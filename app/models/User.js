@@ -26,7 +26,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 
 userSchema.methods.generateToken = function() {
   return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '7d'
+    expiresIn: '7d'
   });
 };
 

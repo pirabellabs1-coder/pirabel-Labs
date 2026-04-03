@@ -1,46 +1,22 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "**/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "css/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "js/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "img/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/pirabel-admin-7x9k2m", "dest": "/api/index.js" },
-    { "src": "/espace-client-4p8w1n", "dest": "/api/index.js" },
-    { "src": "/dashboard", "dest": "/api/index.js" },
-    { "src": "/clients", "dest": "/api/index.js" },
-    { "src": "/projects", "dest": "/api/index.js" },
-    { "src": "/orders", "dest": "/api/index.js" },
-    { "src": "/employees", "dest": "/api/index.js" },
-    { "src": "/invoices", "dest": "/api/index.js" },
-    { "src": "/revenue", "dest": "/api/index.js" },
-    { "src": "/settings", "dest": "/api/index.js" },
-    { "src": "/campaigns", "dest": "/api/index.js" },
-    { "src": "/messages", "dest": "/api/index.js" },
-    { "src": "/articles", "dest": "/api/index.js" },
-    { "src": "/analytics", "dest": "/api/index.js" },
-    { "src": "/portal", "dest": "/api/index.js" },
-    { "src": "/public/(.*)", "dest": "/app/public/$1" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "framework": null
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.js" },
+    { "source": "/pirabel-admin-7x9k2m", "destination": "/api/index.js" },
+    { "source": "/espace-client-4p8w1n", "destination": "/api/index.js" },
+    { "source": "/dashboard", "destination": "/api/index.js" },
+    { "source": "/clients", "destination": "/api/index.js" },
+    { "source": "/projects", "destination": "/api/index.js" },
+    { "source": "/orders", "destination": "/api/index.js" },
+    { "source": "/employees", "destination": "/api/index.js" },
+    { "source": "/invoices", "destination": "/api/index.js" },
+    { "source": "/revenue", "destination": "/api/index.js" },
+    { "source": "/settings", "destination": "/api/index.js" },
+    { "source": "/campaigns", "destination": "/api/index.js" },
+    { "source": "/messages", "destination": "/api/index.js" },
+    { "source": "/articles", "destination": "/api/index.js" },
+    { "source": "/analytics", "destination": "/api/index.js" },
+    { "source": "/portal", "destination": "/api/index.js" }
+  ]
 }

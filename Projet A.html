@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pirabel Labs – Partner in Growth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #066aab;
+      --blue-dark:  #044f82;
+      --blue-light: #e8f4fd;
+      --accent:     #00c9a7;
+      --dark:       #0a0e1a;
+      --dark2:      #111827;
+      --gray:       #6b7280;
+      --light:      #f9fafb;
+      --white:      #ffffff;
+      --gradient:   linear-gradient(135deg, #066aab 0%, #00c9a7 100%);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVBAR ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 6%;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(6,106,171,0.1);
+      transition: all .3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(6,106,171,0.12); }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--dark2);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-cta {
+      background: var(--gradient);
+      color: #fff !important;
+      padding: .55rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      transition: opacity .2s, transform .2s !important;
+    }
+    .nav-cta:hover { opacity: .88; transform: translateY(-1px); }
+
+    .hamburger { display: none; cursor: pointer; font-size: 1.4rem; color: var(--blue); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 6% 5rem;
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, #e8f4fd 0%, #f9fafb 70%);
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6,106,171,.08) 0%, transparent 70%);
+      top: -150px; right: -150px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,201,167,.06) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+      animation: pulse 8s ease-in-out infinite reverse;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+
+    .hero-content { max-width: 680px; position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(6,106,171,.2);
+    }
+    .hero-badge i { font-size: .7rem; }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+    }
+    h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--gray);
+      margin-bottom: 2.5rem;
+      max-width: 540px;
+    }
+
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--gradient);
+      color: #fff;
+      padding: .85rem 2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      box-shadow: 0 8px 30px rgba(6,106,171,.35);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(6,106,171,.4); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      border: 2px solid var(--blue);
+      color: var(--blue);
+      padding: .85rem 2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background .2s, color .2s, transform .2s;
+    }
+    .btn-secondary:hover { background: var(--blue); color: #fff; transform: translateY(-3px); }
+
+    /* ─── STATS BAR ──────────────────────────────────────────── */
+    #stats {
+      background: var(--dark);
+      padding: 3.5rem 6%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+    .stat-item {}
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: .85rem; color: #9ca3af; margin-top: .3rem; font-weight: 500; }
+
+    /* ─── SECTION COMMONS ────────────────────────────────────── */
+    section { padding: 6rem 6%; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: .8rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 3.5rem;
+    }
+
+    /* ─── SERVICES ───────────────────────────────────────────── */
+    #services { background: var(--light); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(6,106,171,.08);
+      transition: transform .3s, box-shadow .3s, border-color .3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(6,106,171,.12);
+      border-color: rgba(6,106,171,.2);
+    }
+
+    .service-icon {
+      width: 56px; height: 56px;
+      background: var(--blue-light);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--blue);
+      margin-bottom: 1.2rem;
+    }
+
+    .service-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .6rem; }
+    .service-card p { font-size: .9rem; color: var(--gray); line-height: 1.6; }
+
+    /* ─── WHY US ─────────────────────────────────────────────── */
+    #why {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    #why .text-side {}
+    #why .visual-side {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .why-card {
+      background: var(--white);
+      border: 1px solid rgba(6,106,171,.1);
+      border-radius: 18px;
+      padding: 1.5rem 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      transition: transform .3s;
+    }
+    .why-card:hover { transform: translateX(8px); }
+    .why-card-icon {
+      min-width: 48px; height: 48px;
+      background: var(--gradient);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+    }
+    .why-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: .2rem; }
+    .why-card p { font-size: .85rem; color: var(--gray); line-height: 1.5; }
+
+    .why-features { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: .8rem; }
+    .why-features li { display: flex; align-items: center; gap: .8rem; font-size: .95rem; color: var(--dark2); font-weight: 500; }
+    .why-features li i { color: var(--accent); font-size: 1rem; }
+
+    /* ─── PROCESS ────────────────────────────────────────────── */
+    #process { background: var(--dark); color: var(--white); }
+    #process .section-title { color: var(--white); }
+    #process .section-sub { color: #9ca3af; }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 36px; left: 8%; right: 8%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--accent));
+      opacity: .4;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+    .step-num {
+      width: 72px; height: 72px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; font-weight: 900; color: #fff;
+      margin: 0 auto 1.2rem;
+      position: relative; z-index: 1;
+      box-shadow: 0 8px 24px rgba(6,106,171,.4);
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; color: #fff; }
+    .step p { font-size: .85rem; color: #9ca3af; line-height: 1.6; }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────────── */
+    #testimonials { background: var(--light); }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testi-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(6,106,171,.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      transition: transform .3s;
+    }
+    .testi-card:hover { transform: translateY(-6px); }
+
+    .stars { color: #f59e0b; font-size: .9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+
+    .testi-text { font-size: .95rem; color: var(--dark2); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+
+    .testi-author { display: flex; align-items: center; gap: .8rem; }
+    .avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 1rem;
+    }
+    .author-info strong { display: block; font-size: .9rem; font-weight: 700; }
+    .author-info span { font-size: .8rem; color: var(--gray); }
+
+    /* ─── CTA SECTION ────────────────────────────────────────── */
+    #cta {
+      background: var(--gradient);
+      text-align: center;
+      padding: 7rem 6%;
+      position: relative;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+      top: -200px; right: -100px;
+    }
+    #cta::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+      bottom: -100px; left: -50px;
+    }
+    #cta h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+      position: relative; z-index: 1;
+    }
+    #cta p { font-size: 1.1rem; color: rgba(255,255,255,.85); margin-bottom: 2.5rem; position: relative; z-index: 1; }
+
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: #fff;
+      color: var(--blue);
+      padding: .9rem 2.2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      box-shadow: 0 8px 30px rgba(0,0,0,.15);
+      transition: transform .2s, box-shadow .2s;
+      position: relative; z-index: 1;
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,.2); }
+
+    /* ─── LOCATIONS ──────────────────────────────────────────── */
+    #locations { text-align: center; }
+    .cities-wrap {
+      display: flex; flex-wrap: wrap;
+      justify-content: center;
+      gap: .8rem;
+      margin-top: 2rem;
+    }
+    .city-chip {
+      display: flex; align-items: center; gap: .4rem;
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: .5rem 1.1rem;
+      border-radius: 50px;
+      font-size: .85rem;
+      font-weight: 600;
+      border: 1px solid rgba(6,106,171,.15);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      color: #9ca3af;
+      padding: 4rem 6% 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand .logo { font-size: 1.4rem; margin-bottom: 1rem; display: block; }
+    .footer-brand p { font-size: .88rem; line-height: 1.7; }
+
+    .footer-col h4 { color: #fff; font-size: .95rem; font-weight: 700; margin-bottom: 1.2rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col ul li a {
+      color: #9ca3af; font-size: .85rem; text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-col ul li a:hover { color: var(--accent); }
+
+    .social-links { display: flex; gap: .8rem; margin-top: 1.2rem; }
+    .social-links a {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,.07);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #9ca3af; font-size: .9rem;
+      transition: background .2s, color .2s;
+      text-decoration: none;
+    }
+    .social-links a:hover { background: var(--blue); color: #fff; }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding-top: 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+      font-size: .82rem;
+    }
+    .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+    /* ─── FLOATING BTN ───────────────────────────────────────── */
+    .float-btn {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--gradient);
+      color: #fff;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 8px 30px rgba(6,106,171,.4);
+      z-index: 999;
+      text-decoration: none;
+      transition: transform .3s;
+    }
+    .float-btn:hover { transform: scale(1.1) rotate(10deg); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #why { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .process-steps::before { display: none; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 4rem 5%; }
+      #hero { padding: 7rem 5% 4rem; }
+      .hero-btns { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="logo">Pirabel<span>Labs</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Pourquoi nous</a></li>
+    <li><a href="#process">Processus</a></li>
+    <li><a href="#testimonials">Témoignages</a></li>
+    <li><a class="nav-login" href="https://pirabellabs.com/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="#cta" class="nav-cta">Démarrer</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content fade-in">
+    <div class="hero-badge">
+      <i class="fas fa-rocket"></i>
+      Agence Marketing Next-Generation
+    </div>
+    <h1>
+      Votre <span class="gradient-text">Département<br>Croissance</span><br>Externalisé
+    </h1>
+    <p class="hero-sub">
+      Nous ne vendons pas du trafic — nous livrons une <strong>croissance mesurable</strong>.
+      Pirabel Labs combine stratégie premium et performance data-driven pour propulser votre business.
+    </p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-primary">
+        <i class="fas fa-rocket"></i>
+        Démarrer ma croissance
+      </a>
+      <a href="#services" class="btn-secondary">
+        <i class="fas fa-eye"></i>
+        Voir nos services
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div id="stats">
+  <div class="stat-item fade-in">
+    <div class="stat-number">150+</div>
+    <div class="stat-label">Projets livrés</div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-number">45%</div>
+    <div class="stat-label">ROI moyen généré</div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-number">3x</div>
+    <div class="stat-label">Trafic SEO moyen</div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-number">2M€+</div>
+    <div class="stat-label">Ads gérées / an</div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-number">98%</div>
+    <div class="stat-label">Satisfaction client</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-tag">Ce que nous faisons</div>
+  <h2 class="section-title">Des services <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">360°</span> pour votre croissance</h2>
+  <p class="section-sub">Une offre complète, des stratégies sur-mesure. Pas de packages génériques — chaque solution est pensée pour votre business.</p>
+
+  <div class="services-grid">
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-search"></i></div>
+      <h3>Référencement Naturel (SEO)</h3>
+      <p>Stratégies SEO avancées pour dominer les résultats Google et générer un trafic organique qualifié et durable.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-bullhorn"></i></div>
+      <h3>Publicité Payante (SEA & Social Ads)</h3>
+      <p>Campagnes Google Ads et Social Ads optimisées pour un coût d'acquisition réduit et un ROI maximal.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-share-alt"></i></div>
+      <h3>Social Media Management</h3>
+      <p>Gestion complète de vos réseaux sociaux : stratégie, création de contenu, community management et analytics.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-robot"></i></div>
+      <h3>IA & Automatisation</h3>
+      <p>Intégration de l'intelligence artificielle et automatisation de vos processus marketing pour gagner en efficacité.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-funnel-dollar"></i></div>
+      <h3>Funnels & Conversion</h3>
+      <p>Conception et optimisation de tunnels de vente performants pour transformer vos visiteurs en clients fidèles.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-laptop-code"></i></div>
+      <h3>Création de Sites Web</h3>
+      <p>Design UX/UI premium et développement de sites web performants, rapides et optimisés pour la conversion.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-pen-nib"></i></div>
+      <h3>Rédaction SEO & Content</h3>
+      <p>Contenu de qualité qui plaît à Google et à vos lecteurs : articles, landing pages, études de cas et plus.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-film"></i></div>
+      <h3>Vidéo & Motion Design</h3>
+      <p>Montage vidéo professionnel et animations graphiques pour captiver votre audience et booster votre engagement.</p>
+    </div>
+    <div class="service-card fade-in">
+      <div class="service-icon"><i class="fas fa-palette"></i></div>
+      <h3>Design Graphique & UI/UX</h3>
+      <p>Identité visuelle forte, design d'interface soigné et expérience utilisateur optimale pour votre marque.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section>
+  <div id="why">
+    <div class="text-side fade-in">
+      <div class="section-tag">Pourquoi Pirabel Labs</div>
+      <h2 class="section-title">Pas une agence.<br>Votre partenaire<br><span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">de croissance.</span></h2>
+      <p class="section-sub">Nous fonctionnons comme votre département marketing interne — avec l'agilité d'une agence et l'engagement d'un associé.</p>
+      <ul class="why-features">
+        <li><i class="fas fa-check-circle"></i> Approches 100% personnalisées, zéro template générique</li>
+        <li><i class="fas fa-check-circle"></i> Reporting transparent et résultats mesurables</li>
+        <li><i class="fas fa-check-circle"></i> Obsession du ROI à chaque décision stratégique</li>
+        <li><i class="fas fa-check-circle"></i> Équipe pluridisciplinaire de 5 ans d'expertise</li>
+        <li><i class="fas fa-check-circle"></i> Présence internationale sur 10 marchés</li>
+        <li><i class="fas fa-check-circle"></i> Partenariats long terme, pas des one-shots</li>
+      </ul>
+    </div>
+    <div class="visual-side fade-in">
+      <div class="why-card">
+        <div class="why-card-icon"><i class="fas fa-chart-line"></i></div>
+        <div>
+          <h4>Data-Driven à 100%</h4>
+          <p>Chaque décision repose sur des données réelles, pas des intuitions.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><i class="fas fa-cogs"></i></div>
+        <div>
+          <h4>Stratégie Intégrée</h4>
+          <p>SEO, Ads, Social, Content — une vision cohérente sur tous vos canaux.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><i class="fas fa-shield-alt"></i></div>
+        <div>
+          <h4>Résultats Garantis</h4>
+          <p>Nous nous engageons sur des objectifs clairs et mesurables dès le départ.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><i class="fas fa-headset"></i></div>
+        <div>
+          <h4>Support Dédié</h4>
+          <p>Un interlocuteur unique, réactif, qui connaît votre business sur le bout des doigts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div style="text-align:center;">
+    <div class="section-tag" style="color:var(--accent);">Notre méthode</div>
+    <h2 class="section-title">Un processus<br>structuré pour des <span style="color:var(--accent);">résultats concrets</span></h2>
+    <p class="section-sub" style="margin:0 auto 3.5rem;">De l'audit à la croissance, chaque étape est pensée pour maximiser votre retour sur investissement.</p>
+  </div>
+  <div class="process-steps">
+    <div class="step fade-in">
+      <div class="step-num">1</div>
+      <h3>Audit & Analyse</h3>
+      <p>Analyse complète de votre situation actuelle, vos concurrents et votre marché cible.</p>
+    </div>
+    <div class="step fade-in">
+      <div class="step-num">2</div>
+      <h3>Stratégie Sur-mesure</h3>
+      <p>Élaboration d'un plan d'action personnalisé avec des KPIs clairs et mesurables.</p>
+    </div>
+    <div class="step fade-in">
+      <div class="step-num">3</div>
+      <h3>Exécution & Optimisation</h3>
+      <p>Mise en œuvre de la stratégie avec optimisation continue basée sur les données.</p>
+    </div>
+    <div class="step fade-in">
+      <div class="step-num">4</div>
+      <h3>Croissance & Scaling</h3>
+      <p>Amplification des résultats et scaling des canaux les plus performants pour maximiser le ROI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-tag">Ils nous font confiance</div>
+  <h2 class="section-title">Ce que disent<br>nos <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">clients</span></h2>
+  <p class="section-sub">Des résultats réels, des partenariats durables, des business qui grandissent.</p>
+
+  <div class="testi-grid">
+    <div class="testi-card fade-in">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Grâce à Pirabel Labs, nous avons réduit notre coût d'acquisition de 30% en seulement 6 mois. Leur approche data-driven et leur expertise SEA ont complètement transformé notre stratégie digitale."</p>
+      <div class="testi-author">
+        <div class="avatar">JD</div>
+        <div class="author-info">
+          <strong>Jean-Marc Durand</strong>
+          <span>CEO, TechFlow</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-in">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Ce qui différencie Pirabel Labs, c'est leur focus sur les revenus, pas juste les clics. En 4 mois, notre CA e-commerce a augmenté de 68%. Une équipe exceptionnelle et très réactive."</p>
+      <div class="testi-author">
+        <div class="avatar">SB</div>
+        <div class="author-info">
+          <strong>Sarah Benamou</strong>
+          <span>Directrice Marketing, Luxe & Co</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-in">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">"Leur stratégie SEO a triplé notre trafic organique en 8 mois. Mais au-delà des chiffres, c'est la qualité des leads qui s'est améliorée. Pirabel Labs comprend vraiment notre business."</p>
+      <div class="testi-author">
+        <div class="avatar">MK</div>
+        <div class="author-info">
+          <strong>Marc Kourouma</strong>
+          <span>Fondateur, StartupScale</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section id="locations">
+  <div class="section-tag">Notre présence</div>
+  <h2 class="section-title">Une agence internationale<br>à votre service</h2>
+  <p class="section-sub" style="margin: 0 auto 1rem;">Pirabel Labs accompagne des entreprises sur 3 continents depuis ses bureaux dans 10 villes.</p>
+  <div class="cities-wrap">
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Paris</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Montréal</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Genève</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Bruxelles</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Lyon</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Casablanca</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Luxembourg</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Dakar</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Cotonou</div>
+    <div class="city-chip"><i class="fas fa-map-marker-alt"></i> Nice</div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section id="cta">
+  <h2>Prêt à propulser<br>votre croissance ?</h2>
+  <p>Discutons de vos objectifs et construisons ensemble votre stratégie sur-mesure.<br>Premier audit offert — sans engagement.</p>
+  <a href="https://pirabellabs.com" target="_blank" class="btn-white">
+    <i class="fas fa-calendar-check"></i>
+    Prendre rendez-vous gratuitement
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Pirabel<span>Labs</span></div>
+      <p>L'agence digitale next-generation qui transforme votre marketing en moteur de croissance mesurable.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">SEO & Référencement</a></li>
+        <li><a href="#">Google Ads & SEA</a></li>
+        <li><a href="#">Social Media</a></li>
+        <li><a href="#">IA & Automatisation</a></li>
+        <li><a href="#">Création Web</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Agence</h4>
+      <ul>
+        <li><a href="#">À propos</a></li>
+        <li><a href="#">Notre équipe</a></li>
+        <li><a href="#">Nos résultats</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Carrières</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">Prendre RDV</a></li>
+        <li><a href="#">contact@pirabellabs.com</a></li>
+        <li><a href="#">Paris — Montréal</a></li>
+        <li><a href="#">Mentions légales</a></li>
+        <li><a href="#">Confidentialité</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Pirabel Labs. Tous droits réservés.</span>
+    <span>Conçu avec <span style="color:var(--accent)">♥</span> pour la croissance de nos clients</span>
+  </div>
+</footer>
+
+<!-- FLOATING CTA -->
+<a href="#cta" class="float-btn" title="Démarrer ma croissance">
+  <i class="fas fa-rocket"></i>
+</a>
+
+<script>
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Intersection Observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Hamburger mobile menu
+  const ham = document.getElementById('hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  ham.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '70px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = '#fff';
+    navLinks.style.padding = '1rem 6%';
+    navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,.1)';
+  });
+
+  // Smooth close on nav link click (mobile)
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 900) {
+        navLinks.style.display = 'none';
+      }
+    });
+  });
+
+  // Animated counter
+  function animateCounter(el, target, suffix='') {
+    let start = 0;
+    const duration = 1800;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        el.textContent = target + suffix;
+        clearInterval(timer);
+      } else {
+        el.textContent = Math.floor(start) + suffix;
+      }
+    }, 16);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      const nums = document.querySelectorAll('.stat-number');
+      animateCounter(nums[0], 150, '+');
+      animateCounter(nums[1], 45, '%');
+      animateCounter(nums[2], 3, 'x');
+      animateCounter(nums[4], 98, '%');
+      statsObserver.disconnect();
+    }
+  }, { threshold: 0.5 });
+
+  statsObserver.observe(document.getElementById('stats'));
+</script>
+<script src="js/tracker.js" defer></script>
+</body>
+</html>

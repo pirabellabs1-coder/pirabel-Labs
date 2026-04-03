@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demandes | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link active"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
+
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+
+    <div class="sidebar-section">Systeme</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Demandes</div>
+      <span class="badge badge-new" id="new-count-badge" style="font-size:0.75rem;">0 nouvelles</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Toolbar -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-status" onchange="loadOrders()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
+        <option value="">Tous les statuts</option>
+        <option value="nouvelle">Nouvelle</option>
+        <option value="en_traitement">En traitement</option>
+        <option value="devis_envoye">Devis envoye</option>
+        <option value="acceptee">Acceptee</option>
+        <option value="refusee">Refusee</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Service</th>
+            <th>Budget</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" style="max-width:600px;">
+    <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+    <div class="modal-title">Details de la demande</div>
+    <div id="detail-content"></div>
+    <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+      <select id="status-select" style="background:var(--bg);border:1px solid var(--border);padding:0.5rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
+        <option value="nouvelle">Nouvelle</option>
+        <option value="en_traitement">En traitement</option>
+        <option value="devis_envoye">Devis envoye</option>
+        <option value="acceptee">Acceptee</option>
+        <option value="refusee">Refusee</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="updateStatus()">Changer statut</button>
+      <button class="btn btn-ghost btn-sm" onclick="convertOrder()"><span class="material-symbols-outlined" style="font-size:0.875rem;">sync_alt</span> Convertir en client + projet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+
+function statusBadge(status) {
+  const map = { 'nouvelle': 'badge-new', 'en_traitement': 'badge-pending', 'devis_envoye': 'badge-pending', 'acceptee': 'badge-active', 'refusee': 'badge-danger' };
+  return `<span class="badge ${map[status] || 'badge-done'}">${status.replace(/_/g, ' ')}</span>`;
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+let currentOrder = null;
+
+async function loadOrders() {
+  try {
+    const status = document.getElementById('filter-status').value;
+    let url = '/api/orders?';
+    if (status) url += 'status=' + encodeURIComponent(status);
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+    const orders = data.orders || data;
+
+    const newCount = orders.filter(o => o.status === 'nouvelle').length;
+    document.getElementById('badge-orders').textContent = newCount;
+    document.getElementById('new-count-badge').textContent = newCount + ' nouvelles';
+
+    document.getElementById('orders-body').innerHTML = orders.map(o => `
+      <tr>
+        <td>${o.name}</td>
+        <td>${o.email}</td>
+        <td>${o.service || '-'}</td>
+        <td>${o.budget || '-'}</td>
+        <td>${statusBadge(o.status)}</td>
+        <td>${formatDate(o.createdAt)}</td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="viewOrder('${o._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune demande</td></tr>';
+  } catch (e) { console.error(e); }
+}
+
+async function viewOrder(id) {
+  try {
+    const res = await fetch('/api/orders/' + id, { headers });
+    currentOrder = await res.json();
+    document.getElementById('detail-content').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Nom</span><div>${currentOrder.name}</div></div>
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Email</span><div>${currentOrder.email}</div></div>
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Telephone</span><div>${currentOrder.phone || '-'}</div></div>
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Entreprise</span><div>${currentOrder.company || '-'}</div></div>
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Service</span><div>${currentOrder.service || '-'}</div></div>
+        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Budget</span><div>${currentOrder.budget || '-'}</div></div>
+        <div style="grid-column:1/-1;"><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Message</span><div style="margin-top:0.25rem;white-space:pre-wrap;">${currentOrder.message || '-'}</div></div>
+      </div>
+    `;
+    document.getElementById('status-select').value = currentOrder.status;
+    document.getElementById('detail-modal').classList.add('open');
+  } catch (e) { console.error(e); }
+}
+
+function closeDetailModal() {
+  document.getElementById('detail-modal').classList.remove('open');
+  currentOrder = null;
+}
+
+async function updateStatus() {
+  if (!currentOrder) return;
+  const newStatus = document.getElementById('status-select').value;
+  try {
+    await fetch('/api/orders/' + currentOrder._id, {
+      method: 'PUT', headers, body: JSON.stringify({ status: newStatus })
+    });
+    closeDetailModal();
+    loadOrders();
+  } catch (e) { console.error(e); }
+}
+
+async function convertOrder() {
+  if (!currentOrder) return;
+  try {
+    await fetch('/api/orders/' + currentOrder._id + '/convert', { method: 'POST', headers });
+    closeDetailModal();
+    loadOrders();
+    alert('Demande convertie en client + projet avec succes!');
+  } catch (e) { console.error(e); alert('Erreur lors de la conversion'); }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
+}
+
+loadOrders();
+</script>
+</body>
+</html>

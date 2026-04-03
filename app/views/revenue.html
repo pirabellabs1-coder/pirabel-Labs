@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link active"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Syst&egrave;me</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Revenue & Comptabilit&eacute;</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter entr&eacute;e</button>
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+  <div class="content">
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">account_balance</span> CA Total</div><div class="stat-card-value accent" id="s-total">0 &euro;</div></div>
+      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">calendar_month</span> CA ce mois</div><div class="stat-card-value" id="s-month">0 &euro;</div></div>
+      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">trending_down</span> D&eacute;penses mois</div><div class="stat-card-value" id="s-expenses">0 &euro;</div></div>
+      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--success);">savings</span> R&eacute;sultat net</div><div class="stat-card-value" id="s-net">0 &euro;</div></div>
+    </div>
+    <!-- Chart -->
+    <div class="chart-wrap"><div class="chart-title">Revenue vs D&eacute;penses (12 mois)</div><canvas id="revenueChart" height="250"></canvas></div>
+  </div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title">Ajouter une entr&eacute;e</div>
+    <form id="entry-form" class="dash-form">
+      <div class="form-group"><label>Type *</label>
+        <select id="f-type" required><option value="income">Revenu</option><option value="expense">D&eacute;pense</option></select>
+      </div>
+      <div class="form-group"><label>Cat&eacute;gorie *</label>
+        <select id="f-category"><option>Facture</option><option>Abonnement</option><option>Salaire</option><option>Outil/Logiciel</option><option>Publicit&eacute;</option><option>Bureau</option><option>Autre</option></select>
+      </div>
+      <div class="form-group"><label>Description *</label><input type="text" id="f-desc" required></div>
+      <div class="form-group"><label>Montant (&euro;) *</label><input type="number" id="f-amount" step="0.01" required></div>
+      <div class="form-group"><label>Date</label><input type="date" id="f-date"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Enregistrer</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/dashboard/stats', { headers });
+    const d = await res.json();
+    document.getElementById('s-total').textContent = fmt(d.revenue?.total);
+    document.getElementById('s-month').textContent = fmt(d.revenue?.thisMonth);
+  } catch(e) {}
+}
+
+async function loadChart() {
+  try {
+    const res = await fetch('/api/dashboard/revenue-chart', { headers });
+    const data = await res.json();
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'bar',
+      data: {
+        labels: data.map(d => d.month),
+        datasets: [
+          { label: 'Revenue', data: data.map(d => d.income), backgroundColor: 'rgba(255,85,0,0.6)', borderColor: '#FF5500', borderWidth: 1 },
+          { label: 'D\u00e9penses', data: data.map(d => d.expenses), backgroundColor: 'rgba(255,180,171,0.3)', borderColor: '#ffb4ab', borderWidth: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } } },
+        scales: {
+          x: { ticks: { color: 'rgba(229,226,225,0.4)' }, grid: { color: 'rgba(92,64,55,0.1)' } },
+          y: { ticks: { color: 'rgba(229,226,225,0.4)', callback: v => v.toLocaleString()+'€' }, grid: { color: 'rgba(92,64,55,0.1)' } }
+        }
+      }
+    });
+  } catch(e) {}
+}
+
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.getElementById('entry-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  // Revenue entries go to a simple endpoint - using dashboard for now
+  // In production, add a /api/revenue route
+  closeModal();
+  alert('Entr\u00e9e enregistr\u00e9e (endpoint /api/revenue \u00e0 impl\u00e9menter)');
+});
+
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+loadStats(); loadChart();
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages Chat | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.chat-layout{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 60px);overflow:hidden;}
+.conv-list{background:var(--card);border-right:1px solid var(--border);overflow-y:auto;}
+.conv-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;}
+.conv-item:hover{background:var(--card-hover);}
+.conv-item.active{background:rgba(255,85,0,0.05);border-left:3px solid var(--accent);}
+.conv-item-name{font-weight:600;font-size:0.875rem;display:flex;justify-content:space-between;align-items:center;}
+.conv-item-msg{font-size:0.75rem;color:var(--muted);margin-top:0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.conv-item-time{font-size:0.625rem;color:var(--muted2);}
+.conv-item-unread{background:var(--accent);color:#fff;font-size:0.5625rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.chat-area{display:flex;flex-direction:column;height:100%;}
+.chat-area-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.chat-area-messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;}
+.chat-area-input{display:flex;border-top:1px solid var(--border);padding:0;}
+.chat-area-input input{flex:1;background:transparent;border:none;padding:1rem 1.5rem;color:var(--text);font-size:0.875rem;outline:none;}
+.chat-area-input button{background:var(--accent);color:#fff;border:none;padding:1rem 1.5rem;cursor:pointer;}
+.msg{max-width:70%;}
+.msg p{padding:0.75rem 1rem;font-size:0.8125rem;line-height:1.5;}
+.msg.visitor{align-self:flex-start;}
+.msg.visitor p{background:rgba(229,226,225,0.08);border-radius:0 12px 12px 12px;}
+.msg.admin{align-self:flex-end;}
+.msg.admin p{background:var(--accent);color:#5c1900;border-radius:12px 0 12px 12px;}
+.msg-time{font-size:0.625rem;color:var(--muted2);margin-top:0.25rem;}
+.empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);}
+.empty-chat .material-symbols-outlined{font-size:3rem;margin-bottom:1rem;opacity:0.3;}
+@media(max-width:900px){.chat-layout{grid-template-columns:1fr;}.conv-list{display:none;}.conv-list.show{display:block;position:fixed;inset:0;z-index:200;}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link active"><span class="material-symbols-outlined">chat</span> Messages <span class="badge badge-new" id="badge-unread" style="margin-left:auto;">0</span></a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+</aside>
+
+<div class="main" style="overflow:hidden;">
+  <div class="chat-layout">
+    <!-- Conversations List -->
+    <div class="conv-list" id="conv-list">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+        <div style="font-family:var(--font-h);font-weight:700;font-size:0.9375rem;">Messages</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.25rem;" id="conv-count">0 conversations</div>
+      </div>
+      <div id="conversations"></div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area">
+      <div class="chat-area-header" id="chat-header" style="display:none;">
+        <div>
+          <div style="font-weight:600;" id="chat-visitor-name">Visiteur</div>
+          <div style="font-size:0.75rem;color:var(--muted);" id="chat-visitor-email"></div>
+        </div>
+      </div>
+      <div class="chat-area-messages" id="chat-messages">
+        <div class="empty-chat">
+          <span class="material-symbols-outlined">forum</span>
+          <p>Selectionnez une conversation</p>
+        </div>
+      </div>
+      <div class="chat-area-input" id="chat-input-area" style="display:none;">
+        <input type="text" id="reply-input" placeholder="Tapez votre reponse...">
+        <button onclick="sendReply()"><span class="material-symbols-outlined">send</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
+
+let activeConv = null;
+
+function formatTime(d) {
+  const date = new Date(d);
+  const now = new Date();
+  if (date.toDateString() === now.toDateString()) return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+}
+
+async function loadConversations() {
+  try {
+    const res = await fetch('/api/chat/conversations', { headers });
+    const data = await res.json();
+    const convs = data.conversations || [];
+    document.getElementById('conv-count').textContent = convs.length + ' conversations';
+
+    let totalUnread = 0;
+    document.getElementById('conversations').innerHTML = convs.map(c => {
+      totalUnread += c.unread || 0;
+      return `<div class="conv-item ${activeConv === c._id ? 'active' : ''}" onclick="openConversation('${c._id}', '${(c.visitorName||'Visiteur').replace(/'/g,"\\'")}', '${c.visitorEmail||''}')">
+        <div class="conv-item-name">
+          <span>${c.visitorName || 'Visiteur'}</span>
+          <span style="display:flex;align-items:center;gap:0.5rem;">
+            <span class="conv-item-time">${formatTime(c.lastDate)}</span>
+            ${c.unread > 0 ? `<span class="conv-item-unread">${c.unread}</span>` : ''}
+          </span>
+        </div>
+        <div class="conv-item-msg">${c.lastMessage || ''}</div>
+      </div>`;
+    }).join('') || '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8125rem;">Aucun message</div>';
+
+    document.getElementById('badge-unread').textContent = totalUnread;
+  } catch (e) { console.error(e); }
+}
+
+async function openConversation(convId, name, email) {
+  activeConv = convId;
+  document.getElementById('chat-header').style.display = 'flex';
+  document.getElementById('chat-input-area').style.display = 'flex';
+  document.getElementById('chat-visitor-name').textContent = name;
+  document.getElementById('chat-visitor-email').textContent = email;
+  document.getElementById('reply-input').focus();
+
+  // Mark active in list
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+  event?.target?.closest('.conv-item')?.classList.add('active');
+
+  try {
+    const res = await fetch(`/api/chat/messages/${convId}`, { headers });
+    const data = await res.json();
+    const msgs = data.messages || [];
+    document.getElementById('chat-messages').innerHTML = msgs.map(m =>
+      `<div class="msg ${m.sender}">
+        <p>${m.content}</p>
+        <div class="msg-time">${formatTime(m.createdAt)}</div>
+      </div>`
+    ).join('') || '<div style="padding:2rem;text-align:center;color:var(--muted);">Debut de la conversation</div>';
+
+    // Scroll to bottom
+    const container = document.getElementById('chat-messages');
+    container.scrollTop = container.scrollHeight;
+  } catch (e) { console.error(e); }
+
+  loadConversations(); // Refresh to update unread count
+}
+
+async function sendReply() {
+  const input = document.getElementById('reply-input');
+  const text = input.value.trim();
+  if (!text || !activeConv) return;
+  input.value = '';
+
+  // Add to UI immediately
+  const container = document.getElementById('chat-messages');
+  container.innerHTML += `<div class="msg admin"><p>${text}</p><div class="msg-time">maintenant</div></div>`;
+  container.scrollTop = container.scrollHeight;
+
+  try {
+    await fetch('/api/chat/admin-reply', {
+      method: 'POST', headers,
+      body: JSON.stringify({ conversationId: activeConv, content: text })
+    });
+  } catch (e) { console.error(e); }
+}
+
+document.getElementById('reply-input')?.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendReply();
+});
+
+function logout() { localStorage.clear(); window.location.href = '/'; }
+
+loadConversations();
+// Poll for new messages
+setInterval(loadConversations, 10000);
+</script>
+</body>
+</html>

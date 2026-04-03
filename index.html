@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pirabel Labs | Agence Digitale Premium — SEO, Web, IA & Automatisation</title>
+<meta name="description" content="Pirabel Labs, votre agence digitale premium a Paris, Cotonou et Casablanca. SEO, creation de sites web, IA, automatisation, branding. Résultats mesurables. Audit gratuit.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pirabel-labs.com/">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Pirabel Labs | Agence Digitale Premium">
+<meta property="og:description" content="Nous aidons les entreprises ambitieuses a dominer le digital. SEO, Web, IA, Branding. Audit gratuit.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pirabel-labs.com/">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/illustrations.css">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Pirabel Labs",
+  "url": "https://pirabel-labs.com",
+  "description": "Agence digitale premium specialisee en SEO, creation de sites web, IA et automatisation, branding et marketing digital.",
+  "foundingDate": "2020",
+  "areaServed": ["Paris","Marseille","Lyon","Bruxelles","Montreal","Cotonou","Casablanca","Dakar","Abidjan","Tunis"],
+  "serviceType": ["SEO","Web Design","IA & Automatisation","Branding","Social Media","Publicite Digitale"]
+}
+</script>
+
+<style>
+/* ===== PAGE-SPECIFIC: Unique animations ===== */
+
+/* Hero text reveal - each word slides up with stagger */
+@keyframes heroReveal {
+  from { transform: translateY(110%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+}
+.hero-word span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: heroReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-word:nth-child(2) span { animation-delay: 0.12s; }
+.hero-word:nth-child(3) span { animation-delay: 0.24s; }
+.hero-word:nth-child(4) span { animation-delay: 0.36s; }
+.hero-word:nth-child(5) span { animation-delay: 0.48s; }
+.hero-word:nth-child(6) span { animation-delay: 0.6s; }
+.hero-word:nth-child(7) span { animation-delay: 0.72s; }
+
+/* Magnetic button effect */
+.btn-magnetic {
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Floating mockup with parallax tilt */
+.hero-mockup {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-6deg);
+  width: 550px;
+  aspect-ratio: 1;
+  background: var(--surface-container-lowest);
+  border: 1px solid rgba(92, 64, 55, 0.1);
+  box-shadow: 0 40px 100px rgba(255, 85, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Glitch text effect for accent words */
+@keyframes glitch {
+  0%, 100% { text-shadow: none; }
+  20% { text-shadow: -2px 0 #FF5500, 2px 0 #00c7a5; }
+  40% { text-shadow: 2px 0 #FF5500, -2px 0 #00c7a5; }
+  60% { text-shadow: -1px 0 #FF5500, 1px 0 #00c7a5; }
+  80% { text-shadow: 1px 0 #FF5500, -1px 0 #00c7a5; }
+}
+.glitch-hover:hover {
+  animation: glitch 0.4s ease forwards;
+}
+
+/* Horizontal scroll parallax for ticker */
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-10px, 20px) scale(0.95); }
+  75% { transform: translate(20px, 10px) scale(1.02); }
+}
+.solar-orb { animation: floatOrb 20s ease-in-out infinite; }
+.solar-orb--secondary { animation-delay: -10s; animation-duration: 25s; }
+
+/* Card hover — lift + orange glow */
+.card-hover-glow {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s;
+}
+.card-hover-glow:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(255, 87, 8, 0.1);
+}
+
+/* Staggered pain cards offset */
+.pain-card:nth-child(2), .pain-card:nth-child(5) { transform: translateY(3rem); }
+.testi-card:nth-child(2) { transform: translateY(-3rem); }
+
+/* Pricing featured */
+.pricing-mid {
+  background: #FF5500;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 0 80px rgba(255, 85, 0, 0.15);
+  z-index: 2;
+  position: relative;
+}
+
+/* Smooth line draw animation */
+@keyframes lineDraw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.line-draw {
+  transform-origin: left;
+  animation: lineDraw 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Number counter pulse */
+@keyframes countPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Parallax scroll effect (via JS) */
+[data-parallax] {
+  transition: transform 0.1s linear;
+}
+
+/* Smooth text underline expand on hover */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--primary-container);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-underline:hover::after { width: 100%; }
+
+@media (max-width: 900px) {
+  .hero-mockup { display: none; }
+  .pain-card:nth-child(2), .pain-card:nth-child(5) { transform: none; }
+  .testi-card:nth-child(2) { transform: none; }
+  .pricing-mid { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pre-logo">PIRABEL LABS</div>
+  <div class="pre-bar"><div class="pre-bar-fill"></div></div>
+  <div class="pre-pct">0%</div>
+</div>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- Noise & Atmosphere -->
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div>
+<div class="solar-orb solar-orb--secondary"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">L'AGENCE</a>
+      <a href="services.html" class="link-underline">SERVICES</a><a href="blog.html">BLOG</a>
+      <a href="guides/" class="link-underline">GUIDES</a>
+      <a href="resultats.html" class="link-underline">RESULTATS</a>
+      <a href="a-propos.html" class="link-underline">A PROPOS</a>
+    </div>
+    <a class="nav-login" href="https://pirabellabs.com/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="contact.html" class="nav-cta btn-magnetic">Audit Gratuit</a>
+    <div class="nav-hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <a href="index.html">Accueil</a>
+  <a href="services.html">Services</a><a href="blog.html">Blog</a>
+  <a href="guides/">Guides</a>
+  <a href="resultats.html">Resultats</a>
+  <a href="a-propos.html">A propos</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<header class="section" style="min-height:100vh;display:flex;align-items:center;padding-top:8rem;">
+  <div class="bg-text" style="top:20%;right:0;">LABS</div>
+  <div class="section-inner" style="width:100%;">
+    <span class="pill rv" style="animation-delay:0.8s;">Agence Marketing Digital Premium</span>
+    <h1 class="text-hero" style="color:#FF5500;margin:1.5rem 0 2rem;">
+      <div class="hero-word"><span>L'AGENCE</span></div>
+      <div class="hero-word"><span>DIGITALE</span></div><br>
+      <div class="hero-word"><span>QUI</span></div>
+      <div class="hero-word"><span>PROPULSE</span></div><br>
+      <div class="hero-word"><span>VOTRE</span></div>
+      <div class="hero-word"><span style="color:var(--on-surface);">CROISSANCE.</span></div>
+    </h1>
+    <p class="text-body-lg rv" style="max-width:42rem;margin-bottom:3rem;animation-delay:1s;">
+      SEO, cr&eacute;ation de sites web, automatisation IA, publicit&eacute; digitale, branding — nous accompagnons les entreprises ambitieuses avec des solutions sur mesure qui g&eacute;n&egrave;rent des r&eacute;sultats concrets et mesurables. De Paris &agrave; Cotonou, de Casablanca &agrave; Montr&eacute;al.
+    </p>
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;" class="rv" style="animation-delay:1.2s;">
+      <a href="contact.html" class="btn btn--primary btn-magnetic">DOMINER LE MARCHE <span class="material-symbols-outlined">arrow_forward</span></a>
+      <a href="#services" class="btn btn--ghost btn-magnetic">DECOUVRIR NOS SERVICES</a>
+    </div>
+  </div>
+  <div class="hero-mockup" data-parallax="0.05">
+    <div class="illus illus-dashboard">
+      <div class="illus-dashboard__dots"><span></span><span></span><span></span></div>
+      <div class="illus-bars">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================
+     MARQUEE TICKER
+     ============================================ -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>SEO STRATEGIQUE <span class="material-symbols-outlined">star</span></span>
+    <span>CREATION DE SITES <span class="material-symbols-outlined">star</span></span>
+    <span>IA & AUTOMATISATION <span class="material-symbols-outlined">star</span></span>
+    <span>BRANDING <span class="material-symbols-outlined">star</span></span>
+    <span>SOCIAL MEDIA <span class="material-symbols-outlined">star</span></span>
+    <span>PUBLICITE DIGITALE <span class="material-symbols-outlined">star</span></span>
+    <span>VIDEO & MOTION <span class="material-symbols-outlined">star</span></span>
+    <span>EMAIL MARKETING <span class="material-symbols-outlined">star</span></span>
+  </div>
+</div>
+
+<!-- ============================================
+     PAIN POINTS
+     ============================================ -->
+<section class="section section--low">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="margin-bottom:4rem;">POURQUOI VOTRE BUSINESS <span class="text-primary glitch-hover" style="font-style:italic;">STAGNE ?</span></h2>
+    <div class="grid-3">
+      <div class="card card-hover-glow pain-card rv rv-d1">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">01</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Votre site est invisible</h3>
+        <p class="text-body">Vos concurrents apparaissent en premier sur Google et vous perdez des clients chaque jour. Votre site existe, mais personne ne le trouve quand il cherche vos services.</p>
+      </div>
+      <div class="card card-hover-glow pain-card rv rv-d2">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">02</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Votre trafic ne bouge plus</h3>
+        <p class="text-body">Vous avez investi dans un beau site, mais les visiteurs ne viennent pas. Le compteur de visites reste désespérément plat malgre vos efforts.</p>
+      </div>
+      <div class="card card-hover-glow pain-card rv rv-d3">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">03</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Vous brulez du budget pub</h3>
+        <p class="text-body">Chaque mois, vous remettez de l'argent dans Google Ads pour avoir des clients. Sans budget pub, plus rien ne rentre. Vous etes pris en otage.</p>
+      </div>
+      <div class="card card-hover-glow pain-card rv rv-d4">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">04</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Votre ancienne agence a échoué</h3>
+        <p class="text-body">Vous avez deja paye une agence. 6 mois plus tard : aucun resultat concret, des rapports incomprehensibles, et une confiance brisee.</p>
+      </div>
+      <div class="card card-hover-glow pain-card rv rv-d5">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">05</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Vous perdez du temps</h3>
+        <p class="text-body">Vous gerez tout vous-meme — réseaux sociaux, site, emails — sans stratégie claire. Vos journees sont pleines mais les résultats ne suivent pas.</p>
+      </div>
+      <div class="card card-hover-glow pain-card rv rv-d6">
+        <span style="font-family:var(--font-headline);font-size:2.5rem;font-weight:900;color:var(--primary);display:block;margin-bottom:1.5rem;">06</span>
+        <h3 class="text-h4" style="margin-bottom:1rem;">Vos donnees sont inexploitées</h3>
+        <p class="text-body">Vous ne savez pas d'ou viennent vos clients, quelles pages fonctionnent, ni pourquoi certains visiteurs n'achetent pas. Vous naviguez a vue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     VALUE PROPOSITION + STATS
+     ============================================ -->
+<section class="section section--surface">
+  <div class="section-inner" style="display:flex;flex-wrap:wrap;gap:4rem;">
+    <div style="flex:1;min-width:300px;">
+      <h2 class="text-h2 rv" style="margin-bottom:2rem;">NOUS NE SOMMES PAS UNE AGENCE CLASSIQUE.<br><span class="text-primary">NOUS SOMMES VOTRE PARTENAIRE DE CROISSANCE.</span></h2>
+      <p class="text-body-lg rv rv-d1" style="margin-bottom:3rem;">Depuis notre creation, nous avons propulse plus de 150 entreprises vers la reussite digitale. Notre approche est strategique, transparente et orientee résultats. Pas de jargon, pas de promesses en l'air — des chiffres qui parlent.</p>
+      <div class="grid-2 rv rv-d2" style="border-top:1px solid rgba(92,64,55,0.2);padding-top:3rem;">
+        <div class="stat" style="text-align:left;">
+          <div class="stat__number" data-count="420" data-prefix="+" data-suffix="%">0%</div>
+          <p class="stat__label">Trafic organique moyen</p>
+        </div>
+        <div class="stat" style="text-align:left;">
+          <div class="stat__number" data-count="150" data-prefix="" data-suffix="+">0</div>
+          <p class="stat__label">Projets livres</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:300px;display:flex;flex-direction:column;gap:2rem;">
+      <div class="rv rv-d1" style="display:flex;gap:2rem;align-items:flex-start;">
+        <div style="width:4rem;height:4rem;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span class="material-symbols-outlined" style="color:var(--primary);font-size:1.75rem;">terminal</span>
+        </div>
+        <div>
+          <h4 class="text-h4" style="margin-bottom:0.75rem;">SEO & Référencement Naturel</h4>
+          <p class="text-body">Vous apparaissez en premier sur Google quand vos clients cherchent vos services. Plus de trafic qualifie, moins de dépendance a la pub.</p>
+        </div>
+      </div>
+      <div class="rv rv-d2" style="display:flex;gap:2rem;align-items:flex-start;">
+        <div style="width:4rem;height:4rem;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span class="material-symbols-outlined" style="color:var(--primary);font-size:1.75rem;">code</span>
+        </div>
+        <div>
+          <h4 class="text-h4" style="margin-bottom:0.75rem;">Creation de Sites Web</h4>
+          <p class="text-body">Des sites rapides, beaux et qui convertissent vos visiteurs en clients. Webflow, WordPress, Shopify — on maitrise chaque plateforme.</p>
+        </div>
+      </div>
+      <div class="rv rv-d3" style="display:flex;gap:2rem;align-items:flex-start;">
+        <div style="width:4rem;height:4rem;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span class="material-symbols-outlined" style="color:var(--primary);font-size:1.75rem;">smart_toy</span>
+        </div>
+        <div>
+          <h4 class="text-h4" style="margin-bottom:0.75rem;">IA & Automatisation</h4>
+          <p class="text-body">Gagnez des heures chaque semaine grace a l'automatisation intelligente. Chatbots, workflows Make/N8N, agents IA sur mesure pour votre business.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SERVICES (Accordion Rows)
+     ============================================ -->
+<section class="section section--low" id="services">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="text-align:center;margin-bottom:4rem;">NOS EXPERTISES</h2>
+
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <a href="agence-seo-referencement-naturel/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">01</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">SEO & REFERENCEMENT NATUREL</h3>
+            <p class="text-body">Vous m&eacute;ritez d'&ecirc;tre trouv&eacute; sur Google. Nous vous amenons en premi&egrave;re page avec une strat&eacute;gie sur mesure, sans raccourcis.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="agence-creation-sites-web/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">02</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">CREATION DE SITES WEB</h3>
+            <p class="text-body">Des sites performants qui convertissent. Webflow, WordPress, Shopify ou sur mesure — chaque projet est unique, comme votre entreprise.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="agence-ia-automatisation/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">03</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">IA & AUTOMATISATION</h3>
+            <p class="text-body">Gagnez du temps et de l'argent. On automatise vos processus repetitifs avec Make, N8N, Zapier et des agents IA sur mesure.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="agence-publicite-payante-sea-ads/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">04</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">PUBLICITE PAYANTE (SEA & ADS)</h3>
+            <p class="text-body">Des campagnes Google Ads, Meta Ads, TikTok et LinkedIn qui rapportent plus qu'elles ne coutent. Chaque euro investi est mesure.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="agence-social-media/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">05</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">SOCIAL MEDIA</h3>
+            <p class="text-body">Construisez une communauté engagée autour de votre marque. Strategie, contenu, community management et influence marketing.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="agence-design-branding/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">06</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3" style="margin-bottom:0.5rem;">DESIGN & BRANDING</h3>
+            <p class="text-body">Une identité visuelle forte qui vous différencie. Logo, charte graphique, direction artistique — on donne vie a votre vision.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem;" class="rv">
+      <a href="services.html" class="btn btn--ghost btn-magnetic">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PROCESS
+     ============================================ -->
+<section class="section section--surface">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="margin-bottom:4rem;">LE PROCESSUS <span class="text-accent">PIRABEL</span></h2>
+    <div class="grid-5 rv">
+      <div class="process-step"><h5 class="text-h4">Immersion</h5><p class="text-body text-small" style="margin-top:0.75rem;">On apprend votre metier, vos objectifs et votre concurrence pour comprendre votre realite.</p></div>
+      <div class="process-step"><h5 class="text-h4">Diagnostic</h5><p class="text-body text-small" style="margin-top:0.75rem;">Audit complet de votre presence digitale et identification des opportunites immediates.</p></div>
+      <div class="process-step"><h5 class="text-h4">Strategie</h5><p class="text-body text-small" style="margin-top:0.75rem;">On construit votre plan d'action personnalisé avec des objectifs clairs et mesurables.</p></div>
+      <div class="process-step"><h5 class="text-h4">Execution</h5><p class="text-body text-small" style="margin-top:0.75rem;">Deploiement méthodique de chaque action. Vous etes informe a chaque étape.</p></div>
+      <div class="process-step"><h5 class="text-h4">Croissance</h5><p class="text-body text-small" style="margin-top:0.75rem;">Suivi continu, optimisation et expansion. Votre croissance est notre obsession.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     RESULTS / CASE STUDIES
+     ============================================ -->
+<section class="section section--lowest">
+  <div class="section-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem;flex-wrap:wrap;gap:2rem;">
+      <h2 class="text-h2 rv">PREUVES<br><span class="text-primary" style="font-style:italic;">CONCRETES</span></h2>
+      <p class="text-label rv">Selection 2025</p>
+    </div>
+    <div class="grid-3">
+      <div class="card-hover-glow rv rv-d1" style="cursor:pointer;">
+        <div class="illus illus-case" style="margin-bottom:2rem;">
+          <div class="illus-case__metric">+310%</div>
+          <div class="illus-case__graph"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <h3 class="text-h3" style="margin-bottom:0.5rem;">E-COMMERCE MODE</h3>
+        <p style="color:var(--primary-container);font-weight:700;margin-bottom:1rem;">+310% de leads qualifies en 6 mois</p>
+        <p class="text-body">Refonte complete de l'architecture de contenu et stratégie de cocon semantique. Le client a pu reduire son budget pub de 40%.</p>
+      </div>
+      <div class="card-hover-glow rv rv-d2" style="cursor:pointer;">
+        <div class="illus illus-case" style="margin-bottom:2rem;">
+          <div class="illus-case__metric">#1</div>
+          <div class="illus-case__graph"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <h3 class="text-h3" style="margin-bottom:0.5rem;">CABINET IMMOBILIER</h3>
+        <p style="color:var(--primary-container);font-weight:700;margin-bottom:1rem;">Position #1 sur 45 mots-cles locaux</p>
+        <p class="text-body">Strategie SEO local et Google Business optimise. Les demandes de visites ont triple en 4 mois.</p>
+      </div>
+      <div class="card-hover-glow rv rv-d3" style="cursor:pointer;">
+        <div class="illus illus-case" style="margin-bottom:2rem;">
+          <div class="illus-case__metric">x3</div>
+          <div class="illus-case__graph"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <h3 class="text-h3" style="margin-bottom:0.5rem;">SAAS B2B</h3>
+        <p style="color:var(--primary-container);font-weight:700;margin-bottom:1rem;">Top 3 mondial sur 150+ keywords</p>
+        <p class="text-body">Optimisation SEO technique avancee et stratégie de contenu expert. Le cout d'acquisition client divise par 3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     TESTIMONIALS
+     ============================================ -->
+<section class="section section--surface">
+  <div class="section-inner">
+    <div class="grid-3">
+      <div class="card card-hover-glow testi-card rv rv-d1" style="border-left:3px solid var(--primary-container);padding:4rem;">
+        <span class="material-symbols-outlined" style="font-size:3rem;color:var(--primary);margin-bottom:1.5rem;">format_quote</span>
+        <p style="font-size:1.25rem;line-height:1.7;font-style:italic;margin-bottom:2rem;color:rgba(229,226,225,0.8);">"Pirabel Labs a transforme notre visibilité en ligne. En 6 mois, notre trafic organique a depasse nos campagnes payantes."</p>
+        <p style="font-weight:700;font-size:1.125rem;">Jean Dupont</p>
+        <p class="text-muted" style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.15em;">CEO, InnovaCorp</p>
+      </div>
+      <div class="card card-hover-glow testi-card rv rv-d2" style="border-left:3px solid var(--primary-container);padding:4rem;">
+        <span class="material-symbols-outlined" style="font-size:3rem;color:var(--primary);margin-bottom:1.5rem;">format_quote</span>
+        <p style="font-size:1.25rem;line-height:1.7;font-style:italic;margin-bottom:2rem;color:rgba(229,226,225,0.8);">"On avait tout essaye avant. Deux agences, un freelance. Pirabel Labs a ete les premiers a tenir leurs promesses."</p>
+        <p style="font-weight:700;font-size:1.125rem;">Sarah Laroche</p>
+        <p class="text-muted" style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.15em;">Directrice Marketing, Zenly</p>
+      </div>
+      <div class="card card-hover-glow testi-card rv rv-d3" style="border-left:3px solid var(--primary-container);padding:4rem;">
+        <span class="material-symbols-outlined" style="font-size:3rem;color:var(--primary);margin-bottom:1.5rem;">format_quote</span>
+        <p style="font-size:1.25rem;line-height:1.7;font-style:italic;margin-bottom:2rem;color:rgba(229,226,225,0.8);">"Le meilleur investissement marketing qu'on ait fait. Notre cout d'acquisition divise par 3."</p>
+        <p style="font-weight:700;font-size:1.125rem;">Marc Antoine</p>
+        <p class="text-muted" style="font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.15em;">CTO, Global Tech</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     COMPARISON
+     ============================================ -->
+<section class="section section--low">
+  <div class="section-inner" style="max-width:60rem;">
+    <h2 class="text-h2 rv" style="text-align:center;margin-bottom:4rem;">PIRABEL <span class="text-primary">VS</span> LES AUTRES</h2>
+    <table class="compare-table rv">
+      <thead><tr><th>FONCTIONNALITE</th><th class="highlight" style="color:var(--primary-container);">PIRABEL LABS</th><th>AGENCE CLASSIQUE</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;">Garantie de résultats</td><td class="highlight"><span class="material-symbols-outlined" style="color:var(--primary);vertical-align:middle;">check_circle</span> Contractuelle</td><td><span class="material-symbols-outlined" style="color:rgba(229,226,225,0.2);vertical-align:middle;">cancel</span> Aucune</td></tr>
+        <tr><td style="font-weight:600;">Rapports comprehensibles</td><td class="highlight"><span class="material-symbols-outlined" style="color:var(--primary);vertical-align:middle;">check_circle</span> En langage clair</td><td><span class="material-symbols-outlined" style="color:rgba(229,226,225,0.2);vertical-align:middle;">cancel</span> Jargon technique</td></tr>
+        <tr><td style="font-weight:600;">Contenu expert</td><td class="highlight"><span class="material-symbols-outlined" style="color:var(--primary);vertical-align:middle;">check_circle</span> Experts & E-E-A-T</td><td><span class="material-symbols-outlined" style="color:rgba(229,226,225,0.2);vertical-align:middle;">cancel</span> IA non corrigee</td></tr>
+        <tr><td style="font-weight:600;">Support reactif</td><td class="highlight"><span class="material-symbols-outlined" style="color:var(--primary);vertical-align:middle;">check_circle</span> Reponse sous 24h</td><td><span class="material-symbols-outlined" style="color:rgba(229,226,225,0.2);vertical-align:middle;">cancel</span> Delais variables</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================
+     PRICING
+     ============================================ -->
+<section class="section section--surface">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="text-align:center;margin-bottom:4rem;">INVESTISSEZ DANS VOTRE <span class="text-primary">EMPIRE.</span></h2>
+    <div class="grid-3">
+      <div class="pricing-card card-hover-glow rv rv-d1">
+        <h4 class="text-h4" style="text-transform:uppercase;margin-bottom:1rem;">Fondation</h4>
+        <div class="pricing-card__price" style="margin-bottom:2rem;">800&euro;<span style="font-size:1rem;font-weight:400;color:rgba(229,226,225,0.4);">/mois</span></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:3rem;"><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Audit technique initial</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Optimisation on-page</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> 4 articles / mois</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Reporting mensuel</li></ul>
+        <a href="contact.html" class="btn btn--ghost btn-magnetic" style="width:100%;justify-content:center;">Choisir ce plan</a>
+      </div>
+      <div class="pricing-card pricing-mid rv rv-d2">
+        <div style="position:absolute;top:-1rem;left:50%;transform:translateX(-50%);background:#fff;color:#000;font-size:0.6875rem;font-weight:900;padding:0.25rem 1rem;text-transform:uppercase;letter-spacing:0.15em;">Le plus demande</div>
+        <h4 class="text-h4" style="text-transform:uppercase;margin-bottom:1rem;">Croissance</h4>
+        <div class="pricing-card__price" style="margin-bottom:2rem;">1 500&euro;<span style="font-size:1rem;font-weight:400;opacity:0.6;">/mois</span></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:3rem;"><li class="pricing-card__feature" style="border-color:rgba(92,25,0,0.2);"><span class="material-symbols-outlined">bolt</span> Strategie complete</li><li class="pricing-card__feature" style="border-color:rgba(92,25,0,0.2);"><span class="material-symbols-outlined">bolt</span> 8 articles / mois</li><li class="pricing-card__feature" style="border-color:rgba(92,25,0,0.2);"><span class="material-symbols-outlined">bolt</span> Netlinking premium</li><li class="pricing-card__feature" style="border-color:rgba(92,25,0,0.2);"><span class="material-symbols-outlined">bolt</span> ROI tracking avance</li><li class="pricing-card__feature" style="border-color:rgba(92,25,0,0.2);"><span class="material-symbols-outlined">bolt</span> Chef de projet dédié</li></ul>
+        <a href="contact.html" class="btn btn-magnetic" style="width:100%;justify-content:center;background:var(--on-primary);color:var(--primary);">Prendre le controle</a>
+      </div>
+      <div class="pricing-card card-hover-glow rv rv-d3">
+        <h4 class="text-h4" style="text-transform:uppercase;margin-bottom:1rem;">Enterprise</h4>
+        <div class="pricing-card__price" style="margin-bottom:2rem;">Sur Mesure</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:3rem;"><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> SEO multi-langue</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Migration accompagnee</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Account manager dédié</li><li class="pricing-card__feature"><span class="material-symbols-outlined" style="color:var(--primary);">bolt</span> Strategie 360</li></ul>
+        <a href="contact.html" class="btn btn--ghost btn-magnetic" style="width:100%;justify-content:center;">Nous contacter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     GUIDES
+     ============================================ -->
+<section class="section section--low">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="margin-bottom:3rem;">NOS GUIDES <span class="text-muted">/ SAVOIR</span></h2>
+    <div class="grid-4">
+      <a href="guides/guide-complet-seo-debutant.html" class="guide-card rv rv-d1"><div class="guide-card__img illus illus-guide"><div class="illus-guide__lines"><span></span><span></span><span></span><span></span></div></div><div class="guide-card__body"><span class="guide-card__tag">Guide SEO</span><h4 class="text-h4" style="margin-bottom:0.75rem;">Le guide complet du SEO pour debutants</h4><p class="text-muted text-small">Guide gratuit &bull; 12 min</p></div></a>
+      <a href="guides/automatisation-marketing-ia-guide.html" class="guide-card rv rv-d2"><div class="guide-card__img illus illus-guide"><div class="illus-guide__lines"><span></span><span></span><span></span><span></span></div></div><div class="guide-card__body"><span class="guide-card__tag">Guide IA</span><h4 class="text-h4" style="margin-bottom:0.75rem;">Automatisation marketing avec l'IA</h4><p class="text-muted text-small">Whitepaper &bull; 25 min</p></div></a>
+      <a href="guides/webflow-vs-wordpress-comparatif.html" class="guide-card rv rv-d3"><div class="guide-card__img illus illus-guide"><div class="illus-guide__lines"><span></span><span></span><span></span><span></span></div></div><div class="guide-card__body"><span class="guide-card__tag">Guide Web</span><h4 class="text-h4" style="margin-bottom:0.75rem;">Webflow vs WordPress : quel CMS ?</h4><p class="text-muted text-small">Comparatif &bull; 8 min</p></div></a>
+      <a href="guides/landing-page-parfaite-guide.html" class="guide-card rv rv-d4"><div class="guide-card__img illus illus-guide"><div class="illus-guide__lines"><span></span><span></span><span></span><span></span></div></div><div class="guide-card__body"><span class="guide-card__tag">Guide CRO</span><h4 class="text-h4" style="margin-bottom:0.75rem;">Anatomie d'une landing page parfaite</h4><p class="text-muted text-small">Article &bull; 15 min</p></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FAQ
+     ============================================ -->
+<section class="section section--surface">
+  <div class="section-inner" style="max-width:48rem;">
+    <h2 class="text-h2 rv" style="text-align:center;margin-bottom:3rem;">QUESTIONS<br><span class="text-primary" style="font-style:italic;">FREQUENTES</span></h2>
+    <details class="faq-item rv"><summary>Combien de temps avant de voir des résultats ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Les premiers gains sont souvent visibles sous 30 jours pour les optimisations techniques. Pour un positionnement solide en première page, comptez 3 a 6 mois selon la concurrence de votre secteur.</div></details>
+    <details class="faq-item rv"><summary>Est-ce que vous travaillez avec tous types d'entreprises ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Oui. Startup, PME ou grande entreprise, nous adaptons notre approche. Nous travaillons avec des clients a Paris, Cotonou, Casablanca, Dakar, Bruxelles et Montreal.</div></details>
+    <details class="faq-item rv"><summary>Quelle difference entre SEO et publicité payante ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">La publicité vous apporte du trafic tant que vous payez. Le SEO construit un actif durable : une fois bien positionne, votre site attire du trafic gratuitement pendant des mois voire des annees.</div></details>
+    <details class="faq-item rv"><summary>Que comprend votre audit gratuit ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Analyse de votre visibilité actuelle, diagnostic technique, etude de vos concurrents et recommandations concretes. Vous recevez un document clair avec des actions prioritaires.</div></details>
+  </div>
+</section>
+
+<!-- ============================================
+     CTA FINAL
+     ============================================ -->
+<section class="section section--cta" style="padding:10rem var(--px-page);text-align:center;">
+  <div class="section-inner">
+    <h2 class="text-hero rv" style="color:var(--on-primary);margin-bottom:2rem;">PRET A DEVENIR<br>INCONTOURNABLE ?</h2>
+    <p class="rv rv-d1" style="font-size:1.25rem;color:rgba(92,25,0,0.8);margin-bottom:3rem;max-width:36rem;margin-left:auto;margin-right:auto;">Reservez votre audit strategique gratuit avec un de nos experts. C'est offert, sans engagement.</p>
+    <div class="rv rv-d2" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;max-width:32rem;margin:0 auto;">
+      <input type="email" placeholder="Votre email professionnel" class="form-input" style="flex:1;min-width:200px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:1.25rem 2rem;color:#fff;">
+      <button class="btn btn--white btn-magnetic">Lancer l'audit</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<!-- NEWSLETTER -->
+<div class="newsletter">
+<div class="newsletter-inner">
+  <div class="newsletter-title">Restez inform&eacute;</div>
+  <p class="newsletter-desc">Recevez nos guides, conseils et actualit&eacute;s directement dans votre bo&icirc;te mail. Pas de spam, que de la valeur.</p>
+  <form class="newsletter-form" id="newsletter-form" onsubmit="return false;">
+    <input type="email" id="nl-email" placeholder="Votre email" required>
+    <button type="submit" id="nl-btn">S'inscrire</button>
+  </form>
+  <div class="newsletter-success" id="nl-success">&check; Inscription r&eacute;ussie !</div>
+</div>
+</div>
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">PIRABEL LABS</div>
+      <p class="footer-desc">L'agence digitale premium au service de votre croissance. Nous construisons les standards de demain pour les entreprises les plus ambitieuses.</p>
+      <div style="display:flex;gap:1.5rem;margin-top:2rem;">
+        <a href="#" class="link-underline" style="color:rgba(255,255,255,0.4);font-size:0.875rem;">INSTAGRAM</a>
+        <a href="#" class="link-underline" style="color:rgba(255,255,255,0.4);font-size:0.875rem;">LINKEDIN</a>
+        <a href="#" class="link-underline" style="color:rgba(255,255,255,0.4);font-size:0.875rem;">TWITTER</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="agence-seo-referencement-naturel/">SEO & Référencement</a></li>
+        <li><a href="agence-creation-sites-web/">Creation de Sites</a></li>
+        <li><a href="agence-ia-automatisation/">IA & Automatisation</a></li>
+        <li><a href="agence-publicite-payante-sea-ads/">Publicite Payante</a></li>
+        <li><a href="agence-social-media/">Social Media</a></li>
+        <li><a href="agence-design-branding/">Design & Branding</a></li>
+        <li><a href="agence-video-motion-design/">Video & Motion</a></li>
+        <li><a href="agence-email-marketing-crm/">Email & CRM</a></li>
+        <li><a href="agence-redaction-content-marketing/">Content Marketing</a></li>
+        <li><a href="agence-sales-funnels-cro/">Sales Funnels</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Ressources</div>
+      <ul class="footer-links">
+        <li><a href="guides/">Guides</a></li>
+        <li><a href="resultats.html">Etudes de cas</a></li>
+        <li><a href="a-propos.html">A propos</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Villes</div>
+      <ul class="footer-links">
+        <li><a href="#">Paris</a></li>
+        <li><a href="#">Marseille</a></li>
+        <li><a href="#">Lyon</a></li>
+        <li><a href="#">Bruxelles</a></li>
+        <li><a href="#">Montreal</a></li>
+        <li><a href="#">Cotonou</a></li>
+        <li><a href="#">Casablanca</a></li>
+        <li><a href="#">Dakar</a></li>
+        <li><a href="#">Abidjan</a></li>
+        <li><a href="#">Tunis</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Pirabel Labs. Tous droits r&eacute;serv&eacute;s.</span>
+    <div style="display:flex;gap:2rem;">
+      <a href="mentions-legales.html">Mentions l&eacute;gales</a>
+      <a href="politique-confidentialite.html">Confidentialit&eacute;</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="js/global.js?v=3"></script>
+<script>
+// ===== UNIQUE ANIMATIONS =====
+
+// Parallax on mouse move for hero mockup
+document.addEventListener('mousemove', (e) => {
+  const els = document.querySelectorAll('[data-parallax]');
+  els.forEach(el => {
+    const speed = parseFloat(el.dataset.parallax);
+    const x = (window.innerWidth / 2 - e.clientX) * speed;
+    const y = (window.innerHeight / 2 - e.clientY) * speed;
+    el.style.transform = `translateY(-50%) rotate(-6deg) translate(${x}px, ${y}px)`;
+  });
+});
+
+// Magnetic button effect
+document.querySelectorAll('.btn-magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+// Smooth counter animation with count-up pulse
+document.querySelectorAll('.stat__number[data-count]').forEach(el => {
+  el.style.transition = 'transform 0.3s';
+});
+
+// Tilt effect on cards
+document.querySelectorAll('.card-hover-glow').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `translateY(-8px) perspective(800px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+</script>
+<script src="js/tracker.js" defer></script>
+</body>
+</html>

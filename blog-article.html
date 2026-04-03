@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article | Pirabel Labs Blog</title>
+<meta name="description" content="">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<style>
+.article-header{padding-top:8rem;padding-bottom:2rem;}
+.article-meta{display:flex;align-items:center;gap:1.5rem;margin-top:1rem;color:rgba(229,226,225,0.4);font-size:0.875rem;flex-wrap:wrap;}
+.article-meta span{display:flex;align-items:center;gap:0.35rem;}
+.article-cover{width:100%;max-width:64rem;margin:0 auto 2rem;padding:0 var(--px-page);}
+.article-cover img{width:100%;height:auto;aspect-ratio:21/9;object-fit:cover;}
+.article-body{max-width:64rem;margin:0 auto;padding:0 var(--px-page) 4rem;}
+.article-body h2{font-family:var(--font-headline);font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--on-surface);margin:3rem 0 1rem;}
+.article-body h3{font-family:var(--font-headline);font-size:clamp(1.125rem,2vw,1.5rem);font-weight:600;margin:2rem 0 0.75rem;}
+.article-body p{color:rgba(229,226,225,0.75);line-height:1.85;margin-bottom:1.25rem;font-size:clamp(0.9375rem,1.5vw,1.0625rem);}
+.article-body ul,.article-body ol{color:rgba(229,226,225,0.75);line-height:1.85;margin-bottom:1.25rem;padding-left:1.5rem;font-size:clamp(0.9375rem,1.5vw,1.0625rem);}
+.article-body li{margin-bottom:0.5rem;}
+.article-body strong{color:var(--on-surface);}
+.article-body blockquote{border-left:3px solid var(--primary-container);padding:1.5rem 2rem;margin:2.5rem 0;background:rgba(255,87,8,0.04);}
+.article-body blockquote p{margin:0;font-style:italic;font-size:1.125rem;color:rgba(229,226,225,0.8);}
+.article-body img{width:100%;height:auto;margin:2rem 0;border:1px solid rgba(92,64,55,0.1);}
+.related-articles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2rem;}
+.related-articles a{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;text-decoration:none;transition:transform 0.3s;}
+.related-articles a:hover{transform:translateY(-3px);}
+.related-articles a h4{color:var(--on-surface);font-size:1rem;margin-top:0.5rem;}
+.related-articles a .cat{font-size:0.625rem;color:var(--primary-container);text-transform:uppercase;letter-spacing:0.1em;}
+.share-bar{display:flex;gap:1rem;margin:2rem 0;padding:1.5rem 0;border-top:1px solid rgba(92,64,55,0.15);border-bottom:1px solid rgba(92,64,55,0.15);}
+.share-btn{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.15);color:var(--on-surface);padding:0.5rem 1rem;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:border-color 0.3s;}
+.share-btn:hover{border-color:var(--primary-container);}
+</style>
+</head>
+<body>
+<div id="preloader"><div class="pre-logo">PIRABEL LABS</div><div class="pre-bar"><div class="pre-bar-fill"></div></div><div class="pre-pct">0%</div></div>
+<div id="progress-bar"></div>
+<div class="cursor-dot"></div><div class="cursor-ring"></div>
+<div class="noise-overlay"></div><div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div>
+
+<nav class="nav"><div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+<div class="nav-links"><a href="index.html">ACCUEIL</a><a href="services.html">SERVICES</a><a href="blog.html" class="active">BLOG</a><a href="guides/">GUIDES</a><a href="resultats.html">R&Eacute;SULTATS</a><a href="a-propos.html">A PROPOS</a></div>
+<a class="nav-login" href="https://pirabellabs.com/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+<a href="contact.html" class="nav-cta">Audit Gratuit</a>
+<div class="nav-hamburger"><span></span><span></span><span></span></div>
+</div></nav>
+<div class="mobile-nav"><a href="index.html">Accueil</a><a href="services.html">Services</a><a href="blog.html">Blog</a><a href="guides/">Guides</a><a href="a-propos.html">A propos</a><a href="contact.html">Contact</a></div>
+
+<header class="section article-header">
+<div class="section-inner" style="max-width:64rem;">
+  <div class="breadcrumb" id="breadcrumb"><a href="index.html">Accueil</a><span class="sep">/</span><a href="blog.html">Blog</a><span class="sep">/</span><span id="bc-title">Chargement...</span></div>
+  <span class="pill" id="article-cat" style="margin-top:1rem;">Blog</span>
+  <h1 class="text-h2" id="article-title" style="margin:1rem 0 0.5rem;color:#FF5500;">Chargement...</h1>
+  <div class="article-meta" id="article-meta">
+    <span><span class="material-symbols-outlined" style="font-size:1rem;">schedule</span> <span id="reading-time">5</span> min</span>
+    <span><span class="material-symbols-outlined" style="font-size:1rem;">calendar_today</span> <span id="article-date">--</span></span>
+    <span><span class="material-symbols-outlined" style="font-size:1rem;">visibility</span> <span id="article-views">0</span> vues</span>
+  </div>
+</div>
+</header>
+
+<div class="article-cover" id="article-cover" style="display:none;"></div>
+
+<div class="article-body" id="article-content">
+  <p style="color:rgba(229,226,225,0.3);text-align:center;">Chargement de l'article...</p>
+</div>
+
+<div style="max-width:64rem;margin:0 auto;padding:0 var(--px-page) 2rem;">
+  <div class="share-bar">
+    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copi\u00e9 !'"><span class="material-symbols-outlined" style="font-size:1rem;">link</span> Copier le lien</button>
+    <button class="share-btn" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(document.getElementById('article-title').textContent))"><span class="material-symbols-outlined" style="font-size:1rem;">share</span> Twitter</button>
+    <button class="share-btn" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href))"><span class="material-symbols-outlined" style="font-size:1rem;">share</span> LinkedIn</button>
+  </div>
+
+  <h2 class="text-h3" style="margin:3rem 0 1rem;">Articles li&eacute;s</h2>
+  <div class="related-articles" id="related-articles"></div>
+</div>
+
+<section class="section section--cta" style="padding:4rem var(--px-page);text-align:center;">
+<div class="section-inner">
+  <h2 class="text-h3" style="color:var(--on-primary);margin-bottom:1rem;">VOUS VOULEZ ALLER PLUS LOIN ?</h2>
+  <p style="color:rgba(92,25,0,0.7);margin-bottom:1.5rem;">Nos experts peuvent transformer ces connaissances en r&eacute;sultats concrets.</p>
+  <a href="contact.html" class="btn btn--white">Demander un audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</section>
+
+<div class="newsletter">
+<div class="newsletter-inner">
+  <div class="newsletter-title">Restez inform&eacute;</div>
+  <p class="newsletter-desc">Recevez nos articles directement dans votre bo&icirc;te mail.</p>
+  <form class="newsletter-form" id="newsletter-form" onsubmit="return false;">
+    <input type="email" id="nl-email" placeholder="Votre email" required>
+    <button type="submit" id="nl-btn">S'inscrire</button>
+  </form>
+  <div class="newsletter-success" id="nl-success">&check; Inscription r&eacute;ussie !</div>
+</div>
+</div>
+
+<footer class="footer">
+<div class="footer-grid">
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agence digitale premium.</p></div>
+  <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO</a></li><li><a href="agence-creation-sites-web/">Sites Web</a></li><li><a href="agence-ia-automatisation/">IA</a></li></ul></div>
+  <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="blog.html">Blog</a></li><li><a href="guides/">Guides</a></li><li><a href="resultats.html">Cas clients</a></li></ul></div>
+</div>
+<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span></div>
+</footer>
+
+<script src="js/global.js?v=3"></script>
+<script>
+const API = window.PIRABEL_API || 'http://localhost:3000';
+const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',video:'Vid\u00e9o',email:'Email',content:'Content',cro:'CRO',general:'Actualit\u00e9s'};
+
+const params = new URLSearchParams(window.location.search);
+const slug = params.get('slug');
+
+if (!slug) { window.location.href = '/blog.html'; }
+
+async function loadArticle() {
+  try {
+    const res = await fetch(`${API}/api/articles/${slug}`);
+    if (!res.ok) { window.location.href = '/blog.html'; return; }
+    const data = await res.json();
+    const a = data.article;
+
+    document.title = `${a.title} | Pirabel Labs Blog`;
+    if (a.metaDescription) document.querySelector('meta[name="description"]').content = a.metaDescription;
+
+    document.getElementById('bc-title').textContent = a.title;
+    document.getElementById('article-cat').textContent = catLabels[a.category] || a.category;
+    document.getElementById('article-title').textContent = a.title;
+    document.getElementById('reading-time').textContent = a.readingTime || 5;
+    document.getElementById('article-date').textContent = new Date(a.publishedAt || a.createdAt).toLocaleDateString('fr-FR', {day:'2-digit',month:'long',year:'numeric'});
+    document.getElementById('article-views').textContent = a.views || 0;
+    // Cover image
+    if (a.coverImage) {
+      const coverEl = document.getElementById('article-cover');
+      coverEl.innerHTML = `<img src="${a.coverImage}" alt="${a.title}">`;
+      coverEl.style.display = 'block';
+    }
+
+    document.getElementById('article-content').innerHTML = a.content;
+
+    // Related
+    const related = data.related || [];
+    document.getElementById('related-articles').innerHTML = related.length ? related.map(r =>
+      `<a href="blog-article.html?slug=${r.slug}"><span class="cat">${catLabels[r.category] || r.category}</span><h4>${r.title}</h4><span style="font-size:0.75rem;color:rgba(229,226,225,0.3);">${r.readingTime || 5} min</span></a>`
+    ).join('') : '<p style="color:rgba(229,226,225,0.3);">Aucun article li\u00e9</p>';
+  } catch (e) {
+    document.getElementById('article-content').innerHTML = '<p style="text-align:center;color:rgba(229,226,225,0.3);">Article non trouv\u00e9</p>';
+  }
+}
+
+loadArticle();
+</script>
+<script src="js/tracker.js" defer></script>
+</body>
+</html>

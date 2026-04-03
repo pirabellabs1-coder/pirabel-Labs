@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clients | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
+
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link active"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+
+    <div class="sidebar-section">Systeme</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Gestion Clients</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="window.location.href='/orders'">
+        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
+        <span id="notif-count">0</span> nouvelles
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Toolbar -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <input type="text" id="search-input" placeholder="Rechercher un client..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;flex:1;min-width:200px;" oninput="loadClients()">
+      <select id="filter-status" onchange="loadClients()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:140px;">
+        <option value="">Tous les statuts</option>
+        <option value="prospect">Prospect</option>
+        <option value="actif">Actif</option>
+        <option value="inactif">Inactif</option>
+        <option value="archive">Archive</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter client
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Entreprise</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Ville</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="clients-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="max-width:600px;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modal-title">Ajouter un client</div>
+    <form class="dash-form" id="client-form" onsubmit="saveClient(event)">
+      <input type="hidden" id="client-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Entreprise *</label>
+          <input type="text" id="f-company" required>
+        </div>
+        <div class="form-group">
+          <label>Nom du contact *</label>
+          <input type="text" id="f-contactName" required>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="f-email" required>
+        </div>
+        <div class="form-group">
+          <label>Telephone</label>
+          <input type="text" id="f-phone">
+        </div>
+        <div class="form-group">
+          <label>Site web</label>
+          <input type="text" id="f-website">
+        </div>
+        <div class="form-group">
+          <label>Adresse</label>
+          <input type="text" id="f-address">
+        </div>
+        <div class="form-group">
+          <label>Ville</label>
+          <input type="text" id="f-city">
+        </div>
+        <div class="form-group">
+          <label>Pays</label>
+          <input type="text" id="f-country">
+        </div>
+        <div class="form-group">
+          <label>Secteur</label>
+          <input type="text" id="f-sector">
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select id="f-status">
+            <option value="prospect">Prospect</option>
+            <option value="actif">Actif</option>
+            <option value="inactif">Inactif</option>
+            <option value="archive">Archive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <input type="text" id="f-source" placeholder="Site web, recommandation...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="f-notes" rows="3"></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+
+function statusBadge(status) {
+  const map = { 'prospect': 'badge-pending', 'actif': 'badge-active', 'inactif': 'badge-done', 'archive': 'badge-danger' };
+  return `<span class="badge ${map[status] || 'badge-done'}">${status}</span>`;
+}
+
+async function loadClients() {
+  try {
+    const search = document.getElementById('search-input').value;
+    const status = document.getElementById('filter-status').value;
+    let url = '/api/clients?';
+    if (search) url += 'search=' + encodeURIComponent(search) + '&';
+    if (status) url += 'status=' + encodeURIComponent(status);
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+    const clients = data.clients || data;
+    document.getElementById('clients-body').innerHTML = clients.map(c => `
+      <tr>
+        <td>${c.company}</td>
+        <td>${c.contactName}</td>
+        <td>${c.email}</td>
+        <td>${c.city || '-'}</td>
+        <td>${statusBadge(c.status)}</td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="editClient('${c._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+          <button class="btn btn-sm btn-ghost" onclick="viewClient('${c._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucun client trouve</td></tr>';
+  } catch (e) { console.error(e); }
+}
+
+function openModal(client) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-title').textContent = client ? 'Modifier le client' : 'Ajouter un client';
+  if (client) {
+    document.getElementById('client-id').value = client._id;
+    document.getElementById('f-company').value = client.company || '';
+    document.getElementById('f-contactName').value = client.contactName || '';
+    document.getElementById('f-email').value = client.email || '';
+    document.getElementById('f-phone').value = client.phone || '';
+    document.getElementById('f-website').value = client.website || '';
+    document.getElementById('f-address').value = client.address || '';
+    document.getElementById('f-city').value = client.city || '';
+    document.getElementById('f-country').value = client.country || '';
+    document.getElementById('f-sector').value = client.sector || '';
+    document.getElementById('f-status').value = client.status || 'prospect';
+    document.getElementById('f-source').value = client.source || '';
+    document.getElementById('f-notes').value = client.notes || '';
+  } else {
+    document.getElementById('client-form').reset();
+    document.getElementById('client-id').value = '';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function saveClient(e) {
+  e.preventDefault();
+  const id = document.getElementById('client-id').value;
+  const body = {
+    company: document.getElementById('f-company').value,
+    contactName: document.getElementById('f-contactName').value,
+    email: document.getElementById('f-email').value,
+    phone: document.getElementById('f-phone').value,
+    website: document.getElementById('f-website').value,
+    address: document.getElementById('f-address').value,
+    city: document.getElementById('f-city').value,
+    country: document.getElementById('f-country').value,
+    sector: document.getElementById('f-sector').value,
+    status: document.getElementById('f-status').value,
+    source: document.getElementById('f-source').value,
+    notes: document.getElementById('f-notes').value
+  };
+  try {
+    if (id) {
+      await fetch('/api/clients/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
+    } else {
+      await fetch('/api/clients', { method: 'POST', headers, body: JSON.stringify(body) });
+    }
+    closeModal();
+    loadClients();
+  } catch (e) { console.error(e); }
+}
+
+async function editClient(id) {
+  try {
+    const res = await fetch('/api/clients/' + id, { headers });
+    const client = await res.json();
+    openModal(client);
+  } catch (e) { console.error(e); }
+}
+
+function viewClient(id) {
+  editClient(id);
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
+}
+
+loadClients();
+</script>
+</body>
+</html>

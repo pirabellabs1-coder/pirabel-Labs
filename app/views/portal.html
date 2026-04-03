@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace Client | Pirabel Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.portal-topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.portal-logo{font-family:var(--font-h);font-size:1.25rem;font-weight:700;color:var(--accent);}
+.portal-content{max-width:900px;margin:0 auto;padding:2rem;}
+.project-card{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;transition:border-color 0.3s;}
+.project-card:hover{border-color:rgba(255,85,0,0.3);}
+.progress-bar{height:6px;background:var(--bg);margin-top:0.75rem;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.5s;}
+.invoice-row{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--border);}
+</style>
+</head>
+<body style="background:var(--bg);color:var(--text);font-family:var(--font-b);">
+
+<div class="portal-topbar">
+  <div class="portal-logo">PIRABEL LABS <span style="font-weight:400;color:var(--muted);font-size:0.875rem;">| Espace Client</span></div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <span id="portal-user" style="font-size:0.875rem;color:var(--muted);"></span>
+    <button class="btn btn-sm btn-ghost" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span> D&eacute;connexion</button>
+  </div>
+</div>
+
+<div class="portal-content">
+  <h1 style="font-family:var(--font-h);font-size:1.75rem;font-weight:700;margin-bottom:0.5rem;">Bienvenue dans votre espace</h1>
+  <p style="color:var(--muted);margin-bottom:2rem;">Suivez l'avancement de vos projets et consultez vos factures.</p>
+
+  <!-- Projects -->
+  <h2 style="font-family:var(--font-h);font-size:1.125rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);">folder</span> Vos projets</h2>
+  <div id="portal-projects" style="margin-bottom:3rem;"></div>
+
+  <!-- Invoices -->
+  <h2 style="font-family:var(--font-h);font-size:1.125rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);">receipt_long</span> Vos factures</h2>
+  <div id="portal-invoices" style="margin-bottom:3rem;"></div>
+
+  <!-- Contact -->
+  <div style="background:var(--card);border:1px solid var(--border);padding:2rem;margin-top:2rem;">
+    <h2 style="font-family:var(--font-h);font-size:1.125rem;font-weight:700;margin-bottom:1rem;">Besoin d'aide ?</h2>
+    <p style="color:var(--muted);margin-bottom:1rem;">Contactez votre chef de projet directement.</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="mailto:contact@pirabel-labs.com" class="btn btn-primary btn-sm"><span class="material-symbols-outlined" style="font-size:1rem;">mail</span> Envoyer un email</a>
+      <a href="tel:+33600000000" class="btn btn-ghost btn-sm"><span class="material-symbols-outlined" style="font-size:1rem;">phone</span> Appeler</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+document.getElementById('portal-user').textContent = user.name || 'Client';
+
+function badge(s) {
+  const m = { en_attente:'badge-pending', en_cours:'badge-active', termine:'badge-done', en_pause:'badge-danger', brouillon:'badge-done', envoyee:'badge-pending', payee:'badge-active', en_retard:'badge-danger' };
+  return '<span class="badge '+(m[s]||'')+'">'+s.replace(/_/g,' ')+'</span>';
+}
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
+
+async function loadProjects() {
+  try {
+    const res = await fetch('/api/projects', { headers });
+    const data = await res.json();
+    const el = document.getElementById('portal-projects');
+    if (!data.projects?.length) { el.innerHTML = '<p style="color:var(--muted);">Aucun projet en cours.</p>'; return; }
+    el.innerHTML = data.projects.map(p => `
+      <div class="project-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+          <strong style="font-size:1rem;">${p.name}</strong>
+          ${badge(p.status)}
+        </div>
+        <p style="color:var(--muted);font-size:0.8125rem;margin-bottom:0.5rem;">${p.description || 'Pas de description'}</p>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);">
+          <span>Progression : ${p.progress || 0}%</span>
+          <span>${p.deadline ? 'Deadline : ' + new Date(p.deadline).toLocaleDateString('fr-FR') : ''}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p.progress||0}%;"></div></div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function loadInvoices() {
+  try {
+    const res = await fetch('/api/invoices', { headers });
+    const data = await res.json();
+    const el = document.getElementById('portal-invoices');
+    if (!data.invoices?.length) { el.innerHTML = '<p style="color:var(--muted);">Aucune facture.</p>'; return; }
+    el.innerHTML = data.invoices.map(i => `
+      <div class="invoice-row">
+        <div><strong>${i.invoiceNumber}</strong><br><span style="color:var(--muted);font-size:0.75rem;">${new Date(i.issueDate).toLocaleDateString('fr-FR')}</span></div>
+        <div style="text-align:right;"><span style="font-weight:700;">${fmt(i.total)}</span><br>${badge(i.status)}</div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+loadProjects(); loadInvoices();
+</script>
+</body>
+</html>

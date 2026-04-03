@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+.realtime-bar{display:flex;align-items:center;gap:0.75rem;background:var(--card);border:1px solid var(--border);padding:0.875rem 1.5rem;margin-bottom:2rem;}
+.realtime-dot{width:10px;height:10px;background:#41e4c0;border-radius:50%;animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(65,228,192,0.5);}50%{box-shadow:0 0 0 8px rgba(65,228,192,0);}}
+.realtime-text{font-size:0.8125rem;font-weight:600;color:var(--teal);}
+.realtime-meta{margin-left:auto;font-size:0.6875rem;color:var(--muted);}
+.period-select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;font-size:0.75rem;font-family:var(--font-h);font-weight:600;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5e2e1' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.75rem center;padding-right:2rem;}
+.period-select option{background:var(--card);color:var(--text);}
+.stat-grid-8{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:2rem;}
+.stat-card-sub{font-size:0.6875rem;color:var(--muted);margin-top:0.25rem;}
+@media(max-width:900px){.stat-grid-8{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.stat-grid-8{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/analytics" class="sidebar-link active"><span class="material-symbols-outlined">query_stats</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Analytics</div>
+    </div>
+    <div class="topbar-actions">
+      <select class="period-select" id="period-select" onchange="onPeriodChange()">
+        <option value="7">7 derniers jours</option>
+        <option value="30" selected>30 derniers jours</option>
+        <option value="90">90 derniers jours</option>
+      </select>
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- Real-time widget -->
+    <div class="realtime-bar">
+      <div class="realtime-dot"></div>
+      <div class="realtime-text" id="realtime-text">-- visiteurs en ligne</div>
+      <div class="realtime-meta" id="realtime-meta">Mise a jour...</div>
+    </div>
+
+    <!-- 8 Stat Cards (2 rows of 4) -->
+    <div class="stat-grid-8">
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">group</span> Visiteurs totaux</div>
+        <div class="stat-card-value" id="s-visitors">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">person_add</span> Nouveaux visiteurs</div>
+        <div class="stat-card-value" id="s-new-visitors">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">visibility</span> Pages vues</div>
+        <div class="stat-card-value" id="s-pageviews">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--muted);">schedule</span> Temps moyen</div>
+        <div class="stat-card-value" id="s-avg-time">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">exit_to_app</span> Taux de rebond</div>
+        <div class="stat-card-value" id="s-bounce">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent-light);">auto_stories</span> Pages/visiteur</div>
+        <div class="stat-card-value" id="s-pages-per">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">ads_click</span> Evenements</div>
+        <div class="stat-card-value" id="s-events">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--success);">sync</span> Visiteurs recurrents</div>
+        <div class="stat-card-value" id="s-returning">--</div>
+      </div>
+    </div>
+
+    <!-- Visitors chart -->
+    <div class="chart-wrap">
+      <div class="chart-title">Visiteurs & Pages vues</div>
+      <canvas id="visitorsChart" height="280"></canvas>
+    </div>
+
+    <!-- Top pages table -->
+    <div class="table-wrap">
+      <div class="table-header"><div class="table-title">Pages les plus visitees</div></div>
+      <table>
+        <thead><tr><th>Page</th><th>Vues</th><th>Temps moyen</th><th>Scroll moyen</th></tr></thead>
+        <tbody id="top-pages-list"></tbody>
+      </table>
+    </div>
+
+    <!-- Side by side: Devices chart + Top referrers -->
+    <div class="grid-2">
+      <div class="chart-wrap">
+        <div class="chart-title">Appareils</div>
+        <div style="max-width:320px;margin:0 auto;"><canvas id="devicesChart"></canvas></div>
+      </div>
+      <div class="table-wrap" style="margin-bottom:0;">
+        <div class="table-header"><div class="table-title">Sources de trafic</div></div>
+        <table>
+          <thead><tr><th>Source</th><th>Visiteurs</th><th>%</th></tr></thead>
+          <tbody id="referrers-list"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Events summary table -->
+    <div class="table-wrap" style="margin-top:2rem;">
+      <div class="table-header"><div class="table-title">Resume des evenements</div></div>
+      <table>
+        <thead><tr><th>Categorie</th><th>Action</th><th>Nombre</th></tr></thead>
+        <tbody id="events-list"></tbody>
+      </table>
+    </div>
+
+    <!-- Browsers bar chart -->
+    <div class="chart-wrap">
+      <div class="chart-title">Navigateurs</div>
+      <canvas id="browsersChart" height="200"></canvas>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase(); }
+
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/login'; }
+
+// Helpers
+function fmtNum(n) { return (n || 0).toLocaleString('fr-FR'); }
+function fmtTime(seconds) {
+  if (!seconds && seconds !== 0) return '--';
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return m > 0 ? m + 'm ' + s + 's' : s + 's';
+}
+function fmtPct(n) { return (n || 0).toFixed(1) + '%'; }
+
+// Chart instances (for destroy on reload)
+let visitorsChartInstance = null;
+let devicesChartInstance = null;
+let browsersChartInstance = null;
+
+function getPeriod() { return document.getElementById('period-select').value; }
+
+// Chart.js dark theme defaults
+const chartColors = {
+  grid: 'rgba(92,64,55,0.1)',
+  tick: 'rgba(229,226,225,0.4)',
+  legend: 'rgba(229,226,225,0.6)',
+  accent: '#FF5500',
+  accentAlpha: 'rgba(255,85,0,0.15)',
+  teal: '#41e4c0',
+  tealAlpha: 'rgba(65,228,192,0.15)',
+  warning: '#ffb59c',
+  danger: '#ffb4ab',
+  muted: 'rgba(229,226,225,0.3)'
+};
+
+// ---- Real-time widget ----
+let realtimeInterval = null;
+async function loadRealtime() {
+  try {
+    const res = await fetch('/api/analytics/realtime', { headers });
+    const data = await res.json();
+    const count = data.activeVisitors || data.visitors || 0;
+    document.getElementById('realtime-text').textContent = fmtNum(count) + ' visiteur' + (count !== 1 ? 's' : '') + ' en ligne';
+    const now = new Date();
+    document.getElementById('realtime-meta').textContent = 'Mis a jour a ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch (e) {
+    document.getElementById('realtime-text').textContent = '-- visiteurs en ligne';
+    document.getElementById('realtime-meta').textContent = 'Erreur de connexion';
+  }
+}
+function startRealtime() {
+  loadRealtime();
+  if (realtimeInterval) clearInterval(realtimeInterval);
+  realtimeInterval = setInterval(loadRealtime, 10000);
+}
+
+// ---- Stats cards ----
+async function loadStats() {
+  try {
+    const res = await fetch('/api/analytics/stats?period=' + getPeriod(), { headers });
+    const d = await res.json();
+    document.getElementById('s-visitors').textContent = fmtNum(d.totalVisitors);
+    document.getElementById('s-new-visitors').textContent = fmtNum(d.newVisitors);
+    document.getElementById('s-pageviews').textContent = fmtNum(d.pageViews);
+    document.getElementById('s-avg-time').textContent = fmtTime(d.avgTime);
+    document.getElementById('s-bounce').textContent = fmtPct(d.bounceRate);
+    document.getElementById('s-pages-per').textContent = (d.pagesPerVisitor || 0).toFixed(1);
+    document.getElementById('s-events').textContent = fmtNum(d.totalEvents);
+    document.getElementById('s-returning').textContent = fmtNum(d.returningVisitors);
+  } catch (e) { console.error('Stats error:', e); }
+}
+
+// ---- Visitors chart (line) ----
+async function loadVisitorsChart() {
+  try {
+    const res = await fetch('/api/analytics/visitors-chart?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const labels = (data.labels || data.map(d => d.date));
+    const visitors = (data.visitors || data.map(d => d.visitors));
+    const pageviews = (data.pageViews || data.pageviews || data.map(d => d.pageViews || d.pageviews));
+
+    if (visitorsChartInstance) visitorsChartInstance.destroy();
+    visitorsChartInstance = new Chart(document.getElementById('visitorsChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Visiteurs',
+            data: visitors,
+            borderColor: chartColors.accent,
+            backgroundColor: chartColors.accentAlpha,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            borderWidth: 2
+          },
+          {
+            label: 'Pages vues',
+            data: pageviews,
+            borderColor: chartColors.teal,
+            backgroundColor: chartColors.tealAlpha,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { labels: { color: chartColors.legend, font: { family: 'Inter', size: 11 } } } },
+        scales: {
+          x: { ticks: { color: chartColors.tick, font: { size: 10 }, maxRotation: 45 }, grid: { color: chartColors.grid } },
+          y: { ticks: { color: chartColors.tick, font: { size: 10 } }, grid: { color: chartColors.grid }, beginAtZero: true }
+        }
+      }
+    });
+  } catch (e) { console.error('Visitors chart error:', e); }
+}
+
+// ---- Top pages ----
+async function loadTopPages() {
+  try {
+    const res = await fetch('/api/analytics/top-pages?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const pages = data.pages || data;
+    document.getElementById('top-pages-list').innerHTML = pages.map(p =>
+      '<tr><td style="font-weight:600;">' + (p.page || p.path) + '</td><td>' + fmtNum(p.views) + '</td><td>' + fmtTime(p.avgTime) + '</td><td>' + fmtPct(p.avgScroll) + '</td></tr>'
+    ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucune donnee</td></tr>';
+  } catch (e) { console.error('Top pages error:', e); }
+}
+
+// ---- Devices pie chart ----
+async function loadDevices() {
+  try {
+    const res = await fetch('/api/analytics/devices?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const devices = data.devices || data;
+
+    // Pie chart
+    const labels = devices.map(d => d.name || d.device);
+    const values = devices.map(d => d.count || d.visitors || d.value);
+    const colors = [chartColors.accent, chartColors.teal, chartColors.warning, chartColors.danger, chartColors.muted];
+
+    if (devicesChartInstance) devicesChartInstance.destroy();
+    devicesChartInstance = new Chart(document.getElementById('devicesChart'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors.slice(0, labels.length),
+          borderColor: 'var(--card)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: chartColors.legend, font: { family: 'Inter', size: 11 }, padding: 16 }
+          }
+        }
+      }
+    });
+
+    // Browsers bar chart (from same endpoint)
+    const browsers = data.browsers || [];
+    if (browsers.length > 0) {
+      loadBrowsersChart(browsers);
+    }
+  } catch (e) { console.error('Devices error:', e); }
+}
+
+// ---- Top referrers ----
+async function loadReferrers() {
+  try {
+    const res = await fetch('/api/analytics/top-referrers?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const referrers = data.referrers || data;
+    const total = referrers.reduce((sum, r) => sum + (r.visitors || r.count || 0), 0);
+    document.getElementById('referrers-list').innerHTML = referrers.map(r => {
+      const v = r.visitors || r.count || 0;
+      const pct = total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
+      return '<tr><td style="font-weight:600;">' + (r.source || r.referrer) + '</td><td>' + fmtNum(v) + '</td><td>' + pct + '%</td></tr>';
+    }).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucune donnee</td></tr>';
+  } catch (e) { console.error('Referrers error:', e); }
+}
+
+// ---- Events summary ----
+async function loadEvents() {
+  try {
+    const res = await fetch('/api/analytics/events-summary?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const events = data.events || data;
+    document.getElementById('events-list').innerHTML = events.map(ev =>
+      '<tr><td><span class="badge badge-pending">' + (ev.category || ev.categorie) + '</span></td><td>' + (ev.action) + '</td><td style="font-weight:700;">' + fmtNum(ev.count || ev.nombre) + '</td></tr>'
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucun evenement</td></tr>';
+  } catch (e) { console.error('Events error:', e); }
+}
+
+// ---- Browsers bar chart ----
+function loadBrowsersChart(browsers) {
+  const labels = browsers.map(b => b.name || b.browser);
+  const values = browsers.map(b => b.count || b.visitors || b.value);
+  const colors = [chartColors.accent, chartColors.teal, chartColors.warning, chartColors.danger, chartColors.muted, 'rgba(229,226,225,0.15)'];
+
+  if (browsersChartInstance) browsersChartInstance.destroy();
+  browsersChartInstance = new Chart(document.getElementById('browsersChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Utilisateurs',
+        data: values,
+        backgroundColor: colors.slice(0, labels.length),
+        borderColor: colors.slice(0, labels.length).map(c => c.replace('0.15', '1').replace('0.3', '1')),
+        borderWidth: 1,
+        borderRadius: 4,
+        maxBarThickness: 60
+      }]
+    },
+    options: {
+      responsive: true,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: { ticks: { color: chartColors.tick, font: { size: 10 } }, grid: { color: chartColors.grid }, beginAtZero: true },
+        y: { ticks: { color: chartColors.tick, font: { size: 11, family: 'Inter' } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// Also try standalone browsers endpoint if devices didn't include browsers
+async function loadBrowsersStandalone() {
+  try {
+    const res = await fetch('/api/analytics/browsers?period=' + getPeriod(), { headers });
+    const data = await res.json();
+    const browsers = data.browsers || data;
+    if (browsers && browsers.length > 0) {
+      loadBrowsersChart(browsers);
+    }
+  } catch (e) { /* fallback: browsers were loaded from devices endpoint */ }
+}
+
+// ---- Period change ----
+function onPeriodChange() { loadAllData(); }
+
+// ---- Load all data ----
+function loadAllData() {
+  loadStats();
+  loadVisitorsChart();
+  loadTopPages();
+  loadDevices();
+  loadReferrers();
+  loadEvents();
+  // Try standalone browsers endpoint as fallback
+  setTimeout(loadBrowsersStandalone, 500);
+}
+
+// Init
+startRealtime();
+loadAllData();
+</script>
+</body>
+</html>

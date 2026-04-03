@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factures | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link active"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Syst&egrave;me</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Factures</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvelle facture</button>
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+  <div class="content">
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-status" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;">
+        <option value="">Tous les statuts</option>
+        <option value="brouillon">Brouillon</option>
+        <option value="envoyee">Envoy&eacute;e</option>
+        <option value="payee">Pay&eacute;e</option>
+        <option value="en_retard">En retard</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>N&deg; Facture</th><th>Client</th><th>Montant TTC</th><th>Statut</th><th>Date &eacute;mission</th><th>&Eacute;ch&eacute;ance</th><th>Actions</th></tr></thead>
+        <tbody id="invoices-table"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="max-width:600px;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title">Nouvelle facture</div>
+    <form id="invoice-form" class="dash-form">
+      <div class="grid-2">
+        <div class="form-group"><label>Client *</label><select id="f-client" required><option value="">S&eacute;lectionner</option></select></div>
+        <div class="form-group"><label>Projet</label><select id="f-project"><option value="">Aucun</option></select></div>
+      </div>
+      <div id="line-items">
+        <div class="form-group"><label>Ligne 1</label>
+          <div style="display:flex;gap:0.5rem;">
+            <input type="text" placeholder="Description" class="li-desc" style="flex:2;" required>
+            <input type="number" placeholder="Qt&eacute;" class="li-qty" value="1" style="width:60px;" min="1">
+            <input type="number" placeholder="Prix" class="li-price" style="width:100px;" step="0.01" required>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-ghost" onclick="addLine()" style="margin-bottom:1rem;"><span class="material-symbols-outlined" style="font-size:0.875rem;">add</span> Ajouter une ligne</button>
+      <div class="grid-2">
+        <div class="form-group"><label>Taux TVA (%)</label><input type="number" id="f-tax" value="20" min="0" max="30"></div>
+        <div class="form-group"><label>&Eacute;ch&eacute;ance</label><input type="date" id="f-due"></div>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="f-notes" rows="2"></textarea></div>
+      <div style="background:var(--bg);padding:1rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;"><span>Sous-total HT</span><span id="calc-ht">0 &euro;</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;"><span>TVA (<span id="calc-rate">20</span>%)</span><span id="calc-tva">0 &euro;</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:var(--accent);"><span>Total TTC</span><span id="calc-ttc">0 &euro;</span></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Cr&eacute;er la facture</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
+
+function badge(s) {
+  const m = { brouillon:'badge-done', envoyee:'badge-pending', payee:'badge-active', en_retard:'badge-danger', annulee:'badge-danger' };
+  return '<span class="badge '+(m[s]||'')+'">'+s.replace(/_/g,' ')+'</span>';
+}
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR') : '-'; }
+
+let lineCount = 1;
+function addLine() {
+  lineCount++;
+  const div = document.createElement('div');
+  div.className = 'form-group';
+  div.innerHTML = '<label>Ligne '+lineCount+'</label><div style="display:flex;gap:0.5rem;"><input type="text" placeholder="Description" class="li-desc" style="flex:2;" required><input type="number" placeholder="Qt\u00e9" class="li-qty" value="1" style="width:60px;" min="1"><input type="number" placeholder="Prix" class="li-price" style="width:100px;" step="0.01" required></div>';
+  document.getElementById('line-items').appendChild(div);
+}
+
+function calcTotal() {
+  let ht = 0;
+  document.querySelectorAll('#line-items .form-group').forEach(g => {
+    const qty = parseFloat(g.querySelector('.li-qty')?.value) || 1;
+    const price = parseFloat(g.querySelector('.li-price')?.value) || 0;
+    ht += qty * price;
+  });
+  const rate = parseFloat(document.getElementById('f-tax').value) || 20;
+  const tva = ht * rate / 100;
+  document.getElementById('calc-ht').textContent = fmt(ht);
+  document.getElementById('calc-rate').textContent = rate;
+  document.getElementById('calc-tva').textContent = fmt(tva);
+  document.getElementById('calc-ttc').textContent = fmt(ht + tva);
+}
+document.getElementById('line-items').addEventListener('input', calcTotal);
+document.getElementById('f-tax').addEventListener('input', calcTotal);
+
+async function loadInvoices() {
+  const status = document.getElementById('filter-status').value;
+  let url = '/api/invoices?limit=50';
+  if (status) url += '&status=' + status;
+  try {
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+    document.getElementById('invoices-table').innerHTML = (data.invoices || []).map(i =>
+      '<tr><td><strong>'+i.invoiceNumber+'</strong></td><td>'+(i.client?.company||'-')+'</td><td style="font-weight:600;">'+fmt(i.total)+'</td><td>'+badge(i.status)+'</td><td>'+fmtDate(i.issueDate)+'</td><td>'+fmtDate(i.dueDate)+'</td><td><button class="btn btn-sm btn-ghost" onclick="markPaid(\''+i._id+'\')">Marquer pay&eacute;e</button></td></tr>'
+    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune facture</td></tr>';
+  } catch(e) { console.error(e); }
+}
+
+async function loadClients() {
+  try {
+    const res = await fetch('/api/clients?limit=100', { headers });
+    const data = await res.json();
+    const sel = document.getElementById('f-client');
+    (data.clients||[]).forEach(c => { const o = document.createElement('option'); o.value = c._id; o.textContent = c.company; sel.appendChild(o); });
+  } catch(e) {}
+}
+
+async function markPaid(id) {
+  try {
+    await fetch('/api/invoices/' + id, { method: 'PUT', headers, body: JSON.stringify({ status: 'payee' }) });
+    loadInvoices();
+  } catch(e) { console.error(e); }
+}
+
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.getElementById('invoice-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const items = [];
+  document.querySelectorAll('#line-items .form-group').forEach(g => {
+    const desc = g.querySelector('.li-desc')?.value;
+    const qty = parseFloat(g.querySelector('.li-qty')?.value) || 1;
+    const price = parseFloat(g.querySelector('.li-price')?.value) || 0;
+    if (desc && price) items.push({ description: desc, quantity: qty, unitPrice: price, total: qty * price });
+  });
+  const body = {
+    client: document.getElementById('f-client').value,
+    project: document.getElementById('f-project').value || undefined,
+    items, taxRate: parseFloat(document.getElementById('f-tax').value) || 20,
+    dueDate: document.getElementById('f-due').value || undefined,
+    notes: document.getElementById('f-notes').value,
+  };
+  try {
+    await fetch('/api/invoices', { method: 'POST', headers, body: JSON.stringify(body) });
+    closeModal(); loadInvoices();
+  } catch(e) { console.error(e); }
+});
+
+document.getElementById('filter-status').addEventListener('change', loadInvoices);
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+loadInvoices(); loadClients();
+</script>
+</body>
+</html>

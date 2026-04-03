@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | Pirabel Labs &mdash; Actualit&eacute;s & Guides Marketing Digital</title>
+<meta name="description" content="D&eacute;couvrez nos articles sur le SEO, la cr&eacute;ation de sites web, l'IA, le marketing digital et la croissance en ligne. Guides, conseils et tendances.">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="canonical" href="https://pirabel-labs.com/blog.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/illustrations.css">
+<style>
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2rem;}
+.blog-card{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);overflow:hidden;transition:transform 0.4s,border-color 0.3s;cursor:pointer;text-decoration:none;color:inherit;}
+.blog-card:hover{transform:translateY(-4px);border-color:rgba(255,87,8,0.2);}
+.blog-card__img{aspect-ratio:16/9;background:linear-gradient(135deg,var(--surface-container-low),var(--surface-container));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.blog-card__img::before{content:'';position:absolute;width:100px;height:100px;background:radial-gradient(circle,rgba(255,85,0,0.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
+.blog-card__body{padding:1.5rem;}
+.blog-card__cat{display:inline-block;font-family:var(--font-headline);font-size:0.625rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary-container);border:1px solid rgba(255,87,8,0.3);padding:0.2rem 0.6rem;margin-bottom:0.75rem;}
+.blog-card__title{font-family:var(--font-headline);font-size:1.125rem;font-weight:700;line-height:1.3;margin-bottom:0.5rem;}
+.blog-card__excerpt{font-size:0.875rem;color:rgba(229,226,225,0.5);line-height:1.6;margin-bottom:1rem;}
+.blog-card__meta{display:flex;align-items:center;gap:1rem;font-size:0.75rem;color:rgba(229,226,225,0.3);}
+.blog-filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;}
+.blog-filter{background:transparent;border:1px solid rgba(92,64,55,0.2);color:rgba(229,226,225,0.5);padding:0.4rem 1rem;font-family:var(--font-headline);font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;}
+.blog-filter:hover,.blog-filter.active{background:var(--primary-container);color:var(--on-primary);border-color:var(--primary-container);}
+.blog-pagination{display:flex;justify-content:center;gap:0.5rem;margin-top:3rem;}
+.blog-pagination button{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.15);color:var(--on-surface);padding:0.5rem 1rem;font-size:0.8125rem;cursor:pointer;transition:border-color 0.3s;}
+.blog-pagination button:hover,.blog-pagination button.active{border-color:var(--primary-container);color:var(--primary-container);}
+.blog-sidebar{display:flex;flex-direction:column;gap:2rem;}
+.blog-popular{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;}
+.blog-popular__title{font-family:var(--font-headline);font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--primary-container);margin-bottom:1rem;}
+.blog-popular__item{padding:0.75rem 0;border-bottom:1px solid rgba(92,64,55,0.08);display:flex;justify-content:space-between;align-items:center;}
+.blog-popular__item:last-child{border-bottom:none;}
+.blog-popular__item a{color:var(--on-surface);font-size:0.8125rem;font-weight:500;text-decoration:none;transition:color 0.3s;}
+.blog-popular__item a:hover{color:var(--primary-container);}
+.blog-popular__views{font-size:0.6875rem;color:rgba(229,226,225,0.3);}
+@media(max-width:900px){.blog-layout{grid-template-columns:1fr !important;}}
+</style>
+</head>
+<body>
+<div id="preloader"><div class="pre-logo">PIRABEL LABS</div><div class="pre-bar"><div class="pre-bar-fill"></div></div><div class="pre-pct">0%</div></div>
+<div id="progress-bar"></div>
+<div class="cursor-dot"></div><div class="cursor-ring"></div>
+<div class="noise-overlay"></div><div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div><div class="solar-orb solar-orb--secondary"></div>
+
+<nav class="nav"><div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+<div class="nav-links"><a href="index.html">ACCUEIL</a><a href="services.html">SERVICES</a><a href="blog.html" class="active">BLOG</a><a href="guides/">GUIDES</a><a href="resultats.html">R&Eacute;SULTATS</a><a href="a-propos.html">A PROPOS</a></div>
+<a class="nav-login" href="https://pirabellabs.com/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+<a href="contact.html" class="nav-cta">Audit Gratuit</a>
+<div class="nav-hamburger"><span></span><span></span><span></span></div>
+</div></nav>
+<div class="mobile-nav"><a href="index.html">Accueil</a><a href="services.html">Services</a><a href="blog.html">Blog</a><a href="guides/">Guides</a><a href="resultats.html">R&eacute;sultats</a><a href="a-propos.html">A propos</a><a href="contact.html">Contact</a></div>
+
+<!-- HERO -->
+<header class="section" style="padding-top:8rem;padding-bottom:3rem;">
+<div class="bg-text" style="top:15%;right:0;">BLOG</div>
+<div class="section-inner">
+  <span class="pill rv">Blog & Actualit&eacute;s</span>
+  <h1 class="text-hero rv" style="color:#FF5500;margin:1.5rem 0 1rem;">LE BLOG<br><span style="color:var(--on-surface);font-style:italic;">PIRABEL LABS.</span></h1>
+  <p class="text-body-lg rv" style="max-width:36rem;">Nos experts partagent leurs connaissances en SEO, marketing digital, IA et cr&eacute;ation web. Des articles concrets pour booster votre croissance.</p>
+</div>
+</header>
+
+<!-- FILTERS + CONTENT -->
+<section class="section section--low" style="padding-top:2rem;">
+<div class="section-inner">
+  <!-- Filters -->
+  <div class="blog-filters rv">
+    <button class="blog-filter active" data-cat="all">Tous</button>
+    <button class="blog-filter" data-cat="seo">SEO</button>
+    <button class="blog-filter" data-cat="web">Web</button>
+    <button class="blog-filter" data-cat="ia">IA</button>
+    <button class="blog-filter" data-cat="ads">Publicit&eacute;</button>
+    <button class="blog-filter" data-cat="social">Social</button>
+    <button class="blog-filter" data-cat="design">Design</button>
+    <button class="blog-filter" data-cat="content">Content</button>
+  </div>
+
+  <!-- Blog Grid + Sidebar -->
+  <div class="blog-layout" style="display:grid;grid-template-columns:1fr 300px;gap:3rem;">
+    <div>
+      <div class="blog-grid" id="blog-grid">
+        <div style="text-align:center;padding:3rem;color:rgba(229,226,225,0.3);">Chargement des articles...</div>
+      </div>
+      <div class="blog-pagination" id="blog-pagination"></div>
+    </div>
+    <div class="blog-sidebar">
+      <!-- Popular articles -->
+      <div class="blog-popular">
+        <div class="blog-popular__title">Articles populaires</div>
+        <div id="popular-list"><p style="color:rgba(229,226,225,0.3);font-size:0.8125rem;">Chargement...</p></div>
+      </div>
+      <!-- Newsletter -->
+      <div style="background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;">
+        <div style="font-family:var(--font-headline);font-size:0.875rem;font-weight:700;margin-bottom:0.75rem;">Newsletter</div>
+        <p style="font-size:0.8125rem;color:rgba(229,226,225,0.5);margin-bottom:1rem;">Recevez nos articles directement dans votre bo&icirc;te mail.</p>
+        <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:0.5rem;">
+          <input type="email" id="sidebar-nl-email" placeholder="Votre email" style="background:var(--surface);border:1px solid rgba(92,64,55,0.2);padding:0.625rem;color:var(--on-surface);font-size:0.8125rem;outline:none;">
+          <button onclick="subscribeNL()" style="background:#FF5500;color:#5c1900;border:none;padding:0.625rem;font-weight:700;font-size:0.75rem;text-transform:uppercase;cursor:pointer;">S'inscrire</button>
+        </form>
+        <div id="sidebar-nl-success" style="display:none;color:#41e4c0;font-size:0.75rem;margin-top:0.5rem;">Inscription r&eacute;ussie !</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+<div class="newsletter-inner">
+  <div class="newsletter-title">Restez inform&eacute;</div>
+  <p class="newsletter-desc">Recevez nos guides, conseils et actualit&eacute;s directement dans votre bo&icirc;te mail.</p>
+  <form class="newsletter-form" id="newsletter-form" onsubmit="return false;">
+    <input type="email" id="nl-email" placeholder="Votre email" required>
+    <button type="submit" id="nl-btn">S'inscrire</button>
+  </form>
+  <div class="newsletter-success" id="nl-success">&check; Inscription r&eacute;ussie !</div>
+</div>
+</div>
+
+<footer class="footer">
+<div class="footer-grid">
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agence digitale premium au service de votre croissance.</p></div>
+  <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO</a></li><li><a href="agence-creation-sites-web/">Sites Web</a></li><li><a href="agence-ia-automatisation/">IA</a></li><li><a href="agence-publicite-payante-sea-ads/">Ads</a></li><li><a href="agence-social-media/">Social</a></li><li><a href="agence-design-branding/">Branding</a></li></ul></div>
+  <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="blog.html">Blog</a></li><li><a href="guides/">Guides</a></li><li><a href="resultats.html">Cas clients</a></li><li><a href="a-propos.html">A propos</a></li></ul></div>
+  <div><div class="footer-title">Villes</div><ul class="footer-links"><li><a href="#">Paris</a></li><li><a href="#">Cotonou</a></li><li><a href="#">Casablanca</a></li><li><a href="#">Dakar</a></li></ul></div>
+</div>
+<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span><div style="display:flex;gap:2rem;"><a href="mentions-legales.html">Mentions l&eacute;gales</a><a href="politique-confidentialite.html">Confidentialit&eacute;</a></div></div>
+</footer>
+
+<script src="js/global.js?v=3"></script>
+<script>
+const API = window.PIRABEL_API || 'http://localhost:3000';
+const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',video:'Video',email:'Email',content:'Content',cro:'CRO',general:'Actualites'};
+let currentCat = 'all';
+let currentPage = 1;
+
+async function loadArticles(cat, page) {
+  currentCat = cat || 'all';
+  currentPage = page || 1;
+  const grid = document.getElementById('blog-grid');
+  try {
+    const url = `${API}/api/articles?category=${currentCat === 'all' ? '' : currentCat}&page=${currentPage}&limit=9`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.articles || data.articles.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:3rem;color:rgba(229,226,225,0.3);grid-column:1/-1;">Aucun article pour le moment. Revenez bient&ocirc;t !</div>';
+      document.getElementById('blog-pagination').innerHTML = '';
+      return;
+    }
+
+    grid.innerHTML = data.articles.map(a => `
+      <a href="blog-article.html?slug=${a.slug}" class="blog-card">
+        <div class="blog-card__img">
+          ${a.coverImage ? `<img src="${a.coverImage}" alt="${a.title}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : `<div class="illus-guide__lines" style="width:50%;"><span style="height:3px;background:rgba(229,226,225,0.04);display:block;margin-bottom:4px;width:70%;border-radius:2px;"></span><span style="height:3px;background:rgba(229,226,225,0.04);display:block;margin-bottom:4px;width:100%;border-radius:2px;"></span><span style="height:3px;background:rgba(255,85,0,0.08);display:block;width:60%;border-radius:2px;"></span></div>`}
+        </div>
+        <div class="blog-card__body">
+          <span class="blog-card__cat">${catLabels[a.category] || a.category}</span>
+          <h3 class="blog-card__title">${a.title}</h3>
+          <p class="blog-card__excerpt">${a.excerpt || ''}</p>
+          <div class="blog-card__meta">
+            <span>${a.readingTime || 5} min</span>
+            <span>${new Date(a.publishedAt || a.createdAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</span>
+            <span>${a.views || 0} vues</span>
+          </div>
+        </div>
+      </a>
+    `).join('');
+
+    // Pagination
+    if (data.pages > 1) {
+      let paginationHTML = '';
+      for (let i = 1; i <= data.pages; i++) {
+        paginationHTML += `<button class="${i === currentPage ? 'active' : ''}" onclick="loadArticles('${currentCat}',${i})">${i}</button>`;
+      }
+      document.getElementById('blog-pagination').innerHTML = paginationHTML;
+    }
+  } catch (e) {
+    grid.innerHTML = '<div style="text-align:center;padding:3rem;color:rgba(229,226,225,0.3);grid-column:1/-1;">Les articles arrivent bient&ocirc;t !</div>';
+  }
+}
+
+async function loadPopular() {
+  try {
+    const res = await fetch(`${API}/api/articles/stats/popular`);
+    const data = await res.json();
+    const list = data.popular || [];
+    document.getElementById('popular-list').innerHTML = list.length ? list.map(a =>
+      `<div class="blog-popular__item"><a href="blog-article.html?slug=${a.slug}">${a.title}</a><span class="blog-popular__views">${a.views} vues</span></div>`
+    ).join('') : '<p style="color:rgba(229,226,225,0.3);font-size:0.8125rem;">Aucun article</p>';
+  } catch (e) {}
+}
+
+// Filter clicks
+document.querySelectorAll('.blog-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.blog-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadArticles(btn.dataset.cat, 1);
+  });
+});
+
+// Sidebar newsletter
+async function subscribeNL() {
+  const email = document.getElementById('sidebar-nl-email')?.value?.trim();
+  if (!email) return;
+  try {
+    await fetch(`${API}/api/campaigns/subscribers`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, type:'newsletter', source:'blog_sidebar'})
+    });
+    document.getElementById('sidebar-nl-success').style.display = 'block';
+    document.getElementById('sidebar-nl-email').value = '';
+  } catch(e) {}
+}
+
+loadArticles('all', 1);
+loadPopular();
+</script>
+<script src="js/tracker.js" defer></script>
+</body>
+</html>

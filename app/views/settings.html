@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Param&egrave;tres | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Syst&egrave;me</div>
+    <a href="/settings" class="sidebar-link active"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Param&egrave;tres</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+  <div class="content">
+    <div class="grid-2">
+      <!-- Profile -->
+      <div style="background:var(--card);border:1px solid var(--border);padding:2rem;">
+        <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">person</span> Mon profil</h2>
+        <form id="profile-form" class="dash-form">
+          <div class="form-group"><label>Nom complet</label><input type="text" id="p-name"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="p-email" disabled style="opacity:0.5;"></div>
+          <div class="form-group"><label>R&ocirc;le</label><input type="text" id="p-role" disabled style="opacity:0.5;"></div>
+          <button type="submit" class="btn btn-primary">Mettre &agrave; jour</button>
+        </form>
+      </div>
+
+      <!-- Change Password -->
+      <div style="background:var(--card);border:1px solid var(--border);padding:2rem;">
+        <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">lock</span> Changer le mot de passe</h2>
+        <form id="password-form" class="dash-form">
+          <div class="form-group"><label>Mot de passe actuel</label><input type="password" id="pw-current" required></div>
+          <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="pw-new" required minlength="6"></div>
+          <div class="form-group"><label>Confirmer</label><input type="password" id="pw-confirm" required></div>
+          <button type="submit" class="btn btn-primary">Changer</button>
+        </form>
+        <div id="pw-msg" style="margin-top:1rem;font-size:0.8125rem;"></div>
+      </div>
+    </div>
+
+    <!-- Company Info -->
+    <div style="background:var(--card);border:1px solid var(--border);padding:2rem;margin-top:1.5rem;">
+      <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">business</span> Informations entreprise</h2>
+      <form class="dash-form">
+        <div class="grid-2">
+          <div class="form-group"><label>Nom entreprise</label><input type="text" value="Pirabel Labs SAS"></div>
+          <div class="form-group"><label>Email</label><input type="email" value="contact@pirabel-labs.com"></div>
+          <div class="form-group"><label>T&eacute;l&eacute;phone</label><input type="tel" value="+33 6 00 00 00 00"></div>
+          <div class="form-group"><label>Site web</label><input type="url" value="https://pirabel-labs.com"></div>
+          <div class="form-group"><label>Adresse</label><input type="text" value="Paris, France"></div>
+          <div class="form-group"><label>N&deg; SIRET</label><input type="text" placeholder="XXX XXX XXX XXXXX"></div>
+        </div>
+        <div class="form-group"><label>Taux TVA par d&eacute;faut (%)</label><input type="number" value="20" min="0" max="30" style="max-width:120px;"></div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </form>
+    </div>
+
+    <!-- Danger Zone -->
+    <div style="background:var(--card);border:1px solid rgba(255,180,171,0.2);padding:2rem;margin-top:1.5rem;">
+      <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--danger);display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="font-size:1.25rem;">warning</span> Zone dangereuse</h2>
+      <p style="color:var(--muted);font-size:0.8125rem;margin-bottom:1rem;">Actions irr&eacute;versibles. Proc&eacute;dez avec pr&eacute;caution.</p>
+      <button class="btn btn-sm" style="background:transparent;border:1px solid var(--danger);color:var(--danger);">Supprimer toutes les donn&eacute;es</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0);
+  document.getElementById('p-name').value = user.name;
+  document.getElementById('p-email').value = user.email;
+  document.getElementById('p-role').value = user.role === 'admin' ? 'Administrateur' : user.role === 'employee' ? 'Employ\u00e9' : 'Client';
+}
+
+document.getElementById('password-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('pw-msg');
+  const newPw = document.getElementById('pw-new').value;
+  const confirm = document.getElementById('pw-confirm').value;
+  if (newPw !== confirm) { msg.style.color = 'var(--danger)'; msg.textContent = 'Les mots de passe ne correspondent pas.'; return; }
+  msg.style.color = 'var(--success)'; msg.textContent = 'Mot de passe mis \u00e0 jour avec succ\u00e8s.';
+  document.getElementById('password-form').reset();
+});
+
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+</script>
+</body>
+</html>

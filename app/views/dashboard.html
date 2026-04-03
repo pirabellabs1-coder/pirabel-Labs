@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link active"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
+
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+
+    <div class="sidebar-section">Systeme</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Tableau de bord</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="window.location.href='/orders'">
+        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
+        <span id="notif-count">0</span> nouvelles
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Stats Cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">monitoring</span> Revenue ce mois</div>
+        <div class="stat-card-value accent" id="stat-revenue">0 &euro;</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">people</span> Clients actifs</div>
+        <div class="stat-card-value" id="stat-clients">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">folder</span> Projets en cours</div>
+        <div class="stat-card-value" id="stat-projects">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">inbox</span> Nouvelles demandes</div>
+        <div class="stat-card-value accent" id="stat-orders">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">badge</span> Employes</div>
+        <div class="stat-card-value" id="stat-employees">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">receipt_long</span> Factures en attente</div>
+        <div class="stat-card-value" id="stat-invoices">0</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Revenue Chart -->
+      <div class="chart-wrap">
+        <div class="chart-title">Revenue mensuel (12 mois)</div>
+        <canvas id="revenueChart" height="200"></canvas>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Dernieres demandes</div>
+          <a href="/orders" class="btn btn-sm btn-ghost">Voir tout</a>
+        </div>
+        <table>
+          <thead><tr><th>Nom</th><th>Service</th><th>Statut</th><th>Date</th></tr></thead>
+          <tbody id="recent-orders"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Projects -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <div class="table-title">Projets recents</div>
+        <a href="/projects" class="btn btn-sm btn-ghost">Voir tout</a>
+      </div>
+      <table>
+        <thead><tr><th>Projet</th><th>Client</th><th>Statut</th><th>Progression</th><th>Mise a jour</th></tr></thead>
+        <tbody id="recent-projects"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/login';
+
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+// Load user info
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+
+// Status badge helper
+function statusBadge(status) {
+  const map = {
+    'nouvelle': 'badge-new', 'en_traitement': 'badge-pending', 'devis_envoye': 'badge-pending',
+    'acceptee': 'badge-active', 'refusee': 'badge-danger',
+    'en_attente': 'badge-pending', 'en_cours': 'badge-active', 'termine': 'badge-done',
+    'en_pause': 'badge-danger', 'annule': 'badge-danger'
+  };
+  const label = status.replace(/_/g, ' ');
+  return `<span class="badge ${map[status] || 'badge-done'}">${label}</span>`;
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+}
+
+// Load dashboard stats
+async function loadStats() {
+  try {
+    const res = await fetch('/api/dashboard/stats', { headers });
+    const data = await res.json();
+    document.getElementById('stat-revenue').textContent = data.revenue.thisMonth.toLocaleString('fr-FR') + ' \u20AC';
+    document.getElementById('stat-clients').textContent = data.clients.active;
+    document.getElementById('stat-projects').textContent = data.projects.active;
+    document.getElementById('stat-orders').textContent = data.orders.new;
+    document.getElementById('stat-employees').textContent = data.employees.total;
+    document.getElementById('stat-invoices').textContent = data.invoices.pending;
+    document.getElementById('badge-orders').textContent = data.orders.new;
+    document.getElementById('notif-count').textContent = data.orders.new;
+  } catch (e) { console.error(e); }
+}
+
+// Load revenue chart
+async function loadChart() {
+  try {
+    const res = await fetch('/api/dashboard/revenue-chart', { headers });
+    const data = await res.json();
+
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'bar',
+      data: {
+        labels: data.map(d => d.month),
+        datasets: [
+          { label: 'Revenue', data: data.map(d => d.income), backgroundColor: 'rgba(255, 85, 0, 0.6)', borderColor: '#FF5500', borderWidth: 1 },
+          { label: 'Depenses', data: data.map(d => d.expenses), backgroundColor: 'rgba(229, 226, 225, 0.1)', borderColor: 'rgba(229,226,225,0.3)', borderWidth: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } } },
+        scales: {
+          x: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 } }, grid: { color: 'rgba(92,64,55,0.1)' } },
+          y: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 }, callback: v => v.toLocaleString() + '\u20AC' }, grid: { color: 'rgba(92,64,55,0.1)' } }
+        }
+      }
+    });
+  } catch (e) { console.error(e); }
+}
+
+// Load recent data
+async function loadRecent() {
+  try {
+    const res = await fetch('/api/dashboard/recent', { headers });
+    const data = await res.json();
+
+    document.getElementById('recent-orders').innerHTML = (data.recentOrders || []).map(o =>
+      `<tr><td>${o.name}</td><td>${o.service}</td><td>${statusBadge(o.status)}</td><td>${formatDate(o.createdAt)}</td></tr>`
+    ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucune demande</td></tr>';
+
+    document.getElementById('recent-projects').innerHTML = (data.recentProjects || []).map(p =>
+      `<tr><td>${p.name}</td><td>${p.client?.company || '-'}</td><td>${statusBadge(p.status)}</td><td><div style="background:var(--bg);height:6px;width:100px;"><div style="background:var(--accent);height:100%;width:${p.progress}%;"></div></div></td><td>${formatDate(p.updatedAt)}</td></tr>`
+    ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);">Aucun projet</td></tr>';
+  } catch (e) { console.error(e); }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
+}
+
+// Init
+loadStats();
+loadChart();
+loadRecent();
+</script>
+</body>
+</html>

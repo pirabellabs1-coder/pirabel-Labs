@@ -42,18 +42,5 @@
     { "src": "/public/(.*)", "dest": "/app/public/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ],
-  "env": {
-    "MONGODB_URI": "@mongodb-uri",
-    "JWT_SECRET": "@jwt-secret",
-    "JWT_EXPIRE": "7d",
-    "ADMIN_SECRET_PATH": "pirabel-admin-7x9k2m",
-    "CLIENT_SECRET_PATH": "espace-client-4p8w1n",
-    "SMTP_HOST": "smtp-relay.brevo.com",
-    "SMTP_PORT": "587",
-    "SMTP_USER": "@smtp-user",
-    "SMTP_PASS": "@smtp-pass",
-    "ADMIN_EMAIL": "contact@pirabellabs.com",
-    "FROM_EMAIL": "contact@pirabellabs.com",
-    "SITE_URL": "https://pirabel-labs.vercel.app"
-  }
+  "framework": null
 }

@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "css/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "img/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/pirabel-admin-7x9k2m", "dest": "/api/index.js" },
+    { "src": "/espace-client-4p8w1n", "dest": "/api/index.js" },
+    { "src": "/dashboard", "dest": "/api/index.js" },
+    { "src": "/clients", "dest": "/api/index.js" },
+    { "src": "/projects", "dest": "/api/index.js" },
+    { "src": "/orders", "dest": "/api/index.js" },
+    { "src": "/employees", "dest": "/api/index.js" },
+    { "src": "/invoices", "dest": "/api/index.js" },
+    { "src": "/revenue", "dest": "/api/index.js" },
+    { "src": "/settings", "dest": "/api/index.js" },
+    { "src": "/campaigns", "dest": "/api/index.js" },
+    { "src": "/messages", "dest": "/api/index.js" },
+    { "src": "/articles", "dest": "/api/index.js" },
+    { "src": "/analytics", "dest": "/api/index.js" },
+    { "src": "/portal", "dest": "/api/index.js" },
+    { "src": "/public/(.*)", "dest": "/app/public/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb-uri",
+    "JWT_SECRET": "@jwt-secret",
+    "JWT_EXPIRE": "7d",
+    "ADMIN_SECRET_PATH": "pirabel-admin-7x9k2m",
+    "CLIENT_SECRET_PATH": "espace-client-4p8w1n",
+    "SMTP_HOST": "smtp-relay.brevo.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "@smtp-user",
+    "SMTP_PASS": "@smtp-pass",
+    "ADMIN_EMAIL": "contact@pirabellabs.com",
+    "FROM_EMAIL": "contact@pirabellabs.com",
+    "SITE_URL": "https://pirabel-labs.vercel.app"
+  }
+}

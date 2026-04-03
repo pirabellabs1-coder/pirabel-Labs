@@ -1,7 +1,12 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js",
+      "headers": { "Cache-Control": "no-cache" }
+    },
     { "src": "/dashboard", "dest": "/api/index.js" },
     { "src": "/clients", "dest": "/api/index.js" },
     { "src": "/projects", "dest": "/api/index.js" },
@@ -14,6 +19,7 @@
     { "src": "/messages", "dest": "/api/index.js" },
     { "src": "/articles", "dest": "/api/index.js" },
     { "src": "/analytics", "dest": "/api/index.js" },
-    { "src": "/portal", "dest": "/api/index.js" }
+    { "src": "/portal", "dest": "/api/index.js" },
+    { "handle": "filesystem" }
   ]
 }

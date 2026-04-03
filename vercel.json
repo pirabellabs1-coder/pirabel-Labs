@@ -1,12 +1,7 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js",
-      "headers": { "Cache-Control": "no-cache" }
-    },
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
     { "src": "/dashboard", "dest": "/api/index.js" },
     { "src": "/clients", "dest": "/api/index.js" },
     { "src": "/projects", "dest": "/api/index.js" },
@@ -20,6 +15,17 @@
     { "src": "/articles", "dest": "/api/index.js" },
     { "src": "/analytics", "dest": "/api/index.js" },
     { "src": "/portal", "dest": "/api/index.js" },
-    { "handle": "filesystem" }
+    { "handle": "filesystem" },
+    { "src": "/blog", "dest": "/blog.html" },
+    { "src": "/contact", "dest": "/contact.html" },
+    { "src": "/a-propos", "dest": "/a-propos.html" },
+    { "src": "/faq", "dest": "/faq.html" },
+    { "src": "/resultats", "dest": "/resultats.html" },
+    { "src": "/mentions-legales", "dest": "/mentions-legales.html" },
+    { "src": "/politique-confidentialite", "dest": "/politique-confidentialite.html" },
+    { "src": "/blog-article", "dest": "/blog-article.html" },
+    { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
+    { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },
+    { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" }
   ]
 }

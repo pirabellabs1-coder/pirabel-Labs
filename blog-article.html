@@ -13,29 +13,75 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/global.css">
 <style>
-.article-header{padding-top:8rem;padding-bottom:2rem;}
-.article-meta{display:flex;align-items:center;gap:1.5rem;margin-top:1rem;color:rgba(229,226,225,0.4);font-size:0.875rem;flex-wrap:wrap;}
+/* === ARTICLE PAGE — Magazine Layout === */
+.article-header{padding-top:8rem;padding-bottom:1rem;}
+.article-meta{display:flex;align-items:center;gap:1.5rem;margin-top:1rem;color:rgba(229,226,225,0.4);font-size:0.8125rem;flex-wrap:wrap;}
 .article-meta span{display:flex;align-items:center;gap:0.35rem;}
-.article-cover{width:100%;max-width:64rem;margin:0 auto 2rem;padding:0 var(--px-page);}
-.article-cover img{width:100%;height:auto;aspect-ratio:21/9;object-fit:cover;}
-.article-body{max-width:64rem;margin:0 auto;padding:0 var(--px-page) 4rem;}
-.article-body h2{font-family:var(--font-headline);font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:var(--on-surface);margin:3rem 0 1rem;}
-.article-body h3{font-family:var(--font-headline);font-size:clamp(1.125rem,2vw,1.5rem);font-weight:600;margin:2rem 0 0.75rem;}
-.article-body p{color:rgba(229,226,225,0.75);line-height:1.85;margin-bottom:1.25rem;font-size:clamp(0.9375rem,1.5vw,1.0625rem);}
-.article-body ul,.article-body ol{color:rgba(229,226,225,0.75);line-height:1.85;margin-bottom:1.25rem;padding-left:1.5rem;font-size:clamp(0.9375rem,1.5vw,1.0625rem);}
-.article-body li{margin-bottom:0.5rem;}
-.article-body strong{color:var(--on-surface);}
-.article-body blockquote{border-left:3px solid var(--primary-container);padding:1.5rem 2rem;margin:2.5rem 0;background:rgba(255,87,8,0.04);}
-.article-body blockquote p{margin:0;font-style:italic;font-size:1.125rem;color:rgba(229,226,225,0.8);}
-.article-body img{width:100%;height:auto;margin:2rem 0;border:1px solid rgba(92,64,55,0.1);}
-.related-articles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:2rem;}
-.related-articles a{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;text-decoration:none;transition:transform 0.3s;}
-.related-articles a:hover{transform:translateY(-3px);}
-.related-articles a h4{color:var(--on-surface);font-size:1rem;margin-top:0.5rem;}
-.related-articles a .cat{font-size:0.625rem;color:var(--primary-container);text-transform:uppercase;letter-spacing:0.1em;}
-.share-bar{display:flex;gap:1rem;margin:2rem 0;padding:1.5rem 0;border-top:1px solid rgba(92,64,55,0.15);border-bottom:1px solid rgba(92,64,55,0.15);}
-.share-btn{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.15);color:var(--on-surface);padding:0.5rem 1rem;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:border-color 0.3s;}
-.share-btn:hover{border-color:var(--primary-container);}
+
+/* Cover image — cinematic ratio, not too tall */
+.article-cover{width:100%;max-width:var(--max-w);margin:0 auto 3rem;padding:0 var(--px-page);}
+.article-cover img{width:100%;height:auto;max-height:400px;object-fit:cover;border:1px solid rgba(92,64,55,0.1);}
+
+/* Article layout — 2 columns on desktop */
+.article-layout{display:grid;grid-template-columns:1fr 280px;gap:3rem;max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 4rem;}
+
+/* Body text — readable width */
+.article-body{min-width:0;}
+.article-body h2{font-family:var(--font-headline);font-size:clamp(1.375rem,2.5vw,1.75rem);font-weight:700;color:var(--on-surface);margin:2.5rem 0 0.75rem;padding-top:1rem;border-top:1px solid rgba(92,64,55,0.08);}
+.article-body h2:first-child{border-top:none;padding-top:0;margin-top:0;}
+.article-body h3{font-family:var(--font-headline);font-size:clamp(1.0625rem,2vw,1.25rem);font-weight:600;color:var(--on-surface);margin:2rem 0 0.5rem;}
+.article-body p{color:rgba(229,226,225,0.72);line-height:1.8;margin-bottom:1.125rem;font-size:0.9375rem;}
+.article-body ul,.article-body ol{color:rgba(229,226,225,0.72);line-height:1.8;margin-bottom:1.125rem;padding-left:1.25rem;font-size:0.9375rem;}
+.article-body li{margin-bottom:0.4rem;}
+.article-body strong{color:var(--on-surface);font-weight:600;}
+.article-body a{color:var(--primary-container);text-decoration:underline;text-underline-offset:3px;}
+.article-body a:hover{color:var(--primary);}
+
+/* Images inside articles — constrained, rounded, captioned look */
+.article-body img{width:100%;max-height:320px;object-fit:cover;margin:1.5rem 0;border:1px solid rgba(92,64,55,0.1);}
+
+/* Blockquotes — professional callout style */
+.article-body blockquote{border-left:3px solid var(--primary-container);padding:1.25rem 1.5rem;margin:2rem 0;background:rgba(255,87,8,0.03);}
+.article-body blockquote p{margin:0;font-style:italic;font-size:0.9375rem;color:rgba(229,226,225,0.7);line-height:1.7;}
+
+/* Sidebar — sticky */
+.article-sidebar{position:sticky;top:5rem;align-self:start;display:flex;flex-direction:column;gap:1.5rem;}
+.sidebar-box{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;}
+.sidebar-box-title{font-family:var(--font-headline);font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary-container);margin-bottom:1rem;}
+.sidebar-toc a{display:block;padding:0.5rem 0;font-size:0.8125rem;color:rgba(229,226,225,0.5);border-bottom:1px solid rgba(92,64,55,0.06);transition:color 0.3s;text-decoration:none;}
+.sidebar-toc a:hover{color:var(--primary-container);}
+
+/* Share bar */
+.share-bar{display:flex;gap:0.75rem;margin:2rem 0;padding:1.25rem 0;border-top:1px solid rgba(92,64,55,0.1);border-bottom:1px solid rgba(92,64,55,0.1);flex-wrap:wrap;}
+.share-btn{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.12);color:rgba(229,226,225,0.6);padding:0.4rem 0.875rem;font-size:0.6875rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;transition:border-color 0.3s,color 0.3s;font-family:var(--font-headline);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.share-btn:hover{border-color:var(--primary-container);color:var(--primary-container);}
+
+/* Related articles */
+.related-section{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 3rem;}
+.related-articles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:1.5rem;}
+.related-articles a{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.25rem;text-decoration:none;transition:transform 0.3s,border-color 0.3s;}
+.related-articles a:hover{transform:translateY(-3px);border-color:rgba(255,87,8,0.2);}
+.related-articles a h4{color:var(--on-surface);font-size:0.9375rem;font-weight:600;margin-top:0.4rem;line-height:1.3;}
+.related-articles a .cat{font-size:0.5625rem;color:var(--primary-container);text-transform:uppercase;letter-spacing:0.1em;font-weight:700;}
+
+/* Author box */
+.author-box{display:flex;gap:1rem;align-items:center;padding:1.5rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);margin-top:2rem;}
+.author-avatar{width:48px;height:48px;background:var(--primary-container);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-weight:700;color:#fff;font-size:1.25rem;flex-shrink:0;}
+.author-name{font-weight:700;font-size:0.875rem;}
+.author-role{font-size:0.75rem;color:rgba(229,226,225,0.4);}
+
+/* Responsive */
+@media(max-width:900px){
+  .article-layout{grid-template-columns:1fr;gap:2rem;}
+  .article-sidebar{position:static;order:-1;}
+  .article-cover img{max-height:250px;}
+}
+@media(max-width:600px){
+  .article-body p,.article-body ul,.article-body ol{font-size:0.875rem;line-height:1.75;}
+  .article-body h2{font-size:1.25rem;}
+  .article-body img{max-height:200px;}
+  .share-bar{gap:0.5rem;}
+}
 </style>
 </head>
 <body>
@@ -67,20 +113,65 @@
 </div>
 </header>
 
+<!-- Cover Image -->
 <div class="article-cover" id="article-cover" style="display:none;"></div>
 
-<div class="article-body" id="article-content">
-  <p style="color:rgba(229,226,225,0.3);text-align:center;">Chargement de l'article...</p>
-</div>
+<!-- 2-Column Layout: Article + Sidebar -->
+<div class="article-layout">
+  <!-- Main Content -->
+  <div>
+    <div class="article-body" id="article-content">
+      <p style="color:rgba(229,226,225,0.3);text-align:center;">Chargement de l'article...</p>
+    </div>
 
-<div style="max-width:64rem;margin:0 auto;padding:0 var(--px-page) 2rem;">
-  <div class="share-bar">
-    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copi\u00e9 !'"><span class="material-symbols-outlined" style="font-size:1rem;">link</span> Copier le lien</button>
-    <button class="share-btn" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(document.getElementById('article-title').textContent))"><span class="material-symbols-outlined" style="font-size:1rem;">share</span> Twitter</button>
-    <button class="share-btn" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href))"><span class="material-symbols-outlined" style="font-size:1rem;">share</span> LinkedIn</button>
+    <!-- Author -->
+    <div class="author-box">
+      <div class="author-avatar">P</div>
+      <div>
+        <div class="author-name">Pirabel Labs</div>
+        <div class="author-role">Agence Marketing Digital Premium</div>
+      </div>
+    </div>
+
+    <!-- Share -->
+    <div class="share-bar">
+      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Copi\u00e9 !'"><span class="material-symbols-outlined" style="font-size:0.875rem;">link</span> Lien</button>
+      <button class="share-btn" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href))"><span class="material-symbols-outlined" style="font-size:0.875rem;">share</span> Twitter</button>
+      <button class="share-btn" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href))"><span class="material-symbols-outlined" style="font-size:0.875rem;">share</span> LinkedIn</button>
+    </div>
   </div>
 
-  <h2 class="text-h3" style="margin:3rem 0 1rem;">Articles li&eacute;s</h2>
+  <!-- Sidebar -->
+  <aside class="article-sidebar">
+    <!-- Table of Contents -->
+    <div class="sidebar-box">
+      <div class="sidebar-box-title">Sommaire</div>
+      <div class="sidebar-toc" id="article-toc"></div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="sidebar-box">
+      <div class="sidebar-box-title">Newsletter</div>
+      <p style="font-size:0.8125rem;color:rgba(229,226,225,0.5);margin-bottom:1rem;">Recevez nos articles par email.</p>
+      <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:0.5rem;">
+        <input type="email" id="sidebar-nl" placeholder="Votre email" style="background:var(--surface);border:1px solid rgba(92,64,55,0.2);padding:0.5rem 0.75rem;color:var(--on-surface);font-size:0.8125rem;outline:none;">
+        <button onclick="sidebarNL()" style="background:#FF5500;color:#5c1900;border:none;padding:0.5rem;font-weight:700;font-size:0.6875rem;text-transform:uppercase;cursor:pointer;">S'inscrire</button>
+      </form>
+      <div id="sidebar-nl-ok" style="display:none;color:#41e4c0;font-size:0.75rem;margin-top:0.5rem;">Inscrit !</div>
+    </div>
+
+    <!-- CTA -->
+    <div class="sidebar-box" style="background:var(--primary-container);border-color:transparent;">
+      <div style="font-family:var(--font-headline);font-size:0.9375rem;font-weight:700;color:var(--on-primary);margin-bottom:0.5rem;">Besoin d'aide ?</div>
+      <p style="font-size:0.8125rem;color:rgba(92,25,0,0.7);margin-bottom:1rem;">Nos experts transforment ces connaissances en r&eacute;sultats concrets.</p>
+      <a href="contact.html" style="display:block;background:var(--on-primary);color:var(--primary);text-align:center;padding:0.5rem;font-weight:700;font-size:0.75rem;text-transform:uppercase;text-decoration:none;">Audit gratuit</a>
+    </div>
+  </aside>
+</div>
+
+<!-- Related Articles -->
+<div class="related-section">
+  <h2 class="text-h3" style="margin-bottom:1rem;">Articles li&eacute;s</h2>
   <div class="related-articles" id="related-articles"></div>
 </div>
 
@@ -148,6 +239,17 @@ async function loadArticle() {
 
     document.getElementById('article-content').innerHTML = a.content;
 
+    // Generate Table of Contents from H2s
+    const h2s = document.querySelectorAll('.article-body h2');
+    const tocEl = document.getElementById('article-toc');
+    if (h2s.length > 0 && tocEl) {
+      tocEl.innerHTML = Array.from(h2s).map((h, i) => {
+        const id = 'section-' + i;
+        h.id = id;
+        return `<a href="#${id}">${h.textContent}</a>`;
+      }).join('');
+    }
+
     // Related
     const related = data.related || [];
     document.getElementById('related-articles').innerHTML = related.length ? related.map(r =>
@@ -159,6 +261,20 @@ async function loadArticle() {
 }
 
 loadArticle();
+
+// Sidebar newsletter
+async function sidebarNL() {
+  const email = document.getElementById('sidebar-nl')?.value?.trim();
+  if (!email) return;
+  try {
+    await fetch(API + '/api/campaigns/subscribers', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, type:'newsletter', source:'blog_article'})
+    });
+    document.getElementById('sidebar-nl-ok').style.display = 'block';
+    document.getElementById('sidebar-nl').value = '';
+  } catch(e) {}
+}
 </script>
 <script src="js/tracker.js" defer></script>
 </body>

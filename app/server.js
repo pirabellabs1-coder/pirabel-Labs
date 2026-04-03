@@ -112,7 +112,7 @@ app.get('/', (req, res) => res.status(404).send('Page non trouvee'));
 // Health check endpoint
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT) || 10000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Serveur Pirabel Labs Admin sur port ${PORT}`));
 
 // Handle uncaught errors

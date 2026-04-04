@@ -395,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   function createWhatsApp() {
     if (document.getElementById('wa-float-btn')) return;
+    if (window.innerWidth <= 768) return; // Hide on mobile
     var wa = document.createElement('a');
     wa.id = 'wa-float-btn';
     wa.href = 'https://wa.me/16139273067';

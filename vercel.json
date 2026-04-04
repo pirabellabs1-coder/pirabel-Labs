@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
@@ -46,6 +47,8 @@
     { "src": "/guides$", "dest": "/guides/index.html" },
     { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
     { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },
+    { "src": "/(consulting-digital|formation-digitale|outils-digitaux)$", "dest": "/$1/index.html" },
+    { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/espace-client-4p8w1n", "dest": "/espace-client-4p8w1n/index.html" }
   ]

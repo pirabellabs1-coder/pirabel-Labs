@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const settingsSchema = new mongoose.Schema({
   key: { type: String, default: 'main', unique: true },
   agencyName: { type: String, default: 'Pirabel Labs' },
-  agencyEmail: { type: String, default: 'pirabellabs@gmail.com' },
+  agencyEmail: { type: String, default: 'contact@pirabellabs.com' },
   agencyPhone: { type: String, default: '' },
   agencyAddress: { type: String, default: '' },
   agencyCity: { type: String, default: '' },

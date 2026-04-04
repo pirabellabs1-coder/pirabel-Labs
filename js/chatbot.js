@@ -185,7 +185,7 @@
       id: 'devis',
       kw: ['devis', 'proposition', 'offre commerciale', 'gratuit'],
       responses: [
-        "Bien sur {name} ! Pour obtenir un <strong>devis gratuit et personnalise</strong>, vous avez 3 options :<br><br>1. <strong>Remplir notre formulaire</strong> — <a href='/contact.html'>cliquez ici</a> (reponse sous 24h)<br>2. <strong>M'envoyer un email</strong> — <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>3. <strong>Me decrire votre projet ici</strong> — je transmettrai a notre equipe<br><br>On ne fait pas de devis generiques — chaque proposition est taillee sur mesure pour votre situation. Dites-moi en plus sur votre projet !"
+        "Bien sur {name} ! Pour obtenir un <strong>devis gratuit et personnalise</strong>, vous avez 3 options :<br><br>1. <strong>Remplir notre formulaire</strong> — <a href='/contact.html'>cliquez ici</a> (reponse sous 24h)<br>2. <strong>M'envoyer un email</strong> — <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>3. <strong>Me decrire votre projet ici</strong> — je transmettrai a notre equipe<br><br>On ne fait pas de devis generiques — chaque proposition est taillee sur mesure pour votre situation. Dites-moi en plus sur votre projet !"
       ],
       buttons: ['Formulaire de contact', 'Decrire mon projet']
     },
@@ -195,7 +195,7 @@
       id: 'contact',
       kw: ['contact', 'joindre', 'appeler', 'telephone', 'mail', 'email', 'adresse', 'localisation', 'ou etes', 'bureau', 'whatsapp'],
       responses: [
-        "Vous pouvez nous joindre facilement {name} :<br><br>📧 <strong>Email</strong> — <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>📝 <strong>Formulaire</strong> — <a href='/contact.html'>page contact</a><br>💬 <strong>WhatsApp</strong> — <a href='https://wa.me/16139273067' target='_blank'>+1 613 927 3067</a><br>💬 <strong>Ce chat</strong> — decrivez votre besoin et je transmets !<br><br>Pirabel Labs est une agence digitale internationale. On travaille avec des clients en <strong>France, Belgique, Canada, Maroc, Senegal, Cote d'Ivoire, Benin, Tunisie</strong> et partout dans le monde. Reponse garantie sous 24h !"
+        "Vous pouvez nous joindre facilement {name} :<br><br>📧 <strong>Email</strong> — <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>📝 <strong>Formulaire</strong> — <a href='/contact.html'>page contact</a><br>💬 <strong>WhatsApp</strong> — <a href='https://wa.me/16139273067' target='_blank'>+1 613 927 3067</a><br>💬 <strong>Ce chat</strong> — decrivez votre besoin et je transmets !<br><br>Pirabel Labs est une agence digitale internationale. On travaille avec des clients en <strong>France, Belgique, Canada, Maroc, Senegal, Cote d'Ivoire, Benin, Tunisie</strong> et partout dans le monde. Reponse garantie sous 24h !"
       ],
       buttons: ['Formulaire de contact', 'Envoyer un email', 'Quels services ?']
     },
@@ -245,7 +245,7 @@
       id: 'human',
       kw: ['humain', 'vraie personne', 'parler quelqu', 'equipe commerciale', 'rendez-vous', 'rdv', 'appel telephonique', 'visio', 'zoom', 'meet'],
       responses: [
-        "Bien sur {name}, je comprends ! Pour parler directement a un membre de notre equipe :<br><br>📧 Envoyez un email a <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>📝 Remplissez notre <a href='/contact.html'>formulaire de contact</a><br>💬 Ecrivez-nous sur <a href='https://wa.me/16139273067' target='_blank'>WhatsApp</a><br><br>Un membre de l'equipe vous recontactera sous <strong>24h ouvrees</strong> pour discuter de vive voix. En attendant, est-ce que je peux deja vous renseigner sur quelque chose ?"
+        "Bien sur {name}, je comprends ! Pour parler directement a un membre de notre equipe :<br><br>📧 Envoyez un email a <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>📝 Remplissez notre <a href='/contact.html'>formulaire de contact</a><br>💬 Ecrivez-nous sur <a href='https://wa.me/16139273067' target='_blank'>WhatsApp</a><br><br>Un membre de l'equipe vous recontactera sous <strong>24h ouvrees</strong> pour discuter de vive voix. En attendant, est-ce que je peux deja vous renseigner sur quelque chose ?"
       ],
       buttons: ['Formulaire de contact', 'Envoyer un email']
     },

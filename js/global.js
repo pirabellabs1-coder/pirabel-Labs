@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '\nSite: ' + data.website + '\nService: ' + data.service +
             '\nBudget: ' + data.budget + '\nMessage: ' + data.message
           );
-          window.open('mailto:pirabellabs@gmail.com?subject=' + subject + '&body=' + body, '_self');
+          window.open('mailto:contact@pirabellabs.com?subject=' + subject + '&body=' + body, '_self');
           sent = true;
         } catch(x) {}
       }
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (successEl) successEl.style.display = 'block';
         contactForm.reset();
       } else {
-        if (errorEl) { errorEl.textContent = 'Erreur de connexion. Envoyez-nous un email a pirabellabs@gmail.com'; errorEl.style.display = 'block'; }
+        if (errorEl) { errorEl.textContent = 'Erreur de connexion. Envoyez-nous un email a contact@pirabellabs.com'; errorEl.style.display = 'block'; }
       }
       btn.disabled = false;
       btn.innerHTML = btnOriginal;
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const subject = encodeURIComponent('Demande depuis ' + page);
           const body = encodeURIComponent('Nom: ' + name + '\nEmail: ' + email + '\nTel: ' + phone + '\nMessage: ' + message);
-          window.open('mailto:pirabellabs@gmail.com?subject=' + subject + '&body=' + body, '_self');
+          window.open('mailto:contact@pirabellabs.com?subject=' + subject + '&body=' + body, '_self');
           sent = true;
         } catch(x) {}
       }
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         setTimeout(() => { btn.innerHTML = btnOriginal; btn.disabled = false; }, 5000);
       } else {
-        btn.innerHTML = 'Erreur - Contactez pirabellabs@gmail.com';
+        btn.innerHTML = 'Erreur - Contactez contact@pirabellabs.com';
         setTimeout(() => { btn.innerHTML = btnOriginal; btn.disabled = false; }, 4000);
       }
     });

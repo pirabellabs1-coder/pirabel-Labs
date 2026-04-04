@@ -75,12 +75,12 @@ const KB = [
   },
   {
     patterns: [/devis/i, /estimation/i, /proposition/i, /offre.*commercial/i],
-    reply: "Pour obtenir un <strong>devis gratuit et personnalis\u00e9</strong>, vous pouvez :<br><br>\u2022 Remplir notre <a href='/contact.html'>formulaire de contact</a><br>\u2022 Nous envoyer un email \u00e0 <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>\u2022 Me d\u00e9crire votre projet ici et je transmettrai votre demande \u00e0 notre \u00e9quipe<br><br>Nous r\u00e9pondons sous <strong>24h ouvr\u00e9es</strong>.",
+    reply: "Pour obtenir un <strong>devis gratuit et personnalis\u00e9</strong>, vous pouvez :<br><br>\u2022 Remplir notre <a href='/contact.html'>formulaire de contact</a><br>\u2022 Nous envoyer un email \u00e0 <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>\u2022 Me d\u00e9crire votre projet ici et je transmettrai votre demande \u00e0 notre \u00e9quipe<br><br>Nous r\u00e9pondons sous <strong>24h ouvr\u00e9es</strong>.",
     buttons: ['Formulaire de contact', 'D\u00e9crire mon projet']
   },
   {
     patterns: [/contact/i, /joindre/i, /appeler/i, /t[eé]l[eé]phone/i, /mail\b/i, /adresse/i, /localisation/i, /o[uù]\s*[eê]tes/i],
-    reply: "Vous pouvez nous contacter de plusieurs fa\u00e7ons :<br><br>\u2022 <strong>Email</strong> : <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>\u2022 <strong>Formulaire</strong> : <a href='/contact.html'>Page contact</a><br>\u2022 <strong>Ce chat</strong> : D\u00e9crivez votre besoin et je le transmets \u00e0 notre \u00e9quipe<br><br>Nous sommes une agence digitale internationale avec des clients en France, Belgique, Canada, et Afrique.",
+    reply: "Vous pouvez nous contacter de plusieurs fa\u00e7ons :<br><br>\u2022 <strong>Email</strong> : <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>\u2022 <strong>Formulaire</strong> : <a href='/contact.html'>Page contact</a><br>\u2022 <strong>Ce chat</strong> : D\u00e9crivez votre besoin et je le transmets \u00e0 notre \u00e9quipe<br><br>Nous sommes une agence digitale internationale avec des clients en France, Belgique, Canada, et Afrique.",
     buttons: ['Formulaire de contact', 'Quels sont vos services ?']
   },
   {
@@ -115,7 +115,7 @@ const KB = [
   },
   {
     patterns: [/humain/i, /vrai.*personne/i, /parler.*quelqu/i, /[eé]quipe.*commercial/i, /rendez.*vous/i, /rdv/i, /appel/i],
-    reply: "Je vais transmettre votre demande \u00e0 notre \u00e9quipe ! En attendant, vous pouvez :<br><br>\u2022 Nous \u00e9crire \u00e0 <a href='mailto:pirabellabs@gmail.com'>pirabellabs@gmail.com</a><br>\u2022 Remplir notre <a href='/contact.html'>formulaire de contact</a><br><br>Un membre de l'\u00e9quipe vous r\u00e9pondra sous <strong>24h ouvr\u00e9es</strong>.",
+    reply: "Je vais transmettre votre demande \u00e0 notre \u00e9quipe ! En attendant, vous pouvez :<br><br>\u2022 Nous \u00e9crire \u00e0 <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a><br>\u2022 Remplir notre <a href='/contact.html'>formulaire de contact</a><br><br>Un membre de l'\u00e9quipe vous r\u00e9pondra sous <strong>24h ouvr\u00e9es</strong>.",
     buttons: ['Formulaire de contact']
   },
   {

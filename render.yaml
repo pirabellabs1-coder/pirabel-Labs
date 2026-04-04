@@ -27,8 +27,8 @@ services:
       - key: SMTP_PASS
         sync: false
       - key: ADMIN_EMAIL
-        value: pirabellabs@gmail.com
+        value: contact@pirabellabs.com
       - key: FROM_EMAIL
-        value: pirabellabs@gmail.com
+        value: contact@pirabellabs.com
       - key: SITE_URL
         value: https://pirabel-labs.vercel.app

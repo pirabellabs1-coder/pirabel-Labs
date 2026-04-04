@@ -10,7 +10,10 @@
 <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -20,183 +23,545 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link active"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Syst&egrave;me</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
 </aside>
+
+<!-- Main Content -->
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
-      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
       <div class="topbar-title">Factures</div>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvelle facture</button>
-      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
     </div>
   </header>
+
   <div class="content">
-    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-      <select id="filter-status" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;">
+    <!-- Summary Stats -->
+    <div class="stat-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">receipt_long</span> Total factures</div>
+        <div class="stat-card-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">euro</span> Montant total</div>
+        <div class="stat-card-value accent" id="stat-amount">0 &euro;</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span> Payees</div>
+        <div class="stat-card-value" id="stat-paid" style="color:var(--teal);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">schedule</span> En attente</div>
+        <div class="stat-card-value" id="stat-pending" style="color:var(--warning);">0</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-status" onchange="loadInvoices()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:150px;">
         <option value="">Tous les statuts</option>
         <option value="brouillon">Brouillon</option>
-        <option value="envoyee">Envoy&eacute;e</option>
-        <option value="payee">Pay&eacute;e</option>
+        <option value="envoyee">Envoyee</option>
+        <option value="payee">Payee</option>
         <option value="en_retard">En retard</option>
+        <option value="annulee">Annulee</option>
       </select>
+      <select id="filter-client" onchange="loadInvoices()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:170px;">
+        <option value="">Tous les clients</option>
+      </select>
+      <div style="flex:1;"></div>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvelle facture
+      </button>
     </div>
+
+    <!-- Table -->
     <div class="table-wrap">
       <table>
-        <thead><tr><th>N&deg; Facture</th><th>Client</th><th>Montant TTC</th><th>Statut</th><th>Date &eacute;mission</th><th>&Eacute;ch&eacute;ance</th><th>Actions</th></tr></thead>
-        <tbody id="invoices-table"></tbody>
+        <thead>
+          <tr>
+            <th>Numéro</th>
+            <th>Client</th>
+            <th>Montant TTC</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Échéance</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoices-body"></tbody>
       </table>
     </div>
   </div>
 </div>
 </div>
 
+<!-- Add/Edit Invoice Modal -->
 <div class="modal-overlay" id="modal">
-  <div class="modal" style="max-width:600px;">
+  <div class="modal" style="max-width:700px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <div class="modal-title">Nouvelle facture</div>
-    <form id="invoice-form" class="dash-form">
-      <div class="grid-2">
-        <div class="form-group"><label>Client *</label><select id="f-client" required><option value="">S&eacute;lectionner</option></select></div>
-        <div class="form-group"><label>Projet</label><select id="f-project"><option value="">Aucun</option></select></div>
-      </div>
-      <div id="line-items">
-        <div class="form-group"><label>Ligne 1</label>
-          <div style="display:flex;gap:0.5rem;">
-            <input type="text" placeholder="Description" class="li-desc" style="flex:2;" required>
-            <input type="number" placeholder="Qt&eacute;" class="li-qty" value="1" style="width:60px;" min="1">
-            <input type="number" placeholder="Prix" class="li-price" style="width:100px;" step="0.01" required>
-          </div>
+    <div class="modal-title" id="modal-title">Nouvelle facture</div>
+    <form class="dash-form" id="invoice-form" onsubmit="saveInvoice(event)" style="max-width:none;">
+      <input type="hidden" id="invoice-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Client *</label>
+          <select id="f-client" required>
+            <option value="">Selectionner un client</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Projet</label>
+          <select id="f-project">
+            <option value="">Aucun</option>
+          </select>
         </div>
       </div>
-      <button type="button" class="btn btn-sm btn-ghost" onclick="addLine()" style="margin-bottom:1rem;"><span class="material-symbols-outlined" style="font-size:0.875rem;">add</span> Ajouter une ligne</button>
-      <div class="grid-2">
-        <div class="form-group"><label>Taux TVA (%)</label><input type="number" id="f-tax" value="20" min="0" max="30"></div>
-        <div class="form-group"><label>&Eacute;ch&eacute;ance</label><input type="date" id="f-due"></div>
+
+      <!-- Line Items -->
+      <div style="margin-bottom:0.5rem;">
+        <label style="display:block;font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.5rem;font-family:var(--font-h);">Articles</label>
       </div>
-      <div class="form-group"><label>Notes</label><textarea id="f-notes" rows="2"></textarea></div>
-      <div style="background:var(--bg);padding:1rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;"><span>Sous-total HT</span><span id="calc-ht">0 &euro;</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;"><span>TVA (<span id="calc-rate">20</span>%)</span><span id="calc-tva">0 &euro;</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:var(--accent);"><span>Total TTC</span><span id="calc-ttc">0 &euro;</span></div>
+      <div id="line-items">
+        <div class="line-item" style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
+          <input type="text" placeholder="Description" class="li-desc" style="flex:2;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.75rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+          <input type="number" placeholder="Qte" class="li-qty" value="1" min="1" style="width:65px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;text-align:center;">
+          <input type="number" placeholder="Prix unitaire" class="li-price" step="0.01" style="width:120px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+          <span class="li-total" style="width:90px;text-align:right;font-size:0.8125rem;font-weight:600;color:var(--text);">0 &euro;</span>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="removeLine(this)" style="padding:0.25rem;color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">close</span></button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">Cr&eacute;er la facture</button>
+      <button type="button" class="btn btn-sm btn-ghost" onclick="addLine()" style="margin-bottom:1.25rem;">
+        <span class="material-symbols-outlined" style="font-size:0.875rem;">add</span> Ajouter une ligne
+      </button>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Taux TVA (%)</label>
+          <input type="number" id="f-tax" value="20" min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Date échéance</label>
+          <input type="date" id="f-due">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="f-notes" rows="2"></textarea>
+      </div>
+
+      <!-- Totals -->
+      <div style="background:var(--bg);padding:1.25rem;margin-bottom:1.25rem;border:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;">
+          <span>Sous-total HT</span>
+          <span id="calc-ht" style="font-weight:600;">0 &euro;</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.5rem;">
+          <span>TVA (<span id="calc-rate">20</span>%)</span>
+          <span id="calc-tva" style="font-weight:600;">0 &euro;</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:1.125rem;font-weight:700;color:var(--accent);padding-top:0.75rem;border-top:1px solid var(--border);">
+          <span>Total TTC</span>
+          <span id="calc-ttc">0 &euro;</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1rem;">
+        <button type="submit" class="btn btn-primary" style="flex:1;">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      </div>
     </form>
+  </div>
+</div>
+
+<!-- View Invoice Modal -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeViewModal()">&times;</button>
+    <div class="modal-title">Details facture</div>
+    <div id="view-content"></div>
   </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
-
-function badge(s) {
-  const m = { brouillon:'badge-done', envoyee:'badge-pending', payee:'badge-active', en_retard:'badge-danger', annulee:'badge-danger' };
-  return '<span class="badge '+(m[s]||'')+'">'+s.replace(/_/g,' ')+'</span>';
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
-function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
-function fmtDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR') : '-'; }
 
-let lineCount = 1;
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/pirabel-admin-7x9k2m';
+}
+
+function statusBadge(s) {
+  const m = { 'actif': 'badge-active', 'inactif': 'badge-danger', 'en_attente': 'badge-pending', 'paye': 'badge-active', 'en_retard': 'badge-danger', 'brouillon': 'badge-done', 'envoyee': 'badge-pending', 'payee': 'badge-active', 'annulee': 'badge-danger' };
+  return '<span class="badge ' + (m[s] || 'badge-done') + '">' + (s || '-').replace(/_/g, ' ') + '</span>';
+}
+
+function formatDate(d) {
+  return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+}
+
+function fmt(n) {
+  return (n || 0).toLocaleString('fr-FR') + ' \u20AC';
+}
+
+// ---- Cached data ----
+let allClients = [];
+let allProjects = [];
+
+// ---- Load Clients & Projects for dropdowns ----
+async function loadDropdowns() {
+  try {
+    const [cRes, pRes] = await Promise.all([
+      fetch('/api/clients?limit=200', { headers }),
+      fetch('/api/projects?limit=200', { headers })
+    ]);
+    if (cRes.ok) {
+      const cData = await cRes.json();
+      allClients = cData.clients || cData || [];
+      // Populate filter dropdown
+      const filterSel = document.getElementById('filter-client');
+      allClients.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c._id;
+        o.textContent = c.company || c.name;
+        filterSel.appendChild(o);
+      });
+      // Populate form dropdown
+      const formSel = document.getElementById('f-client');
+      allClients.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c._id;
+        o.textContent = c.company || c.name;
+        formSel.appendChild(o);
+      });
+    }
+    if (pRes.ok) {
+      const pData = await pRes.json();
+      allProjects = pData.projects || pData || [];
+      const projSel = document.getElementById('f-project');
+      allProjects.forEach(p => {
+        const o = document.createElement('option');
+        o.value = p._id;
+        o.textContent = p.name || p.title;
+        projSel.appendChild(o);
+      });
+    }
+  } catch (e) { console.error(e); }
+}
+
+// ---- Line Items ----
 function addLine() {
-  lineCount++;
+  const container = document.getElementById('line-items');
   const div = document.createElement('div');
-  div.className = 'form-group';
-  div.innerHTML = '<label>Ligne '+lineCount+'</label><div style="display:flex;gap:0.5rem;"><input type="text" placeholder="Description" class="li-desc" style="flex:2;" required><input type="number" placeholder="Qt\u00e9" class="li-qty" value="1" style="width:60px;" min="1"><input type="number" placeholder="Prix" class="li-price" style="width:100px;" step="0.01" required></div>';
-  document.getElementById('line-items').appendChild(div);
+  div.className = 'line-item';
+  div.style.cssText = 'display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
+  div.innerHTML = `
+    <input type="text" placeholder="Description" class="li-desc" style="flex:2;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.75rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+    <input type="number" placeholder="Qte" class="li-qty" value="1" min="1" style="width:65px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;text-align:center;">
+    <input type="number" placeholder="Prix unitaire" class="li-price" step="0.01" style="width:120px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+    <span class="li-total" style="width:90px;text-align:right;font-size:0.8125rem;font-weight:600;color:var(--text);">0 \u20AC</span>
+    <button type="button" class="btn btn-sm btn-ghost" onclick="removeLine(this)" style="padding:0.25rem;color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">close</span></button>
+  `;
+  container.appendChild(div);
 }
 
-function calcTotal() {
+function removeLine(btn) {
+  const items = document.querySelectorAll('#line-items .line-item');
+  if (items.length <= 1) return; // keep at least one line
+  btn.closest('.line-item').remove();
+  calcTotals();
+}
+
+function calcTotals() {
   let ht = 0;
-  document.querySelectorAll('#line-items .form-group').forEach(g => {
-    const qty = parseFloat(g.querySelector('.li-qty')?.value) || 1;
-    const price = parseFloat(g.querySelector('.li-price')?.value) || 0;
-    ht += qty * price;
+  document.querySelectorAll('#line-items .line-item').forEach(row => {
+    const qty = parseFloat(row.querySelector('.li-qty').value) || 1;
+    const price = parseFloat(row.querySelector('.li-price').value) || 0;
+    const lineTotal = qty * price;
+    row.querySelector('.li-total').textContent = fmt(lineTotal);
+    ht += lineTotal;
   });
-  const rate = parseFloat(document.getElementById('f-tax').value) || 20;
+  const rate = parseFloat(document.getElementById('f-tax').value) || 0;
   const tva = ht * rate / 100;
   document.getElementById('calc-ht').textContent = fmt(ht);
   document.getElementById('calc-rate').textContent = rate;
   document.getElementById('calc-tva').textContent = fmt(tva);
   document.getElementById('calc-ttc').textContent = fmt(ht + tva);
 }
-document.getElementById('line-items').addEventListener('input', calcTotal);
-document.getElementById('f-tax').addEventListener('input', calcTotal);
 
+document.getElementById('line-items').addEventListener('input', calcTotals);
+document.getElementById('f-tax').addEventListener('input', calcTotals);
+
+// ---- Load Invoices ----
 async function loadInvoices() {
-  const status = document.getElementById('filter-status').value;
-  let url = '/api/invoices?limit=50';
-  if (status) url += '&status=' + status;
   try {
+    const status = document.getElementById('filter-status').value;
+    const client = document.getElementById('filter-client').value;
+    let url = '/api/invoices?';
+    if (status) url += 'status=' + encodeURIComponent(status) + '&';
+    if (client) url += 'client=' + encodeURIComponent(client);
     const res = await fetch(url, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement factures', 'error'); return; }
     const data = await res.json();
-    document.getElementById('invoices-table').innerHTML = (data.invoices || []).map(i =>
-      '<tr><td><strong>'+i.invoiceNumber+'</strong></td><td>'+(i.client?.company||'-')+'</td><td style="font-weight:600;">'+fmt(i.total)+'</td><td>'+badge(i.status)+'</td><td>'+fmtDate(i.issueDate)+'</td><td>'+fmtDate(i.dueDate)+'</td><td><button class="btn btn-sm btn-ghost" onclick="markPaid(\''+i._id+'\')">Marquer pay&eacute;e</button></td></tr>'
-    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune facture</td></tr>';
-  } catch(e) { console.error(e); }
+    const invoices = data.invoices || data || [];
+
+    // Calculate stats
+    let totalAmount = 0, paidCount = 0, pendingCount = 0;
+    invoices.forEach(i => {
+      totalAmount += i.total || i.totalTTC || 0;
+      if (i.status === 'payee') paidCount++;
+      if (i.status === 'envoyee' || i.status === 'en_retard' || i.status === 'brouillon') pendingCount++;
+    });
+    document.getElementById('stat-total').textContent = invoices.length;
+    document.getElementById('stat-amount').textContent = fmt(totalAmount);
+    document.getElementById('stat-paid').textContent = paidCount;
+    document.getElementById('stat-pending').textContent = pendingCount;
+
+    // Render table
+    document.getElementById('invoices-body').innerHTML = invoices.map(i => {
+      const clientName = i.client?.company || i.client?.name || (typeof i.client === 'string' ? i.client : '-');
+      return `
+        <tr>
+          <td style="font-weight:600;">${i.invoiceNumber || i.numéro || '-'}</td>
+          <td>${clientName}</td>
+          <td style="font-weight:600;">${fmt(i.total || i.totalTTC)}</td>
+          <td>${statusBadge(i.status)}</td>
+          <td>${formatDate(i.issueDate || i.createdAt || i.date)}</td>
+          <td>${formatDate(i.dueDate)}</td>
+          <td>
+            <div style="display:flex;gap:0.25rem;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-ghost" onclick="viewInvoice('${i._id}')" title="Voir"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+              <button class="btn btn-sm btn-ghost" onclick="editInvoice('${i._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+              <button class="btn btn-sm btn-ghost" onclick="sendInvoice('${i._id}')" title="Envoyer par email"><span class="material-symbols-outlined" style="font-size:0.875rem;">send</span></button>
+              <button class="btn btn-sm btn-ghost" onclick="markPaid('${i._id}')" title="Marquer payee" style="color:var(--teal);"><span class="material-symbols-outlined" style="font-size:0.875rem;">check_circle</span></button>
+              <button class="btn btn-sm btn-ghost" onclick="deleteInvoice('${i._id}')" title="Supprimer" style="color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune facture trouvee</td></tr>';
+  } catch (e) { console.error(e); }
 }
 
-async function loadClients() {
-  try {
-    const res = await fetch('/api/clients?limit=100', { headers });
-    const data = await res.json();
-    const sel = document.getElementById('f-client');
-    (data.clients||[]).forEach(c => { const o = document.createElement('option'); o.value = c._id; o.textContent = c.company; sel.appendChild(o); });
-  } catch(e) {}
+// ---- Add/Edit Modal ----
+function openModal(invoice) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-title').textContent = invoice ? 'Modifier la facture' : 'Nouvelle facture';
+  if (invoice) {
+    document.getElementById('invoice-id').value = invoice._id;
+    document.getElementById('f-client').value = invoice.client?._id || invoice.client || '';
+    document.getElementById('f-project').value = invoice.project?._id || invoice.project || '';
+    document.getElementById('f-tax').value = invoice.taxRate != null ? invoice.taxRate : 20;
+    document.getElementById('f-due').value = invoice.dueDate ? invoice.dueDate.substring(0, 10) : '';
+    document.getElementById('f-notes').value = invoice.notes || '';
+    // Populate line items
+    const container = document.getElementById('line-items');
+    container.innerHTML = '';
+    const items = invoice.items || [];
+    if (items.length === 0) items.push({ description: '', quantity: 1, unitPrice: 0 });
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'line-item';
+      div.style.cssText = 'display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
+      div.innerHTML = `
+        <input type="text" placeholder="Description" class="li-desc" style="flex:2;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.75rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required value="${(item.description || '').replace(/"/g, '&quot;')}">
+        <input type="number" placeholder="Qte" class="li-qty" value="${item.quantity || 1}" min="1" style="width:65px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;text-align:center;">
+        <input type="number" placeholder="Prix unitaire" class="li-price" step="0.01" value="${item.unitPrice || 0}" style="width:120px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+        <span class="li-total" style="width:90px;text-align:right;font-size:0.8125rem;font-weight:600;color:var(--text);">0 \u20AC</span>
+        <button type="button" class="btn btn-sm btn-ghost" onclick="removeLine(this)" style="padding:0.25rem;color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">close</span></button>
+      `;
+      container.appendChild(div);
+    });
+    calcTotals();
+  } else {
+    document.getElementById('invoice-form').reset();
+    document.getElementById('invoice-id').value = '';
+    document.getElementById('f-tax').value = 20;
+    // Reset line items to one empty row
+    const container = document.getElementById('line-items');
+    container.innerHTML = `
+      <div class="line-item" style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:center;">
+        <input type="text" placeholder="Description" class="li-desc" style="flex:2;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.75rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+        <input type="number" placeholder="Qte" class="li-qty" value="1" min="1" style="width:65px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;text-align:center;">
+        <input type="number" placeholder="Prix unitaire" class="li-price" step="0.01" style="width:120px;background:var(--bg);border:1px solid var(--border);padding:0.625rem 0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;" required>
+        <span class="li-total" style="width:90px;text-align:right;font-size:0.8125rem;font-weight:600;color:var(--text);">0 \u20AC</span>
+        <button type="button" class="btn btn-sm btn-ghost" onclick="removeLine(this)" style="padding:0.25rem;color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">close</span></button>
+      </div>
+    `;
+    calcTotals();
+  }
 }
 
-async function markPaid(id) {
-  try {
-    await fetch('/api/invoices/' + id, { method: 'PUT', headers, body: JSON.stringify({ status: 'payee' }) });
-    loadInvoices();
-  } catch(e) { console.error(e); }
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
 }
 
-function openModal() { document.getElementById('modal').classList.add('open'); }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-
-document.getElementById('invoice-form').addEventListener('submit', async (e) => {
+async function saveInvoice(e) {
   e.preventDefault();
+  const id = document.getElementById('invoice-id').value;
   const items = [];
-  document.querySelectorAll('#line-items .form-group').forEach(g => {
-    const desc = g.querySelector('.li-desc')?.value;
-    const qty = parseFloat(g.querySelector('.li-qty')?.value) || 1;
-    const price = parseFloat(g.querySelector('.li-price')?.value) || 0;
+  document.querySelectorAll('#line-items .line-item').forEach(row => {
+    const desc = row.querySelector('.li-desc').value;
+    const qty = parseFloat(row.querySelector('.li-qty').value) || 1;
+    const price = parseFloat(row.querySelector('.li-price').value) || 0;
     if (desc && price) items.push({ description: desc, quantity: qty, unitPrice: price, total: qty * price });
   });
+  if (items.length === 0) { toast('Ajoutez au moins un article.', 'error'); return; }
   const body = {
     client: document.getElementById('f-client').value,
     project: document.getElementById('f-project').value || undefined,
-    items, taxRate: parseFloat(document.getElementById('f-tax').value) || 20,
+    items: items,
+    taxRate: parseFloat(document.getElementById('f-tax').value) || 20,
     dueDate: document.getElementById('f-due').value || undefined,
-    notes: document.getElementById('f-notes').value,
+    notes: document.getElementById('f-notes').value
   };
   try {
-    await fetch('/api/invoices', { method: 'POST', headers, body: JSON.stringify(body) });
-    closeModal(); loadInvoices();
-  } catch(e) { console.error(e); }
-});
+    const res = id
+      ? await fetch('/api/invoices/' + id, { method: 'PUT', headers, body: JSON.stringify(body) })
+      : await fetch('/api/invoices', { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur sauvegarde facture', 'error'); return; }
+    closeModal();
+    loadInvoices();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
 
-document.getElementById('filter-status').addEventListener('change', loadInvoices);
-function logout() { localStorage.clear(); window.location.href = '/login'; }
-loadInvoices(); loadClients();
+async function editInvoice(id) {
+  try {
+    const res = await fetch('/api/invoices/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement facture', 'error'); return; }
+    const invoice = await res.json();
+    openModal(invoice);
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- View Invoice ----
+async function viewInvoice(id) {
+  try {
+    const res = await fetch('/api/invoices/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement facture', 'error'); return; }
+    const inv = await res.json();
+    const clientName = inv.client?.company || inv.client?.name || '-';
+    const projectName = inv.project?.name || inv.project?.title || '-';
+    const items = inv.items || [];
+    const subtotal = items.reduce((s, i) => s + (i.quantity || 1) * (i.unitPrice || 0), 0);
+    const taxRate = inv.taxRate != null ? inv.taxRate : 20;
+    const tva = subtotal * taxRate / 100;
+
+    let html = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem;margin-bottom:1.5rem;">
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Numéro</span>${inv.invoiceNumber || inv.numéro || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Statut</span>${statusBadge(inv.status)}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Client</span>${clientName}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Projet</span>${projectName}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Date emission</span>${formatDate(inv.issueDate || inv.createdAt)}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Échéance</span>${formatDate(inv.dueDate)}</div>
+      </div>
+      ${items.length ? `
+        <div style="border-top:1px solid var(--border);padding-top:1rem;margin-bottom:1rem;">
+          <table style="width:100%;">
+            <thead><tr><th>Description</th><th style="text-align:center;">Qte</th><th style="text-align:right;">Prix unit.</th><th style="text-align:right;">Total</th></tr></thead>
+            <tbody>${items.map(i => `<tr><td>${i.description}</td><td style="text-align:center;">${i.quantity || 1}</td><td style="text-align:right;">${fmt(i.unitPrice)}</td><td style="text-align:right;">${fmt((i.quantity || 1) * (i.unitPrice || 0))}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+      ` : ''}
+      <div style="background:var(--bg);padding:1rem;border:1px solid var(--border);margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.375rem;"><span>Sous-total HT</span><span>${fmt(subtotal)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:0.375rem;"><span>TVA (${taxRate}%)</span><span>${fmt(tva)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1.125rem;font-weight:700;color:var(--accent);padding-top:0.5rem;border-top:1px solid var(--border);"><span>Total TTC</span><span>${fmt(subtotal + tva)}</span></div>
+      </div>
+      ${inv.notes ? '<div style="font-size:0.8125rem;color:var(--muted);"><strong>Notes:</strong> ' + inv.notes + '</div>' : ''}
+    `;
+    document.getElementById('view-content').innerHTML = html;
+    document.getElementById('view-modal').classList.add('open');
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+function closeViewModal() {
+  document.getElementById('view-modal').classList.remove('open');
+}
+
+// ---- Send Invoice by Email ----
+async function sendInvoice(id) {
+  if (!confirm('Envoyer cette facture par email au client ?')) return;
+  try {
+    const res = await fetch('/api/invoices/' + id + '/send', { method: 'POST', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur envoi facture', 'error'); return; }
+    toast('Facture envoyee par email avec succes !', 'success');
+    loadInvoices();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- Mark Paid ----
+async function markPaid(id) {
+  if (!confirm('Marquer cette facture comme payee ?')) return;
+  try {
+    const res = await fetch('/api/invoices/' + id, { method: 'PUT', headers, body: JSON.stringify({ status: 'payee' }) });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur mise a jour', 'error'); return; }
+    loadInvoices();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- Delete ----
+async function deleteInvoice(id) {
+  if (!confirm('Supprimer cette facture ? Cette action est irreversible.')) return;
+  try {
+    const res = await fetch('/api/invoices/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur suppression', 'error'); return; }
+    loadInvoices();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- Init ----
+loadDropdowns().then(() => loadInvoices());
 </script>
 </body>
 </html>

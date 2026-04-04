@@ -1,5 +1,6 @@
 /**
  * PIRABEL LABS — Configuration
- * Changez PIRABEL_API_URL pour pointer vers votre backend en production
+ * PIRABEL_API = '' means same-origin (use /api/... relative paths)
+ * For local dev with separate backend: set to 'http://localhost:10000'
  */
 window.PIRABEL_API = '';

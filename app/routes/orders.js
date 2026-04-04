@@ -5,20 +5,38 @@ const Client = require('../models/Client');
 const Project = require('../models/Project');
 const Subscriber = require('../models/Subscriber');
 const { auth, adminOrEmployee } = require('../middleware/auth');
-const { notifyNewOrder } = require('../config/email');
+const Activity = require('../models/Activity');
+const { notifyNewOrder, sendWelcome } = require('../config/email');
+const { rateLimit, sanitize, sanitizeEmail, isValidEmail, honeypotCheck, limitBody } = require('../middleware/security');
+
+// Rate limit: max 5 orders per 15 minutes per IP
+const orderLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Trop de demandes. Reessayez dans 15 minutes.', keyPrefix: 'order' });
 
 // POST /api/orders - Public endpoint (from website contact form)
-router.post('/', async (req, res) => {
+router.post('/', orderLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
   try {
+    // Validate required fields
+    const name = sanitize(req.body.name, 100);
+    const email = sanitizeEmail(req.body.email);
+    const phone = sanitize(req.body.phone || '', 30);
+    const website = sanitize(req.body.website || '', 200);
+    const service = sanitize(req.body.service, 100);
+    const budget = sanitize(req.body.budget || '', 50);
+    const message = sanitize(req.body.message || '', 2000);
+
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis (min 2 caracteres)' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
+    if (!service) return res.status(400).json({ error: 'Service requis' });
+
     const order = await Order.create({
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone || '',
-      website: req.body.website || '',
-      service: req.body.service,
-      budget: req.body.budget || '',
-      message: req.body.message || '',
-      source: 'site'
+      name,
+      email,
+      phone,
+      website,
+      service,
+      budget,
+      message,
+      source: req.body.source === 'cta_form' ? 'cta_form' : 'site'
     });
 
     // Send email notification to admin
@@ -66,6 +84,40 @@ router.put('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!order) return res.status(404).json({ error: 'Commande non trouvee' });
+
+    // Auto-convert to client when status changes to "acceptee"
+    if (req.body.status === 'acceptee') {
+      let client = await Client.findOne({ email: order.email });
+      if (!client) {
+        client = await Client.create({
+          company: order.name,
+          contactName: order.name,
+          email: order.email,
+          phone: order.phone,
+          website: order.website,
+          status: 'actif',
+          source: 'site'
+        });
+      }
+
+      order.convertedToClient = client._id;
+      await order.save();
+
+      // Log activity
+      await Activity.create({
+        type: 'client_created',
+        description: `Client auto-cree depuis commande acceptee: ${order.name}`,
+        user: req.user._id,
+        relatedModel: 'Client',
+        relatedId: client._id
+      });
+
+      // Send welcome email
+      sendWelcome(client.email, client.contactName).catch(err => console.error('Welcome email error:', err));
+
+      return res.json({ order, client });
+    }
+
     res.json(order);
   } catch (err) {
     res.status(500).json({ error: err.message });

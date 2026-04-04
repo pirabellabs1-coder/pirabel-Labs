@@ -9,6 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+.timeline{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;}
+.timeline-title{font-family:var(--font-h);font-weight:700;font-size:0.9375rem;margin-bottom:1rem;}
+.timeline-item{display:flex;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--border);}
+.timeline-item:last-child{border-bottom:none;}
+.timeline-icon{width:32px;height:32px;background:rgba(255,85,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.timeline-icon .material-symbols-outlined{font-size:1rem;color:var(--accent);}
+.timeline-text{font-size:0.8125rem;color:var(--text);}
+.timeline-date{font-size:0.6875rem;color:var(--muted);margin-top:0.25rem;}
+.salary-alert-item{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--border);}
+.salary-alert-item:last-child{border-bottom:none;}
+.salary-alert-name{font-weight:600;font-size:0.8125rem;}
+.salary-alert-detail{font-size:0.75rem;color:var(--muted);}
+.salary-alert-amount{font-family:var(--font-h);font-weight:700;font-size:0.875rem;color:var(--danger);}
+.progress-bar{background:var(--bg);height:6px;width:100px;position:relative;}
+.progress-bar-fill{background:var(--accent);height:100%;transition:width 0.3s;}
+</style>
 </head>
 <body>
 <div class="app">
@@ -19,25 +36,22 @@
   <nav class="sidebar-nav">
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link active"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
-
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
-
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -60,10 +74,6 @@
       <div class="topbar-title">Tableau de bord</div>
     </div>
     <div class="topbar-actions">
-      <button class="topbar-btn" onclick="window.location.href='/orders'">
-        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
-        <span id="notif-count">0</span> nouvelles
-      </button>
       <button class="topbar-btn" onclick="logout()">
         <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
       </button>
@@ -99,14 +109,20 @@
       </div>
     </div>
 
+    <!-- Charts Row -->
     <div class="grid-2">
-      <!-- Revenue Chart -->
       <div class="chart-wrap">
         <div class="chart-title">Revenue mensuel (12 mois)</div>
         <canvas id="revenueChart" height="200"></canvas>
       </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Projets par service</div>
+        <canvas id="serviceChart" height="200"></canvas>
+      </div>
+    </div>
 
-      <!-- Recent Orders -->
+    <!-- Recent Orders & Recent Projects -->
+    <div class="grid-2">
       <div class="table-wrap">
         <div class="table-header">
           <div class="table-title">Dernieres demandes</div>
@@ -117,122 +133,223 @@
           <tbody id="recent-orders"></tbody>
         </table>
       </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Projets recents</div>
+          <a href="/projects" class="btn btn-sm btn-ghost">Voir tout</a>
+        </div>
+        <table>
+          <thead><tr><th>Projet</th><th>Client</th><th>Statut</th><th>Progression</th><th>MAJ</th></tr></thead>
+          <tbody id="recent-projects"></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Recent Projects -->
-    <div class="table-wrap">
-      <div class="table-header">
-        <div class="table-title">Projets recents</div>
-        <a href="/projects" class="btn btn-sm btn-ghost">Voir tout</a>
+    <!-- Activity Timeline & Salary Alerts -->
+    <div class="grid-2">
+      <div class="timeline">
+        <div class="timeline-title">Activité recente</div>
+        <div id="activity-list">
+          <div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Chargement...</div>
+        </div>
       </div>
-      <table>
-        <thead><tr><th>Projet</th><th>Client</th><th>Statut</th><th>Progression</th><th>Mise a jour</th></tr></thead>
-        <tbody id="recent-projects"></tbody>
-      </table>
+
+      <div class="timeline">
+        <div class="timeline-title"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);vertical-align:middle;">warning</span> Alertes salaires</div>
+        <div id="salary-alerts">
+          <div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Chargement...</div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
-
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-
-// Load user info
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
-
-// Status badge helper
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function statusBadge(status) {
-  const map = {
-    'nouvelle': 'badge-new', 'en_traitement': 'badge-pending', 'devis_envoye': 'badge-pending',
-    'acceptee': 'badge-active', 'refusee': 'badge-danger',
-    'en_attente': 'badge-pending', 'en_cours': 'badge-active', 'termine': 'badge-done',
-    'en_pause': 'badge-danger', 'annule': 'badge-danger'
-  };
-  const label = status.replace(/_/g, ' ');
-  return `<span class="badge ${map[status] || 'badge-done'}">${label}</span>`;
+  const map = {'nouvelle':'badge-new','en_traitement':'badge-pending','devis_envoye':'badge-pending','acceptee':'badge-active','refusee':'badge-danger','en_attente':'badge-pending','en_cours':'badge-active','termine':'badge-done','en_pause':'badge-danger','annule':'badge-danger','prospect':'badge-pending','actif':'badge-active','inactif':'badge-done','archive':'badge-danger','brouillon':'badge-done','envoyee':'badge-pending','payee':'badge-active','en_retard':'badge-danger','draft':'badge-pending','published':'badge-active','sent':'badge-active'};
+  return '<span class="badge '+(map[status]||'badge-done')+'">'+status.replace(/_/g,' ')+'</span>';
 }
-
-function formatDate(d) {
-  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
-}
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
 
 // Load dashboard stats
 async function loadStats() {
   try {
     const res = await fetch('/api/dashboard/stats', { headers });
-    const data = await res.json();
-    document.getElementById('stat-revenue').textContent = data.revenue.thisMonth.toLocaleString('fr-FR') + ' \u20AC';
-    document.getElementById('stat-clients').textContent = data.clients.active;
-    document.getElementById('stat-projects').textContent = data.projects.active;
-    document.getElementById('stat-orders').textContent = data.orders.new;
-    document.getElementById('stat-employees').textContent = data.employees.total;
-    document.getElementById('stat-invoices').textContent = data.invoices.pending;
-    document.getElementById('badge-orders').textContent = data.orders.new;
-    document.getElementById('notif-count').textContent = data.orders.new;
-  } catch (e) { console.error(e); }
+    const result = await res.json();
+    if (!res.ok) { console.error(result.error || 'Erreur'); return; }
+    document.getElementById('stat-revenue').textContent = fmt(result.revenue?.thisMonth);
+    document.getElementById('stat-clients').textContent = result.clients?.active || 0;
+    document.getElementById('stat-projects').textContent = result.projects?.active || 0;
+    document.getElementById('stat-orders').textContent = result.orders?.new || 0;
+    document.getElementById('stat-employees').textContent = result.employees?.total || 0;
+    document.getElementById('stat-invoices').textContent = result.invoices?.pending || 0;
+  } catch (e) { console.error('Stats error:', e); }
 }
 
-// Load revenue chart
-async function loadChart() {
+// Revenue chart (bar — income vs expenses)
+let revenueChartInstance = null;
+async function loadRevenueChart() {
   try {
     const res = await fetch('/api/dashboard/revenue-chart', { headers });
     const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
 
-    new Chart(document.getElementById('revenueChart'), {
+    const ctx = document.getElementById('revenueChart');
+    if (revenueChartInstance) revenueChartInstance.destroy();
+    revenueChartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: data.map(d => d.month),
         datasets: [
-          { label: 'Revenue', data: data.map(d => d.income), backgroundColor: 'rgba(255, 85, 0, 0.6)', borderColor: '#FF5500', borderWidth: 1 },
-          { label: 'Depenses', data: data.map(d => d.expenses), backgroundColor: 'rgba(229, 226, 225, 0.1)', borderColor: 'rgba(229,226,225,0.3)', borderWidth: 1 }
+          {
+            label: 'Revenue',
+            data: data.map(d => d.income),
+            backgroundColor: 'rgba(255,85,0,0.6)',
+            borderColor: '#FF5500',
+            borderWidth: 1
+          },
+          {
+            label: 'Dépenses',
+            data: data.map(d => d.expenses),
+            backgroundColor: 'rgba(229,226,225,0.1)',
+            borderColor: 'rgba(229,226,225,0.3)',
+            borderWidth: 1
+          }
         ]
       },
       options: {
         responsive: true,
-        plugins: { legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } } },
+        plugins: {
+          legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } }
+        },
         scales: {
           x: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 } }, grid: { color: 'rgba(92,64,55,0.1)' } },
           y: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 }, callback: v => v.toLocaleString() + '\u20AC' }, grid: { color: 'rgba(92,64,55,0.1)' } }
         }
       }
     });
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error('Revenue chart error:', e); }
 }
 
-// Load recent data
+// Pie chart: projects by service
+let serviceChartInstance = null;
+async function loadServiceChart() {
+  try {
+    const res = await fetch('/api/dashboard/projects-by-service', { headers });
+    const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
+
+    const colors = ['#FF5500','#41e4c0','#ffb59c','#ffb4ab','rgba(229,226,225,0.5)','#ff7700','#5c4037','#e5e2e1'];
+    const ctx = document.getElementById('serviceChart');
+    if (serviceChartInstance) serviceChartInstance.destroy();
+    serviceChartInstance = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: data.map(d => d._id || d.service || 'Autre'),
+        datasets: [{
+          data: data.map(d => d.count),
+          backgroundColor: data.map((_, i) => colors[i % colors.length]),
+          borderColor: '#0e0e0e',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 }, padding: 12 }
+          }
+        }
+      }
+    });
+  } catch (e) { console.error('Service chart error:', e); }
+}
+
+// Recent orders & projects
 async function loadRecent() {
   try {
     const res = await fetch('/api/dashboard/recent', { headers });
     const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
 
     document.getElementById('recent-orders').innerHTML = (data.recentOrders || []).map(o =>
-      `<tr><td>${o.name}</td><td>${o.service}</td><td>${statusBadge(o.status)}</td><td>${formatDate(o.createdAt)}</td></tr>`
+      '<tr><td>'+o.name+'</td><td>'+o.service+'</td><td>'+statusBadge(o.status)+'</td><td>'+formatDate(o.createdAt)+'</td></tr>'
     ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucune demande</td></tr>';
 
     document.getElementById('recent-projects').innerHTML = (data.recentProjects || []).map(p =>
-      `<tr><td>${p.name}</td><td>${p.client?.company || '-'}</td><td>${statusBadge(p.status)}</td><td><div style="background:var(--bg);height:6px;width:100px;"><div style="background:var(--accent);height:100%;width:${p.progress}%;"></div></div></td><td>${formatDate(p.updatedAt)}</td></tr>`
+      '<tr><td>'+p.name+'</td><td>'+(p.client?.company || '-')+'</td><td>'+statusBadge(p.status)+'</td><td><div class="progress-bar"><div class="progress-bar-fill" style="width:'+(p.progress||0)+'%"></div></div></td><td>'+formatDate(p.updatedAt)+'</td></tr>'
     ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);">Aucun projet</td></tr>';
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error('Recent data error:', e); }
 }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+// Activity timeline
+async function loadActivity() {
+  try {
+    const res = await fetch('/api/dashboard/activity', { headers });
+    const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
+
+    const activities = Array.isArray(data) ? data : (data.activities || []);
+    if (activities.length === 0) {
+      document.getElementById('activity-list').innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Aucune activité recente</div>';
+      return;
+    }
+    document.getElementById('activity-list').innerHTML = activities.map(a => {
+      const iconMap = { 'order': 'inbox', 'project': 'folder', 'client': 'people', 'invoice': 'receipt_long', 'employee': 'badge', 'campaign': 'campaign' };
+      const icon = iconMap[a.type] || 'info';
+      return '<div class="timeline-item">' +
+        '<div class="timeline-icon"><span class="material-symbols-outlined">'+icon+'</span></div>' +
+        '<div><div class="timeline-text">'+a.message+'</div>' +
+        '<div class="timeline-date">'+formatDate(a.createdAt || a.date)+'</div></div>' +
+      '</div>';
+    }).join('');
+  } catch (e) { console.error('Activity error:', e); }
 }
 
-// Init
+// Salary alerts
+async function loadSalaryAlerts() {
+  try {
+    const res = await fetch('/api/employees/salary-alerts', { headers });
+    const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
+
+    const alerts = Array.isArray(data) ? data : (data.alerts || []);
+    if (alerts.length === 0) {
+      document.getElementById('salary-alerts').innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Aucune alerte</div>';
+      return;
+    }
+    document.getElementById('salary-alerts').innerHTML = alerts.map(a =>
+      '<div class="salary-alert-item">' +
+        '<div><div class="salary-alert-name">'+(a.name || a.employee?.name || '-')+'</div>' +
+        '<div class="salary-alert-detail">'+(a.reason || a.message || 'Alerte salaire')+'</div></div>' +
+        '<div class="salary-alert-amount">'+fmt(a.amount || a.salary)+'</div>' +
+      '</div>'
+    ).join('');
+  } catch (e) { console.error('Salary alerts error:', e); }
+}
+
+// Init all
 loadStats();
-loadChart();
+loadRevenueChart();
+loadServiceChart();
 loadRecent();
+loadActivity();
+loadSalaryAlerts();
 </script>
 </body>
 </html>

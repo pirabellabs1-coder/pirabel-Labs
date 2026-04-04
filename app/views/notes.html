@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;}
+.note-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;transition:border-color 0.2s;}
+.note-card:hover{border-color:rgba(255,85,0,0.3);}
+.note-card.resolved{opacity:0.6;}
+.note-card-header{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;}
+.note-card-priority{font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0.2rem 0.5rem;}
+.priority-basse{background:rgba(229,226,225,0.1);color:var(--muted);}
+.priority-normale{background:rgba(65,228,192,0.1);color:var(--teal);}
+.priority-haute{background:rgba(255,181,156,0.15);color:var(--warning);}
+.priority-urgente{background:rgba(255,180,171,0.15);color:var(--danger);}
+.note-card-content{font-size:0.8125rem;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+.note-card-meta{display:flex;align-items:center;gap:0.75rem;font-size:0.6875rem;color:var(--muted);flex-wrap:wrap;margin-top:auto;padding-top:0.5rem;border-top:1px solid var(--border);}
+.note-card-meta .material-symbols-outlined{font-size:0.875rem;}
+.note-card-actions{display:flex;gap:0.5rem;margin-left:auto;}
+.note-entity-badge{background:rgba(255,85,0,0.08);color:var(--accent);padding:0.15rem 0.5rem;font-size:0.6875rem;font-weight:600;}
+.note-resolved-badge{background:rgba(65,228,192,0.1);color:var(--teal);padding:0.15rem 0.5rem;font-size:0.6875rem;font-weight:600;display:flex;align-items:center;gap:0.25rem;}
+.filters-bar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.filters-bar select{background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/notes" class="sidebar-link active"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Notes</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter une note</button>
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Filters -->
+    <div class="filters-bar">
+      <select id="filter-subject" onchange="loadNotes()">
+        <option value="">Tous les sujets</option>
+        <option value="General">General</option>
+        <option value="Client">Client</option>
+        <option value="Projet">Projet</option>
+        <option value="Employee">Employee</option>
+        <option value="Order">Commande</option>
+      </select>
+      <select id="filter-priority" onchange="loadNotes()">
+        <option value="">Toutes priorites</option>
+        <option value="basse">Basse</option>
+        <option value="normale">Normale</option>
+        <option value="haute">Haute</option>
+        <option value="urgente">Urgente</option>
+      </select>
+    </div>
+
+    <!-- Notes grid -->
+    <div class="notes-grid" id="notes-grid">
+      <div style="text-align:center;color:var(--muted);padding:3rem 0;font-size:0.8125rem;grid-column:1/-1;">Chargement...</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Note Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="max-width:600px;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modal-title">Ajouter une note</div>
+    <form class="dash-form" id="note-form" onsubmit="saveNote(event)">
+      <input type="hidden" id="note-id">
+      <div class="form-group">
+        <label>Contenu *</label>
+        <textarea id="f-content" rows="5" required placeholder="Ecrivez votre note..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Sujet</label>
+          <select id="f-relatedModel" onchange="onSubjectChange()">
+            <option value="General">General</option>
+            <option value="Client">Client</option>
+            <option value="Projet">Projet</option>
+            <option value="Employee">Employee</option>
+            <option value="Order">Commande</option>
+          </select>
+        </div>
+        <div class="form-group" id="entity-group" style="display:none;">
+          <label>Entite liee</label>
+          <select id="f-relatedId">
+            <option value="">-- Selectionner --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Priorite</label>
+          <select id="f-priority">
+            <option value="basse">Basse</option>
+            <option value="normale" selected>Normale</option>
+            <option value="haute">Haute</option>
+            <option value="urgente">Urgente</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'; }
+
+function priorityClass(p) {
+  const map = { 'basse': 'priority-basse', 'normale': 'priority-normale', 'haute': 'priority-haute', 'urgente': 'priority-urgente' };
+  return map[p] || 'priority-normale';
+}
+
+function subjectIcon(s) {
+  const map = { 'General': 'note', 'Client': 'people', 'Projet': 'folder', 'Employee': 'badge', 'Order': 'inbox' };
+  return map[s] || 'sticky_note_2';
+}
+
+function subjectLabel(s) {
+  const map = { 'General': 'General', 'Client': 'Client', 'Projet': 'Projet', 'Employee': 'Employee', 'Order': 'Commande' };
+  return map[s] || s;
+}
+
+// Load notes
+async function loadNotes() {
+  try {
+    const subject = document.getElementById('filter-subject').value;
+    const priority = document.getElementById('filter-priority').value;
+    let url = '/api/notes?';
+    if (subject) url += 'relatedModel=' + encodeURIComponent(subject) + '&';
+    if (priority) url += 'priority=' + encodeURIComponent(priority);
+
+    const res = await fetch(url, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement notes', 'error'); return; }
+    const data = await res.json();
+    const notes = data.notes || data;
+
+    if (!notes.length) {
+      document.getElementById('notes-grid').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem 0;font-size:0.8125rem;grid-column:1/-1;">Aucune note trouvee</div>';
+      return;
+    }
+
+    document.getElementById('notes-grid').innerHTML = notes.map(n => {
+      const resolved = n.resolved ? ' resolved' : '';
+      const entityName = n.relatedEntity?.name || n.relatedEntity?.company || n.relatedEntity?.contactName || '';
+      return '<div class="note-card' + resolved + '">' +
+        '<div class="note-card-header">' +
+          '<span class="note-card-priority ' + priorityClass(n.priority) + '">' + (n.priority || 'normale') + '</span>' +
+          '<div class="note-card-actions">' +
+            (n.resolved
+              ? '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', false)" title="Marquer non resolu"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--teal);">check_circle</span></button>'
+              : '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', true)" title="Marquer resolu"><span class="material-symbols-outlined" style="font-size:0.875rem;">radio_button_unchecked</span></button>'
+            ) +
+            '<button class="btn btn-sm btn-ghost" onclick="editNote(\'' + n._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
+            '<button class="btn btn-sm btn-ghost" onclick="deleteNote(\'' + n._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--danger);">delete</span></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="note-card-content">' + escapeHtml(n.content) + '</div>' +
+        '<div class="note-card-meta">' +
+          '<span style="display:flex;align-items:center;gap:0.25rem;"><span class="material-symbols-outlined">' + subjectIcon(n.relatedModel) + '</span> ' + subjectLabel(n.relatedModel || 'General') + '</span>' +
+          (entityName ? '<span class="note-entity-badge">' + escapeHtml(entityName) + '</span>' : '') +
+          (n.resolved ? '<span class="note-resolved-badge"><span class="material-symbols-outlined" style="font-size:0.75rem;">check</span> Resolu</span>' : '') +
+          '<span style="margin-left:auto;">' + formatDate(n.createdAt) + '</span>' +
+          (n.author ? '<span>' + escapeHtml(n.author.name || n.author) + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch (e) { console.error('Notes error:', e); }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Subject change -> load related entities
+async function onSubjectChange() {
+  const subject = document.getElementById('f-relatedModel').value;
+  const entityGroup = document.getElementById('entity-group');
+  const entitySelect = document.getElementById('f-relatedId');
+
+  if (subject === 'General') {
+    entityGroup.style.display = 'none';
+    entitySelect.innerHTML = '<option value="">-- Selectionner --</option>';
+    return;
+  }
+
+  entityGroup.style.display = '';
+  entitySelect.innerHTML = '<option value="">Chargement...</option>';
+
+  let endpoint = '';
+  if (subject === 'Client') endpoint = '/api/clients';
+  else if (subject === 'Projet') endpoint = '/api/projects';
+  else if (subject === 'Employee') endpoint = '/api/employees';
+  else if (subject === 'Order') endpoint = '/api/orders';
+
+  if (!endpoint) {
+    entityGroup.style.display = 'none';
+    return;
+  }
+
+  try {
+    const res = await fetch(endpoint, { headers });
+    if (!res.ok) { entitySelect.innerHTML = '<option value="">Erreur</option>'; return; }
+    const data = await res.json();
+    const items = data.clients || data.projects || data.employees || data.orders || data;
+
+    entitySelect.innerHTML = '<option value="">-- Selectionner --</option>' +
+      items.map(item => {
+        const label = item.company || item.name || item.contactName || item.email || item._id;
+        return '<option value="' + item._id + '">' + escapeHtml(label) + '</option>';
+      }).join('');
+  } catch (e) {
+    entitySelect.innerHTML = '<option value="">Erreur chargement</option>';
+  }
+}
+
+// Open modal
+function openModal(note) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-title').textContent = note ? 'Modifier la note' : 'Ajouter une note';
+
+  if (note) {
+    document.getElementById('note-id').value = note._id;
+    document.getElementById('f-content').value = note.content || '';
+    document.getElementById('f-relatedModel').value = note.relatedModel || 'General';
+    document.getElementById('f-priority').value = note.priority || 'normale';
+    onSubjectChange().then(() => {
+      if (note.relatedId) {
+        document.getElementById('f-relatedId').value = note.relatedId;
+      }
+    });
+  } else {
+    document.getElementById('note-form').reset();
+    document.getElementById('note-id').value = '';
+    document.getElementById('f-relatedModel').value = 'General';
+    document.getElementById('entity-group').style.display = 'none';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// Save note
+async function saveNote(e) {
+  e.preventDefault();
+  const id = document.getElementById('note-id').value;
+  const body = {
+    content: document.getElementById('f-content').value,
+    relatedModel: document.getElementById('f-relatedModel').value,
+    relatedId: document.getElementById('f-relatedId').value || null,
+    priority: document.getElementById('f-priority').value
+  };
+
+  try {
+    let res;
+    if (id) {
+      res = await fetch('/api/notes/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
+    } else {
+      res = await fetch('/api/notes', { method: 'POST', headers, body: JSON.stringify(body) });
+    }
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur sauvegarde note', 'error'); return; }
+    closeModal();
+    loadNotes();
+  } catch (e) {
+    console.error('Save note error:', e);
+    toast('Erreur lors de la sauvegarde', 'error');
+  }
+}
+
+// Edit note
+async function editNote(id) {
+  try {
+    const res = await fetch('/api/notes/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement note', 'error'); return; }
+    const note = await res.json();
+    openModal(note);
+  } catch (e) { console.error('Edit note error:', e); }
+}
+
+// Toggle resolved
+async function toggleResolved(id, resolved) {
+  try {
+    const res = await fetch('/api/notes/' + id, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ resolved: resolved })
+    });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur', 'error'); return; }
+    loadNotes();
+  } catch (e) { console.error('Toggle error:', e); }
+}
+
+// Delete note
+async function deleteNote(id) {
+  if (!confirm('Supprimer cette note ?')) return;
+  try {
+    const res = await fetch('/api/notes/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur suppression', 'error'); return; }
+    loadNotes();
+  } catch (e) { console.error('Delete note error:', e); }
+}
+
+// Init
+loadNotes();
+</script>
+</body>
+</html>

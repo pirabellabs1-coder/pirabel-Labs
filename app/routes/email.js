@@ -4,7 +4,8 @@ const Campaign = require('../models/Campaign');
 const Subscriber = require('../models/Subscriber');
 const Client = require('../models/Client');
 const { auth, adminOnly } = require('../middleware/auth');
-const { sendEmail, emailTemplate } = require('../config/email');
+const { sendEmail, masterTemplate } = require('../config/email');
+const { rateLimit, sanitize, sanitizeEmail, isValidEmail, honeypotCheck, limitBody } = require('../middleware/security');
 
 // GET /api/campaigns - List campaigns
 router.get('/', auth, adminOnly, async (req, res) => {
@@ -70,7 +71,13 @@ router.post('/:id/send', auth, adminOnly, async (req, res) => {
     let sentCount = 0;
     for (const r of recipients) {
       const personalizedContent = campaign.content.replace(/\{\{name\}\}/g, r.name || 'Cher client');
-      const success = await sendEmail(r.email, campaign.subject, campaign.name, personalizedContent);
+      const html = masterTemplate({
+        title: campaign.subject,
+        body: `<div style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${personalizedContent}</div>`,
+        cta: 'Visiter notre site',
+        ctaUrl: process.env.SITE_URL || 'https://pirabellabs.com'
+      });
+      const success = await sendEmail(r.email, campaign.subject, html);
       if (success) sentCount++;
     }
 
@@ -110,10 +117,19 @@ router.get('/subscribers', auth, adminOnly, async (req, res) => {
   }
 });
 
+// Rate limit: max 5 subscribe requests per 15 minutes per IP
+const subscribeLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Trop de requetes. Reessayez plus tard.', keyPrefix: 'sub' });
+
 // POST /api/campaigns/subscribers (public - for guide downloads, newsletter)
-router.post('/subscribers', async (req, res) => {
+router.post('/subscribers', subscribeLimiter, honeypotCheck('website_url'), limitBody(6), async (req, res) => {
   try {
-    const { email, name, type = 'newsletter', source = 'site' } = req.body;
+    const email = sanitizeEmail(req.body.email);
+    const name = sanitize(req.body.name || '', 100);
+    const type = ['newsletter', 'guide_download', 'prospect'].includes(req.body.type) ? req.body.type : 'newsletter';
+    const source = sanitize(req.body.source || 'site', 50);
+
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
+
     await Subscriber.findOneAndUpdate(
       { email },
       { email, name, type, source, isActive: true },

@@ -4,10 +4,11 @@ const crypto = require('crypto');
 const Employee = require('../models/Employee');
 const User = require('../models/User');
 const Activity = require('../models/Activity');
-const { auth, adminOnly } = require('../middleware/auth');
+const { auth, adminOnly, adminOrEmployee } = require('../middleware/auth');
 const { sendEmail, masterTemplate } = require('../config/email');
 
-router.get('/', auth, async (req, res) => {
+// GET /api/employees
+router.get('/', auth, adminOrEmployee, async (req, res) => {
   try {
     const { department, status } = req.query;
     const query = {};
@@ -20,7 +21,8 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.get('/:id', auth, async (req, res) => {
+// GET /api/employees/:id
+router.get('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id).populate('user', 'name email lastLogin');
     if (!employee) return res.status(404).json({ error: 'Employe non trouve' });
@@ -30,6 +32,7 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+// POST /api/employees
 router.post('/', auth, adminOnly, async (req, res) => {
   try {
     const employee = await Employee.create(req.body);
@@ -48,14 +51,12 @@ router.post('/', auth, adminOnly, async (req, res) => {
   }
 });
 
-// POST /api/employees/:id/invite - Send invitation email
+// POST /api/employees/:id/invite — Send invitation email with credentials
 router.post('/:id/invite', auth, adminOnly, async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employe non trouve' });
 
-    // Generate invite token
-    const inviteToken = crypto.randomBytes(32).toString('hex');
     const SITE = process.env.SITE_URL || 'https://pirabellabs.com';
 
     // Check if user already exists
@@ -66,7 +67,7 @@ router.post('/:id/invite', auth, adminOnly, async (req, res) => {
       return res.json({ success: true, message: 'Employe deja inscrit, compte lie' });
     }
 
-    // Create user account with temporary password (employee must change it)
+    // Create user account
     const tempPassword = crypto.randomBytes(8).toString('hex');
     const user = await User.create({
       name: employee.name,
@@ -83,22 +84,22 @@ router.post('/:id/invite', auth, adminOnly, async (req, res) => {
     const html = masterTemplate({
       headerType: 'hero',
       preheader: 'Vous etes invite a rejoindre Pirabel Labs',
-      title: `Bienvenue dans l'\u00e9quipe !`,
+      title: 'Bienvenue dans l\'équipe !',
       subtitle: 'Pirabel Labs',
       body: `
         <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${employee.name},</p>
-        <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Vous avez \u00e9t\u00e9 ajout\u00e9(e) \u00e0 l'\u00e9quipe Pirabel Labs en tant que <strong style="color:#e5e2e1;">${employee.role}</strong> dans le d\u00e9partement <strong style="color:#e5e2e1;">${employee.department}</strong>.</p>
+        <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Vous avez ete ajoute(e) a l'équipe Pirabel Labs en tant que <strong style="color:#e5e2e1;">${employee.role}</strong> dans le departement <strong style="color:#e5e2e1;">${employee.department}</strong>.</p>
         <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Voici vos identifiants de connexion :</p>
         <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:20px;margin:20px 0;">
           <table width="100%">
             <tr><td style="padding:6px 0;color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Email</td><td style="padding:6px 0;text-align:right;font-weight:600;">${employee.email}</td></tr>
-            <tr><td style="padding:6px 0;color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mot de passe temporaire</td><td style="padding:6px 0;text-align:right;font-weight:600;color:#FF5500;">${tempPassword}</td></tr>
+            <tr><td style="padding:6px 0;color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mot de passe</td><td style="padding:6px 0;text-align:right;font-weight:600;color:#FF5500;">${tempPassword}</td></tr>
           </table>
         </div>
-        <p style="font-size:14px;color:rgba(255,180,171,0.8);"><strong>Important :</strong> Changez votre mot de passe apr\u00e8s votre premi\u00e8re connexion.</p>
+        <p style="font-size:14px;color:rgba(255,180,171,0.8);"><strong>Important :</strong> Changez votre mot de passe apres votre première connexion.</p>
       `,
       cta: 'Se connecter',
-      ctaUrl: `${SITE}:3000/pirabel-admin-7x9k2m`
+      ctaUrl: `${SITE}/pirabel-admin-7x9k2m`
     });
 
     await sendEmail(employee.email, 'Bienvenue chez Pirabel Labs — Vos identifiants', html);
@@ -117,6 +118,7 @@ router.post('/:id/invite', auth, adminOnly, async (req, res) => {
   }
 });
 
+// PUT /api/employees/:id
 router.put('/:id', auth, adminOnly, async (req, res) => {
   try {
     const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -127,6 +129,7 @@ router.put('/:id', auth, adminOnly, async (req, res) => {
   }
 });
 
+// DELETE /api/employees/:id
 router.delete('/:id', auth, adminOnly, async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
@@ -135,6 +138,70 @@ router.delete('/:id', auth, adminOnly, async (req, res) => {
     }
     await Employee.findByIdAndUpdate(req.params.id, { status: 'inactif' });
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/employees/:id/salary — Record salary payment
+router.post('/:id/salary', auth, adminOnly, async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    if (!employee) return res.status(404).json({ error: 'Employe non trouve' });
+
+    const { month, amount, notes } = req.body;
+    employee.salaryPayments.push({
+      amount: amount || employee.salary,
+      month,
+      paidDate: Date.now(),
+      status: 'paye',
+      notes: notes || ''
+    });
+    await employee.save();
+
+    // Record as expense
+    const Revenue = require('../models/Revenue');
+    await Revenue.create({
+      type: 'expense',
+      category: 'salaire',
+      description: `Salaire ${month} — ${employee.name}`,
+      amount: amount || employee.salary,
+      date: Date.now()
+    });
+
+    res.json({ success: true, employee });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/employees/salary-alerts — Get salary payment alerts
+router.get('/salary-alerts', auth, adminOnly, async (req, res) => {
+  try {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const dayOfMonth = now.getDate();
+
+    const employees = await Employee.find({ status: 'actif', salary: { $gt: 0 } });
+    const alerts = [];
+
+    employees.forEach(emp => {
+      const paidThisMonth = emp.salaryPayments.some(p => p.month === currentMonth && p.status === 'paye');
+      if (!paidThisMonth && dayOfMonth >= (emp.payDay || 5)) {
+        const daysLate = dayOfMonth - (emp.payDay || 5);
+        alerts.push({
+          employeeId: emp._id,
+          name: emp.name,
+          salary: emp.salary,
+          payDay: emp.payDay || 5,
+          daysLate,
+          month: currentMonth,
+          severity: daysLate > 5 ? 'haute' : daysLate > 2 ? 'moyenne' : 'basse'
+        });
+      }
+    });
+
+    res.json({ alerts });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

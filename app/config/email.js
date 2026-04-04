@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const FROM = () => `"Pirabel Labs" <${process.env.FROM_EMAIL || process.env.ADMIN_EMAIL || 'contact@pirabellabs.com'}>`;
+const FROM = () => `"Pirabel Labs" <${process.env.FROM_EMAIL || 'pirabellabs@gmail.com'}>`;
 const SITE = () => process.env.SITE_URL || 'https://pirabellabs.com';
 
 // ========================================
@@ -115,7 +115,7 @@ ${ctaHTML}
       <p style="margin:0;font-size:11px;color:rgba(229,226,225,0.25);line-height:1.6;">
         &copy; 2026 Pirabel Labs &mdash; Agence Marketing Digital Premium<br>
         Paris &bull; Cotonou &bull; Casablanca &bull; Dakar &bull; Montr&eacute;al<br>
-        <a href="mailto:contact@pirabellabs.com" style="color:rgba(229,226,225,0.3);">contact@pirabellabs.com</a>
+        <a href="mailto:pirabellabs@gmail.com" style="color:rgba(229,226,225,0.3);">pirabellabs@gmail.com</a>
       </p>
     </td></tr>
   </table>
@@ -340,7 +340,7 @@ async function sendOTP(email, code) {
 
 async function notifyNewOrder(order) {
   return sendEmail(
-    process.env.ADMIN_EMAIL || 'contact@pirabellabs.com',
+    process.env.ADMIN_EMAIL || 'pirabellabs@gmail.com',
     `Nouvelle demande : ${order.name} - ${order.service}`,
     newOrderEmail(order)
   );

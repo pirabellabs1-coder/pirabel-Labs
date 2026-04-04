@@ -2,12 +2,19 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { auth, adminOrEmployee } = require('../middleware/auth');
 
-// Configure storage
+// Use /tmp on Vercel (serverless), local uploads otherwise
+const uploadDir = process.env.VERCEL ? '/tmp/uploads' : path.join(__dirname, '..', 'public', 'uploads');
+
+// Ensure upload directory exists
+try { fs.mkdirSync(uploadDir, { recursive: true }); } catch(e) {}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'public', 'uploads'));
+    try { fs.mkdirSync(uploadDir, { recursive: true }); } catch(e) {}
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -25,21 +32,55 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB max
+  limits: { fileSize: 10 * 1024 * 1024 }
 });
 
-// POST /api/upload - Upload single image
+// POST /api/upload — Upload and return base64 data URL (works on Vercel)
 router.post('/', auth, adminOrEmployee, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Aucun fichier envoye' });
-  const url = `/uploads/${req.file.filename}`;
-  res.json({ success: true, url, filename: req.file.filename, size: req.file.size });
+
+  try {
+    // Read the file and return as base64 data URL
+    const filePath = path.join(uploadDir, req.file.filename);
+    const fileBuffer = fs.readFileSync(filePath);
+    const base64 = fileBuffer.toString('base64');
+    const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
+
+    // Clean up temp file
+    try { fs.unlinkSync(filePath); } catch(e) {}
+
+    res.json({
+      success: true,
+      url: dataUrl,
+      filename: req.file.filename,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// POST /api/upload/multiple - Upload multiple files
+// POST /api/upload/multiple
 router.post('/multiple', auth, adminOrEmployee, upload.array('files', 10), (req, res) => {
   if (!req.files || req.files.length === 0) return res.status(400).json({ error: 'Aucun fichier envoye' });
-  const files = req.files.map(f => ({ url: `/uploads/${f.filename}`, filename: f.filename, size: f.size }));
-  res.json({ success: true, files });
+
+  try {
+    const files = req.files.map(f => {
+      const filePath = path.join(uploadDir, f.filename);
+      const fileBuffer = fs.readFileSync(filePath);
+      const base64 = fileBuffer.toString('base64');
+      try { fs.unlinkSync(filePath); } catch(e) {}
+      return {
+        url: `data:${f.mimetype};base64,${base64}`,
+        filename: f.filename,
+        size: f.size
+      };
+    });
+    res.json({ success: true, files });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

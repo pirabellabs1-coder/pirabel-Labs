@@ -10,7 +10,10 @@
 <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -23,62 +26,104 @@
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link active"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
 
+<!-- Main Content -->
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
-      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
       <div class="topbar-title">Gestion Articles</div>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvel article</button>
-      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvel article
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
     </div>
   </header>
 
   <div class="content">
     <!-- Stats -->
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">article</span> Total articles</div><div class="stat-card-value" id="stat-total">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">check_circle</span> Publies</div><div class="stat-card-value" id="stat-published">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">drafts</span> Brouillons</div><div class="stat-card-value" id="stat-drafts">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--purple);">visibility</span> Vues totales</div><div class="stat-card-value" id="stat-views">0</div></div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">article</span> Total articles</div>
+        <div class="stat-card-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">check_circle</span> Publies</div>
+        <div class="stat-card-value" id="stat-published">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">drafts</span> Brouillons</div>
+        <div class="stat-card-value" id="stat-drafts">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--purple, #bb86fc);">visibility</span> Vues totales</div>
+        <div class="stat-card-value" id="stat-views">0</div>
+      </div>
     </div>
 
-    <!-- Articles table -->
+    <!-- Articles Table -->
     <div class="table-wrap">
       <div class="table-header"><div class="table-title">Articles</div></div>
       <table>
-        <thead><tr><th>Titre</th><th>Categorie</th><th>Statut</th><th>Vues</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody id="articles-list"></tbody>
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Categorie</th>
+            <th>Statut</th>
+            <th>Vues</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="articles-body"></tbody>
       </table>
     </div>
   </div>
 </div>
 </div>
 
-<!-- Modal: Create/Edit Article -->
+<!-- Add/Edit Article Modal (full width) -->
 <div class="modal-overlay" id="modal">
-  <div class="modal" style="max-width:720px;">
-    <button class="modal-close" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+  <div class="modal" style="max-width:900px;width:95%;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-title" id="modal-title">Nouvel Article</div>
-    <form id="article-form" class="dash-form">
+    <form class="dash-form" id="article-form" onsubmit="event.preventDefault();">
       <input type="hidden" id="a-id">
-      <div class="form-group"><label>Titre</label><input type="text" id="a-title" required placeholder="Titre de l'article" oninput="generateSlug()"></div>
-      <div class="form-group"><label>Slug</label><input type="text" id="a-slug" required placeholder="titre-de-larticle"></div>
+
+      <!-- Row 1: Title + Slug -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group"><label>Categorie</label>
+        <div class="form-group">
+          <label>Titre *</label>
+          <input type="text" id="a-title" required placeholder="Titre de l'article" oninput="generateSlug()">
+        </div>
+        <div class="form-group">
+          <label>Slug</label>
+          <input type="text" id="a-slug" placeholder="titre-de-larticle">
+        </div>
+      </div>
+
+      <!-- Row 2: Category + Tags -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Categorie</label>
           <select id="a-category">
             <option value="general">General</option>
             <option value="seo">SEO</option>
@@ -93,17 +138,67 @@
             <option value="cro">CRO</option>
           </select>
         </div>
-        <div class="form-group"><label>Tags (separes par virgule)</label><input type="text" id="a-tags" placeholder="marketing, seo, tips"></div>
+        <div class="form-group">
+          <label>Tags (separes par virgule)</label>
+          <input type="text" id="a-tags" placeholder="marketing, seo, tips">
+        </div>
       </div>
-      <div class="form-group"><label>Extrait</label><textarea id="a-excerpt" rows="2" placeholder="Bref resume de l'article..."></textarea></div>
-      <div class="form-group"><label>Contenu (HTML)</label><textarea id="a-content" rows="15" placeholder="<p>Votre contenu ici...</p>"></textarea></div>
+
+      <!-- Excerpt -->
+      <div class="form-group">
+        <label>Extrait</label>
+        <textarea id="a-excerpt" rows="2" placeholder="Bref resume de l'article..."></textarea>
+      </div>
+
+      <!-- Row 3: Meta title + Meta description -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group"><label>Meta Title</label><input type="text" id="a-metaTitle" placeholder="Titre SEO (max 60 car.)"></div>
-        <div class="form-group"><label>Meta Description</label><input type="text" id="a-metaDesc" placeholder="Description SEO (max 160 car.)"></div>
+        <div class="form-group">
+          <label>Meta Title</label>
+          <input type="text" id="a-metaTitle" placeholder="Titre SEO (max 60 car.)">
+        </div>
+        <div class="form-group">
+          <label>Meta Description</label>
+          <input type="text" id="a-metaDesc" placeholder="Description SEO (max 160 car.)">
+        </div>
       </div>
-      <div style="display:flex;gap:1rem;justify-content:flex-end;">
-        <button type="button" class="btn btn-ghost" onclick="saveArticle('draft')">Sauver brouillon</button>
-        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">Publier</button>
+
+      <!-- Cover Image -->
+      <div class="form-group">
+        <label>Image de couverture</label>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <input type="file" id="a-coverFile" accept="image/*" onchange="uploadCoverImage()" style="background:var(--card);border:1px solid var(--border);padding:0.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);flex:1;">
+          <input type="hidden" id="a-coverImage">
+        </div>
+        <div id="cover-preview" style="margin-top:0.75rem;display:none;">
+          <img id="cover-img" src="" alt="Cover preview" style="max-width:100%;max-height:200px;border-radius:6px;border:1px solid var(--border);">
+        </div>
+      </div>
+
+      <!-- Content Editor -->
+      <div class="form-group">
+        <label>Contenu (HTML)</label>
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('b')" title="Gras"><strong>B</strong></button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('i')" title="Italique"><em>I</em></button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('h2')" title="Titre H2">H2</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('h3')" title="Titre H3">H3</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('p')" title="Paragraphe">P</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="insertLink()" title="Lien">Link</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="uploadContentImage()" title="Image">Img</button>
+        </div>
+        <textarea id="a-content" rows="18" placeholder="<p>Votre contenu ici...</p>" style="font-family:'Space Grotesk',monospace;font-size:0.8125rem;line-height:1.6;"></textarea>
+        <input type="file" id="content-img-input" accept="image/*" style="display:none;" onchange="handleContentImageUpload()">
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:1rem;margin-top:1rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+        <button type="button" class="btn btn-ghost" onclick="saveArticle('draft')">
+          <span class="material-symbols-outlined" style="font-size:1rem;">drafts</span> Brouillon
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
+          <span class="material-symbols-outlined" style="font-size:1rem;">publish</span> Publier
+        </button>
       </div>
     </form>
   </div>
@@ -111,41 +206,87 @@
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
-
-let editingId = null;
-
-function logout() { localStorage.clear(); window.location.href = '/'; }
-
-function openModal(article) {
-  editingId = null;
-  document.getElementById('article-form').reset();
-  document.getElementById('a-id').value = '';
-  document.getElementById('modal-title').textContent = 'Nouvel Article';
-  if (article) {
-    editingId = article._id;
-    document.getElementById('a-id').value = article._id;
-    document.getElementById('modal-title').textContent = 'Modifier Article';
-    document.getElementById('a-title').value = article.title || '';
-    document.getElementById('a-slug').value = article.slug || '';
-    document.getElementById('a-category').value = article.category || 'general';
-    document.getElementById('a-tags').value = (article.tags || []).join(', ');
-    document.getElementById('a-excerpt').value = article.excerpt || '';
-    document.getElementById('a-content').value = article.content || '';
-    document.getElementById('a-metaTitle').value = article.metaTitle || '';
-    document.getElementById('a-metaDesc').value = article.metaDescription || '';
-  }
-  document.getElementById('modal').classList.add('open');
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
 }
 
-function closeModal() { document.getElementById('modal').classList.remove('open'); editingId = null; }
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+
+function formatDate(d) {
+  if (!d) return '-';
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function statusBadge(s) {
+  const map = { draft: 'badge-pending', published: 'badge-active' };
+  const labels = { draft: 'Brouillon', published: 'Publie' };
+  return '<span class="badge ' + (map[s] || 'badge-done') + '">' + (labels[s] || s) + '</span>';
+}
+
+function categoryBadge(cat) {
+  const colors = {
+    seo: 'badge-accent', web: 'badge-active', ia: 'badge-purple',
+    ads: 'badge-danger', social: 'badge-new', design: 'badge-pending',
+    video: 'badge-done', email: 'badge-active', content: 'badge-new',
+    cro: 'badge-accent', general: 'badge-done'
+  };
+  return '<span class="badge ' + (colors[cat] || 'badge-done') + '">' + cat + '</span>';
+}
+
+let articlesCache = [];
+
+async function loadArticles() {
+  try {
+    const res = await fetch('/api/articles/admin', { headers });
+    if (!res.ok) { toast('Erreur chargement des articles', 'error'); return; }
+    const data = await res.json();
+    articlesCache = data.articles || data || [];
+
+    document.getElementById('stat-total').textContent = articlesCache.length;
+    document.getElementById('stat-published').textContent = articlesCache.filter(a => a.status === 'published').length;
+    document.getElementById('stat-drafts').textContent = articlesCache.filter(a => a.status === 'draft').length;
+    document.getElementById('stat-views').textContent = articlesCache.reduce(function(sum, a) { return sum + (a.views || 0); }, 0);
+
+    document.getElementById('articles-body').innerHTML = articlesCache.map(function(a) {
+      const safeJson = JSON.stringify(a).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return '<tr>' +
+        '<td>' +
+          '<div>' + (a.title || '-') + '</div>' +
+          (a.status === 'published' && a.slug ? '<a href="/blog/' + a.slug + '" target="_blank" style="font-size:0.7rem;color:var(--accent);text-decoration:none;">Voir article</a>' : '') +
+        '</td>' +
+        '<td>' + categoryBadge(a.category) + '</td>' +
+        '<td>' + statusBadge(a.status) + '</td>' +
+        '<td>' + (a.views || 0) + '</td>' +
+        '<td>' + formatDate(a.createdAt) + '</td>' +
+        '<td>' +
+          '<button class="btn btn-sm btn-ghost" onclick="editArticle(\'' + a._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
+          (a.status === 'draft' ? '<button class="btn btn-sm btn-primary" onclick="publishArticle(\'' + a._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">publish</span></button>' : '') +
+          (a.status === 'published' ? '<button class="btn btn-sm btn-ghost" onclick="unpublishArticle(\'' + a._id + '\')" title="Repasser en brouillon"><span class="material-symbols-outlined" style="font-size:0.875rem;">unpublished</span></button>' : '') +
+          '<button class="btn btn-sm btn-ghost" onclick="deleteArticle(\'' + a._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>' +
+        '</td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucun article</td></tr>';
+  } catch (e) { console.error(e); }
+}
 
 function generateSlug() {
-  const title = document.getElementById('a-title').value;
-  const slug = title
+  var title = document.getElementById('a-title').value;
+  var slug = title
     .toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s-]/g, '')
@@ -155,99 +296,186 @@ function generateSlug() {
   document.getElementById('a-slug').value = slug;
 }
 
-function categoryBadge(cat) {
-  const colors = {
-    seo: 'badge-accent',
-    web: 'badge-active',
-    ia: 'badge-purple',
-    ads: 'badge-danger',
-    social: 'badge-new',
-    design: 'badge-pending',
-    video: 'badge-done',
-    email: 'badge-active',
-    content: 'badge-new',
-    cro: 'badge-accent',
-    general: 'badge-done'
-  };
-  return `<span class="badge ${colors[cat] || 'badge-done'}">${cat}</span>`;
+function openModal(article) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('article-form').reset();
+  document.getElementById('a-id').value = '';
+  document.getElementById('a-coverImage').value = '';
+  document.getElementById('cover-preview').style.display = 'none';
+  document.getElementById('modal-title').textContent = 'Nouvel Article';
+
+  if (article) {
+    document.getElementById('modal-title').textContent = 'Modifier l\'article';
+    document.getElementById('a-id').value = article._id;
+    document.getElementById('a-title').value = article.title || '';
+    document.getElementById('a-slug').value = article.slug || '';
+    document.getElementById('a-category').value = article.category || 'general';
+    document.getElementById('a-tags').value = (article.tags || []).join(', ');
+    document.getElementById('a-excerpt').value = article.excerpt || '';
+    document.getElementById('a-metaTitle').value = article.metaTitle || '';
+    document.getElementById('a-metaDesc').value = article.metaDescription || '';
+    document.getElementById('a-content').value = article.content || '';
+    if (article.coverImage) {
+      document.getElementById('a-coverImage').value = article.coverImage;
+      document.getElementById('cover-img').src = article.coverImage;
+      document.getElementById('cover-preview').style.display = 'block';
+    }
+  }
 }
 
-function statusBadge(s) {
-  const map = { draft: 'badge-pending', published: 'badge-active' };
-  return `<span class="badge ${map[s] || 'badge-done'}">${s === 'draft' ? 'Brouillon' : 'Publie'}</span>`;
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
 }
 
-function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }); }
-
-async function loadArticles() {
-  try {
-    const res = await fetch('/api/articles/admin', { headers });
-    const data = await res.json();
-    const list = data.articles || [];
-    document.getElementById('stat-total').textContent = list.length;
-    document.getElementById('stat-published').textContent = list.filter(a => a.status === 'published').length;
-    document.getElementById('stat-drafts').textContent = list.filter(a => a.status === 'draft').length;
-    document.getElementById('stat-views').textContent = list.reduce((sum, a) => sum + (a.views || 0), 0);
-    document.getElementById('articles-list').innerHTML = list.map(a =>
-      `<tr>
-        <td>${a.title}</td>
-        <td>${categoryBadge(a.category)}</td>
-        <td>${statusBadge(a.status)}</td>
-        <td>${a.views || 0}</td>
-        <td>${formatDate(a.createdAt)}</td>
-        <td>
-          <button class="btn btn-sm btn-ghost" onclick='editArticle(${JSON.stringify(a).replace(/'/g, "&#39;")})'><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
-          ${a.status === 'draft' ? `<button class="btn btn-sm btn-primary" onclick="publishArticle('${a._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">publish</span></button>` : ''}
-          <button class="btn btn-sm btn-ghost" onclick="deleteArticle('${a._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
-        </td>
-      </tr>`
-    ).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucun article</td></tr>';
-  } catch (e) { console.error(e); }
+async function uploadFile(file) {
+  var formData = new FormData();
+  formData.append('file', file);
+  var res = await fetch('/api/upload', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: formData
+  });
+  if (!res.ok) { toast('Erreur upload image', 'error'); return null; }
+  var data = await res.json();
+  return data.url;
 }
 
-function editArticle(article) {
-  openModal(article);
+async function uploadCoverImage() {
+  var fileInput = document.getElementById('a-coverFile');
+  if (!fileInput.files || !fileInput.files[0]) return;
+  var url = await uploadFile(fileInput.files[0]);
+  if (url) {
+    document.getElementById('a-coverImage').value = url;
+    document.getElementById('cover-img').src = url;
+    document.getElementById('cover-preview').style.display = 'block';
+  }
+}
+
+function uploadContentImage() {
+  document.getElementById('content-img-input').click();
+}
+
+async function handleContentImageUpload() {
+  var fileInput = document.getElementById('content-img-input');
+  if (!fileInput.files || !fileInput.files[0]) return;
+  var url = await uploadFile(fileInput.files[0]);
+  if (url) {
+    var textarea = document.getElementById('a-content');
+    var imgTag = '<img src="' + url + '" alt="" style="max-width:100%;">';
+    var pos = textarea.selectionStart;
+    var text = textarea.value;
+    textarea.value = text.substring(0, pos) + imgTag + text.substring(pos);
+  }
+  fileInput.value = '';
+}
+
+function insertTag(tag) {
+  var textarea = document.getElementById('a-content');
+  var start = textarea.selectionStart;
+  var end = textarea.selectionEnd;
+  var text = textarea.value;
+  var selected = text.substring(start, end);
+  var replacement = '<' + tag + '>' + (selected || '') + '</' + tag + '>';
+  textarea.value = text.substring(0, start) + replacement + text.substring(end);
+  textarea.focus();
+  textarea.selectionStart = start + tag.length + 2;
+  textarea.selectionEnd = start + tag.length + 2 + (selected || '').length;
+}
+
+function insertLink() {
+  var url = prompt('URL du lien:');
+  if (!url) return;
+  var textarea = document.getElementById('a-content');
+  var start = textarea.selectionStart;
+  var end = textarea.selectionEnd;
+  var text = textarea.value;
+  var selected = text.substring(start, end) || 'Texte du lien';
+  var link = '<a href="' + url + '">' + selected + '</a>';
+  textarea.value = text.substring(0, start) + link + text.substring(end);
+  textarea.focus();
 }
 
 async function saveArticle(status) {
-  const body = {
-    title: document.getElementById('a-title').value,
-    slug: document.getElementById('a-slug').value,
+  var title = document.getElementById('a-title').value;
+  if (!title) { toast('Le titre est obligatoire', 'error'); return; }
+
+  var id = document.getElementById('a-id').value;
+  var body = {
+    title: title,
+    slug: document.getElementById('a-slug').value || undefined,
     category: document.getElementById('a-category').value,
-    tags: document.getElementById('a-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    tags: document.getElementById('a-tags').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean),
     excerpt: document.getElementById('a-excerpt').value,
-    content: document.getElementById('a-content').value,
     metaTitle: document.getElementById('a-metaTitle').value,
     metaDescription: document.getElementById('a-metaDesc').value,
+    content: document.getElementById('a-content').value,
+    coverImage: document.getElementById('a-coverImage').value || undefined,
     status: status
   };
+
   try {
-    if (editingId) {
-      await fetch(`/api/articles/${editingId}`, { method: 'PUT', headers, body: JSON.stringify(body) });
+    var res;
+    if (id) {
+      res = await fetch('/api/articles/' + id, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
     } else {
-      await fetch('/api/articles', { method: 'POST', headers, body: JSON.stringify(body) });
+      res = await fetch('/api/articles', { method: 'POST', headers: headers, body: JSON.stringify(body) });
     }
+    if (!res.ok) { toast('Erreur lors de la sauvegarde', 'error'); return; }
     closeModal();
     loadArticles();
-  } catch (e) { console.error(e); alert('Erreur lors de la sauvegarde'); }
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
+}
+
+async function editArticle(id) {
+  var article = articlesCache.find(function(a) { return a._id === id; });
+  if (article) {
+    openModal(article);
+  } else {
+    try {
+      var res = await fetch('/api/articles/admin', { headers: headers });
+      if (!res.ok) return;
+      var data = await res.json();
+      var list = data.articles || data || [];
+      var found = list.find(function(a) { return a._id === id; });
+      if (found) openModal(found);
+    } catch (e) { console.error(e); }
+  }
 }
 
 async function publishArticle(id) {
   if (!confirm('Publier cet article ?')) return;
   try {
-    await fetch(`/api/articles/${id}`, { method: 'PUT', headers, body: JSON.stringify({ status: 'published' }) });
+    var res = await fetch('/api/articles/' + id, { method: 'PUT', headers: headers, body: JSON.stringify({ status: 'published' }) });
+    if (!res.ok) { toast('Erreur publication', 'error'); return; }
     loadArticles();
-  } catch (e) { alert('Erreur'); }
+  } catch (e) { console.error(e); toast('Erreur', 'error'); }
+}
+
+async function unpublishArticle(id) {
+  if (!confirm('Repasser cet article en brouillon ?')) return;
+  try {
+    var res = await fetch('/api/articles/' + id, { method: 'PUT', headers: headers, body: JSON.stringify({ status: 'draft' }) });
+    if (!res.ok) { toast('Erreur', 'error'); return; }
+    loadArticles();
+  } catch (e) { console.error(e); toast('Erreur', 'error'); }
 }
 
 async function deleteArticle(id) {
-  if (!confirm('Supprimer cet article ?')) return;
+  if (!confirm('Supprimer cet article ? Cette action est irreversible.')) return;
   try {
-    await fetch(`/api/articles/${id}`, { method: 'DELETE', headers });
+    var res = await fetch('/api/articles/' + id, { method: 'DELETE', headers: headers });
+    if (!res.ok) { toast('Erreur suppression', 'error'); return; }
     loadArticles();
-  } catch (e) { alert('Erreur'); }
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
 }
 
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/pirabel-admin-7x9k2m';
+}
+
+// Init
 loadArticles();
 </script>
 </body>

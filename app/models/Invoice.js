@@ -25,7 +25,7 @@ const invoiceSchema = new mongoose.Schema({
 });
 
 // Auto-generate invoice number
-invoiceSchema.pre('save', async function(next) {
+invoiceSchema.pre('validate', async function(next) {
   if (!this.invoiceNumber) {
     const count = await this.constructor.countDocuments();
     const year = new Date().getFullYear();

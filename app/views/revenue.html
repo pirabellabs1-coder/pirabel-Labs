@@ -11,7 +11,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -21,120 +24,448 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link active"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Syst&egrave;me</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
+
+<!-- Main Content -->
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
-      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
-      <div class="topbar-title">Revenue & Comptabilit&eacute;</div>
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Revenue &amp; Comptabilit&eacute;</div>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter entr&eacute;e</button>
-      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter
+      </button>
+      <button class="topbar-btn" onclick="exportCSV()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">download</span> Exporter CSV
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
     </div>
   </header>
+
   <div class="content">
-    <!-- Stats -->
+    <!-- Summary Cards -->
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">account_balance</span> CA Total</div><div class="stat-card-value accent" id="s-total">0 &euro;</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">calendar_month</span> CA ce mois</div><div class="stat-card-value" id="s-month">0 &euro;</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">trending_down</span> D&eacute;penses mois</div><div class="stat-card-value" id="s-expenses">0 &euro;</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--success);">savings</span> R&eacute;sultat net</div><div class="stat-card-value" id="s-net">0 &euro;</div></div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">trending_up</span> Total revenus</div>
+        <div class="stat-card-value accent" id="s-income">0 &euro;</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">trending_down</span> Total d&eacute;penses</div>
+        <div class="stat-card-value" id="s-expenses">0 &euro;</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--success);">savings</span> B&eacute;n&eacute;fice net</div>
+        <div class="stat-card-value" id="s-net">0 &euro;</div>
+      </div>
     </div>
+
+    <!-- Filters -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-type" onchange="loadRevenue()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;min-width:140px;">
+        <option value="">Tous les types</option>
+        <option value="income">Revenus</option>
+        <option value="expense">D&eacute;penses</option>
+      </select>
+      <select id="filter-category" onchange="loadRevenue()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;min-width:140px;">
+        <option value="">Toutes cat&eacute;gories</option>
+        <option value="facture">Facture</option>
+        <option value="service">Service</option>
+        <option value="salaire">Salaire</option>
+        <option value="loyer">Loyer</option>
+        <option value="logiciel">Logiciel</option>
+        <option value="marketing">Marketing</option>
+        <option value="autre">Autre</option>
+      </select>
+      <input type="date" id="startDate" onchange="loadRevenue()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
+      <input type="date" id="endDate" onchange="loadRevenue()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
+    </div>
+
+    <!-- Revenue Table -->
+    <div class="table-wrap">
+      <div class="table-header"><div class="table-title">Entr&eacute;es financ&egrave;res</div></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Cat&eacute;gorie</th>
+            <th>Description</th>
+            <th>Montant</th>
+            <th>Client</th>
+            <th>Projet</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="revenue-body"></tbody>
+      </table>
+    </div>
+
     <!-- Chart -->
-    <div class="chart-wrap"><div class="chart-title">Revenue vs D&eacute;penses (12 mois)</div><canvas id="revenueChart" height="250"></canvas></div>
+    <div class="chart-wrap" style="margin-top:2rem;">
+      <div class="chart-title">Revenue vs D&eacute;penses (12 mois)</div>
+      <canvas id="revenueChart" height="280"></canvas>
+    </div>
   </div>
 </div>
 </div>
 
+<!-- Add/Edit Modal -->
 <div class="modal-overlay" id="modal">
-  <div class="modal">
+  <div class="modal" style="max-width:600px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <div class="modal-title">Ajouter une entr&eacute;e</div>
-    <form id="entry-form" class="dash-form">
-      <div class="form-group"><label>Type *</label>
-        <select id="f-type" required><option value="income">Revenu</option><option value="expense">D&eacute;pense</option></select>
+    <div class="modal-title" id="modal-title">Ajouter une entr&eacute;e</div>
+    <form class="dash-form" id="revenue-form" onsubmit="saveEntry(event)">
+      <input type="hidden" id="entry-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Type *</label>
+          <select id="f-type" required>
+            <option value="income">Revenu</option>
+            <option value="expense">D&eacute;pense</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cat&eacute;gorie *</label>
+          <select id="f-category" required>
+            <option value="facture">Facture</option>
+            <option value="service">Service</option>
+            <option value="salaire">Salaire</option>
+            <option value="loyer">Loyer</option>
+            <option value="logiciel">Logiciel</option>
+            <option value="marketing">Marketing</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Description *</label>
+          <input type="text" id="f-description" required placeholder="Description de l'entree">
+        </div>
+        <div class="form-group">
+          <label>Montant (&euro;) *</label>
+          <input type="number" id="f-amount" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="form-group">
+          <label>Client</label>
+          <select id="f-client">
+            <option value="">-- Aucun --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Projet</label>
+          <select id="f-project">
+            <option value="">-- Aucun --</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group"><label>Cat&eacute;gorie *</label>
-        <select id="f-category"><option>Facture</option><option>Abonnement</option><option>Salaire</option><option>Outil/Logiciel</option><option>Publicit&eacute;</option><option>Bureau</option><option>Autre</option></select>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
       </div>
-      <div class="form-group"><label>Description *</label><input type="text" id="f-desc" required></div>
-      <div class="form-group"><label>Montant (&euro;) *</label><input type="number" id="f-amount" step="0.01" required></div>
-      <div class="form-group"><label>Date</label><input type="date" id="f-date"></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">Enregistrer</button>
     </form>
   </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
-const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
-function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 
-async function loadStats() {
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+
+function fmt(n) { return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC'; }
+
+function formatDate(d) {
+  if (!d) return '-';
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function statusBadge(status) {
+  const map = { 'income': 'badge-active', 'expense': 'badge-danger' };
+  const labels = { 'income': 'Revenu', 'expense': 'D\u00e9pense' };
+  return '<span class="badge ' + (map[status] || 'badge-done') + '">' + (labels[status] || status) + '</span>';
+}
+
+let revenueChart = null;
+let clientsCache = [];
+let projectsCache = [];
+
+async function loadClients() {
   try {
-    const res = await fetch('/api/dashboard/stats', { headers });
-    const d = await res.json();
-    document.getElementById('s-total').textContent = fmt(d.revenue?.total);
-    document.getElementById('s-month').textContent = fmt(d.revenue?.thisMonth);
-  } catch(e) {}
+    const res = await fetch('/api/clients', { headers });
+    if (!res.ok) return;
+    const data = await res.json();
+    clientsCache = data.clients || data || [];
+    const sel = document.getElementById('f-client');
+    sel.innerHTML = '<option value="">-- Aucun --</option>';
+    clientsCache.forEach(c => {
+      sel.innerHTML += '<option value="' + c._id + '">' + (c.company || c.contactName) + '</option>';
+    });
+  } catch (e) { console.error('Clients load error:', e); }
+}
+
+async function loadProjects() {
+  try {
+    const res = await fetch('/api/projects', { headers });
+    if (!res.ok) return;
+    const data = await res.json();
+    projectsCache = data.projects || data || [];
+    const sel = document.getElementById('f-project');
+    sel.innerHTML = '<option value="">-- Aucun --</option>';
+    projectsCache.forEach(p => {
+      sel.innerHTML += '<option value="' + p._id + '">' + p.name + '</option>';
+    });
+  } catch (e) { console.error('Projects load error:', e); }
+}
+
+function getClientName(id) {
+  if (!id) return '-';
+  const c = clientsCache.find(x => x._id === id);
+  return c ? (c.company || c.contactName) : '-';
+}
+
+function getProjectName(id) {
+  if (!id) return '-';
+  const p = projectsCache.find(x => x._id === id);
+  return p ? p.name : '-';
+}
+
+function buildQuery() {
+  const type = document.getElementById('filter-type').value;
+  const category = document.getElementById('filter-category').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const params = new URLSearchParams();
+  if (type) params.append('type', type);
+  if (category) params.append('category', category);
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+  return params.toString();
+}
+
+async function loadRevenue() {
+  try {
+    const query = buildQuery();
+    const res = await fetch('/api/revenue' + (query ? '?' + query : ''), { headers });
+    if (!res.ok) { toast('Erreur chargement des donnees', 'error'); return; }
+    const data = await res.json();
+    const entries = data.entries || data || [];
+
+    // Calculate summaries
+    let totalIncome = 0, totalExpense = 0;
+    entries.forEach(e => {
+      if (e.type === 'income') totalIncome += (e.amount || 0);
+      else totalExpense += (e.amount || 0);
+    });
+    document.getElementById('s-income').textContent = fmt(totalIncome);
+    document.getElementById('s-expenses').textContent = fmt(totalExpense);
+    document.getElementById('s-net').textContent = fmt(totalIncome - totalExpense);
+    document.getElementById('s-net').style.color = (totalIncome - totalExpense) >= 0 ? 'var(--success, #4caf50)' : 'var(--danger, #ff4444)';
+
+    document.getElementById('revenue-body').innerHTML = entries.map(e =>
+      '<tr>' +
+        '<td>' + formatDate(e.date || e.createdAt) + '</td>' +
+        '<td>' + statusBadge(e.type) + '</td>' +
+        '<td>' + (e.category || '-') + '</td>' +
+        '<td>' + (e.description || '-') + '</td>' +
+        '<td style="font-weight:600;color:' + (e.type === 'income' ? 'var(--success, #4caf50)' : 'var(--danger, #ff4444)') + ';">' + (e.type === 'income' ? '+' : '-') + fmt(e.amount) + '</td>' +
+        '<td>' + getClientName(e.client) + '</td>' +
+        '<td>' + getProjectName(e.project) + '</td>' +
+        '<td>' +
+          '<button class="btn btn-sm btn-ghost" onclick="editEntry(\'' + e._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
+          '<button class="btn btn-sm btn-ghost" onclick="deleteEntry(\'' + e._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>' +
+        '</td>' +
+      '</tr>'
+    ).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);">Aucune entree trouvee</td></tr>';
+  } catch (e) { console.error(e); }
 }
 
 async function loadChart() {
   try {
     const res = await fetch('/api/dashboard/revenue-chart', { headers });
+    if (!res.ok) return;
     const data = await res.json();
-    new Chart(document.getElementById('revenueChart'), {
-      type: 'bar',
+    const ctx = document.getElementById('revenueChart');
+    if (revenueChart) revenueChart.destroy();
+    revenueChart = new Chart(ctx, {
+      type: 'line',
       data: {
         labels: data.map(d => d.month),
         datasets: [
-          { label: 'Revenue', data: data.map(d => d.income), backgroundColor: 'rgba(255,85,0,0.6)', borderColor: '#FF5500', borderWidth: 1 },
-          { label: 'D\u00e9penses', data: data.map(d => d.expenses), backgroundColor: 'rgba(255,180,171,0.3)', borderColor: '#ffb4ab', borderWidth: 1 }
+          {
+            label: 'Revenus',
+            data: data.map(d => d.income),
+            borderColor: '#FF5500',
+            backgroundColor: 'rgba(255,85,0,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#FF5500',
+            pointBorderColor: '#FF5500',
+            pointRadius: 4
+          },
+          {
+            label: 'D\u00e9penses',
+            data: data.map(d => d.expenses),
+            borderColor: '#ffb4ab',
+            backgroundColor: 'rgba(255,180,171,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#ffb4ab',
+            pointBorderColor: '#ffb4ab',
+            pointRadius: 4
+          }
         ]
       },
       options: {
         responsive: true,
-        plugins: { legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('fr-FR') + ' \u20AC'; }
+            }
+          }
+        },
         scales: {
           x: { ticks: { color: 'rgba(229,226,225,0.4)' }, grid: { color: 'rgba(92,64,55,0.1)' } },
-          y: { ticks: { color: 'rgba(229,226,225,0.4)', callback: v => v.toLocaleString()+'€' }, grid: { color: 'rgba(92,64,55,0.1)' } }
+          y: {
+            ticks: { color: 'rgba(229,226,225,0.4)', callback: function(v) { return v.toLocaleString() + '\u20AC'; } },
+            grid: { color: 'rgba(92,64,55,0.1)' }
+          }
         }
       }
     });
-  } catch(e) {}
+  } catch (e) { console.error('Chart error:', e); }
 }
 
-function openModal() { document.getElementById('modal').classList.add('open'); }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function openModal(entry) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('revenue-form').reset();
+  document.getElementById('entry-id').value = '';
+  document.getElementById('modal-title').textContent = 'Ajouter une entr\u00e9e';
+  if (entry) {
+    document.getElementById('modal-title').textContent = 'Modifier l\'entr\u00e9e';
+    document.getElementById('entry-id').value = entry._id;
+    document.getElementById('f-type').value = entry.type || 'income';
+    document.getElementById('f-category').value = entry.category || 'autre';
+    document.getElementById('f-description').value = entry.description || '';
+    document.getElementById('f-amount').value = entry.amount || '';
+    document.getElementById('f-date').value = entry.date ? entry.date.substring(0, 10) : '';
+    document.getElementById('f-client').value = entry.client || '';
+    document.getElementById('f-project').value = entry.project || '';
+  }
+}
 
-document.getElementById('entry-form').addEventListener('submit', async (e) => {
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function saveEntry(e) {
   e.preventDefault();
-  // Revenue entries go to a simple endpoint - using dashboard for now
-  // In production, add a /api/revenue route
-  closeModal();
-  alert('Entr\u00e9e enregistr\u00e9e (endpoint /api/revenue \u00e0 impl\u00e9menter)');
-});
+  const id = document.getElementById('entry-id').value;
+  const body = {
+    type: document.getElementById('f-type').value,
+    category: document.getElementById('f-category').value,
+    description: document.getElementById('f-description').value,
+    amount: parseFloat(document.getElementById('f-amount').value),
+    date: document.getElementById('f-date').value || undefined,
+    client: document.getElementById('f-client').value || undefined,
+    project: document.getElementById('f-project').value || undefined
+  };
+  try {
+    let res;
+    if (id) {
+      res = await fetch('/api/revenue/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
+    } else {
+      res = await fetch('/api/revenue', { method: 'POST', headers, body: JSON.stringify(body) });
+    }
+    if (!res.ok) { toast('Erreur lors de l\'enregistrement', 'error'); return; }
+    closeModal();
+    loadRevenue();
+    loadChart();
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
+}
 
-function logout() { localStorage.clear(); window.location.href = '/login'; }
-loadStats(); loadChart();
+async function editEntry(id) {
+  try {
+    const res = await fetch('/api/revenue?_id=' + id, { headers });
+    if (!res.ok) { toast('Erreur chargement', 'error'); return; }
+    const data = await res.json();
+    const entries = data.entries || data || [];
+    const entry = Array.isArray(entries) ? entries.find(e => e._id === id) : data;
+    if (entry) openModal(entry);
+  } catch (e) { console.error(e); toast('Erreur', 'error'); }
+}
+
+async function deleteEntry(id) {
+  if (!confirm('Supprimer cette entree ?')) return;
+  try {
+    const res = await fetch('/api/revenue/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { toast('Erreur suppression', 'error'); return; }
+    loadRevenue();
+    loadChart();
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
+}
+
+function exportCSV() {
+  const query = buildQuery();
+  const url = '/api/revenue/export' + (query ? '?' + query : '');
+  window.open(url, '_blank');
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/pirabel-admin-7x9k2m';
+}
+
+// Init
+loadClients();
+loadProjects();
+loadRevenue();
+loadChart();
 </script>
 </body>
 </html>

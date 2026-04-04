@@ -77,8 +77,9 @@ router.post('/:id/update', auth, adminOrEmployee, async (req, res) => {
   try {
     const project = await Project.findById(req.params.id).populate('client');
     if (!project) return res.status(404).json({ error: 'Projet non trouve' });
-    project.updates.push({ message: req.body.message, author: req.user._id });
-    if (req.body.progress) project.progress = req.body.progress;
+    const updateMsg = req.body.message || req.body.content || '';
+    project.updates.push({ message: updateMsg, author: req.user._id });
+    if (req.body.progress !== undefined) project.progress = req.body.progress;
     if (req.body.status) project.status = req.body.status;
     await project.save();
 
@@ -88,7 +89,7 @@ router.post('/:id/update', auth, adminOrEmployee, async (req, res) => {
         project.client.email,
         project.client.contactName || project.client.company,
         project.name,
-        req.body.message,
+        updateMsg,
         project.progress
       ).catch(() => {});
     }
@@ -96,7 +97,7 @@ router.post('/:id/update', auth, adminOrEmployee, async (req, res) => {
     // Log activity
     await Activity.create({
       type: 'project_updated',
-      description: `Projet "${project.name}" mis a jour : ${req.body.message.substring(0, 100)}`,
+      description: `Projet "${project.name}" mis a jour : ${(updateMsg || '').substring(0, 100)}`,
       user: req.user._id,
       relatedModel: 'Project',
       relatedId: project._id

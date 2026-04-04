@@ -12,9 +12,10 @@ const clientSchema = new mongoose.Schema({
   country: { type: String, default: '' },
   sector: { type: String, default: '' },
   status: { type: String, enum: ['prospect', 'actif', 'inactif', 'archive'], default: 'prospect' },
-  source: { type: String, enum: ['site', 'referral', 'linkedin', 'ads', 'autre'], default: 'site' },
+  source: { type: String, default: 'site' },
   notes: { type: String, default: '' },
   totalRevenue: { type: Number, default: 0 },
+  totalExpenses: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

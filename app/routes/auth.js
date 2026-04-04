@@ -13,7 +13,9 @@ router.post('/register', async (req, res) => {
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ error: 'Cet email est deja utilise' });
 
-    const user = await User.create({ name, email, password, role: role || 'client' });
+    // Only allow 'client' role via public registration — admin/employee must be created internally
+    const safeRole = (role === 'admin' || role === 'employee') ? 'client' : (role || 'client');
+    const user = await User.create({ name, email, password, role: safeRole });
     const token = user.generateToken();
 
     res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
@@ -118,7 +120,7 @@ router.post('/register-with-otp', async (req, res) => {
       expiresAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } // Within 10 min of verification
     });
 
-    if (!otp) return res.status(400).json({ error: 'Veuillez verifier votre email d\'abord' });
+    if (!otp) return res.status(400).json({ error: 'Veuillez vérifier votre email d\'abord' });
 
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ error: 'Cet email est deja utilise' });

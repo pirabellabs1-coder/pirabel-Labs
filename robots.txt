@@ -1,6 +1,25 @@
 User-agent: *
 Allow: /
-Sitemap: https://pirabel-labs.com/sitemap.xml
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /portal-login
+Disallow: /dashboard
+Disallow: /clients
+Disallow: /projects
+Disallow: /orders
+Disallow: /employees
+Disallow: /invoices
+Disallow: /revenue
+Disallow: /settings
+Disallow: /campaigns
+Disallow: /messages
+Disallow: /articles
+Disallow: /analytics
+Disallow: /portal
+Disallow: /notes
+Disallow: /prospects
+
+Sitemap: https://pirabellabs.com/sitemap.xml
 
 User-agent: GPTBot
 Disallow: /

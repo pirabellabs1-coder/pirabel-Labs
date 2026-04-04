@@ -8,8 +8,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.toolbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;transition:border-color 0.3s;}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
+.toolbar input{flex:1;min-width:200px;}
+.toolbar select{appearance:none;min-width:140px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5e2e1' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
+.toolbar select option{background:var(--card);color:var(--text);}
+.bulk-bar{display:none;align-items:center;gap:1rem;padding:0.75rem 1.5rem;background:rgba(255,85,0,0.05);border:1px solid var(--border);margin-bottom:1rem;font-size:0.8125rem;}
+.bulk-bar.visible{display:flex;}
+.bulk-bar span{color:var(--accent);font-weight:600;}
+.action-btns{display:flex;gap:0.25rem;}
+.action-btns button{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:0.35rem 0.5rem;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.action-btns button:hover{border-color:var(--accent);color:var(--accent);}
+.action-btns button .material-symbols-outlined{font-size:0.875rem;}
+input[type="checkbox"]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
+</style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
 
 <!-- Sidebar -->
@@ -18,25 +35,22 @@
   <nav class="sidebar-nav">
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
-
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link active"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
-
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -59,10 +73,6 @@
       <div class="topbar-title">Gestion Clients</div>
     </div>
     <div class="topbar-actions">
-      <button class="topbar-btn" onclick="window.location.href='/orders'">
-        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
-        <span id="notif-count">0</span> nouvelles
-      </button>
       <button class="topbar-btn" onclick="logout()">
         <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
       </button>
@@ -71,9 +81,9 @@
 
   <div class="content">
     <!-- Toolbar -->
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-      <input type="text" id="search-input" placeholder="Rechercher un client..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;flex:1;min-width:200px;" oninput="loadClients()">
-      <select id="filter-status" onchange="loadClients()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:140px;">
+    <div class="toolbar">
+      <input type="text" id="search-input" placeholder="Rechercher un client..." oninput="loadClients()">
+      <select id="filter-status" onchange="loadClients()">
         <option value="">Tous les statuts</option>
         <option value="prospect">Prospect</option>
         <option value="actif">Actif</option>
@@ -85,15 +95,24 @@
       </button>
     </div>
 
+    <!-- Bulk Action Bar -->
+    <div class="bulk-bar" id="bulk-bar">
+      <span id="bulk-count">0</span> client(s) selectionne(s)
+      <button class="btn btn-sm btn-primary" onclick="openBulkEmailModal()">
+        <span class="material-symbols-outlined" style="font-size:0.875rem;">mail</span> Envoyer a la selection
+      </button>
+      <button class="btn btn-sm btn-ghost" onclick="clearSelection()">Annuler</button>
+    </div>
+
     <!-- Table -->
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
+            <th><input type="checkbox" id="select-all" onchange="toggleSelectAll(this)"></th>
             <th>Entreprise</th>
             <th>Contact</th>
             <th>Email</th>
-            <th>Ville</th>
             <th>Statut</th>
             <th>Actions</th>
           </tr>
@@ -105,7 +124,7 @@
 </div>
 </div>
 
-<!-- Modal -->
+<!-- Add/Edit Client Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal" style="max-width:600px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -160,7 +179,14 @@
         </div>
         <div class="form-group">
           <label>Source</label>
-          <input type="text" id="f-source" placeholder="Site web, recommandation...">
+          <select id="f-source">
+            <option value="">-- Choisir --</option>
+            <option value="site">Site web</option>
+            <option value="referral">Recommandation</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="ads">Publicité</option>
+            <option value="autre">Autre</option>
+          </select>
         </div>
       </div>
       <div class="form-group">
@@ -175,24 +201,127 @@
   </div>
 </div>
 
+<!-- Email Modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+    <div class="modal-title" id="email-modal-title">Envoyer un email</div>
+    <form class="dash-form" id="email-form" onsubmit="sendEmail(event)">
+      <input type="hidden" id="email-client-id">
+      <div class="form-group">
+        <label>Sujet *</label>
+        <input type="text" id="email-subject" required>
+      </div>
+      <div class="form-group">
+        <label>Contenu *</label>
+        <textarea id="email-content" rows="6" required></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:0.875rem;">send</span> Envoyer
+        </button>
+        <button type="button" class="btn btn-ghost" onclick="closeEmailModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bulk Email Modal -->
+<div class="modal-overlay" id="bulk-email-modal">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeBulkEmailModal()">&times;</button>
+    <div class="modal-title">Email groupé</div>
+    <div id="bulk-email-recipients" style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem;"></div>
+    <form class="dash-form" id="bulk-email-form" onsubmit="sendBulkEmail(event)">
+      <div class="form-group">
+        <label>Sujet *</label>
+        <input type="text" id="bulk-email-subject" required>
+      </div>
+      <div class="form-group">
+        <label>Contenu *</label>
+        <textarea id="bulk-email-content" rows="6" required></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:0.875rem;">send</span> Envoyer a tous
+        </button>
+        <button type="button" class="btn btn-ghost" onclick="closeBulkEmailModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
-
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
-
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function statusBadge(status) {
-  const map = { 'prospect': 'badge-pending', 'actif': 'badge-active', 'inactif': 'badge-done', 'archive': 'badge-danger' };
-  return `<span class="badge ${map[status] || 'badge-done'}">${status}</span>`;
+  const map = {'nouvelle':'badge-new','en_traitement':'badge-pending','devis_envoye':'badge-pending','acceptee':'badge-active','refusee':'badge-danger','en_attente':'badge-pending','en_cours':'badge-active','termine':'badge-done','en_pause':'badge-danger','annule':'badge-danger','prospect':'badge-pending','actif':'badge-active','inactif':'badge-done','archive':'badge-danger','brouillon':'badge-done','envoyee':'badge-pending','payee':'badge-active','en_retard':'badge-danger','draft':'badge-pending','published':'badge-active','sent':'badge-active'};
+  return '<span class="badge '+(map[status]||'badge-done')+'">'+status.replace(/_/g,' ')+'</span>';
+}
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
+
+// Selection state
+let selectedIds = [];
+let clientsCache = [];
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  document.getElementById('bulk-count').textContent = selectedIds.length;
+  if (selectedIds.length > 0) {
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
 }
 
+function toggleSelect(id) {
+  const idx = selectedIds.indexOf(id);
+  if (idx > -1) {
+    selectedIds.splice(idx, 1);
+  } else {
+    selectedIds.push(id);
+  }
+  updateBulkBar();
+}
+
+function toggleSelectAll(el) {
+  if (el.checked) {
+    selectedIds = clientsCache.map(c => c._id);
+    document.querySelectorAll('.client-checkbox').forEach(cb => cb.checked = true);
+  } else {
+    selectedIds = [];
+    document.querySelectorAll('.client-checkbox').forEach(cb => cb.checked = false);
+  }
+  updateBulkBar();
+}
+
+function clearSelection() {
+  selectedIds = [];
+  document.getElementById('select-all').checked = false;
+  document.querySelectorAll('.client-checkbox').forEach(cb => cb.checked = false);
+  updateBulkBar();
+}
+
+// Load clients
 async function loadClients() {
   try {
     const search = document.getElementById('search-input').value;
@@ -202,23 +331,32 @@ async function loadClients() {
     if (status) url += 'status=' + encodeURIComponent(status);
     const res = await fetch(url, { headers });
     const data = await res.json();
+    if (!res.ok) { toast(data.error || 'Erreur', 'error'); return; }
     const clients = data.clients || data;
-    document.getElementById('clients-body').innerHTML = clients.map(c => `
-      <tr>
-        <td>${c.company}</td>
-        <td>${c.contactName}</td>
-        <td>${c.email}</td>
-        <td>${c.city || '-'}</td>
-        <td>${statusBadge(c.status)}</td>
-        <td>
-          <button class="btn btn-sm btn-ghost" onclick="editClient('${c._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
-          <button class="btn btn-sm btn-ghost" onclick="viewClient('${c._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
-        </td>
-      </tr>
-    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucun client trouve</td></tr>';
-  } catch (e) { console.error(e); }
+    clientsCache = clients;
+    document.getElementById('select-all').checked = false;
+    selectedIds = [];
+    updateBulkBar();
+
+    document.getElementById('clients-body').innerHTML = clients.map(c =>
+      '<tr>' +
+        '<td><input type="checkbox" class="client-checkbox" value="'+c._id+'" onchange="toggleSelect(\''+c._id+'\')" '+(selectedIds.includes(c._id)?'checked':'')+'></td>' +
+        '<td>'+c.company+'</td>' +
+        '<td>'+c.contactName+'</td>' +
+        '<td>'+c.email+'</td>' +
+        '<td>'+statusBadge(c.status)+'</td>' +
+        '<td><div class="action-btns">' +
+          '<button title="Modifier" onclick="editClient(\''+c._id+'\')"><span class="material-symbols-outlined">edit</span></button>' +
+          '<button title="Créer identifiants" onclick="createCredentials(\''+c._id+'\')"><span class="material-symbols-outlined">key</span></button>' +
+          '<button title="Envoyer email" onclick="openEmailModal(\''+c._id+'\')"><span class="material-symbols-outlined">mail</span></button>' +
+          '<button title="Supprimer" onclick="deleteClient(\''+c._id+'\',\''+c.company.replace(/'/g,"\\'")+ '\')"><span class="material-symbols-outlined">delete</span></button>' +
+        '</div></td>' +
+      '</tr>'
+    ).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucun client trouve</td></tr>';
+  } catch (e) { console.error('Load clients error:', e); }
 }
 
+// Open add/edit modal
 function openModal(client) {
   document.getElementById('modal').classList.add('open');
   document.getElementById('modal-title').textContent = client ? 'Modifier le client' : 'Ajouter un client';
@@ -246,6 +384,7 @@ function closeModal() {
   document.getElementById('modal').classList.remove('open');
 }
 
+// Save client (create or update)
 async function saveClient(e) {
   e.preventDefault();
   const id = document.getElementById('client-id').value;
@@ -264,34 +403,115 @@ async function saveClient(e) {
     notes: document.getElementById('f-notes').value
   };
   try {
-    if (id) {
-      await fetch('/api/clients/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
-    } else {
-      await fetch('/api/clients', { method: 'POST', headers, body: JSON.stringify(body) });
-    }
+    const url = id ? '/api/clients/' + id : '/api/clients';
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, headers, body: JSON.stringify(body) });
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
     closeModal();
     loadClients();
-  } catch (e) { console.error(e); }
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
+// Edit client
 async function editClient(id) {
   try {
     const res = await fetch('/api/clients/' + id, { headers });
-    const client = await res.json();
-    openModal(client);
-  } catch (e) { console.error(e); }
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
+    openModal(result);
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
-function viewClient(id) {
-  editClient(id);
+// Delete client
+async function deleteClient(id, name) {
+  if (!confirm('Supprimer le client "' + name + '" ? Cette action est irreversible.')) return;
+  try {
+    const res = await fetch('/api/clients/' + id, { method: 'DELETE', headers });
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
+    loadClients();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+// Create credentials
+async function createCredentials(id) {
+  if (!confirm('Créer des identifiants de connexion pour ce client ?')) return;
+  try {
+    const res = await fetch('/api/clients/' + id + '/credentials', { method: 'POST', headers });
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
+    const client = clientsCache.find(c => c._id === id);
+    if (result.alreadyExists) {
+      toast('Compte deja existant, lie au client', 'info');
+    } else {
+      toast('Identifiants créés et envoyes a ' + (client ? client.email : 'client'), 'success');
+    }
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
+// Email modal (single client)
+function openEmailModal(clientId) {
+  document.getElementById('email-modal').classList.add('open');
+  document.getElementById('email-client-id').value = clientId;
+  document.getElementById('email-form').reset();
+  const client = clientsCache.find(c => c._id === clientId);
+  document.getElementById('email-modal-title').textContent = client
+    ? 'Email a ' + client.company
+    : 'Envoyer un email';
+}
+
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+
+async function sendEmail(e) {
+  e.preventDefault();
+  const clientId = document.getElementById('email-client-id').value;
+  const body = {
+    subject: document.getElementById('email-subject').value,
+    content: document.getElementById('email-content').value
+  };
+  try {
+    const res = await fetch('/api/clients/' + clientId + '/email', { method: 'POST', headers, body: JSON.stringify(body) });
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
+    toast('Email envoye avec succes !', 'success');
+    closeEmailModal();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// Bulk email modal
+function openBulkEmailModal() {
+  if (selectedIds.length === 0) { toast('Selectionnez au moins un client.', 'error'); return; }
+  const names = clientsCache.filter(c => selectedIds.includes(c._id)).map(c => c.company);
+  document.getElementById('bulk-email-recipients').textContent = 'Destinataires: ' + names.join(', ');
+  document.getElementById('bulk-email-form').reset();
+  document.getElementById('bulk-email-modal').classList.add('open');
+}
+
+function closeBulkEmailModal() {
+  document.getElementById('bulk-email-modal').classList.remove('open');
+}
+
+async function sendBulkEmail(e) {
+  e.preventDefault();
+  const body = {
+    clientIds: selectedIds,
+    subject: document.getElementById('bulk-email-subject').value,
+    content: document.getElementById('bulk-email-content').value
+  };
+  try {
+    const res = await fetch('/api/clients/bulk-email', { method: 'POST', headers, body: JSON.stringify(body) });
+    const result = await res.json();
+    if (!res.ok) { toast(result.error || 'Erreur', 'error'); return; }
+    toast('Email envoye a ' + selectedIds.length + ' client(s) !', 'success');
+    closeBulkEmailModal();
+    clearSelection();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// Init
 loadClients();
 </script>
 </body>

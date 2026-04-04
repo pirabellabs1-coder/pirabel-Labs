@@ -17,13 +17,13 @@
 .realtime-meta{margin-left:auto;font-size:0.6875rem;color:var(--muted);}
 .period-select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;font-size:0.75rem;font-family:var(--font-h);font-weight:600;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5e2e1' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.75rem center;padding-right:2rem;}
 .period-select option{background:var(--card);color:var(--text);}
-.stat-grid-8{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:2rem;}
-.stat-card-sub{font-size:0.6875rem;color:var(--muted);margin-top:0.25rem;}
-@media(max-width:900px){.stat-grid-8{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.stat-grid-8{grid-template-columns:1fr;}}
+.stat-grid-6{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem;}
+@media(max-width:900px){.stat-grid-6{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.stat-grid-6{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
 
 <aside class="sidebar" id="sidebar">
@@ -38,16 +38,17 @@
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
-    <a href="/analytics" class="sidebar-link active"><span class="material-symbols-outlined">query_stats</span> Analytics</a>
+    <a href="/analytics" class="sidebar-link active"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
 
 <div class="main">
@@ -75,39 +76,31 @@
       <div class="realtime-meta" id="realtime-meta">Mise a jour...</div>
     </div>
 
-    <!-- 8 Stat Cards (2 rows of 4) -->
-    <div class="stat-grid-8">
+    <!-- Stat Cards -->
+    <div class="stat-grid-6">
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">group</span> Visiteurs totaux</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">group</span> Visiteurs</div>
         <div class="stat-card-value" id="s-visitors">--</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">person_add</span> Nouveaux visiteurs</div>
-        <div class="stat-card-value" id="s-new-visitors">--</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">visibility</span> Pages vues</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">visibility</span> Pages vues</div>
         <div class="stat-card-value" id="s-pageviews">--</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--muted);">schedule</span> Temps moyen</div>
-        <div class="stat-card-value" id="s-avg-time">--</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">exit_to_app</span> Taux de rebond</div>
         <div class="stat-card-value" id="s-bounce">--</div>
       </div>
       <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">schedule</span> Temps moyen</div>
+        <div class="stat-card-value" id="s-avg-time">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">person_add</span> Nouveaux visiteurs</div>
+        <div class="stat-card-value" id="s-new-visitors">--</div>
+      </div>
+      <div class="stat-card">
         <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent-light);">auto_stories</span> Pages/visiteur</div>
         <div class="stat-card-value" id="s-pages-per">--</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">ads_click</span> Evenements</div>
-        <div class="stat-card-value" id="s-events">--</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--success);">sync</span> Visiteurs recurrents</div>
-        <div class="stat-card-value" id="s-returning">--</div>
       </div>
     </div>
 
@@ -126,34 +119,34 @@
       </table>
     </div>
 
-    <!-- Side by side: Devices chart + Top referrers -->
+    <!-- Top referrers table -->
+    <div class="table-wrap">
+      <div class="table-header"><div class="table-title">Sources de trafic</div></div>
+      <table>
+        <thead><tr><th>Source</th><th>Visiteurs</th><th>%</th></tr></thead>
+        <tbody id="referrers-list"></tbody>
+      </table>
+    </div>
+
+    <!-- Side by side: Devices pie + Browsers bar -->
     <div class="grid-2">
       <div class="chart-wrap">
         <div class="chart-title">Appareils</div>
         <div style="max-width:320px;margin:0 auto;"><canvas id="devicesChart"></canvas></div>
       </div>
-      <div class="table-wrap" style="margin-bottom:0;">
-        <div class="table-header"><div class="table-title">Sources de trafic</div></div>
-        <table>
-          <thead><tr><th>Source</th><th>Visiteurs</th><th>%</th></tr></thead>
-          <tbody id="referrers-list"></tbody>
-        </table>
+      <div class="chart-wrap">
+        <div class="chart-title">Navigateurs</div>
+        <canvas id="browsersChart" height="200"></canvas>
       </div>
     </div>
 
     <!-- Events summary table -->
     <div class="table-wrap" style="margin-top:2rem;">
-      <div class="table-header"><div class="table-title">Resume des evenements</div></div>
+      <div class="table-header"><div class="table-title">Résumé des evenements</div></div>
       <table>
         <thead><tr><th>Categorie</th><th>Action</th><th>Nombre</th></tr></thead>
         <tbody id="events-list"></tbody>
       </table>
-    </div>
-
-    <!-- Browsers bar chart -->
-    <div class="chart-wrap">
-      <div class="chart-title">Navigateurs</div>
-      <canvas id="browsersChart" height="200"></canvas>
     </div>
 
   </div>
@@ -162,12 +155,25 @@
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase(); }
-
-function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/login'; }
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 
 // Helpers
 function fmtNum(n) { return (n || 0).toLocaleString('fr-FR'); }
@@ -179,14 +185,13 @@ function fmtTime(seconds) {
 }
 function fmtPct(n) { return (n || 0).toFixed(1) + '%'; }
 
-// Chart instances (for destroy on reload)
+// Chart instances
 let visitorsChartInstance = null;
 let devicesChartInstance = null;
 let browsersChartInstance = null;
 
 function getPeriod() { return document.getElementById('period-select').value; }
 
-// Chart.js dark theme defaults
 const chartColors = {
   grid: 'rgba(92,64,55,0.1)',
   tick: 'rgba(229,226,225,0.4)',
@@ -205,6 +210,7 @@ let realtimeInterval = null;
 async function loadRealtime() {
   try {
     const res = await fetch('/api/analytics/realtime', { headers });
+    if (!res.ok) throw new Error('Erreur');
     const data = await res.json();
     const count = data.activeVisitors || data.visitors || 0;
     document.getElementById('realtime-text').textContent = fmtNum(count) + ' visiteur' + (count !== 1 ? 's' : '') + ' en ligne';
@@ -221,30 +227,30 @@ function startRealtime() {
   realtimeInterval = setInterval(loadRealtime, 10000);
 }
 
-// ---- Stats cards ----
-async function loadStats() {
+// ---- Overview stats ----
+async function loadOverview() {
   try {
-    const res = await fetch('/api/analytics/stats?period=' + getPeriod(), { headers });
+    const res = await fetch('/api/analytics/overview?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement overview', 'error'); return; }
     const d = await res.json();
     document.getElementById('s-visitors').textContent = fmtNum(d.totalVisitors);
-    document.getElementById('s-new-visitors').textContent = fmtNum(d.newVisitors);
     document.getElementById('s-pageviews').textContent = fmtNum(d.pageViews);
-    document.getElementById('s-avg-time').textContent = fmtTime(d.avgTime);
     document.getElementById('s-bounce').textContent = fmtPct(d.bounceRate);
+    document.getElementById('s-avg-time').textContent = fmtTime(d.avgTime);
+    document.getElementById('s-new-visitors').textContent = fmtNum(d.newVisitors);
     document.getElementById('s-pages-per').textContent = (d.pagesPerVisitor || 0).toFixed(1);
-    document.getElementById('s-events').textContent = fmtNum(d.totalEvents);
-    document.getElementById('s-returning').textContent = fmtNum(d.returningVisitors);
-  } catch (e) { console.error('Stats error:', e); }
+  } catch (e) { console.error('Overview error:', e); }
 }
 
 // ---- Visitors chart (line) ----
 async function loadVisitorsChart() {
   try {
     const res = await fetch('/api/analytics/visitors-chart?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement chart', 'error'); return; }
     const data = await res.json();
-    const labels = (data.labels || data.map(d => d.date));
-    const visitors = (data.visitors || data.map(d => d.visitors));
-    const pageviews = (data.pageViews || data.pageviews || data.map(d => d.pageViews || d.pageviews));
+    const labels = data.labels || data.map(d => d.date);
+    const visitors = data.visitors || data.map(d => d.visitors);
+    const pageviews = data.pageViews || data.pageviews || data.map(d => d.pageViews || d.pageviews);
 
     if (visitorsChartInstance) visitorsChartInstance.destroy();
     visitorsChartInstance = new Chart(document.getElementById('visitorsChart'), {
@@ -293,6 +299,7 @@ async function loadVisitorsChart() {
 async function loadTopPages() {
   try {
     const res = await fetch('/api/analytics/top-pages?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement pages', 'error'); return; }
     const data = await res.json();
     const pages = data.pages || data;
     document.getElementById('top-pages-list').innerHTML = pages.map(p =>
@@ -301,14 +308,31 @@ async function loadTopPages() {
   } catch (e) { console.error('Top pages error:', e); }
 }
 
+// ---- Top referrers ----
+async function loadReferrers() {
+  try {
+    const res = await fetch('/api/analytics/top-referrers?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement referrers', 'error'); return; }
+    const data = await res.json();
+    const referrers = data.referrers || data;
+    const total = referrers.reduce((sum, r) => sum + (r.visitors || r.count || 0), 0);
+    document.getElementById('referrers-list').innerHTML = referrers.map(r => {
+      const v = r.visitors || r.count || 0;
+      const pct = total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
+      return '<tr><td style="font-weight:600;">' + (r.source || r.referrer) + '</td><td>' + fmtNum(v) + '</td><td>' + pct + '%</td></tr>';
+    }).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucune donnee</td></tr>';
+  } catch (e) { console.error('Referrers error:', e); }
+}
+
 // ---- Devices pie chart ----
 async function loadDevices() {
   try {
     const res = await fetch('/api/analytics/devices?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement devices', 'error'); return; }
     const data = await res.json();
     const devices = data.devices || data;
+    const browsers = data.browsers || [];
 
-    // Pie chart
     const labels = devices.map(d => d.name || d.device);
     const values = devices.map(d => d.count || d.visitors || d.value);
     const colors = [chartColors.accent, chartColors.teal, chartColors.warning, chartColors.danger, chartColors.muted];
@@ -321,7 +345,7 @@ async function loadDevices() {
         datasets: [{
           data: values,
           backgroundColor: colors.slice(0, labels.length),
-          borderColor: 'var(--card)',
+          borderColor: '#0e0e0e',
           borderWidth: 2
         }]
       },
@@ -337,39 +361,12 @@ async function loadDevices() {
       }
     });
 
-    // Browsers bar chart (from same endpoint)
-    const browsers = data.browsers || [];
     if (browsers.length > 0) {
       loadBrowsersChart(browsers);
+    } else {
+      loadBrowsersStandalone();
     }
   } catch (e) { console.error('Devices error:', e); }
-}
-
-// ---- Top referrers ----
-async function loadReferrers() {
-  try {
-    const res = await fetch('/api/analytics/top-referrers?period=' + getPeriod(), { headers });
-    const data = await res.json();
-    const referrers = data.referrers || data;
-    const total = referrers.reduce((sum, r) => sum + (r.visitors || r.count || 0), 0);
-    document.getElementById('referrers-list').innerHTML = referrers.map(r => {
-      const v = r.visitors || r.count || 0;
-      const pct = total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
-      return '<tr><td style="font-weight:600;">' + (r.source || r.referrer) + '</td><td>' + fmtNum(v) + '</td><td>' + pct + '%</td></tr>';
-    }).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucune donnee</td></tr>';
-  } catch (e) { console.error('Referrers error:', e); }
-}
-
-// ---- Events summary ----
-async function loadEvents() {
-  try {
-    const res = await fetch('/api/analytics/events-summary?period=' + getPeriod(), { headers });
-    const data = await res.json();
-    const events = data.events || data;
-    document.getElementById('events-list').innerHTML = events.map(ev =>
-      '<tr><td><span class="badge badge-pending">' + (ev.category || ev.categorie) + '</span></td><td>' + (ev.action) + '</td><td style="font-weight:700;">' + fmtNum(ev.count || ev.nombre) + '</td></tr>'
-    ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucun evenement</td></tr>';
-  } catch (e) { console.error('Events error:', e); }
 }
 
 // ---- Browsers bar chart ----
@@ -387,7 +384,6 @@ function loadBrowsersChart(browsers) {
         label: 'Utilisateurs',
         data: values,
         backgroundColor: colors.slice(0, labels.length),
-        borderColor: colors.slice(0, labels.length).map(c => c.replace('0.15', '1').replace('0.3', '1')),
         borderWidth: 1,
         borderRadius: 4,
         maxBarThickness: 60
@@ -396,9 +392,7 @@ function loadBrowsersChart(browsers) {
     options: {
       responsive: true,
       indexAxis: 'y',
-      plugins: {
-        legend: { display: false }
-      },
+      plugins: { legend: { display: false } },
       scales: {
         x: { ticks: { color: chartColors.tick, font: { size: 10 } }, grid: { color: chartColors.grid }, beginAtZero: true },
         y: { ticks: { color: chartColors.tick, font: { size: 11, family: 'Inter' } }, grid: { display: false } }
@@ -407,16 +401,27 @@ function loadBrowsersChart(browsers) {
   });
 }
 
-// Also try standalone browsers endpoint if devices didn't include browsers
 async function loadBrowsersStandalone() {
   try {
     const res = await fetch('/api/analytics/browsers?period=' + getPeriod(), { headers });
+    if (!res.ok) return;
     const data = await res.json();
     const browsers = data.browsers || data;
-    if (browsers && browsers.length > 0) {
-      loadBrowsersChart(browsers);
-    }
-  } catch (e) { /* fallback: browsers were loaded from devices endpoint */ }
+    if (browsers && browsers.length > 0) loadBrowsersChart(browsers);
+  } catch (e) { /* fallback */ }
+}
+
+// ---- Events summary ----
+async function loadEvents() {
+  try {
+    const res = await fetch('/api/analytics/events-summary?period=' + getPeriod(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement events', 'error'); return; }
+    const data = await res.json();
+    const events = data.events || data;
+    document.getElementById('events-list').innerHTML = events.map(ev =>
+      '<tr><td><span class="badge badge-pending">' + (ev.category || ev.categorie) + '</span></td><td>' + (ev.action) + '</td><td style="font-weight:700;">' + fmtNum(ev.count || ev.nombre) + '</td></tr>'
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Aucun événement</td></tr>';
+  } catch (e) { console.error('Events error:', e); }
 }
 
 // ---- Period change ----
@@ -424,14 +429,12 @@ function onPeriodChange() { loadAllData(); }
 
 // ---- Load all data ----
 function loadAllData() {
-  loadStats();
+  loadOverview();
   loadVisitorsChart();
   loadTopPages();
-  loadDevices();
   loadReferrers();
+  loadDevices();
   loadEvents();
-  // Try standalone browsers endpoint as fallback
-  setTimeout(loadBrowsersStandalone, 500);
 }
 
 // Init

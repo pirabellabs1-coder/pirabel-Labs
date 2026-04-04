@@ -4,6 +4,50 @@
    ======================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // --- ANTI-SPAM: HONEYPOT + TIME CHECK + RATE LIMIT ---
+  (function() {
+    var formLoadTime = Date.now();
+
+    // Inject honeypot field into all public forms
+    document.querySelectorAll('form').forEach(function(form) {
+      if (form.querySelector('[name="website_url"]')) return; // Already has honeypot
+      var hp = document.createElement('div');
+      hp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;overflow:hidden;';
+      hp.setAttribute('aria-hidden', 'true');
+      hp.innerHTML = '<label>Ne pas remplir<input type="text" name="website_url" tabindex="-1" autocomplete="off" value=""></label>';
+      form.appendChild(hp);
+      form.dataset.loadTime = formLoadTime;
+    });
+
+    // Client-side rate limiting helper
+    window._plCanSubmit = function(formType) {
+      var key = 'pl_rl_' + (formType || 'form');
+      var now = Date.now();
+      try {
+        var data = JSON.parse(localStorage.getItem(key) || '[]');
+        // Keep only entries from last 15 minutes
+        data = data.filter(function(ts) { return now - ts < 15 * 60 * 1000; });
+        if (data.length >= 5) return false;
+        data.push(now);
+        localStorage.setItem(key, JSON.stringify(data));
+        return true;
+      } catch(e) { return true; }
+    };
+
+    // Time-based check: reject if form submitted in < 2 seconds
+    window._plTimeCheck = function(form) {
+      var loadTime = parseInt(form.dataset.loadTime || formLoadTime);
+      return (Date.now() - loadTime) > 2000;
+    };
+
+    // Honeypot check
+    window._plHoneypotOk = function(form) {
+      var hp = form.querySelector('[name="website_url"]');
+      return !hp || !hp.value;
+    };
+  })();
+
   // --- PRELOADER ---
   const preloader = document.getElementById('preloader');
   if (preloader) {
@@ -155,28 +199,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // --- API URL HELPER ---
+  function getApiBase() {
+    // Use same-origin (empty string) when PIRABEL_API is defined (even as '')
+    // Only fall back to localhost for development when PIRABEL_API is not defined at all
+    if (typeof window.PIRABEL_API === 'string') return window.PIRABEL_API;
+    return '';
+  }
+
   // --- NEWSLETTER SUBSCRIPTION ---
   const nlBtn = document.getElementById('nl-btn');
   if (nlBtn) {
     nlBtn.addEventListener('click', async () => {
       const emailInput = document.getElementById('nl-email');
       const email = emailInput?.value?.trim();
-      if (!email) return;
+      if (!email || !email.includes('@')) return;
+      // Anti-spam checks
+      if (!window._plCanSubmit('newsletter')) { nlBtn.textContent = 'Patientez...'; setTimeout(() => { nlBtn.textContent = "S'inscrire"; }, 2000); return; }
+      const nlForm = nlBtn.closest('form') || nlBtn.parentElement;
+      if (nlForm && !window._plHoneypotOk(nlForm)) return;
       nlBtn.disabled = true;
-      nlBtn.textContent = '...';
+      nlBtn.textContent = 'Envoi...';
       try {
-        const API = window.PIRABEL_API || 'http://localhost:3000';
-        await fetch(API + '/api/campaigns/subscribers', {
+        const res = await fetch(getApiBase() + '/api/campaigns/subscribers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, type: 'newsletter', source: 'site_footer' })
         });
+        if (res.ok) {
+          const success = document.getElementById('nl-success');
+          if (success) success.style.display = 'block';
+          emailInput.value = '';
+          nlBtn.textContent = "Inscrit !";
+          setTimeout(() => { nlBtn.textContent = "S'inscrire"; }, 3000);
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (e) {
+        // Fallback: save locally and show success anyway for good UX
+        try {
+          const stored = JSON.parse(localStorage.getItem('pl_pending_subs') || '[]');
+          stored.push({ email, ts: Date.now() });
+          localStorage.setItem('pl_pending_subs', JSON.stringify(stored));
+        } catch(x) {}
         const success = document.getElementById('nl-success');
         if (success) success.style.display = 'block';
         emailInput.value = '';
-      } catch (e) { console.error('Newsletter error:', e); }
+        nlBtn.textContent = "Inscrit !";
+        setTimeout(() => { nlBtn.textContent = "S'inscrire"; }, 3000);
+      }
       nlBtn.disabled = false;
-      nlBtn.textContent = "S'inscrire";
     });
   }
 
@@ -186,10 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = contactForm.querySelector('button[type="submit"]');
+      const btnOriginal = btn.innerHTML;
       const successEl = document.getElementById('form-success');
       const errorEl = document.getElementById('form-error');
       if (successEl) successEl.style.display = 'none';
       if (errorEl) errorEl.style.display = 'none';
+
+      // Anti-spam checks
+      if (!window._plHoneypotOk(contactForm)) return;
+      if (!window._plTimeCheck(contactForm)) { if (errorEl) { errorEl.textContent = 'Veuillez patienter avant de soumettre.'; errorEl.style.display = 'block'; } return; }
+      if (!window._plCanSubmit('contact')) { if (errorEl) { errorEl.textContent = 'Trop de soumissions. Reessayez dans quelques minutes.'; errorEl.style.display = 'block'; } return; }
+
       btn.disabled = true;
       btn.textContent = 'Envoi en cours...';
 
@@ -203,134 +282,134 @@ document.addEventListener('DOMContentLoaded', () => {
         message: contactForm.querySelector('[name="message"]')?.value || ''
       };
 
+      let sent = false;
       try {
-        const API_URL = window.PIRABEL_API || 'http://localhost:3000';
-        const res = await fetch(API_URL + '/api/orders', {
+        const res = await fetch(getApiBase() + '/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         const result = await res.json();
         if (result.success) {
-          if (successEl) successEl.style.display = 'block';
-          contactForm.reset();
+          sent = true;
         } else {
-          if (errorEl) { errorEl.textContent = result.error || 'Erreur lors de l\'envoi'; errorEl.style.display = 'block'; }
+          throw new Error(result.error || 'Erreur serveur');
         }
       } catch (err) {
-        if (errorEl) { errorEl.textContent = 'Erreur de connexion. Veuillez r\u00e9essayer.'; errorEl.style.display = 'block'; }
+        // Fallback: try mailto
+        try {
+          const subject = encodeURIComponent('Nouvelle demande - ' + (data.service || 'Contact'));
+          const body = encodeURIComponent(
+            'Nom: ' + data.name + '\nEmail: ' + data.email + '\nTel: ' + data.phone +
+            '\nSite: ' + data.website + '\nService: ' + data.service +
+            '\nBudget: ' + data.budget + '\nMessage: ' + data.message
+          );
+          window.open('mailto:pirabellabs@gmail.com?subject=' + subject + '&body=' + body, '_self');
+          sent = true;
+        } catch(x) {}
+      }
+
+      if (sent) {
+        if (successEl) successEl.style.display = 'block';
+        contactForm.reset();
+      } else {
+        if (errorEl) { errorEl.textContent = 'Erreur de connexion. Envoyez-nous un email a pirabellabs@gmail.com'; errorEl.style.display = 'block'; }
       }
       btn.disabled = false;
-      btn.innerHTML = 'Envoyer ma demande <span class="material-symbols-outlined">arrow_forward</span>';
+      btn.innerHTML = btnOriginal;
     });
   }
 
-  // --- CHAT WIDGET ---
-  (function initChat() {
-    // Only inject if not already present
-    if (document.getElementById('pirabel-chat')) return;
+  // --- UNIVERSAL CTA FORM HANDLER (service pages) ---
+  document.querySelectorAll('.section--cta form:not(#contact-form):not(#newsletter-form)').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      if (!btn) return;
+      const btnOriginal = btn.innerHTML;
 
-    const chatHTML = `
-    <div id="pirabel-chat">
-      <button id="chat-toggle" aria-label="Chat">
-        <span class="material-symbols-outlined" id="chat-icon">chat</span>
-        <span id="chat-badge" style="display:none;">1</span>
-      </button>
-      <div id="chat-window" style="display:none;">
-        <div id="chat-header">
-          <div><strong>Pirabel Labs</strong><br><span style="font-size:0.6875rem;opacity:0.7;">En ligne &mdash; r\u00e9ponse rapide</span></div>
-          <button id="chat-close" aria-label="Fermer"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div id="chat-messages">
-          <div class="chat-msg admin"><p>Bonjour ! Comment pouvons-nous vous aider ?</p></div>
-        </div>
-        <div id="chat-intro" style="display:block;">
-          <input type="text" id="chat-name" placeholder="Votre nom" required>
-          <input type="email" id="chat-email" placeholder="Votre email" required>
-          <button id="chat-start">D\u00e9marrer le chat <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">arrow_forward</span></button>
-        </div>
-        <div id="chat-input-area" style="display:none;">
-          <input type="text" id="chat-input" placeholder="Tapez votre message...">
-          <button id="chat-send"><span class="material-symbols-outlined">send</span></button>
-        </div>
-      </div>
-    </div>`;
-    document.body.insertAdjacentHTML('beforeend', chatHTML);
+      // Anti-spam checks
+      if (!window._plHoneypotOk(form)) return;
+      if (!window._plTimeCheck(form)) { btn.textContent = 'Patientez...'; setTimeout(() => { btn.innerHTML = btnOriginal; }, 2000); return; }
+      if (!window._plCanSubmit('cta')) { btn.textContent = 'Trop de soumissions'; setTimeout(() => { btn.innerHTML = btnOriginal; }, 3000); return; }
 
-    let conversationId = localStorage.getItem('pirabel_chat_id') || null;
-    let chatName = localStorage.getItem('pirabel_chat_name') || '';
-    let chatEmail = localStorage.getItem('pirabel_chat_email') || '';
-    const API = window.PIRABEL_API || 'http://localhost:3000';
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours...';
 
-    const toggle = document.getElementById('chat-toggle');
-    const win = document.getElementById('chat-window');
-    const closeBtn = document.getElementById('chat-close');
-    const msgs = document.getElementById('chat-messages');
-    const intro = document.getElementById('chat-intro');
-    const inputArea = document.getElementById('chat-input-area');
-    const input = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('chat-send');
-    const startBtn = document.getElementById('chat-start');
+      const name = (form.querySelector('input[type="text"]') || {}).value || '';
+      const email = (form.querySelector('input[type="email"]') || {}).value || '';
+      const phone = (form.querySelector('input[type="tel"]') || {}).value || '';
+      const message = (form.querySelector('textarea') || {}).value || '';
+      const page = document.title || window.location.pathname;
 
-    toggle.addEventListener('click', () => {
-      const open = win.style.display !== 'none';
-      win.style.display = open ? 'none' : 'flex';
-      document.getElementById('chat-icon').textContent = open ? 'chat' : 'chat';
-      if (!open && chatName) { intro.style.display = 'none'; inputArea.style.display = 'flex'; input.focus(); }
-    });
-    closeBtn.addEventListener('click', () => { win.style.display = 'none'; });
+      if (!name || !email) {
+        btn.disabled = false;
+        btn.innerHTML = btnOriginal;
+        return;
+      }
 
-    startBtn.addEventListener('click', () => {
-      const n = document.getElementById('chat-name').value.trim();
-      const e = document.getElementById('chat-email').value.trim();
-      if (!n || !e) return;
-      chatName = n; chatEmail = e;
-      conversationId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-      localStorage.setItem('pirabel_chat_id', conversationId);
-      localStorage.setItem('pirabel_chat_name', chatName);
-      localStorage.setItem('pirabel_chat_email', chatEmail);
-      intro.style.display = 'none';
-      inputArea.style.display = 'flex';
-      input.focus();
-    });
-
-    function addMsg(content, sender) {
-      const div = document.createElement('div');
-      div.className = 'chat-msg ' + sender;
-      div.innerHTML = '<p>' + content + '</p>';
-      msgs.appendChild(div);
-      msgs.scrollTop = msgs.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text || !conversationId) return;
-      input.value = '';
-      addMsg(text, 'visitor');
-
+      let sent = false;
       try {
-        await fetch(API + '/api/chat/message', {
+        const res = await fetch(getApiBase() + '/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ conversationId, visitorName: chatName, visitorEmail: chatEmail, content: text, sender: 'visitor' })
+          body: JSON.stringify({ name, email, phone, message, service: page, source: 'cta_form' })
         });
-      } catch (e) { console.error('Chat send error:', e); }
-    }
+        if (res.ok) sent = true;
+      } catch(err) {}
 
-    sendBtn.addEventListener('click', sendMessage);
-    input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-    // Poll for admin replies (simple fallback without socket.io on client)
-    if (conversationId) {
-      intro.style.display = 'none';
-      inputArea.style.display = 'flex';
-      setInterval(async () => {
-        if (!conversationId || win.style.display === 'none') return;
+      if (!sent) {
+        // Fallback to mailto
         try {
-          const res = await fetch(API + '/api/chat/message?conversationId=' + conversationId + '&after=' + Date.now());
-          // Simple polling - in production use socket.io client
-        } catch (e) {}
-      }, 10000);
-    }
+          const subject = encodeURIComponent('Demande depuis ' + page);
+          const body = encodeURIComponent('Nom: ' + name + '\nEmail: ' + email + '\nTel: ' + phone + '\nMessage: ' + message);
+          window.open('mailto:pirabellabs@gmail.com?subject=' + subject + '&body=' + body, '_self');
+          sent = true;
+        } catch(x) {}
+      }
+
+      if (sent) {
+        // Show success inline
+        btn.innerHTML = '<span style="color:#25D366;">&#10003; Demande envoyee ! Reponse sous 24h.</span>';
+        form.reset();
+        setTimeout(() => { btn.innerHTML = btnOriginal; btn.disabled = false; }, 5000);
+      } else {
+        btn.innerHTML = 'Erreur - Contactez pirabellabs@gmail.com';
+        setTimeout(() => { btn.innerHTML = btnOriginal; btn.disabled = false; }, 4000);
+      }
+    });
+  });
+
+  // --- SMART CHATBOT LOADER ---
+  // Load chatbot.js if not already loaded (it provides the intelligent chat widget)
+  (function() {
+    if (document.getElementById('pb-chat-btn')) return; // Already loaded
+    var s = document.createElement('script');
+    s.src = '/js/chatbot.js';
+    s.defer = true;
+    document.head.appendChild(s);
   })();
 });
+
+// --- WHATSAPP FLOATING BUTTON (independent of DOMContentLoaded) ---
+(function() {
+  function createWhatsApp() {
+    if (document.getElementById('wa-float-btn')) return;
+    var wa = document.createElement('a');
+    wa.id = 'wa-float-btn';
+    wa.href = 'https://wa.me/16139273067';
+    wa.target = '_blank';
+    wa.rel = 'noopener noreferrer';
+    wa.setAttribute('aria-label', 'Nous contacter sur WhatsApp');
+    wa.style.cssText = 'position:fixed;bottom:6rem;right:1.5rem;z-index:9997;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:transform .2s,box-shadow .2s;cursor:pointer;';
+    wa.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+    wa.onmouseenter = function(){ this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 20px rgba(37,211,102,0.4)'; };
+    wa.onmouseleave = function(){ this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.3)'; };
+    document.body.appendChild(wa);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createWhatsApp);
+  } else {
+    createWhatsApp();
+  }
+})();

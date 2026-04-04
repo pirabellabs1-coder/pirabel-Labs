@@ -8,8 +8,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.detail-label{color:var(--muted);font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-h);font-weight:700;margin-bottom:0.25rem;}
+.detail-value{font-size:0.875rem;margin-bottom:1rem;}
+.notes-area{width:100%;background:var(--bg);border:1px solid var(--border);padding:0.75rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;resize:vertical;min-height:80px;transition:border-color 0.3s;}
+.notes-area:focus{border-color:var(--accent);}
+.inline-status{background:var(--bg);border:1px solid var(--border);padding:0.3rem 0.5rem;color:var(--text);font-size:0.75rem;font-family:var(--font-b);outline:none;appearance:none;cursor:pointer;transition:border-color 0.3s;}
+.inline-status:focus{border-color:var(--accent);}
+</style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
 
 <!-- Sidebar -->
@@ -18,25 +27,22 @@
   <nav class="sidebar-nav">
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link active"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
-
+    <a href="/orders" class="sidebar-link active"><span class="material-symbols-outlined">inbox</span> Demandes</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
-
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -100,47 +106,111 @@
 </div>
 </div>
 
-<!-- Detail Modal -->
+<!-- View Order Modal -->
 <div class="modal-overlay" id="detail-modal">
-  <div class="modal" style="max-width:600px;">
+  <div class="modal" style="max-width:650px;">
     <button class="modal-close" onclick="closeDetailModal()">&times;</button>
     <div class="modal-title">Details de la demande</div>
     <div id="detail-content"></div>
-    <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
-      <select id="status-select" style="background:var(--bg);border:1px solid var(--border);padding:0.5rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
+
+    <!-- Notes section -->
+    <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;">
+      <div class="detail-label">Notes internes</div>
+      <textarea class="notes-area" id="detail-notes" placeholder="Ajoutez des notes sur cette demande..."></textarea>
+      <button class="btn btn-sm btn-ghost" style="margin-top:0.5rem;" onclick="saveNotes()">
+        <span class="material-symbols-outlined" style="font-size:0.875rem;">save</span> Sauvegarder notes
+      </button>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:1rem;margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;flex-wrap:wrap;align-items:center;">
+      <select id="detail-status-select" style="background:var(--bg);border:1px solid var(--border);padding:0.5rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
         <option value="nouvelle">Nouvelle</option>
         <option value="en_traitement">En traitement</option>
         <option value="devis_envoye">Devis envoye</option>
         <option value="acceptee">Acceptee</option>
         <option value="refusee">Refusee</option>
       </select>
-      <button class="btn btn-primary btn-sm" onclick="updateStatus()">Changer statut</button>
-      <button class="btn btn-ghost btn-sm" onclick="convertOrder()"><span class="material-symbols-outlined" style="font-size:0.875rem;">sync_alt</span> Convertir en client + projet</button>
+      <button class="btn btn-primary btn-sm" onclick="updateDetailStatus()">Changer statut</button>
+      <button class="btn btn-ghost btn-sm" onclick="openConvertModal()">
+        <span class="material-symbols-outlined" style="font-size:0.875rem;">sync_alt</span> Convertir en client
+      </button>
     </div>
+  </div>
+</div>
+
+<!-- Convert to Client Modal -->
+<div class="modal-overlay" id="convert-modal">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeConvertModal()">&times;</button>
+    <div class="modal-title">Convertir en client + projet</div>
+    <form class="dash-form" id="convert-form" onsubmit="submitConvert(event)">
+      <div class="form-group">
+        <label>Nom entreprise *</label>
+        <input type="text" id="c-company" required>
+      </div>
+      <div class="form-group">
+        <label>Nom du projet *</label>
+        <input type="text" id="c-projectName" required>
+      </div>
+      <div class="form-group">
+        <label>Service</label>
+        <select id="c-service">
+          <option value="">Choisir...</option>
+          <option value="seo">SEO</option>
+          <option value="web">Web</option>
+          <option value="ia">IA</option>
+          <option value="ads">Ads</option>
+          <option value="social">Social</option>
+          <option value="cro">CRO</option>
+          <option value="email">Email</option>
+          <option value="content">Content</option>
+          <option value="video">Video</option>
+          <option value="design">Design</option>
+          <option value="formation">Formation</option>
+          <option value="consulting">Consulting</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Budget</label>
+        <input type="number" id="c-budget" placeholder="0">
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Convertir</button>
+        <button type="button" class="btn btn-ghost" onclick="closeConvertModal()">Annuler</button>
+      </div>
+    </form>
   </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
-
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
-
-function statusBadge(status) {
-  const map = { 'nouvelle': 'badge-new', 'en_traitement': 'badge-pending', 'devis_envoye': 'badge-pending', 'acceptee': 'badge-active', 'refusee': 'badge-danger' };
-  return `<span class="badge ${map[status] || 'badge-done'}">${status.replace(/_/g, ' ')}</span>`;
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+function statusBadge(s) {
+  const m={'nouvelle':'badge-new','en_traitement':'badge-pending','devis_envoye':'badge-pending','acceptee':'badge-active','refusee':'badge-danger','en_attente':'badge-pending','en_cours':'badge-active','termine':'badge-done','en_pause':'badge-danger','annule':'badge-danger','prospect':'badge-pending','actif':'badge-active','inactif':'badge-done','archive':'badge-danger'};
+  return '<span class="badge '+(m[s]||'badge-done')+'">'+s.replace(/_/g,' ')+'</span>';
 }
-
-function formatDate(d) {
-  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
-}
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20ac'; }
 
 let currentOrder = null;
 
@@ -150,47 +220,60 @@ async function loadOrders() {
     let url = '/api/orders?';
     if (status) url += 'status=' + encodeURIComponent(status);
     const res = await fetch(url, { headers });
+    if (!res.ok) { toast('Erreur lors du chargement des demandes', 'error'); return; }
     const data = await res.json();
     const orders = data.orders || data;
 
-    const newCount = orders.filter(o => o.status === 'nouvelle').length;
-    document.getElementById('badge-orders').textContent = newCount;
+    const newCount = orders.filter(function(o) { return o.status === 'nouvelle'; }).length;
     document.getElementById('new-count-badge').textContent = newCount + ' nouvelles';
 
-    document.getElementById('orders-body').innerHTML = orders.map(o => `
-      <tr>
-        <td>${o.name}</td>
-        <td>${o.email}</td>
-        <td>${o.service || '-'}</td>
-        <td>${o.budget || '-'}</td>
-        <td>${statusBadge(o.status)}</td>
-        <td>${formatDate(o.createdAt)}</td>
-        <td>
-          <button class="btn btn-sm btn-ghost" onclick="viewOrder('${o._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
-        </td>
-      </tr>
-    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune demande</td></tr>';
-  } catch (e) { console.error(e); }
+    document.getElementById('orders-body').innerHTML = orders.map(function(o) {
+      return '<tr>' +
+        '<td style="font-weight:600;">' + o.name + '</td>' +
+        '<td>' + o.email + '</td>' +
+        '<td>' + (o.service || '-') + '</td>' +
+        '<td>' + (o.budget || '-') + '</td>' +
+        '<td>' + statusBadge(o.status) + '</td>' +
+        '<td>' + formatDate(o.createdAt) + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button class="btn btn-sm btn-ghost" onclick="viewOrder(\'' + o._id + '\')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>' +
+          '<button class="btn btn-sm btn-ghost" onclick="quickConvert(\'' + o._id + '\')" title="Convertir"><span class="material-symbols-outlined" style="font-size:0.875rem;">sync_alt</span></button>' +
+          '<select class="inline-status" onchange="updateStatusInline(\'' + o._id + '\', this.value)" title="Changer statut">' +
+            '<option value="nouvelle"' + (o.status === 'nouvelle' ? ' selected' : '') + '>Nouvelle</option>' +
+            '<option value="en_traitement"' + (o.status === 'en_traitement' ? ' selected' : '') + '>En traitement</option>' +
+            '<option value="devis_envoye"' + (o.status === 'devis_envoye' ? ' selected' : '') + '>Devis envoye</option>' +
+            '<option value="acceptee"' + (o.status === 'acceptee' ? ' selected' : '') + '>Acceptee</option>' +
+            '<option value="refusee"' + (o.status === 'refusee' ? ' selected' : '') + '>Refusee</option>' +
+          '</select>' +
+        '</td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">Aucune demande</td></tr>';
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
 async function viewOrder(id) {
   try {
     const res = await fetch('/api/orders/' + id, { headers });
+    if (!res.ok) { toast('Erreur lors du chargement de la demande', 'error'); return; }
     currentOrder = await res.json();
-    document.getElementById('detail-content').innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Nom</span><div>${currentOrder.name}</div></div>
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Email</span><div>${currentOrder.email}</div></div>
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Telephone</span><div>${currentOrder.phone || '-'}</div></div>
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Entreprise</span><div>${currentOrder.company || '-'}</div></div>
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Service</span><div>${currentOrder.service || '-'}</div></div>
-        <div><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Budget</span><div>${currentOrder.budget || '-'}</div></div>
-        <div style="grid-column:1/-1;"><span style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;">Message</span><div style="margin-top:0.25rem;white-space:pre-wrap;">${currentOrder.message || '-'}</div></div>
-      </div>
-    `;
-    document.getElementById('status-select').value = currentOrder.status;
+
+    document.getElementById('detail-content').innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2rem;">' +
+        '<div><div class="detail-label">Nom</div><div class="detail-value">' + currentOrder.name + '</div></div>' +
+        '<div><div class="detail-label">Email</div><div class="detail-value">' + currentOrder.email + '</div></div>' +
+        '<div><div class="detail-label">Telephone</div><div class="detail-value">' + (currentOrder.phone || '-') + '</div></div>' +
+        '<div><div class="detail-label">Site web</div><div class="detail-value">' + (currentOrder.website || '-') + '</div></div>' +
+        '<div><div class="detail-label">Service</div><div class="detail-value">' + (currentOrder.service || '-') + '</div></div>' +
+        '<div><div class="detail-label">Budget</div><div class="detail-value">' + (currentOrder.budget || '-') + '</div></div>' +
+        '<div><div class="detail-label">Statut</div><div class="detail-value">' + statusBadge(currentOrder.status) + '</div></div>' +
+        '<div><div class="detail-label">Date</div><div class="detail-value">' + formatDate(currentOrder.createdAt) + '</div></div>' +
+        '<div style="grid-column:1/-1;"><div class="detail-label">Message</div><div class="detail-value" style="white-space:pre-wrap;">' + (currentOrder.message || '-') + '</div></div>' +
+      '</div>';
+
+    document.getElementById('detail-notes').value = currentOrder.notes || '';
+    document.getElementById('detail-status-select').value = currentOrder.status;
     document.getElementById('detail-modal').classList.add('open');
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
 function closeDetailModal() {
@@ -198,33 +281,97 @@ function closeDetailModal() {
   currentOrder = null;
 }
 
-async function updateStatus() {
+async function saveNotes() {
   if (!currentOrder) return;
-  const newStatus = document.getElementById('status-select').value;
+  const notes = document.getElementById('detail-notes').value;
   try {
-    await fetch('/api/orders/' + currentOrder._id, {
+    const res = await fetch('/api/orders/' + currentOrder._id, {
+      method: 'PUT', headers, body: JSON.stringify({ notes: notes })
+    });
+    if (!res.ok) { toast('Erreur lors de la sauvegarde des notes', 'error'); return; }
+    currentOrder.notes = notes;
+    toast('Notes sauvegardees', 'success');
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
+}
+
+async function updateDetailStatus() {
+  if (!currentOrder) return;
+  const newStatus = document.getElementById('detail-status-select').value;
+  try {
+    const res = await fetch('/api/orders/' + currentOrder._id, {
       method: 'PUT', headers, body: JSON.stringify({ status: newStatus })
     });
+    if (!res.ok) { toast('Erreur lors du changement de statut', 'error'); return; }
     closeDetailModal();
     loadOrders();
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
-async function convertOrder() {
-  if (!currentOrder) return;
+async function updateStatusInline(id, newStatus) {
   try {
-    await fetch('/api/orders/' + currentOrder._id + '/convert', { method: 'POST', headers });
-    closeDetailModal();
+    const res = await fetch('/api/orders/' + id, {
+      method: 'PUT', headers, body: JSON.stringify({ status: newStatus })
+    });
+    if (!res.ok) { toast('Erreur lors du changement de statut', 'error'); loadOrders(); return; }
     loadOrders();
-    alert('Demande convertie en client + projet avec succes!');
-  } catch (e) { console.error(e); alert('Erreur lors de la conversion'); }
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); loadOrders(); }
 }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+// Convert modal
+function openConvertModal() {
+  if (!currentOrder) return;
+  document.getElementById('c-company').value = currentOrder.company || currentOrder.name || '';
+  document.getElementById('c-projectName').value = (currentOrder.service ? currentOrder.service + ' - ' : '') + (currentOrder.name || '');
+  document.getElementById('c-service').value = currentOrder.service || '';
+  document.getElementById('c-budget').value = currentOrder.budget ? String(currentOrder.budget).replace(/[^\d]/g, '') : '';
+  document.getElementById('convert-modal').classList.add('open');
 }
+
+function closeConvertModal() {
+  document.getElementById('convert-modal').classList.remove('open');
+}
+
+function quickConvert(id) {
+  // Load order first, then open convert modal
+  fetch('/api/orders/' + id, { headers })
+    .then(function(res) {
+      if (!res.ok) throw new Error('Erreur');
+      return res.json();
+    })
+    .then(function(order) {
+      currentOrder = order;
+      openConvertModal();
+    })
+    .catch(function(e) { console.error(e); toast('Erreur lors du chargement de la demande', 'error'); });
+}
+
+async function submitConvert(e) {
+  e.preventDefault();
+  if (!currentOrder) return;
+  const body = {
+    company: document.getElementById('c-company').value,
+    projectName: document.getElementById('c-projectName').value,
+    service: document.getElementById('c-service').value,
+    budget: Number(document.getElementById('c-budget').value) || 0
+  };
+  try {
+    const res = await fetch('/api/orders/' + currentOrder._id + '/convert', {
+      method: 'POST', headers, body: JSON.stringify(body)
+    });
+    if (!res.ok) { const err = await res.json().catch(function() { return {}; }); toast(err.message || 'Erreur lors de la conversion', 'error'); return; }
+    closeConvertModal();
+    closeDetailModal();
+    loadOrders();
+    toast('Demande convertie en client + projet avec succes!', 'success');
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
 
 loadOrders();
 </script>

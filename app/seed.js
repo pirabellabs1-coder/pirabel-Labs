@@ -1,5 +1,5 @@
 /**
- * Script de creation du compte admin par defaut
+ * Script de création du compte admin par defaut
  * Usage: node seed.js
  *
  * Identifiants par defaut:
@@ -47,7 +47,7 @@ async function seed() {
     console.log('  http://localhost:' + (process.env.PORT || 3000) + '/' + (process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m'));
     console.log('\n  URL espace client:');
     console.log('  http://localhost:' + (process.env.PORT || 3000) + '/' + (process.env.CLIENT_SECRET_PATH || 'espace-client-4p8w1n'));
-    console.log('\n  IMPORTANT: Changez le mot de passe apres la premiere connexion!');
+    console.log('\n  IMPORTANT: Changez le mot de passe apres la première connexion!');
     console.log('');
 
     process.exit(0);

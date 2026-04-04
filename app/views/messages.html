@@ -3,41 +3,97 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages Chat | Pirabel Labs Admin</title>
+<title>Messages | Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <style>
-.chat-layout{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 60px);overflow:hidden;}
-.conv-list{background:var(--card);border-right:1px solid var(--border);overflow-y:auto;}
-.conv-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;}
+/* Chat layout */
+.chat-layout{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 60px);overflow:hidden;}
+
+/* Conversation list panel */
+.conv-list{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.conv-list-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.conv-list-title{font-family:var(--font-h);font-weight:700;font-size:1rem;display:flex;align-items:center;gap:0.5rem;}
+.conv-list-count{font-size:0.75rem;color:var(--muted);margin-top:0.25rem;}
+.conv-search{padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.conv-search input{width:100%;background:var(--bg);border:1px solid var(--border);padding:0.625rem 1rem 0.625rem 2.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;transition:border-color 0.3s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(229,226,225,0.3)' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:0.75rem center;}
+.conv-search input:focus{border-color:var(--accent);}
+.conv-scroll{flex:1;overflow-y:auto;}
+
+/* Conversation items */
+.conv-item{padding:1rem 1.5rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;display:flex;gap:0.75rem;align-items:flex-start;}
 .conv-item:hover{background:var(--card-hover);}
 .conv-item.active{background:rgba(255,85,0,0.05);border-left:3px solid var(--accent);}
-.conv-item-name{font-weight:600;font-size:0.875rem;display:flex;justify-content:space-between;align-items:center;}
-.conv-item-msg{font-size:0.75rem;color:var(--muted);margin-top:0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.conv-item-time{font-size:0.625rem;color:var(--muted2);}
-.conv-item-unread{background:var(--accent);color:#fff;font-size:0.5625rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.chat-area{display:flex;flex-direction:column;height:100%;}
-.chat-area-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.conv-item-avatar{width:36px;height:36px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-h);font-weight:700;font-size:0.75rem;color:var(--muted);}
+.conv-item-body{flex:1;min-width:0;}
+.conv-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;}
+.conv-item-name{font-weight:600;font-size:0.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-item-time{font-size:0.625rem;color:var(--muted2);flex-shrink:0;margin-left:0.5rem;}
+.conv-item-bottom{display:flex;justify-content:space-between;align-items:center;}
+.conv-item-msg{font-size:0.75rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.conv-item-email{font-size:0.625rem;color:var(--muted2);margin-top:0.125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.conv-item-unread{background:var(--accent);color:#fff;font-size:0.5625rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:0.5rem;}
+
+/* Chat area */
+.chat-area{display:flex;flex-direction:column;height:100%;background:var(--bg);}
+.chat-area-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--card);flex-shrink:0;}
+.chat-header-info{display:flex;align-items:center;gap:0.75rem;}
+.chat-header-avatar{width:36px;height:36px;background:rgba(255,85,0,0.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-weight:700;font-size:0.75rem;color:var(--accent);}
+.chat-header-name{font-weight:700;font-size:0.9375rem;font-family:var(--font-h);}
+.chat-header-email{font-size:0.75rem;color:var(--muted);}
+.chat-header-actions{display:flex;align-items:center;gap:0.5rem;}
+
+/* Messages area */
 .chat-area-messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;}
-.chat-area-input{display:flex;border-top:1px solid var(--border);padding:0;}
-.chat-area-input input{flex:1;background:transparent;border:none;padding:1rem 1.5rem;color:var(--text);font-size:0.875rem;outline:none;}
-.chat-area-input button{background:var(--accent);color:#fff;border:none;padding:1rem 1.5rem;cursor:pointer;}
-.msg{max-width:70%;}
-.msg p{padding:0.75rem 1rem;font-size:0.8125rem;line-height:1.5;}
+.msg{max-width:65%;position:relative;}
+.msg p{padding:0.75rem 1rem;font-size:0.8125rem;line-height:1.6;}
 .msg.visitor{align-self:flex-start;}
 .msg.visitor p{background:rgba(229,226,225,0.08);border-radius:0 12px 12px 12px;}
 .msg.admin{align-self:flex-end;}
 .msg.admin p{background:var(--accent);color:#5c1900;border-radius:12px 0 12px 12px;}
 .msg-time{font-size:0.625rem;color:var(--muted2);margin-top:0.25rem;}
-.empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);}
-.empty-chat .material-symbols-outlined{font-size:3rem;margin-bottom:1rem;opacity:0.3;}
-@media(max-width:900px){.chat-layout{grid-template-columns:1fr;}.conv-list{display:none;}.conv-list.show{display:block;position:fixed;inset:0;z-index:200;}}
+.msg.admin .msg-time{text-align:right;}
+
+/* Input area */
+.chat-area-input{display:flex;border-top:1px solid var(--border);background:var(--card);flex-shrink:0;}
+.chat-area-input input{flex:1;background:transparent;border:none;padding:1rem 1.5rem;color:var(--text);font-size:0.875rem;font-family:var(--font-b);outline:none;}
+.chat-area-input input::placeholder{color:var(--muted2);}
+.chat-area-input button{background:var(--accent);color:#fff;border:none;padding:1rem 1.5rem;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;gap:0.5rem;font-family:var(--font-h);font-weight:600;font-size:0.8125rem;}
+.chat-area-input button:hover{background:var(--accent-light);}
+
+/* Empty state */
+.empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;padding:2rem;}
+.empty-chat .material-symbols-outlined{font-size:3.5rem;margin-bottom:1rem;opacity:0.2;}
+.empty-chat p{font-size:0.9rem;max-width:280px;line-height:1.6;}
+
+/* Prospect button */
+.btn-prospect{background:rgba(65,228,192,0.1);border:1px solid rgba(65,228,192,0.3);color:var(--teal);padding:0.4rem 0.75rem;font-size:0.6875rem;font-family:var(--font-h);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.375rem;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.05em;}
+.btn-prospect:hover{background:rgba(65,228,192,0.2);border-color:var(--teal);}
+.btn-prospect.added{opacity:0.5;cursor:default;pointer-events:none;}
+
+/* Mobile back button */
+.chat-back-btn{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:0.5rem;margin-right:0.5rem;}
+
+/* Date separator */
+.msg-date-sep{text-align:center;font-size:0.625rem;color:var(--muted2);padding:0.75rem 0;font-family:var(--font-h);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;}
+
+/* Responsive */
+@media(max-width:900px){
+  .chat-layout{grid-template-columns:1fr;}
+  .conv-list{display:flex;}
+  .conv-list.hidden{display:none;}
+  .chat-area.hidden{display:none;}
+  .chat-back-btn{display:block;}
+}
 </style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
+<!-- Admin Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -50,46 +106,88 @@
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link active"><span class="material-symbols-outlined">chat</span> Messages <span class="badge badge-new" id="badge-unread" style="margin-left:auto;">0</span></a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
 </aside>
 
+<!-- Main Content -->
 <div class="main" style="overflow:hidden;">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Messages</div>
+      <span class="badge badge-new" id="topbar-unread">0 non lus</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
+    </div>
+  </header>
+
   <div class="chat-layout">
     <!-- Conversations List -->
     <div class="conv-list" id="conv-list">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
-        <div style="font-family:var(--font-h);font-weight:700;font-size:0.9375rem;">Messages</div>
-        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.25rem;" id="conv-count">0 conversations</div>
+      <div class="conv-list-header">
+        <div class="conv-list-title">
+          <span class="material-symbols-outlined" style="font-size:1.25rem;color:var(--accent);">forum</span>
+          Conversations
+        </div>
+        <div class="conv-list-count" id="conv-count">0 conversations</div>
       </div>
-      <div id="conversations"></div>
+      <div class="conv-search">
+        <input type="text" id="conv-search-input" placeholder="Rechercher un visiteur..." oninput="filterConversations()">
+      </div>
+      <div class="conv-scroll" id="conversations"></div>
     </div>
 
     <!-- Chat Area -->
-    <div class="chat-area">
+    <div class="chat-area" id="chat-area">
       <div class="chat-area-header" id="chat-header" style="display:none;">
-        <div>
-          <div style="font-weight:600;" id="chat-visitor-name">Visiteur</div>
-          <div style="font-size:0.75rem;color:var(--muted);" id="chat-visitor-email"></div>
+        <div class="chat-header-info">
+          <button class="chat-back-btn" onclick="showConvList()">
+            <span class="material-symbols-outlined">arrow_back</span>
+          </button>
+          <div class="chat-header-avatar" id="chat-avatar">V</div>
+          <div>
+            <div class="chat-header-name" id="chat-visitor-name">Visiteur</div>
+            <div class="chat-header-email" id="chat-visitor-email"></div>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="btn-prospect" id="btn-add-prospect" onclick="addAsProspect()" style="display:none;">
+            <span class="material-symbols-outlined" style="font-size:0.875rem;">person_add</span> Ajouter comme prospect
+          </button>
         </div>
       </div>
       <div class="chat-area-messages" id="chat-messages">
         <div class="empty-chat">
           <span class="material-symbols-outlined">forum</span>
-          <p>Selectionnez une conversation</p>
+          <p>S&eacute;lectionnez une conversation pour voir les messages</p>
         </div>
       </div>
       <div class="chat-area-input" id="chat-input-area" style="display:none;">
-        <input type="text" id="reply-input" placeholder="Tapez votre reponse...">
-        <button onclick="sendReply()"><span class="material-symbols-outlined">send</span></button>
+        <input type="text" id="reply-input" placeholder="Tapez votre r&eacute;ponse...">
+        <button onclick="sendReply()"><span class="material-symbols-outlined" style="font-size:1.125rem;">send</span> Envoyer</button>
       </div>
     </div>
   </div>
@@ -97,106 +195,324 @@
 </div>
 
 <script>
+// ============ AUTH ============
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+}
+if (user.role) {
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : user.role;
+}
 
+// ============ STATE ============
 let activeConv = null;
+let activeVisitorName = '';
+let activeVisitorEmail = '';
+let allConversations = [];
+let refreshInterval = null;
+let messageRefreshInterval = null;
 
+// ============ TIME FORMATTING ============
 function formatTime(d) {
   const date = new Date(d);
   const now = new Date();
-  if (date.toDateString() === now.toDateString()) return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+
+  if (diffMins < 1) return 'maintenant';
+  if (diffMins < 60) return diffMins + ' min';
+  if (date.toDateString() === now.toDateString()) {
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return 'Hier';
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
 }
 
+function formatFullTime(d) {
+  const date = new Date(d);
+  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' - ' + date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+}
+
+function formatDateSeparator(d) {
+  const date = new Date(d);
+  const now = new Date();
+  if (date.toDateString() === now.toDateString()) return "Aujourd'hui";
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return 'Hier';
+  return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function getInitials(name) {
+  if (!name) return 'V';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.charAt(0).toUpperCase();
+}
+
+// ============ CONVERSATIONS ============
 async function loadConversations() {
   try {
     const res = await fetch('/api/chat/conversations', { headers });
     const data = await res.json();
-    const convs = data.conversations || [];
-    document.getElementById('conv-count').textContent = convs.length + ' conversations';
+    allConversations = data.conversations || [];
+    renderConversations(allConversations);
+    updateUnreadCount();
+  } catch (e) { console.error('Error loading conversations:', e); }
+}
 
-    let totalUnread = 0;
-    document.getElementById('conversations').innerHTML = convs.map(c => {
-      totalUnread += c.unread || 0;
-      return `<div class="conv-item ${activeConv === c._id ? 'active' : ''}" onclick="openConversation('${c._id}', '${(c.visitorName||'Visiteur').replace(/'/g,"\\'")}', '${c.visitorEmail||''}')">
-        <div class="conv-item-name">
-          <span>${c.visitorName || 'Visiteur'}</span>
+function renderConversations(convs) {
+  document.getElementById('conv-count').textContent = convs.length + ' conversation' + (convs.length !== 1 ? 's' : '');
+
+  const container = document.getElementById('conversations');
+  if (!convs.length) {
+    container.innerHTML = '<div style="padding:3rem 1.5rem;text-align:center;"><span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--muted2);display:block;margin-bottom:0.75rem;">chat_bubble_outline</span><p style="color:var(--muted);font-size:0.8125rem;">Aucune conversation</p></div>';
+    return;
+  }
+
+  container.innerHTML = convs.map(c => {
+    const name = c.visitorName || 'Visiteur';
+    const initials = getInitials(name);
+    return `<div class="conv-item ${activeConv === c._id ? 'active' : ''}" onclick="openConversation('${c._id}', '${escHtml(name).replace(/'/g, "\\'")}', '${escHtml(c.visitorEmail || '').replace(/'/g, "\\'")}')">
+      <div class="conv-item-avatar">${initials}</div>
+      <div class="conv-item-body">
+        <div class="conv-item-top">
+          <span class="conv-item-name">${escHtml(name)}</span>
           <span style="display:flex;align-items:center;gap:0.5rem;">
-            <span class="conv-item-time">${formatTime(c.lastDate)}</span>
+            <span class="conv-item-time">${formatTime(c.lastDate || c.updatedAt)}</span>
             ${c.unread > 0 ? `<span class="conv-item-unread">${c.unread}</span>` : ''}
           </span>
         </div>
-        <div class="conv-item-msg">${c.lastMessage || ''}</div>
-      </div>`;
-    }).join('') || '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8125rem;">Aucun message</div>';
-
-    document.getElementById('badge-unread').textContent = totalUnread;
-  } catch (e) { console.error(e); }
+        ${c.visitorEmail ? `<div class="conv-item-email">${escHtml(c.visitorEmail)}</div>` : ''}
+        <div class="conv-item-bottom">
+          <span class="conv-item-msg">${escHtml(c.lastMessage || '')}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
+function filterConversations() {
+  const query = document.getElementById('conv-search-input').value.toLowerCase().trim();
+  if (!query) {
+    renderConversations(allConversations);
+    return;
+  }
+  const filtered = allConversations.filter(c => {
+    const name = (c.visitorName || '').toLowerCase();
+    const email = (c.visitorEmail || '').toLowerCase();
+    const msg = (c.lastMessage || '').toLowerCase();
+    return name.includes(query) || email.includes(query) || msg.includes(query);
+  });
+  renderConversations(filtered);
+}
+
+async function updateUnreadCount() {
+  try {
+    const res = await fetch('/api/chat/unread-count', { headers });
+    const data = await res.json();
+    const count = data.count || data.unreadCount || 0;
+    document.getElementById('topbar-unread').textContent = count + ' non lu' + (count !== 1 ? 's' : '');
+  } catch (e) { /* silent */ }
+}
+
+// ============ OPEN CONVERSATION ============
 async function openConversation(convId, name, email) {
   activeConv = convId;
+  activeVisitorName = name;
+  activeVisitorEmail = email;
+
+  // Show header and input
   document.getElementById('chat-header').style.display = 'flex';
   document.getElementById('chat-input-area').style.display = 'flex';
+
+  // Set header info
   document.getElementById('chat-visitor-name').textContent = name;
   document.getElementById('chat-visitor-email').textContent = email;
-  document.getElementById('reply-input').focus();
+  document.getElementById('chat-avatar').textContent = getInitials(name);
+
+  // Show/hide prospect button
+  const prospectBtn = document.getElementById('btn-add-prospect');
+  if (email) {
+    prospectBtn.style.display = 'inline-flex';
+    prospectBtn.classList.remove('added');
+    prospectBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;">person_add</span> Ajouter comme prospect';
+  } else {
+    prospectBtn.style.display = 'none';
+  }
 
   // Mark active in list
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
-  event?.target?.closest('.conv-item')?.classList.add('active');
+  const items = document.querySelectorAll('.conv-item');
+  items.forEach(el => {
+    if (el.onclick && el.getAttribute('onclick')?.includes(convId)) {
+      el.classList.add('active');
+    }
+  });
 
+  // Mobile: show chat, hide list
+  document.getElementById('conv-list').classList.add('hidden');
+  document.getElementById('chat-area').classList.remove('hidden');
+
+  // Load messages
+  await loadMessages(convId);
+
+  // Focus input
+  document.getElementById('reply-input').focus();
+
+  // Refresh conversation list to update unread counts
+  loadConversations();
+
+  // Auto-refresh messages for active conversation
+  clearInterval(messageRefreshInterval);
+  messageRefreshInterval = setInterval(() => {
+    if (activeConv === convId) loadMessages(convId);
+  }, 10000);
+}
+
+async function loadMessages(convId) {
   try {
     const res = await fetch(`/api/chat/messages/${convId}`, { headers });
     const data = await res.json();
     const msgs = data.messages || [];
-    document.getElementById('chat-messages').innerHTML = msgs.map(m =>
-      `<div class="msg ${m.sender}">
-        <p>${m.content}</p>
-        <div class="msg-time">${formatTime(m.createdAt)}</div>
-      </div>`
-    ).join('') || '<div style="padding:2rem;text-align:center;color:var(--muted);">Debut de la conversation</div>';
-
-    // Scroll to bottom
     const container = document.getElementById('chat-messages');
-    container.scrollTop = container.scrollHeight;
-  } catch (e) { console.error(e); }
 
-  loadConversations(); // Refresh to update unread count
+    if (!msgs.length) {
+      container.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.8125rem;">D&eacute;but de la conversation</div>';
+      return;
+    }
+
+    // Group messages by date
+    let html = '';
+    let lastDate = '';
+    msgs.forEach(m => {
+      const msgDate = new Date(m.createdAt || m.date).toDateString();
+      if (msgDate !== lastDate) {
+        lastDate = msgDate;
+        html += `<div class="msg-date-sep">${formatDateSeparator(m.createdAt || m.date)}</div>`;
+      }
+      html += `<div class="msg ${m.sender}">
+        <p>${escHtml(m.content)}</p>
+        <div class="msg-time">${formatFullTime(m.createdAt || m.date)}</div>
+      </div>`;
+    });
+
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+  } catch (e) { console.error('Error loading messages:', e); }
 }
 
+// ============ SEND REPLY ============
 async function sendReply() {
   const input = document.getElementById('reply-input');
   const text = input.value.trim();
   if (!text || !activeConv) return;
   input.value = '';
 
-  // Add to UI immediately
+  // Add to UI immediately (optimistic)
   const container = document.getElementById('chat-messages');
-  container.innerHTML += `<div class="msg admin"><p>${text}</p><div class="msg-time">maintenant</div></div>`;
+  const msgEl = document.createElement('div');
+  msgEl.className = 'msg admin';
+  msgEl.innerHTML = `<p>${escHtml(text)}</p><div class="msg-time">maintenant</div>`;
+  container.appendChild(msgEl);
   container.scrollTop = container.scrollHeight;
 
   try {
     await fetch('/api/chat/admin-reply', {
-      method: 'POST', headers,
+      method: 'POST',
+      headers,
       body: JSON.stringify({ conversationId: activeConv, content: text })
     });
-  } catch (e) { console.error(e); }
+    // Refresh conversation list to update last message preview
+    loadConversations();
+  } catch (e) {
+    console.error('Error sending reply:', e);
+    msgEl.querySelector('p').style.opacity = '0.5';
+    msgEl.querySelector('.msg-time').textContent = 'Erreur d\'envoi';
+  }
 }
 
-document.getElementById('reply-input')?.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendReply();
+// ============ ADD AS PROSPECT ============
+async function addAsProspect() {
+  if (!activeVisitorEmail) return;
+  const btn = document.getElementById('btn-add-prospect');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;animation:spin 1s linear infinite;">progress_activity</span> Ajout...';
+
+  try {
+    const res = await fetch('/api/prospects', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        name: activeVisitorName || 'Visiteur',
+        email: activeVisitorEmail,
+        source: 'chat',
+        notes: 'Ajout\u00e9 depuis le chat visiteur'
+      })
+    });
+    if (res.ok) {
+      btn.classList.add('added');
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;">check</span> Prospect ajout\u00e9';
+    } else {
+      const data = await res.json();
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;">error</span> ' + (data.message || 'Erreur');
+      setTimeout(() => {
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;">person_add</span> Ajouter comme prospect';
+      }, 3000);
+    }
+  } catch (e) {
+    console.error(e);
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:0.875rem;">person_add</span> Ajouter comme prospect';
+  }
+}
+
+// ============ MOBILE NAV ============
+function showConvList() {
+  document.getElementById('conv-list').classList.remove('hidden');
+  document.getElementById('chat-area').classList.add('hidden');
+}
+
+// ============ KEYBOARD ============
+document.getElementById('reply-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendReply();
+  }
 });
 
-function logout() { localStorage.clear(); window.location.href = '/'; }
+// ============ LOGOUT ============
+function logout() {
+  localStorage.clear();
+  window.location.href = '/pirabel-admin-7x9k2m';
+}
 
+// ============ INIT ============
 loadConversations();
-// Poll for new messages
-setInterval(loadConversations, 10000);
+
+// Auto-refresh conversations every 10 seconds
+refreshInterval = setInterval(loadConversations, 10000);
 </script>
 </body>
 </html>

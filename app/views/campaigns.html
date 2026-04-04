@@ -10,7 +10,10 @@
 <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -23,54 +26,85 @@
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link active"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
 
+<!-- Main Content -->
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
-      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
       <div class="topbar-title">Campagnes Email</div>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvelle campagne</button>
-      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Créer campagne
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+      </button>
     </div>
   </header>
 
   <div class="content">
     <!-- Stats -->
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">campaign</span> Total campagnes</div><div class="stat-card-value" id="stat-total">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">send</span> Envoyees</div><div class="stat-card-value" id="stat-sent">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">group</span> Abonnes</div><div class="stat-card-value" id="stat-subs">0</div></div>
-      <div class="stat-card"><div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">drafts</span> Brouillons</div><div class="stat-card-value" id="stat-drafts">0</div></div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">campaign</span> Total campagnes</div>
+        <div class="stat-card-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">send</span> Envoyees</div>
+        <div class="stat-card-value" id="stat-sent">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--warning);">drafts</span> Brouillons</div>
+        <div class="stat-card-value" id="stat-drafts">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--purple, #bb86fc);">group</span> Abonnes</div>
+        <div class="stat-card-value" id="stat-subs">0</div>
+      </div>
     </div>
 
-    <div class="grid-2">
-      <!-- Campaigns list -->
-      <div class="table-wrap">
-        <div class="table-header"><div class="table-title">Campagnes</div></div>
-        <table>
-          <thead><tr><th>Nom</th><th>Audience</th><th>Statut</th><th>Envoyes</th><th>Actions</th></tr></thead>
-          <tbody id="campaigns-list"></tbody>
-        </table>
-      </div>
+    <!-- Campaigns Table -->
+    <div class="table-wrap">
+      <div class="table-header"><div class="table-title">Campagnes</div></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Sujet</th>
+            <th>Audience</th>
+            <th>Statut</th>
+            <th>Envoyes</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="campaigns-body"></tbody>
+      </table>
+    </div>
 
-      <!-- Subscribers list -->
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Abonnes & Contacts</div>
-          <select id="sub-filter" onchange="loadSubscribers()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.375rem 0.75rem;font-size:0.75rem;">
+    <!-- Subscribers Section -->
+    <div class="table-wrap" style="margin-top:2rem;">
+      <div class="table-header">
+        <div class="table-title">Abonnes &amp; Contacts</div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span style="font-size:0.75rem;color:var(--muted);" id="sub-count">0 abonnes</span>
+          <select id="sub-filter" onchange="loadSubscribers()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.375rem 0.75rem;font-size:0.75rem;font-family:var(--font-b);outline:none;">
             <option value="">Tous</option>
             <option value="client">Clients</option>
             <option value="prospect">Prospects</option>
@@ -78,36 +112,54 @@
             <option value="newsletter">Newsletter</option>
           </select>
         </div>
-        <table>
-          <thead><tr><th>Email</th><th>Nom</th><th>Type</th><th>Date</th></tr></thead>
-          <tbody id="subscribers-list"></tbody>
-        </table>
       </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Email</th>
+            <th>Nom</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="subscribers-body"></tbody>
+      </table>
     </div>
   </div>
 </div>
 </div>
 
-<!-- Modal: Create/Edit Campaign -->
+<!-- Add/Edit Campaign Modal -->
 <div class="modal-overlay" id="modal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-    <div class="modal-title">Nouvelle Campagne Email</div>
-    <form id="campaign-form" class="dash-form">
-      <div class="form-group"><label>Nom de la campagne</label><input type="text" id="c-name" required placeholder="Ex: Newsletter Avril 2026"></div>
-      <div class="form-group"><label>Objet de l'email</label><input type="text" id="c-subject" required placeholder="Ex: Nos nouveaux services IA"></div>
-      <div class="form-group"><label>Audience</label>
+  <div class="modal" style="max-width:680px;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modal-title">Nouvelle Campagne Email</div>
+    <form class="dash-form" id="campaign-form" onsubmit="saveCampaign(event)">
+      <input type="hidden" id="c-id">
+      <div class="form-group">
+        <label>Nom de la campagne *</label>
+        <input type="text" id="c-name" required placeholder="Ex: Newsletter Avril 2026">
+      </div>
+      <div class="form-group">
+        <label>Sujet de l'email *</label>
+        <input type="text" id="c-subject" required placeholder="Ex: Nos nouveaux services IA">
+      </div>
+      <div class="form-group">
+        <label>Audience</label>
         <select id="c-audience">
           <option value="all">Tous les contacts</option>
-          <option value="clients">Clients actifs uniquement</option>
-          <option value="prospects">Prospects (formulaire contact)</option>
+          <option value="clients">Clients actifs</option>
+          <option value="prospects">Prospects</option>
           <option value="guide_downloads">Telechargeurs de guides</option>
         </select>
       </div>
-      <div class="form-group"><label>Contenu HTML du mail</label><textarea id="c-content" rows="10" placeholder="<p>Bonjour {{name}},</p><p>Voici nos dernieres nouvelles...</p>"></textarea></div>
-      <div style="display:flex;gap:1rem;">
-        <button type="button" class="btn btn-ghost" onclick="saveDraft()">Sauver brouillon</button>
-        <button type="button" class="btn btn-primary" onclick="sendCampaign()">Envoyer maintenant</button>
+      <div class="form-group">
+        <label>Contenu HTML *</label>
+        <textarea id="c-content" rows="12" required placeholder="<p>Bonjour {{name}},</p>&#10;<p>Voici nos dernieres nouvelles...</p>"></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
       </div>
     </form>
   </div>
@@ -115,39 +167,76 @@
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.name) { document.getElementById('user-name').textContent = user.name; document.getElementById('user-avatar').textContent = user.name.charAt(0); }
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
 
-function logout() { localStorage.clear(); window.location.href = '/'; }
-function openModal() { document.getElementById('modal').classList.add('open'); }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function formatDate(d) {
+  if (!d) return '-';
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
 
-function badgeType(type) {
+function statusBadge(s) {
+  const map = { draft: 'badge-pending', sent: 'badge-active', sending: 'badge-new', failed: 'badge-danger' };
+  const labels = { draft: 'Brouillon', sent: 'Envoyee', sending: 'En cours', failed: 'Echec' };
+  return '<span class="badge ' + (map[s] || 'badge-done') + '">' + (labels[s] || s) + '</span>';
+}
+
+function audienceLabel(a) {
+  const map = { all: 'Tous', clients: 'Clients', prospects: 'Prospects', guide_downloads: 'Guides' };
+  return map[a] || a;
+}
+
+function subscriberBadge(type) {
   const map = { client: 'badge-active', prospect: 'badge-new', guide_download: 'badge-pending', newsletter: 'badge-done' };
-  return `<span class="badge ${map[type] || 'badge-done'}">${type}</span>`;
+  return '<span class="badge ' + (map[type] || 'badge-done') + '">' + type + '</span>';
 }
-function badgeStatus(s) {
-  const map = { draft: 'badge-pending', sent: 'badge-active', failed: 'badge-danger' };
-  return `<span class="badge ${map[s] || 'badge-done'}">${s}</span>`;
-}
-function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }); }
+
+let campaignsCache = [];
 
 async function loadCampaigns() {
   try {
     const res = await fetch('/api/campaigns', { headers });
+    if (!res.ok) { toast('Erreur chargement des campagnes', 'error'); return; }
     const data = await res.json();
-    const list = data.campaigns || [];
-    document.getElementById('stat-total').textContent = list.length;
-    document.getElementById('stat-sent').textContent = list.filter(c => c.status === 'sent').length;
-    document.getElementById('stat-drafts').textContent = list.filter(c => c.status === 'draft').length;
-    document.getElementById('campaigns-list').innerHTML = list.map(c =>
-      `<tr><td>${c.name}</td><td>${c.audience}</td><td>${badgeStatus(c.status)}</td><td>${c.sentCount || 0}</td><td>
-      ${c.status === 'draft' ? `<button class="btn btn-sm btn-primary" onclick="sendById('${c._id}')">Envoyer</button>` : ''}
-      <button class="btn btn-sm btn-ghost" onclick="deleteCampaign('${c._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
-      </td></tr>`
-    ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);">Aucune campagne</td></tr>';
+    campaignsCache = data.campaigns || data || [];
+
+    document.getElementById('stat-total').textContent = campaignsCache.length;
+    document.getElementById('stat-sent').textContent = campaignsCache.filter(c => c.status === 'sent').length;
+    document.getElementById('stat-drafts').textContent = campaignsCache.filter(c => c.status === 'draft').length;
+
+    document.getElementById('campaigns-body').innerHTML = campaignsCache.map(c =>
+      '<tr>' +
+        '<td>' + (c.name || '-') + '</td>' +
+        '<td>' + (c.subject || '-') + '</td>' +
+        '<td>' + audienceLabel(c.audience) + '</td>' +
+        '<td>' + statusBadge(c.status) + '</td>' +
+        '<td>' + (c.sentCount || 0) + '</td>' +
+        '<td>' + formatDate(c.sentAt || c.createdAt) + '</td>' +
+        '<td>' +
+          '<button class="btn btn-sm btn-ghost" onclick="editCampaign(\'' + c._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
+          (c.status === 'draft' ? '<button class="btn btn-sm btn-primary" onclick="sendCampaign(\'' + c._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">send</span></button>' : '') +
+          '<button class="btn btn-sm btn-ghost" onclick="deleteCampaign(\'' + c._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>' +
+        '</td>' +
+      '</tr>'
+    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune campagne</td></tr>';
   } catch (e) { console.error(e); }
 }
 
@@ -156,62 +245,110 @@ async function loadSubscribers() {
     const type = document.getElementById('sub-filter').value;
     const url = '/api/campaigns/subscribers' + (type ? '?type=' + type : '');
     const res = await fetch(url, { headers });
+    if (!res.ok) return;
     const data = await res.json();
-    const subs = data.subscribers || [];
-    document.getElementById('stat-subs').textContent = data.total || subs.length;
-    document.getElementById('subscribers-list').innerHTML = subs.map(s =>
-      `<tr><td>${s.email}</td><td>${s.name || '-'}</td><td>${badgeType(s.type)}</td><td>${formatDate(s.createdAt)}</td></tr>`
+    const subs = data.subscribers || data || [];
+    const total = data.total || subs.length;
+
+    document.getElementById('stat-subs').textContent = total;
+    document.getElementById('sub-count').textContent = total + ' abonne' + (total > 1 ? 's' : '');
+
+    document.getElementById('subscribers-body').innerHTML = subs.map(s =>
+      '<tr>' +
+        '<td>' + subscriberBadge(s.type) + '</td>' +
+        '<td>' + (s.email || '-') + '</td>' +
+        '<td>' + (s.name || '-') + '</td>' +
+        '<td>' + formatDate(s.createdAt) + '</td>' +
+      '</tr>'
     ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucun abonne</td></tr>';
   } catch (e) { console.error(e); }
 }
 
-async function saveDraft() {
-  try {
-    await fetch('/api/campaigns', { method: 'POST', headers, body: JSON.stringify({
-      name: document.getElementById('c-name').value,
-      subject: document.getElementById('c-subject').value,
-      audience: document.getElementById('c-audience').value,
-      content: document.getElementById('c-content').value,
-      status: 'draft'
-    })});
-    closeModal(); loadCampaigns();
-  } catch (e) { console.error(e); }
+function openModal(campaign) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('campaign-form').reset();
+  document.getElementById('c-id').value = '';
+  document.getElementById('modal-title').textContent = 'Nouvelle Campagne Email';
+  if (campaign) {
+    document.getElementById('modal-title').textContent = 'Modifier la campagne';
+    document.getElementById('c-id').value = campaign._id;
+    document.getElementById('c-name').value = campaign.name || '';
+    document.getElementById('c-subject').value = campaign.subject || '';
+    document.getElementById('c-audience').value = campaign.audience || 'all';
+    document.getElementById('c-content').value = campaign.content || '';
+  }
 }
 
-async function sendCampaign() {
-  try {
-    const res = await fetch('/api/campaigns', { method: 'POST', headers, body: JSON.stringify({
-      name: document.getElementById('c-name').value,
-      subject: document.getElementById('c-subject').value,
-      audience: document.getElementById('c-audience').value,
-      content: document.getElementById('c-content').value,
-      status: 'draft'
-    })});
-    const campaign = await res.json();
-    // Now send it
-    const sendRes = await fetch(`/api/campaigns/${campaign._id}/send`, { method: 'POST', headers });
-    const result = await sendRes.json();
-    alert(`Campagne envoyee a ${result.sentCount} destinataires !`);
-    closeModal(); loadCampaigns();
-  } catch (e) { console.error(e); alert('Erreur envoi'); }
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
 }
 
-async function sendById(id) {
-  if (!confirm('Envoyer cette campagne maintenant ?')) return;
+async function saveCampaign(e) {
+  e.preventDefault();
+  const id = document.getElementById('c-id').value;
+  const body = {
+    name: document.getElementById('c-name').value,
+    subject: document.getElementById('c-subject').value,
+    audience: document.getElementById('c-audience').value,
+    content: document.getElementById('c-content').value
+  };
   try {
-    const res = await fetch(`/api/campaigns/${id}/send`, { method: 'POST', headers });
-    const result = await res.json();
-    alert(`Envoye a ${result.sentCount} destinataires`);
+    let res;
+    if (id) {
+      res = await fetch('/api/campaigns/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
+    } else {
+      body.status = 'draft';
+      res = await fetch('/api/campaigns', { method: 'POST', headers, body: JSON.stringify(body) });
+    }
+    if (!res.ok) { toast('Erreur lors de l\'enregistrement', 'error'); return; }
+    closeModal();
     loadCampaigns();
-  } catch (e) { alert('Erreur'); }
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
+}
+
+async function editCampaign(id) {
+  const campaign = campaignsCache.find(c => c._id === id);
+  if (campaign) {
+    openModal(campaign);
+  } else {
+    try {
+      const res = await fetch('/api/campaigns', { headers });
+      if (!res.ok) return;
+      const data = await res.json();
+      const list = data.campaigns || data || [];
+      const found = list.find(c => c._id === id);
+      if (found) openModal(found);
+    } catch (e) { console.error(e); }
+  }
+}
+
+async function sendCampaign(id) {
+  if (!confirm('Envoyer cette campagne maintenant ? Cette action est irreversible.')) return;
+  try {
+    const res = await fetch('/api/campaigns/' + id + '/send', { method: 'POST', headers });
+    if (!res.ok) { toast('Erreur lors de l\'envoi', 'error'); return; }
+    const result = await res.json();
+    toast('Campagne envoyee a ' + (result.sentCount || 0) + ' destinataire(s) !', 'success');
+    loadCampaigns();
+  } catch (e) { console.error(e); toast('Erreur envoi', 'error'); }
 }
 
 async function deleteCampaign(id) {
   if (!confirm('Supprimer cette campagne ?')) return;
-  await fetch(`/api/campaigns/${id}`, { method: 'DELETE', headers });
-  loadCampaigns();
+  try {
+    const res = await fetch('/api/campaigns/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { toast('Erreur suppression', 'error'); return; }
+    loadCampaigns();
+  } catch (e) { console.error(e); toast('Erreur serveur', 'error'); }
 }
 
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/pirabel-admin-7x9k2m';
+}
+
+// Init
 loadCampaigns();
 loadSubscribers();
 </script>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prospection | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.status-nouveau{background:rgba(229,226,225,0.1);color:var(--muted);}
+.status-contacte{background:rgba(255,181,156,0.15);color:var(--warning);}
+.status-intéressé{background:rgba(65,228,192,0.1);color:var(--teal);}
+.status-converti{background:rgba(255,85,0,0.1);color:var(--accent);}
+.status-perdu{background:rgba(255,180,171,0.15);color:var(--danger);}
+.prospect-actions{display:flex;gap:0.25rem;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/prospects" class="sidebar-link active"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Prospection</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter prospect</button>
+      <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Toolbar -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <input type="text" id="search-input" placeholder="Rechercher un prospect..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;flex:1;min-width:200px;" oninput="loadProspects()">
+      <select id="filter-status" onchange="loadProspects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
+        <option value="">Tous les statuts</option>
+        <option value="nouveau">Nouveau</option>
+        <option value="contacte">Contacte</option>
+        <option value="intéressé">Interesse</option>
+        <option value="converti">Converti</option>
+        <option value="perdu">Perdu</option>
+      </select>
+    </div>
+
+    <!-- Prospects Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Entreprise</th>
+            <th>Email</th>
+            <th>Statut</th>
+            <th>Emails envoyes</th>
+            <th>Dernier contact</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="prospects-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Add/Edit Prospect Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="max-width:650px;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-title" id="modal-title">Ajouter un prospect</div>
+    <form class="dash-form" id="prospect-form" onsubmit="saveProspect(event)">
+      <input type="hidden" id="prospect-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Nom du contact *</label>
+          <input type="text" id="f-contactName" required>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="f-email" required>
+        </div>
+        <div class="form-group">
+          <label>Entreprise</label>
+          <input type="text" id="f-company">
+        </div>
+        <div class="form-group">
+          <label>Telephone</label>
+          <input type="tel" id="f-phone">
+        </div>
+        <div class="form-group">
+          <label>Site web</label>
+          <input type="url" id="f-website" placeholder="https://">
+        </div>
+        <div class="form-group">
+          <label>Secteur</label>
+          <input type="text" id="f-sector">
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select id="f-status">
+            <option value="nouveau">Nouveau</option>
+            <option value="contacte">Contacte</option>
+            <option value="intéressé">Interesse</option>
+            <option value="converti">Converti</option>
+            <option value="perdu">Perdu</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Probleme identifie</label>
+        <textarea id="f-problem" rows="3" placeholder="Quel probleme ce prospect cherche a resoudre..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="f-notes" rows="2" placeholder="Notes internes..."></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Send Email Modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal" style="max-width:600px;">
+    <button class="modal-close" onclick="closeEmailModal()">&times;</button>
+    <div class="modal-title">Envoyer un email</div>
+    <form class="dash-form" id="email-form" onsubmit="sendEmail(event)">
+      <input type="hidden" id="email-prospect-id">
+      <div class="form-group">
+        <label>Destinataire</label>
+        <input type="text" id="email-to" disabled style="opacity:0.6;">
+      </div>
+      <div class="form-group">
+        <label>Objet *</label>
+        <input type="text" id="email-subject" required placeholder="Objet de l'email">
+      </div>
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="email-title" placeholder="Titre affiche dans l'email">
+      </div>
+      <div class="form-group">
+        <label>Contenu du message *</label>
+        <textarea id="email-body" rows="8" required placeholder="Redigez votre message..."></textarea>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:1rem;">send</span> Envoyer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeEmailModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
+
+function statusBadge(status) {
+  const cls = 'status-' + (status || 'nouveau');
+  const labels = { 'nouveau': 'Nouveau', 'contacte': 'Contacte', 'intéressé': 'Interesse', 'converti': 'Converti', 'perdu': 'Perdu' };
+  return '<span class="badge ' + cls + '">' + (labels[status] || status) + '</span>';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Load prospects
+async function loadProspects() {
+  try {
+    const search = document.getElementById('search-input').value;
+    const status = document.getElementById('filter-status').value;
+    let url = '/api/prospects?';
+    if (search) url += 'search=' + encodeURIComponent(search) + '&';
+    if (status) url += 'status=' + encodeURIComponent(status);
+
+    const res = await fetch(url, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement prospects', 'error'); return; }
+    const data = await res.json();
+    const prospects = data.prospects || data;
+
+    document.getElementById('prospects-body').innerHTML = prospects.map(p =>
+      '<tr>' +
+        '<td style="font-weight:600;">' + escapeHtml(p.contactName) + '</td>' +
+        '<td>' + escapeHtml(p.company || '-') + '</td>' +
+        '<td>' + escapeHtml(p.email) + '</td>' +
+        '<td>' + statusBadge(p.status) + '</td>' +
+        '<td style="text-align:center;">' + (p.emailsSent || 0) + '</td>' +
+        '<td>' + formatDate(p.lastContactedAt || p.updatedAt) + '</td>' +
+        '<td>' +
+          '<div class="prospect-actions">' +
+            '<button class="btn btn-sm btn-ghost" onclick="editProspect(\'' + p._id + '\')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
+            '<button class="btn btn-sm btn-ghost" onclick="openEmailModal(\'' + p._id + '\', \'' + escapeHtml(p.email) + '\', \'' + escapeHtml(p.contactName) + '\')" title="Envoyer email"><span class="material-symbols-outlined" style="font-size:0.875rem;">email</span></button>' +
+            (p.status !== 'converti' ? '<button class="btn btn-sm btn-ghost" onclick="convertProspect(\'' + p._id + '\', \'' + escapeHtml(p.contactName) + '\')" title="Convertir en client"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--teal);">person_add</span></button>' : '') +
+            '<button class="btn btn-sm btn-ghost" onclick="deleteProspect(\'' + p._id + '\')" title="Supprimer"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--danger);">delete</span></button>' +
+          '</div>' +
+        '</td>' +
+      '</tr>'
+    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun prospect trouve</td></tr>';
+  } catch (e) { console.error('Prospects error:', e); }
+}
+
+// Open add/edit modal
+function openModal(prospect) {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-title').textContent = prospect ? 'Modifier le prospect' : 'Ajouter un prospect';
+
+  if (prospect) {
+    document.getElementById('prospect-id').value = prospect._id;
+    document.getElementById('f-contactName').value = prospect.contactName || '';
+    document.getElementById('f-email').value = prospect.email || '';
+    document.getElementById('f-company').value = prospect.company || '';
+    document.getElementById('f-phone').value = prospect.phone || '';
+    document.getElementById('f-website').value = prospect.website || '';
+    document.getElementById('f-sector').value = prospect.sector || '';
+    document.getElementById('f-status').value = prospect.status || 'nouveau';
+    document.getElementById('f-problem').value = prospect.problem || '';
+    document.getElementById('f-notes').value = prospect.notes || '';
+  } else {
+    document.getElementById('prospect-form').reset();
+    document.getElementById('prospect-id').value = '';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// Save prospect
+async function saveProspect(e) {
+  e.preventDefault();
+  const id = document.getElementById('prospect-id').value;
+  const body = {
+    contactName: document.getElementById('f-contactName').value,
+    email: document.getElementById('f-email').value,
+    company: document.getElementById('f-company').value,
+    phone: document.getElementById('f-phone').value,
+    website: document.getElementById('f-website').value,
+    sector: document.getElementById('f-sector').value,
+    status: document.getElementById('f-status').value,
+    problem: document.getElementById('f-problem').value,
+    notes: document.getElementById('f-notes').value
+  };
+
+  try {
+    let res;
+    if (id) {
+      res = await fetch('/api/prospects/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
+    } else {
+      res = await fetch('/api/prospects', { method: 'POST', headers, body: JSON.stringify(body) });
+    }
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur sauvegarde prospect', 'error'); return; }
+    closeModal();
+    loadProspects();
+  } catch (e) {
+    console.error('Save prospect error:', e);
+    toast('Erreur lors de la sauvegarde', 'error');
+  }
+}
+
+// Edit prospect
+async function editProspect(id) {
+  try {
+    const res = await fetch('/api/prospects/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement prospect', 'error'); return; }
+    const prospect = await res.json();
+    openModal(prospect);
+  } catch (e) { console.error('Edit prospect error:', e); }
+}
+
+// Delete prospect
+async function deleteProspect(id) {
+  if (!confirm('Supprimer ce prospect ?')) return;
+  try {
+    const res = await fetch('/api/prospects/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur suppression', 'error'); return; }
+    loadProspects();
+  } catch (e) { console.error('Delete prospect error:', e); }
+}
+
+// Convert prospect to client
+async function convertProspect(id, name) {
+  if (!confirm('Convertir "' + name + '" en client ? Le prospect sera mis a jour en statut "converti".')) return;
+  try {
+    const res = await fetch('/api/prospects/' + id + '/convert', { method: 'POST', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur conversion', 'error'); return; }
+    toast('Prospect converti en client avec succes', 'success');
+    loadProspects();
+  } catch (e) {
+    console.error('Convert error:', e);
+    toast('Erreur lors de la conversion', 'error');
+  }
+}
+
+// Email modal
+function openEmailModal(prospectId, email, name) {
+  document.getElementById('email-modal').classList.add('open');
+  document.getElementById('email-prospect-id').value = prospectId;
+  document.getElementById('email-to').value = name + ' <' + email + '>';
+  document.getElementById('email-subject').value = '';
+  document.getElementById('email-title').value = '';
+  document.getElementById('email-body').value = '';
+}
+
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+
+// Send email
+async function sendEmail(e) {
+  e.preventDefault();
+  const prospectId = document.getElementById('email-prospect-id').value;
+  const body = {
+    subject: document.getElementById('email-subject').value,
+    title: document.getElementById('email-title').value,
+    message: document.getElementById('email-body').value
+  };
+
+  try {
+    const res = await fetch('/api/prospects/' + prospectId + '/email', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur envoi email', 'error'); return; }
+    toast('Email envoye avec succes', 'success');
+    closeEmailModal();
+    loadProspects();
+  } catch (e) {
+    console.error('Send email error:', e);
+    toast('Erreur lors de l\'envoi de l\'email', 'error');
+  }
+}
+
+// Init
+loadProspects();
+</script>
+</body>
+</html>

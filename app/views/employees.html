@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
 
 <!-- Sidebar -->
@@ -18,21 +19,22 @@
   <nav class="sidebar-nav">
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
-
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link active"><span class="material-symbols-outlined">badge</span> Employes</a>
-
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -55,10 +57,6 @@
       <div class="topbar-title">Gestion Employes</div>
     </div>
     <div class="topbar-actions">
-      <button class="topbar-btn" onclick="window.location.href='/orders'">
-        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
-        <span id="notif-count">0</span> nouvelles
-      </button>
       <button class="topbar-btn" onclick="logout()">
         <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
       </button>
@@ -66,15 +64,33 @@
   </header>
 
   <div class="content">
+    <!-- Salary Alerts -->
+    <div id="salary-alerts" style="margin-bottom:1.5rem;"></div>
+
     <!-- Toolbar -->
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-      <select id="filter-department" onchange="loadEmployees()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
+      <select id="filter-department" onchange="loadEmployees()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:170px;">
         <option value="">Tous les departements</option>
+        <option value="seo">SEO</option>
+        <option value="web">Web</option>
         <option value="design">Design</option>
-        <option value="developpement">Developpement</option>
         <option value="marketing">Marketing</option>
-        <option value="management">Management</option>
         <option value="commercial">Commercial</option>
+        <option value="direction">Direction</option>
+        <option value="support">Support</option>
+        <option value="ia">IA</option>
+        <option value="video">Video</option>
+        <option value="content">Content</option>
+        <option value="ads">Ads</option>
+        <option value="rh">RH</option>
+        <option value="finance">Finance</option>
+        <option value="technique">Technique</option>
+      </select>
+      <select id="filter-status" onchange="loadEmployees()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:140px;">
+        <option value="">Tous les statuts</option>
+        <option value="actif">Actif</option>
+        <option value="inactif">Inactif</option>
+        <option value="en_attente">En attente</option>
       </select>
       <div style="flex:1;"></div>
       <button class="btn btn-primary" onclick="openModal()">
@@ -89,10 +105,10 @@
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Role</th>
             <th>Departement</th>
+            <th>Role</th>
             <th>Statut</th>
-            <th>Projets actifs</th>
+            <th>Salaire</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -103,9 +119,9 @@
 </div>
 </div>
 
-<!-- Modal -->
+<!-- Add/Edit Employee Modal -->
 <div class="modal-overlay" id="modal">
-  <div class="modal" style="max-width:600px;">
+  <div class="modal" style="max-width:640px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-title" id="modal-title">Ajouter un employe</div>
     <form class="dash-form" id="employee-form" onsubmit="saveEmployee(event)">
@@ -124,22 +140,40 @@
           <input type="text" id="f-phone">
         </div>
         <div class="form-group">
-          <label>Role</label>
-          <input type="text" id="f-role" placeholder="Designer, Developpeur...">
+          <label>Role *</label>
+          <input type="text" id="f-role" placeholder="Designer, Developpeur..." required>
         </div>
         <div class="form-group">
-          <label>Departement</label>
-          <select id="f-department">
+          <label>Departement *</label>
+          <select id="f-department" required>
+            <option value="">Selectionner</option>
+            <option value="seo">SEO</option>
+            <option value="web">Web</option>
             <option value="design">Design</option>
-            <option value="developpement">Developpement</option>
             <option value="marketing">Marketing</option>
-            <option value="management">Management</option>
             <option value="commercial">Commercial</option>
+            <option value="direction">Direction</option>
+            <option value="support">Support</option>
+            <option value="ia">IA</option>
+            <option value="video">Video</option>
+            <option value="content">Content</option>
+            <option value="ads">Ads</option>
+            <option value="rh">RH</option>
+            <option value="finance">Finance</option>
+            <option value="technique">Technique</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Salaire</label>
-          <input type="number" id="f-salary" placeholder="0">
+          <label>Salaire mensuel</label>
+          <input type="number" id="f-salary" placeholder="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Date debut</label>
+          <input type="date" id="f-startDate">
+        </div>
+        <div class="form-group">
+          <label>Jour de paie</label>
+          <input type="number" id="f-payDay" value="5" min="1" max="31">
         </div>
       </div>
       <div class="form-group">
@@ -154,11 +188,57 @@
   </div>
 </div>
 
+<!-- Salary Payment Modal -->
+<div class="modal-overlay" id="salary-modal">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" onclick="closeSalaryModal()">&times;</button>
+    <div class="modal-title">Payer salaire</div>
+    <form class="dash-form" id="salary-form" onsubmit="paySalary(event)">
+      <input type="hidden" id="sal-employee-id">
+      <div class="form-group">
+        <label>Employe</label>
+        <input type="text" id="sal-employee-name" disabled style="opacity:0.7;">
+      </div>
+      <div class="form-group">
+        <label>Mois (YYYY-MM) *</label>
+        <input type="month" id="sal-month" required>
+      </div>
+      <div class="form-group">
+        <label>Montant *</label>
+        <input type="number" id="sal-amount" step="0.01" required>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Payer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeSalaryModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Employee Modal -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeViewModal()">&times;</button>
+    <div class="modal-title">Details employe</div>
+    <div id="view-content"></div>
+  </div>
+</div>
+
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
@@ -167,35 +247,82 @@ if (user.name) {
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
 
-function statusBadge(status) {
-  const map = { 'actif': 'badge-active', 'inactif': 'badge-done', 'conge': 'badge-pending' };
-  return `<span class="badge ${map[status] || 'badge-done'}">${status}</span>`;
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/pirabel-admin-7x9k2m';
 }
 
+function statusBadge(s) {
+  const m = { 'actif': 'badge-active', 'inactif': 'badge-danger', 'en_attente': 'badge-pending', 'paye': 'badge-active', 'en_retard': 'badge-danger', 'brouillon': 'badge-done', 'envoyee': 'badge-pending', 'payee': 'badge-active', 'annulee': 'badge-danger' };
+  return '<span class="badge ' + (m[s] || 'badge-done') + '">' + (s || '-').replace(/_/g, ' ') + '</span>';
+}
+
+function formatDate(d) {
+  return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+}
+
+function fmt(n) {
+  return (n || 0).toLocaleString('fr-FR') + ' \u20AC';
+}
+
+// ---- Salary Alerts ----
+async function loadSalaryAlerts() {
+  try {
+    const res = await fetch('/api/employees/salary-alerts', { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement alertes salaire', 'error'); return; }
+    const alerts = await res.json();
+    const container = document.getElementById('salary-alerts');
+    if (!alerts || !alerts.length) { container.innerHTML = ''; return; }
+    container.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;">' +
+      alerts.map(a => `
+        <div style="background:rgba(255,180,171,0.08);border:1px solid rgba(255,180,171,0.2);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;">
+          <span class="material-symbols-outlined" style="color:var(--danger);font-size:1.5rem;">warning</span>
+          <div>
+            <div style="font-weight:600;font-size:0.8125rem;">${a.name || a.employeeName || 'Employe'}</div>
+            <div style="font-size:0.75rem;color:var(--muted);">${a.message || 'Salaire impaye'}</div>
+          </div>
+          ${a.employeeId || a._id ? '<button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="openSalaryModal(\'' + (a.employeeId || a._id) + '\',\'' + (a.name || a.employeeName || '') + '\',' + (a.salary || 0) + ')">Payer</button>' : ''}
+        </div>
+      `).join('') + '</div>';
+  } catch (e) { console.error(e); }
+}
+
+// ---- Load Employees ----
 async function loadEmployees() {
   try {
     const dept = document.getElementById('filter-department').value;
+    const status = document.getElementById('filter-status').value;
     let url = '/api/employees?';
-    if (dept) url += 'department=' + encodeURIComponent(dept);
+    if (dept) url += 'department=' + encodeURIComponent(dept) + '&';
+    if (status) url += 'status=' + encodeURIComponent(status);
     const res = await fetch(url, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employes', 'error'); return; }
     const data = await res.json();
     const employees = data.employees || data;
     document.getElementById('employees-body').innerHTML = employees.map(e => `
       <tr>
-        <td>${e.name}</td>
+        <td style="font-weight:600;">${e.name}</td>
         <td>${e.email}</td>
-        <td>${e.role || '-'}</td>
         <td>${e.department || '-'}</td>
+        <td>${e.role || '-'}</td>
         <td>${statusBadge(e.status || 'actif')}</td>
-        <td>${e.activeProjects || 0}</td>
+        <td>${fmt(e.salary)}</td>
         <td>
-          <button class="btn btn-sm btn-ghost" onclick="editEmployee('${e._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+          <div style="display:flex;gap:0.25rem;flex-wrap:wrap;">
+            <button class="btn btn-sm btn-ghost" onclick="editEmployee('${e._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+            <button class="btn btn-sm btn-ghost" onclick="inviteEmployee('${e._id}')" title="Inviter"><span class="material-symbols-outlined" style="font-size:0.875rem;">mail</span></button>
+            <button class="btn btn-sm btn-ghost" onclick="openSalaryModal('${e._id}','${e.name.replace(/'/g, "\\'")}',${e.salary || 0})" title="Payer salaire"><span class="material-symbols-outlined" style="font-size:0.875rem;">payments</span></button>
+            <button class="btn btn-sm btn-ghost" onclick="viewEmployee('${e._id}')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+            <button class="btn btn-sm btn-ghost" onclick="deleteEmployee('${e._id}')" title="Supprimer" style="color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
+          </div>
         </td>
       </tr>
     `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun employe trouve</td></tr>';
   } catch (e) { console.error(e); }
 }
 
+// ---- Add/Edit Modal ----
 function openModal(employee) {
   document.getElementById('modal').classList.add('open');
   document.getElementById('modal-title').textContent = employee ? 'Modifier l\'employe' : 'Ajouter un employe';
@@ -205,12 +332,15 @@ function openModal(employee) {
     document.getElementById('f-email').value = employee.email || '';
     document.getElementById('f-phone').value = employee.phone || '';
     document.getElementById('f-role').value = employee.role || '';
-    document.getElementById('f-department').value = employee.department || 'design';
+    document.getElementById('f-department').value = employee.department || '';
     document.getElementById('f-salary').value = employee.salary || '';
+    document.getElementById('f-startDate').value = employee.startDate ? employee.startDate.substring(0, 10) : '';
     document.getElementById('f-skills').value = (employee.skills || []).join(', ');
+    document.getElementById('f-payDay').value = employee.payDay || 5;
   } else {
     document.getElementById('employee-form').reset();
     document.getElementById('employee-id').value = '';
+    document.getElementById('f-payDay').value = 5;
   }
 }
 
@@ -228,34 +358,126 @@ async function saveEmployee(e) {
     role: document.getElementById('f-role').value,
     department: document.getElementById('f-department').value,
     salary: Number(document.getElementById('f-salary').value) || 0,
-    skills: document.getElementById('f-skills').value.split(',').map(s => s.trim()).filter(Boolean)
+    startDate: document.getElementById('f-startDate').value || undefined,
+    skills: document.getElementById('f-skills').value.split(',').map(s => s.trim()).filter(Boolean),
+    payDay: Number(document.getElementById('f-payDay').value) || 5
   };
   try {
-    if (id) {
-      await fetch('/api/employees/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
-    } else {
-      await fetch('/api/employees', { method: 'POST', headers, body: JSON.stringify(body) });
-    }
+    const res = id
+      ? await fetch('/api/employees/' + id, { method: 'PUT', headers, body: JSON.stringify(body) })
+      : await fetch('/api/employees', { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur sauvegarde employe', 'error'); return; }
     closeModal();
     loadEmployees();
-  } catch (e) { console.error(e); }
+    loadSalaryAlerts();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
 async function editEmployee(id) {
   try {
     const res = await fetch('/api/employees/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employe', 'error'); return; }
     const employee = await res.json();
     openModal(employee);
-  } catch (e) { console.error(e); }
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+// ---- Invite ----
+async function inviteEmployee(id) {
+  if (!confirm('Envoyer une invitation a cet employe ? Un compte utilisateur sera cree et les identifiants envoyes par email.')) return;
+  try {
+    const res = await fetch('/api/employees/' + id + '/invite', { method: 'POST', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur invitation', 'error'); return; }
+    toast('Invitation envoyee avec succes !', 'success');
+    loadEmployees();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
 
+// ---- Salary Payment ----
+function openSalaryModal(id, name, salary) {
+  document.getElementById('salary-modal').classList.add('open');
+  document.getElementById('sal-employee-id').value = id;
+  document.getElementById('sal-employee-name').value = name;
+  document.getElementById('sal-amount').value = salary || '';
+  // Default month to current
+  const now = new Date();
+  document.getElementById('sal-month').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+}
+
+function closeSalaryModal() {
+  document.getElementById('salary-modal').classList.remove('open');
+}
+
+async function paySalary(e) {
+  e.preventDefault();
+  const id = document.getElementById('sal-employee-id').value;
+  const body = {
+    mois: document.getElementById('sal-month').value,
+    montant: Number(document.getElementById('sal-amount').value)
+  };
+  try {
+    const res = await fetch('/api/employees/' + id + '/salary', { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur paiement salaire', 'error'); return; }
+    toast('Salaire paye avec succes !', 'success');
+    closeSalaryModal();
+    loadEmployees();
+    loadSalaryAlerts();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- View Employee Details ----
+async function viewEmployee(id) {
+  try {
+    const res = await fetch('/api/employees/' + id, { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employe', 'error'); return; }
+    const emp = await res.json();
+    const payments = emp.salaryPayments || [];
+    let html = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem;margin-bottom:1.5rem;">
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Nom</span>${emp.name}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Email</span>${emp.email}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Telephone</span>${emp.phone || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Role</span>${emp.role || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Departement</span>${emp.department || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Statut</span>${statusBadge(emp.status || 'actif')}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Salaire</span>${fmt(emp.salary)}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Date debut</span>${formatDate(emp.startDate)}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Jour de paie</span>${emp.payDay || 5}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Competences</span>${(emp.skills || []).join(', ') || '-'}</div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:1.25rem;">
+        <div style="font-family:var(--font-h);font-weight:700;font-size:0.9375rem;margin-bottom:1rem;">Historique des paiements</div>
+        ${payments.length ? `
+          <table style="width:100%;">
+            <thead><tr><th>Mois</th><th>Montant</th><th>Date paiement</th></tr></thead>
+            <tbody>${payments.map(p => `<tr><td>${p.mois || p.month || '-'}</td><td>${fmt(p.montant || p.amount)}</td><td>${formatDate(p.paidAt || p.date)}</td></tr>`).join('')}</tbody>
+          </table>
+        ` : '<div style="color:var(--muted);font-size:0.8125rem;">Aucun paiement enregistre</div>'}
+      </div>
+    `;
+    document.getElementById('view-content').innerHTML = html;
+    document.getElementById('view-modal').classList.add('open');
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+function closeViewModal() {
+  document.getElementById('view-modal').classList.remove('open');
+}
+
+// ---- Delete ----
+async function deleteEmployee(id) {
+  if (!confirm('Supprimer cet employe ? Cette action est irreversible.')) return;
+  try {
+    const res = await fetch('/api/employees/' + id, { method: 'DELETE', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur suppression', 'error'); return; }
+    loadEmployees();
+    loadSalaryAlerts();
+  } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
+}
+
+// ---- Init ----
 loadEmployees();
+loadSalaryAlerts();
 </script>
 </body>
 </html>

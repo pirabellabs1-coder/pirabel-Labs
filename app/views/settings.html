@@ -3,14 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Param&egrave;tres | Pirabel Labs Admin</title>
+<title>Paramètres | Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.settings-section{background:var(--card);border:1px solid var(--border);padding:2rem;margin-bottom:1.5rem;}
+.settings-section-title{font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;}
+.settings-section-title .material-symbols-outlined{color:var(--accent);font-size:1.25rem;}
+.logo-preview{width:120px;height:120px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;background:var(--bg);overflow:hidden;}
+.logo-preview img{max-width:100%;max-height:100%;object-fit:contain;}
+.logo-preview .placeholder{color:var(--muted);font-size:0.75rem;text-align:center;}
+.save-bar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:flex-end;gap:1rem;z-index:10;}
+</style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
+
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
   <nav class="sidebar-nav">
@@ -20,108 +31,230 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employ&eacute;s</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Syst&egrave;me</div>
-    <a href="/settings" class="sidebar-link active"><span class="material-symbols-outlined">settings</span> Param&egrave;tres</a>
+    <div class="sidebar-section">Systeme</div>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link active"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
-  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role">Administrateur</div></div></div></div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
+
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
       <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
-      <div class="topbar-title">Param&egrave;tres</div>
+      <div class="topbar-title">Paramètres</div>
     </div>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
     </div>
   </header>
+
   <div class="content">
-    <div class="grid-2">
-      <!-- Profile -->
-      <div style="background:var(--card);border:1px solid var(--border);padding:2rem;">
-        <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">person</span> Mon profil</h2>
-        <form id="profile-form" class="dash-form">
-          <div class="form-group"><label>Nom complet</label><input type="text" id="p-name"></div>
-          <div class="form-group"><label>Email</label><input type="email" id="p-email" disabled style="opacity:0.5;"></div>
-          <div class="form-group"><label>R&ocirc;le</label><input type="text" id="p-role" disabled style="opacity:0.5;"></div>
-          <button type="submit" class="btn btn-primary">Mettre &agrave; jour</button>
-        </form>
-      </div>
+    <form id="settings-form" class="dash-form">
 
-      <!-- Change Password -->
-      <div style="background:var(--card);border:1px solid var(--border);padding:2rem;">
-        <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">lock</span> Changer le mot de passe</h2>
-        <form id="password-form" class="dash-form">
-          <div class="form-group"><label>Mot de passe actuel</label><input type="password" id="pw-current" required></div>
-          <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="pw-new" required minlength="6"></div>
-          <div class="form-group"><label>Confirmer</label><input type="password" id="pw-confirm" required></div>
-          <button type="submit" class="btn btn-primary">Changer</button>
-        </form>
-        <div id="pw-msg" style="margin-top:1rem;font-size:0.8125rem;"></div>
-      </div>
-    </div>
-
-    <!-- Company Info -->
-    <div style="background:var(--card);border:1px solid var(--border);padding:2rem;margin-top:1.5rem;">
-      <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1.25rem;">business</span> Informations entreprise</h2>
-      <form class="dash-form">
-        <div class="grid-2">
-          <div class="form-group"><label>Nom entreprise</label><input type="text" value="Pirabel Labs SAS"></div>
-          <div class="form-group"><label>Email</label><input type="email" value="contact@pirabel-labs.com"></div>
-          <div class="form-group"><label>T&eacute;l&eacute;phone</label><input type="tel" value="+33 6 00 00 00 00"></div>
-          <div class="form-group"><label>Site web</label><input type="url" value="https://pirabel-labs.com"></div>
-          <div class="form-group"><label>Adresse</label><input type="text" value="Paris, France"></div>
-          <div class="form-group"><label>N&deg; SIRET</label><input type="text" placeholder="XXX XXX XXX XXXXX"></div>
+      <!-- Informations Agence -->
+      <div class="settings-section">
+        <div class="settings-section-title"><span class="material-symbols-outlined">business</span> Informations Agence</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>Nom de l'agence</label><input type="text" id="f-agencyName"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="f-agencyEmail"></div>
+          <div class="form-group"><label>Telephone</label><input type="tel" id="f-agencyPhone"></div>
+          <div class="form-group"><label>Adresse</label><input type="text" id="f-agencyAddress"></div>
+          <div class="form-group"><label>Ville</label><input type="text" id="f-agencyCity"></div>
+          <div class="form-group"><label>Pays</label><input type="text" id="f-agencyCountry"></div>
+          <div class="form-group"><label>Site web</label><input type="url" id="f-agencyWebsite"></div>
+          <div class="form-group"><label>SIRET</label><input type="text" id="f-agencySiret" placeholder="XXX XXX XXX XXXXX"></div>
+          <div class="form-group"><label>Numéro TVA</label><input type="text" id="f-agencyTva" placeholder="FR XX XXXXXXXXX"></div>
         </div>
-        <div class="form-group"><label>Taux TVA par d&eacute;faut (%)</label><input type="number" value="20" min="0" max="30" style="max-width:120px;"></div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-      </form>
-    </div>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>Logo</label>
+          <div class="logo-preview" id="logo-preview">
+            <div class="placeholder">Aucun logo</div>
+          </div>
+          <input type="file" id="f-logo" accept="image/*" onchange="uploadLogo()" style="font-size:0.8125rem;">
+        </div>
+      </div>
 
-    <!-- Danger Zone -->
-    <div style="background:var(--card);border:1px solid rgba(255,180,171,0.2);padding:2rem;margin-top:1.5rem;">
-      <h2 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--danger);display:flex;align-items:center;gap:0.5rem;"><span class="material-symbols-outlined" style="font-size:1.25rem;">warning</span> Zone dangereuse</h2>
-      <p style="color:var(--muted);font-size:0.8125rem;margin-bottom:1rem;">Actions irr&eacute;versibles. Proc&eacute;dez avec pr&eacute;caution.</p>
-      <button class="btn btn-sm" style="background:transparent;border:1px solid var(--danger);color:var(--danger);">Supprimer toutes les donn&eacute;es</button>
-    </div>
+      <!-- Facturation -->
+      <div class="settings-section">
+        <div class="settings-section-title"><span class="material-symbols-outlined">receipt_long</span> Facturation</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>Prefixe facture</label><input type="text" id="f-invoicePrefix" placeholder="FAC-"></div>
+          <div class="form-group"><label>Taux TVA par defaut (%)</label><input type="number" id="f-defaultTva" min="0" max="100" step="0.1"></div>
+          <div class="form-group"><label>Devise</label>
+            <select id="f-currency">
+              <option value="EUR">EUR - Euro</option>
+              <option value="USD">USD - Dollar US</option>
+              <option value="GBP">GBP - Livre Sterling</option>
+              <option value="CHF">CHF - Franc Suisse</option>
+              <option value="MAD">MAD - Dirham Marocain</option>
+              <option value="XOF">XOF - Franc CFA</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>Mention legale facture</label>
+          <textarea id="f-invoiceLegalMention" rows="3" placeholder="Mention legale affichee en bas de chaque facture..."></textarea>
+        </div>
+      </div>
+
+      <!-- Employes -->
+      <div class="settings-section">
+        <div class="settings-section-title"><span class="material-symbols-outlined">badge</span> Employes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>Jour de paie par defaut</label><input type="number" id="f-defaultPayDay" min="1" max="31" placeholder="28"></div>
+          <div class="form-group"><label>Jours de rappel avant retard</label><input type="number" id="f-reminderDays" min="0" max="30" placeholder="3"></div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="settings-section">
+        <div class="settings-section-title"><span class="material-symbols-outlined">email</span> Email</div>
+        <div class="form-group">
+          <label>Signature email</label>
+          <textarea id="f-emailSignature" rows="5" placeholder="Signature ajoutee automatiquement aux emails envoyes..."></textarea>
+        </div>
+      </div>
+
+      <!-- Save bar -->
+      <div class="save-bar">
+        <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:1rem;">save</span> Enregistrer les paramètres</button>
+      </div>
+
+    </form>
   </div>
 </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
-  document.getElementById('user-avatar').textContent = user.name.charAt(0);
-  document.getElementById('p-name').value = user.name;
-  document.getElementById('p-email').value = user.email;
-  document.getElementById('p-role').value = user.role === 'admin' ? 'Administrateur' : user.role === 'employee' ? 'Employ\u00e9' : 'Client';
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+}
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+
+let currentLogoUrl = '';
+
+// Load settings
+async function loadSettings() {
+  try {
+    const res = await fetch('/api/settings', { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement paramètres', 'error'); return; }
+    const s = await res.json();
+
+    document.getElementById('f-agencyName').value = s.agencyName || '';
+    document.getElementById('f-agencyEmail').value = s.agencyEmail || '';
+    document.getElementById('f-agencyPhone').value = s.agencyPhone || '';
+    document.getElementById('f-agencyAddress').value = s.agencyAddress || '';
+    document.getElementById('f-agencyCity').value = s.agencyCity || '';
+    document.getElementById('f-agencyCountry').value = s.agencyCountry || '';
+    document.getElementById('f-agencyWebsite').value = s.agencyWebsite || '';
+    document.getElementById('f-agencySiret').value = s.agencySiret || '';
+    document.getElementById('f-agencyTva').value = s.agencyTva || '';
+    document.getElementById('f-invoicePrefix').value = s.invoicePrefix || '';
+    document.getElementById('f-defaultTva').value = s.defaultTva != null ? s.defaultTva : 20;
+    document.getElementById('f-currency').value = s.currency || 'EUR';
+    document.getElementById('f-invoiceLegalMention').value = s.invoiceLegalMention || '';
+    document.getElementById('f-defaultPayDay').value = s.defaultPayDay || '';
+    document.getElementById('f-reminderDays').value = s.reminderDays != null ? s.reminderDays : '';
+    document.getElementById('f-emailSignature').value = s.emailSignature || '';
+
+    if (s.logoUrl) {
+      currentLogoUrl = s.logoUrl;
+      document.getElementById('logo-preview').innerHTML = '<img src="' + s.logoUrl + '" alt="Logo">';
+    }
+  } catch (e) { console.error('Settings load error:', e); }
 }
 
-document.getElementById('password-form').addEventListener('submit', (e) => {
+// Upload logo
+async function uploadLogo() {
+  const fileInput = document.getElementById('f-logo');
+  if (!fileInput.files || !fileInput.files[0]) return;
+
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur upload logo', 'error'); return; }
+    const data = await res.json();
+    currentLogoUrl = data.url || data.fileUrl || data.path || '';
+    if (currentLogoUrl) {
+      document.getElementById('logo-preview').innerHTML = '<img src="' + currentLogoUrl + '" alt="Logo">';
+    }
+  } catch (e) {
+    console.error('Upload error:', e);
+    toast('Erreur lors de l\'upload du logo', 'error');
+  }
+}
+
+// Save settings
+document.getElementById('settings-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const msg = document.getElementById('pw-msg');
-  const newPw = document.getElementById('pw-new').value;
-  const confirm = document.getElementById('pw-confirm').value;
-  if (newPw !== confirm) { msg.style.color = 'var(--danger)'; msg.textContent = 'Les mots de passe ne correspondent pas.'; return; }
-  msg.style.color = 'var(--success)'; msg.textContent = 'Mot de passe mis \u00e0 jour avec succ\u00e8s.';
-  document.getElementById('password-form').reset();
+  const body = {
+    agencyName: document.getElementById('f-agencyName').value,
+    agencyEmail: document.getElementById('f-agencyEmail').value,
+    agencyPhone: document.getElementById('f-agencyPhone').value,
+    agencyAddress: document.getElementById('f-agencyAddress').value,
+    agencyCity: document.getElementById('f-agencyCity').value,
+    agencyCountry: document.getElementById('f-agencyCountry').value,
+    agencyWebsite: document.getElementById('f-agencyWebsite').value,
+    agencySiret: document.getElementById('f-agencySiret').value,
+    agencyTva: document.getElementById('f-agencyTva').value,
+    logoUrl: currentLogoUrl,
+    invoicePrefix: document.getElementById('f-invoicePrefix').value,
+    defaultTva: parseFloat(document.getElementById('f-defaultTva').value) || 20,
+    currency: document.getElementById('f-currency').value,
+    invoiceLegalMention: document.getElementById('f-invoiceLegalMention').value,
+    defaultPayDay: parseInt(document.getElementById('f-defaultPayDay').value) || null,
+    reminderDays: parseInt(document.getElementById('f-reminderDays').value) || null,
+    emailSignature: document.getElementById('f-emailSignature').value
+  };
+
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur sauvegarde', 'error'); return; }
+    toast('Paramètres enregistres avec succes', 'success');
+  } catch (e) {
+    console.error('Save error:', e);
+    toast('Erreur lors de la sauvegarde des paramètres', 'error');
+  }
 });
 
-function logout() { localStorage.clear(); window.location.href = '/login'; }
+// Init
+loadSettings();
 </script>
 </body>
 </html>

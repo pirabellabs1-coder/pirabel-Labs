@@ -8,8 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<style>
+.progress-bar{background:var(--bg);height:6px;width:80px;flex-shrink:0;}
+.progress-bar-fill{background:var(--accent);height:100%;transition:width 0.3s;}
+.progress-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--bg);outline:none;border:1px solid var(--border);}
+.progress-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;background:var(--accent);cursor:pointer;border:none;}
+.progress-slider::-moz-range-thumb{width:16px;height:16px;background:var(--accent);cursor:pointer;border:none;}
+.timeline{margin-top:1rem;}
+.timeline-item{position:relative;padding-left:1.5rem;padding-bottom:1.25rem;border-left:2px solid var(--border);}
+.timeline-item:last-child{border-left-color:transparent;padding-bottom:0;}
+.timeline-item::before{content:'';position:absolute;left:-5px;top:4px;width:8px;height:8px;background:var(--accent);border-radius:50%;}
+.timeline-date{font-size:0.6875rem;color:var(--muted);margin-bottom:0.25rem;}
+.timeline-msg{font-size:0.8125rem;}
+.timeline-meta{display:flex;align-items:center;gap:0.75rem;margin-top:0.25rem;font-size:0.75rem;color:var(--muted);}
+.detail-label{color:var(--muted);font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-h);font-weight:700;margin-bottom:0.25rem;}
+.detail-value{font-size:0.875rem;margin-bottom:1rem;}
+.modal-wide{max-width:700px;}
+</style>
 </head>
 <body>
+<div class="toast-container" id="toasts"></div>
 <div class="app">
 
 <!-- Sidebar -->
@@ -18,25 +36,22 @@
   <nav class="sidebar-nav">
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes <span class="badge badge-new" id="badge-orders" style="margin-left:auto;">0</span></a>
-
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link active"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
-
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/messages" class="sidebar-link"><span class="material-symbols-outlined">chat</span> Messages</a>
-
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-
     <div class="sidebar-section">Systeme</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Parametres</a>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -59,10 +74,6 @@
       <div class="topbar-title">Suivi Projets</div>
     </div>
     <div class="topbar-actions">
-      <button class="topbar-btn" onclick="window.location.href='/orders'">
-        <span class="material-symbols-outlined" style="font-size:1rem;">notifications</span>
-        <span id="notif-count">0</span> nouvelles
-      </button>
       <button class="topbar-btn" onclick="logout()">
         <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
       </button>
@@ -76,12 +87,16 @@
         <option value="">Tous les statuts</option>
         <option value="en_attente">En attente</option>
         <option value="en_cours">En cours</option>
-        <option value="termine">Termine</option>
         <option value="en_pause">En pause</option>
+        <option value="termine">Termine</option>
+        <option value="annule">Annule</option>
+      </select>
+      <select id="filter-client" onchange="loadProjects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
+        <option value="">Tous les clients</option>
       </select>
       <div style="flex:1;"></div>
       <button class="btn btn-primary" onclick="openModal()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouveau projet
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter projet
       </button>
     </div>
 
@@ -95,7 +110,7 @@
             <th>Service</th>
             <th>Statut</th>
             <th>Progression</th>
-            <th>Echeance</th>
+            <th>Deadline</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -106,7 +121,7 @@
 </div>
 </div>
 
-<!-- Modal -->
+<!-- Add/Edit Project Modal -->
 <div class="modal-overlay" id="modal">
   <div class="modal" style="max-width:600px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -123,27 +138,39 @@
           <select id="f-client" required></select>
         </div>
         <div class="form-group">
-          <label>Assigne a</label>
-          <select id="f-assignedTo"></select>
-        </div>
-        <div class="form-group">
-          <label>Service</label>
-          <input type="text" id="f-service" placeholder="Branding, Web dev...">
+          <label>Service *</label>
+          <select id="f-service" required>
+            <option value="">Choisir...</option>
+            <option value="seo">SEO</option>
+            <option value="web">Web</option>
+            <option value="ia">IA</option>
+            <option value="ads">Ads</option>
+            <option value="social">Social</option>
+            <option value="cro">CRO</option>
+            <option value="email">Email</option>
+            <option value="content">Content</option>
+            <option value="video">Video</option>
+            <option value="design">Design</option>
+            <option value="formation">Formation</option>
+            <option value="consulting">Consulting</option>
+            <option value="autre">Autre</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Statut</label>
           <select id="f-status">
             <option value="en_attente">En attente</option>
             <option value="en_cours">En cours</option>
-            <option value="termine">Termine</option>
             <option value="en_pause">En pause</option>
+            <option value="termine">Termine</option>
+            <option value="annule">Annule</option>
           </select>
         </div>
         <div class="form-group">
           <label>Priorite</label>
           <select id="f-priority">
             <option value="basse">Basse</option>
-            <option value="moyenne">Moyenne</option>
+            <option value="normale" selected>Normale</option>
             <option value="haute">Haute</option>
             <option value="urgente">Urgente</option>
           </select>
@@ -157,8 +184,12 @@
           <input type="date" id="f-startDate">
         </div>
         <div class="form-group">
-          <label>Echeance</label>
+          <label>Deadline</label>
           <input type="date" id="f-deadline">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Assigne a</label>
+          <select id="f-assignedTo"></select>
         </div>
       </div>
       <div class="form-group">
@@ -173,56 +204,111 @@
   </div>
 </div>
 
+<!-- Update Modal -->
+<div class="modal-overlay" id="update-modal">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="closeUpdateModal()">&times;</button>
+    <div class="modal-title">Ajouter une mise a jour</div>
+    <form class="dash-form" id="update-form" onsubmit="submitUpdate(event)">
+      <input type="hidden" id="update-project-id">
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea id="u-message" rows="4" required placeholder="Decrivez l'avancement..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Progression: <span id="u-progress-label">0</span>%</label>
+        <input type="range" class="progress-slider" id="u-progress" min="0" max="100" value="0" oninput="document.getElementById('u-progress-label').textContent=this.value">
+      </div>
+      <div class="form-group">
+        <label>Statut</label>
+        <select id="u-status">
+          <option value="en_attente">En attente</option>
+          <option value="en_cours">En cours</option>
+          <option value="en_pause">En pause</option>
+          <option value="termine">Termine</option>
+          <option value="annule">Annule</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;">
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+        <button type="button" class="btn btn-ghost" onclick="closeUpdateModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Project Modal -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeViewModal()">&times;</button>
+    <div class="modal-title" id="view-title">Details du projet</div>
+    <div id="view-content"></div>
+  </div>
+</div>
+
 <script>
 const token = localStorage.getItem('token');
-if (!token) window.location.href = '/login';
-
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
 }
-
-function statusBadge(status) {
-  const map = { 'en_attente': 'badge-pending', 'en_cours': 'badge-active', 'termine': 'badge-done', 'en_pause': 'badge-danger', 'annule': 'badge-danger' };
-  return `<span class="badge ${map[status] || 'badge-done'}">${status.replace(/_/g, ' ')}</span>`;
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+function statusBadge(s) {
+  const m={'nouvelle':'badge-new','en_traitement':'badge-pending','devis_envoye':'badge-pending','acceptee':'badge-active','refusee':'badge-danger','en_attente':'badge-pending','en_cours':'badge-active','termine':'badge-done','en_pause':'badge-danger','annule':'badge-danger','prospect':'badge-pending','actif':'badge-active','inactif':'badge-done','archive':'badge-danger'};
+  return '<span class="badge '+(m[s]||'badge-done')+'">'+s.replace(/_/g,' ')+'</span>';
 }
+function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
+function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20ac'; }
 
-function formatDate(d) {
-  if (!d) return '-';
-  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
-}
+let clientsList = [];
+let employeesList = [];
 
 async function loadProjects() {
   try {
     const status = document.getElementById('filter-status').value;
+    const client = document.getElementById('filter-client').value;
     let url = '/api/projects?';
-    if (status) url += 'status=' + encodeURIComponent(status);
+    if (status) url += 'status=' + encodeURIComponent(status) + '&';
+    if (client) url += 'client=' + encodeURIComponent(client);
     const res = await fetch(url, { headers });
+    if (!res.ok) { toast('Erreur lors du chargement des projets', 'error'); return; }
     const data = await res.json();
     const projects = data.projects || data;
     document.getElementById('projects-body').innerHTML = projects.map(p => `
       <tr>
-        <td>${p.name}</td>
+        <td style="font-weight:600;">${p.name}</td>
         <td>${p.client?.company || '-'}</td>
         <td>${p.service || '-'}</td>
         <td>${statusBadge(p.status)}</td>
         <td>
           <div style="display:flex;align-items:center;gap:0.5rem;">
-            <div style="background:var(--bg);height:6px;width:80px;flex-shrink:0;"><div style="background:var(--accent);height:100%;width:${p.progress || 0}%;"></div></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:${p.progress || 0}%;"></div></div>
             <span style="font-size:0.75rem;color:var(--muted);">${p.progress || 0}%</span>
           </div>
         </td>
         <td>${formatDate(p.deadline)}</td>
-        <td>
-          <button class="btn btn-sm btn-ghost" onclick="editProject('${p._id}')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+        <td style="white-space:nowrap;">
+          <button class="btn btn-sm btn-ghost" onclick="editProject('${p._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
+          <button class="btn btn-sm btn-ghost" onclick="openUpdateModal('${p._id}', ${p.progress || 0}, '${p.status}')" title="Ajouter update"><span class="material-symbols-outlined" style="font-size:0.875rem;">update</span></button>
+          <button class="btn btn-sm btn-ghost" onclick="viewProject('${p._id}')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun projet trouve</td></tr>';
-  } catch (e) { console.error(e); }
+    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">Aucun projet trouve</td></tr>';
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
 async function loadSelectData() {
@@ -231,16 +317,21 @@ async function loadSelectData() {
       fetch('/api/clients', { headers }),
       fetch('/api/employees', { headers })
     ]);
+    if (!cRes.ok || !eRes.ok) { toast('Erreur lors du chargement des donnees', 'error'); return; }
     const cData = await cRes.json();
     const eData = await eRes.json();
-    const clients = cData.clients || cData;
-    const employees = eData.employees || eData;
+    clientsList = cData.clients || cData;
+    employeesList = eData.employees || eData;
 
     document.getElementById('f-client').innerHTML = '<option value="">Choisir...</option>' +
-      clients.map(c => `<option value="${c._id}">${c.company}</option>`).join('');
+      clientsList.map(c => '<option value="' + c._id + '">' + c.company + '</option>').join('');
     document.getElementById('f-assignedTo').innerHTML = '<option value="">Choisir...</option>' +
-      employees.map(e => `<option value="${e._id}">${e.name}</option>`).join('');
-  } catch (e) { console.error(e); }
+      employeesList.map(e => '<option value="' + e._id + '">' + e.name + '</option>').join('');
+
+    // Populate client filter dropdown
+    document.getElementById('filter-client').innerHTML = '<option value="">Tous les clients</option>' +
+      clientsList.map(c => '<option value="' + c._id + '">' + c.company + '</option>').join('');
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
 function openModal(project) {
@@ -250,13 +341,13 @@ function openModal(project) {
     document.getElementById('project-id').value = project._id;
     document.getElementById('f-name').value = project.name || '';
     document.getElementById('f-client').value = project.client?._id || project.client || '';
-    document.getElementById('f-assignedTo').value = project.assignedTo?._id || project.assignedTo || '';
     document.getElementById('f-service').value = project.service || '';
     document.getElementById('f-status').value = project.status || 'en_attente';
-    document.getElementById('f-priority').value = project.priority || 'moyenne';
+    document.getElementById('f-priority').value = project.priority || 'normale';
     document.getElementById('f-budget').value = project.budget || '';
     document.getElementById('f-startDate').value = project.startDate ? project.startDate.substring(0, 10) : '';
     document.getElementById('f-deadline').value = project.deadline ? project.deadline.substring(0, 10) : '';
+    document.getElementById('f-assignedTo').value = project.assignedTo?._id || project.assignedTo || '';
     document.getElementById('f-description').value = project.description || '';
   } else {
     document.getElementById('project-form').reset();
@@ -274,39 +365,126 @@ async function saveProject(e) {
   const body = {
     name: document.getElementById('f-name').value,
     client: document.getElementById('f-client').value,
-    assignedTo: document.getElementById('f-assignedTo').value || undefined,
     service: document.getElementById('f-service').value,
     status: document.getElementById('f-status').value,
     priority: document.getElementById('f-priority').value,
+    description: document.getElementById('f-description').value,
     budget: Number(document.getElementById('f-budget').value) || 0,
     startDate: document.getElementById('f-startDate').value || undefined,
     deadline: document.getElementById('f-deadline').value || undefined,
-    description: document.getElementById('f-description').value
+    assignedTo: document.getElementById('f-assignedTo').value || undefined
   };
   try {
-    if (id) {
-      await fetch('/api/projects/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
-    } else {
-      await fetch('/api/projects', { method: 'POST', headers, body: JSON.stringify(body) });
-    }
+    const res = id
+      ? await fetch('/api/projects/' + id, { method: 'PUT', headers, body: JSON.stringify(body) })
+      : await fetch('/api/projects', { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const err = await res.json().catch(() => ({})); toast(err.message || 'Erreur lors de l\'enregistrement', 'error'); return; }
     closeModal();
     loadProjects();
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
 async function editProject(id) {
   try {
     const res = await fetch('/api/projects/' + id, { headers });
+    if (!res.ok) { toast('Erreur lors du chargement du projet', 'error'); return; }
     const project = await res.json();
     openModal(project);
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+// Update modal
+function openUpdateModal(id, progress, status) {
+  document.getElementById('update-project-id').value = id;
+  document.getElementById('u-progress').value = progress;
+  document.getElementById('u-progress-label').textContent = progress;
+  document.getElementById('u-status').value = status;
+  document.getElementById('u-message').value = '';
+  document.getElementById('update-modal').classList.add('open');
 }
+
+function closeUpdateModal() {
+  document.getElementById('update-modal').classList.remove('open');
+}
+
+async function submitUpdate(e) {
+  e.preventDefault();
+  const id = document.getElementById('update-project-id').value;
+  const body = {
+    message: document.getElementById('u-message').value,
+    progress: Number(document.getElementById('u-progress').value),
+    status: document.getElementById('u-status').value
+  };
+  try {
+    const res = await fetch('/api/projects/' + id + '/update', { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!res.ok) { const err = await res.json().catch(() => ({})); toast(err.message || 'Erreur lors de la mise a jour', 'error'); return; }
+    closeUpdateModal();
+    loadProjects();
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
+}
+
+// View project details + timeline
+async function viewProject(id) {
+  try {
+    const res = await fetch('/api/projects/' + id, { headers });
+    if (!res.ok) { toast('Erreur lors du chargement du projet', 'error'); return; }
+    const p = await res.json();
+    const assignee = p.assignedTo?.name || '-';
+    const clientName = p.client?.company || '-';
+    const priorityMap = { basse: 'badge-done', normale: 'badge-pending', haute: 'badge-new', urgente: 'badge-danger' };
+    const priorityBadge = '<span class="badge ' + (priorityMap[p.priority] || 'badge-done') + '">' + (p.priority || 'normale') + '</span>';
+
+    let timelineHtml = '';
+    const updates = p.updates || [];
+    if (updates.length > 0) {
+      timelineHtml = '<div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;"><div style="font-family:var(--font-h);font-weight:700;font-size:0.875rem;margin-bottom:1rem;">Historique des mises a jour</div><div class="timeline">';
+      updates.slice().reverse().forEach(function(u) {
+        timelineHtml += '<div class="timeline-item">' +
+          '<div class="timeline-date">' + formatDate(u.date || u.createdAt) + '</div>' +
+          '<div class="timeline-msg">' + (u.message || '') + '</div>' +
+          '<div class="timeline-meta">' +
+            (u.progress !== undefined ? '<span>Progression: ' + u.progress + '%</span>' : '') +
+            (u.status ? '<span>' + statusBadge(u.status) + '</span>' : '') +
+            (u.author?.name ? '<span>Par ' + u.author.name + '</span>' : '') +
+          '</div>' +
+        '</div>';
+      });
+      timelineHtml += '</div></div>';
+    } else {
+      timelineHtml = '<div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;color:var(--muted);font-size:0.8125rem;">Aucune mise a jour pour le moment.</div>';
+    }
+
+    document.getElementById('view-title').textContent = p.name;
+    document.getElementById('view-content').innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2rem;">' +
+        '<div><div class="detail-label">Client</div><div class="detail-value">' + clientName + '</div></div>' +
+        '<div><div class="detail-label">Service</div><div class="detail-value">' + (p.service || '-') + '</div></div>' +
+        '<div><div class="detail-label">Statut</div><div class="detail-value">' + statusBadge(p.status) + '</div></div>' +
+        '<div><div class="detail-label">Priorite</div><div class="detail-value">' + priorityBadge + '</div></div>' +
+        '<div><div class="detail-label">Progression</div><div class="detail-value"><div style="display:flex;align-items:center;gap:0.5rem;"><div class="progress-bar" style="width:120px;"><div class="progress-bar-fill" style="width:' + (p.progress || 0) + '%;"></div></div> ' + (p.progress || 0) + '%</div></div></div>' +
+        '<div><div class="detail-label">Budget</div><div class="detail-value">' + fmt(p.budget) + '</div></div>' +
+        '<div><div class="detail-label">Date debut</div><div class="detail-value">' + formatDate(p.startDate) + '</div></div>' +
+        '<div><div class="detail-label">Deadline</div><div class="detail-value">' + formatDate(p.deadline) + '</div></div>' +
+        '<div><div class="detail-label">Assigne a</div><div class="detail-value">' + assignee + '</div></div>' +
+        '<div><div class="detail-label">Cree le</div><div class="detail-value">' + formatDate(p.createdAt) + '</div></div>' +
+        (p.description ? '<div style="grid-column:1/-1;"><div class="detail-label">Description</div><div class="detail-value" style="white-space:pre-wrap;">' + p.description + '</div></div>' : '') +
+      '</div>' +
+      timelineHtml;
+
+    document.getElementById('view-modal').classList.add('open');
+  } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
+}
+
+function closeViewModal() {
+  document.getElementById('view-modal').classList.remove('open');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
 
 loadProjects();
 loadSelectData();

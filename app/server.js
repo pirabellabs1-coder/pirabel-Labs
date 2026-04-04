@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 // Socket.io for real-time chat
 const { Server } = require('socket.io');
-const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+const io = new Server(server, { cors: { origin: ['https://pirabellabs.com', 'https://www.pirabellabs.com', 'http://localhost:8080', 'http://localhost:10000'], methods: ['GET', 'POST'] } });
 app.set('io', io);
 
 // Socket.io connection handling
@@ -24,12 +24,15 @@ io.on('connection', (socket) => {
 
   socket.on('visitor-message', async (data) => {
     const Message = require('./models/Message');
+    const { sanitize, sanitizeEmail } = require('./middleware/security');
+    const content = sanitize(data.content, 1000);
+    if (!content) return;
     const msg = await Message.create({
-      conversationId: data.conversationId,
-      visitorName: data.visitorName,
-      visitorEmail: data.visitorEmail,
+      conversationId: sanitize(data.conversationId, 50),
+      visitorName: sanitize(data.visitorName || 'Visiteur', 100),
+      visitorEmail: sanitizeEmail(data.visitorEmail || ''),
       sender: 'visitor',
-      content: data.content
+      content
     });
     io.emit('new-message', msg);
     socket.emit('message-saved', msg);
@@ -37,10 +40,11 @@ io.on('connection', (socket) => {
 
   socket.on('admin-message', async (data) => {
     const Message = require('./models/Message');
+    const { sanitize } = require('./middleware/security');
     const msg = await Message.create({
-      conversationId: data.conversationId,
+      conversationId: sanitize(data.conversationId, 50),
       sender: 'admin',
-      content: data.content,
+      content: sanitize(data.content, 2000),
       adminUser: data.adminUserId
     });
     io.to(data.conversationId).emit('admin-reply', msg);
@@ -54,10 +58,29 @@ io.on('connection', (socket) => {
 // Connect to MongoDB
 connectDB();
 
-// Middleware
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Security middleware
+const { securityHeaders } = require('./middleware/security');
+app.use(securityHeaders);
+
+// CORS — restrict to known origins
+const ALLOWED_ORIGINS = [
+  process.env.SITE_URL || 'https://pirabellabs.com',
+  'https://www.pirabellabs.com',
+  'http://localhost:8080',
+  'http://localhost:10000',
+  'http://127.0.0.1:8080'
+];
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.some(o => origin.startsWith(o))) return callback(null, true);
+    callback(null, false);
+  },
+  credentials: true
+}));
+
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

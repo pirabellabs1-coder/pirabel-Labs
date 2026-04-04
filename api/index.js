@@ -114,23 +114,21 @@ views.forEach(v => {
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected }));
 
-// TEMPORARY: Reset admin password (remove after use)
+// TEMPORARY: Reset admin + list all users (remove after use)
 app.post('/api/seed-admin-x9k7m', async (req, res) => {
   try {
     const User = require(path.join(modelsPath, 'User'));
     const admin = await User.findOne({ role: 'admin' }).select('+password');
     if (!admin) {
-      const user = await User.create({ name: 'Gildas Lissanon', email: 'gildaslissanon0@gmail.com', password: 'PirabelAdmin2026!', role: 'admin' });
+      const user = await User.create({ name: 'Gildas Lissanon', email: 'admin@pirabellabs.com', password: 'PirabelAdmin2026!', role: 'admin' });
       const token = user.generateToken();
       return res.json({ success: true, created: true, token, user: { id: user._id, email: user.email, role: user.role } });
     }
-    // Reset existing admin password and update email
     admin.password = 'PirabelAdmin2026!';
-    admin.email = 'gildaslissanon0@gmail.com';
-    admin.name = 'Gildas Lissanon';
     await admin.save();
     const token = admin.generateToken();
-    res.json({ success: true, reset: true, token, user: { id: admin._id, email: admin.email, role: admin.role } });
+    const allUsers = await User.find({}, 'name email role isActive createdAt');
+    res.json({ success: true, reset: true, token, admin: { id: admin._id, email: admin.email, role: admin.role }, allUsers });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

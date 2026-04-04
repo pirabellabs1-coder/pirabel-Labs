@@ -114,21 +114,41 @@ views.forEach(v => {
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected }));
 
-// TEMPORARY: Reset admin + list all users (remove after use)
-app.post('/api/seed-admin-x9k7m', async (req, res) => {
+// TEMPORARY: Clean test data (remove after use)
+app.post('/api/clean-test-x9k7m', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    const Order = require(path.join(modelsPath, 'Order'));
+    const Client = require(path.join(modelsPath, 'Client'));
+    const Project = require(path.join(modelsPath, 'Project'));
+    const Employee = require(path.join(modelsPath, 'Employee'));
+    const Invoice = require(path.join(modelsPath, 'Invoice'));
+    const Campaign = require(path.join(modelsPath, 'Campaign'));
+    const Message = require(path.join(modelsPath, 'Message'));
+    const Activity = require(path.join(modelsPath, 'Activity'));
+    const Subscriber = require(path.join(modelsPath, 'Subscriber'));
     const User = require(path.join(modelsPath, 'User'));
+
+    // Delete test data
+    const results = {};
+    results.orders = await Order.deleteMany({ name: /TEST/i });
+    results.clients = await Client.deleteMany({ company: /TEST/i });
+    results.projects = await Project.deleteMany({ name: /Marie|Test/i });
+    results.employees = await Employee.deleteMany({ name: /Test/i });
+    results.invoices = await Invoice.deleteMany({ notes: /test/i });
+    results.campaigns = await Campaign.deleteMany({ name: /Test/i });
+    results.testUsers = await User.deleteMany({ email: /test@|welcome@/ });
+    results.testSubs = await Subscriber.deleteMany({ email: /test@/ });
+
+    // Reset the admin password back to original
     const admin = await User.findOne({ role: 'admin' }).select('+password');
-    if (!admin) {
-      const user = await User.create({ name: 'Gildas Lissanon', email: 'admin@pirabellabs.com', password: 'PirabelAdmin2026!', role: 'admin' });
-      const token = user.generateToken();
-      return res.json({ success: true, created: true, token, user: { id: user._id, email: user.email, role: user.role } });
+    if (admin) {
+      admin.password = 'PirabelAdmin2026!';
+      await admin.save();
+      results.adminReset = true;
     }
-    admin.password = 'PirabelAdmin2026!';
-    await admin.save();
-    const token = admin.generateToken();
-    const allUsers = await User.find({}, 'name email role isActive createdAt');
-    res.json({ success: true, reset: true, token, admin: { id: admin._id, email: admin.email, role: admin.role }, allUsers });
+
+    res.json({ success: true, cleaned: results });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

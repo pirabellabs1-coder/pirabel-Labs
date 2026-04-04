@@ -35,6 +35,7 @@
     { "src": "/prospects", "dest": "/api/index.js" },
     { "src": "/leads", "dest": "/api/index.js" },
     { "src": "/logs", "dest": "/api/index.js" },
+    { "src": "/health", "dest": "/api/index.js" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
     { "src": "/index$", "headers": { "Location": "/" }, "status": 308 },

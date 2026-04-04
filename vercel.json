@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
@@ -34,6 +33,7 @@
     { "src": "/portal-login", "dest": "/api/index.js" },
     { "src": "/notes", "dest": "/api/index.js" },
     { "src": "/prospects", "dest": "/api/index.js" },
+    { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
     { "src": "/services", "dest": "/services.html" },
     { "src": "/blog", "dest": "/blog.html" },
@@ -50,6 +50,7 @@
     { "src": "/(consulting-digital|formation-digitale|outils-digitaux)$", "dest": "/$1/index.html" },
     { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
+    { "src": "/(blog)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/espace-client-4p8w1n", "dest": "/espace-client-4p8w1n/index.html" }
   ]
 }

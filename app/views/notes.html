@@ -42,17 +42,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link active"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -75,14 +77,14 @@
     <div class="filters-bar">
       <select id="filter-subject" onchange="loadNotes()">
         <option value="">Tous les sujets</option>
-        <option value="General">General</option>
+        <option value="General">Général</option>
         <option value="Client">Client</option>
         <option value="Projet">Projet</option>
-        <option value="Employee">Employee</option>
+        <option value="Employee">Employé</option>
         <option value="Order">Commande</option>
       </select>
       <select id="filter-priority" onchange="loadNotes()">
-        <option value="">Toutes priorites</option>
+        <option value="">Toutes priorités</option>
         <option value="basse">Basse</option>
         <option value="normale">Normale</option>
         <option value="haute">Haute</option>
@@ -107,27 +109,27 @@
       <input type="hidden" id="note-id">
       <div class="form-group">
         <label>Contenu *</label>
-        <textarea id="f-content" rows="5" required placeholder="Ecrivez votre note..."></textarea>
+        <textarea id="f-content" rows="5" required placeholder="Écrivez votre note..."></textarea>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="form-group">
           <label>Sujet</label>
           <select id="f-relatedModel" onchange="onSubjectChange()">
-            <option value="General">General</option>
+            <option value="General">Général</option>
             <option value="Client">Client</option>
             <option value="Projet">Projet</option>
-            <option value="Employee">Employee</option>
+            <option value="Employee">Employé</option>
             <option value="Order">Commande</option>
           </select>
         </div>
         <div class="form-group" id="entity-group" style="display:none;">
-          <label>Entite liee</label>
+          <label>Entité liée</label>
           <select id="f-relatedId">
-            <option value="">-- Selectionner --</option>
+            <option value="">-- Sélectionner --</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Priorite</label>
+          <label>Priorité</label>
           <select id="f-priority">
             <option value="basse">Basse</option>
             <option value="normale" selected>Normale</option>
@@ -162,7 +164,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'; }
@@ -178,7 +180,7 @@ function subjectIcon(s) {
 }
 
 function subjectLabel(s) {
-  const map = { 'General': 'General', 'Client': 'Client', 'Projet': 'Projet', 'Employee': 'Employee', 'Order': 'Commande' };
+  const map = { 'General': 'Général', 'Client': 'Client', 'Projet': 'Projet', 'Employee': 'Employé', 'Order': 'Commande' };
   return map[s] || s;
 }
 
@@ -197,7 +199,7 @@ async function loadNotes() {
     const notes = data.notes || data;
 
     if (!notes.length) {
-      document.getElementById('notes-grid').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem 0;font-size:0.8125rem;grid-column:1/-1;">Aucune note trouvee</div>';
+      document.getElementById('notes-grid').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem 0;font-size:0.8125rem;grid-column:1/-1;">Aucune note trouvée</div>';
       return;
     }
 
@@ -209,8 +211,8 @@ async function loadNotes() {
           '<span class="note-card-priority ' + priorityClass(n.priority) + '">' + (n.priority || 'normale') + '</span>' +
           '<div class="note-card-actions">' +
             (n.resolved
-              ? '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', false)" title="Marquer non resolu"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--teal);">check_circle</span></button>'
-              : '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', true)" title="Marquer resolu"><span class="material-symbols-outlined" style="font-size:0.875rem;">radio_button_unchecked</span></button>'
+              ? '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', false)" title="Marquer non résolu"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--teal);">check_circle</span></button>'
+              : '<button class="btn btn-sm btn-ghost" onclick="toggleResolved(\'' + n._id + '\', true)" title="Marquer résolu"><span class="material-symbols-outlined" style="font-size:0.875rem;">radio_button_unchecked</span></button>'
             ) +
             '<button class="btn btn-sm btn-ghost" onclick="editNote(\'' + n._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
             '<button class="btn btn-sm btn-ghost" onclick="deleteNote(\'' + n._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--danger);">delete</span></button>' +
@@ -220,7 +222,7 @@ async function loadNotes() {
         '<div class="note-card-meta">' +
           '<span style="display:flex;align-items:center;gap:0.25rem;"><span class="material-symbols-outlined">' + subjectIcon(n.relatedModel) + '</span> ' + subjectLabel(n.relatedModel || 'General') + '</span>' +
           (entityName ? '<span class="note-entity-badge">' + escapeHtml(entityName) + '</span>' : '') +
-          (n.resolved ? '<span class="note-resolved-badge"><span class="material-symbols-outlined" style="font-size:0.75rem;">check</span> Resolu</span>' : '') +
+          (n.resolved ? '<span class="note-resolved-badge"><span class="material-symbols-outlined" style="font-size:0.75rem;">check</span> Résolu</span>' : '') +
           '<span style="margin-left:auto;">' + formatDate(n.createdAt) + '</span>' +
           (n.author ? '<span>' + escapeHtml(n.author.name || n.author) + '</span>' : '') +
         '</div>' +
@@ -242,7 +244,7 @@ async function onSubjectChange() {
 
   if (subject === 'General') {
     entityGroup.style.display = 'none';
-    entitySelect.innerHTML = '<option value="">-- Selectionner --</option>';
+    entitySelect.innerHTML = '<option value="">-- Sélectionner --</option>';
     return;
   }
 
@@ -266,7 +268,7 @@ async function onSubjectChange() {
     const data = await res.json();
     const items = data.clients || data.projects || data.employees || data.orders || data;
 
-    entitySelect.innerHTML = '<option value="">-- Selectionner --</option>' +
+    entitySelect.innerHTML = '<option value="">-- Sélectionner --</option>' +
       items.map(item => {
         const label = item.company || item.name || item.contactName || item.email || item._id;
         return '<option value="' + item._id + '">' + escapeHtml(label) + '</option>';

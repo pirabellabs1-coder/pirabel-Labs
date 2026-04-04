@@ -31,17 +31,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
@@ -67,7 +69,7 @@
     </div>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -79,9 +81,9 @@
         <option value="">Tous les statuts</option>
         <option value="nouvelle">Nouvelle</option>
         <option value="en_traitement">En traitement</option>
-        <option value="devis_envoye">Devis envoye</option>
-        <option value="acceptee">Acceptee</option>
-        <option value="refusee">Refusee</option>
+        <option value="devis_envoye">Devis envoyé</option>
+        <option value="acceptee">Acceptée</option>
+        <option value="refusee">Refusée</option>
       </select>
     </div>
 
@@ -110,7 +112,7 @@
 <div class="modal-overlay" id="detail-modal">
   <div class="modal" style="max-width:650px;">
     <button class="modal-close" onclick="closeDetailModal()">&times;</button>
-    <div class="modal-title">Details de la demande</div>
+    <div class="modal-title">Détails de la demande</div>
     <div id="detail-content"></div>
 
     <!-- Notes section -->
@@ -127,9 +129,9 @@
       <select id="detail-status-select" style="background:var(--bg);border:1px solid var(--border);padding:0.5rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;">
         <option value="nouvelle">Nouvelle</option>
         <option value="en_traitement">En traitement</option>
-        <option value="devis_envoye">Devis envoye</option>
-        <option value="acceptee">Acceptee</option>
-        <option value="refusee">Refusee</option>
+        <option value="devis_envoye">Devis envoyé</option>
+        <option value="acceptee">Acceptée</option>
+        <option value="refusee">Refusée</option>
       </select>
       <button class="btn btn-primary btn-sm" onclick="updateDetailStatus()">Changer statut</button>
       <button class="btn btn-ghost btn-sm" onclick="openConvertModal()">
@@ -202,7 +204,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function statusBadge(s) {
@@ -236,14 +238,14 @@ async function loadOrders() {
         '<td>' + statusBadge(o.status) + '</td>' +
         '<td>' + formatDate(o.createdAt) + '</td>' +
         '<td style="white-space:nowrap;">' +
-          '<button class="btn btn-sm btn-ghost" onclick="viewOrder(\'' + o._id + '\')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>' +
+          '<button class="btn btn-sm btn-ghost" onclick="viewOrder(\'' + o._id + '\')" title="Voir détails"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>' +
           '<button class="btn btn-sm btn-ghost" onclick="quickConvert(\'' + o._id + '\')" title="Convertir"><span class="material-symbols-outlined" style="font-size:0.875rem;">sync_alt</span></button>' +
           '<select class="inline-status" onchange="updateStatusInline(\'' + o._id + '\', this.value)" title="Changer statut">' +
             '<option value="nouvelle"' + (o.status === 'nouvelle' ? ' selected' : '') + '>Nouvelle</option>' +
             '<option value="en_traitement"' + (o.status === 'en_traitement' ? ' selected' : '') + '>En traitement</option>' +
-            '<option value="devis_envoye"' + (o.status === 'devis_envoye' ? ' selected' : '') + '>Devis envoye</option>' +
-            '<option value="acceptee"' + (o.status === 'acceptee' ? ' selected' : '') + '>Acceptee</option>' +
-            '<option value="refusee"' + (o.status === 'refusee' ? ' selected' : '') + '>Refusee</option>' +
+            '<option value="devis_envoye"' + (o.status === 'devis_envoye' ? ' selected' : '') + '>Devis envoyé</option>' +
+            '<option value="acceptee"' + (o.status === 'acceptee' ? ' selected' : '') + '>Acceptée</option>' +
+            '<option value="refusee"' + (o.status === 'refusee' ? ' selected' : '') + '>Refusée</option>' +
           '</select>' +
         '</td>' +
       '</tr>';
@@ -261,7 +263,7 @@ async function viewOrder(id) {
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2rem;">' +
         '<div><div class="detail-label">Nom</div><div class="detail-value">' + currentOrder.name + '</div></div>' +
         '<div><div class="detail-label">Email</div><div class="detail-value">' + currentOrder.email + '</div></div>' +
-        '<div><div class="detail-label">Telephone</div><div class="detail-value">' + (currentOrder.phone || '-') + '</div></div>' +
+        '<div><div class="detail-label">Téléphone</div><div class="detail-value">' + (currentOrder.phone || '-') + '</div></div>' +
         '<div><div class="detail-label">Site web</div><div class="detail-value">' + (currentOrder.website || '-') + '</div></div>' +
         '<div><div class="detail-label">Service</div><div class="detail-value">' + (currentOrder.service || '-') + '</div></div>' +
         '<div><div class="detail-label">Budget</div><div class="detail-value">' + (currentOrder.budget || '-') + '</div></div>' +
@@ -290,7 +292,7 @@ async function saveNotes() {
     });
     if (!res.ok) { toast('Erreur lors de la sauvegarde des notes', 'error'); return; }
     currentOrder.notes = notes;
-    toast('Notes sauvegardees', 'success');
+    toast('Notes sauvegardées', 'success');
   } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
@@ -362,7 +364,7 @@ async function submitConvert(e) {
     closeConvertModal();
     closeDetailModal();
     loadOrders();
-    toast('Demande convertie en client + projet avec succes!', 'success');
+    toast('Demande convertie en client + projet avec succès !', 'success');
   } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 

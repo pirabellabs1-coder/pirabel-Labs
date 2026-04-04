@@ -10,7 +10,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://pirabellabs.com https://*.pirabellabs.com; frame-ancestors 'self'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://pirabellabs.com https://*.pirabellabs.com https://www.bing.com https://*.bing.com https://*.clarity.ms https://region1.google-analytics.com; frame-ancestors 'self'" }
       ]
     }
   ],
@@ -33,8 +33,11 @@
     { "src": "/portal-login", "dest": "/api/index.js" },
     { "src": "/notes", "dest": "/api/index.js" },
     { "src": "/prospects", "dest": "/api/index.js" },
+    { "src": "/leads", "dest": "/api/index.js" },
+    { "src": "/logs", "dest": "/api/index.js" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
+    { "src": "/index$", "headers": { "Location": "/" }, "status": 308 },
     { "src": "/services", "dest": "/services.html" },
     { "src": "/blog", "dest": "/blog.html" },
     { "src": "/contact", "dest": "/contact.html" },
@@ -51,6 +54,9 @@
     { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(blog)/([^/]+)$", "dest": "/$1/$2.html" },
-    { "src": "/espace-client-4p8w1n", "dest": "/espace-client-4p8w1n/index.html" }
+    { "src": "/espace-client-4p8w1n", "dest": "/espace-client-4p8w1n/index.html" },
+    { "src": "/llms\\.txt", "dest": "/llms.txt" },
+    { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },
+    { "src": "/.well-known/(.*)", "dest": "/.well-known/$1" }
   ]
 }

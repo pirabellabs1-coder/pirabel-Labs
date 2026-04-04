@@ -18,11 +18,77 @@ Disallow: /analytics
 Disallow: /portal
 Disallow: /notes
 Disallow: /prospects
+Disallow: /leads
 
-Sitemap: https://pirabellabs.com/sitemap.xml
+# Major Search Engines — Explicitly Allowed
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
 
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+User-agent: msnbot
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+User-agent: Yandexbot
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+# AI Search Engines — Welcome
 User-agent: GPTBot
-Disallow: /
+Allow: /
+Disallow: /api/
+Disallow: /pirabel-admin-7x9k2m
+Disallow: /dashboard
+
+User-agent: ChatGPT-User
+Allow: /
 
 User-agent: CCBot
-Disallow: /
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://pirabellabs.com/sitemap.xml

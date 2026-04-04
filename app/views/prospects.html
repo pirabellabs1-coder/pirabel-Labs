@@ -30,17 +30,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link active"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -65,8 +67,8 @@
       <select id="filter-status" onchange="loadProspects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
         <option value="">Tous les statuts</option>
         <option value="nouveau">Nouveau</option>
-        <option value="contacte">Contacte</option>
-        <option value="intéressé">Interesse</option>
+        <option value="contacte">Contacté</option>
+        <option value="intéressé">Intéressé</option>
         <option value="converti">Converti</option>
         <option value="perdu">Perdu</option>
       </select>
@@ -81,7 +83,7 @@
             <th>Entreprise</th>
             <th>Email</th>
             <th>Statut</th>
-            <th>Emails envoyes</th>
+            <th>Emails envoyés</th>
             <th>Dernier contact</th>
             <th>Actions</th>
           </tr>
@@ -114,7 +116,7 @@
           <input type="text" id="f-company">
         </div>
         <div class="form-group">
-          <label>Telephone</label>
+          <label>Téléphone</label>
           <input type="tel" id="f-phone">
         </div>
         <div class="form-group">
@@ -129,16 +131,16 @@
           <label>Statut</label>
           <select id="f-status">
             <option value="nouveau">Nouveau</option>
-            <option value="contacte">Contacte</option>
-            <option value="intéressé">Interesse</option>
+            <option value="contacte">Contacté</option>
+            <option value="intéressé">Intéressé</option>
             <option value="converti">Converti</option>
             <option value="perdu">Perdu</option>
           </select>
         </div>
       </div>
       <div class="form-group">
-        <label>Probleme identifie</label>
-        <textarea id="f-problem" rows="3" placeholder="Quel probleme ce prospect cherche a resoudre..."></textarea>
+        <label>Problème identifié</label>
+        <textarea id="f-problem" rows="3" placeholder="Quel problème ce prospect cherche à résoudre..."></textarea>
       </div>
       <div class="form-group">
         <label>Notes</label>
@@ -169,11 +171,11 @@
       </div>
       <div class="form-group">
         <label>Titre</label>
-        <input type="text" id="email-title" placeholder="Titre affiche dans l'email">
+        <input type="text" id="email-title" placeholder="Titre affiché dans l'email">
       </div>
       <div class="form-group">
         <label>Contenu du message *</label>
-        <textarea id="email-body" rows="8" required placeholder="Redigez votre message..."></textarea>
+        <textarea id="email-body" rows="8" required placeholder="Rédigez votre message..."></textarea>
       </div>
       <div style="display:flex;gap:1rem;margin-top:1rem;">
         <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:1rem;">send</span> Envoyer</button>
@@ -201,14 +203,14 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
 
 function statusBadge(status) {
   const cls = 'status-' + (status || 'nouveau');
-  const labels = { 'nouveau': 'Nouveau', 'contacte': 'Contacte', 'intéressé': 'Interesse', 'converti': 'Converti', 'perdu': 'Perdu' };
+  const labels = { 'nouveau': 'Nouveau', 'contacte': 'Contacté', 'intéressé': 'Intéressé', 'converti': 'Converti', 'perdu': 'Perdu' };
   return '<span class="badge ' + cls + '">' + (labels[status] || status) + '</span>';
 }
 
@@ -238,7 +240,7 @@ async function loadProspects() {
         '<td>' + escapeHtml(p.email) + '</td>' +
         '<td>' + statusBadge(p.status) + '</td>' +
         '<td style="text-align:center;">' + (p.emailsSent || 0) + '</td>' +
-        '<td>' + formatDate(p.lastContactedAt || p.updatedAt) + '</td>' +
+        '<td>' + formatDate(p.lastContactédAt || p.updatedAt) + '</td>' +
         '<td>' +
           '<div class="prospect-actions">' +
             '<button class="btn btn-sm btn-ghost" onclick="editProspect(\'' + p._id + '\')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
@@ -248,7 +250,7 @@ async function loadProspects() {
           '</div>' +
         '</td>' +
       '</tr>'
-    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun prospect trouve</td></tr>';
+    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun prospect trouvé</td></tr>';
   } catch (e) { console.error('Prospects error:', e); }
 }
 
@@ -332,11 +334,11 @@ async function deleteProspect(id) {
 
 // Convert prospect to client
 async function convertProspect(id, name) {
-  if (!confirm('Convertir "' + name + '" en client ? Le prospect sera mis a jour en statut "converti".')) return;
+  if (!confirm('Convertir "' + name + '" en client ? Le prospect sera mis à jour en statut "converti".')) return;
   try {
     const res = await fetch('/api/prospects/' + id + '/convert', { method: 'POST', headers });
     if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur conversion', 'error'); return; }
-    toast('Prospect converti en client avec succes', 'success');
+    toast('Prospect converti en client avec succès', 'success');
     loadProspects();
   } catch (e) {
     console.error('Convert error:', e);
@@ -375,7 +377,7 @@ async function sendEmail(e) {
       body: JSON.stringify(body)
     });
     if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur envoi email', 'error'); return; }
-    toast('Email envoye avec succes', 'success');
+    toast('Email envoyé avec succès', 'success');
     closeEmailModal();
     loadProspects();
   } catch (e) {

@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
 <div class="toast-container" id="toasts"></div>
@@ -23,17 +24,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link active"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -53,7 +56,7 @@
         <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Nouvel article
       </button>
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -66,7 +69,7 @@
         <div class="stat-card-value" id="stat-total">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">check_circle</span> Publies</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">check_circle</span> Publiés</div>
         <div class="stat-card-value" id="stat-published">0</div>
       </div>
       <div class="stat-card">
@@ -86,7 +89,7 @@
         <thead>
           <tr>
             <th>Titre</th>
-            <th>Categorie</th>
+            <th>Catégorie</th>
             <th>Statut</th>
             <th>Vues</th>
             <th>Date</th>
@@ -123,9 +126,9 @@
       <!-- Row 2: Category + Tags -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="form-group">
-          <label>Categorie</label>
+          <label>Catégorie</label>
           <select id="a-category">
-            <option value="general">General</option>
+            <option value="general">Général</option>
             <option value="seo">SEO</option>
             <option value="web">Web</option>
             <option value="ia">IA</option>
@@ -136,10 +139,13 @@
             <option value="email">Email</option>
             <option value="content">Content</option>
             <option value="cro">CRO</option>
+            <option value="automation">Automation</option>
+            <option value="sales">Sales</option>
+            <option value="analytics">Analytics</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Tags (separes par virgule)</label>
+          <label>Tags (séparés par virgule)</label>
           <input type="text" id="a-tags" placeholder="marketing, seo, tips">
         </div>
       </div>
@@ -147,7 +153,7 @@
       <!-- Excerpt -->
       <div class="form-group">
         <label>Extrait</label>
-        <textarea id="a-excerpt" rows="2" placeholder="Bref resume de l'article..."></textarea>
+        <textarea id="a-excerpt" rows="2" placeholder="Bref résumé de l'article..."></textarea>
       </div>
 
       <!-- Row 3: Meta title + Meta description -->
@@ -174,19 +180,11 @@
         </div>
       </div>
 
-      <!-- Content Editor -->
+      <!-- Content Editor (TinyMCE WYSIWYG) -->
       <div class="form-group">
-        <label>Contenu (HTML)</label>
-        <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('b')" title="Gras"><strong>B</strong></button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('i')" title="Italique"><em>I</em></button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('h2')" title="Titre H2">H2</button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('h3')" title="Titre H3">H3</button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertTag('p')" title="Paragraphe">P</button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="insertLink()" title="Lien">Link</button>
-          <button type="button" class="btn btn-sm btn-ghost" onclick="uploadContentImage()" title="Image">Img</button>
-        </div>
-        <textarea id="a-content" rows="18" placeholder="<p>Votre contenu ici...</p>" style="font-family:'Space Grotesk',monospace;font-size:0.8125rem;line-height:1.6;"></textarea>
+        <label>Contenu</label>
+        <div id="tinymce-editor"></div>
+        <textarea id="a-content" rows="18" style="display:none;"></textarea>
         <input type="file" id="content-img-input" accept="image/*" style="display:none;" onchange="handleContentImageUpload()">
       </div>
 
@@ -224,7 +222,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 
 function formatDate(d) {
@@ -234,7 +232,7 @@ function formatDate(d) {
 
 function statusBadge(s) {
   const map = { draft: 'badge-pending', published: 'badge-active' };
-  const labels = { draft: 'Brouillon', published: 'Publie' };
+  const labels = { draft: 'Brouillon', published: 'Publié' };
   return '<span class="badge ' + (map[s] || 'badge-done') + '">' + (labels[s] || s) + '</span>';
 }
 
@@ -243,12 +241,266 @@ function categoryBadge(cat) {
     seo: 'badge-accent', web: 'badge-active', ia: 'badge-purple',
     ads: 'badge-danger', social: 'badge-new', design: 'badge-pending',
     video: 'badge-done', email: 'badge-active', content: 'badge-new',
-    cro: 'badge-accent', general: 'badge-done'
+    cro: 'badge-accent', general: 'badge-done',
+    automation: 'badge-purple', sales: 'badge-accent', analytics: 'badge-active'
   };
   return '<span class="badge ' + (colors[cat] || 'badge-done') + '">' + cat + '</span>';
 }
 
 let articlesCache = [];
+
+/* ========================================
+   TinyMCE Initialization & Helpers
+   ======================================== */
+
+var tinyMCEInitialized = false;
+var tinyMCEEditorInstance = null;
+
+function initTinyMCE(initialContent) {
+  // Destroy existing instance if any
+  if (tinyMCEEditorInstance) {
+    try { tinyMCEEditorInstance.destroy(); } catch(e) {}
+    tinyMCEEditorInstance = null;
+    tinyMCEInitialized = false;
+  }
+
+  // Clear the container
+  var container = document.getElementById('tinymce-editor');
+  container.innerHTML = '';
+
+  // Create the target element
+  var editorEl = document.createElement('div');
+  editorEl.id = 'tinymce-target';
+  container.appendChild(editorEl);
+
+  tinymce.init({
+    target: editorEl,
+    license_key: 'gpl',
+    skin: 'oxide-dark',
+    content_css: 'dark',
+    language: 'fr_FR',
+    language_url: '', // will fallback to English if not found
+    height: 500,
+    menubar: 'file edit view insert format table',
+    plugins: 'lists link image code table wordcount autolink',
+    toolbar: 'undo redo | bold italic underline strikethrough | blocks | bullist numlist | blockquote link | forecolor backcolor | customimage | removeformat | code',
+    block_formats: 'Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4',
+    promotion: false,
+    branding: false,
+    resize: true,
+    statusbar: true,
+    image_advtab: true,
+    image_uploadtab: true,
+    automatic_uploads: true,
+    convert_urls: false,
+
+    // Image upload handler using existing /api/upload endpoint
+    images_upload_handler: function(blobInfo) {
+      return new Promise(function(resolve, reject) {
+        var formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
+        fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token },
+          body: formData
+        })
+        .then(function(res) {
+          if (!res.ok) throw new Error('Upload failed');
+          return res.json();
+        })
+        .then(function(data) {
+          resolve(data.url);
+        })
+        .catch(function(err) {
+          reject('Erreur upload image: ' + err.message);
+        });
+      });
+    },
+
+    // Dark theme content styling to match admin dashboard
+    content_style: [
+      'body {',
+      '  background-color: #1a1a2e;',
+      '  color: #e0e0e0;',
+      '  font-family: "Inter", "Space Grotesk", sans-serif;',
+      '  font-size: 14px;',
+      '  line-height: 1.7;',
+      '  padding: 16px;',
+      '  margin: 0;',
+      '}',
+      'h1, h2, h3, h4, h5, h6 {',
+      '  color: #ffffff;',
+      '  font-family: "Space Grotesk", sans-serif;',
+      '  margin-top: 1.5em;',
+      '  margin-bottom: 0.5em;',
+      '}',
+      'h2 { font-size: 1.5em; border-bottom: 1px solid #333; padding-bottom: 0.3em; }',
+      'h3 { font-size: 1.25em; }',
+      'h4 { font-size: 1.1em; }',
+      'p { margin: 0.8em 0; }',
+      'a { color: #FF5500; text-decoration: underline; }',
+      'a:hover { color: #ff7733; }',
+      'blockquote {',
+      '  border-left: 3px solid #FF5500;',
+      '  margin: 1em 0;',
+      '  padding: 0.5em 1em;',
+      '  background: rgba(255,85,0,0.05);',
+      '  color: #ccc;',
+      '}',
+      'img {',
+      '  max-width: 100%;',
+      '  height: auto;',
+      '  border-radius: 6px;',
+      '}',
+      'ul, ol {',
+      '  padding-left: 1.5em;',
+      '}',
+      'li { margin-bottom: 0.3em; }',
+      'pre {',
+      '  background: #0d0d1a;',
+      '  border: 1px solid #333;',
+      '  border-radius: 6px;',
+      '  padding: 1em;',
+      '  overflow-x: auto;',
+      '  color: #e0e0e0;',
+      '}',
+      'code {',
+      '  background: #0d0d1a;',
+      '  padding: 0.15em 0.4em;',
+      '  border-radius: 3px;',
+      '  font-size: 0.9em;',
+      '}',
+      'table {',
+      '  border-collapse: collapse;',
+      '  width: 100%;',
+      '  margin: 1em 0;',
+      '}',
+      'table th, table td {',
+      '  border: 1px solid #333;',
+      '  padding: 0.5em 0.75em;',
+      '  text-align: left;',
+      '}',
+      'table th { background: #1e1e3a; color: #fff; }',
+      'table td { background: #1a1a2e; }',
+      'hr { border: none; border-top: 1px solid #333; margin: 1.5em 0; }'
+    ].join('\n'),
+
+    setup: function(editor) {
+      // Custom image button with upload-from-device support
+      editor.ui.registry.addButton('customimage', {
+        icon: 'image',
+        tooltip: 'Insérer une image',
+        onAction: function() {
+          editor.windowManager.open({
+            title: 'Insérer une image',
+            body: {
+              type: 'panel',
+              items: [
+                {
+                  type: 'input',
+                  name: 'src',
+                  label: 'URL de l\'image (laisser vide pour uploader)',
+                  placeholder: 'https://...'
+                },
+                {
+                  type: 'input',
+                  name: 'alt',
+                  label: 'Texte alternatif',
+                  placeholder: 'Description de l\'image'
+                }
+              ]
+            },
+            buttons: [
+              {
+                type: 'custom',
+                name: 'upload',
+                text: 'Uploader depuis l\'appareil',
+                primary: false
+              },
+              {
+                type: 'cancel',
+                text: 'Annuler'
+              },
+              {
+                type: 'submit',
+                text: 'Insérer',
+                primary: true
+              }
+            ],
+            onAction: function(dialogApi, details) {
+              if (details.name === 'upload') {
+                // Trigger file upload
+                var fileInput = document.getElementById('content-img-input');
+                fileInput.onchange = async function() {
+                  if (!fileInput.files || !fileInput.files[0]) return;
+                  toast('Upload en cours...', 'info');
+                  var url = await uploadFile(fileInput.files[0]);
+                  if (url) {
+                    var data = dialogApi.getData();
+                    var altText = data.alt || '';
+                    editor.insertContent('<img src="' + url + '" alt="' + altText + '" style="max-width:100%;" />');
+                    toast('Image uploadée avec succès');
+                    dialogApi.close();
+                  }
+                  fileInput.value = '';
+                };
+                fileInput.click();
+              }
+            },
+            onSubmit: function(dialogApi) {
+              var data = dialogApi.getData();
+              if (data.src) {
+                editor.insertContent('<img src="' + data.src + '" alt="' + (data.alt || '') + '" style="max-width:100%;" />');
+              }
+              dialogApi.close();
+            }
+          });
+        }
+      });
+
+      // Sync content back to hidden textarea on every change
+      editor.on('change keyup input NodeChange', function() {
+        document.getElementById('a-content').value = editor.getContent();
+      });
+
+      editor.on('init', function() {
+        tinyMCEInitialized = true;
+        tinyMCEEditorInstance = editor;
+        if (initialContent) {
+          editor.setContent(initialContent);
+        }
+      });
+    },
+
+    init_instance_callback: function(editor) {
+      tinyMCEEditorInstance = editor;
+    }
+  }).catch(function(err) {
+    console.error('TinyMCE init error:', err);
+    // Fallback: show the textarea if TinyMCE fails to load
+    document.getElementById('a-content').style.display = 'block';
+    document.getElementById('tinymce-editor').style.display = 'none';
+    toast('Éditeur WYSIWYG indisponible, mode texte actif', 'info');
+  });
+}
+
+function getTinyMCEContent() {
+  if (tinyMCEEditorInstance) {
+    return tinyMCEEditorInstance.getContent();
+  }
+  return document.getElementById('a-content').value;
+}
+
+function setTinyMCEContent(html) {
+  if (tinyMCEEditorInstance) {
+    tinyMCEEditorInstance.setContent(html || '');
+  }
+  document.getElementById('a-content').value = html || '';
+}
+
+/* ========================================
+   Article CRUD
+   ======================================== */
 
 async function loadArticles() {
   try {
@@ -304,6 +556,8 @@ function openModal(article) {
   document.getElementById('cover-preview').style.display = 'none';
   document.getElementById('modal-title').textContent = 'Nouvel Article';
 
+  var contentToSet = '';
+
   if (article) {
     document.getElementById('modal-title').textContent = 'Modifier l\'article';
     document.getElementById('a-id').value = article._id;
@@ -315,16 +569,26 @@ function openModal(article) {
     document.getElementById('a-metaTitle').value = article.metaTitle || '';
     document.getElementById('a-metaDesc').value = article.metaDescription || '';
     document.getElementById('a-content').value = article.content || '';
+    contentToSet = article.content || '';
     if (article.coverImage) {
       document.getElementById('a-coverImage').value = article.coverImage;
       document.getElementById('cover-img').src = article.coverImage;
       document.getElementById('cover-preview').style.display = 'block';
     }
   }
+
+  // Initialize TinyMCE (re-init each time modal opens for clean state)
+  initTinyMCE(contentToSet);
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
+  // Destroy TinyMCE when modal closes
+  if (tinyMCEEditorInstance) {
+    try { tinyMCEEditorInstance.destroy(); } catch(e) {}
+    tinyMCEEditorInstance = null;
+    tinyMCEInitialized = false;
+  }
 }
 
 async function uploadFile(file) {
@@ -351,53 +615,18 @@ async function uploadCoverImage() {
   }
 }
 
-function uploadContentImage() {
-  document.getElementById('content-img-input').click();
-}
-
+// Legacy content image upload (kept as fallback for TinyMCE custom dialog)
 async function handleContentImageUpload() {
-  var fileInput = document.getElementById('content-img-input');
-  if (!fileInput.files || !fileInput.files[0]) return;
-  var url = await uploadFile(fileInput.files[0]);
-  if (url) {
-    var textarea = document.getElementById('a-content');
-    var imgTag = '<img src="' + url + '" alt="" style="max-width:100%;">';
-    var pos = textarea.selectionStart;
-    var text = textarea.value;
-    textarea.value = text.substring(0, pos) + imgTag + text.substring(pos);
-  }
-  fileInput.value = '';
-}
-
-function insertTag(tag) {
-  var textarea = document.getElementById('a-content');
-  var start = textarea.selectionStart;
-  var end = textarea.selectionEnd;
-  var text = textarea.value;
-  var selected = text.substring(start, end);
-  var replacement = '<' + tag + '>' + (selected || '') + '</' + tag + '>';
-  textarea.value = text.substring(0, start) + replacement + text.substring(end);
-  textarea.focus();
-  textarea.selectionStart = start + tag.length + 2;
-  textarea.selectionEnd = start + tag.length + 2 + (selected || '').length;
-}
-
-function insertLink() {
-  var url = prompt('URL du lien:');
-  if (!url) return;
-  var textarea = document.getElementById('a-content');
-  var start = textarea.selectionStart;
-  var end = textarea.selectionEnd;
-  var text = textarea.value;
-  var selected = text.substring(start, end) || 'Texte du lien';
-  var link = '<a href="' + url + '">' + selected + '</a>';
-  textarea.value = text.substring(0, start) + link + text.substring(end);
-  textarea.focus();
+  // This is now handled by the TinyMCE custom image dialog onchange handler
+  // Kept for backward compatibility
 }
 
 async function saveArticle(status) {
   var title = document.getElementById('a-title').value;
   if (!title) { toast('Le titre est obligatoire', 'error'); return; }
+
+  // Get content from TinyMCE editor
+  var content = getTinyMCEContent();
 
   var id = document.getElementById('a-id').value;
   var body = {
@@ -408,7 +637,7 @@ async function saveArticle(status) {
     excerpt: document.getElementById('a-excerpt').value,
     metaTitle: document.getElementById('a-metaTitle').value,
     metaDescription: document.getElementById('a-metaDesc').value,
-    content: document.getElementById('a-content').value,
+    content: content,
     coverImage: document.getElementById('a-coverImage').value || undefined,
     status: status
   };
@@ -461,7 +690,7 @@ async function unpublishArticle(id) {
 }
 
 async function deleteArticle(id) {
-  if (!confirm('Supprimer cet article ? Cette action est irreversible.')) return;
+  if (!confirm('Supprimer cet article ? Cette action est irréversible.')) return;
   try {
     var res = await fetch('/api/articles/' + id, { method: 'DELETE', headers: headers });
     if (!res.ok) { toast('Erreur suppression', 'error'); return; }

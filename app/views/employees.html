@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Employes | Pirabel Labs Admin</title>
+<title>Employés | Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -23,17 +23,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link active"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link active"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
@@ -54,11 +56,11 @@
       <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
         <span class="material-symbols-outlined">menu</span>
       </button>
-      <div class="topbar-title">Gestion Employes</div>
+      <div class="topbar-title">Gestion Employés</div>
     </div>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -70,7 +72,7 @@
     <!-- Toolbar -->
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
       <select id="filter-department" onchange="loadEmployees()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:170px;">
-        <option value="">Tous les departements</option>
+        <option value="">Tous les départements</option>
         <option value="seo">SEO</option>
         <option value="web">Web</option>
         <option value="design">Design</option>
@@ -94,7 +96,7 @@
       </select>
       <div style="flex:1;"></div>
       <button class="btn btn-primary" onclick="openModal()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter employe
+        <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter employé
       </button>
     </div>
 
@@ -105,7 +107,7 @@
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Departement</th>
+            <th>Département</th>
             <th>Role</th>
             <th>Statut</th>
             <th>Salaire</th>
@@ -123,7 +125,7 @@
 <div class="modal-overlay" id="modal">
   <div class="modal" style="max-width:640px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <div class="modal-title" id="modal-title">Ajouter un employe</div>
+    <div class="modal-title" id="modal-title">Ajouter un employé</div>
     <form class="dash-form" id="employee-form" onsubmit="saveEmployee(event)">
       <input type="hidden" id="employee-id">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
@@ -136,17 +138,17 @@
           <input type="email" id="f-email" required>
         </div>
         <div class="form-group">
-          <label>Telephone</label>
+          <label>Téléphone</label>
           <input type="text" id="f-phone">
         </div>
         <div class="form-group">
           <label>Role *</label>
-          <input type="text" id="f-role" placeholder="Designer, Developpeur..." required>
+          <input type="text" id="f-role" placeholder="Designer, Développeur..." required>
         </div>
         <div class="form-group">
-          <label>Departement *</label>
+          <label>Département *</label>
           <select id="f-department" required>
-            <option value="">Selectionner</option>
+            <option value="">Sélectionner</option>
             <option value="seo">SEO</option>
             <option value="web">Web</option>
             <option value="design">Design</option>
@@ -168,7 +170,7 @@
           <input type="number" id="f-salary" placeholder="0" step="0.01">
         </div>
         <div class="form-group">
-          <label>Date debut</label>
+          <label>Date début</label>
           <input type="date" id="f-startDate">
         </div>
         <div class="form-group">
@@ -177,8 +179,8 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Competences</label>
-        <input type="text" id="f-skills" placeholder="React, Figma, SEO... (separe par virgules)">
+        <label>Compétences</label>
+        <input type="text" id="f-skills" placeholder="React, Figma, SEO... (séparé par virgules)">
       </div>
       <div style="display:flex;gap:1rem;margin-top:1rem;">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -196,7 +198,7 @@
     <form class="dash-form" id="salary-form" onsubmit="paySalary(event)">
       <input type="hidden" id="sal-employee-id">
       <div class="form-group">
-        <label>Employe</label>
+        <label>Employé</label>
         <input type="text" id="sal-employee-name" disabled style="opacity:0.7;">
       </div>
       <div class="form-group">
@@ -219,7 +221,7 @@
 <div class="modal-overlay" id="view-modal">
   <div class="modal" style="max-width:640px;">
     <button class="modal-close" onclick="closeViewModal()">&times;</button>
-    <div class="modal-title">Details employe</div>
+    <div class="modal-title">Détails employé</div>
     <div id="view-content"></div>
   </div>
 </div>
@@ -244,7 +246,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 
 function logout() {
@@ -279,8 +281,8 @@ async function loadSalaryAlerts() {
         <div style="background:rgba(255,180,171,0.08);border:1px solid rgba(255,180,171,0.2);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;">
           <span class="material-symbols-outlined" style="color:var(--danger);font-size:1.5rem;">warning</span>
           <div>
-            <div style="font-weight:600;font-size:0.8125rem;">${a.name || a.employeeName || 'Employe'}</div>
-            <div style="font-size:0.75rem;color:var(--muted);">${a.message || 'Salaire impaye'}</div>
+            <div style="font-weight:600;font-size:0.8125rem;">${a.name || a.employeeName || 'Employé'}</div>
+            <div style="font-size:0.75rem;color:var(--muted);">${a.message || 'Salaire impayé'}</div>
           </div>
           ${a.employeeId || a._id ? '<button class="btn btn-sm btn-ghost" style="margin-left:auto;" onclick="openSalaryModal(\'' + (a.employeeId || a._id) + '\',\'' + (a.name || a.employeeName || '') + '\',' + (a.salary || 0) + ')">Payer</button>' : ''}
         </div>
@@ -297,7 +299,7 @@ async function loadEmployees() {
     if (dept) url += 'department=' + encodeURIComponent(dept) + '&';
     if (status) url += 'status=' + encodeURIComponent(status);
     const res = await fetch(url, { headers });
-    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employes', 'error'); return; }
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employés', 'error'); return; }
     const data = await res.json();
     const employees = data.employees || data;
     document.getElementById('employees-body').innerHTML = employees.map(e => `
@@ -313,19 +315,19 @@ async function loadEmployees() {
             <button class="btn btn-sm btn-ghost" onclick="editEmployee('${e._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
             <button class="btn btn-sm btn-ghost" onclick="inviteEmployee('${e._id}')" title="Inviter"><span class="material-symbols-outlined" style="font-size:0.875rem;">mail</span></button>
             <button class="btn btn-sm btn-ghost" onclick="openSalaryModal('${e._id}','${e.name.replace(/'/g, "\\'")}',${e.salary || 0})" title="Payer salaire"><span class="material-symbols-outlined" style="font-size:0.875rem;">payments</span></button>
-            <button class="btn btn-sm btn-ghost" onclick="viewEmployee('${e._id}')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+            <button class="btn btn-sm btn-ghost" onclick="viewEmployee('${e._id}')" title="Voir détails"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
             <button class="btn btn-sm btn-ghost" onclick="deleteEmployee('${e._id}')" title="Supprimer" style="color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
           </div>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun employe trouve</td></tr>';
+    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun employé trouvé</td></tr>';
   } catch (e) { console.error(e); }
 }
 
 // ---- Add/Edit Modal ----
 function openModal(employee) {
   document.getElementById('modal').classList.add('open');
-  document.getElementById('modal-title').textContent = employee ? 'Modifier l\'employe' : 'Ajouter un employe';
+  document.getElementById('modal-title').textContent = employee ? 'Modifier l\'employé' : 'Ajouter un employé';
   if (employee) {
     document.getElementById('employee-id').value = employee._id;
     document.getElementById('f-name').value = employee.name || '';
@@ -366,7 +368,7 @@ async function saveEmployee(e) {
     const res = id
       ? await fetch('/api/employees/' + id, { method: 'PUT', headers, body: JSON.stringify(body) })
       : await fetch('/api/employees', { method: 'POST', headers, body: JSON.stringify(body) });
-    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur sauvegarde employe', 'error'); return; }
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur sauvegarde employé', 'error'); return; }
     closeModal();
     loadEmployees();
     loadSalaryAlerts();
@@ -376,7 +378,7 @@ async function saveEmployee(e) {
 async function editEmployee(id) {
   try {
     const res = await fetch('/api/employees/' + id, { headers });
-    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employe', 'error'); return; }
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employé', 'error'); return; }
     const employee = await res.json();
     openModal(employee);
   } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
@@ -384,11 +386,11 @@ async function editEmployee(id) {
 
 // ---- Invite ----
 async function inviteEmployee(id) {
-  if (!confirm('Envoyer une invitation a cet employe ? Un compte utilisateur sera cree et les identifiants envoyes par email.')) return;
+  if (!confirm('Envoyer une invitation à cet employé ? Un compte utilisateur sera créé et les identifiants envoyés par email.')) return;
   try {
     const res = await fetch('/api/employees/' + id + '/invite', { method: 'POST', headers });
     if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur invitation', 'error'); return; }
-    toast('Invitation envoyee avec succes !', 'success');
+    toast('Invitation envoyée avec succès !', 'success');
     loadEmployees();
   } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
@@ -418,7 +420,7 @@ async function paySalary(e) {
   try {
     const res = await fetch('/api/employees/' + id + '/salary', { method: 'POST', headers, body: JSON.stringify(body) });
     if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur paiement salaire', 'error'); return; }
-    toast('Salaire paye avec succes !', 'success');
+    toast('Salaire payé avec succès !', 'success');
     closeSalaryModal();
     loadEmployees();
     loadSalaryAlerts();
@@ -429,21 +431,21 @@ async function paySalary(e) {
 async function viewEmployee(id) {
   try {
     const res = await fetch('/api/employees/' + id, { headers });
-    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employe', 'error'); return; }
+    if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur chargement employé', 'error'); return; }
     const emp = await res.json();
     const payments = emp.salaryPayments || [];
     let html = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem 2rem;margin-bottom:1.5rem;">
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Nom</span>${emp.name}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Email</span>${emp.email}</div>
-        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Telephone</span>${emp.phone || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Téléphone</span>${emp.phone || '-'}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Role</span>${emp.role || '-'}</div>
-        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Departement</span>${emp.department || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Département</span>${emp.department || '-'}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Statut</span>${statusBadge(emp.status || 'actif')}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Salaire</span>${fmt(emp.salary)}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Date debut</span>${formatDate(emp.startDate)}</div>
         <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Jour de paie</span>${emp.payDay || 5}</div>
-        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Competences</span>${(emp.skills || []).join(', ') || '-'}</div>
+        <div><span style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);display:block;margin-bottom:0.25rem;">Compétences</span>${(emp.skills || []).join(', ') || '-'}</div>
       </div>
       <div style="border-top:1px solid var(--border);padding-top:1.25rem;">
         <div style="font-family:var(--font-h);font-weight:700;font-size:0.9375rem;margin-bottom:1rem;">Historique des paiements</div>
@@ -452,7 +454,7 @@ async function viewEmployee(id) {
             <thead><tr><th>Mois</th><th>Montant</th><th>Date paiement</th></tr></thead>
             <tbody>${payments.map(p => `<tr><td>${p.mois || p.month || '-'}</td><td>${fmt(p.montant || p.amount)}</td><td>${formatDate(p.paidAt || p.date)}</td></tr>`).join('')}</tbody>
           </table>
-        ` : '<div style="color:var(--muted);font-size:0.8125rem;">Aucun paiement enregistre</div>'}
+        ` : '<div style="color:var(--muted);font-size:0.8125rem;">Aucun paiement enregistré</div>'}
       </div>
     `;
     document.getElementById('view-content').innerHTML = html;
@@ -466,7 +468,7 @@ function closeViewModal() {
 
 // ---- Delete ----
 async function deleteEmployee(id) {
-  if (!confirm('Supprimer cet employe ? Cette action est irreversible.')) return;
+  if (!confirm('Supprimer cet employé ? Cette action est irréversible.')) return;
   try {
     const res = await fetch('/api/employees/' + id, { method: 'DELETE', headers });
     if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur suppression', 'error'); return; }

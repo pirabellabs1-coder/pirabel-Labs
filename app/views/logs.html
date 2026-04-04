@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logs | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+/* ===== STATS ROW ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+@media(max-width:900px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr;}}
+.stat-box{background:var(--card);border:1px solid var(--border);padding:1.25rem 1.5rem;position:relative;overflow:hidden;transition:border-color 0.3s;}
+.stat-box:hover{border-color:rgba(255,85,0,0.3);}
+.stat-box-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;font-size:1.25rem;}
+.stat-box-icon.blue{background:rgba(66,165,245,0.12);color:#42a5f5;}
+.stat-box-icon.teal{background:rgba(65,228,192,0.1);color:var(--teal);}
+.stat-box-icon.yellow{background:rgba(255,193,7,0.12);color:#ffc107;}
+.stat-box-icon.red{background:rgba(255,107,53,0.12);color:#ff6b35;}
+.stat-box-value{font-family:var(--font-h);font-weight:700;font-size:1.75rem;letter-spacing:-0.5px;color:var(--text);line-height:1;}
+.stat-box-label{font-size:0.75rem;color:var(--muted);margin-top:0.375rem;text-transform:uppercase;letter-spacing:0.05em;}
+
+/* ===== TOOLBAR ===== */
+.toolbar{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.toolbar select,.toolbar input[type="text"],.toolbar input[type="date"]{background:var(--card);border:1px solid var(--border);padding:0.5rem 0.875rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;transition:border-color 0.3s;min-width:0;}
+.toolbar select{appearance:none;min-width:140px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e5e2e1' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.75rem center;padding-right:2rem;}
+.toolbar select:focus,.toolbar input:focus{border-color:var(--accent);}
+.toolbar select option{background:var(--card);color:var(--text);}
+.toolbar input[type="text"]{flex:1;min-width:180px;}
+.toolbar input[type="date"]{width:140px;}
+
+/* ===== LOGS TABLE ===== */
+.logs-table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);}
+.logs-table{width:100%;border-collapse:collapse;font-size:0.8125rem;}
+.logs-table th{text-align:left;padding:0.75rem 1rem;font-family:var(--font-h);font-weight:600;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+.logs-table td{padding:0.625rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.logs-table tr:hover td{background:rgba(255,85,0,0.02);}
+.logs-table .td-date{font-size:0.75rem;color:var(--muted2);white-space:nowrap;}
+.logs-table .td-cat{white-space:nowrap;}
+.logs-table .td-cat-inner{display:inline-flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:var(--text);}
+.logs-table .td-cat-inner .material-symbols-outlined{font-size:0.9375rem;color:var(--accent);}
+.logs-table .td-action{font-weight:600;color:var(--text);font-family:var(--font-h);text-transform:uppercase;font-size:0.6875rem;letter-spacing:0.04em;}
+.logs-table .td-desc{color:var(--muted);max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.logs-table .td-user{font-size:0.75rem;color:var(--muted2);}
+.logs-table .td-ip{font-size:0.6875rem;color:var(--muted2);font-family:monospace;}
+
+/* Level badges */
+.level-badge{display:inline-block;font-size:0.6875rem;padding:0.2rem 0.5rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.level-info{background:rgba(65,228,192,0.15);color:var(--teal);}
+.level-warning{background:rgba(255,181,156,0.15);color:var(--warning,#ffc107);}
+.level-error{background:rgba(255,180,171,0.15);color:var(--danger,#f87171);}
+.level-critical{background:rgba(255,180,171,0.15);color:var(--danger,#f87171);animation:critPulse 1.5s ease infinite;}
+@keyframes critPulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* ===== PAGINATION ===== */
+.pagination{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1.5rem;}
+.pagination button{background:var(--card);border:1px solid var(--border);padding:0.375rem 0.75rem;color:var(--muted);font-size:0.8125rem;font-family:var(--font-h);cursor:pointer;transition:all 0.2s;}
+.pagination button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.pagination button:disabled{opacity:0.3;cursor:default;}
+.pagination button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.pagination .page-info{font-size:0.75rem;color:var(--muted);}
+
+/* ===== PURGE BTN ===== */
+.btn-purge{background:transparent;border:1px solid var(--border);padding:0.5rem 1rem;font-family:var(--font-h);font-weight:600;font-size:0.75rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:0.375rem;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.04em;}
+.btn-purge:hover{border-color:var(--danger,#f87171);color:var(--danger,#f87171);}
+.btn-purge .material-symbols-outlined{font-size:0.9375rem;}
+
+/* ===== EMPTY & LOADING ===== */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.empty-state .material-symbols-outlined{font-size:3.5rem;display:block;margin-bottom:1rem;opacity:0.2;}
+.empty-state p{font-size:0.9rem;max-width:320px;margin:0 auto;line-height:1.6;}
+.loading-state{text-align:center;padding:3rem;color:var(--muted);font-size:0.8125rem;}
+
+/* Auto-refresh indicator */
+.auto-refresh{display:inline-flex;align-items:center;gap:0.375rem;font-size:0.6875rem;color:var(--muted2);margin-left:auto;}
+.auto-refresh .dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:blink 2s ease infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">conversion_path</span> Leads Chatbot</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link active"><span class="material-symbols-outlined">history</span> Logs</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">A</div>
+      <div>
+        <div class="sidebar-username" id="user-name">Admin</div>
+        <div class="sidebar-role" id="user-role">Administrateur</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="topbar-title">Journal d'audit</div>
+    </div>
+    <div class="topbar-actions">
+      <span class="auto-refresh"><span class="dot"></span> Auto-refresh 30s</span>
+      <button class="topbar-btn" onclick="loadLogs()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">refresh</span> Actualiser
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-box-icon blue"><span class="material-symbols-outlined">history</span></div>
+        <div class="stat-box-value" id="stat-total">0</div>
+        <div class="stat-box-label">Total logs</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-icon teal"><span class="material-symbols-outlined">info</span></div>
+        <div class="stat-box-value" id="stat-info">0</div>
+        <div class="stat-box-label">Info</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-icon yellow"><span class="material-symbols-outlined">warning</span></div>
+        <div class="stat-box-value" id="stat-warning">0</div>
+        <div class="stat-box-label">Warning</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-icon red"><span class="material-symbols-outlined">error</span></div>
+        <div class="stat-box-value" id="stat-error">0</div>
+        <div class="stat-box-label">Erreurs</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <select id="filter-category" onchange="loadLogs()">
+        <option value="">Toutes catégories</option>
+        <option value="auth">Authentification</option>
+        <option value="client">Client</option>
+        <option value="project">Projet</option>
+        <option value="order">Demande</option>
+        <option value="invoice">Facture</option>
+        <option value="employee">Employé</option>
+        <option value="article">Article</option>
+        <option value="campaign">Campagne</option>
+        <option value="settings">Paramètres</option>
+        <option value="system">Système</option>
+      </select>
+      <select id="filter-level" onchange="loadLogs()">
+        <option value="">Tous niveaux</option>
+        <option value="info">Info</option>
+        <option value="warning">Warning</option>
+        <option value="error">Error</option>
+        <option value="critical">Critical</option>
+      </select>
+      <input type="date" id="filter-from" onchange="loadLogs()">
+      <input type="date" id="filter-to" onchange="loadLogs()">
+      <input type="text" id="filter-search" placeholder="Rechercher dans les descriptions..." onkeyup="debounceSearch()">
+      <button class="btn-purge" onclick="purgeLogs()">
+        <span class="material-symbols-outlined">delete_sweep</span> Purger les logs
+      </button>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="logs-table-wrap">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Catégorie</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Utilisateur</th>
+            <th>Niveau</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody id="logs-tbody">
+          <tr><td colspan="7" class="loading-state">Chargement des logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+function toast(msg, type='success') {
+  const c = document.getElementById('toasts');
+  if (!c) return alert(msg);
+  const icons = {success:'check_circle',error:'error',info:'info'};
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = '<span class="material-symbols-outlined">' + (icons[type]||'info') + '</span>' + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.name) {
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
+}
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
+
+// Category icon mapping
+const categoryIcons = {
+  auth: 'lock',
+  client: 'people',
+  project: 'folder',
+  order: 'inbox',
+  invoice: 'receipt_long',
+  employee: 'badge',
+  article: 'article',
+  campaign: 'campaign',
+  settings: 'settings',
+  system: 'terminal'
+};
+
+const categoryLabels = {
+  auth: 'Auth',
+  client: 'Client',
+  project: 'Projet',
+  order: 'Demande',
+  invoice: 'Facture',
+  employee: 'Employé',
+  article: 'Article',
+  campaign: 'Campagne',
+  settings: 'Paramètres',
+  system: 'Système'
+};
+
+let currentPage = 1;
+const perPage = 50;
+let searchTimeout = null;
+
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => loadLogs(), 400);
+}
+
+function formatDate(d) {
+  if (!d) return '-';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function levelBadge(level) {
+  const cls = {
+    info: 'level-info',
+    warning: 'level-warning',
+    error: 'level-error',
+    critical: 'level-critical'
+  };
+  return '<span class="level-badge ' + (cls[level] || 'level-info') + '">' + (level || 'info') + '</span>';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Load stats
+async function loadStats() {
+  try {
+    const res = await fetch('/api/logs/stats', { headers });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    document.getElementById('stat-total').textContent = data.total || 0;
+
+    const levelMap = {};
+    (data.byLevel || []).forEach(l => { levelMap[l._id] = l.count; });
+    document.getElementById('stat-info').textContent = levelMap.info || 0;
+    document.getElementById('stat-warning').textContent = levelMap.warning || 0;
+    document.getElementById('stat-error').textContent = (levelMap.error || 0) + (levelMap.critical || 0);
+  } catch (e) {
+    console.error('Stats error:', e);
+  }
+}
+
+// Load logs
+async function loadLogs(page) {
+  if (page) currentPage = page;
+  const tbody = document.getElementById('logs-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" class="loading-state">Chargement...</td></tr>';
+
+  const params = new URLSearchParams();
+  params.set('page', currentPage);
+  params.set('limit', perPage);
+
+  const category = document.getElementById('filter-category').value;
+  const level = document.getElementById('filter-level').value;
+  const from = document.getElementById('filter-from').value;
+  const to = document.getElementById('filter-to').value;
+  const search = document.getElementById('filter-search').value.trim();
+
+  if (category) params.set('category', category);
+  if (level) params.set('level', level);
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  if (search) params.set('search', search);
+
+  try {
+    const res = await fetch('/api/logs?' + params.toString(), { headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement logs', 'error'); return; }
+    const data = await res.json();
+
+    if (!data.logs || data.logs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><span class="material-symbols-outlined">history</span><p>Aucun log trouvé</p></div></td></tr>';
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    data.logs.forEach(log => {
+      const cat = log.category || 'system';
+      const icon = categoryIcons[cat] || 'terminal';
+      const label = categoryLabels[cat] || cat;
+      const userName = (log.user && log.user.name) ? escapeHtml(log.user.name) : (log.userName ? escapeHtml(log.userName) : '-');
+
+      html += '<tr>';
+      html += '<td class="td-date">' + formatDate(log.createdAt) + '</td>';
+      html += '<td class="td-cat"><span class="td-cat-inner"><span class="material-symbols-outlined">' + icon + '</span> ' + label + '</span></td>';
+      html += '<td class="td-action">' + escapeHtml(log.action) + '</td>';
+      html += '<td class="td-desc" title="' + escapeHtml(log.description) + '">' + escapeHtml(log.description) + '</td>';
+      html += '<td class="td-user">' + userName + '</td>';
+      html += '<td>' + levelBadge(log.level) + '</td>';
+      html += '<td class="td-ip">' + escapeHtml(log.ip || '-') + '</td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+
+    // Pagination
+    renderPagination(data.page, data.pages, data.total);
+  } catch (e) {
+    console.error('Logs error:', e);
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-state">Erreur de chargement</td></tr>';
+  }
+}
+
+function renderPagination(page, pages, total) {
+  const container = document.getElementById('pagination');
+  if (pages <= 1) { container.innerHTML = ''; return; }
+
+  let html = '<button ' + (page <= 1 ? 'disabled' : '') + ' onclick="loadLogs(' + (page - 1) + ')">&laquo; Prec</button>';
+
+  const maxVisible = 7;
+  let start = Math.max(1, page - Math.floor(maxVisible / 2));
+  let end = Math.min(pages, start + maxVisible - 1);
+  if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+
+  if (start > 1) {
+    html += '<button onclick="loadLogs(1)">1</button>';
+    if (start > 2) html += '<span class="page-info">...</span>';
+  }
+
+  for (let i = start; i <= end; i++) {
+    html += '<button class="' + (i === page ? 'active' : '') + '" onclick="loadLogs(' + i + ')">' + i + '</button>';
+  }
+
+  if (end < pages) {
+    if (end < pages - 1) html += '<span class="page-info">...</span>';
+    html += '<button onclick="loadLogs(' + pages + ')">' + pages + '</button>';
+  }
+
+  html += '<button ' + (page >= pages ? 'disabled' : '') + ' onclick="loadLogs(' + (page + 1) + ')">Suiv &raquo;</button>';
+  html += '<span class="page-info" style="margin-left:0.5rem;">' + total + ' logs</span>';
+
+  container.innerHTML = html;
+}
+
+// Purge logs older than 30 days
+async function purgeLogs() {
+  if (!confirm('Supprimer tous les logs de plus de 30 jours ?')) return;
+  try {
+    const res = await fetch('/api/logs/clear', { method: 'DELETE', headers });
+    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur purge', 'error'); return; }
+    const data = await res.json();
+    toast(data.message || 'Logs purges', 'success');
+    loadLogs(1);
+    loadStats();
+  } catch (e) {
+    console.error('Purge error:', e);
+    toast('Erreur lors de la purge', 'error');
+  }
+}
+
+// Auto-refresh every 30 seconds
+let autoRefreshInterval = setInterval(() => {
+  loadLogs();
+  loadStats();
+}, 30000);
+
+// Init
+loadStats();
+loadLogs();
+</script>
+</body>
+</html>

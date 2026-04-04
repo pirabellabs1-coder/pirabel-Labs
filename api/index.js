@@ -106,7 +106,7 @@ app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'po
 app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });

@@ -31,17 +31,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link active"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -67,7 +69,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
           <div class="form-group"><label>Nom de l'agence</label><input type="text" id="f-agencyName"></div>
           <div class="form-group"><label>Email</label><input type="email" id="f-agencyEmail"></div>
-          <div class="form-group"><label>Telephone</label><input type="tel" id="f-agencyPhone"></div>
+          <div class="form-group"><label>Téléphone</label><input type="tel" id="f-agencyPhone"></div>
           <div class="form-group"><label>Adresse</label><input type="text" id="f-agencyAddress"></div>
           <div class="form-group"><label>Ville</label><input type="text" id="f-agencyCity"></div>
           <div class="form-group"><label>Pays</label><input type="text" id="f-agencyCountry"></div>
@@ -88,8 +90,8 @@
       <div class="settings-section">
         <div class="settings-section-title"><span class="material-symbols-outlined">receipt_long</span> Facturation</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="form-group"><label>Prefixe facture</label><input type="text" id="f-invoicePrefix" placeholder="FAC-"></div>
-          <div class="form-group"><label>Taux TVA par defaut (%)</label><input type="number" id="f-defaultTva" min="0" max="100" step="0.1"></div>
+          <div class="form-group"><label>Préfixe facture</label><input type="text" id="f-invoicePrefix" placeholder="FAC-"></div>
+          <div class="form-group"><label>Taux TVA par défaut (%)</label><input type="number" id="f-defaultTva" min="0" max="100" step="0.1"></div>
           <div class="form-group"><label>Devise</label>
             <select id="f-currency">
               <option value="EUR">EUR - Euro</option>
@@ -102,16 +104,16 @@
           </div>
         </div>
         <div class="form-group" style="margin-top:1rem;">
-          <label>Mention legale facture</label>
-          <textarea id="f-invoiceLegalMention" rows="3" placeholder="Mention legale affichee en bas de chaque facture..."></textarea>
+          <label>Mention légale facture</label>
+          <textarea id="f-invoiceLegalMention" rows="3" placeholder="Mention légale affichée en bas de chaque facture..."></textarea>
         </div>
       </div>
 
-      <!-- Employes -->
+      <!-- Employés -->
       <div class="settings-section">
-        <div class="settings-section-title"><span class="material-symbols-outlined">badge</span> Employes</div>
+        <div class="settings-section-title"><span class="material-symbols-outlined">badge</span> Employés</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="form-group"><label>Jour de paie par defaut</label><input type="number" id="f-defaultPayDay" min="1" max="31" placeholder="28"></div>
+          <div class="form-group"><label>Jour de paie par défaut</label><input type="number" id="f-defaultPayDay" min="1" max="31" placeholder="28"></div>
           <div class="form-group"><label>Jours de rappel avant retard</label><input type="number" id="f-reminderDays" min="0" max="30" placeholder="3"></div>
         </div>
       </div>
@@ -121,7 +123,7 @@
         <div class="settings-section-title"><span class="material-symbols-outlined">email</span> Email</div>
         <div class="form-group">
           <label>Signature email</label>
-          <textarea id="f-emailSignature" rows="5" placeholder="Signature ajoutee automatiquement aux emails envoyes..."></textarea>
+          <textarea id="f-emailSignature" rows="5" placeholder="Signature ajoutée automatiquement aux emails envoyés..."></textarea>
         </div>
       </div>
 
@@ -153,7 +155,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 
@@ -246,7 +248,7 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
       body: JSON.stringify(body)
     });
     if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur sauvegarde', 'error'); return; }
-    toast('Paramètres enregistres avec succes', 'success');
+    toast('Paramètres enregistrés avec succès', 'success');
   } catch (e) {
     console.error('Save error:', e);
     toast('Erreur lors de la sauvegarde des paramètres', 'error');

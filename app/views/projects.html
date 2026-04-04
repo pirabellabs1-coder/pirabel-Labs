@@ -24,6 +24,37 @@
 .detail-label{color:var(--muted);font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-h);font-weight:700;margin-bottom:0.25rem;}
 .detail-value{font-size:0.875rem;margin-bottom:1rem;}
 .modal-wide{max-width:700px;}
+
+/* View toggle */
+.view-toggle{background:transparent;border:none;color:var(--muted);padding:0.5rem 0.75rem;cursor:pointer;display:flex;align-items:center;font-size:0.8125rem;gap:0.25rem;font-family:var(--font-b);transition:all 0.2s;}
+.view-toggle.active{background:var(--accent);color:#fff;}
+.view-toggle:hover:not(.active){background:rgba(255,85,0,0.1);color:var(--accent);}
+
+/* Kanban */
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;min-height:60vh;display:none;}
+.kanban.active{display:grid;}
+.kanban-col{background:var(--bg);border:1px solid var(--border);padding:0.75rem;min-height:400px;}
+.kanban-col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.kanban-col-title{font-family:var(--font-h);font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;}
+.kanban-col-count{background:var(--card);border:1px solid var(--border);padding:0.125rem 0.5rem;font-size:0.6875rem;font-weight:700;font-family:var(--font-h);}
+.kanban-card{background:var(--card);border:1px solid var(--border);padding:1rem;margin-bottom:0.5rem;cursor:grab;transition:all 0.2s;position:relative;}
+.kanban-card:hover{border-color:rgba(255,85,0,0.3);transform:translateY(-1px);}
+.kanban-card.dragging{opacity:0.5;border-color:var(--accent);}
+.kanban-card-name{font-weight:700;font-size:0.8125rem;margin-bottom:0.25rem;}
+.kanban-card-client{font-size:0.6875rem;color:var(--muted);margin-bottom:0.5rem;}
+.kanban-card-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.6875rem;color:var(--muted);margin-top:0.5rem;}
+.kanban-card-service{font-size:0.625rem;background:rgba(255,85,0,0.1);color:var(--accent);padding:0.125rem 0.5rem;display:inline-block;font-family:var(--font-h);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.priority-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.priority-dot.basse{background:#41e4c0;}
+.priority-dot.normale{background:#ff9500;}
+.priority-dot.haute{background:#ff5500;}
+.priority-dot.urgente{background:#ff3333;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.drop-zone{border:2px dashed rgba(255,85,0,0.3);padding:1rem;text-align:center;color:var(--muted);font-size:0.75rem;margin-top:0.5rem;display:none;}
+.kanban-col.drag-over .drop-zone{display:block;}
+.kanban-col.drag-over{background:rgba(255,85,0,0.03);}
+@media(max-width:1100px){.kanban{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.kanban{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -40,16 +71,17 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link active"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
@@ -75,7 +107,7 @@
     </div>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -88,12 +120,20 @@
         <option value="en_attente">En attente</option>
         <option value="en_cours">En cours</option>
         <option value="en_pause">En pause</option>
-        <option value="termine">Termine</option>
-        <option value="annule">Annule</option>
+        <option value="termine">Terminé</option>
+        <option value="annule">Annulé</option>
       </select>
       <select id="filter-client" onchange="loadProjects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
         <option value="">Tous les clients</option>
       </select>
+      <div style="display:flex;gap:0.25rem;background:var(--bg);border:1px solid var(--border);padding:2px;">
+        <button class="view-toggle active" id="btn-list" onclick="setView('list')">
+          <span class="material-symbols-outlined" style="font-size:1rem;">view_list</span>
+        </button>
+        <button class="view-toggle" id="btn-kanban" onclick="setView('kanban')">
+          <span class="material-symbols-outlined" style="font-size:1rem;">view_kanban</span>
+        </button>
+      </div>
       <div style="flex:1;"></div>
       <button class="btn btn-primary" onclick="openModal()">
         <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter projet
@@ -117,6 +157,9 @@
         <tbody id="projects-body"></tbody>
       </table>
     </div>
+
+    <!-- Kanban Board -->
+    <div class="kanban" id="kanban-board"></div>
   </div>
 </div>
 </div>
@@ -162,12 +205,12 @@
             <option value="en_attente">En attente</option>
             <option value="en_cours">En cours</option>
             <option value="en_pause">En pause</option>
-            <option value="termine">Termine</option>
-            <option value="annule">Annule</option>
+            <option value="termine">Terminé</option>
+            <option value="annule">Annulé</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Priorite</label>
+          <label>Priorité</label>
           <select id="f-priority">
             <option value="basse">Basse</option>
             <option value="normale" selected>Normale</option>
@@ -180,7 +223,7 @@
           <input type="number" id="f-budget" placeholder="0">
         </div>
         <div class="form-group">
-          <label>Date debut</label>
+          <label>Date début</label>
           <input type="date" id="f-startDate">
         </div>
         <div class="form-group">
@@ -188,7 +231,7 @@
           <input type="date" id="f-deadline">
         </div>
         <div class="form-group" style="grid-column:1/-1;">
-          <label>Assigne a</label>
+          <label>Assigné à</label>
           <select id="f-assignedTo"></select>
         </div>
       </div>
@@ -208,12 +251,12 @@
 <div class="modal-overlay" id="update-modal">
   <div class="modal" style="max-width:500px;">
     <button class="modal-close" onclick="closeUpdateModal()">&times;</button>
-    <div class="modal-title">Ajouter une mise a jour</div>
+    <div class="modal-title">Ajouter une mise à jour</div>
     <form class="dash-form" id="update-form" onsubmit="submitUpdate(event)">
       <input type="hidden" id="update-project-id">
       <div class="form-group">
         <label>Message *</label>
-        <textarea id="u-message" rows="4" required placeholder="Decrivez l'avancement..."></textarea>
+        <textarea id="u-message" rows="4" required placeholder="Décrivez l'avancement..."></textarea>
       </div>
       <div class="form-group">
         <label>Progression: <span id="u-progress-label">0</span>%</label>
@@ -225,8 +268,8 @@
           <option value="en_attente">En attente</option>
           <option value="en_cours">En cours</option>
           <option value="en_pause">En pause</option>
-          <option value="termine">Termine</option>
-          <option value="annule">Annule</option>
+          <option value="termine">Terminé</option>
+          <option value="annule">Annulé</option>
         </select>
       </div>
       <div style="display:flex;gap:1rem;margin-top:1rem;">
@@ -241,7 +284,7 @@
 <div class="modal-overlay" id="view-modal">
   <div class="modal modal-wide">
     <button class="modal-close" onclick="closeViewModal()">&times;</button>
-    <div class="modal-title" id="view-title">Details du projet</div>
+    <div class="modal-title" id="view-title">Détails du projet</div>
     <div id="view-content"></div>
   </div>
 </div>
@@ -264,7 +307,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function statusBadge(s) {
@@ -276,6 +319,105 @@ function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20ac'; }
 
 let clientsList = [];
 let employeesList = [];
+let allProjectsList = [];
+let currentView = 'list';
+
+// View toggle
+function setView(view) {
+  currentView = view;
+  document.getElementById('btn-list').classList.toggle('active', view === 'list');
+  document.getElementById('btn-kanban').classList.toggle('active', view === 'kanban');
+  document.querySelector('.table-wrap').style.display = view === 'list' ? 'block' : 'none';
+  document.querySelector('.kanban').style.display = view === 'kanban' ? 'grid' : 'none';
+  if (view === 'kanban') renderKanban();
+}
+
+// Drag & Drop
+let draggedProjectId = null;
+
+function handleDragStart(e, projectId) {
+  draggedProjectId = projectId;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+async function handleDrop(e, newStatus) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!draggedProjectId) return;
+
+  try {
+    const res = await fetch('/api/projects/' + draggedProjectId, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ status: newStatus })
+    });
+    if (res.ok) {
+      toast('Statut mis à jour', 'success');
+      loadProjects();
+    } else {
+      toast('Erreur lors de la mise à jour', 'error');
+    }
+  } catch (e) {
+    toast('Erreur réseau', 'error');
+  }
+  draggedProjectId = null;
+}
+
+// Render Kanban board
+function renderKanban() {
+  const statuses = [
+    { key: 'en_attente', label: 'En attente', color: '#ffb59c' },
+    { key: 'en_cours', label: 'En cours', color: '#FF5500' },
+    { key: 'en_pause', label: 'En pause', color: '#ffb4ab' },
+    { key: 'termine', label: 'Terminé', color: '#41e4c0' },
+    { key: 'annule', label: 'Annulé', color: 'rgba(229,226,225,0.3)' }
+  ];
+
+  document.getElementById('kanban-board').innerHTML = statuses.map(s => {
+    const projects = allProjectsList.filter(p => p.status === s.key);
+    return `
+      <div class="kanban-col" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${s.key}')">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title" style="color:${s.color};">${s.label}</div>
+          <div class="kanban-col-count">${projects.length}</div>
+        </div>
+        ${projects.map(p => `
+          <div class="kanban-card" draggable="true" ondragstart="handleDragStart(event, '${p._id}')" ondragend="handleDragEnd(event)" onclick="viewProject('${p._id}')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div class="kanban-card-name">${p.name}</div>
+              <span class="priority-dot ${p.priority || 'normale'}"></span>
+            </div>
+            <div class="kanban-card-client">${p.client?.company || '-'}</div>
+            ${p.service ? `<div class="kanban-card-service">${p.service}</div>` : ''}
+            <div style="margin-top:0.5rem;">
+              <div class="progress-bar"><div class="progress-bar-fill" style="width:${p.progress || 0}%;"></div></div>
+            </div>
+            <div class="kanban-card-meta">
+              <span>${p.progress || 0}%</span>
+              <span>${p.deadline ? formatDate(p.deadline) : ''}</span>
+            </div>
+          </div>
+        `).join('') || '<div style="padding:1rem;text-align:center;color:var(--muted2);font-size:0.75rem;">Aucun projet</div>'}
+        <div class="drop-zone">Déposer ici</div>
+      </div>
+    `;
+  }).join('');
+}
 
 async function loadProjects() {
   try {
@@ -288,6 +430,7 @@ async function loadProjects() {
     if (!res.ok) { toast('Erreur lors du chargement des projets', 'error'); return; }
     const data = await res.json();
     const projects = data.projects || data;
+    allProjectsList = projects;
     document.getElementById('projects-body').innerHTML = projects.map(p => `
       <tr>
         <td style="font-weight:600;">${p.name}</td>
@@ -304,10 +447,11 @@ async function loadProjects() {
         <td style="white-space:nowrap;">
           <button class="btn btn-sm btn-ghost" onclick="editProject('${p._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
           <button class="btn btn-sm btn-ghost" onclick="openUpdateModal('${p._id}', ${p.progress || 0}, '${p.status}')" title="Ajouter update"><span class="material-symbols-outlined" style="font-size:0.875rem;">update</span></button>
-          <button class="btn btn-sm btn-ghost" onclick="viewProject('${p._id}')" title="Voir details"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
+          <button class="btn btn-sm btn-ghost" onclick="viewProject('${p._id}')" title="Voir détails"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">Aucun projet trouve</td></tr>';
+    `).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">Aucun projet trouvé</td></tr>';
+    if (currentView === 'kanban') renderKanban();
   } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
 }
 
@@ -317,7 +461,7 @@ async function loadSelectData() {
       fetch('/api/clients', { headers }),
       fetch('/api/employees', { headers })
     ]);
-    if (!cRes.ok || !eRes.ok) { toast('Erreur lors du chargement des donnees', 'error'); return; }
+    if (!cRes.ok || !eRes.ok) { toast('Erreur lors du chargement des données', 'error'); return; }
     const cData = await cRes.json();
     const eData = await eRes.json();
     clientsList = cData.clients || cData;
@@ -417,7 +561,7 @@ async function submitUpdate(e) {
   };
   try {
     const res = await fetch('/api/projects/' + id + '/update', { method: 'POST', headers, body: JSON.stringify(body) });
-    if (!res.ok) { const err = await res.json().catch(() => ({})); toast(err.message || 'Erreur lors de la mise a jour', 'error'); return; }
+    if (!res.ok) { const err = await res.json().catch(() => ({})); toast(err.message || 'Erreur lors de la mise à jour', 'error'); return; }
     closeUpdateModal();
     loadProjects();
   } catch (e) { console.error(e); toast('Erreur réseau', 'error'); }
@@ -465,8 +609,8 @@ async function viewProject(id) {
         '<div><div class="detail-label">Budget</div><div class="detail-value">' + fmt(p.budget) + '</div></div>' +
         '<div><div class="detail-label">Date debut</div><div class="detail-value">' + formatDate(p.startDate) + '</div></div>' +
         '<div><div class="detail-label">Deadline</div><div class="detail-value">' + formatDate(p.deadline) + '</div></div>' +
-        '<div><div class="detail-label">Assigne a</div><div class="detail-value">' + assignee + '</div></div>' +
-        '<div><div class="detail-label">Cree le</div><div class="detail-value">' + formatDate(p.createdAt) + '</div></div>' +
+        '<div><div class="detail-label">Assigné à</div><div class="detail-value">' + assignee + '</div></div>' +
+        '<div><div class="detail-label">Créé le</div><div class="detail-value">' + formatDate(p.createdAt) + '</div></div>' +
         (p.description ? '<div style="grid-column:1/-1;"><div class="detail-label">Description</div><div class="detail-value" style="white-space:pre-wrap;">' + p.description + '</div></div>' : '') +
       '</div>' +
       timelineHtml;

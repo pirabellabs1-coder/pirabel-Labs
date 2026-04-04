@@ -97,6 +97,8 @@ app.use('/api/chat', require('./routes/chat'));
 app.use('/api/articles', require('./routes/articles'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/logs', require('./routes/logs'));
+app.use('/api/notes', require('./routes/notes'));
 
 // ============================================
 // SECRET ACCESS URLs
@@ -127,6 +129,8 @@ app.get('/messages', (req, res) => res.sendFile(path.join(__dirname, 'views', 'm
 app.get('/portal', (req, res) => res.sendFile(path.join(__dirname, 'views', 'portal.html')));
 app.get('/articles', (req, res) => res.sendFile(path.join(__dirname, 'views', 'articles.html')));
 app.get('/analytics', (req, res) => res.sendFile(path.join(__dirname, 'views', 'analytics.html')));
+app.get('/leads', (req, res) => res.sendFile(path.join(__dirname, 'views', 'leads.html')));
+app.get('/logs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'logs.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

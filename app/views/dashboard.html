@@ -25,6 +25,17 @@
 .salary-alert-amount{font-family:var(--font-h);font-weight:700;font-size:0.875rem;color:var(--danger);}
 .progress-bar{background:var(--bg);height:6px;width:100px;position:relative;}
 .progress-bar-fill{background:var(--accent);height:100%;transition:width 0.3s;}
+
+/* New: countUp animation for stat values */
+@keyframes countUp { from { opacity: 0.5; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.stat-card-value { animation: countUp 0.4s ease; }
+
+/* New: third chart row */
+.chart-row-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+
+@media(max-width:900px){
+  .chart-row-3 { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -40,16 +51,17 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">group_add</span> Leads</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
@@ -73,9 +85,19 @@
       </button>
       <div class="topbar-title">Tableau de bord</div>
     </div>
+
+    <!-- Global Search Bar -->
+    <div class="search-wrap" style="position:relative;">
+      <span class="material-symbols-outlined" style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:1.125rem;color:var(--muted);">search</span>
+      <input type="text" id="global-search" placeholder="Rechercher clients, projets, articles..."
+        style="background:var(--bg);border:1px solid var(--border);padding:0.625rem 1rem 0.625rem 2.5rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;width:320px;"
+        oninput="handleSearch(this.value)" onfocus="showSearchResults()" onblur="setTimeout(()=>hideSearchResults(),200)">
+      <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);max-height:350px;overflow-y:auto;z-index:999;margin-top:4px;"></div>
+    </div>
+
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -100,16 +122,25 @@
         <div class="stat-card-value accent" id="stat-orders">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">badge</span> Employes</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">badge</span> Employés</div>
         <div class="stat-card-value" id="stat-employees">0</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--danger);">receipt_long</span> Factures en attente</div>
         <div class="stat-card-value" id="stat-invoices">0</div>
       </div>
+
+      <!-- Monthly Goal Progress -->
+      <div class="stat-card" style="grid-column: span 2;">
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">flag</span> Objectif mensuel</div>
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-top:0.5rem;">
+          <div style="flex:1;"><div style="background:var(--bg);height:10px;position:relative;"><div id="goal-bar" style="background:linear-gradient(90deg,var(--accent),#ff7700);height:100%;width:0%;transition:width 1s ease;"></div></div></div>
+          <div style="font-family:var(--font-h);font-weight:700;font-size:1.25rem;" id="goal-text">0%</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Charts Row -->
+    <!-- Charts Row 1: Revenue + Service Pie -->
     <div class="grid-2">
       <div class="chart-wrap">
         <div class="chart-title">Revenue mensuel (12 mois)</div>
@@ -121,11 +152,23 @@
       </div>
     </div>
 
+    <!-- Charts Row 2: Client Evolution + Top Services by Revenue -->
+    <div class="chart-row-3">
+      <div class="chart-wrap">
+        <div class="chart-title">Evolution des clients (12 mois)</div>
+        <canvas id="clientGrowthChart" height="200"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Top services par revenue</div>
+        <canvas id="topServicesChart" height="200"></canvas>
+      </div>
+    </div>
+
     <!-- Recent Orders & Recent Projects -->
     <div class="grid-2">
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Dernieres demandes</div>
+          <div class="table-title">Dernières demandes</div>
           <a href="/orders" class="btn btn-sm btn-ghost">Voir tout</a>
         </div>
         <table>
@@ -136,7 +179,7 @@
 
       <div class="table-wrap">
         <div class="table-header">
-          <div class="table-title">Projets recents</div>
+          <div class="table-title">Projets récents</div>
           <a href="/projects" class="btn btn-sm btn-ghost">Voir tout</a>
         </div>
         <table>
@@ -149,7 +192,7 @@
     <!-- Activity Timeline & Salary Alerts -->
     <div class="grid-2">
       <div class="timeline">
-        <div class="timeline-title">Activité recente</div>
+        <div class="timeline-title">Activité récente</div>
         <div id="activity-list">
           <div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Chargement...</div>
         </div>
@@ -175,7 +218,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
 function statusBadge(status) {
@@ -185,22 +228,77 @@ function statusBadge(status) {
 function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
 function fmt(n) { return (n||0).toLocaleString('fr-FR') + ' \u20AC'; }
 
-// Load dashboard stats
+// Animated counter function
+function animateCount(el, target, suffix='') {
+  let start = 0;
+  const duration = 600;
+  const startTime = performance.now();
+  function step(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * ease);
+    el.textContent = current.toLocaleString('fr-FR') + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// Global search
+let searchTimeout;
+function handleSearch(q) {
+  clearTimeout(searchTimeout);
+  if (q.length < 2) { document.getElementById('search-results').style.display = 'none'; return; }
+  searchTimeout = setTimeout(async () => {
+    const res = await fetch('/api/dashboard/search?q=' + encodeURIComponent(q), { headers });
+    const data = await res.json();
+    const results = data.results || [];
+    const el = document.getElementById('search-results');
+    if (!results.length) {
+      el.innerHTML = '<div style="padding:1rem;color:var(--muted);font-size:0.8125rem;text-align:center;">Aucun résultat</div>';
+    } else {
+      const iconMap = {client:'people',project:'folder',order:'inbox',article:'article'};
+      const hrefMap = {client:'/clients',project:'/projects',order:'/orders',article:'/articles'};
+      el.innerHTML = results.map(r => `
+        <a href="${hrefMap[r.type] || '#'}" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);transition:background 0.15s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
+          <span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">${iconMap[r.type]||'search'}</span>
+          <div>
+            <div style="font-size:0.8125rem;font-weight:600;">${r.label}</div>
+            <div style="font-size:0.6875rem;color:var(--muted);">${r.type} · ${r.sub || ''}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+    el.style.display = 'block';
+  }, 300);
+}
+function showSearchResults() { const el = document.getElementById('search-results'); if (el.innerHTML) el.style.display = 'block'; }
+function hideSearchResults() { document.getElementById('search-results').style.display = 'none'; }
+
+// Load dashboard stats with animated counters
 async function loadStats() {
   try {
     const res = await fetch('/api/dashboard/stats', { headers });
     const result = await res.json();
     if (!res.ok) { console.error(result.error || 'Erreur'); return; }
-    document.getElementById('stat-revenue').textContent = fmt(result.revenue?.thisMonth);
-    document.getElementById('stat-clients').textContent = result.clients?.active || 0;
-    document.getElementById('stat-projects').textContent = result.projects?.active || 0;
-    document.getElementById('stat-orders').textContent = result.orders?.new || 0;
-    document.getElementById('stat-employees').textContent = result.employees?.total || 0;
-    document.getElementById('stat-invoices').textContent = result.invoices?.pending || 0;
+
+    // Animated counters for stat cards
+    const revenueVal = result.revenue?.thisMonth || 0;
+    animateCount(document.getElementById('stat-revenue'), revenueVal, ' \u20AC');
+    animateCount(document.getElementById('stat-clients'), result.clients?.active || 0);
+    animateCount(document.getElementById('stat-projects'), result.projects?.active || 0);
+    animateCount(document.getElementById('stat-orders'), result.orders?.new || 0);
+    animateCount(document.getElementById('stat-employees'), result.employees?.total || 0);
+    animateCount(document.getElementById('stat-invoices'), result.invoices?.pending || 0);
+
+    // Monthly goal progress
+    const goal = result.revenue?.monthlyGoal || 10000;
+    const percent = Math.min(100, Math.round((result.revenue?.thisMonth || 0) / goal * 100));
+    document.getElementById('goal-bar').style.width = percent + '%';
+    document.getElementById('goal-text').textContent = percent + '%';
   } catch (e) { console.error('Stats error:', e); }
 }
 
-// Revenue chart (bar — income vs expenses)
+// Revenue chart (bar -- income vs expenses)
 let revenueChartInstance = null;
 async function loadRevenueChart() {
   try {
@@ -223,7 +321,7 @@ async function loadRevenueChart() {
             borderWidth: 1
           },
           {
-            label: 'Dépenses',
+            label: 'D\u00e9penses',
             data: data.map(d => d.expenses),
             backgroundColor: 'rgba(229,226,225,0.1)',
             borderColor: 'rgba(229,226,225,0.3)',
@@ -280,6 +378,104 @@ async function loadServiceChart() {
   } catch (e) { console.error('Service chart error:', e); }
 }
 
+// Client evolution line chart (new)
+let clientGrowthChartInstance = null;
+async function loadClientGrowthChart() {
+  try {
+    const res = await fetch('/api/dashboard/clients-growth', { headers });
+    const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
+
+    const ctx = document.getElementById('clientGrowthChart');
+    if (clientGrowthChartInstance) clientGrowthChartInstance.destroy();
+
+    clientGrowthChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map(d => d.month),
+        datasets: [{
+          label: 'Nouveaux clients',
+          data: data.map(d => d.count),
+          borderColor: '#FF5500',
+          backgroundColor: function(context) {
+            const chart = context.chart;
+            const { ctx: c, chartArea } = chart;
+            if (!chartArea) return 'rgba(255,85,0,0.1)';
+            const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, 'rgba(255,85,0,0.4)');
+            gradient.addColorStop(1, 'rgba(255,85,0,0.02)');
+            return gradient;
+          },
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#FF5500',
+          pointBorderColor: '#FF5500',
+          pointRadius: 3,
+          pointHoverRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } }
+        },
+        scales: {
+          x: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 } }, grid: { color: 'rgba(92,64,55,0.1)' } },
+          y: { beginAtZero: true, ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 }, stepSize: 1 }, grid: { color: 'rgba(92,64,55,0.1)' } }
+        }
+      }
+    });
+  } catch (e) { console.error('Client growth chart error:', e); }
+}
+
+// Top services by revenue horizontal bar chart (new)
+let topServicesChartInstance = null;
+async function loadTopServicesChart() {
+  try {
+    const res = await fetch('/api/dashboard/top-services', { headers });
+    const data = await res.json();
+    if (!res.ok) { console.error(data.error || 'Erreur'); return; }
+
+    const top5 = data.slice(0, 5);
+    const ctx = document.getElementById('topServicesChart');
+    if (topServicesChartInstance) topServicesChartInstance.destroy();
+
+    topServicesChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: top5.map(d => d._id || 'Autre'),
+        datasets: [{
+          label: 'Revenue',
+          data: top5.map(d => d.totalRevenue),
+          backgroundColor: function(context) {
+            const chart = context.chart;
+            const { ctx: c, chartArea } = chart;
+            if (!chartArea) return 'rgba(255,85,0,0.6)';
+            const gradient = c.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+            gradient.addColorStop(0, 'rgba(255,85,0,0.8)');
+            gradient.addColorStop(1, 'rgba(255,119,0,0.4)');
+            return gradient;
+          },
+          borderColor: '#FF5500',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: 'rgba(229,226,225,0.6)', font: { family: 'Inter', size: 11 } } }
+        },
+        scales: {
+          x: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 }, callback: v => v.toLocaleString() + '\u20AC' }, grid: { color: 'rgba(92,64,55,0.1)' } },
+          y: { ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 } }, grid: { color: 'rgba(92,64,55,0.1)' } }
+        }
+      }
+    });
+  } catch (e) { console.error('Top services chart error:', e); }
+}
+
 // Recent orders & projects
 async function loadRecent() {
   try {
@@ -306,7 +502,7 @@ async function loadActivity() {
 
     const activities = Array.isArray(data) ? data : (data.activities || []);
     if (activities.length === 0) {
-      document.getElementById('activity-list').innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Aucune activité recente</div>';
+      document.getElementById('activity-list').innerHTML = '<div style="text-align:center;color:var(--muted);padding:2rem 0;font-size:0.8125rem;">Aucune activité récente</div>';
       return;
     }
     document.getElementById('activity-list').innerHTML = activities.map(a => {
@@ -347,6 +543,8 @@ async function loadSalaryAlerts() {
 loadStats();
 loadRevenueChart();
 loadServiceChart();
+loadClientGrowthChart();
+loadTopServicesChart();
 loadRecent();
 loadActivity();
 loadSalaryAlerts();

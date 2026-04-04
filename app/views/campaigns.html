@@ -23,17 +23,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link active"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -53,7 +55,7 @@
         <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Créer campagne
       </button>
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -66,7 +68,7 @@
         <div class="stat-card-value" id="stat-total">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">send</span> Envoyees</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--teal);">send</span> Envoyées</div>
         <div class="stat-card-value" id="stat-sent">0</div>
       </div>
       <div class="stat-card">
@@ -74,7 +76,7 @@
         <div class="stat-card-value" id="stat-drafts">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--purple, #bb86fc);">group</span> Abonnes</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;color:var(--purple, #bb86fc);">group</span> Abonnés</div>
         <div class="stat-card-value" id="stat-subs">0</div>
       </div>
     </div>
@@ -89,7 +91,7 @@
             <th>Sujet</th>
             <th>Audience</th>
             <th>Statut</th>
-            <th>Envoyes</th>
+            <th>Envoyés</th>
             <th>Date</th>
             <th>Actions</th>
           </tr>
@@ -101,9 +103,9 @@
     <!-- Subscribers Section -->
     <div class="table-wrap" style="margin-top:2rem;">
       <div class="table-header">
-        <div class="table-title">Abonnes &amp; Contacts</div>
+        <div class="table-title">Abonnés &amp; Contacts</div>
         <div style="display:flex;align-items:center;gap:0.75rem;">
-          <span style="font-size:0.75rem;color:var(--muted);" id="sub-count">0 abonnes</span>
+          <span style="font-size:0.75rem;color:var(--muted);" id="sub-count">0 abonnés</span>
           <select id="sub-filter" onchange="loadSubscribers()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.375rem 0.75rem;font-size:0.75rem;font-family:var(--font-b);outline:none;">
             <option value="">Tous</option>
             <option value="client">Clients</option>
@@ -150,12 +152,12 @@
           <option value="all">Tous les contacts</option>
           <option value="clients">Clients actifs</option>
           <option value="prospects">Prospects</option>
-          <option value="guide_downloads">Telechargeurs de guides</option>
+          <option value="guide_downloads">Téléchargeurs de guides</option>
         </select>
       </div>
       <div class="form-group">
         <label>Contenu HTML *</label>
-        <textarea id="c-content" rows="12" required placeholder="<p>Bonjour {{name}},</p>&#10;<p>Voici nos dernieres nouvelles...</p>"></textarea>
+        <textarea id="c-content" rows="12" required placeholder="<p>Bonjour {{name}},</p>&#10;<p>Voici nos dernières nouvelles...</p>"></textarea>
       </div>
       <div style="display:flex;gap:1rem;margin-top:1rem;">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -185,7 +187,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 
 function formatDate(d) {
@@ -195,7 +197,7 @@ function formatDate(d) {
 
 function statusBadge(s) {
   const map = { draft: 'badge-pending', sent: 'badge-active', sending: 'badge-new', failed: 'badge-danger' };
-  const labels = { draft: 'Brouillon', sent: 'Envoyee', sending: 'En cours', failed: 'Echec' };
+  const labels = { draft: 'Brouillon', sent: 'Envoyée', sending: 'En cours', failed: 'Échec' };
   return '<span class="badge ' + (map[s] || 'badge-done') + '">' + (labels[s] || s) + '</span>';
 }
 
@@ -251,7 +253,7 @@ async function loadSubscribers() {
     const total = data.total || subs.length;
 
     document.getElementById('stat-subs').textContent = total;
-    document.getElementById('sub-count').textContent = total + ' abonne' + (total > 1 ? 's' : '');
+    document.getElementById('sub-count').textContent = total + ' abonné' + (total > 1 ? 's' : '');
 
     document.getElementById('subscribers-body').innerHTML = subs.map(s =>
       '<tr>' +
@@ -260,7 +262,7 @@ async function loadSubscribers() {
         '<td>' + (s.name || '-') + '</td>' +
         '<td>' + formatDate(s.createdAt) + '</td>' +
       '</tr>'
-    ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucun abonne</td></tr>';
+    ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);">Aucun abonné</td></tr>';
   } catch (e) { console.error(e); }
 }
 
@@ -323,12 +325,12 @@ async function editCampaign(id) {
 }
 
 async function sendCampaign(id) {
-  if (!confirm('Envoyer cette campagne maintenant ? Cette action est irreversible.')) return;
+  if (!confirm('Envoyer cette campagne maintenant ? Cette action est irréversible.')) return;
   try {
     const res = await fetch('/api/campaigns/' + id + '/send', { method: 'POST', headers });
     if (!res.ok) { toast('Erreur lors de l\'envoi', 'error'); return; }
     const result = await res.json();
-    toast('Campagne envoyee a ' + (result.sentCount || 0) + ' destinataire(s) !', 'success');
+    toast('Campagne envoyée à' + (result.sentCount || 0) + ' destinataire(s) !', 'success');
     loadCampaigns();
   } catch (e) { console.error(e); toast('Erreur envoi', 'error'); }
 }

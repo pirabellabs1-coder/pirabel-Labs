@@ -24,17 +24,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link active"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
@@ -57,7 +59,7 @@
         <span class="material-symbols-outlined" style="font-size:1rem;">download</span> Exporter CSV
       </button>
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -158,7 +160,7 @@
         </div>
         <div class="form-group" style="grid-column:1/-1;">
           <label>Description *</label>
-          <input type="text" id="f-description" required placeholder="Description de l'entree">
+          <input type="text" id="f-description" required placeholder="Description de l'entrée">
         </div>
         <div class="form-group">
           <label>Montant (&euro;) *</label>
@@ -209,7 +211,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 
 function fmt(n) { return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' \u20AC'; }
@@ -286,7 +288,7 @@ async function loadRevenue() {
   try {
     const query = buildQuery();
     const res = await fetch('/api/revenue' + (query ? '?' + query : ''), { headers });
-    if (!res.ok) { toast('Erreur chargement des donnees', 'error'); return; }
+    if (!res.ok) { toast('Erreur chargement des données', 'error'); return; }
     const data = await res.json();
     const entries = data.entries || data || [];
 
@@ -315,7 +317,7 @@ async function loadRevenue() {
           '<button class="btn btn-sm btn-ghost" onclick="deleteEntry(\'' + e._id + '\')"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>' +
         '</td>' +
       '</tr>'
-    ).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);">Aucune entree trouvee</td></tr>';
+    ).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);">Aucune entrée trouvée</td></tr>';
   } catch (e) { console.error(e); }
 }
 

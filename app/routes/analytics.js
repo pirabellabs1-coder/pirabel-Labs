@@ -1,255 +1,1256 @@
 const express = require('express');
 const router = express.Router();
-const { Visitor, PageView, AnalyticsEvent, DailyStat } = require('../models/Analytics');
+const { Visitor, Session, PageView, AnalyticsEvent, HeatmapData, Conversion, DailyStat } = require('../models/Analytics');
 const { auth, adminOnly } = require('../middleware/auth');
 
-// ========================================
-// PUBLIC ENDPOINTS (called by tracker.js)
-// ========================================
+// ============================================================
+// RATE LIMITER — simple in-memory per-IP (60 req/min)
+// ============================================================
+const rateLimitMap = new Map();
+const RATE_LIMIT = 60;
+const RATE_WINDOW = 60 * 1000;
 
-// POST /api/analytics/track - Track page view
-router.post('/track', async (req, res) => {
+function rateLimit(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  let entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.start > RATE_WINDOW) {
+    entry = { start: now, count: 0 };
+    rateLimitMap.set(ip, entry);
+  }
+  entry.count++;
+  if (entry.count > RATE_LIMIT) {
+    return res.status(429).json({ error: 'Rate limit exceeded' });
+  }
+  next();
+}
+
+// Clean rate limit map every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.start > RATE_WINDOW) rateLimitMap.delete(ip);
+  }
+}, 5 * 60 * 1000);
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+/** Build a date range filter from query params */
+function getDateRange(query) {
+  const { period = '30', from, to } = query;
+  if (from && to) {
+    return { start: new Date(from), end: new Date(to) };
+  }
+  const days = parseInt(period, 10) || 30;
+  return { start: new Date(Date.now() - days * 24 * 60 * 60 * 1000), end: new Date() };
+}
+
+/** Referrer categorisation (server side) */
+const SOCIAL_DOMAINS = ['facebook.com','fb.com','t.co','twitter.com','x.com','linkedin.com','instagram.com','pinterest.com','reddit.com','youtube.com','tiktok.com'];
+const SEARCH_DOMAINS = ['google.','bing.com','yahoo.','duckduckgo.com','baidu.com','yandex.','ecosia.org','qwant.com'];
+const EMAIL_DOMAINS  = ['mail.google.com','outlook.live.com','mail.yahoo.com'];
+
+function categoriseReferrer(ref) {
+  if (!ref) return 'direct';
   try {
-    const { visitorId, sessionId, page, title, referrer, device, browser, os, language, timeOnPage, scrollDepth, utmSource, utmMedium, utmCampaign } = req.body;
-    if (!visitorId || !page) return res.status(400).json({ error: 'visitorId and page required' });
+    const host = new URL(ref).hostname.replace(/^www\./, '');
+    if (SOCIAL_DOMAINS.some(d => host.includes(d))) return 'social';
+    if (SEARCH_DOMAINS.some(d => host.includes(d))) return 'organic';
+    if (EMAIL_DOMAINS.some(d => host.includes(d))) return 'email';
+    return 'referral';
+  } catch {
+    return 'referral';
+  }
+}
+
+// ========================================================================
+//  PUBLIC ENDPOINTS  (called by tracker.js — no auth, rate limited)
+// ========================================================================
+
+// ---------------------------------------------------------------
+// 1) POST /api/analytics/batch — receive batched events
+// ---------------------------------------------------------------
+router.post('/batch', rateLimit, async (req, res) => {
+  try {
+    let events = req.body;
+    if (!Array.isArray(events)) {
+      // Could be a single event wrapped
+      if (events && events.vid) events = [events];
+      else return res.status(400).json({ error: 'Expected array of events' });
+    }
+    if (events.length > 50) events = events.slice(0, 50);
+
+    // Process each event by type
+    const ops = events.map(evt => processEvent(evt, req));
+    await Promise.allSettled(ops);
+
+    res.json({ ok: true, processed: events.length });
+  } catch (err) {
+    console.error('[analytics/batch]', err.message);
+    res.status(500).json({ error: 'Internal error' });
+  }
+});
+
+/** Route a single batched event to the right handler */
+async function processEvent(evt, req) {
+  if (!evt || !evt.vid || !evt.sid || !evt.type) return;
+
+  const vid = String(evt.vid);
+  const sid = String(evt.sid);
+  const ts  = evt.ts || Date.now();
+  const d   = evt.data || {};
+
+  switch (evt.type) {
+    case 'pageview':
+      return processPageView(vid, sid, ts, d, req);
+    case 'click':
+      return processClick(vid, sid, ts, d);
+    case 'scroll':
+      return processScroll(vid, sid, ts, d);
+    case 'form':
+      return processForm(vid, sid, ts, d);
+    case 'heartbeat':
+      return processHeartbeat(vid, sid, ts, d);
+    case 'engagement':
+      return processEngagement(vid, sid, ts, d);
+    case 'heatmap':
+      return processHeatmap(vid, sid, ts, d);
+    case 'conversion':
+      return processConversion(vid, sid, ts, d);
+    case 'custom':
+      return processCustom(vid, sid, ts, d);
+    case 'error':
+      return processError(vid, sid, ts, d);
+    default:
+      // Store as generic event
+      await AnalyticsEvent.create({
+        visitorId: vid, sessionId: sid, page: d.p || '',
+        category: evt.type, action: 'unknown',
+        label: '', value: 0, meta: d, timestamp: new Date(ts)
+      });
+  }
+}
+
+async function processPageView(vid, sid, ts, d, req) {
+  // Upsert visitor
+  const isNew = d.new === 1;
+  const refCat = d.rc || categoriseReferrer(d.ref);
+
+  const visitorUpdate = {
+    $set: {
+      lastSeen: new Date(ts),
+      device: d.dv || 'desktop',
+      browser: d.br || '',
+      browserVersion: d.bv || '',
+      os: d.os || '',
+      osVersion: d.ov || '',
+      language: d.lang || '',
+      timezone: d.tz || '',
+      screenResolution: d.sr || '',
+      connectionType: d.ct || '',
+      referrerCategory: refCat,
+      utmSource: d.us || '',
+      utmMedium: d.um || '',
+      utmCampaign: d.uc || '',
+      utmTerm: d.ut || '',
+      utmContent: d.uco || '',
+      isBot: d.bot === 1,
+      searchQuery: d.sq || ''
+    },
+    $inc: { totalPageViews: 1 },
+    $setOnInsert: {
+      visitorId: vid,
+      firstSeen: new Date(ts),
+      entryPage: d.p || '',
+      totalVisits: 1,
+      totalTimeSpent: 0,
+      totalAttentionTime: 0,
+      isReturning: false,
+      engagementScore: 0
+    }
+  };
+
+  const visitor = await Visitor.findOneAndUpdate(
+    { visitorId: vid },
+    visitorUpdate,
+    { upsert: true, new: true }
+  );
+
+  // Mark returning
+  if (visitor && visitor.totalVisits > 1 && !visitor.isReturning) {
+    await Visitor.updateOne({ visitorId: vid }, { $set: { isReturning: true } });
+  }
+
+  // Upsert session
+  await Session.findOneAndUpdate(
+    { sessionId: sid },
+    {
+      $set: {
+        lastActivity: new Date(ts),
+        device: d.dv || 'desktop',
+        browser: d.br || '',
+        os: d.os || '',
+        referrer: d.ref || '',
+        referrerCategory: refCat,
+        utmSource: d.us || '',
+        utmMedium: d.um || '',
+        utmCampaign: d.uc || ''
+      },
+      $inc: { pageCount: 1 },
+      $setOnInsert: {
+        sessionId: sid,
+        visitorId: vid,
+        startedAt: new Date(ts),
+        duration: 0,
+        attentionTime: 0,
+        entryPage: d.p || '',
+        exitPage: d.p || '',
+        isBounce: true,
+        engagementScore: 0,
+        conversions: []
+      }
+    },
+    { upsert: true, new: true }
+  );
+
+  // Mark not-bounce if this is 2nd+ pageview
+  await Session.updateOne(
+    { sessionId: sid, pageCount: { $gt: 1 } },
+    { $set: { isBounce: false } }
+  );
+
+  // Update exit page
+  await Session.updateOne({ sessionId: sid }, { $set: { exitPage: d.p || '' } });
+
+  // Record page view
+  await PageView.create({
+    visitorId: vid,
+    sessionId: sid,
+    page: d.p || '',
+    fullUrl: d.url || '',
+    title: d.t || '',
+    referrer: d.ref || '',
+    isEntry: d.ns === 1,
+    timestamp: new Date(ts)
+  });
+}
+
+async function processClick(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: 'click',
+    action: d.a || 'click',
+    label: d.txt || '',
+    value: 0,
+    meta: { tag: d.tag, href: d.hr, cls: d.cls, x: d.x, y: d.y, cx: d.cx, cy: d.cy },
+    timestamp: new Date(ts)
+  });
+}
+
+async function processScroll(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: 'scroll',
+    action: 'milestone_' + (d.m || 0),
+    label: '',
+    value: d.m || 0,
+    meta: { velocity: d.v || 0 },
+    timestamp: new Date(ts)
+  });
+
+  // Update pageview scroll milestones
+  await PageView.findOneAndUpdate(
+    { visitorId: vid, sessionId: sid, page: d.p || '' },
+    { $addToSet: { scrollMilestones: d.m }, $max: { scrollDepth: d.m } },
+    { sort: { timestamp: -1 } }
+  );
+}
+
+async function processForm(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: 'form',
+    action: d.a || 'interaction',
+    label: d.f || d.form || '',
+    value: d.dur || 0,
+    meta: { field: d.f, type: d.type, formId: d.form, filled: d.filled },
+    timestamp: new Date(ts)
+  });
+}
+
+async function processHeartbeat(vid, sid, ts, d) {
+  // Update the latest page view with time / scroll / vitals
+  await PageView.findOneAndUpdate(
+    { visitorId: vid, sessionId: sid, page: d.p || '' },
+    {
+      $set: {
+        timeOnPage: d.top || 0,
+        attentionTime: d.at || 0,
+        scrollDepth: d.sd || 0,
+        lcp: d.lcp || 0,
+        fid: d.fid || 0,
+        cls: d.cls || 0,
+        rageClicks: d.rc || 0,
+        deadClicks: d.dc || 0
+      }
+    },
+    { sort: { timestamp: -1 } }
+  );
+
+  // Update session duration & engagement
+  await Session.findOneAndUpdate(
+    { sessionId: sid },
+    {
+      $set: {
+        lastActivity: new Date(ts),
+        exitPage: d.p || '',
+        engagementScore: d.es || 0
+      },
+      $max: {
+        duration: d.top || 0,
+        attentionTime: d.at || 0
+      }
+    }
+  );
+
+  // Update visitor time
+  await Visitor.findOneAndUpdate(
+    { visitorId: vid },
+    {
+      $set: { lastSeen: new Date(ts), engagementScore: d.es || 0 },
+      $max: { totalTimeSpent: d.top || 0, totalAttentionTime: d.at || 0 }
+    }
+  );
+}
+
+async function processEngagement(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: 'engagement',
+    action: d.a || 'unknown',
+    label: d.l || d.txt || '',
+    value: d.val || 0,
+    meta: { x: d.x, y: d.y, tag: d.tag, txt: d.txt,
+            top: d.top, pt: d.pt, at: d.at, sd: d.sd,
+            es: d.es, lcp: d.lcp, fid: d.fid, cls: d.cls,
+            rc: d.rc, dc: d.dc, sdc: d.sdc, fi: d.fi },
+    timestamp: new Date(ts)
+  });
+
+  // If page_exit, finalize session/pageview
+  if (d.a === 'page_exit') {
+    await PageView.findOneAndUpdate(
+      { visitorId: vid, sessionId: sid, page: d.p || '' },
+      {
+        $set: {
+          isExit: true,
+          timeOnPage: d.top || 0,
+          attentionTime: d.at || 0,
+          scrollDepth: d.sd || 0,
+          lcp: d.lcp || 0,
+          fid: d.fid || 0,
+          cls: d.cls || 0,
+          rageClicks: d.rc || 0,
+          deadClicks: d.dc || 0
+        }
+      },
+      { sort: { timestamp: -1 } }
+    );
+  }
+}
+
+async function processHeatmap(vid, sid, ts, d) {
+  if (!d.pts || !Array.isArray(d.pts) || d.pts.length === 0) return;
+  await HeatmapData.create({
+    visitorId: vid,
+    sessionId: sid,
+    page: d.p || '',
+    points: d.pts.slice(0, 500), // cap at 500 points
+    timestamp: new Date(ts)
+  });
+}
+
+async function processConversion(vid, sid, ts, d) {
+  await Conversion.create({
+    visitorId: vid,
+    sessionId: sid,
+    goal: d.g || 'unknown',
+    page: d.p || '',
+    referrer: d.ref || '',
+    referrerCategory: d.rc || 'unknown',
+    utmSource: d.us || '',
+    utmMedium: d.um || '',
+    utmCampaign: d.uc || '',
+    value: d.val || 0,
+    timestamp: new Date(ts)
+  });
+
+  // Also add to session conversions array
+  await Session.findOneAndUpdate(
+    { sessionId: sid },
+    { $push: { conversions: { goal: d.g, timestamp: new Date(ts), value: d.val || 0 } } }
+  );
+}
+
+async function processCustom(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: d.cat || 'custom',
+    action: d.act || 'custom',
+    label: d.lbl || '',
+    value: d.val || 0,
+    meta: {},
+    timestamp: new Date(ts)
+  });
+}
+
+async function processError(vid, sid, ts, d) {
+  await AnalyticsEvent.create({
+    visitorId: vid, sessionId: sid,
+    page: d.p || '',
+    category: 'error',
+    action: d.type || 'js_error',
+    label: d.msg || '',
+    value: d.ln || 0,
+    meta: { source: d.src, line: d.ln, col: d.col },
+    timestamp: new Date(ts)
+  });
+}
+
+// ---------------------------------------------------------------
+// 2) POST /api/analytics/track — single page view (backwards compat)
+// ---------------------------------------------------------------
+router.post('/track', rateLimit, async (req, res) => {
+  try {
+    const b = req.body;
+    if (!b.visitorId || !b.page) return res.status(400).json({ error: 'visitorId and page required' });
+
+    const refCat = b.referrerCategory || categoriseReferrer(b.referrer);
 
     // Upsert visitor
-    const existing = await Visitor.findOne({ visitorId });
-    if (existing) {
-      existing.lastSeen = Date.now();
-      existing.totalPageViews += 1;
-      existing.totalVisits = existing.totalVisits; // Updated on new session
-      existing.isReturning = true;
-      if (timeOnPage) existing.totalTimeSpent += timeOnPage;
-      await existing.save();
-    } else {
-      await Visitor.create({
-        visitorId, device: device || 'desktop', browser, os, language,
-        referrer: referrer || '', utmSource, utmMedium, utmCampaign,
-        totalPageViews: 1
-      });
+    await Visitor.findOneAndUpdate(
+      { visitorId: b.visitorId },
+      {
+        $set: {
+          lastSeen: new Date(),
+          device: b.device || 'desktop',
+          browser: b.browser || '',
+          browserVersion: b.browserVersion || '',
+          os: b.os || '',
+          osVersion: b.osVersion || '',
+          language: b.language || '',
+          timezone: b.timezone || '',
+          screenResolution: b.screenResolution || '',
+          connectionType: b.connectionType || '',
+          referrer: b.referrer || '',
+          referrerCategory: refCat,
+          utmSource: b.utmSource || '',
+          utmMedium: b.utmMedium || '',
+          utmCampaign: b.utmCampaign || '',
+          utmTerm: b.utmTerm || '',
+          utmContent: b.utmContent || '',
+          isBot: b.isBot || false,
+          searchQuery: b.searchQuery || ''
+        },
+        $inc: { totalPageViews: 1 },
+        $setOnInsert: {
+          visitorId: b.visitorId,
+          firstSeen: new Date(),
+          entryPage: b.page,
+          totalVisits: 1,
+          totalTimeSpent: 0,
+          isReturning: false
+        }
+      },
+      { upsert: true, new: true }
+    );
+
+    // Mark returning if > 1 visit
+    if (b.visitCount > 1 || !b.isNewVisitor) {
+      await Visitor.updateOne({ visitorId: b.visitorId }, { $set: { isReturning: true } });
     }
 
     // Record page view
-    await PageView.create({ visitorId, sessionId: sessionId || visitorId, page, title, referrer, timeOnPage: timeOnPage || 0, scrollDepth: scrollDepth || 0 });
+    await PageView.create({
+      visitorId: b.visitorId,
+      sessionId: b.sessionId || b.visitorId,
+      page: b.page,
+      title: b.title || '',
+      referrer: b.referrer || '',
+      timestamp: new Date()
+    });
 
     res.json({ ok: true });
   } catch (err) {
+    console.error('[analytics/track]', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST /api/analytics/event - Track custom event
-router.post('/event', async (req, res) => {
+// ---------------------------------------------------------------
+// 3) POST /api/analytics/event — single event (backwards compat)
+// ---------------------------------------------------------------
+router.post('/event', rateLimit, async (req, res) => {
   try {
     const { visitorId, sessionId, page, category, action, label, value } = req.body;
     if (!visitorId || !category || !action) return res.status(400).json({ error: 'Missing fields' });
 
-    await AnalyticsEvent.create({ visitorId, sessionId: sessionId || visitorId, page, category, action, label, value });
+    await AnalyticsEvent.create({
+      visitorId,
+      sessionId: sessionId || visitorId,
+      page: page || '',
+      category,
+      action,
+      label: label || '',
+      value: value || 0,
+      timestamp: new Date()
+    });
+
     res.json({ ok: true });
   } catch (err) {
+    console.error('[analytics/event]', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST /api/analytics/heartbeat - Update time on page
-router.post('/heartbeat', async (req, res) => {
+// ---------------------------------------------------------------
+// 4) POST /api/analytics/heartbeat — time tracking (backwards compat)
+// ---------------------------------------------------------------
+router.post('/heartbeat', rateLimit, async (req, res) => {
   try {
-    const { visitorId, sessionId, page, timeOnPage, scrollDepth } = req.body;
-    // Update latest pageview for this visitor+page
+    const b = req.body;
+    if (!b.visitorId) return res.json({ ok: true });
+
+    // Update latest page view
+    const updateFields = {
+      timeOnPage: b.timeOnPage || 0,
+      scrollDepth: b.scrollDepth || 0
+    };
+    if (b.preciseTime !== undefined) updateFields.attentionTime = b.preciseTime;
+    if (b.attentionTime !== undefined) updateFields.attentionTime = b.attentionTime;
+    if (b.lcp) updateFields.lcp = b.lcp;
+    if (b.fid) updateFields.fid = b.fid;
+    if (b.cls !== undefined) updateFields.cls = b.cls;
+
     await PageView.findOneAndUpdate(
-      { visitorId, page, sessionId },
-      { timeOnPage, scrollDepth },
+      { visitorId: b.visitorId, page: b.page, sessionId: b.sessionId || b.visitorId },
+      { $set: updateFields },
       { sort: { timestamp: -1 } }
     );
-    // Update visitor total time
-    if (timeOnPage) {
-      await Visitor.findOneAndUpdate({ visitorId }, { $inc: { totalTimeSpent: 5 }, lastSeen: Date.now() });
+
+    // Update visitor
+    await Visitor.findOneAndUpdate(
+      { visitorId: b.visitorId },
+      {
+        $set: { lastSeen: new Date(), engagementScore: b.engagementScore || 0 },
+        $max: { totalTimeSpent: b.timeOnPage || 0, totalAttentionTime: b.attentionTime || 0 }
+      }
+    );
+
+    // Update session
+    if (b.sessionId) {
+      await Session.findOneAndUpdate(
+        { sessionId: b.sessionId },
+        {
+          $set: { lastActivity: new Date(), exitPage: b.page || '', engagementScore: b.engagementScore || 0 },
+          $max: { duration: b.timeOnPage || 0, attentionTime: b.attentionTime || 0 }
+        }
+      );
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    res.json({ ok: true }); // never fail on heartbeat
+  }
+});
+
+// ---------------------------------------------------------------
+// 5) POST /api/analytics/session — new session (backwards compat)
+// ---------------------------------------------------------------
+router.post('/session', rateLimit, async (req, res) => {
+  try {
+    const { visitorId } = req.body;
+    if (visitorId) {
+      await Visitor.findOneAndUpdate(
+        { visitorId },
+        { $inc: { totalVisits: 1 }, $set: { lastSeen: new Date(), isReturning: true } }
+      );
     }
     res.json({ ok: true });
   } catch (err) {
-    res.status(500).json({ ok: true }); // Don't fail silently
-  }
-});
-
-// POST /api/analytics/session - New session
-router.post('/session', async (req, res) => {
-  try {
-    const { visitorId } = req.body;
-    await Visitor.findOneAndUpdate({ visitorId }, { $inc: { totalVisits: 1 }, lastSeen: Date.now() });
-    res.json({ ok: true });
-  } catch (err) {
     res.json({ ok: true });
   }
 });
 
-// ========================================
-// ADMIN ENDPOINTS (dashboard)
-// ========================================
 
-// GET /api/analytics/realtime - Active visitors right now
+// ========================================================================
+//  ADMIN ENDPOINTS  (auth + adminOnly)
+// ========================================================================
+
+// ---------------------------------------------------------------
+// 6) GET /api/analytics/realtime — active visitors right now
+// ---------------------------------------------------------------
 router.get('/realtime', auth, adminOnly, async (req, res) => {
   try {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const activeVisitors = await Visitor.countDocuments({ lastSeen: { $gte: fiveMinAgo } });
-    const recentPages = await PageView.find({ timestamp: { $gte: fiveMinAgo } })
-      .sort({ timestamp: -1 }).limit(20).select('page visitorId timestamp');
-    res.json({ activeVisitors, recentPages });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-// GET /api/analytics/overview - Overview stats
-router.get('/overview', auth, adminOnly, async (req, res) => {
-  try {
-    const { period = '30' } = req.query;
-    const days = parseInt(period);
-    const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const [activeCount, recentPages, deviceBreakdown] = await Promise.all([
+      Visitor.countDocuments({ lastSeen: { $gte: fiveMinAgo }, isBot: { $ne: true } }),
 
-    const [totalVisitors, newVisitors, totalPageViews, totalEvents] = await Promise.all([
-      Visitor.countDocuments({ lastSeen: { $gte: startDate } }),
-      Visitor.countDocuments({ firstSeen: { $gte: startDate } }),
-      PageView.countDocuments({ timestamp: { $gte: startDate } }),
-      AnalyticsEvent.countDocuments({ timestamp: { $gte: startDate } })
+      PageView.find({ timestamp: { $gte: fiveMinAgo } })
+        .sort({ timestamp: -1 }).limit(30)
+        .select('page visitorId title timestamp'),
+
+      Visitor.aggregate([
+        { $match: { lastSeen: { $gte: fiveMinAgo }, isBot: { $ne: true } } },
+        { $group: { _id: '$device', count: { $sum: 1 } } }
+      ])
     ]);
 
-    // Avg time on site
-    const avgTime = await PageView.aggregate([
-      { $match: { timestamp: { $gte: startDate }, timeOnPage: { $gt: 0 } } },
-      { $group: { _id: null, avg: { $avg: '$timeOnPage' } } }
-    ]);
-
-    // Avg pages per visitor
-    const avgPages = totalVisitors > 0 ? (totalPageViews / totalVisitors).toFixed(1) : 0;
-
-    // Bounce rate (visitors with only 1 pageview)
-    const singlePageVisitors = await PageView.aggregate([
-      { $match: { timestamp: { $gte: startDate } } },
-      { $group: { _id: '$visitorId', count: { $sum: 1 } } },
-      { $match: { count: 1 } },
-      { $count: 'total' }
-    ]);
-    const bounceRate = totalVisitors > 0 ? ((singlePageVisitors[0]?.total || 0) / totalVisitors * 100).toFixed(1) : 0;
+    // Current pages being viewed (dedupe)
+    const pageMap = {};
+    recentPages.forEach(pv => {
+      if (!pageMap[pv.page]) pageMap[pv.page] = { page: pv.page, title: pv.title || pv.page, activeVisitors: new Set() };
+      pageMap[pv.page].activeVisitors.add(pv.visitorId);
+    });
+    const currentPages = Object.values(pageMap).map(p => ({
+      page: p.page, title: p.title, activeVisitors: p.activeVisitors.size
+    })).sort((a, b) => b.activeVisitors - a.activeVisitors);
 
     res.json({
-      totalVisitors, newVisitors, returningVisitors: totalVisitors - newVisitors,
-      totalPageViews, totalEvents,
-      avgTimeOnSite: Math.round(avgTime[0]?.avg || 0),
-      avgPagesPerVisitor: parseFloat(avgPages),
-      bounceRate: parseFloat(bounceRate)
+      activeVisitors: activeCount,
+      currentPages,
+      deviceBreakdown: deviceBreakdown.map(d => ({ device: d._id || 'unknown', count: d.count }))
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/analytics/visitors-chart - Visitors per day
+// ---------------------------------------------------------------
+// 7) GET /api/analytics/overview — overview stats
+// ---------------------------------------------------------------
+router.get('/overview', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+
+    const [totalVisitors, newVisitors, totalPageViews, totalEvents, totalSessions, totalConversions] = await Promise.all([
+      Visitor.countDocuments({ lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true } }),
+      Visitor.countDocuments({ firstSeen: { $gte: start, $lte: end }, isBot: { $ne: true } }),
+      PageView.countDocuments({ timestamp: { $gte: start, $lte: end } }),
+      AnalyticsEvent.countDocuments({ timestamp: { $gte: start, $lte: end } }),
+      Session.countDocuments({ startedAt: { $gte: start, $lte: end } }),
+      Conversion.countDocuments({ timestamp: { $gte: start, $lte: end } })
+    ]);
+
+    // Avg session duration
+    const avgDuration = await Session.aggregate([
+      { $match: { startedAt: { $gte: start, $lte: end }, duration: { $gt: 0 } } },
+      { $group: { _id: null, avg: { $avg: '$duration' } } }
+    ]);
+
+    // Avg pages per session
+    const avgPagesPerSession = await Session.aggregate([
+      { $match: { startedAt: { $gte: start, $lte: end }, pageCount: { $gt: 0 } } },
+      { $group: { _id: null, avg: { $avg: '$pageCount' } } }
+    ]);
+
+    // Bounce rate
+    const bounceSessions = await Session.countDocuments({
+      startedAt: { $gte: start, $lte: end }, isBounce: true
+    });
+    const bounceRate = totalSessions > 0 ? ((bounceSessions / totalSessions) * 100) : 0;
+
+    // Engagement rate (sessions with engagementScore > 30)
+    const engagedSessions = await Session.countDocuments({
+      startedAt: { $gte: start, $lte: end }, engagementScore: { $gt: 30 }
+    });
+    const engagementRate = totalSessions > 0 ? ((engagedSessions / totalSessions) * 100) : 0;
+
+    // Top conversions
+    const topConversions = await Conversion.aggregate([
+      { $match: { timestamp: { $gte: start, $lte: end } } },
+      { $group: { _id: '$goal', count: { $sum: 1 }, totalValue: { $sum: '$value' } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+
+    // Avg time on page
+    const avgTimeOnPage = await PageView.aggregate([
+      { $match: { timestamp: { $gte: start, $lte: end }, timeOnPage: { $gt: 0 } } },
+      { $group: { _id: null, avg: { $avg: '$timeOnPage' } } }
+    ]);
+
+    res.json({
+      totalVisitors,
+      uniqueVisitors: totalVisitors,
+      newVisitors,
+      returningVisitors: totalVisitors - newVisitors,
+      totalPageViews,
+      totalEvents,
+      totalSessions,
+      avgSessionDuration: Math.round(avgDuration[0]?.avg || 0),
+      avgPagesPerSession: parseFloat((avgPagesPerSession[0]?.avg || 0).toFixed(1)),
+      avgTimeOnPage: Math.round(avgTimeOnPage[0]?.avg || 0),
+      bounceRate: parseFloat(bounceRate.toFixed(1)),
+      engagementRate: parseFloat(engagementRate.toFixed(1)),
+      totalConversions,
+      topConversions: topConversions.map(c => ({ goal: c._id, count: c.count, value: c.totalValue }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------
+// 8) GET /api/analytics/visitors-chart — daily visitors for chart
+// ---------------------------------------------------------------
 router.get('/visitors-chart', auth, adminOnly, async (req, res) => {
   try {
-    const { period = '30' } = req.query;
-    const days = parseInt(period);
-    const data = [];
+    const { start, end } = getDateRange(req.query);
 
-    for (let i = days - 1; i >= 0; i--) {
-      const start = new Date(); start.setDate(start.getDate() - i); start.setHours(0,0,0,0);
-      const end = new Date(start); end.setDate(end.getDate() + 1);
+    const data = await PageView.aggregate([
+      { $match: { timestamp: { $gte: start, $lte: end } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
+          pageViews: { $sum: 1 },
+          visitors: { $addToSet: '$visitorId' }
+        }
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          date: '$_id',
+          pageViews: 1,
+          visitors: { $size: '$visitors' }
+        }
+      }
+    ]);
 
-      const [visitors, pageViews] = await Promise.all([
-        Visitor.countDocuments({ lastSeen: { $gte: start, $lt: end } }),
-        PageView.countDocuments({ timestamp: { $gte: start, $lt: end } })
-      ]);
-
-      data.push({
-        date: start.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
-        visitors, pageViews
+    // Calculate simple trend line (linear regression)
+    const n = data.length;
+    if (n > 1) {
+      let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+      data.forEach((d, i) => {
+        sumX += i; sumY += d.visitors; sumXY += i * d.visitors; sumXX += i * i;
       });
+      const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+      data.forEach((d, i) => { d.trend = Math.round(intercept + slope * i); });
     }
+
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/analytics/top-pages - Most viewed pages
+// ---------------------------------------------------------------
+// 9) GET /api/analytics/top-pages — most viewed pages
+// ---------------------------------------------------------------
 router.get('/top-pages', auth, adminOnly, async (req, res) => {
   try {
-    const { period = '30' } = req.query;
-    const startDate = new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000);
+    const { start, end } = getDateRange(req.query);
+    const limit = parseInt(req.query.limit, 10) || 20;
 
     const pages = await PageView.aggregate([
-      { $match: { timestamp: { $gte: startDate } } },
-      { $group: { _id: '$page', views: { $sum: 1 }, avgTime: { $avg: '$timeOnPage' }, avgScroll: { $avg: '$scrollDepth' } } },
+      { $match: { timestamp: { $gte: start, $lte: end } } },
+      {
+        $group: {
+          _id: '$page',
+          title: { $first: '$title' },
+          views: { $sum: 1 },
+          uniqueVisitors: { $addToSet: '$visitorId' },
+          avgTime: { $avg: { $cond: [{ $gt: ['$timeOnPage', 0] }, '$timeOnPage', null] } },
+          avgScroll: { $avg: { $cond: [{ $gt: ['$scrollDepth', 0] }, '$scrollDepth', null] } },
+          avgAttention: { $avg: { $cond: [{ $gt: ['$attentionTime', 0] }, '$attentionTime', null] } },
+          entryCount: { $sum: { $cond: ['$isEntry', 1, 0] } },
+          exitCount: { $sum: { $cond: ['$isExit', 1, 0] } },
+          bounceCount: { $sum: { $cond: ['$isBounce', 1, 0] } },
+          avgLCP: { $avg: { $cond: [{ $gt: ['$lcp', 0] }, '$lcp', null] } },
+          avgCLS: { $avg: { $cond: [{ $gt: ['$cls', 0] }, '$cls', null] } }
+        }
+      },
       { $sort: { views: -1 } },
-      { $limit: 20 }
+      { $limit: limit },
+      {
+        $project: {
+          page: '$_id',
+          title: 1,
+          views: 1,
+          uniqueViews: { $size: '$uniqueVisitors' },
+          avgTime: { $round: [{ $ifNull: ['$avgTime', 0] }, 0] },
+          avgScroll: { $round: [{ $ifNull: ['$avgScroll', 0] }, 0] },
+          avgAttention: { $round: [{ $ifNull: ['$avgAttention', 0] }, 0] },
+          entryCount: 1,
+          exitCount: 1,
+          bounceRate: {
+            $cond: [
+              { $gt: ['$views', 0] },
+              { $round: [{ $multiply: [{ $divide: ['$bounceCount', '$views'] }, 100] }, 1] },
+              0
+            ]
+          },
+          avgLCP: { $round: [{ $ifNull: ['$avgLCP', 0] }, 0] },
+          avgCLS: { $round: [{ $ifNull: ['$avgCLS', 0] }, 4] }
+        }
+      }
     ]);
-    res.json(pages.map(p => ({ page: p._id, views: p.views, avgTime: Math.round(p.avgTime || 0), avgScroll: Math.round(p.avgScroll || 0) })));
+
+    res.json(pages);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/analytics/top-referrers
+// ---------------------------------------------------------------
+// 10) GET /api/analytics/top-referrers
+// ---------------------------------------------------------------
 router.get('/top-referrers', auth, adminOnly, async (req, res) => {
   try {
-    const { period = '30' } = req.query;
-    const startDate = new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000);
+    const { start, end } = getDateRange(req.query);
+    const limit = parseInt(req.query.limit, 10) || 20;
 
-    const referrers = await PageView.aggregate([
-      { $match: { timestamp: { $gte: startDate }, referrer: { $ne: '' } } },
-      { $group: { _id: '$referrer', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
+    const referrers = await Session.aggregate([
+      { $match: { startedAt: { $gte: start, $lte: end }, referrer: { $ne: '' } } },
+      {
+        $group: {
+          _id: '$referrer',
+          category: { $first: '$referrerCategory' },
+          visits: { $sum: 1 },
+          bounces: { $sum: { $cond: ['$isBounce', 1, 0] } },
+          totalDuration: { $sum: '$duration' }
+        }
+      },
+      { $sort: { visits: -1 } },
+      { $limit: limit },
+      {
+        $project: {
+          referrer: '$_id',
+          category: 1,
+          visits: 1,
+          bounceRate: {
+            $cond: [
+              { $gt: ['$visits', 0] },
+              { $round: [{ $multiply: [{ $divide: ['$bounces', '$visits'] }, 100] }, 1] },
+              0
+            ]
+          },
+          avgDuration: {
+            $cond: [
+              { $gt: ['$visits', 0] },
+              { $round: [{ $divide: ['$totalDuration', '$visits'] }, 0] },
+              0
+            ]
+          }
+        }
+      }
     ]);
-    res.json(referrers.map(r => ({ referrer: r._id, count: r.count })));
+
+    res.json(referrers);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/analytics/devices
+// ---------------------------------------------------------------
+// 11) GET /api/analytics/devices
+// ---------------------------------------------------------------
 router.get('/devices', auth, adminOnly, async (req, res) => {
   try {
-    const { period = '30' } = req.query;
-    const startDate = new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000);
+    const { start, end } = getDateRange(req.query);
+    const match = { lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true } };
 
-    const devices = await Visitor.aggregate([
-      { $match: { lastSeen: { $gte: startDate } } },
-      { $group: { _id: '$device', count: { $sum: 1 } } }
-    ]);
-
-    const browsers = await Visitor.aggregate([
-      { $match: { lastSeen: { $gte: startDate }, browser: { $ne: '' } } },
-      { $group: { _id: '$browser', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 5 }
+    const [devices, browsers, operatingSystems, screenResolutions] = await Promise.all([
+      Visitor.aggregate([
+        { $match: match },
+        { $group: { _id: '$device', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]),
+      Visitor.aggregate([
+        { $match: { ...match, browser: { $ne: '' } } },
+        { $group: { _id: '$browser', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]),
+      Visitor.aggregate([
+        { $match: { ...match, os: { $ne: '' } } },
+        { $group: { _id: '$os', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]),
+      Visitor.aggregate([
+        { $match: { ...match, screenResolution: { $ne: '' } } },
+        { $group: { _id: '$screenResolution', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ])
     ]);
 
     res.json({
-      devices: devices.map(d => ({ device: d._id, count: d.count })),
-      browsers: browsers.map(b => ({ browser: b._id, count: b.count }))
+      devices: devices.map(d => ({ device: d._id || 'unknown', count: d.count })),
+      browsers: browsers.map(b => ({ browser: b._id, count: b.count })),
+      operatingSystems: operatingSystems.map(o => ({ os: o._id, count: o.count })),
+      screenResolutions: screenResolutions.map(s => ({ resolution: s._id, count: s.count }))
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/analytics/events-summary
+// ---------------------------------------------------------------
+// 12) GET /api/analytics/events-summary
+// ---------------------------------------------------------------
 router.get('/events-summary', auth, adminOnly, async (req, res) => {
   try {
-    const { period = '30' } = req.query;
-    const startDate = new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000);
+    const { start, end } = getDateRange(req.query);
+    const match = { timestamp: { $gte: start, $lte: end } };
 
-    const events = await AnalyticsEvent.aggregate([
-      { $match: { timestamp: { $gte: startDate } } },
-      { $group: { _id: { category: '$category', action: '$action' }, count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 20 }
+    const [eventsByCategory, clickHeatmap, conversionEvents, engagementMetrics] = await Promise.all([
+      // Events grouped by category+action
+      AnalyticsEvent.aggregate([
+        { $match: match },
+        { $group: { _id: { category: '$category', action: '$action' }, count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 30 }
+      ]),
+
+      // Click heatmap data (top clicked positions)
+      AnalyticsEvent.aggregate([
+        { $match: { ...match, category: 'click' } },
+        {
+          $group: {
+            _id: '$page',
+            clicks: {
+              $push: {
+                x: '$meta.x', y: '$meta.y',
+                tag: '$meta.tag', text: '$label'
+              }
+            },
+            total: { $sum: 1 }
+          }
+        },
+        { $sort: { total: -1 } },
+        { $limit: 10 }
+      ]),
+
+      // Conversion events
+      Conversion.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end } } },
+        { $group: { _id: '$goal', count: { $sum: 1 }, totalValue: { $sum: '$value' } } },
+        { $sort: { count: -1 } }
+      ]),
+
+      // Engagement metrics summary
+      AnalyticsEvent.aggregate([
+        { $match: { ...match, category: 'engagement' } },
+        { $group: { _id: '$action', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ])
     ]);
-    res.json(events.map(e => ({ category: e._id.category, action: e._id.action, count: e.count })));
+
+    res.json({
+      eventsByCategory: eventsByCategory.map(e => ({
+        category: e._id.category, action: e._id.action, count: e.count
+      })),
+      clickHeatmap: clickHeatmap.map(p => ({
+        page: p._id, totalClicks: p.total,
+        clicks: (p.clicks || []).slice(0, 200) // limit points sent
+      })),
+      conversions: conversionEvents.map(c => ({
+        goal: c._id, count: c.count, value: c.totalValue
+      })),
+      engagementMetrics: engagementMetrics.map(e => ({
+        action: e._id, count: e.count
+      }))
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// ---------------------------------------------------------------
+// 13) GET /api/analytics/engagement
+// ---------------------------------------------------------------
+router.get('/engagement', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+
+    const [attentionDistribution, rageClickHotspots, scrollDistribution, engagementScores] = await Promise.all([
+      // Attention time distribution (buckets)
+      PageView.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end }, attentionTime: { $gt: 0 } } },
+        {
+          $bucket: {
+            groupBy: '$attentionTime',
+            boundaries: [0, 10, 30, 60, 120, 300, 600, Infinity],
+            default: 'other',
+            output: { count: { $sum: 1 } }
+          }
+        }
+      ]),
+
+      // Rage click hotspots
+      AnalyticsEvent.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end }, category: 'engagement', action: 'rage_click' } },
+        {
+          $group: {
+            _id: { page: '$page', tag: '$meta.tag' },
+            count: { $sum: 1 },
+            sampleX: { $first: '$meta.x' },
+            sampleY: { $first: '$meta.y' },
+            sampleText: { $first: '$meta.txt' }
+          }
+        },
+        { $sort: { count: -1 } },
+        { $limit: 20 }
+      ]),
+
+      // Scroll depth distribution
+      PageView.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end }, scrollDepth: { $gt: 0 } } },
+        {
+          $bucket: {
+            groupBy: '$scrollDepth',
+            boundaries: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, Infinity],
+            default: 'other',
+            output: { count: { $sum: 1 } }
+          }
+        }
+      ]),
+
+      // Session engagement score distribution
+      Session.aggregate([
+        { $match: { startedAt: { $gte: start, $lte: end }, engagementScore: { $gt: 0 } } },
+        {
+          $bucket: {
+            groupBy: '$engagementScore',
+            boundaries: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, Infinity],
+            default: 'other',
+            output: { count: { $sum: 1 }, avgDuration: { $avg: '$duration' } }
+          }
+        }
+      ])
+    ]);
+
+    // Dead click summary
+    const deadClicks = await AnalyticsEvent.aggregate([
+      { $match: { timestamp: { $gte: start, $lte: end }, category: 'engagement', action: 'dead_click' } },
+      {
+        $group: {
+          _id: { page: '$page', tag: '$meta.tag' },
+          count: { $sum: 1 },
+          sampleText: { $first: '$meta.txt' }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 20 }
+    ]);
+
+    res.json({
+      attentionDistribution: attentionDistribution.map(b => ({
+        bucket: b._id === 'other' ? '600+' : `${b._id}s`,
+        count: b.count
+      })),
+      rageClickHotspots: rageClickHotspots.map(r => ({
+        page: r._id.page, element: r._id.tag,
+        count: r.count, x: r.sampleX, y: r.sampleY, text: r.sampleText
+      })),
+      deadClicks: deadClicks.map(d => ({
+        page: d._id.page, element: d._id.tag,
+        count: d.count, text: d.sampleText
+      })),
+      scrollDistribution: scrollDistribution.map(b => ({
+        bucket: b._id === 'other' ? '100%' : `${b._id}%`,
+        count: b.count
+      })),
+      engagementScores: engagementScores.map(b => ({
+        bucket: b._id === 'other' ? '100' : b._id,
+        count: b.count,
+        avgDuration: Math.round(b.avgDuration || 0)
+      }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------
+// 14) GET /api/analytics/conversions
+// ---------------------------------------------------------------
+router.get('/conversions', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const match = { timestamp: { $gte: start, $lte: end } };
+
+    const [goalCompletions, totalSessions, attributionBySource] = await Promise.all([
+      Conversion.aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id: '$goal',
+            completions: { $sum: 1 },
+            totalValue: { $sum: '$value' },
+            uniqueVisitors: { $addToSet: '$visitorId' }
+          }
+        },
+        { $sort: { completions: -1 } }
+      ]),
+
+      Session.countDocuments({ startedAt: { $gte: start, $lte: end } }),
+
+      Conversion.aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id: { goal: '$goal', source: '$referrerCategory' },
+            count: { $sum: 1 },
+            value: { $sum: '$value' }
+          }
+        },
+        { $sort: { count: -1 } }
+      ])
+    ]);
+
+    // Build attribution map
+    const attribution = {};
+    attributionBySource.forEach(a => {
+      if (!attribution[a._id.goal]) attribution[a._id.goal] = [];
+      attribution[a._id.goal].push({
+        source: a._id.source, conversions: a.count, value: a.value
+      });
+    });
+
+    res.json({
+      goals: goalCompletions.map(g => ({
+        goal: g._id,
+        completions: g.completions,
+        totalValue: g.totalValue,
+        uniqueVisitors: g.uniqueVisitors.length,
+        conversionRate: totalSessions > 0
+          ? parseFloat(((g.completions / totalSessions) * 100).toFixed(2))
+          : 0,
+        attribution: attribution[g._id] || []
+      })),
+      totalSessions,
+      totalConversions: goalCompletions.reduce((s, g) => s + g.completions, 0)
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------
+// 15) GET /api/analytics/visitor/:id — full visitor profile
+// ---------------------------------------------------------------
+router.get('/visitor/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const vid = req.params.id;
+
+    const [visitor, sessions, pageViews, events, conversions] = await Promise.all([
+      Visitor.findOne({ visitorId: vid }).lean(),
+      Session.find({ visitorId: vid }).sort({ startedAt: -1 }).limit(50).lean(),
+      PageView.find({ visitorId: vid }).sort({ timestamp: -1 }).limit(200).lean(),
+      AnalyticsEvent.find({ visitorId: vid }).sort({ timestamp: -1 }).limit(200).lean(),
+      Conversion.find({ visitorId: vid }).sort({ timestamp: -1 }).limit(50).lean()
+    ]);
+
+    if (!visitor) return res.status(404).json({ error: 'Visitor not found' });
+
+    // Build timeline (interleave all events chronologically)
+    const timeline = [];
+    pageViews.forEach(pv => timeline.push({ type: 'pageview', ts: pv.timestamp, data: { page: pv.page, title: pv.title, timeOnPage: pv.timeOnPage, scrollDepth: pv.scrollDepth } }));
+    events.forEach(ev => timeline.push({ type: 'event', ts: ev.timestamp, data: { category: ev.category, action: ev.action, label: ev.label, page: ev.page } }));
+    conversions.forEach(cv => timeline.push({ type: 'conversion', ts: cv.timestamp, data: { goal: cv.goal, page: cv.page, value: cv.value } }));
+    timeline.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+    res.json({
+      visitor,
+      sessions,
+      pageViews: pageViews.slice(0, 100),
+      events: events.slice(0, 100),
+      conversions,
+      timeline: timeline.slice(0, 200)
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------
+// 16) GET /api/analytics/export — export as CSV
+// ---------------------------------------------------------------
+router.get('/export', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const format = req.query.format || 'csv';
+    const type = req.query.type || 'pageviews'; // pageviews, events, sessions, visitors, conversions
+
+    let rows = [];
+    let headers = [];
+
+    switch (type) {
+      case 'visitors': {
+        headers = ['visitorId','firstSeen','lastSeen','totalVisits','totalPageViews','totalTimeSpent','device','browser','os','language','referrer','referrerCategory','utmSource','utmMedium','utmCampaign','isReturning','isBot','engagementScore'];
+        const visitors = await Visitor.find({ lastSeen: { $gte: start, $lte: end } }).lean();
+        rows = visitors.map(v => headers.map(h => csvEscape(v[h])));
+        break;
+      }
+      case 'sessions': {
+        headers = ['sessionId','visitorId','startedAt','lastActivity','duration','attentionTime','pageCount','entryPage','exitPage','device','browser','os','referrer','referrerCategory','isBounce','engagementScore'];
+        const sessions = await Session.find({ startedAt: { $gte: start, $lte: end } }).lean();
+        rows = sessions.map(s => headers.map(h => csvEscape(s[h])));
+        break;
+      }
+      case 'events': {
+        headers = ['visitorId','sessionId','page','category','action','label','value','timestamp'];
+        const events = await AnalyticsEvent.find({ timestamp: { $gte: start, $lte: end } }).sort({ timestamp: -1 }).limit(10000).lean();
+        rows = events.map(e => headers.map(h => csvEscape(e[h])));
+        break;
+      }
+      case 'conversions': {
+        headers = ['visitorId','sessionId','goal','page','referrer','referrerCategory','utmSource','utmMedium','utmCampaign','value','timestamp'];
+        const convs = await Conversion.find({ timestamp: { $gte: start, $lte: end } }).sort({ timestamp: -1 }).lean();
+        rows = convs.map(c => headers.map(h => csvEscape(c[h])));
+        break;
+      }
+      default: { // pageviews
+        headers = ['visitorId','sessionId','page','title','referrer','timeOnPage','attentionTime','scrollDepth','lcp','fid','cls','rageClicks','deadClicks','isEntry','isExit','timestamp'];
+        const pvs = await PageView.find({ timestamp: { $gte: start, $lte: end } }).sort({ timestamp: -1 }).limit(10000).lean();
+        rows = pvs.map(pv => headers.map(h => csvEscape(pv[h])));
+      }
+    }
+
+    if (format === 'csv') {
+      const csv = [headers.join(',')].concat(rows.map(r => r.join(','))).join('\n');
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename=pirabel_analytics_${type}_${new Date().toISOString().slice(0,10)}.csv`);
+      return res.send(csv);
+    }
+
+    // JSON fallback
+    res.json({ headers, rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+function csvEscape(val) {
+  if (val === null || val === undefined) return '';
+  const s = String(val);
+  if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
 
 module.exports = router;

@@ -23,17 +23,19 @@
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employes</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
     <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
     <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     <div class="sidebar-section">Finance</div>
     <a href="/invoices" class="sidebar-link active"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
     <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Systeme</div>
+    <div class="sidebar-section">Système</div>
     <a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+    <a href="/logs" class="sidebar-link"><span class="material-symbols-outlined">history</span> Logs</a>
     <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
   </nav>
   <div class="sidebar-footer">
@@ -58,7 +60,7 @@
     </div>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="logout()">
-        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Deconnexion
+        <span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Déconnexion
       </button>
     </div>
   </header>
@@ -75,7 +77,7 @@
         <div class="stat-card-value accent" id="stat-amount">0 &euro;</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span> Payees</div>
+        <div class="stat-card-label"><span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span> Payées</div>
         <div class="stat-card-value" id="stat-paid" style="color:var(--teal);">0</div>
       </div>
       <div class="stat-card">
@@ -89,10 +91,10 @@
       <select id="filter-status" onchange="loadInvoices()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:150px;">
         <option value="">Tous les statuts</option>
         <option value="brouillon">Brouillon</option>
-        <option value="envoyee">Envoyee</option>
-        <option value="payee">Payee</option>
+        <option value="envoyee">Envoyée</option>
+        <option value="payee">Payée</option>
         <option value="en_retard">En retard</option>
-        <option value="annulee">Annulee</option>
+        <option value="annulee">Annulée</option>
       </select>
       <select id="filter-client" onchange="loadInvoices()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:170px;">
         <option value="">Tous les clients</option>
@@ -135,7 +137,7 @@
         <div class="form-group">
           <label>Client *</label>
           <select id="f-client" required>
-            <option value="">Selectionner un client</option>
+            <option value="">Sélectionner un client</option>
           </select>
         </div>
         <div class="form-group">
@@ -206,7 +208,7 @@
 <div class="modal-overlay" id="view-modal">
   <div class="modal" style="max-width:640px;">
     <button class="modal-close" onclick="closeViewModal()">&times;</button>
-    <div class="modal-title">Details facture</div>
+    <div class="modal-title">Détails facture</div>
     <div id="view-content"></div>
   </div>
 </div>
@@ -231,7 +233,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
   document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employe';
+  document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 
 function logout() {
@@ -382,13 +384,13 @@ async function loadInvoices() {
               <button class="btn btn-sm btn-ghost" onclick="viewInvoice('${i._id}')" title="Voir"><span class="material-symbols-outlined" style="font-size:0.875rem;">visibility</span></button>
               <button class="btn btn-sm btn-ghost" onclick="editInvoice('${i._id}')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>
               <button class="btn btn-sm btn-ghost" onclick="sendInvoice('${i._id}')" title="Envoyer par email"><span class="material-symbols-outlined" style="font-size:0.875rem;">send</span></button>
-              <button class="btn btn-sm btn-ghost" onclick="markPaid('${i._id}')" title="Marquer payee" style="color:var(--teal);"><span class="material-symbols-outlined" style="font-size:0.875rem;">check_circle</span></button>
+              <button class="btn btn-sm btn-ghost" onclick="markPaid('${i._id}')" title="Marquer payée" style="color:var(--teal);"><span class="material-symbols-outlined" style="font-size:0.875rem;">check_circle</span></button>
               <button class="btn btn-sm btn-ghost" onclick="deleteInvoice('${i._id}')" title="Supprimer" style="color:var(--danger);"><span class="material-symbols-outlined" style="font-size:0.875rem;">delete</span></button>
             </div>
           </td>
         </tr>
       `;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune facture trouvee</td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucune facture trouvée</td></tr>';
   } catch (e) { console.error(e); }
 }
 
@@ -535,7 +537,7 @@ async function sendInvoice(id) {
   try {
     const res = await fetch('/api/invoices/' + id + '/send', { method: 'POST', headers });
     if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur envoi facture', 'error'); return; }
-    toast('Facture envoyee par email avec succes !', 'success');
+    toast('Facture envoyée par email avec succès !', 'success');
     loadInvoices();
   } catch (e) { toast('Erreur réseau', 'error'); console.error(e); }
 }
@@ -552,7 +554,7 @@ async function markPaid(id) {
 
 // ---- Delete ----
 async function deleteInvoice(id) {
-  if (!confirm('Supprimer cette facture ? Cette action est irreversible.')) return;
+  if (!confirm('Supprimer cette facture ? Cette action est irréversible.')) return;
   try {
     const res = await fetch('/api/invoices/' + id, { method: 'DELETE', headers });
     if (!res.ok) { const err = await res.json(); toast(err.message || 'Erreur suppression', 'error'); return; }

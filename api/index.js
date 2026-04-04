@@ -94,6 +94,7 @@ app.use('/api/settings', require(path.join(routesPath, 'settings')));
 app.use('/api/notes', require(path.join(routesPath, 'notes')));
 app.use('/api/prospects', require(path.join(routesPath, 'prospects')));
 app.use('/api/revenue', require(path.join(routesPath, 'revenue')));
+app.use('/api/logs', require(path.join(routesPath, 'logs')));
 
 // Secret admin/client URLs
 const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m';
@@ -106,13 +107,14 @@ app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'po
 app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });
 
 // Health check
-app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected }));
+app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 
 
 // Email diagnostic endpoint

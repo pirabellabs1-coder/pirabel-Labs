@@ -99,6 +99,9 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/logs', require('./routes/logs'));
 app.use('/api/notes', require('./routes/notes'));
+app.use('/api/settings', require('./routes/settings'));
+app.use('/api/prospects', require('./routes/prospects'));
+app.use('/api/revenue', require('./routes/revenue'));
 
 // ============================================
 // SECRET ACCESS URLs
@@ -131,6 +134,8 @@ app.get('/articles', (req, res) => res.sendFile(path.join(__dirname, 'views', 'a
 app.get('/analytics', (req, res) => res.sendFile(path.join(__dirname, 'views', 'analytics.html')));
 app.get('/leads', (req, res) => res.sendFile(path.join(__dirname, 'views', 'leads.html')));
 app.get('/logs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'logs.html')));
+app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, 'views', 'notes.html')));
+app.get('/prospects', (req, res) => res.sendFile(path.join(__dirname, 'views', 'prospects.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

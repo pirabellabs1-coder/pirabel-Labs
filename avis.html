@@ -5,62 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Avis clients — Pirabel Labs</title>
 <meta name="description" content="Découvrez les avis de nos clients. Pirabel Labs, agence marketing digital de confiance.">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
 <style>
-:root{--accent:#FF5500;--bg:#0a0a0a;--card:#141414;--border:#2a2a2a;--text:#e5e2e1;--muted:#888;--font-h:'Space Grotesk',sans-serif;--font-b:'Inter',sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.6;}
-.nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-.logo{font-family:var(--font-h);font-weight:700;font-size:1.25rem;color:var(--accent);text-decoration:none;}
-.hero{padding:8rem 2rem 3rem;text-align:center;max-width:700px;margin:0 auto;}
-.hero h1{font-family:var(--font-h);font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-1px;margin-bottom:1rem;}
-.hero h1 span{color:var(--accent);}
-.hero p{color:var(--muted);font-size:1rem;}
-.reviews-grid{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
-.review{background:var(--card);border:1px solid var(--border);padding:2rem;transition:border-color .3s;}
+.reviews-hero{padding:10rem var(--px-page) 3rem;text-align:center;max-width:700px;margin:0 auto;}
+.reviews-hero h1{font-family:var(--font-headline);font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-1px;margin-bottom:1rem;}
+.reviews-hero h1 span{color:var(--primary);}
+.reviews-hero p{color:var(--on-surface-variant);font-size:1rem;}
+.reviews-grid{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.review{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;transition:border-color .3s;}
 .review:hover{border-color:rgba(255,85,0,.3);}
 .review-stars{color:#f39c12;font-size:1.1rem;margin-bottom:.75rem;}
 .review-text{font-size:.95rem;font-style:italic;color:rgba(229,226,225,.8);line-height:1.7;margin-bottom:1.25rem;}
 .review-author{font-weight:700;font-size:.85rem;}
-.review-company{font-size:.75rem;color:var(--muted);}
-.empty{text-align:center;padding:4rem;color:var(--muted);grid-column:1/-1;}
-.footer{padding:3rem 2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.85rem;}
+.review-company{font-size:.75rem;color:var(--on-surface-variant);}
+.empty{text-align:center;padding:4rem;color:var(--on-surface-variant);grid-column:1/-1;}
 /* Review form */
-.form-container{max-width:550px;margin:0 auto;padding:0 2rem 4rem;}
+.form-container{max-width:550px;margin:0 auto;padding:0 var(--px-page) 4rem;}
 .field{margin-bottom:1.5rem;}
-.field label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem;font-weight:700;}
-.field input,.field textarea{width:100%;background:var(--card);border:1px solid var(--border);padding:.9rem 1rem;color:var(--text);font-size:.95rem;outline:none;font-family:inherit;}
-.field input:focus,.field textarea:focus{border-color:var(--accent);}
+.field label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--on-surface-variant);margin-bottom:.5rem;font-weight:700;}
+.field input,.field textarea{width:100%;background:var(--surface-container);border:1px solid var(--outline-variant);padding:.9rem 1rem;color:var(--on-surface);font-size:.95rem;outline:none;font-family:inherit;}
+.field input:focus,.field textarea:focus{border-color:var(--primary);}
 .star-input{display:flex;gap:.5rem;font-size:2rem;cursor:pointer;}
-.star-input span{color:var(--border);transition:color .2s;}
+.star-input span{color:var(--outline-variant);transition:color .2s;}
 .star-input span.active{color:#f39c12;}
-.btn-submit{background:var(--accent);color:#5c1900;border:none;padding:1rem 2rem;font-family:var(--font-h);font-weight:700;font-size:1rem;text-transform:uppercase;cursor:pointer;width:100%;}
+.btn-submit{background:var(--primary);color:#5c1900;border:none;padding:1rem 2rem;font-family:var(--font-headline);font-weight:700;font-size:1rem;text-transform:uppercase;cursor:pointer;width:100%;}
 </style>
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="logo">PIRABEL LABS</a>
-  <div style="display:flex;gap:2rem;"><a href="/services" style="color:var(--text);text-decoration:none;font-size:.85rem;">Services</a><a href="/contact" style="color:var(--text);text-decoration:none;font-size:.85rem;">Contact</a></div>
-</nav>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
 
-<!-- Public reviews display OR review form -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/" class="link-underline">L'AGENCE</a>
+      <a href="/services" class="link-underline">SERVICES</a>
+      <a href="/blog" class="link-underline">BLOG</a>
+      <a href="/resultats" class="link-underline">RÉSULTATS</a>
+      <a href="/a-propos" class="link-underline">À PROPOS</a>
+      <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+    </div>
+    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="/contact" class="nav-cta">Audit Gratuit</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-nav">
+  <a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="/resultats">Résultats</a><a href="/a-propos">À propos</a><a href="/carrieres">Carrières</a><a href="/contact">Contact</a>
+  <a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
+</div>
+
 <div id="reviews-page">
-  <section class="hero">
-    <h1>Nos clients <span>témoignent</span></h1>
-    <p>Découvrez ce que nos clients disent de leur expérience avec Pirabel Labs.</p>
-  </section>
+  <section class="reviews-hero"><h1>Nos clients <span>témoignent</span></h1><p>Découvrez ce que nos clients disent de leur expérience avec Pirabel Labs.</p></section>
   <section class="reviews-grid" id="reviews-list"><div class="empty">Chargement...</div></section>
 </div>
 
 <div id="form-page" style="display:none;">
-  <section class="hero">
-    <h1>Votre <span>avis</span> compte</h1>
-    <p>Merci de prendre un moment pour partager votre expérience.</p>
-  </section>
+  <section class="reviews-hero"><h1>Votre <span>avis</span> compte</h1><p>Merci de prendre un moment pour partager votre expérience.</p></section>
   <div class="form-container">
-    <div class="field"><label>Note</label>
-      <div class="star-input" id="star-input"></div>
-    </div>
+    <div class="field"><label>Note</label><div class="star-input" id="star-input"></div></div>
     <div class="field"><label>Titre (optionnel)</label><input id="f-title" placeholder="Excellente collaboration !"></div>
     <div class="field"><label>Votre avis *</label><textarea id="f-comment" rows="5" placeholder="Décrivez votre expérience..."></textarea></div>
     <button class="btn-submit" onclick="submitReview()">Envoyer mon avis</button>
@@ -69,93 +79,63 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-heigh
 </div>
 
 <div id="thanks-page" style="display:none;">
-  <section class="hero" style="padding-top:12rem;">
+  <section class="reviews-hero" style="padding-top:12rem;">
     <h1>Merci ! 🎉</h1>
     <p>Votre avis a été enregistré. Il sera publié après validation.</p>
-    <a href="/" style="display:inline-block;margin-top:2rem;color:var(--accent);text-decoration:none;font-weight:600;">← Retour au site</a>
+    <a href="/" style="display:inline-block;margin-top:2rem;color:var(--primary);text-decoration:none;font-weight:600;">← Retour au site</a>
   </section>
 </div>
 
-<footer class="footer">© 2026 Pirabel Labs. Tous droits réservés.</footer>
+<footer class="footer">
+  <div class="footer-grid">
+    <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agence digitale premium au service de votre croissance.</p></div>
+    <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO & Référencement</a></li><li><a href="agence-creation-sites-web/">Création de Sites</a></li><li><a href="agence-ia-automatisation/">IA & Automatisation</a></li></ul></div>
+    <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="guides/">Guides</a></li><li><a href="/resultats">Études de cas</a></li><li><a href="/carrieres">Carrières</a></li><li><a href="/status">Statut</a></li></ul></div>
+    <div><div class="footer-title">Contact</div><ul class="footer-links"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><a href="/contact">Formulaire</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. Tous droits réservés.</span><div style="display:flex;gap:2rem;"><a href="/mentions-legales">Mentions légales</a><a href="/politique-confidentialite">Confidentialité</a></div></div>
+</footer>
 
+<script src="js/config.js"></script>
+<script src="js/global.js?v=4"></script>
 <script>
 const params = new URLSearchParams(window.location.search);
 const reviewToken = params.get('token');
 let selectedRating = 5;
 
 if (reviewToken) {
-  // Show form
   document.getElementById('reviews-page').style.display = 'none';
   document.getElementById('form-page').style.display = 'block';
-
-  // Stars
   const starEl = document.getElementById('star-input');
   for (let i = 1; i <= 5; i++) {
-    const s = document.createElement('span');
-    s.textContent = '★';
-    s.dataset.val = i;
+    const s = document.createElement('span'); s.textContent = '★'; s.dataset.val = i;
     if (i <= 5) s.classList.add('active');
-    s.onclick = () => {
-      selectedRating = i;
-      starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i));
-    };
+    s.onclick = () => { selectedRating = i; starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i)); };
     starEl.appendChild(s);
   }
-
-  // Check token
-  fetch('/api/reviews/submit/' + reviewToken)
-    .then(r => r.json())
-    .then(d => {
-      if (d.alreadySubmitted) {
-        document.getElementById('form-page').style.display = 'none';
-        document.getElementById('thanks-page').style.display = 'block';
-      }
-    });
+  fetch('/api/reviews/submit/' + reviewToken).then(r => r.json()).then(d => { if (d.alreadySubmitted) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; } });
 } else {
-  // Show public reviews
-  fetch('/api/reviews/public')
-    .then(r => r.json())
-    .then(d => {
-      const reviews = d.reviews || [];
-      document.getElementById('reviews-list').innerHTML = reviews.length ? reviews.map(r => `
-        <div class="review">
-          <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-          ${r.title ? `<div style="font-weight:700;margin-bottom:.5rem;">${esc(r.title)}</div>` : ''}
-          <div class="review-text">"${esc(r.comment)}"</div>
-          <div class="review-author">${esc(r.name)}</div>
-          <div class="review-company">${esc(r.company)} ${r.service ? '· ' + esc(r.service) : ''}</div>
-        </div>
-      `).join('') : '<div class="empty"><h2 style="font-family:var(--font-h);margin-bottom:1rem;">Aucun avis publié pour le moment</h2></div>';
-    })
-    .catch(() => {
-      document.getElementById('reviews-list').innerHTML = '<div class="empty">Erreur de chargement</div>';
-    });
+  fetch('/api/reviews/public').then(r => r.json()).then(d => {
+    const reviews = d.reviews || [];
+    document.getElementById('reviews-list').innerHTML = reviews.length ? reviews.map(r => `
+      <div class="review">
+        <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        ${r.title ? `<div style="font-weight:700;margin-bottom:.5rem;">${esc(r.title)}</div>` : ''}
+        <div class="review-text">"${esc(r.comment)}"</div>
+        <div class="review-author">${esc(r.name)}</div>
+        <div class="review-company">${esc(r.company)} ${r.service ? '· ' + esc(r.service) : ''}</div>
+      </div>
+    `).join('') : '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucun avis publié pour le moment</h2></div>';
+  }).catch(() => document.getElementById('reviews-list').innerHTML = '<div class="empty">Erreur de chargement</div>');
 }
 
 async function submitReview() {
   const comment = document.getElementById('f-comment').value.trim();
   if (!comment) return alert('Veuillez écrire un commentaire');
-  try {
-    const r = await fetch('/api/reviews/submit/' + reviewToken, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment })
-    });
-    const d = await r.json();
-    if (d.success) {
-      document.getElementById('form-page').style.display = 'none';
-      document.getElementById('thanks-page').style.display = 'block';
-    } else {
-      const msg = document.getElementById('form-msg');
-      msg.style.display = 'block';
-      msg.style.color = '#e74c3c';
-      msg.textContent = d.error || 'Erreur';
-    }
-  } catch (e) {
-    alert('Erreur réseau');
-  }
+  const r = await fetch('/api/reviews/submit/' + reviewToken, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment }) });
+  const d = await r.json();
+  if (d.success) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; }
 }
-
 function esc(s) { return (s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 </script>
 </body>

@@ -5,100 +5,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Statut des Services — Pirabel Labs</title>
 <meta name="description" content="Statut en temps réel des services Pirabel Labs. Vérifiez la disponibilité de notre plateforme.">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
 <style>
-:root{--accent:#FF5500;--bg:#0a0a0a;--card:#141414;--border:#2a2a2a;--text:#e5e2e1;--muted:#888;--font-h:'Space Grotesk',sans-serif;--font-b:'Inter',sans-serif;--green:#2ecc71;--yellow:#f39c12;--red:#e74c3c;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.6;}
-.nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-.logo{font-family:var(--font-h);font-weight:700;font-size:1.25rem;color:var(--accent);text-decoration:none;}
-.container{max-width:800px;margin:0 auto;padding:8rem 2rem 4rem;}
-.overall{text-align:center;margin-bottom:3rem;}
-.overall-badge{display:inline-block;padding:.75rem 2rem;font-family:var(--font-h);font-weight:700;font-size:1.25rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;}
-.overall-badge.operational{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.3);}
-.overall-badge.degraded{background:rgba(243,156,18,.1);color:var(--yellow);border:1px solid rgba(243,156,18,.3);}
-.overall-badge.down{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.3);}
-.overall-sub{color:var(--muted);font-size:.85rem;}
-.service-list{margin-bottom:3rem;}
-.service{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:var(--card);margin-bottom:1px;}
-.service:first-child{border-top:1px solid var(--border);}
+.status-hero{padding:10rem var(--px-page) 3rem;text-align:center;max-width:800px;margin:0 auto;}
+.overall-badge{display:inline-block;padding:.75rem 2rem;font-family:var(--font-headline);font-weight:700;font-size:1.25rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;}
+.overall-badge.operational{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
+.overall-badge.degraded{background:rgba(243,156,18,.1);color:#f39c12;border:1px solid rgba(243,156,18,.3);}
+.overall-badge.down{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.3);}
+.overall-sub{color:var(--on-surface-variant);font-size:.85rem;}
+.service-list{max-width:800px;margin:0 auto;padding:0 var(--px-page) 3rem;}
+.service{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--outline-variant);background:var(--surface-container);}
+.service:first-child{border-top:1px solid var(--outline-variant);}
 .service-name{font-weight:600;font-size:.95rem;}
 .service-status{font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:.5rem;}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
-.dot.operational{background:var(--green);box-shadow:0 0 8px rgba(46,204,113,.4);}
-.dot.degraded{background:var(--yellow);box-shadow:0 0 8px rgba(243,156,18,.4);}
-.dot.down{background:var(--red);box-shadow:0 0 8px rgba(231,76,60,.4);}
-.dot.unknown{background:var(--muted);}
-.uptime{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;}
-.uptime h3{font-family:var(--font-h);font-size:.9rem;margin-bottom:1rem;}
+.dot.operational{background:#2ecc71;box-shadow:0 0 8px rgba(46,204,113,.4);}
+.dot.degraded{background:#f39c12;box-shadow:0 0 8px rgba(243,156,18,.4);}
+.dot.down{background:#e74c3c;box-shadow:0 0 8px rgba(231,76,60,.4);}
+.dot.unknown{background:var(--on-surface-variant);}
+.uptime-box{max-width:800px;margin:0 auto;background:var(--surface-container);border:1px solid var(--outline-variant);padding:1.5rem;margin-bottom:2rem;}
+.uptime-box h3{font-family:var(--font-headline);font-size:.9rem;margin-bottom:1rem;}
 .uptime-row{display:flex;gap:2rem;flex-wrap:wrap;}
 .uptime-stat{flex:1;min-width:100px;}
-.uptime-val{font-family:var(--font-h);font-weight:700;font-size:1.5rem;color:var(--green);}
-.uptime-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
-.footer{text-align:center;color:var(--muted);font-size:.8rem;padding:2rem;}
+.uptime-val{font-family:var(--font-headline);font-weight:700;font-size:1.5rem;color:#2ecc71;}
+.uptime-label{font-size:.7rem;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:.08em;}
 </style>
 </head>
 <body>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+
 <nav class="nav">
-  <a href="/" class="logo">PIRABEL LABS</a>
-  <a href="/" style="color:var(--text);text-decoration:none;font-size:.85rem;">← Retour au site</a>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/" class="link-underline">L'AGENCE</a>
+      <a href="/services" class="link-underline">SERVICES</a>
+      <a href="/blog" class="link-underline">BLOG</a>
+      <a href="/resultats" class="link-underline">RÉSULTATS</a>
+      <a href="/a-propos" class="link-underline">À PROPOS</a>
+      <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+    </div>
+    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="/contact" class="nav-cta">Audit Gratuit</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+  </div>
 </nav>
-
-<div class="container">
-  <div class="overall">
-    <div class="overall-badge" id="overall-badge">Vérification...</div>
-    <div class="overall-sub" id="overall-sub">Dernière vérification : —</div>
-  </div>
-
-  <div class="service-list" id="services"></div>
-
-  <div class="uptime" id="uptime-section" style="display:none;">
-    <h3>Disponibilité</h3>
-    <div class="uptime-row" id="uptime"></div>
-  </div>
+<div class="mobile-nav">
+  <a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="/resultats">Résultats</a><a href="/a-propos">À propos</a><a href="/carrieres">Carrières</a><a href="/contact">Contact</a>
+  <a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
 </div>
 
-<footer class="footer">© 2026 Pirabel Labs. Tous droits réservés.</footer>
+<section class="status-hero">
+  <div class="overall-badge" id="overall-badge">Vérification...</div>
+  <div class="overall-sub" id="overall-sub">Dernière vérification : —</div>
+</section>
 
+<div class="service-list" id="services"></div>
+
+<div class="uptime-box" id="uptime-section" style="display:none;margin-left:auto;margin-right:auto;max-width:800px;padding:1.5rem var(--px-page);">
+  <h3>Disponibilité</h3>
+  <div class="uptime-row" id="uptime"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agence digitale premium au service de votre croissance.</p></div>
+    <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO & Référencement</a></li><li><a href="agence-creation-sites-web/">Création de Sites</a></li><li><a href="agence-ia-automatisation/">IA & Automatisation</a></li></ul></div>
+    <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="guides/">Guides</a></li><li><a href="/resultats">Études de cas</a></li><li><a href="/carrieres">Carrières</a></li><li><a href="/avis">Avis clients</a></li></ul></div>
+    <div><div class="footer-title">Contact</div><ul class="footer-links"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><a href="/contact">Formulaire</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. Tous droits réservés.</span><div style="display:flex;gap:2rem;"><a href="/mentions-legales">Mentions légales</a><a href="/politique-confidentialite">Confidentialité</a></div></div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/global.js?v=4"></script>
 <script>
 const statusLabels = { operational: 'Opérationnel', degraded: 'Dégradé', down: 'Indisponible', unknown: 'Inconnu' };
-
 async function loadStatus() {
   try {
     const r = await fetch('/api/status');
     const d = await r.json();
-
-    // Overall
     const badge = document.getElementById('overall-badge');
     badge.className = 'overall-badge ' + d.overall;
     badge.textContent = d.overall === 'operational' ? '✓ Tous les systèmes sont opérationnels' : '⚠ Dégradations détectées';
     document.getElementById('overall-sub').textContent = 'Dernière vérification : ' + new Date(d.lastChecked).toLocaleString('fr-FR');
-
-    // Services
     document.getElementById('services').innerHTML = (d.services || []).map(s => `
-      <div class="service">
-        <div class="service-name">${s.name}</div>
-        <div class="service-status"><span class="dot ${s.status}"></span> ${statusLabels[s.status] || s.status}</div>
-      </div>
+      <div class="service"><div class="service-name">${s.name}</div><div class="service-status"><span class="dot ${s.status}"></span> ${statusLabels[s.status] || s.status}</div></div>
     `).join('');
-
-    // Uptime
     if (d.uptime) {
       document.getElementById('uptime-section').style.display = 'block';
-      document.getElementById('uptime').innerHTML = Object.entries(d.uptime).map(([k, v]) => `
-        <div class="uptime-stat">
-          <div class="uptime-val">${v}</div>
-          <div class="uptime-label">${k === 'last24h' ? '24 heures' : k === 'last7d' ? '7 jours' : '30 jours'}</div>
-        </div>
-      `).join('');
+      document.getElementById('uptime').innerHTML = Object.entries(d.uptime).map(([k, v]) => `<div class="uptime-stat"><div class="uptime-val">${v}</div><div class="uptime-label">${k === 'last24h' ? '24 heures' : k === 'last7d' ? '7 jours' : '30 jours'}</div></div>`).join('');
     }
   } catch (e) {
-    document.getElementById('overall-badge').textContent = '⚠ Impossible de vérifier le statut';
+    document.getElementById('overall-badge').textContent = '⚠ Impossible de vérifier';
     document.getElementById('overall-badge').className = 'overall-badge down';
   }
 }
-
 loadStatus();
 setInterval(loadStatus, 60000);
 </script>

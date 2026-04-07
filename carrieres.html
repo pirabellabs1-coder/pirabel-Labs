@@ -5,45 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carrières — Pirabel Labs</title>
 <meta name="description" content="Rejoignez Pirabel Labs, agence marketing digital. Découvrez nos offres d'emploi en CDI, freelance, stage et alternance.">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
 <style>
-:root{--accent:#FF5500;--bg:#0a0a0a;--card:#141414;--border:#2a2a2a;--text:#e5e2e1;--muted:#888;--font-h:'Space Grotesk',sans-serif;--font-b:'Inter',sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.6;}
-.nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-.logo{font-family:var(--font-h);font-weight:700;font-size:1.25rem;color:var(--accent);text-decoration:none;letter-spacing:-.5px;}
-.nav-links{display:flex;gap:2rem;}
-.nav-links a{color:var(--text);text-decoration:none;font-size:.85rem;transition:color .2s;}
-.nav-links a:hover{color:var(--accent);}
-.hero{padding:10rem 2rem 5rem;text-align:center;max-width:900px;margin:0 auto;}
-.hero h1{font-family:var(--font-h);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;}
-.hero h1 span{color:var(--accent);}
-.hero p{font-size:1.15rem;color:var(--muted);max-width:600px;margin:0 auto;}
-.jobs{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
-.job{background:var(--card);border:1px solid var(--border);padding:2rem;transition:border-color .3s,transform .3s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;}
-.job:hover{border-color:var(--accent);transform:translateY(-4px);}
-.job-type{display:inline-block;background:rgba(255,85,0,.1);color:var(--accent);padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;align-self:flex-start;}
-.job h3{font-family:var(--font-h);font-size:1.25rem;font-weight:700;margin-bottom:.5rem;}
-.job-meta{font-size:.8rem;color:var(--muted);margin-bottom:1rem;}
-.job-desc{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;flex:1;}
-.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;}
-.empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--muted);}
-.footer{padding:3rem 2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.85rem;}
+.hero-careers{padding:10rem var(--px-page) 5rem;text-align:center;max-width:900px;margin:0 auto;}
+.hero-careers h1{font-family:var(--font-headline);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;}
+.hero-careers h1 span{color:var(--primary);}
+.hero-careers p{font-size:1.15rem;color:var(--on-surface-variant);max-width:600px;margin:0 auto;}
+.jobs{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
+.job{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;transition:border-color .3s,transform .3s;text-decoration:none;color:var(--on-surface);display:flex;flex-direction:column;}
+.job:hover{border-color:var(--primary);transform:translateY(-4px);}
+.job-type{display:inline-block;background:rgba(255,85,0,.1);color:var(--primary);padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;align-self:flex-start;}
+.job h3{font-family:var(--font-headline);font-size:1.25rem;font-weight:700;margin-bottom:.5rem;}
+.job-meta{font-size:.8rem;color:var(--on-surface-variant);margin-bottom:1rem;}
+.job-desc{font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;flex:1;}
+.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:var(--primary);font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;}
+.empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--on-surface-variant);}
 </style>
 </head>
 <body>
+<!-- Noise & Atmosphere -->
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+
+<!-- Navigation (same as main site) -->
 <nav class="nav">
-  <a href="/" class="logo">PIRABEL LABS</a>
-  <div class="nav-links">
-    <a href="/services.html">Services</a>
-    <a href="/blog.html">Blog</a>
-    <a href="/carrieres.html">Carrières</a>
-    <a href="/contact.html">Contact</a>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/" class="link-underline">L'AGENCE</a>
+      <a href="/services" class="link-underline">SERVICES</a>
+      <a href="/blog" class="link-underline">BLOG</a>
+      <a href="/resultats" class="link-underline">RÉSULTATS</a>
+      <a href="/a-propos" class="link-underline">À PROPOS</a>
+      <a href="/carrieres" class="active">CARRIÈRES</a>
+    </div>
+    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="/contact" class="nav-cta">Audit Gratuit</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
-<section class="hero">
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <a href="/">Accueil</a>
+  <a href="/services">Services</a>
+  <a href="/blog">Blog</a>
+  <a href="/resultats">Résultats</a>
+  <a href="/a-propos">À propos</a>
+  <a href="/carrieres">Carrières</a>
+  <a href="/contact">Contact</a>
+  <a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
+</div>
+
+<section class="hero-careers">
   <h1>Rejoignez <span>Pirabel Labs</span></h1>
   <p>Construisons ensemble l'agence marketing digital de demain. Talents passionnés, projets ambitieux, équipe bienveillante.</p>
 </section>
@@ -52,21 +72,67 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-heigh
   <div class="empty">Chargement des offres...</div>
 </section>
 
+<!-- Footer (same as main site) -->
 <footer class="footer">
-  <p>© 2026 Pirabel Labs. Tous droits réservés.</p>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">PIRABEL LABS</div>
+      <p class="footer-desc">L'agence digitale premium au service de votre croissance. Nous construisons les standards de demain pour les entreprises les plus ambitieuses.</p>
+    </div>
+    <div>
+      <div class="footer-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="agence-seo-referencement-naturel/">SEO & Référencement</a></li>
+        <li><a href="agence-creation-sites-web/">Création de Sites</a></li>
+        <li><a href="agence-ia-automatisation/">IA & Automatisation</a></li>
+        <li><a href="agence-publicite-payante-sea-ads/">Publicité Payante</a></li>
+        <li><a href="agence-social-media/">Social Media</a></li>
+        <li><a href="agence-design-branding/">Design & Branding</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Ressources</div>
+      <ul class="footer-links">
+        <li><a href="guides/">Guides</a></li>
+        <li><a href="/resultats">Études de cas</a></li>
+        <li><a href="/a-propos">À propos</a></li>
+        <li><a href="/carrieres">Carrières</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/avis">Avis clients</a></li>
+        <li><a href="/status">Statut des services</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li>
+        <li><a href="/contact">Formulaire</a></li>
+        <li><a href="/rendez-vous">Prendre RDV</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Pirabel Labs. Tous droits réservés.</span>
+    <div style="display:flex;gap:2rem;">
+      <a href="/mentions-legales">Mentions légales</a>
+      <a href="/politique-confidentialite">Confidentialité</a>
+    </div>
+  </div>
 </footer>
 
+<script src="js/config.js"></script>
+<script src="js/global.js?v=4"></script>
 <script>
 fetch('/api/recruitment/jobs/public')
   .then(r => r.json())
   .then(data => {
     const list = document.getElementById('jobs-list');
     if (!data.jobs || !data.jobs.length) {
-      list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-h);margin-bottom:1rem;">Aucune offre ouverte pour le moment</h2><p>Envoyez-nous une candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p></div>';
+      list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucune offre ouverte pour le moment</h2><p>Envoyez-nous une candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:var(--primary);">contact@pirabellabs.com</a></p></div>';
       return;
     }
     list.innerHTML = data.jobs.map(j => `
-      <a href="/candidature.html?slug=${j.slug}" class="job">
+      <a href="/candidature?slug=${j.slug}" class="job">
         <span class="job-type">${escapeHtml(j.type)}</span>
         <h3>${escapeHtml(j.title)}</h3>
         <div class="job-meta">${escapeHtml(j.department || '')} ${j.location ? '· ' + escapeHtml(j.location) : ''} ${j.salary ? '· ' + escapeHtml(j.salary) : ''}</div>

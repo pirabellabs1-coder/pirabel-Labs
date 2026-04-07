@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devis | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:2rem;}
+.quote-card{background:var(--card);border:1px solid var(--border);padding:1.5rem;transition:border-color .3s,transform .2s;cursor:pointer;}
+.quote-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.quote-number{font-family:var(--font-h);font-weight:700;font-size:.8rem;color:var(--accent);margin-bottom:.5rem;}
+.quote-title{font-weight:600;font-size:1rem;margin-bottom:.5rem;}
+.quote-client{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;}
+.quote-footer{display:flex;justify-content:space-between;align-items:center;}
+.quote-total{font-family:var(--font-h);font-weight:700;font-size:1.1rem;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:700px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-body{padding:1.5rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
+.items-table{width:100%;margin:1rem 0;}
+.items-table th{text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);padding:.5rem;letter-spacing:.05em;}
+.items-table td{padding:.25rem .5rem;}
+.items-table input{background:var(--bg);border:1px solid var(--border);padding:.5rem;color:var(--text);font-size:.8rem;width:100%;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.btn-danger{background:transparent;color:#e74c3c;border:1px solid rgba(231,76,60,.3);padding:.75rem 1rem;font-size:.8rem;cursor:pointer;}
+.btn-sm{padding:.4rem .8rem;font-size:.7rem;}
+.ai-btn{background:linear-gradient(135deg,#9b59b6,#3498db);color:#fff;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;}
+.totals-row{display:flex;justify-content:flex-end;gap:2rem;padding:.75rem 0;border-top:1px solid var(--border);margin-top:.5rem;}
+.totals-row div{text-align:right;}
+.totals-row .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;}
+.totals-row .value{font-family:var(--font-h);font-weight:700;font-size:1rem;}
+.totals-row .value.accent{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Devis / Propositions</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="ai-btn" onclick="openAI()"><span class="material-symbols-outlined" style="font-size:1rem;">auto_awesome</span> Générer par IA</button>
+      <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau devis</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-status" onchange="loadQuotes()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.5rem 1rem;font-size:.8rem;">
+        <option value="">Tous les statuts</option>
+        <option value="brouillon">Brouillon</option>
+        <option value="envoye">Envoyé</option>
+        <option value="accepte">Accepté</option>
+        <option value="refuse">Refusé</option>
+        <option value="expire">Expiré</option>
+      </select>
+      <button class="btn-secondary btn-sm" onclick="exportCSV()"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">download</span> Export CSV</button>
+    </div>
+
+    <div class="quote-grid" id="quotes-list">
+      <div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1;">Chargement...</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Quote Modal -->
+<div class="modal-bg" id="modal"><div class="modal">
+  <div class="modal-header">
+    <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Nouveau devis</h3>
+    <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="field"><label>Titre *</label><input id="f-title" placeholder="Refonte site web"></div>
+      <div class="field"><label>Client (nom)</label><input id="f-clientName"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="field"><label>Email client</label><input id="f-clientEmail" type="email"></div>
+      <div class="field"><label>Entreprise</label><input id="f-clientCompany"></div>
+      <div class="field"><label>Statut</label>
+        <select id="f-status"><option value="brouillon">Brouillon</option><option value="envoye">Envoyé</option><option value="accepte">Accepté</option><option value="refuse">Refusé</option></select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="field"><label>Taux TVA (%)</label><input id="f-taxRate" type="number" value="20"></div>
+      <div class="field"><label>Remise (€)</label><input id="f-discount" type="number" value="0"></div>
+      <div class="field"><label>Valable jusqu'au</label><input id="f-validUntil" type="date"></div>
+    </div>
+    <div class="field"><label>Lien de paiement</label><input id="f-paymentLink" placeholder="https://wise.com/pay/..."></div>
+
+    <h4 style="font-family:var(--font-h);margin:1rem 0 .5rem;">Lignes du devis</h4>
+    <table class="items-table">
+      <thead><tr><th>Description</th><th style="width:60px;">Qté</th><th style="width:100px;">P.U. (€)</th><th style="width:100px;">Total</th><th style="width:30px;"></th></tr></thead>
+      <tbody id="items-body"></tbody>
+    </table>
+    <button class="btn-secondary btn-sm" onclick="addItem()" style="margin-bottom:1rem;">+ Ajouter une ligne</button>
+
+    <div class="totals-row">
+      <div><div class="label">Sous-total HT</div><div class="value" id="t-subtotal">0 €</div></div>
+      <div><div class="label">TVA</div><div class="value" id="t-tax">0 €</div></div>
+      <div><div class="label">Total TTC</div><div class="value accent" id="t-total">0 €</div></div>
+    </div>
+
+    <div class="field"><label>Notes</label><textarea id="f-notes" rows="2"></textarea></div>
+    <div class="field"><label>Conditions</label><textarea id="f-conditions" rows="2">Conditions de paiement : 30 jours à réception de facture.</textarea></div>
+
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
+      <button class="btn-danger" id="del-btn" style="margin-right:auto;display:none;" onclick="deleteQuote()">Supprimer</button>
+      <button class="btn-secondary" onclick="sendQuote()" id="send-btn" style="display:none;"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">send</span> Envoyer</button>
+      <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn-primary" onclick="saveQuote()">Enregistrer</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- AI Modal -->
+<div class="modal-bg" id="ai-modal"><div class="modal" style="max-width:550px;">
+  <div class="modal-header">
+    <h3 style="margin:0;font-family:var(--font-h);">🤖 Générer un devis par IA</h3>
+    <button onclick="document.getElementById('ai-modal').classList.remove('show')" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="field"><label>Nom du client</label><input id="ai-client"></div>
+    <div class="field"><label>Service</label><input id="ai-service" placeholder="SEO, Site web, Ads..."></div>
+    <div class="field"><label>Budget indicatif</label><input id="ai-budget" placeholder="5000 €"></div>
+    <div class="field"><label>Brief / Demande *</label><textarea id="ai-brief" rows="4" placeholder="Décrivez le besoin du client..."></textarea></div>
+    <div style="text-align:right;"><button class="ai-btn" onclick="generateAI()" id="ai-go">Générer la proposition</button></div>
+    <div id="ai-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">⏳ Génération en cours...</div>
+  </div>
+</div></div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+let allQuotes = [];
+let editingId = null;
+
+// Sidebar
+document.getElementById('sidebar-nav').innerHTML = `
+<div class="sidebar-section">Principal</div>
+<a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+<a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+<a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+<a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+<div class="sidebar-section">Commercial</div>
+<a href="/quotes" class="sidebar-link active"><span class="material-symbols-outlined">description</span> Devis</a>
+<a href="/pipeline" class="sidebar-link"><span class="material-symbols-outlined">view_kanban</span> Pipeline CRM</a>
+<a href="/email-templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates Email</a>
+<div class="sidebar-section">Gestion</div>
+<a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+<a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+<a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+<a href="/time-tracking" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Time Tracking</a>
+<a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+<div class="sidebar-section">Marketing</div>
+<a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+<a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+<a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">group_add</span> Leads</a>
+<a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+<a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+<a href="/reviews-admin" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
+<div class="sidebar-section">Finance</div>
+<a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+<a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+<div class="sidebar-section">Système</div>
+<a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+<a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+`;
+
+function toast(msg, type='success'){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),3000);}
+function fmt(n){return(n||0).toLocaleString('fr-FR')+' €';}
+function statusBadge(s){const m={'brouillon':'badge-done','envoye':'badge-pending','accepte':'badge-active','refuse':'badge-danger','expire':'badge-done'};return '<span class="badge '+(m[s]||'badge-done')+'">'+s+'</span>';}
+
+async function loadQuotes(){
+  const status = document.getElementById('filter-status').value;
+  const res = await fetch('/api/quotes?limit=100' + (status ? '&status='+status : ''), {headers});
+  const data = await res.json();
+  allQuotes = data.quotes || [];
+  const el = document.getElementById('quotes-list');
+  if(!allQuotes.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1;">Aucun devis</div>';return;}
+  el.innerHTML = allQuotes.map(q => `
+    <div class="quote-card" onclick="openEdit('${q._id}')">
+      <div class="quote-number">${q.quoteNumber}</div>
+      <div class="quote-title">${esc(q.title)}</div>
+      <div class="quote-client">${esc(q.clientName||q.clientCompany||'')} ${q.clientEmail?'· '+esc(q.clientEmail):''}</div>
+      <div class="quote-footer">
+        <div class="quote-total">${fmt(q.total)}</div>
+        ${statusBadge(q.status)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function openCreate(){
+  editingId=null;
+  document.getElementById('modal-title').textContent='Nouveau devis';
+  document.getElementById('del-btn').style.display='none';
+  document.getElementById('send-btn').style.display='none';
+  ['f-title','f-clientName','f-clientEmail','f-clientCompany','f-notes','f-paymentLink'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-taxRate').value=20;
+  document.getElementById('f-discount').value=0;
+  document.getElementById('f-status').value='brouillon';
+  document.getElementById('f-validUntil').value='';
+  document.getElementById('f-conditions').value='Conditions de paiement : 30 jours à réception de facture.';
+  document.getElementById('items-body').innerHTML='';
+  addItem();addItem();
+  recalc();
+  document.getElementById('modal').classList.add('show');
+}
+
+function openEdit(id){
+  const q=allQuotes.find(x=>x._id===id);if(!q)return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='Modifier '+q.quoteNumber;
+  document.getElementById('del-btn').style.display='inline-block';
+  document.getElementById('send-btn').style.display=q.status==='brouillon'?'inline-flex':'none';
+  document.getElementById('f-title').value=q.title||'';
+  document.getElementById('f-clientName').value=q.clientName||'';
+  document.getElementById('f-clientEmail').value=q.clientEmail||'';
+  document.getElementById('f-clientCompany').value=q.clientCompany||'';
+  document.getElementById('f-taxRate').value=q.taxRate||20;
+  document.getElementById('f-discount').value=q.discount||0;
+  document.getElementById('f-status').value=q.status||'brouillon';
+  document.getElementById('f-validUntil').value=q.validUntil?q.validUntil.split('T')[0]:'';
+  document.getElementById('f-paymentLink').value=q.paymentLink||'';
+  document.getElementById('f-notes').value=q.notes||'';
+  document.getElementById('f-conditions').value=q.conditions||'';
+  document.getElementById('items-body').innerHTML='';
+  (q.items||[]).forEach(i=>addItem(i));
+  if(!q.items||!q.items.length){addItem();}
+  recalc();
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+
+function addItem(data={}){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><input class="i-desc" value="${esc(data.description||'')}" oninput="recalc()"></td>
+    <td><input class="i-qty" type="number" value="${data.quantity||1}" min="1" oninput="recalc()"></td>
+    <td><input class="i-price" type="number" value="${data.unitPrice||0}" min="0" oninput="recalc()"></td>
+    <td style="font-weight:600;font-size:.85rem;" class="i-total">${fmt((data.quantity||1)*(data.unitPrice||0))}</td>
+    <td><button onclick="this.closest('tr').remove();recalc();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;">×</button></td>
+  `;
+  document.getElementById('items-body').appendChild(tr);
+}
+
+function recalc(){
+  let subtotal=0;
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const qty=parseFloat(tr.querySelector('.i-qty').value)||0;
+    const price=parseFloat(tr.querySelector('.i-price').value)||0;
+    const total=qty*price;
+    tr.querySelector('.i-total').textContent=fmt(total);
+    subtotal+=total;
+  });
+  const discount=parseFloat(document.getElementById('f-discount').value)||0;
+  const taxRate=parseFloat(document.getElementById('f-taxRate').value)||0;
+  const taxable=subtotal-discount;
+  const tax=taxable*(taxRate/100);
+  document.getElementById('t-subtotal').textContent=fmt(subtotal);
+  document.getElementById('t-tax').textContent=fmt(tax);
+  document.getElementById('t-total').textContent=fmt(taxable+tax);
+}
+
+function getItems(){
+  const items=[];
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const desc=tr.querySelector('.i-desc').value.trim();
+    const qty=parseFloat(tr.querySelector('.i-qty').value)||1;
+    const price=parseFloat(tr.querySelector('.i-price').value)||0;
+    if(desc)items.push({description:desc,quantity:qty,unitPrice:price,total:qty*price});
+  });
+  return items;
+}
+
+async function saveQuote(){
+  const body={
+    title:document.getElementById('f-title').value.trim(),
+    clientName:document.getElementById('f-clientName').value.trim(),
+    clientEmail:document.getElementById('f-clientEmail').value.trim(),
+    clientCompany:document.getElementById('f-clientCompany').value.trim(),
+    status:document.getElementById('f-status').value,
+    taxRate:parseFloat(document.getElementById('f-taxRate').value)||20,
+    discount:parseFloat(document.getElementById('f-discount').value)||0,
+    validUntil:document.getElementById('f-validUntil').value||undefined,
+    paymentLink:document.getElementById('f-paymentLink').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    conditions:document.getElementById('f-conditions').value.trim(),
+    items:getItems()
+  };
+  if(!body.title||!body.items.length)return toast('Titre et au moins une ligne requis','error');
+  const url=editingId?'/api/quotes/'+editingId:'/api/quotes';
+  const method=editingId?'PUT':'POST';
+  await fetch(url,{method,headers,body:JSON.stringify(body)});
+  toast('Devis sauvegardé');
+  closeModal();loadQuotes();
+}
+
+async function deleteQuote(){
+  if(!editingId||!confirm('Supprimer ce devis ?'))return;
+  await fetch('/api/quotes/'+editingId,{method:'DELETE',headers});
+  toast('Supprimé');closeModal();loadQuotes();
+}
+
+async function sendQuote(){
+  if(!editingId)return;
+  const res=await fetch('/api/quotes/'+editingId+'/send',{method:'POST',headers});
+  const data=await res.json();
+  toast(data.success?'Devis envoyé par email':'Echec envoi',data.success?'success':'error');
+  closeModal();loadQuotes();
+}
+
+function exportCSV(){window.location.href='/api/dashboard/export/invoices';}
+
+// AI Generation
+function openAI(){
+  ['ai-client','ai-service','ai-budget','ai-brief'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ai-loading').style.display='none';
+  document.getElementById('ai-go').style.display='flex';
+  document.getElementById('ai-modal').classList.add('show');
+}
+
+async function generateAI(){
+  const brief=document.getElementById('ai-brief').value.trim();
+  if(!brief)return toast('Décrivez le besoin du client','error');
+  document.getElementById('ai-loading').style.display='block';
+  document.getElementById('ai-go').style.display='none';
+  try{
+    const res=await fetch('/api/quotes/generate-ai',{method:'POST',headers,body:JSON.stringify({
+      brief,clientName:document.getElementById('ai-client').value,service:document.getElementById('ai-service').value,budget:document.getElementById('ai-budget').value
+    })});
+    const data=await res.json();
+    if(data.success&&data.proposal){
+      document.getElementById('ai-modal').classList.remove('show');
+      openCreate();
+      document.getElementById('f-title').value=data.proposal.title||'';
+      document.getElementById('f-clientName').value=document.getElementById('ai-client').value;
+      document.getElementById('f-notes').value=data.proposal.notes||'';
+      document.getElementById('f-conditions').value=data.proposal.conditions||'';
+      document.getElementById('items-body').innerHTML='';
+      (data.proposal.items||[]).forEach(i=>addItem(i));
+      recalc();
+      toast('Proposition générée par IA !');
+    } else {
+      toast(data.error||'Erreur IA','error');
+      document.getElementById('ai-loading').style.display='none';
+      document.getElementById('ai-go').style.display='flex';
+    }
+  }catch(e){toast('Erreur réseau','error');document.getElementById('ai-loading').style.display='none';document.getElementById('ai-go').style.display='flex';}
+}
+
+loadQuotes();
+</script>
+</body>
+</html>

@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, default: '' },
   avatar: { type: String, default: '' },
   isActive: { type: Boolean, default: true },
+  totpSecret: { type: String, default: '' },
+  totpEnabled: { type: Boolean, default: false },
   lastLogin: { type: Date },
   createdAt: { type: Date, default: Date.now }
 });

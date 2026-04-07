@@ -141,4 +141,44 @@ router.post('/subscribers', subscribeLimiter, honeypotCheck('website_url'), limi
   }
 });
 
+// --- EMAIL TRACKING ---
+
+// GET /api/campaigns/track/open/:campaignId — Tracking pixel (1x1 transparent GIF)
+router.get('/track/open/:campaignId', async (req, res) => {
+  try {
+    const campaign = await Campaign.findById(req.params.campaignId);
+    if (campaign) {
+      campaign.openCount = (campaign.openCount || 0) + 1;
+      campaign.lastOpenedAt = Date.now();
+      await campaign.save();
+    }
+  } catch (e) { /* silent */ }
+
+  // Return 1x1 transparent GIF
+  const pixel = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+  res.writeHead(200, {
+    'Content-Type': 'image/gif',
+    'Content-Length': pixel.length,
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  res.end(pixel);
+});
+
+// GET /api/campaigns/track/click/:campaignId — Click redirect tracker
+router.get('/track/click/:campaignId', async (req, res) => {
+  try {
+    const campaign = await Campaign.findById(req.params.campaignId);
+    if (campaign) {
+      campaign.clickCount = (campaign.clickCount || 0) + 1;
+      campaign.lastClickedAt = Date.now();
+      await campaign.save();
+    }
+  } catch (e) { /* silent */ }
+
+  const url = req.query.url || process.env.SITE_URL || 'https://www.pirabellabs.com';
+  res.redirect(302, url);
+});
+
 module.exports = router;

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Tracking | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.timer-bar{background:var(--card);border:1px solid var(--border);padding:1.25rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.timer-bar input,.timer-bar select{background:var(--bg);border:1px solid var(--border);padding:.6rem;color:var(--text);font-size:.85rem;outline:none;}
+.timer-display{font-family:var(--font-h);font-weight:700;font-size:1.5rem;color:var(--accent);min-width:100px;text-align:center;}
+.timer-btn{width:44px;height:44px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.timer-btn.start{background:var(--accent);color:#5c1900;}
+.timer-btn.stop{background:#e74c3c;color:#fff;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-box{background:var(--card);border:1px solid var(--border);padding:1rem 1.25rem;}
+.stat-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;}
+.stat-box .value{font-family:var(--font-h);font-weight:700;font-size:1.25rem;margin-top:.25rem;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar"><div class="sidebar-logo">PIRABEL LABS</div><nav class="sidebar-nav" id="sidebar-nav"></nav></aside>
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Time Tracking</div>
+    </div>
+    <div class="topbar-actions">
+      <button style="background:transparent;color:var(--text);border:1px solid var(--border);padding:.5rem 1rem;font-size:.8rem;cursor:pointer;" onclick="exportCSV()"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">download</span> Export</button>
+    </div>
+  </header>
+  <div class="content">
+    <!-- Timer -->
+    <div class="timer-bar">
+      <input id="t-desc" placeholder="Description de la tâche..." style="flex:1;min-width:200px;">
+      <select id="t-project" style="min-width:150px;"><option value="">Choisir projet...</option></select>
+      <div class="timer-display" id="timer-display">00:00:00</div>
+      <button class="timer-btn start" id="timer-btn" onclick="toggleTimer()"><span class="material-symbols-outlined">play_arrow</span></button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="label">Total aujourd'hui</div><div class="value" id="s-today">0h</div></div>
+      <div class="stat-box"><div class="label">Cette semaine</div><div class="value" id="s-week">0h</div></div>
+      <div class="stat-box"><div class="label">Ce mois</div><div class="value" id="s-month">0h</div></div>
+      <div class="stat-box"><div class="label">Montant facturable</div><div class="value" style="color:var(--accent);" id="s-billable">0 €</div></div>
+    </div>
+
+    <!-- Entries table -->
+    <div class="table-wrap">
+      <div class="table-header"><div class="table-title">Entrées récentes</div></div>
+      <table>
+        <thead><tr><th>Date</th><th>Projet</th><th>Description</th><th>Durée</th><th>Facturable</th><th></th></tr></thead>
+        <tbody id="entries"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+const token=localStorage.getItem('token');if(!token)window.location.href='/pirabel-admin-7x9k2m';
+const headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'};
+let timerRunning=false,timerStart=null,timerInterval=null,runningEntryId=null;
+
+document.getElementById('sidebar-nav').innerHTML=`
+<div class="sidebar-section">Principal</div><a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a><a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a><a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a><a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+<div class="sidebar-section">Commercial</div><a href="/quotes" class="sidebar-link"><span class="material-symbols-outlined">description</span> Devis</a><a href="/pipeline" class="sidebar-link"><span class="material-symbols-outlined">view_kanban</span> Pipeline CRM</a><a href="/email-templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates Email</a>
+<div class="sidebar-section">Gestion</div><a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a><a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a><a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a><a href="/time-tracking" class="sidebar-link active"><span class="material-symbols-outlined">timer</span> Time Tracking</a><a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+<div class="sidebar-section">Marketing</div><a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a><a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">group_add</span> Leads</a><a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a><a href="/reviews-admin" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis</a>
+<div class="sidebar-section">Finance</div><a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a><a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+<div class="sidebar-section">Système</div><a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>`;
+
+function toast(m,t='success'){const e=document.createElement('div');e.className='toast toast-'+t;e.textContent=m;document.getElementById('toasts').appendChild(e);setTimeout(()=>e.remove(),3000);}
+function fmtDuration(mins){const h=Math.floor(mins/60);const m=mins%60;return h+'h'+String(m).padStart(2,'0');}
+function fmtTime(s){const h=Math.floor(s/3600);const m=Math.floor((s%3600)/60);const sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
+
+async function loadProjects(){
+  const r=await fetch('/api/projects?limit=100',{headers});
+  const d=await r.json();
+  const sel=document.getElementById('t-project');
+  (d.projects||[]).forEach(p=>{const o=document.createElement('option');o.value=p._id;o.textContent=p.name;sel.appendChild(o);});
+}
+
+async function loadEntries(){
+  const r=await fetch('/api/time-entries?limit=50',{headers});
+  const d=await r.json();
+  const el=document.getElementById('entries');
+  el.innerHTML=(d.entries||[]).map(e=>`
+    <tr>
+      <td>${new Date(e.startTime).toLocaleDateString('fr-FR')}</td>
+      <td>${e.project?.name||'-'}</td>
+      <td>${(e.description||'').replace(/</g,'&lt;')}</td>
+      <td>${e.isRunning?'⏱ En cours':fmtDuration(e.duration||0)}</td>
+      <td>${e.billable?'✓':'-'}</td>
+      <td><button onclick="delEntry('${e._id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;">×</button></td>
+    </tr>
+  `).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--muted);">Aucune entrée</td></tr>';
+
+  // Stats
+  const today=new Date();today.setHours(0,0,0,0);
+  const weekStart=new Date(today);weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);
+  const monthStart=new Date(today.getFullYear(),today.getMonth(),1);
+  
+  const all=d.entries||[];
+  const todayMins=all.filter(e=>new Date(e.startTime)>=today).reduce((s,e)=>s+(e.duration||0),0);
+  const weekMins=all.filter(e=>new Date(e.startTime)>=weekStart).reduce((s,e)=>s+(e.duration||0),0);
+  document.getElementById('s-today').textContent=fmtDuration(todayMins);
+  document.getElementById('s-week').textContent=fmtDuration(weekMins);
+  document.getElementById('s-month').textContent=fmtDuration(d.totalMinutes||0);
+  document.getElementById('s-billable').textContent=Math.round(d.totalBillable||0).toLocaleString('fr-FR')+' €';
+
+  // Check for running timer
+  const running=all.find(e=>e.isRunning);
+  if(running){
+    runningEntryId=running._id;
+    timerRunning=true;
+    timerStart=new Date(running.startTime);
+    updateTimerDisplay();
+    timerInterval=setInterval(updateTimerDisplay,1000);
+    const btn=document.getElementById('timer-btn');
+    btn.classList.remove('start');btn.classList.add('stop');
+    btn.innerHTML='<span class="material-symbols-outlined">stop</span>';
+  }
+}
+
+function updateTimerDisplay(){
+  if(!timerStart)return;
+  const elapsed=Math.floor((Date.now()-timerStart.getTime())/1000);
+  document.getElementById('timer-display').textContent=fmtTime(elapsed);
+}
+
+async function toggleTimer(){
+  const btn=document.getElementById('timer-btn');
+  if(!timerRunning){
+    const project=document.getElementById('t-project').value;
+    if(!project)return toast('Choisissez un projet','error');
+    const r=await fetch('/api/time-entries/start',{method:'POST',headers,body:JSON.stringify({project,description:document.getElementById('t-desc').value})});
+    const entry=await r.json();
+    runningEntryId=entry._id;
+    timerStart=new Date();
+    timerRunning=true;
+    timerInterval=setInterval(updateTimerDisplay,1000);
+    btn.classList.remove('start');btn.classList.add('stop');
+    btn.innerHTML='<span class="material-symbols-outlined">stop</span>';
+    toast('Timer démarré');
+  } else {
+    if(runningEntryId)await fetch('/api/time-entries/'+runningEntryId+'/stop',{method:'POST',headers});
+    clearInterval(timerInterval);
+    timerRunning=false;runningEntryId=null;timerStart=null;
+    document.getElementById('timer-display').textContent='00:00:00';
+    btn.classList.remove('stop');btn.classList.add('start');
+    btn.innerHTML='<span class="material-symbols-outlined">play_arrow</span>';
+    toast('Timer arrêté');
+    loadEntries();
+  }
+}
+
+async function delEntry(id){if(!confirm('Supprimer ?'))return;await fetch('/api/time-entries/'+id,{method:'DELETE',headers});loadEntries();}
+function exportCSV(){window.location.href='/api/dashboard/export/projects';}
+
+loadProjects();loadEntries();
+</script>
+</body>
+</html>

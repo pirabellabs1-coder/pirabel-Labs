@@ -44,6 +44,11 @@
     { "src": "/candidates", "dest": "/api/index.js" },
     { "src": "/tasks", "dest": "/api/index.js" },
     { "src": "/calendar", "dest": "/api/index.js" },
+    { "src": "/quotes", "dest": "/api/index.js" },
+    { "src": "/pipeline", "dest": "/api/index.js" },
+    { "src": "/email-templates", "dest": "/api/index.js" },
+    { "src": "/time-tracking", "dest": "/api/index.js" },
+    { "src": "/reviews-admin", "dest": "/api/index.js" },
     { "src": "/health", "dest": "/api/index.js" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
@@ -60,6 +65,8 @@
     { "src": "/carrieres", "dest": "/carrieres.html" },
     { "src": "/candidature", "dest": "/candidature.html" },
     { "src": "/rendez-vous", "dest": "/rendez-vous.html" },
+    { "src": "/status", "dest": "/status.html" },
+    { "src": "/avis", "dest": "/avis.html" },
     { "src": "/guides$", "dest": "/guides/index.html" },
     { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
     { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },
@@ -71,5 +78,11 @@
     { "src": "/llms\\.txt", "dest": "/llms.txt" },
     { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },
     { "src": "/.well-known/(.*)", "dest": "/.well-known/$1" }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 8 * * *"
+    }
   ]
 }

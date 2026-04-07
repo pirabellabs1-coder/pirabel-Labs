@@ -18,7 +18,18 @@
   // ================================================================
   // CONFIGURATION
   // ================================================================
-  var API           = window.PIRABEL_API || 'http://localhost:3000';
+  // In production: use same origin as current page. In dev (localhost/127.0.0.1):
+  // fall back to explicit port if needed. Never hardcode localhost:3000.
+  var API = (function() {
+    if (window.PIRABEL_API) return window.PIRABEL_API;
+    var h = location.hostname;
+    if (h === 'localhost' || h === '127.0.0.1') {
+      // Same-origin on local dev — use current port (Express or Vercel dev).
+      return location.protocol + '//' + location.host;
+    }
+    // Production — same origin, always https
+    return location.origin;
+  })();
   var BATCH_INTERVAL = 5000;      // flush queue every 5 s
   var HEATMAP_SAMPLE = 500;       // mouse-position sample interval (ms)
   var SESSION_TTL    = 30 * 60 * 1000; // 30 min session timeout

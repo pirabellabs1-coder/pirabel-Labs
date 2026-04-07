@@ -81,7 +81,7 @@ router.post('/:id/email', auth, adminOrEmployee, async (req, res) => {
         <div style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${content || prospect.problem || 'Nous avons identifie des opportunites pour votre entreprise.'}</div>
       `,
       cta: 'Demander un audit gratuit',
-      ctaUrl: (process.env.SITE_URL || 'https://pirabellabs.com') + '/contact',
+      ctaUrl: (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/contact',
       stats: [
         { value: '+347%', label: 'Trafic moyen' },
         { value: '150+', label: 'Projets' },

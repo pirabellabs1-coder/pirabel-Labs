@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 // Socket.io for real-time chat
 const { Server } = require('socket.io');
-const io = new Server(server, { cors: { origin: ['https://pirabellabs.com', 'https://www.pirabellabs.com', 'http://localhost:8080', 'http://localhost:10000'], methods: ['GET', 'POST'] } });
+const io = new Server(server, { cors: { origin: ['https://www.pirabellabs.com', 'https://pirabellabs.com', 'http://localhost:8080', 'http://localhost:10000'], methods: ['GET', 'POST'] } });
 app.set('io', io);
 
 // Socket.io connection handling
@@ -64,8 +64,9 @@ app.use(securityHeaders);
 
 // CORS — restrict to known origins
 const ALLOWED_ORIGINS = [
-  process.env.SITE_URL || 'https://pirabellabs.com',
+  process.env.SITE_URL || 'https://www.pirabellabs.com',
   'https://www.pirabellabs.com',
+  'https://pirabellabs.com',
   'http://localhost:8080',
   'http://localhost:10000',
   'http://127.0.0.1:8080'

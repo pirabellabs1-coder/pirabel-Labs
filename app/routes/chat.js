@@ -551,9 +551,9 @@ router.post('/send-offer', offerLimiter, limitBody(15), async (req, res) => {
         <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">À très bientôt,<br><strong style="color:#FF5500;">L'équipe Pirabel Labs</strong></p>
       `,
       cta: 'Planifier un appel',
-      ctaUrl: (process.env.SITE_URL || 'https://pirabellabs.com') + '/contact.html?ref=offer',
+      ctaUrl: (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/contact.html?ref=offer',
       ctaSecondary: 'Voir nos résultats',
-      ctaSecondaryUrl: (process.env.SITE_URL || 'https://pirabellabs.com') + '/resultats.html'
+      ctaSecondaryUrl: (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/resultats.html'
     });
 
     await sendEmail(email, `${name}, votre proposition personnalisée — Pirabel Labs`, htmlContent);
@@ -627,9 +627,9 @@ router.post('/send-followup', followUpLimiter, limitBody(6), async (req, res) =>
         <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">L'équipe <strong style="color:#FF5500;">Pirabel Labs</strong></p>
       `,
       cta: 'Nous contacter',
-      ctaUrl: (process.env.SITE_URL || 'https://pirabellabs.com') + '/contact.html',
+      ctaUrl: (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/contact.html',
       ctaSecondary: 'Découvrir nos services',
-      ctaSecondaryUrl: (process.env.SITE_URL || 'https://pirabellabs.com') + '/services.html'
+      ctaSecondaryUrl: (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/services.html'
     });
 
     await sendEmail(email, `${name}, merci pour votre intérêt — Pirabel Labs`, htmlContent);

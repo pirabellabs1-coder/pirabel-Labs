@@ -110,7 +110,7 @@ router.post('/:id/credentials', auth, adminOrEmployee, async (req, res) => {
     client.user = user._id;
     await client.save();
 
-    const SITE = process.env.SITE_URL || 'https://pirabellabs.com';
+    const SITE = process.env.SITE_URL || 'https://www.pirabellabs.com';
 
     // Send credentials email
     const html = masterTemplate({
@@ -165,7 +165,7 @@ router.post('/:id/email', auth, adminOrEmployee, async (req, res) => {
         <div style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${content}</div>
       `,
       cta: 'Acceder a mon espace',
-      ctaUrl: `${process.env.SITE_URL || 'https://pirabellabs.com'}/espace-client-4p8w1n`
+      ctaUrl: `${process.env.SITE_URL || 'https://www.pirabellabs.com'}/espace-client-4p8w1n`
     });
 
     const success = await sendEmail(client.email, subject, html);
@@ -202,7 +202,7 @@ router.post('/bulk-email', auth, adminOrEmployee, async (req, res) => {
           <div style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${personalizedContent}</div>
         `,
         cta: 'Visiter notre site',
-        ctaUrl: process.env.SITE_URL || 'https://pirabellabs.com'
+        ctaUrl: process.env.SITE_URL || 'https://www.pirabellabs.com'
       });
       const ok = await sendEmail(client.email, subject, html);
       if (ok) sentCount++;

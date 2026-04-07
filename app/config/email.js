@@ -1,17 +1,21 @@
 const nodemailer = require('nodemailer');
 
+// Strip stray whitespace/newlines from env vars (Vercel sometimes keeps them)
+const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
+
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-  port: parseInt(process.env.SMTP_PORT) || 587,
+  host: clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com',
+  port: parseInt(clean(process.env.SMTP_PORT)) || 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+    user: clean(process.env.SMTP_USER),
+    pass: clean(process.env.SMTP_PASS)
   }
 });
 
-const FROM = () => `"Pirabel Labs" <${process.env.FROM_EMAIL || 'contact@pirabellabs.com'}>`;
-const SITE = () => process.env.SITE_URL || 'https://pirabellabs.com';
+const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
+const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
+const SITE = () => clean(process.env.SITE_URL) || 'https://www.pirabellabs.com';
 
 // ========================================
 // MASTER TEMPLATE — Premium Dark Theme
@@ -340,7 +344,7 @@ async function sendOTP(email, code) {
 
 async function notifyNewOrder(order) {
   return sendEmail(
-    process.env.ADMIN_EMAIL || 'contact@pirabellabs.com',
+    ADMIN_EMAIL(),
     `Nouvelle demande : ${order.name} - ${order.service}`,
     newOrderEmail(order)
   );

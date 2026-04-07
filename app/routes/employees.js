@@ -57,7 +57,7 @@ router.post('/:id/invite', auth, adminOnly, async (req, res) => {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employe non trouve' });
 
-    const SITE = process.env.SITE_URL || 'https://pirabellabs.com';
+    const SITE = process.env.SITE_URL || 'https://www.pirabellabs.com';
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: employee.email });

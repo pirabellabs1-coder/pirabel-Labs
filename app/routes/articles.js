@@ -150,7 +150,7 @@ router.get('/stats/popular', async (req, res) => {
 async function notifySubscribers(article) {
   try {
     const subscribers = await Subscriber.find({ isActive: true });
-    const SITE = process.env.SITE_URL || 'https://pirabellabs.com';
+    const SITE = process.env.SITE_URL || 'https://www.pirabellabs.com';
 
     const categoryLabels = { seo: 'SEO', web: 'Web', ia: 'IA', ads: 'Ads', social: 'Social', design: 'Design', video: 'Video', email: 'Email', content: 'Content', cro: 'CRO', general: 'Actualites' };
 

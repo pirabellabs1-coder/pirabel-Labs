@@ -79,6 +79,31 @@ router.get('/', auth, adminOrEmployee, async (req, res) => {
   }
 });
 
+// GET /api/orders/:id - Fetch single order (admin/employee)
+router.get('/:id', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate('assignedTo', 'name email')
+      .populate('convertedToClient', 'company contactName email')
+      .populate('convertedToProject', 'name status');
+    if (!order) return res.status(404).json({ error: 'Commande non trouvée' });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/orders/:id - Delete order (admin only)
+router.delete('/:id', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Commande non trouvée' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PUT /api/orders/:id
 router.put('/:id', auth, adminOrEmployee, async (req, res) => {
   try {

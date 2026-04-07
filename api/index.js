@@ -25,8 +25,9 @@ app.use(securityHeaders);
 
 // CORS — restrict to known origins
 const ALLOWED_ORIGINS = [
-  process.env.SITE_URL || 'https://pirabellabs.com',
+  process.env.SITE_URL || 'https://www.pirabellabs.com',
   'https://www.pirabellabs.com',
+  'https://pirabellabs.com',
   'http://localhost:8080',
   'http://localhost:10000',
   'http://127.0.0.1:8080'

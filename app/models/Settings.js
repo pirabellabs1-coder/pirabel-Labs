@@ -8,7 +8,7 @@ const settingsSchema = new mongoose.Schema({
   agencyAddress: { type: String, default: '' },
   agencyCity: { type: String, default: '' },
   agencyCountry: { type: String, default: '' },
-  agencyWebsite: { type: String, default: 'https://pirabellabs.com' },
+  agencyWebsite: { type: String, default: 'https://www.pirabellabs.com' },
   agencySiret: { type: String, default: '' },
   agencyTva: { type: String, default: '' },
   agencyLogo: { type: String, default: '' },

@@ -1252,5 +1252,118 @@ function csvEscape(val) {
   return s;
 }
 
+// ============================================================
+// GET /api/analytics/browsers — browser breakdown (standalone)
+// ============================================================
+router.get('/browsers', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const browsers = await Visitor.aggregate([
+      { $match: { lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true }, browser: { $exists: true, $ne: '' } } },
+      { $group: { _id: '$browser', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 }
+    ]);
+    res.json({ browsers: browsers.map(b => ({ browser: b._id || 'unknown', name: b._id || 'unknown', count: b.count })) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================================
+// GET /api/analytics/funnel — conversion funnel
+// ============================================================
+router.get('/funnel', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const visitMatch = { lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true } };
+    const eventMatch = { timestamp: { $gte: start, $lte: end } };
+
+    const [totalVisitors, engagedVisitors, interactions, leadEvents, conversions] = await Promise.all([
+      Visitor.countDocuments(visitMatch),
+      Visitor.countDocuments({ ...visitMatch, totalTimeSpent: { $gte: 10 } }),
+      AnalyticsEvent.distinct('visitorId', { ...eventMatch, category: { $in: ['click', 'scroll', 'engagement'] } }).then(a => a.length),
+      AnalyticsEvent.distinct('visitorId', { ...eventMatch, category: 'form' }).then(a => a.length),
+      Conversion.countDocuments({ timestamp: { $gte: start, $lte: end } }).catch(() => 0)
+    ]);
+
+    const steps = [
+      { label: 'Visiteurs', value: totalVisitors },
+      { label: 'Engagement', value: engagedVisitors },
+      { label: 'Interaction', value: interactions },
+      { label: 'Lead', value: leadEvents },
+      { label: 'Conversion', value: conversions }
+    ];
+    res.json({ steps });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================================
+// GET /api/analytics/scroll-depth — scroll depth histogram
+// ============================================================
+router.get('/scroll-depth', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const views = await PageView.find({
+      timestamp: { $gte: start, $lte: end },
+      scrollDepth: { $gt: 0 }
+    }).select('scrollDepth').lean();
+
+    const buckets = [
+      { depth: '0-10%', users: 0, min: 0, max: 10 },
+      { depth: '10-20%', users: 0, min: 10, max: 20 },
+      { depth: '20-30%', users: 0, min: 20, max: 30 },
+      { depth: '30-40%', users: 0, min: 30, max: 40 },
+      { depth: '40-50%', users: 0, min: 40, max: 50 },
+      { depth: '50-60%', users: 0, min: 50, max: 60 },
+      { depth: '60-70%', users: 0, min: 60, max: 70 },
+      { depth: '70-80%', users: 0, min: 70, max: 80 },
+      { depth: '80-90%', users: 0, min: 80, max: 90 },
+      { depth: '90-100%', users: 0, min: 90, max: 101 }
+    ];
+
+    for (const v of views) {
+      const d = v.scrollDepth || 0;
+      // Count this user in every bucket up to their max depth (cumulative histogram)
+      for (const b of buckets) {
+        if (d >= b.min) b.users++;
+      }
+    }
+
+    res.json({ depths: buckets.map(b => ({ depth: b.depth, users: b.users })) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================================
+// GET /api/analytics/behavior — aggregate click / rage / scroll stats
+// ============================================================
+router.get('/behavior', auth, adminOnly, async (req, res) => {
+  try {
+    const { start, end } = getDateRange(req.query);
+    const pageMatch = { timestamp: { $gte: start, $lte: end } };
+    const evtMatch = { timestamp: { $gte: start, $lte: end } };
+
+    const [clickAgg, rageAgg, deadAgg, scrollAgg] = await Promise.all([
+      AnalyticsEvent.countDocuments({ ...evtMatch, category: 'click' }),
+      PageView.aggregate([{ $match: pageMatch }, { $group: { _id: null, total: { $sum: '$rageClicks' } } }]),
+      PageView.aggregate([{ $match: pageMatch }, { $group: { _id: null, total: { $sum: '$deadClicks' } } }]),
+      PageView.aggregate([{ $match: { ...pageMatch, scrollDepth: { $gt: 0 } } }, { $group: { _id: null, avg: { $avg: '$scrollDepth' } } }])
+    ]);
+
+    res.json({
+      totalClicks: clickAgg || 0,
+      rageClicks: rageAgg[0]?.total || 0,
+      deadClicks: deadAgg[0]?.total || 0,
+      avgScroll: Math.round(scrollAgg[0]?.avg || 0)
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;

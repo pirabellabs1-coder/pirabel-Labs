@@ -75,7 +75,7 @@ router.post('/:id/send', auth, adminOnly, async (req, res) => {
         title: campaign.subject,
         body: `<div style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${personalizedContent}</div>`,
         cta: 'Visiter notre site',
-        ctaUrl: process.env.SITE_URL || 'https://pirabellabs.com'
+        ctaUrl: process.env.SITE_URL || 'https://www.pirabellabs.com'
       });
       const success = await sendEmail(r.email, campaign.subject, html);
       if (success) sentCount++;

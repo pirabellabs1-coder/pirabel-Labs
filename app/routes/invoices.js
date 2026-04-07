@@ -128,7 +128,7 @@ router.post('/:id/send', auth, adminOrEmployee, async (req, res) => {
     if (!invoice.client || !invoice.client.email) return res.status(400).json({ error: 'Client sans email' });
 
     const settings = await Settings.findOne({ key: 'main' }) || {};
-    const SITE = process.env.SITE_URL || 'https://pirabellabs.com';
+    const SITE = process.env.SITE_URL || 'https://www.pirabellabs.com';
 
     const itemsHTML = invoice.items.map(item => `
       <tr>

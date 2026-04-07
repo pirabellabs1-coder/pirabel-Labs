@@ -103,6 +103,11 @@ app.use('/api/notes', require('./routes/notes'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/prospects', require('./routes/prospects'));
 app.use('/api/revenue', require('./routes/revenue'));
+app.use('/api/recruitment', require('./routes/recruitment'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/search', require('./routes/search'));
+app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/appointments', require('./routes/appointments'));
 
 // ============================================
 // SECRET ACCESS URLs
@@ -137,6 +142,10 @@ app.get('/leads', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lead
 app.get('/logs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'logs.html')));
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, 'views', 'notes.html')));
 app.get('/prospects', (req, res) => res.sendFile(path.join(__dirname, 'views', 'prospects.html')));
+app.get('/recruitment', (req, res) => res.sendFile(path.join(__dirname, 'views', 'recruitment.html')));
+app.get('/candidates', (req, res) => res.sendFile(path.join(__dirname, 'views', 'candidates.html')));
+app.get('/tasks', (req, res) => res.sendFile(path.join(__dirname, 'views', 'tasks.html')));
+app.get('/calendar', (req, res) => res.sendFile(path.join(__dirname, 'views', 'calendar.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 .timeline{background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;}
@@ -49,10 +50,13 @@
     <div class="sidebar-section">Principal</div>
     <a href="/dashboard" class="sidebar-link active"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
     <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
     <div class="sidebar-section">Gestion</div>
     <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
     <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
     <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
     <div class="sidebar-section">Marketing</div>
     <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
     <a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
@@ -140,6 +144,43 @@
         </div>
       </div>
     </div>
+
+    <!-- GA-style Traffic Timeline -->
+    <div class="chart-wrap" style="margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <div class="chart-title" style="margin:0;">Évolution du trafic</div>
+          <div style="display:flex;gap:1.5rem;align-items:baseline;margin-top:.5rem;">
+            <div>
+              <div style="font-size:1.75rem;font-weight:800;font-family:var(--font-h);" id="ga-total">—</div>
+              <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(229,226,225,0.4);" id="ga-metric-label">visiteurs</div>
+            </div>
+            <div id="ga-delta" style="font-size:.85rem;font-weight:700;"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <select id="ga-metric" onchange="loadGAChart()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;font-size:.75rem;font-family:inherit;">
+            <option value="visitors">Visiteurs</option>
+            <option value="sessions">Sessions</option>
+            <option value="pageviews">Pages vues</option>
+            <option value="duration">Durée moyenne (s)</option>
+            <option value="bounce">Taux de rebond (%)</option>
+          </select>
+          <div style="display:flex;border:1px solid var(--border);">
+            <button onclick="setGAPeriod(7)" id="ga-p-7" class="ga-btn">7j</button>
+            <button onclick="setGAPeriod(30)" id="ga-p-30" class="ga-btn ga-active">30j</button>
+            <button onclick="setGAPeriod(90)" id="ga-p-90" class="ga-btn">90j</button>
+            <button onclick="setGAPeriod(365)" id="ga-p-365" class="ga-btn">1an</button>
+          </div>
+        </div>
+      </div>
+      <canvas id="gaChart" height="80"></canvas>
+    </div>
+    <style>
+    .ga-btn{background:transparent;border:none;color:var(--muted);padding:.4rem .8rem;font-size:.7rem;font-family:inherit;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;}
+    .ga-btn:hover{color:var(--text);}
+    .ga-btn.ga-active{background:var(--accent);color:#000;font-weight:700;}
+    </style>
 
     <!-- Charts Row 1: Revenue + Service Pie -->
     <div class="grid-2">
@@ -540,8 +581,136 @@ async function loadSalaryAlerts() {
   } catch (e) { console.error('Salary alerts error:', e); }
 }
 
+// === GA-style Traffic Chart ===
+let gaChartInstance = null;
+let currentGAPeriod = 30;
+
+function setGAPeriod(period) {
+  currentGAPeriod = period;
+  document.querySelectorAll('.ga-btn').forEach(b => b.classList.remove('ga-active'));
+  const btn = document.getElementById('ga-p-' + period);
+  if (btn) btn.classList.add('ga-active');
+  loadGAChart();
+}
+
+async function loadGAChart() {
+  try {
+    const metric = document.getElementById('ga-metric').value;
+    const granularity = currentGAPeriod >= 90 ? 'week' : 'day';
+    const r = await fetch('/api/analytics/timeline?metric=' + metric + '&granularity=' + granularity + '&period=' + currentGAPeriod, { credentials: 'include' });
+    const data = await r.json();
+
+    const labels = (data.current || []).map(p => {
+      const d = new Date(p.date);
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    });
+    const currentVals = (data.current || []).map(p => p.value);
+    const previousVals = (data.previous || []).map(p => p.value);
+
+    // Smooth values for sinusoidal effect using moving average
+    const smooth = (arr, window = 3) => arr.map((_, i, a) => {
+      const start = Math.max(0, i - window + 1);
+      const slice = a.slice(start, i + 1);
+      return slice.reduce((s, v) => s + v, 0) / slice.length;
+    });
+
+    // Update header total + delta
+    const total = data.currentTotal || 0;
+    const delta = data.delta || 0;
+    document.getElementById('ga-total').textContent = metric === 'duration'
+      ? Math.round(total) + 's'
+      : metric === 'bounce'
+        ? (data.current && data.current.length ? Math.round(currentVals.reduce((s,v)=>s+v,0) / Math.max(1,currentVals.length)) : 0) + '%'
+        : total.toLocaleString('fr-FR');
+
+    const metricLabels = { visitors: 'visiteurs', sessions: 'sessions', pageviews: 'pages vues', duration: 'durée moyenne', bounce: 'taux de rebond' };
+    document.getElementById('ga-metric-label').textContent = metricLabels[metric] || 'visiteurs';
+
+    const deltaEl = document.getElementById('ga-delta');
+    if (delta > 0) {
+      deltaEl.innerHTML = '<span style="color:#2ecc71;">↑ +' + delta.toFixed(1) + '%</span> <span style="color:rgba(229,226,225,0.4);font-weight:400;font-size:.7rem;">vs période précédente</span>';
+    } else if (delta < 0) {
+      deltaEl.innerHTML = '<span style="color:#e74c3c;">↓ ' + delta.toFixed(1) + '%</span> <span style="color:rgba(229,226,225,0.4);font-weight:400;font-size:.7rem;">vs période précédente</span>';
+    } else {
+      deltaEl.innerHTML = '<span style="color:rgba(229,226,225,0.4);">—</span>';
+    }
+
+    if (gaChartInstance) gaChartInstance.destroy();
+
+    const ctx = document.getElementById('gaChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+    gradient.addColorStop(0, 'rgba(255,85,0,0.35)');
+    gradient.addColorStop(1, 'rgba(255,85,0,0)');
+
+    gaChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Période actuelle',
+            data: smooth(currentVals),
+            borderColor: '#FF5500',
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.45,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#FF5500',
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2
+          },
+          {
+            label: 'Période précédente',
+            data: smooth(previousVals),
+            borderColor: 'rgba(229,226,225,0.25)',
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.45,
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            pointHoverRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(20,20,20,0.95)',
+            borderColor: 'rgba(255,85,0,0.4)',
+            borderWidth: 1,
+            titleColor: '#fff',
+            bodyColor: '#e5e2e1',
+            padding: 12,
+            cornerRadius: 0,
+            displayColors: true
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+            ticks: { color: 'rgba(229,226,225,0.4)', font: { size: 10 } },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  } catch (e) { console.error('GA chart error:', e); }
+}
+
 // Init all
 loadStats();
+loadGAChart();
 loadRevenueChart();
 loadServiceChart();
 loadClientGrowthChart();

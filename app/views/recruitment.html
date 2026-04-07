@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recrutement | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.job-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;transition:border-color .25s, transform .25s;cursor:pointer;}
+.job-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;}
+.job-title{font-family:var(--font-h);font-weight:700;font-size:1rem;margin-bottom:.25rem;}
+.job-meta{font-size:.75rem;color:var(--muted);margin-bottom:.75rem;}
+.job-stats{display:flex;gap:1rem;font-size:.75rem;color:var(--muted);margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);}
+.badge{display:inline-block;padding:.2rem .55rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;border:1px solid var(--border);}
+.badge-open{background:rgba(46,204,113,.1);color:#2ecc71;border-color:rgba(46,204,113,.3);}
+.badge-closed{background:rgba(231,76,60,.1);color:#e74c3c;border-color:rgba(231,76,60,.3);}
+.badge-draft{background:rgba(255,255,255,.05);color:var(--muted);}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:640px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-body{padding:1.5rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;font-family:var(--font-b);outline:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+.field textarea{min-height:100px;resize:vertical;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;}
+.btn-primary:hover{background:#ff6a1a;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-weight:600;font-size:.8rem;cursor:pointer;}
+.copy-link{display:flex;gap:.5rem;align-items:center;font-size:.7rem;color:var(--muted);margin-top:.5rem;}
+.copy-link button{background:transparent;border:1px solid var(--border);color:var(--accent);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link active"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="topbar-title">Recrutement</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouvelle offre</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
+      <div class="card" style="padding:1.25rem;">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Offres ouvertes</div>
+        <div style="font-size:1.75rem;font-weight:800;color:var(--accent);" id="stat-open">0</div>
+      </div>
+      <div class="card" style="padding:1.25rem;">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Total offres</div>
+        <div style="font-size:1.75rem;font-weight:800;" id="stat-total">0</div>
+      </div>
+      <div class="card" style="padding:1.25rem;">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Candidatures</div>
+        <div style="font-size:1.75rem;font-weight:800;" id="stat-apps">0</div>
+      </div>
+      <div class="card" style="padding:1.25rem;">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Voir candidats</div>
+        <a href="/candidates" class="btn-primary" style="display:inline-block;margin-top:.4rem;text-decoration:none;">Tableau</a>
+      </div>
+    </div>
+
+    <div class="job-grid" id="jobs-list"></div>
+  </div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal"><div class="modal">
+  <div class="modal-header">
+    <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Nouvelle offre</h3>
+    <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="field"><label>Titre du poste *</label><input id="f-title" placeholder="Développeur Full Stack"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="field"><label>Département</label><input id="f-department" placeholder="Engineering"></div>
+      <div class="field"><label>Localisation</label><input id="f-location" placeholder="Remote / Paris"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="field"><label>Type</label><select id="f-type"><option>CDI</option><option>CDD</option><option>Stage</option><option>Freelance</option><option>Alternance</option></select></div>
+      <div class="field"><label>Expérience</label><input id="f-experience" placeholder="3+ ans"></div>
+      <div class="field"><label>Salaire</label><input id="f-salary" placeholder="40-55k€"></div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="f-description" rows="5" placeholder="Décrivez le poste..."></textarea></div>
+    <div class="field"><label>Pré-requis (un par ligne)</label><textarea id="f-requirements" rows="4"></textarea></div>
+    <div class="field"><label>Avantages (un par ligne)</label><textarea id="f-benefits" rows="3"></textarea></div>
+    <div class="field"><label>Statut</label><select id="f-status"><option value="ouvert">Ouvert</option><option value="brouillon">Brouillon</option><option value="ferme">Fermé</option></select></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
+      <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn-primary" onclick="saveJob()">Enregistrer</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+let editingId = null;
+let SITE_URL = window.location.origin;
+
+async function api(url, opts = {}) {
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+async function loadJobs() {
+  const data = await api('/recruitment/jobs');
+  const stats = await api('/recruitment/stats');
+  document.getElementById('stat-open').textContent = stats.openJobs || 0;
+  document.getElementById('stat-total').textContent = stats.totalJobs || 0;
+  document.getElementById('stat-apps').textContent = stats.totalApps || 0;
+
+  const list = document.getElementById('jobs-list');
+  if (!data.jobs || !data.jobs.length) {
+    list.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);">Aucune offre. Cliquez sur "Nouvelle offre" pour commencer.</div>';
+    return;
+  }
+  list.innerHTML = data.jobs.map(j => `
+    <div class="job-card">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:.5rem;">
+        <div style="flex:1;">
+          <div class="job-title">${escapeHtml(j.title)}</div>
+          <div class="job-meta">${escapeHtml(j.department || '')} ${j.location ? '· ' + escapeHtml(j.location) : ''} · ${escapeHtml(j.type)}</div>
+        </div>
+        <span class="badge badge-${j.status === 'ouvert' ? 'open' : (j.status === 'ferme' ? 'closed' : 'draft')}">${j.status}</span>
+      </div>
+      <div class="job-stats">
+        <span><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">visibility</span> ${j.views || 0}</span>
+        <a href="/candidates?job=${j._id}" style="color:var(--accent);text-decoration:none;"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">person_add</span> ${j.applicationCount || 0} candidats</a>
+      </div>
+      <div class="copy-link">
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${SITE_URL}/candidature.html?slug=${j.slug}</span>
+        <button onclick="event.stopPropagation();copyLink('${j.slug}')">Copier</button>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+        <button class="btn-secondary" style="padding:.4rem .8rem;font-size:.7rem;flex:1;" onclick="editJob('${j._id}')">Éditer</button>
+        <button class="btn-secondary" style="padding:.4rem .8rem;font-size:.7rem;color:#e74c3c;border-color:rgba(231,76,60,.3);" onclick="deleteJob('${j._id}')">Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function copyLink(slug) {
+  navigator.clipboard.writeText(`${SITE_URL}/candidature.html?slug=${slug}`);
+  toast('Lien copié');
+}
+
+function openCreate() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Nouvelle offre';
+  ['f-title', 'f-department', 'f-location', 'f-experience', 'f-salary', 'f-description', 'f-requirements', 'f-benefits'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-type').value = 'CDI';
+  document.getElementById('f-status').value = 'ouvert';
+  document.getElementById('modal').classList.add('show');
+}
+
+async function editJob(id) {
+  const data = await api('/recruitment/jobs');
+  const job = data.jobs.find(j => j._id === id);
+  if (!job) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Éditer l\'offre';
+  document.getElementById('f-title').value = job.title || '';
+  document.getElementById('f-department').value = job.department || '';
+  document.getElementById('f-location').value = job.location || '';
+  document.getElementById('f-type').value = job.type || 'CDI';
+  document.getElementById('f-experience').value = job.experience || '';
+  document.getElementById('f-salary').value = job.salary || '';
+  document.getElementById('f-description').value = job.description || '';
+  document.getElementById('f-requirements').value = (job.requirements || []).join('\n');
+  document.getElementById('f-benefits').value = (job.benefits || []).join('\n');
+  document.getElementById('f-status').value = job.status || 'ouvert';
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+async function saveJob() {
+  const body = {
+    title: document.getElementById('f-title').value.trim(),
+    department: document.getElementById('f-department').value.trim(),
+    location: document.getElementById('f-location').value.trim(),
+    type: document.getElementById('f-type').value,
+    experience: document.getElementById('f-experience').value.trim(),
+    salary: document.getElementById('f-salary').value.trim(),
+    description: document.getElementById('f-description').value.trim(),
+    requirements: document.getElementById('f-requirements').value.split('\n').map(s => s.trim()).filter(Boolean),
+    benefits: document.getElementById('f-benefits').value.split('\n').map(s => s.trim()).filter(Boolean),
+    status: document.getElementById('f-status').value
+  };
+  if (!body.title) return toast('Titre requis', 'error');
+  const url = editingId ? '/recruitment/jobs/' + editingId : '/recruitment/jobs';
+  const method = editingId ? 'PUT' : 'POST';
+  const res = await api(url, { method, body: JSON.stringify(body) });
+  if (res.error) return toast(res.error, 'error');
+  toast(editingId ? 'Offre mise à jour' : 'Offre créée');
+  closeModal();
+  loadJobs();
+}
+
+async function deleteJob(id) {
+  if (!confirm('Supprimer cette offre et toutes ses candidatures ?')) return;
+  await api('/recruitment/jobs/' + id, { method: 'DELETE' });
+  toast('Supprimée');
+  loadJobs();
+}
+
+loadJobs();
+</script>
+</body>
+</html>

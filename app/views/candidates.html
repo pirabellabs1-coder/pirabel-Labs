@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidatures | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.kanban{display:grid;grid-template-columns:repeat(7,minmax(220px,1fr));gap:.75rem;overflow-x:auto;padding-bottom:1rem;}
+.kanban-col{background:var(--card);border:1px solid var(--border);min-height:60vh;display:flex;flex-direction:column;}
+.kanban-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;display:flex;justify-content:space-between;}
+.kanban-body{padding:.5rem;display:flex;flex-direction:column;gap:.5rem;flex:1;overflow-y:auto;max-height:75vh;}
+.app-card{background:var(--bg);border:1px solid var(--border);padding:.75rem;cursor:grab;transition:border-color .2s, transform .2s;}
+.app-card:hover{border-color:var(--accent);}
+.app-card.dragging{opacity:.5;}
+.app-name{font-weight:700;font-size:.8rem;margin-bottom:.2rem;}
+.app-meta{font-size:.65rem;color:var(--muted);}
+.stars{color:var(--accent);font-size:.7rem;margin-top:.3rem;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:680px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-body{padding:1.5rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
+.field textarea{min-height:120px;resize:vertical;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.btn-danger{background:transparent;color:#e74c3c;border:1px solid rgba(231,76,60,.3);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.detail-row{display:grid;grid-template-columns:140px 1fr;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.8rem;}
+.detail-row strong{color:var(--muted);text-transform:uppercase;font-size:.65rem;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <a href="/candidates" class="sidebar-link active"><span class="material-symbols-outlined">person_add</span> Candidatures</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="topbar-title">Candidatures</div>
+      <select id="filter-job" onchange="loadApps()" style="background:var(--card);border:1px solid var(--border);padding:.5rem .75rem;color:var(--text);font-size:.75rem;">
+        <option value="">Toutes les offres</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="kanban" id="kanban"></div>
+  </div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal"><div class="modal">
+  <div class="modal-header">
+    <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Candidat</h3>
+    <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div></div>
+
+<script>
+const STATUSES = [
+  { key: 'nouveau', label: 'Nouveau', color: '#3498db' },
+  { key: 'en_revue', label: 'En revue', color: '#9b59b6' },
+  { key: 'preselectionne', label: 'Présélectionné', color: '#e67e22' },
+  { key: 'entretien', label: 'Entretien', color: '#f39c12' },
+  { key: 'test', label: 'Test', color: '#1abc9c' },
+  { key: 'accepte', label: 'Accepté', color: '#2ecc71' },
+  { key: 'refuse', label: 'Refusé', color: '#e74c3c' }
+];
+
+let allApps = [];
+let currentApp = null;
+
+async function api(url, opts = {}) {
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+async function loadJobs() {
+  const data = await api('/recruitment/jobs');
+  const select = document.getElementById('filter-job');
+  const params = new URLSearchParams(window.location.search);
+  const preselect = params.get('job') || '';
+  (data.jobs || []).forEach(j => {
+    const opt = document.createElement('option');
+    opt.value = j._id;
+    opt.textContent = j.title;
+    if (j._id === preselect) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+async function loadApps() {
+  const job = document.getElementById('filter-job').value;
+  const url = '/recruitment/applications' + (job ? '?jobOffer=' + job : '');
+  const data = await api(url);
+  allApps = data.applications || [];
+  render();
+}
+
+function render() {
+  const kanban = document.getElementById('kanban');
+  kanban.innerHTML = STATUSES.map(s => {
+    const apps = allApps.filter(a => a.status === s.key);
+    return `
+      <div class="kanban-col">
+        <div class="kanban-head" style="border-top:3px solid ${s.color};">
+          <span>${s.label}</span><span style="background:${s.color};color:#000;padding:.1rem .4rem;font-size:.65rem;">${apps.length}</span>
+        </div>
+        <div class="kanban-body" data-status="${s.key}" ondragover="event.preventDefault()" ondrop="onDrop(event,'${s.key}')">
+          ${apps.map(a => `
+            <div class="app-card" draggable="true" data-id="${a._id}" ondragstart="onDragStart(event,'${a._id}')" onclick="openApp('${a._id}')">
+              <div class="app-name">${escapeHtml(a.name)}</div>
+              <div class="app-meta">${escapeHtml(a.jobTitle || '')}</div>
+              <div class="app-meta">${escapeHtml(a.email)}</div>
+              ${a.rating ? `<div class="stars">${'★'.repeat(a.rating)}${'☆'.repeat(5 - a.rating)}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function onDragStart(e, id) {
+  e.dataTransfer.setData('text/plain', id);
+  e.target.classList.add('dragging');
+}
+
+async function onDrop(e, status) {
+  e.preventDefault();
+  const id = e.dataTransfer.getData('text/plain');
+  await api('/recruitment/applications/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
+  toast('Statut mis à jour');
+  loadApps();
+}
+
+async function openApp(id) {
+  const app = await api('/recruitment/applications/' + id);
+  currentApp = app;
+  document.getElementById('modal-title').textContent = app.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-row"><strong>Poste</strong><div>${escapeHtml(app.jobTitle || '')}</div></div>
+    <div class="detail-row"><strong>Email</strong><div><a href="mailto:${app.email}" style="color:var(--accent);">${escapeHtml(app.email)}</a></div></div>
+    <div class="detail-row"><strong>Téléphone</strong><div>${escapeHtml(app.phone || '-')}</div></div>
+    <div class="detail-row"><strong>LinkedIn</strong><div>${app.linkedin ? `<a href="${escapeHtml(app.linkedin)}" target="_blank" style="color:var(--accent);">${escapeHtml(app.linkedin)}</a>` : '-'}</div></div>
+    <div class="detail-row"><strong>Portfolio</strong><div>${app.portfolio ? `<a href="${escapeHtml(app.portfolio)}" target="_blank" style="color:var(--accent);">${escapeHtml(app.portfolio)}</a>` : '-'}</div></div>
+    <div class="detail-row"><strong>CV</strong><div>${app.cvUrl ? `<a href="${escapeHtml(app.cvUrl)}" target="_blank" style="color:var(--accent);">${escapeHtml(app.cvFilename || 'Télécharger')}</a>` : '-'}</div></div>
+    <div class="field" style="margin-top:1rem;"><label>Lettre de motivation</label><div style="background:var(--bg);padding:.75rem;border:1px solid var(--border);font-size:.8rem;white-space:pre-wrap;">${escapeHtml(app.coverLetter || 'Aucune')}</div></div>
+    <div class="field"><label>Statut</label>
+      <select id="m-status">${STATUSES.map(s => `<option value="${s.key}" ${app.status === s.key ? 'selected' : ''}>${s.label}</option>`).join('')}</select>
+    </div>
+    <div class="field"><label>Note (1-5 étoiles)</label>
+      <select id="m-rating">${[0, 1, 2, 3, 4, 5].map(n => `<option value="${n}" ${app.rating === n ? 'selected' : ''}>${n} étoile${n > 1 ? 's' : ''}</option>`).join('')}</select>
+    </div>
+    <div class="field"><label>Notes internes</label><textarea id="m-notes">${escapeHtml(app.notes || '')}</textarea></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;">
+      <button class="btn-primary" onclick="saveApp()">Enregistrer</button>
+      <button class="btn-secondary" onclick="emailApp()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">mail</span> Email</button>
+      <button class="btn-danger" onclick="deleteApp()" style="margin-left:auto;">Supprimer</button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); currentApp = null; }
+
+async function saveApp() {
+  if (!currentApp) return;
+  await api('/recruitment/applications/' + currentApp._id, {
+    method: 'PUT',
+    body: JSON.stringify({
+      status: document.getElementById('m-status').value,
+      rating: parseInt(document.getElementById('m-rating').value),
+      notes: document.getElementById('m-notes').value
+    })
+  });
+  toast('Sauvegardé');
+  closeModal();
+  loadApps();
+}
+
+async function emailApp() {
+  if (!currentApp) return;
+  const subject = prompt('Sujet de l\'email :', `Votre candidature - ${currentApp.jobTitle}`);
+  if (!subject) return;
+  const body = prompt('Contenu :', `Bonjour ${currentApp.name},\n\n`);
+  if (!body) return;
+  const r = await api('/recruitment/applications/' + currentApp._id + '/email', { method: 'POST', body: JSON.stringify({ subject, body }) });
+  if (r.error) toast(r.error, 'error'); else toast('Email envoyé');
+}
+
+async function deleteApp() {
+  if (!currentApp) return;
+  if (!confirm('Supprimer cette candidature ?')) return;
+  await api('/recruitment/applications/' + currentApp._id, { method: 'DELETE' });
+  toast('Supprimée');
+  closeModal();
+  loadApps();
+}
+
+(async function init() {
+  await loadJobs();
+  await loadApps();
+})();
+</script>
+</body>
+</html>

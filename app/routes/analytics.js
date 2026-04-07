@@ -1554,5 +1554,118 @@ router.get('/behavior', auth, adminOnly, async (req, res) => {
   }
 });
 
+// ============================================================
+// GET /api/analytics/timeline — GA-style smooth timeline
+// Params: metric=visitors|sessions|pageviews|duration, granularity=day|week|month, period=days
+// Returns: { current: [{date, value}], previous: [{date, value}], delta }
+// ============================================================
+router.get('/timeline', auth, adminOnly, async (req, res) => {
+  try {
+    const metric = ['visitors', 'sessions', 'pageviews', 'duration', 'bounce'].includes(req.query.metric)
+      ? req.query.metric : 'visitors';
+    const granularity = ['day', 'week', 'month'].includes(req.query.granularity) ? req.query.granularity : 'day';
+    const period = parseInt(req.query.period) || 30;
+    const now = new Date();
+    const start = new Date(now.getTime() - period * 24 * 60 * 60 * 1000);
+    const prevEnd = new Date(start.getTime());
+    const prevStart = new Date(start.getTime() - period * 24 * 60 * 60 * 1000);
+
+    const dateFormat = granularity === 'month' ? '%Y-%m' : (granularity === 'week' ? '%Y-W%V' : '%Y-%m-%d');
+
+    async function aggregate(rangeStart, rangeEnd) {
+      let pipeline;
+      if (metric === 'visitors') {
+        pipeline = [
+          { $match: { firstSeen: { $gte: rangeStart, $lte: rangeEnd } } },
+          { $group: { _id: { $dateToString: { format: dateFormat, date: '$firstSeen' } }, value: { $sum: 1 } } },
+          { $sort: { _id: 1 } }
+        ];
+        return await Visitor.aggregate(pipeline);
+      }
+      if (metric === 'sessions') {
+        pipeline = [
+          { $match: { startedAt: { $gte: rangeStart, $lte: rangeEnd } } },
+          { $group: { _id: { $dateToString: { format: dateFormat, date: '$startedAt' } }, value: { $sum: 1 } } },
+          { $sort: { _id: 1 } }
+        ];
+        return await Session.aggregate(pipeline);
+      }
+      if (metric === 'pageviews') {
+        pipeline = [
+          { $match: { timestamp: { $gte: rangeStart, $lte: rangeEnd } } },
+          { $group: { _id: { $dateToString: { format: dateFormat, date: '$timestamp' } }, value: { $sum: 1 } } },
+          { $sort: { _id: 1 } }
+        ];
+        return await PageView.aggregate(pipeline);
+      }
+      if (metric === 'duration') {
+        pipeline = [
+          { $match: { startedAt: { $gte: rangeStart, $lte: rangeEnd }, duration: { $gt: 0 } } },
+          { $group: { _id: { $dateToString: { format: dateFormat, date: '$startedAt' } }, value: { $avg: '$duration' } } },
+          { $sort: { _id: 1 } }
+        ];
+        return await Session.aggregate(pipeline);
+      }
+      if (metric === 'bounce') {
+        pipeline = [
+          { $match: { startedAt: { $gte: rangeStart, $lte: rangeEnd } } },
+          { $group: {
+            _id: { $dateToString: { format: dateFormat, date: '$startedAt' } },
+            bounced: { $sum: { $cond: [{ $eq: ['$pageViewCount', 1] }, 1, 0] } },
+            total: { $sum: 1 }
+          } },
+          { $project: { _id: 1, value: { $multiply: [{ $divide: ['$bounced', { $max: ['$total', 1] }] }, 100] } } },
+          { $sort: { _id: 1 } }
+        ];
+        return await Session.aggregate(pipeline);
+      }
+      return [];
+    }
+
+    const [currentData, previousData] = await Promise.all([
+      aggregate(start, now),
+      aggregate(prevStart, prevEnd)
+    ]);
+
+    // Fill missing days with 0
+    function fillDays(data, rangeStart, rangeEnd) {
+      const map = new Map(data.map(d => [d._id, d.value]));
+      const filled = [];
+      const cursor = new Date(rangeStart);
+      cursor.setHours(0, 0, 0, 0);
+      while (cursor <= rangeEnd) {
+        let key;
+        if (granularity === 'month') {
+          key = cursor.getFullYear() + '-' + String(cursor.getMonth() + 1).padStart(2, '0');
+          filled.push({ date: key, value: Math.round(map.get(key) || 0) });
+          cursor.setMonth(cursor.getMonth() + 1);
+        } else if (granularity === 'week') {
+          const weekNum = Math.ceil((((cursor - new Date(cursor.getFullYear(), 0, 1)) / 86400000) + new Date(cursor.getFullYear(), 0, 1).getDay() + 1) / 7);
+          key = cursor.getFullYear() + '-W' + String(weekNum).padStart(2, '0');
+          filled.push({ date: key, value: Math.round(map.get(key) || 0) });
+          cursor.setDate(cursor.getDate() + 7);
+        } else {
+          key = cursor.toISOString().slice(0, 10);
+          filled.push({ date: key, value: Math.round(map.get(key) || 0) });
+          cursor.setDate(cursor.getDate() + 1);
+        }
+      }
+      return filled;
+    }
+
+    const current = fillDays(currentData, start, now);
+    const previous = fillDays(previousData, prevStart, prevEnd);
+
+    const currentTotal = current.reduce((s, p) => s + p.value, 0);
+    const previousTotal = previous.reduce((s, p) => s + p.value, 0);
+    const delta = previousTotal > 0 ? Math.round(((currentTotal - previousTotal) / previousTotal) * 1000) / 10 : 0;
+
+    res.json({ metric, granularity, period, current, previous, currentTotal, previousTotal, delta });
+  } catch (err) {
+    console.error('Timeline error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;

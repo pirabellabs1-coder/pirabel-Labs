@@ -1312,7 +1312,10 @@
   }
 
   // =====================================================================
-  //  SECTION 15 — MAIN CONVERSATION ENGINE
+  //  SECTION 15 — MAIN CONVERSATION ENGINE — backed by /api/chat/lea
+  //  Léa now runs on the server (Claude API + persona consultante).
+  //  This function only handles local STATE updates and forwards the
+  //  conversation to the backend, then renders the reply.
   // =====================================================================
   function processUserMessage(input) {
     STATE.messageCount++;
@@ -1320,264 +1323,89 @@
     STATE.conversationHistory.push({ role: 'user', text: input, ts: Date.now() });
     STATE.history.push({ role: 'user', text: input, ts: Date.now() });
 
-    // Extract all info from input
+    // Local extraction (keeps STATE.visitor / qualification in sync for UI + lead capture)
     extractAllInfo(input);
 
-    // Switch to tutoyement after first exchange
-    if (STATE.userMessageCount >= 2) STATE.tutoyement = true;
+    // Léa vouvoie toujours — pas de bascule en tutoiement
+    STATE.tutoyement = false;
 
-    // Determine current phase
+    // Determine current phase (kept for tracking + lead summary)
     STATE.phase = determinePhase();
 
-    var responses = [];
-    var buttons = [];
-    var hadQuestion = false;
+    // Build short conversation history for the API (last 16 turns max)
+    var apiHistory = STATE.conversationHistory.slice(-16).map(function (m) {
+      return {
+        role: m.role === 'bot' ? 'assistant' : 'user',
+        content: stripHtml(m.text || '').slice(0, 2000)
+      };
+    });
 
-    // --- Check for special captured info responses ---
-    if (STATE.waitingForEmail && detectEmail(input)) {
-      responses.push("Parfait, j'ai noté ton email ! " + (STATE.visitor.name ? STATE.visitor.name + ', ' : '') + "on t'enverra tout là-dessus.");
-      STATE.waitingForEmail = false;
-    }
-    if (STATE.waitingForPhone && detectPhone(input)) {
-      responses.push("Super, merci pour le numéro ! Notre équipe te recontacte rapidement.");
-      STATE.waitingForPhone = false;
-    }
-    if (STATE.waitingForName && detectName(input)) {
-      responses.push("Enchantée " + STATE.visitor.name + " ! C'est plus sympa comme ça.");
-      STATE.waitingForName = false;
-    }
+    // Snapshot of what we already know about the visitor
+    var visitorPayload = {
+      name: STATE.visitor.name || '',
+      company: STATE.visitor.company || '',
+      sector: STATE.visitor.sector || '',
+      email: STATE.visitor.email || '',
+      phone: STATE.visitor.phone || '',
+      website: STATE.visitor.website || ''
+    };
+    var qualPayload = {
+      budget: STATE.qualification.budget || '',
+      timeline: STATE.qualification.timeline || '',
+      decisionMaker: STATE.qualification.decisionMaker === true
+    };
 
-    // --- Detect objection ---
-    var objection = detectObjection(input);
-    if (objection) {
-      STATE.objectionCount++;
-      var objResp = pickUnused(OBJECTION_HANDLERS[objection], 'obj_' + objection);
-      responses.push(replaceName(objResp));
-      if (objection === 'tooExpensive') {
-        buttons = ['Audit gratuit sans engagement', 'Voir les formules adaptées', 'Parler à un expert'];
-      } else if (objection === 'willThinkAboutIt' || objection === 'notSure') {
-        buttons = ['Recevoir un recap par email', 'Audit gratuit sans engagement', 'Pas de souci, à bientôt'];
-      } else {
-        buttons = ['En savoir plus', 'Audit gratuit', 'Parler à un expert'];
-      }
-      finishBotTurn(responses, buttons, hadQuestion);
-      return;
-    }
+    // Show typing indicator immediately for better UX
+    showTyping();
 
-    // --- Detect intent ---
-    var intent = detectIntent(input);
-
-    // --- Handle by intent ---
-    if (intent === 'hello') {
-      // Always respond warmly to greetings
-      if (!STATE.hasGreeted) {
-        // First greeting — use contextual greeting
-        var helloGreeting = getContextualGreeting();
-        STATE.hasGreeted = true;
-        responses.push(replaceName(helloGreeting));
-        buttons = getContextualButtons();
-        finishBotTurn(responses, buttons, false);
-        return;
-      } else {
-        // Already greeted — respond warmly without re-doing the full greeting
-        responses.push(replaceName(pick([
-          "Re-coucou ! \ud83d\ude04 Comment je peux t'aider ?",
-          "Hey ! Je suis toujours là. Qu'est-ce que tu veux savoir ?",
-          "Salut ! Dis-moi, qu'est-ce qui t'intéresse ?",
-          "Coucou ! Pose-moi tes questions, je suis là pour toi \ud83d\ude0a"
-        ])));
-        buttons = getContextualButtons();
-        finishBotTurn(responses, buttons, false);
-        return;
-      }
-    } else if (intent === 'thanks' || intent === 'no') {
-      var isGoodbye = /au revoir|bye|à bientôt|bonne journée|bonne soirée|ciao|adieu/i.test(input);
-      if (isGoodbye || intent === 'no') {
-        responses.push(replaceName(pickUnused(GOODBYE_RESPONSES, 'goodbye')));
-        // Generate offer summary if enough info
-        if (STATE.userMessageCount >= 3 && (STATE.interests.length > 0 || STATE.problems.length > 0)) {
-          responses.push("Tiens, je t'ai préparé un petit recap de ce qu'on a discuté :");
-          responses.push(formatOfferHTML());
+    fetch('/api/chat/lea', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        conversationId: conversationId,
+        history: apiHistory,
+        visitor: visitorPayload,
+        qualification: qualPayload
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        hideTyping();
+        if (!data || !data.reply) {
+          finishBotTurn(["Je rencontre une difficulté technique. Pourriez-vous reformuler votre question, ou nous écrire à <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a> ?"], [], false);
+          return;
         }
-        buttons = [];
-        triggerEndOfConversation();
-        finishBotTurn(responses, buttons, false);
-        return;
-      }
-      responses.push(replaceName(pickUnused(GOODBYE_RESPONSES, 'goodbye')));
-      buttons = [];
-      finishBotTurn(responses, buttons, false);
-      return;
-    } else if (intent === 'yes') {
-      // Affirm and continue the conversation flow
-      if (STATE.phase === PHASES.CLOSING) {
-        if (!STATE.visitor.email) {
-          responses.push("Super ! Pour t'envoyer tout ça, c'est quoi ton email ?");
-          STATE.waitingForEmail = true;
-          hadQuestion = true;
-        } else if (!STATE.visitor.phone) {
-          responses.push("Top ! Et un numéro pour qu'on puisse te rappeler ?");
-          STATE.waitingForPhone = true;
-          hadQuestion = true;
-        } else {
-          responses.push("Parfait " + (STATE.visitor.name || '') + " ! Je transmets tout à notre équipe. Tu recevras un email sous 24h avec une proposition détaillée.");
-          responses.push(formatOfferHTML());
+
+        // Trigger closing flow when we have a hot lead and enough turns
+        var closingDue = (
+          STATE.qualification.score >= 55 &&
+          STATE.userMessageCount >= 5 &&
+          !STATE.closingAttempted &&
+          (STATE.visitor.email || STATE.visitor.phone)
+        );
+
+        var buttons = Array.isArray(data.buttons) ? data.buttons : [];
+
+        // Auto-end conversation if Léa has captured enough and we're past 5 turns
+        if (closingDue) {
+          STATE.closingAttempted = true;
           triggerEndOfConversation();
-          sendOffer();
         }
-        buttons = [];
-        finishBotTurn(responses, buttons, hadQuestion);
-        return;
-      }
-      responses.push(pick([
-        "Super ! Alors dis-moi en plus, je suis toute ouie.",
-        "Génial ! On continue. Qu'est-ce que tu voudrais savoir ?",
-        "Parfait ! Pose-moi tes questions ou parle-moi de ton projet."
-      ]));
-      buttons = ['Voir les services', 'J\'ai un projet', 'Tarifs'];
-    } else if (intent && TOPIC_RESPONSES[intent]) {
-      // Service-specific topic
-      var topicResp = pickUnused(TOPIC_RESPONSES[intent], 'topic_' + intent);
-      responses.push(replaceName(topicResp));
 
-      if (STATE.topicsDiscussed.indexOf(intent) === -1) {
-        STATE.topicsDiscussed.push(intent);
-      }
-      if (SERVICES[intent] && STATE.interests.indexOf(SERVICES[intent].name) === -1) {
-        STATE.interests.push(SERVICES[intent].name);
-      }
-
-      // Add relevant case study sometimes
-      if (Math.random() > 0.5) {
-        var relevantCase = CASE_STUDIES.find(function (cs) {
-          return cs.services.indexOf(intent) !== -1;
-        });
-        if (relevantCase) {
-          responses.push("D'ailleurs, " + relevantCase.detail.charAt(0).toLowerCase() + relevantCase.detail.slice(1) + " Résultat : <strong>" + relevantCase.result + "</strong>.");
-        }
-      }
-
-      // Buttons based on service
-      buttons = ['Tarif ' + (SERVICES[intent] ? SERVICES[intent].name : '') + ' ?', 'Audit gratuit', 'J\'ai un projet'];
-      STATE.lastTopicId = intent;
-
-    } else if (intent === 'pricing') {
-      var pricingHtml = "Voici nos fourchettes de prix :<br><br>";
-      var serviceKeys = ['seo', 'web', 'ia', 'ads', 'social', 'branding', 'email', 'video', 'content', 'funnel', 'consulting', 'formation'];
-      serviceKeys.forEach(function (sk) {
-        var svc = SERVICES[sk];
-        pricingHtml += svc.icon + ' <strong>' + svc.name + '</strong> : ' + svc.priceRange + '<br>';
+        finishBotTurn([data.reply], buttons, false);
+      })
+      .catch(function (err) {
+        hideTyping();
+        finishBotTurn(["Désolée, je n'arrive pas à vous répondre pour le moment. Vous pouvez nous joindre directement à <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a> et nous vous reviendrons sous 24 heures."], [], false);
       });
-      pricingHtml += "<br>Pour un devis précis, décris-moi ton projet et je te fais une estimation personnalisée !";
-      responses.push(pricingHtml);
-      buttons = ['J\'ai un projet', 'Audit gratuit', 'Parler à un expert'];
-
-    } else if (intent === 'process') {
-      responses.push(pickUnused(PROCESS_RESPONSES, 'process'));
-      buttons = ['Planifier un appel', 'Obtenir un devis'];
-
-    } else if (intent === 'results') {
-      var resultsHtml = "Nos résultats parlent d'eux-mêmes :<br><br>";
-      CASE_STUDIES.slice(0, 5).forEach(function (cs) {
-        resultsHtml += "&#10003; <strong>" + cs.sector + "</strong> : " + cs.result + "<br>";
-      });
-      resultsHtml += "<br>Et j'en ai plein d'autres ! Tu veux des détails sur un secteur en particulier ?";
-      responses.push(resultsHtml);
-      buttons = ['Mon secteur ?', 'Obtenir un devis', 'Planifier un appel'];
-
-    } else if (intent === 'whyUs') {
-      responses.push(pickUnused(WHY_US_RESPONSES, 'whyUs'));
-      buttons = ['Voir les résultats', 'Services', 'Planifier un appel'];
-
-    } else if (intent === 'guarantee') {
-      responses.push("On ne garantit pas des chiffres précis parce que chaque marché est différent. Mais ce qu'on garantit, c'est notre méthode, notre transparence et notre engagement à 100%. Si ça marche pas, on ajuste jusqu'à ce que ça marche. Et l'audit initial est gratuit et sans engagement.");
-      buttons = ['Audit gratuit', 'Voir les résultats', 'Parler à un expert'];
-
-    } else if (intent === 'contact') {
-      responses.push("Tu peux nous joindre de plein de façons :<br><br>&#128231; <strong>Email</strong> : <a href='mailto:" + CONFIG.contactEmail + "'>" + CONFIG.contactEmail + "</a><br>&#128172; <strong>WhatsApp</strong> : <a href='" + CONFIG.whatsAppLink + "' target='_blank'>" + CONFIG.contactWhatsApp + "</a><br>&#128221; <strong>Formulaire</strong> : <a href='/contact'>page contact</a><br><br>Ou bien continue à discuter avec moi, je peux déjà t'orienter !");
-      buttons = ['Formulaire de contact', 'WhatsApp', 'J\'ai un projet'];
-
-    } else if (intent === 'about') {
-      responses.push("<strong>Pirabel Labs</strong>, c'est une agence digitale 360 avec une équipe multidisciplinaire : dev, design, marketing, data, IA.<br><br>On est présents à " + CONFIG.cities + ".<br><br>Notre mission : rendre le digital accessible et rentable pour chaque entreprise. +150 projets livrés, clients dans 10+ pays.");
-      buttons = ['Services', 'Résultats', 'Contact'];
-
-    } else if (intent === 'timeline') {
-      responses.push("Les délais dépendent du projet, mais en général :<br><br>&#9889; <strong>Logo</strong> : 1-2 semaines<br>&#127760; <strong>Site vitrine</strong> : 2-4 semaines<br>&#128722; <strong>E-commerce</strong> : 4-8 semaines<br>&#128226; <strong>Setup Ads</strong> : 3-5 jours<br>&#128269; <strong>Audit SEO</strong> : 3-5 jours<br>&#129302; <strong>Chatbot IA</strong> : 2-3 semaines<br><br>Et si c'est urgent, on a des solutions pour accélérer !");
-      buttons = ['J\'ai un projet urgent', 'Obtenir un devis'];
-
-    } else if (intent === 'tools') {
-      responses.push("On utilise les meilleurs outils du marché :<br><br>&#128269; SEO : Semrush, Ahrefs, Screaming Frog<br>&#128202; Analytics : GA4, GTM, Looker Studio<br>&#127912; Design : Figma, Adobe Suite<br>&#128231; Email : Brevo, Mailchimp, HubSpot<br>&#129302; IA : Make, Zapier, n8n, OpenAI<br>&#128187; Dev : React, Node.js, WordPress, Shopify<br><br>On choisit toujours le plus adapté à ton projet.");
-      buttons = ['En savoir plus', 'Obtenir un devis'];
-
-    } else if (intent === 'tech') {
-      responses.push("Notre stack technique :<br><br>&#128187; Frontend : React, Vue.js, Next.js, HTML/CSS/JS<br>&#9881; Backend : Node.js, Express, PHP, Laravel, Python<br>&#128230; CMS : WordPress, Shopify, Webflow<br>&#128451; BDD : MongoDB, MySQL, PostgreSQL<br>&#9729; Cloud : Vercel, AWS, DigitalOcean<br>&#128274; Sécurité : SSL, RGPD, OAuth<br><br>On maîtrise tout et on choisit la techno la plus adaptée.");
-      buttons = ['Projet web', 'Parler à un dev'];
-
-    } else if (intent === 'cities') {
-      responses.push("Pirabel Labs est présent partout :<br><br>&#127467;&#127479; France : Paris, Lyon, Marseille<br>&#127463;&#127466; Belgique : Bruxelles<br>&#127464;&#127462; Canada : Montréal<br>&#127474;&#127462; Maroc : Casablanca<br>&#127480;&#127475; Sénégal : Dakar<br>&#127464;&#127470; Côte d'Ivoire : Abidjan<br>&#127463;&#127471; Bénin : Cotonou<br>&#127481;&#127475; Tunisie : Tunis<br><br>Et on travaille à distance avec des clients partout dans le monde !");
-      buttons = ['Services', 'Obtenir un devis'];
-
-    } else if (input.length > 30 && /mon|ma|notre|je|nous|j.|on a|chez|besoin|cherche|voudr|souhaite|aimerais|voulais/i.test(input)) {
-      // User is describing their project — act as consultant
-      var hasProblems = STATE.problems.length > 0;
-      if (hasProblems) {
-        responses.push(replaceName(pickUnused(DISCOVERY_RESPONSES.empathize, 'empathize')));
-      } else {
-        responses.push(replaceName(pickUnused(DISCOVERY_RESPONSES.projectDescription, 'projectDescription')));
-      }
-      buttons = ['Obtenir un devis', 'Audit gratuit', 'Planifier un appel'];
-
-    } else if (responses.length === 0 && normalize(input).split(/\s+/).length <= 2 && !intent) {
-      // Short or ambiguous message — ask for clarification
-      var shortResp = pickUnused([
-        "Dis-moi en plus ! Quel est ton projet ou ta problématique ?",
-        "Peux-tu m'en dire un peu plus ? Je suis là pour t'aider \ud83d\ude0a",
-        "Je t'écoute ! N'hésite pas à détailler ton besoin."
-      ], 'shortMsg');
-      responses.push(shortResp);
-      buttons = ['Je veux plus de clients', 'J\'ai besoin d\'un site web', 'Je veux être visible sur Google'];
-
-    } else if (responses.length === 0) {
-      // Default fallback
-      responses.push(replaceName(pickUnused(DEFAULT_RESPONSES, 'default')));
-      buttons = DEFAULT_BUTTONS.slice();
-    }
-
-    // --- Add phase-appropriate follow-up question ---
-    if (Math.random() > 0.35) {
-      var followUp = getPhaseQuestion();
-      if (followUp) {
-        responses.push(replaceName(followUp));
-        hadQuestion = true;
-      }
-    }
-
-    // --- Check if it's time to close ---
-    if (STATE.phase === PHASES.CLOSING && !STATE.closingAttempted && STATE.userMessageCount >= 5) {
-      STATE.closingAttempted = true;
-      STATE.closingCount++;
-      var level = STATE.qualification.level;
-      var closingScript = replaceName(pickUnused(CLOSING_RESPONSES[level], 'closing_' + level));
-      responses.push(closingScript);
-      if (level === 'hot' || level === 'warm') {
-        buttons = ['Oui, je veux un appel !', 'Envoyez-moi un devis', 'Je vais réfléchir'];
-      } else {
-        buttons = ['Recevoir un recap par email', 'Audit gratuit', 'Peut-être plus tard'];
-      }
-    }
-
-    // --- Check if we should présent solution ---
-    if (STATE.phase === PHASES.SOLUTION && STATE.interests.length > 0 && !STATE.offerGenerated && STATE.userMessageCount >= 4) {
-      if (Math.random() > 0.6 || STATE.userMessageCount >= 7) {
-        responses.push(replaceName(pickUnused(SOLUTION_INTROS, 'solutionIntro')));
-        responses.push(formatOfferHTML());
-        STATE.offerGenerated = true;
-        buttons = ['Ça m\'intéresse !', 'Planifier un appel', 'Ajuster la proposition'];
-      }
-    }
-
-    finishBotTurn(responses, buttons, hadQuestion);
   }
+
+  // Strip HTML tags so we never send markup to the LLM
+  function stripHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
 
   function finishBotTurn(responses, buttons, hadQuestion) {
     // Queue all responses with delays
@@ -1650,23 +1478,6 @@
           visitorEmail: email,
           content: content,
           sender: sender
-        })
-      }).catch(function () { });
-    } catch (e) { }
-  }
-
-  function sendBotReplyToAPI(userMessage) {
-    if (!conversationId) return;
-    try {
-      fetch('/api/chat/bot-reply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conversationId: conversationId,
-          message: userMessage,
-          visitor: STATE.visitor,
-          phase: STATE.phase,
-          score: STATE.qualification.score
         })
       }).catch(function () { });
     } catch (e) { }
@@ -2128,7 +1939,6 @@
 
     addUserMessage(text);
     saveMsg(conversationId, STATE.visitor.name, STATE.visitor.email, text, 'visitor');
-    sendBotReplyToAPI(text);
     trackEvent('chat_message', { sender: 'user', phase: STATE.phase, length: text.length });
 
     processUserMessage(text);

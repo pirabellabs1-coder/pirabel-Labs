@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ============================================================
@@ -1196,13 +1197,9 @@ async function loadOverview() {
 }
 
 function generateSparkData(baseValue, isPercent) {
-  const points = [];
-  const count = 14;
-  for (let i = 0; i < count; i++) {
-    const variance = isPercent ? (Math.random() - 0.5) * 15 : (Math.random() - 0.5) * baseValue * 0.3;
-    points.push(Math.max(0, baseValue + variance));
-  }
-  return points;
+  // Return zero-filled series when API has no real data, to avoid fake-looking
+  // random sparklines that mislead the admin into thinking traffic exists.
+  return new Array(14).fill(0);
 }
 
 /* ============================================================
@@ -1529,11 +1526,11 @@ function renderEngagementRadar(data) {
   const ctx = document.getElementById('engagementRadar').getContext('2d');
 
   const radarData = data || {
-    temps: 65,
-    scroll: 55,
-    clics: 70,
-    pagesSession: 50,
-    retour: 40
+    temps: 0,
+    scroll: 0,
+    clics: 0,
+    pagesSession: 0,
+    retour: 0
   };
 
   chartInstances.engagement = new Chart(ctx, {

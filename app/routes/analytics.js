@@ -621,12 +621,37 @@ router.get('/realtime', auth, adminOnly, async (req, res) => {
       pageMap[pv.page].activeVisitors.add(pv.visitorId);
     });
     const currentPages = Object.values(pageMap).map(p => ({
-      page: p.page, title: p.title, activeVisitors: p.activeVisitors.size
+      page: p.page,
+      path: p.page,
+      title: p.title,
+      activeVisitors: p.activeVisitors.size,
+      visitors: p.activeVisitors.size,
+      count: p.activeVisitors.size
     })).sort((a, b) => b.activeVisitors - a.activeVisitors);
+
+    // Recent page views (raw stream, dedupe by visitor+page)
+    const seen = new Set();
+    const recentPageViews = [];
+    for (const pv of recentPages) {
+      const k = pv.visitorId + '|' + pv.page;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      recentPageViews.push({
+        page: pv.page,
+        path: pv.page,
+        title: pv.title || pv.page,
+        time: pv.timestamp
+      });
+      if (recentPageViews.length >= 20) break;
+    }
 
     res.json({
       activeVisitors: activeCount,
+      visitors: activeCount,
       currentPages,
+      activePages: currentPages,
+      recentPageViews,
+      recentViews: recentPageViews,
       deviceBreakdown: deviceBreakdown.map(d => ({ device: d._id || 'unknown', count: d.count }))
     });
   } catch (err) {
@@ -641,13 +666,22 @@ router.get('/overview', auth, adminOnly, async (req, res) => {
   try {
     const { start, end } = getDateRange(req.query);
 
-    const [totalVisitors, newVisitors, totalPageViews, totalEvents, totalSessions, totalConversions] = await Promise.all([
+    // Same-length previous period for trend deltas
+    const periodMs = end.getTime() - start.getTime();
+    const prevStart = new Date(start.getTime() - periodMs);
+    const prevEnd = new Date(start.getTime());
+
+    const [totalVisitors, newVisitors, totalPageViews, totalEvents, totalSessions, totalConversions,
+           prevVisitors, prevPageViews, prevNewVisitors] = await Promise.all([
       Visitor.countDocuments({ lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true } }),
       Visitor.countDocuments({ firstSeen: { $gte: start, $lte: end }, isBot: { $ne: true } }),
       PageView.countDocuments({ timestamp: { $gte: start, $lte: end } }),
       AnalyticsEvent.countDocuments({ timestamp: { $gte: start, $lte: end } }),
       Session.countDocuments({ startedAt: { $gte: start, $lte: end } }),
-      Conversion.countDocuments({ timestamp: { $gte: start, $lte: end } })
+      Conversion.countDocuments({ timestamp: { $gte: start, $lte: end } }),
+      Visitor.countDocuments({ lastSeen: { $gte: prevStart, $lte: prevEnd }, isBot: { $ne: true } }),
+      PageView.countDocuments({ timestamp: { $gte: prevStart, $lte: prevEnd } }),
+      Visitor.countDocuments({ firstSeen: { $gte: prevStart, $lte: prevEnd }, isBot: { $ne: true } })
     ]);
 
     // Avg session duration
@@ -688,7 +722,45 @@ router.get('/overview', auth, adminOnly, async (req, res) => {
       { $group: { _id: null, avg: { $avg: '$timeOnPage' } } }
     ]);
 
+    // Daily sparkline series (real data, not random)
+    const dailySeries = await PageView.aggregate([
+      { $match: { timestamp: { $gte: start, $lte: end } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
+          pageViews: { $sum: 1 },
+          visitors: { $addToSet: '$visitorId' }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    const dailyVisitors  = dailySeries.map(d => d.visitors.length);
+    const dailyPageViews = dailySeries.map(d => d.pageViews);
+
+    // Daily new visitors series
+    const dailyNewSeries = await Visitor.aggregate([
+      { $match: { firstSeen: { $gte: start, $lte: end }, isBot: { $ne: true } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$firstSeen' } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    const dailyNewVisitors = dailyNewSeries.map(d => d.count);
+
+    // Helper: percent delta vs previous period
+    const pct = (cur, prev) => {
+      if (!prev) return cur > 0 ? 100 : 0;
+      return parseFloat((((cur - prev) / prev) * 100).toFixed(1));
+    };
+
+    const avgTimeVal = Math.round(avgTimeOnPage[0]?.avg || 0);
+    const avgDurationVal = Math.round(avgDuration[0]?.avg || 0);
+
     res.json({
+      // Original keys
       totalVisitors,
       uniqueVisitors: totalVisitors,
       newVisitors,
@@ -696,13 +768,35 @@ router.get('/overview', auth, adminOnly, async (req, res) => {
       totalPageViews,
       totalEvents,
       totalSessions,
-      avgSessionDuration: Math.round(avgDuration[0]?.avg || 0),
+      avgSessionDuration: avgDurationVal,
       avgPagesPerSession: parseFloat((avgPagesPerSession[0]?.avg || 0).toFixed(1)),
-      avgTimeOnPage: Math.round(avgTimeOnPage[0]?.avg || 0),
+      avgTimeOnPage: avgTimeVal,
       bounceRate: parseFloat(bounceRate.toFixed(1)),
       engagementRate: parseFloat(engagementRate.toFixed(1)),
       totalConversions,
-      topConversions: topConversions.map(c => ({ goal: c._id, count: c.count, value: c.totalValue }))
+      topConversions: topConversions.map(c => ({ goal: c._id, count: c.count, value: c.totalValue })),
+      // Aliases expected by frontend
+      pageViews: totalPageViews,
+      avgTime: avgTimeVal,
+      visitors: totalVisitors,
+      // Real sparklines (frontend was generating random fillers)
+      dailyVisitors,
+      dailyPageViews,
+      dailyNewVisitors,
+      sparklines: {
+        visitors: dailyVisitors,
+        pageViews: dailyPageViews,
+        newVisitors: dailyNewVisitors
+      },
+      // Trend deltas
+      trends: {
+        visitors: pct(totalVisitors, prevVisitors),
+        pageViews: pct(totalPageViews, prevPageViews),
+        newVisitors: pct(newVisitors, prevNewVisitors)
+      },
+      visitorsTrend: pct(totalVisitors, prevVisitors),
+      pageViewsTrend: pct(totalPageViews, prevPageViews),
+      newVisitorsTrend: pct(newVisitors, prevNewVisitors)
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -747,7 +841,19 @@ router.get('/visitors-chart', auth, adminOnly, async (req, res) => {
       data.forEach((d, i) => { d.trend = Math.round(intercept + slope * i); });
     }
 
-    res.json(data);
+    // Provide both formats: array (legacy) AND keyed object (new frontend)
+    const labels = data.map(d => d.date);
+    const visitorsArr = data.map(d => d.visitors);
+    const pageViewsArr = data.map(d => d.pageViews);
+
+    // Attach the keyed properties on the array itself so both
+    // `data.map(...)` AND `data.labels` work in the frontend.
+    Object.defineProperty(data, 'labels', { value: labels, enumerable: false });
+    Object.defineProperty(data, 'visitors', { value: visitorsArr, enumerable: false });
+    Object.defineProperty(data, 'pageViews', { value: pageViewsArr, enumerable: false });
+
+    // But JSON.stringify won't serialize non-enumerable props, so wrap:
+    res.json({ labels, visitors: visitorsArr, pageViews: pageViewsArr, days: data });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -819,43 +925,74 @@ router.get('/top-referrers', auth, adminOnly, async (req, res) => {
     const { start, end } = getDateRange(req.query);
     const limit = parseInt(req.query.limit, 10) || 20;
 
-    const referrers = await Session.aggregate([
-      { $match: { startedAt: { $gte: start, $lte: end }, referrer: { $ne: '' } } },
+    // Build a regex that excludes self-referrals (internal navigation).
+    // Hosts are read from env so the same code works in dev and prod.
+    const selfHosts = [];
+    try {
+      if (process.env.SITE_URL) selfHosts.push(new URL(process.env.SITE_URL).hostname.replace(/^www\./, ''));
+    } catch (_) {}
+    selfHosts.push('pirabellabs.com', 'localhost', '127.0.0.1');
+    const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const selfHostRegex = new RegExp(selfHosts.map(escapeRe).join('|'), 'i');
+
+    const grouped = await Session.aggregate([
+      { $match: { startedAt: { $gte: start, $lte: end }, referrer: { $nin: [null, ''] } } },
       {
         $group: {
           _id: '$referrer',
           category: { $first: '$referrerCategory' },
           visits: { $sum: 1 },
+          uniqueVisitors: { $addToSet: '$visitorId' },
           bounces: { $sum: { $cond: ['$isBounce', 1, 0] } },
           totalDuration: { $sum: '$duration' }
         }
       },
-      { $sort: { visits: -1 } },
-      { $limit: limit },
-      {
-        $project: {
-          referrer: '$_id',
-          category: 1,
-          visits: 1,
-          bounceRate: {
-            $cond: [
-              { $gt: ['$visits', 0] },
-              { $round: [{ $multiply: [{ $divide: ['$bounces', '$visits'] }, 100] }, 1] },
-              0
-            ]
-          },
-          avgDuration: {
-            $cond: [
-              { $gt: ['$visits', 0] },
-              { $round: [{ $divide: ['$totalDuration', '$visits'] }, 0] },
-              0
-            ]
-          }
-        }
-      }
+      { $sort: { visits: -1 } }
     ]);
 
-    res.json(referrers);
+    // Filter out self-referrals + aggregate by host (so all paths from
+    // a single domain are merged into one bucket).
+    const byHost = new Map();
+    for (const row of grouped) {
+      let host = '';
+      try { host = new URL(row._id).hostname.replace(/^www\./, ''); } catch (_) { host = row._id; }
+      if (selfHostRegex.test(host)) continue; // skip internal navigation
+      if (!byHost.has(host)) {
+        byHost.set(host, {
+          source: host,
+          referrer: host,
+          category: row.category || categoriseReferrer(row._id),
+          visits: 0,
+          visitors: 0,
+          uniqueVisitorsSet: new Set(),
+          bounces: 0,
+          totalDuration: 0
+        });
+      }
+      const agg = byHost.get(host);
+      agg.visits += row.visits;
+      agg.bounces += row.bounces;
+      agg.totalDuration += row.totalDuration;
+      (row.uniqueVisitors || []).forEach(v => agg.uniqueVisitorsSet.add(v));
+    }
+
+    const referrers = Array.from(byHost.values())
+      .map(r => ({
+        source: r.source,
+        referrer: r.referrer,
+        category: r.category,
+        visits: r.visits,
+        visitors: r.uniqueVisitorsSet.size, // alias for the doughnut chart
+        count: r.uniqueVisitorsSet.size,
+        bounceRate: r.visits > 0 ? parseFloat(((r.bounces / r.visits) * 100).toFixed(1)) : 0,
+        avgDuration: r.visits > 0 ? Math.round(r.totalDuration / r.visits) : 0
+      }))
+      .sort((a, b) => b.visits - a.visits)
+      .slice(0, limit);
+
+    // The frontend reads either `data.referrers` or the array directly,
+    // so wrap to support both.
+    res.json({ referrers, sources: referrers, list: referrers });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -957,10 +1094,13 @@ router.get('/events-summary', auth, adminOnly, async (req, res) => {
       ])
     ]);
 
+    const eventsList = eventsByCategory.map(e => ({
+      category: e._id.category, action: e._id.action, count: e.count
+    }));
     res.json({
-      eventsByCategory: eventsByCategory.map(e => ({
-        category: e._id.category, action: e._id.action, count: e.count
-      })),
+      // Alias `events` consumed by analytics.html (loadEvents)
+      events: eventsList,
+      eventsByCategory: eventsList,
       clickHeatmap: clickHeatmap.map(p => ({
         page: p._id, totalClicks: p.total,
         clicks: (p.clicks || []).slice(0, 200) // limit points sent
@@ -1055,7 +1195,56 @@ router.get('/engagement', auth, adminOnly, async (req, res) => {
       { $limit: 20 }
     ]);
 
+    // ---- 5-axis radar metrics (0-100 each) ----
+    const [avgTimeAgg, avgScrollAgg, totalClicksAgg, avgPagesAgg, returningCount, totalVisitorsCount] = await Promise.all([
+      Session.aggregate([
+        { $match: { startedAt: { $gte: start, $lte: end }, duration: { $gt: 0 } } },
+        { $group: { _id: null, avg: { $avg: '$duration' } } }
+      ]),
+      PageView.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end }, scrollDepth: { $gt: 0 } } },
+        { $group: { _id: null, avg: { $avg: '$scrollDepth' } } }
+      ]),
+      AnalyticsEvent.countDocuments({ timestamp: { $gte: start, $lte: end }, category: 'click' }),
+      Session.aggregate([
+        { $match: { startedAt: { $gte: start, $lte: end }, pageCount: { $gt: 0 } } },
+        { $group: { _id: null, avg: { $avg: '$pageCount' } } }
+      ]),
+      Visitor.countDocuments({ lastSeen: { $gte: start, $lte: end }, isReturning: true, isBot: { $ne: true } }),
+      Visitor.countDocuments({ lastSeen: { $gte: start, $lte: end }, isBot: { $ne: true } })
+    ]);
+
+    const sessionsCount = await Session.countDocuments({ startedAt: { $gte: start, $lte: end } });
+    const avgTimeSec = Math.round(avgTimeAgg[0]?.avg || 0);
+    const avgScrollPct = Math.round(avgScrollAgg[0]?.avg || 0);
+    const avgClicksPerSession = sessionsCount > 0 ? totalClicksAgg / sessionsCount : 0;
+    const avgPages = avgPagesAgg[0]?.avg || 0;
+
+    // Score everything 0-100
+    const tempsScore  = Math.min(100, Math.round((avgTimeSec / 300) * 100));   // 5 min = 100
+    const scrollScore = Math.min(100, avgScrollPct);                            // already %
+    const clicsScore  = Math.min(100, Math.round((avgClicksPerSession / 10) * 100)); // 10 clicks/session = 100
+    const pagesScore  = Math.min(100, Math.round((avgPages / 5) * 100));        // 5 pages = 100
+    const retourScore = totalVisitorsCount > 0
+      ? Math.round((returningCount / totalVisitorsCount) * 100)
+      : 0;
+
     res.json({
+      // Radar metrics (consumed by renderEngagementRadar)
+      temps: tempsScore,
+      scroll: scrollScore,
+      clics: clicsScore,
+      pagesSession: pagesScore,
+      retour: retourScore,
+      // Raw values for tooltips/cards
+      raw: {
+        avgTimeSec,
+        avgScrollPct,
+        avgClicksPerSession: parseFloat(avgClicksPerSession.toFixed(1)),
+        avgPagesPerSession: parseFloat(avgPages.toFixed(1)),
+        returningPercent: retourScore
+      },
+      // Existing detailed distributions
       attentionDistribution: attentionDistribution.map(b => ({
         bucket: b._id === 'other' ? '600+' : `${b._id}s`,
         count: b.count

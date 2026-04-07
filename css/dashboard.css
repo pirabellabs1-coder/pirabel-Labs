@@ -188,3 +188,49 @@ input[type="checkbox"]:checked::after{content:'✓';position:absolute;top:50%;le
   th,td{padding:0.625rem 0.75rem;font-size:0.75rem;}
   .modal{width:95%;padding:1.5rem;}
 }
+
+/* ============================================================
+   Sidebar toggle (auto-injected by /js/dashboard-ui.js)
+   Works on desktop AND mobile.
+   ============================================================ */
+.pb-sidebar-toggle{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text);
+  cursor:pointer;
+  padding:0.4rem 0.55rem;
+  margin-right:0.75rem;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:border-color 0.2s,background 0.2s;
+}
+.pb-sidebar-toggle:hover{border-color:var(--accent);background:rgba(255,85,0,0.05);}
+.pb-sidebar-toggle .material-symbols-outlined{font-size:1.25rem;}
+
+.pb-sidebar-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:99;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s;
+}
+.pb-sidebar-overlay.show{opacity:1;pointer-events:auto;}
+
+/* Desktop: collapsed state slides the sidebar out and gives the
+   main content the full width. Triggered by clicking the hamburger. */
+@media(min-width:901px){
+  .sidebar,.portal-sidebar{transition:transform 0.3s ease;}
+  .main,.portal-main{transition:margin-left 0.3s ease;}
+  body.pb-sidebar-collapsed .sidebar,
+  body.pb-sidebar-collapsed .portal-sidebar{transform:translateX(-100%);}
+  body.pb-sidebar-collapsed .main,
+  body.pb-sidebar-collapsed .portal-main{margin-left:0;}
+}
+
+/* Mobile: portal-sidebar gets the same slide-out behaviour as .sidebar */
+@media(max-width:900px){
+  .portal-sidebar{transform:translateX(-100%);transition:transform 0.3s ease;}
+  .portal-sidebar.open{transform:translateX(0);}
+  .portal-main{margin-left:0;}
+}

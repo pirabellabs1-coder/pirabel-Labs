@@ -118,31 +118,149 @@ app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, times
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 
 
+// Admin cleanup endpoint — remove demo/test orders + leads, keep Ultimauto
+// Usage (logged-in admin): POST /api/admin/cleanup-demos?keep=ultimauto
+// Or dry run: GET /api/admin/cleanup-demos?keep=ultimauto&dryRun=1
+app.all('/api/admin/cleanup-demos', async (req, res) => {
+  try {
+    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
+    // Run auth + adminOnly manually
+    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+
+    const Order = require(path.join(modelsPath, 'Order'));
+    const Lead = require(path.join(modelsPath, 'Lead'));
+
+    const keepRaw = (req.query.keep || req.body?.keep || 'ultimauto').toString().trim();
+    const dryRun = req.query.dryRun === '1' || req.body?.dryRun === true;
+    const keepRegex = new RegExp(keepRaw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+
+    // Find orders to keep
+    const ordersToKeep = await Order.find({
+      $or: [
+        { name: keepRegex },
+        { email: keepRegex },
+        { website: keepRegex },
+        { message: keepRegex }
+      ]
+    }).select('_id name email');
+
+    // Find leads to keep
+    const leadsToKeep = await Lead.find({
+      $or: [
+        { 'visitor.name': keepRegex },
+        { 'visitor.email': keepRegex },
+        { 'visitor.company': keepRegex },
+        { 'visitor.website': keepRegex },
+        { conversationSummary: keepRegex }
+      ]
+    }).select('_id visitor.name visitor.email');
+
+    const keepOrderIds = ordersToKeep.map(o => o._id);
+    const keepLeadIds = leadsToKeep.map(l => l._id);
+
+    const ordersToDeleteCount = await Order.countDocuments({ _id: { $nin: keepOrderIds } });
+    const leadsToDeleteCount = await Lead.countDocuments({ _id: { $nin: keepLeadIds } });
+
+    if (dryRun) {
+      return res.json({
+        dryRun: true,
+        keep: keepRaw,
+        ordersKept: ordersToKeep.length,
+        ordersToDelete: ordersToDeleteCount,
+        leadsKept: leadsToKeep.length,
+        leadsToDelete: leadsToDeleteCount,
+        keptOrders: ordersToKeep,
+        keptLeads: leadsToKeep
+      });
+    }
+
+    const orderResult = await Order.deleteMany({ _id: { $nin: keepOrderIds } });
+    const leadResult = await Lead.deleteMany({ _id: { $nin: keepLeadIds } });
+
+    res.json({
+      success: true,
+      keep: keepRaw,
+      ordersDeleted: orderResult.deletedCount,
+      ordersKept: ordersToKeep.length,
+      leadsDeleted: leadResult.deletedCount,
+      leadsKept: leadsToKeep.length,
+      keptOrders: ordersToKeep,
+      keptLeads: leadsToKeep
+    });
+  } catch (err) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+});
+
 // Email diagnostic endpoint
 app.get('/api/test-email', async (req, res) => {
   const cleanEnv = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
-  const to = cleanEnv(req.query.to);
-  const from = cleanEnv(req.query.from || process.env.FROM_EMAIL);
-  if (!to) return res.json({ error: 'Ajoutez ?to=email@example.com' });
+  const host = cleanEnv(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
+  const port = parseInt(cleanEnv(process.env.SMTP_PORT)) || 587;
+  const user = cleanEnv(process.env.SMTP_USER);
+  const pass = cleanEnv(process.env.SMTP_PASS);
+  const from = cleanEnv(req.query.from || process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
+  const adminEmail = cleanEnv(process.env.ADMIN_EMAIL) || from;
+  const to = cleanEnv(req.query.to) || adminEmail;
+
+  // Diagnostic snapshot of what config we're actually using
+  const config = {
+    host, port,
+    secure: port === 465,
+    user: user ? (user.slice(0, 4) + '***@' + (user.split('@')[1] || '?')) : '(MANQUANT)',
+    passLength: pass ? pass.length : 0,
+    from, adminEmail, to
+  };
+
+  if (!user || !pass) {
+    return res.json({
+      success: false,
+      error: 'SMTP_USER ou SMTP_PASS manquant dans les variables Vercel',
+      config
+    });
+  }
+
   try {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
-      host: cleanEnv(process.env.SMTP_HOST),
-      port: parseInt(cleanEnv(process.env.SMTP_PORT)),
-      secure: false,
-      auth: { user: cleanEnv(process.env.SMTP_USER), pass: cleanEnv(process.env.SMTP_PASS) },
+      host, port,
+      secure: port === 465,
+      auth: { user, pass },
       debug: true,
       logger: false
     });
+
+    // Verify the connection first (catches most auth errors clearly)
+    await transporter.verify();
+
     const info = await transporter.sendMail({
       from: `"Pirabel Labs" <${from}>`,
       to,
       subject: 'Test Email Pirabel Labs — ' + new Date().toISOString(),
       html: '<h1 style="color:#FF5500;">Test Pirabel Labs</h1><p>Email envoye le ' + new Date().toLocaleString('fr-FR') + '</p><p>FROM: ' + from + '</p><p>TO: ' + to + '</p>'
     });
-    res.json({ success: true, messageId: info.messageId, response: info.response, accepted: info.accepted, rejected: info.rejected, from });
+    res.json({
+      success: true,
+      messageId: info.messageId,
+      response: info.response,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      config
+    });
   } catch (err) {
-    res.json({ success: false, error: err.message, code: err.code, command: err.command, responseCode: err.responseCode, from });
+    res.json({
+      success: false,
+      error: err.message,
+      code: err.code,
+      command: err.command,
+      responseCode: err.responseCode,
+      config
+    });
   }
 });
 

@@ -6,6 +6,7 @@ const Prospect = require('../models/Prospect');
 const { auth, adminOrEmployee } = require('../middleware/auth');
 const { rateLimit, sanitize, sanitizeEmail, isValidEmail, limitBody } = require('../middleware/security');
 const { sendEmail, masterTemplate } = require('../config/email');
+const { generateLeaReply, extractInfoFromMessage, detectInterests } = require('../config/lea');
 
 // ═══════════════════════════════════════════════════════════
 // AI CHATBOT KNOWLEDGE BASE — Pirabel Labs
@@ -280,6 +281,79 @@ const chatLimiter = rateLimit({ windowMs: 5 * 60 * 1000, max: 30, message: 'Trop
 const leadSummaryLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Trop de requêtes. Réessayez dans quelques minutes.', keyPrefix: 'lead-summary' });
 const followUpLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 3, message: 'Trop de requêtes. Réessayez dans quelques minutes.', keyPrefix: 'lead-followup' });
 const offerLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 3, message: 'Trop de requêtes. Réessayez dans quelques minutes.', keyPrefix: 'lead-offer' });
+
+// ═══════════════════════════════════════════════════════════
+// POST /api/chat/lea — NEW: Léa intelligente (Claude API + persona consultante)
+// Le frontend envoie l'historique complet, Léa renvoie une réponse contextuelle.
+// ═══════════════════════════════════════════════════════════
+router.post('/lea', chatLimiter, limitBody(20), async (req, res) => {
+  try {
+    const conversationId = sanitize(req.body.conversationId, 50) || Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    const rawHistory = Array.isArray(req.body.history) ? req.body.history : [];
+    const visitor = (req.body.visitor && typeof req.body.visitor === 'object') ? req.body.visitor : {};
+    const qualification = (req.body.qualification && typeof req.body.qualification === 'object') ? req.body.qualification : {};
+
+    // Sanitize history
+    const history = rawHistory
+      .filter(m => m && typeof m === 'object' && m.role && m.content)
+      .slice(-20)
+      .map(m => ({
+        role: (m.role === 'assistant' || m.role === 'bot') ? 'assistant' : 'user',
+        content: String(m.content).slice(0, 4000)
+      }));
+
+    if (history.length === 0) {
+      return res.status(400).json({ error: 'Historique requis' });
+    }
+
+    const lastUserMsg = [...history].reverse().find(m => m.role === 'user');
+    if (!lastUserMsg) {
+      return res.status(400).json({ error: 'Aucun message utilisateur' });
+    }
+
+    // Sanitize visitor fields
+    const safeVisitor = {
+      name: sanitize(visitor.name || '', 100),
+      company: sanitize(visitor.company || '', 200),
+      sector: sanitize(visitor.sector || '', 100),
+      email: sanitizeEmail(visitor.email || ''),
+      phone: sanitize(visitor.phone || '', 30),
+      website: sanitize(visitor.website || '', 200)
+    };
+    const safeQual = {
+      budget: sanitize(qualification.budget || '', 100),
+      timeline: sanitize(qualification.timeline || '', 100),
+      decisionMaker: !!qualification.decisionMaker
+    };
+
+    // Note : la persistance des messages (visiteur + bot) est déjà gérée
+    // côté frontend via saveMsg / processQueue, donc on ne crée rien ici
+    // pour éviter les doublons.
+
+    // Generate the reply with Léa's brain
+    const result = await generateLeaReply({
+      history,
+      visitor: safeVisitor,
+      qualification: safeQual
+    });
+
+    res.json({
+      reply: result.reply,
+      buttons: result.buttons || [],
+      quickButtons: result.buttons || [],
+      extractedInfo: result.extractedInfo || {},
+      detectedInterests: result.detectedInterests || [],
+      source: result.source || 'fallback',
+      conversationId
+    });
+  } catch (err) {
+    console.error('[Léa endpoint]', err.message);
+    res.status(500).json({
+      error: 'Erreur de génération',
+      reply: "Je rencontre une difficulté technique momentanée. Pourriez-vous reformuler votre question ou nous joindre directement à <a href='mailto:contact@pirabellabs.com'>contact@pirabellabs.com</a> ?"
+    });
+  }
+});
 
 // POST /api/chat/bot-reply — Visitor sends message, gets AI reply
 router.post('/bot-reply', chatLimiter, limitBody(6), async (req, res) => {

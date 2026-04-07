@@ -120,16 +120,17 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, t
 
 // Email diagnostic endpoint
 app.get('/api/test-email', async (req, res) => {
-  const to = req.query.to;
-  const from = req.query.from || process.env.FROM_EMAIL;
+  const cleanEnv = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
+  const to = cleanEnv(req.query.to);
+  const from = cleanEnv(req.query.from || process.env.FROM_EMAIL);
   if (!to) return res.json({ error: 'Ajoutez ?to=email@example.com' });
   try {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT),
+      host: cleanEnv(process.env.SMTP_HOST),
+      port: parseInt(cleanEnv(process.env.SMTP_PORT)),
       secure: false,
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      auth: { user: cleanEnv(process.env.SMTP_USER), pass: cleanEnv(process.env.SMTP_PASS) },
       debug: true,
       logger: false
     });

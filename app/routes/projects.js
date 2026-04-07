@@ -83,15 +83,17 @@ router.post('/:id/update', auth, adminOrEmployee, async (req, res) => {
     if (req.body.status) project.status = req.body.status;
     await project.save();
 
-    // Notify client by email
+    // Notify client by email (await to ensure delivery on Vercel serverless)
     if (project.client && project.client.email) {
-      notifyProjectUpdate(
-        project.client.email,
-        project.client.contactName || project.client.company,
-        project.name,
-        updateMsg,
-        project.progress
-      ).catch(() => {});
+      try {
+        await notifyProjectUpdate(
+          project.client.email,
+          project.client.contactName || project.client.company,
+          project.name,
+          updateMsg,
+          project.progress
+        );
+      } catch (err) { console.error('Project update email error:', err); }
     }
 
     // Log activity

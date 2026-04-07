@@ -129,26 +129,28 @@ router.post('/jobs/:slug/apply', applyLimiter, honeypotCheck('website_url'), lim
       icon: 'person_add'
     }).catch(() => {});
 
-    sendEmail(
-      process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
-      `Nouvelle candidature : ${name} - ${job.title}`,
-      `<h2>Nouvelle candidature</h2>
-      <p><strong>Poste :</strong> ${job.title}</p>
-      <p><strong>Nom :</strong> ${name}</p>
-      <p><strong>Email :</strong> ${email}</p>
-      <p><strong>Telephone :</strong> ${app.phone}</p>
-      <p><strong>LinkedIn :</strong> ${app.linkedin || '-'}</p>
-      <p><strong>Lettre :</strong></p><p>${(app.coverLetter || '').replace(/\n/g, '<br>')}</p>`
-    ).catch(() => {});
-
-    sendEmail(
-      email,
-      `Candidature recue - ${job.title}`,
-      `<h2>Bonjour ${name},</h2>
-      <p>Nous avons bien recu votre candidature pour le poste <strong>${job.title}</strong>.</p>
-      <p>Notre equipe l'examinera dans les plus brefs delais et reviendra vers vous.</p>
-      <p>A bientot,<br>L'equipe Pirabel Labs</p>`
-    ).catch(() => {});
+    // Await emails to ensure delivery on Vercel serverless
+    try {
+      await sendEmail(
+        process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
+        `Nouvelle candidature : ${name} - ${job.title}`,
+        `<h2>Nouvelle candidature</h2>
+        <p><strong>Poste :</strong> ${job.title}</p>
+        <p><strong>Nom :</strong> ${name}</p>
+        <p><strong>Email :</strong> ${email}</p>
+        <p><strong>Telephone :</strong> ${app.phone}</p>
+        <p><strong>LinkedIn :</strong> ${app.linkedin || '-'}</p>
+        <p><strong>Lettre :</strong></p><p>${(app.coverLetter || '').replace(/\n/g, '<br>')}</p>`
+      );
+      await sendEmail(
+        email,
+        `Candidature recue - ${job.title}`,
+        `<h2>Bonjour ${name},</h2>
+        <p>Nous avons bien recu votre candidature pour le poste <strong>${job.title}</strong>.</p>
+        <p>Notre equipe l'examinera dans les plus brefs delais et reviendra vers vous.</p>
+        <p>A bientot,<br>L'equipe Pirabel Labs</p>`
+      );
+    } catch (err) { console.error('Recruitment email error:', err); }
 
     if (req.app.get('io')) {
       req.app.get('io').emit('new-application', { id: app._id, name, jobTitle: job.title });

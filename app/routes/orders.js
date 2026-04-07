@@ -39,8 +39,12 @@ router.post('/', orderLimiter, honeypotCheck('website_url'), limitBody(10), asyn
       source: req.body.source === 'cta_form' ? 'cta_form' : 'site'
     });
 
-    // Send email notification to admin
-    notifyNewOrder(order).catch(err => console.error('Email notification error:', err));
+    // Send email notification to admin (await to ensure delivery on Vercel serverless)
+    try {
+      await notifyNewOrder(order);
+    } catch (err) {
+      console.error('Email notification error:', err);
+    }
 
     // Auto-add to subscribers as prospect
     Subscriber.findOneAndUpdate(
@@ -137,8 +141,9 @@ router.put('/:id', auth, adminOrEmployee, async (req, res) => {
         relatedId: client._id
       });
 
-      // Send welcome email
-      sendWelcome(client.email, client.contactName).catch(err => console.error('Welcome email error:', err));
+      // Send welcome email (await to ensure delivery on Vercel serverless)
+      try { await sendWelcome(client.email, client.contactName); }
+      catch (err) { console.error('Welcome email error:', err); }
 
       return res.json({ order, client });
     }

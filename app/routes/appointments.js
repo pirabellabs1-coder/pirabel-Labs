@@ -83,24 +83,26 @@ router.post('/book', bookLimiter, honeypotCheck('website_url'), limitBody(10), a
       icon: 'event'
     }).catch(() => {});
 
-    sendEmail(
-      process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
-      `Nouveau rendez-vous : ${name}`,
-      `<h2>Nouveau rendez-vous</h2>
-      <p><strong>Avec :</strong> ${name} (${email})</p>
-      <p><strong>Date :</strong> ${new Date(appt.date).toLocaleString('fr-FR')}</p>
-      <p><strong>Type :</strong> ${appt.type}</p>
-      <p><strong>Notes :</strong> ${appt.notes || '-'}</p>`
-    ).catch(() => {});
-
-    sendEmail(
-      email,
-      `Rendez-vous confirme - Pirabel Labs`,
-      `<h2>Bonjour ${name},</h2>
-      <p>Votre rendez-vous est planifie pour le <strong>${new Date(appt.date).toLocaleString('fr-FR')}</strong>.</p>
-      <p>Vous recevrez le lien de visio par email avant le rendez-vous.</p>
-      <p>A bientot,<br>L'equipe Pirabel Labs</p>`
-    ).catch(() => {});
+    // Await emails to ensure delivery on Vercel serverless
+    try {
+      await sendEmail(
+        process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
+        `Nouveau rendez-vous : ${name}`,
+        `<h2>Nouveau rendez-vous</h2>
+        <p><strong>Avec :</strong> ${name} (${email})</p>
+        <p><strong>Date :</strong> ${new Date(appt.date).toLocaleString('fr-FR')}</p>
+        <p><strong>Type :</strong> ${appt.type}</p>
+        <p><strong>Notes :</strong> ${appt.notes || '-'}</p>`
+      );
+      await sendEmail(
+        email,
+        `Rendez-vous confirme - Pirabel Labs`,
+        `<h2>Bonjour ${name},</h2>
+        <p>Votre rendez-vous est planifie pour le <strong>${new Date(appt.date).toLocaleString('fr-FR')}</strong>.</p>
+        <p>Vous recevrez le lien de visio par email avant le rendez-vous.</p>
+        <p>A bientot,<br>L'equipe Pirabel Labs</p>`
+      );
+    } catch (err) { console.error('Appointment email error:', err); }
 
     if (req.app.get('io')) req.app.get('io').emit('new-appointment', { id: appt._id, name });
 

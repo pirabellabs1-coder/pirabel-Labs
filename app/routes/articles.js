@@ -173,7 +173,9 @@ async function notifySubscribers(article) {
         ctaUrl: `${SITE}/blog-article.html?slug=${article.slug}`
       });
 
-      sendEmail(sub.email, `Nouvel article : ${article.title}`, html).catch(() => {});
+      // Await each send to ensure delivery on Vercel serverless
+      try { await sendEmail(sub.email, `Nouvel article : ${article.title}`, html); }
+      catch (e) { console.error('Subscriber email error:', e.message); }
     }
     console.log(`Notification sent to ${subscribers.length} subscribers for article: ${article.title}`);
   } catch (err) {

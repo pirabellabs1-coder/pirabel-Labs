@@ -3,15 +3,29 @@ const nodemailer = require('nodemailer');
 // Strip stray whitespace/newlines from env vars (Vercel sometimes keeps them)
 const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
 
+const SMTP_HOST = clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
+const SMTP_PORT = parseInt(clean(process.env.SMTP_PORT)) || 587;
+const SMTP_USER = clean(process.env.SMTP_USER);
+const SMTP_PASS = clean(process.env.SMTP_PASS);
+
+// Build transporter — single instance, optimized for Vercel serverless cold-starts
 const transporter = nodemailer.createTransport({
-  host: clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com',
-  port: parseInt(clean(process.env.SMTP_PORT)) || 587,
-  secure: false,
-  auth: {
-    user: clean(process.env.SMTP_USER),
-    pass: clean(process.env.SMTP_PASS)
-  }
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_PORT === 465,
+  auth: { user: SMTP_USER, pass: SMTP_PASS },
+  // Vercel serverless: use short timeouts so we never block beyond 10s
+  connectionTimeout: 8000,
+  greetingTimeout: 5000,
+  socketTimeout: 8000,
+  // No pooling on serverless — each invocation is fresh
+  pool: false,
+  // TLS — Brevo accepts STARTTLS on 587
+  tls: { rejectUnauthorized: false }
 });
+
+// Log config once at module load (helps debugging in Vercel logs)
+console.log(`[email] SMTP host=${SMTP_HOST} port=${SMTP_PORT} user=${SMTP_USER ? SMTP_USER.substring(0, 6) + '...' : 'MISSING'}`);
 
 const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
@@ -328,12 +342,20 @@ function newsletterEmail(recipientName, options = {}) {
 // ========================================
 
 async function sendEmail(to, subject, html) {
+  if (!SMTP_USER || !SMTP_PASS) {
+    console.error('[email] MISSING SMTP_USER/SMTP_PASS env vars - cannot send email to', to);
+    return false;
+  }
+  if (!to) {
+    console.error('[email] missing recipient (to) for subject:', subject);
+    return false;
+  }
   try {
-    await transporter.sendMail({ from: FROM(), to, subject, html });
-    console.log(`Email sent to ${to}: ${subject}`);
+    const info = await transporter.sendMail({ from: FROM(), to, subject, html });
+    console.log(`[email] OK to=${to} subject="${subject}" messageId=${info.messageId} accepted=${(info.accepted || []).length} rejected=${(info.rejected || []).length}`);
     return true;
   } catch (err) {
-    console.error(`Email error to ${to}:`, err.message);
+    console.error(`[email] FAIL to=${to} subject="${subject}" code=${err.code} responseCode=${err.responseCode} message=${err.message}`);
     return false;
   }
 }

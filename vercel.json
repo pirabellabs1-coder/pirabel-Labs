@@ -50,6 +50,7 @@
     { "src": "/time-tracking", "dest": "/api/index.js" },
     { "src": "/reviews-admin", "dest": "/api/index.js" },
     { "src": "/health", "dest": "/api/index.js" },
+    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
     { "src": "/index$", "headers": { "Location": "/" }, "status": 308 },

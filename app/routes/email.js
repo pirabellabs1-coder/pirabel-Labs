@@ -130,11 +130,36 @@ router.post('/subscribers', subscribeLimiter, honeypotCheck('website_url'), limi
 
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
 
-    await Subscriber.findOneAndUpdate(
+    const subscriber = await Subscriber.findOneAndUpdate(
       { email },
       { email, name, type, source, isActive: true },
-      { upsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
+
+    // Notify admin
+    try {
+      const { sendEmail, masterTemplate } = require('../config/email');
+      const adminEmail = process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com';
+      await sendEmail(
+        adminEmail,
+        `Nouvel inscrit : ${type} — ${email}`,
+        masterTemplate({
+          title: 'Nouvel Inscrit',
+          subtitle: `Type : ${type}`,
+          body: `
+            <p><strong>Email :</strong> <a href="mailto:${email}" style="color:#FF5500;">${email}</a></p>
+            <p><strong>Nom :</strong> ${name || 'Non renseigné'}</p>
+            <p><strong>Source :</strong> ${source}</p>
+            <p><strong>Type :</strong> ${type}</p>
+          `,
+          cta: 'Voir dans l\'admin',
+          ctaUrl: `${process.env.SITE_URL || 'https://www.pirabellabs.com'}/subscribers`
+        })
+      );
+    } catch (err) {
+      console.error('[email] Subscription notification error:', err.message);
+    }
+
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

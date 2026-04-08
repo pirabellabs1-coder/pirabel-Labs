@@ -4,7 +4,7 @@ const JobOffer = require('../models/JobOffer');
 const Application = require('../models/Application');
 const Notification = require('../models/Notification');
 const { auth, adminOrEmployee, adminOnly } = require('../middleware/auth');
-const { sendEmail } = require('../config/email');
+const { sendEmail, notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate } = require('../config/email');
 const { rateLimit, sanitize, sanitizeEmail, isValidEmail, honeypotCheck, limitBody } = require('../middleware/security');
 
 const applyLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Trop de candidatures. Reessayez dans 15 minutes.', keyPrefix: 'apply' });
@@ -129,28 +129,13 @@ router.post('/jobs/:slug/apply', applyLimiter, honeypotCheck('website_url'), lim
       icon: 'person_add'
     }).catch(() => {});
 
-    // Await emails to ensure delivery on Vercel serverless
+    // Send rich template emails (await to ensure delivery on Vercel serverless)
     try {
-      await sendEmail(
-        process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
-        `Nouvelle candidature : ${name} - ${job.title}`,
-        `<h2>Nouvelle candidature</h2>
-        <p><strong>Poste :</strong> ${job.title}</p>
-        <p><strong>Nom :</strong> ${name}</p>
-        <p><strong>Email :</strong> ${email}</p>
-        <p><strong>Telephone :</strong> ${app.phone}</p>
-        <p><strong>LinkedIn :</strong> ${app.linkedin || '-'}</p>
-        <p><strong>Lettre :</strong></p><p>${(app.coverLetter || '').replace(/\n/g, '<br>')}</p>`
-      );
-      await sendEmail(
-        email,
-        `Candidature recue - ${job.title}`,
-        `<h2>Bonjour ${name},</h2>
-        <p>Nous avons bien recu votre candidature pour le poste <strong>${job.title}</strong>.</p>
-        <p>Notre equipe l'examinera dans les plus brefs delais et reviendra vers vous.</p>
-        <p>A bientot,<br>L'equipe Pirabel Labs</p>`
-      );
-    } catch (err) { console.error('Recruitment email error:', err); }
+      // Admin notification with full template
+      await notifyNewApplication(app, job);
+      // Candidate confirmation with hero template
+      await sendApplicationConfirmation(email, name, job.title);
+    } catch (err) { console.error('Recruitment email error:', err.message); }
 
     if (req.app.get('io')) {
       req.app.get('io').emit('new-application', { id: app._id, name, jobTitle: job.title });
@@ -191,16 +176,37 @@ router.put('/applications/:id', auth, adminOrEmployee, async (req, res) => {
   try {
     const app = await Application.findById(req.params.id);
     if (!app) return res.status(404).json({ error: 'Candidature introuvable' });
-    if (req.body.status && req.body.status !== app.status) {
-      app.history.push({ status: req.body.status, changedBy: req.user._id, note: req.body.note || '' });
+
+    const previousStatus = app.status;
+    const newStatus = req.body.status;
+
+    if (newStatus && newStatus !== previousStatus) {
+      app.history.push({ status: newStatus, changedBy: req.user._id, note: req.body.note || '' });
     }
     Object.assign(app, req.body);
     await app.save();
+
+    // Send automatic status update email to candidate
+    if (newStatus && newStatus !== previousStatus && app.email) {
+      try {
+        await sendApplicationStatusUpdate(
+          app.email,
+          app.name,
+          app.jobTitle || 'Poste Pirabel Labs',
+          newStatus,
+          req.body.note || null
+        );
+        console.log(`[recruitment] Status email sent to ${app.email} for status: ${newStatus}`);
+      } catch (err) {
+        console.error('[recruitment] Status email error:', err.message);
+      }
+    }
+
     res.json(app);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// POST /api/recruitment/applications/:id/email — send email to candidate
+// POST /api/recruitment/applications/:id/email — send manual email to candidate
 router.post('/applications/:id/email', auth, adminOrEmployee, async (req, res) => {
   try {
     const app = await Application.findById(req.params.id);
@@ -208,7 +214,13 @@ router.post('/applications/:id/email', auth, adminOrEmployee, async (req, res) =
     const subject = sanitize(req.body.subject || '', 200);
     const body = req.body.body || '';
     if (!subject || !body) return res.status(400).json({ error: 'Sujet et contenu requis' });
-    await sendEmail(app.email, subject, `<div>${body.replace(/\n/g, '<br>')}</div>`);
+    // Use masterTemplate for custom emails too
+    const { masterTemplate } = require('../config/email');
+    const html = masterTemplate({
+      title: subject,
+      body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${body.replace(/\n/g, '<br>')}</p>`
+    });
+    await sendEmail(app.email, subject, html);
     res.json({ success: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });

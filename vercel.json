@@ -77,6 +77,8 @@
     { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(blog)/([^/]+)$", "dest": "/$1/$2.html" },
+    { "src": "/villes/(.*)$", "dest": "/villes/$1.html" },
+    { "src": "/zones-intervention", "dest": "/zones-intervention.html" },
     { "src": "/espace-client-4p8w1n", "dest": "/espace-client-4p8w1n/index.html" },
     { "src": "/llms\\.txt", "dest": "/llms.txt" },
     { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },

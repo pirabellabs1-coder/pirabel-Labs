@@ -91,6 +91,7 @@
     <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
   </div>
   <div class="modal-body">
+    <div class="field"><label>Sélectionner un client existant (optionnel)</label><select id="f-clientSelect" onchange="fillClientFromSelect()"><option value="">-- Nouveau client / Saisie manuelle --</option></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div class="field"><label>Titre *</label><input id="f-title" placeholder="Refonte site web"></div>
       <div class="field"><label>Client (nom)</label><input id="f-clientName"></div>
@@ -127,6 +128,7 @@
 
     <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
       <button class="btn-danger" id="del-btn" style="margin-right:auto;display:none;" onclick="deleteQuote()">Supprimer</button>
+      <button class="btn-secondary btn-sm" id="link-btn" style="display:none;" onclick="copyQuoteLink()"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">link</span> Copier le lien</button>
       <button class="btn-secondary" onclick="sendQuote()" id="send-btn" style="display:none;"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">send</span> Envoyer</button>
       <button class="btn-secondary" onclick="closeModal()">Annuler</button>
       <button class="btn-primary" onclick="saveQuote()">Enregistrer</button>
@@ -155,6 +157,7 @@ const token = localStorage.getItem('token');
 if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
 let allQuotes = [];
+let allClients = [];
 let editingId = null;
 
 // Sidebar
@@ -219,6 +222,7 @@ function openCreate(){
   editingId=null;
   document.getElementById('modal-title').textContent='Nouveau devis';
   document.getElementById('del-btn').style.display='none';
+  document.getElementById('link-btn').style.display='none';
   document.getElementById('send-btn').style.display='none';
   ['f-title','f-clientName','f-clientEmail','f-clientCompany','f-notes','f-paymentLink'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-taxRate').value=20;
@@ -237,6 +241,7 @@ function openEdit(id){
   editingId=id;
   document.getElementById('modal-title').textContent='Modifier '+q.quoteNumber;
   document.getElementById('del-btn').style.display='inline-block';
+  document.getElementById('link-btn').style.display='inline-flex';
   document.getElementById('send-btn').style.display=q.status==='brouillon'?'inline-flex':'none';
   document.getElementById('f-title').value=q.title||'';
   document.getElementById('f-clientName').value=q.clientName||'';
@@ -375,6 +380,33 @@ async function generateAI(){
   }catch(e){toast('Erreur réseau','error');document.getElementById('ai-loading').style.display='none';document.getElementById('ai-go').style.display='flex';}
 }
 
+async function loadClients() {
+  try {
+    const res = await fetch('/api/clients?limit=500', { headers });
+    const data = await res.json();
+    allClients = data.clients || data || [];
+    const sel = document.getElementById('f-clientSelect');
+    sel.innerHTML = '<option value="">-- Nouveau client / Saisie manuelle --</option>' +
+      allClients.map(c => `<option value="${c._id}" data-name="${esc(c.contactName||'')}" data-email="${esc(c.email||'')}" data-company="${esc(c.company||'')}">${esc(c.company || c.contactName || c.email)}</option>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+function fillClientFromSelect() {
+  const sel = document.getElementById('f-clientSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if (!sel.value) return;
+  document.getElementById('f-clientName').value = opt.dataset.name || '';
+  document.getElementById('f-clientEmail').value = opt.dataset.email || '';
+  document.getElementById('f-clientCompany').value = opt.dataset.company || '';
+}
+
+function copyQuoteLink() {
+  if (!editingId) return;
+  const link = window.location.origin + '/api/quotes/public/' + editingId;
+  navigator.clipboard.writeText(link).then(() => toast('Lien copié !')).catch(() => { prompt('Copiez ce lien :', link); });
+}
+
+loadClients();
 loadQuotes();
 </script>
 </body>

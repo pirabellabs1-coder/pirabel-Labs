@@ -118,6 +118,7 @@
     <div class="sidebar-section">Mon Espace</div>
     <a href="#dashboard" class="sidebar-link active" onclick="showSection('dashboard')"><span class="material-symbols-outlined">dashboard</span> Tableau de bord</a>
     <a href="#projects" class="sidebar-link" onclick="showSection('projects')"><span class="material-symbols-outlined">folder</span> Mes Projets</a>
+    <a href="#quotes" class="sidebar-link" onclick="showSection('quotes')"><span class="material-symbols-outlined">description</span> Mes Devis</a>
     <a href="#invoices" class="sidebar-link" onclick="showSection('invoices')"><span class="material-symbols-outlined">receipt_long</span> Mes Factures</a>
     <a href="#messages" class="sidebar-link" onclick="showSection('messages')">
       <span class="material-symbols-outlined">chat</span> Messages
@@ -353,6 +354,29 @@
       </div>
     </div>
 
+    <!-- ======================== QUOTES SECTION ======================== -->
+    <div class="portal-section" id="section-quotes">
+      <div style="margin-bottom:2rem;">
+        <h2 style="font-family:var(--font-h);font-size:1.5rem;font-weight:700;">Mes Devis</h2>
+        <p style="color:var(--muted);font-size:0.875rem;margin-top:0.25rem;">Consultez, acceptez ou demandez des modifications sur vos propositions commerciales.</p>
+      </div>
+      <div id="quotes-list-portal">
+        <p style="color:var(--muted);font-size:0.8125rem;">Chargement...</p>
+      </div>
+    </div>
+
+    <!-- Quote Detail Modal -->
+    <div class="modal-bg" id="quote-modal">
+      <div class="modal" style="max-width:700px;">
+        <div class="modal-header">
+          <h3 id="qm-title" style="margin:0;font-family:var(--font-h);">Devis</h3>
+          <button onclick="document.getElementById('quote-modal').classList.remove('show')" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">&times;</button>
+        </div>
+        <div class="modal-body" id="qm-body"></div>
+      </div>
+    </div>
+
+
   </div>
 </div>
 </div>
@@ -372,7 +396,7 @@ let allInvoices = [];
 // ============ INIT ============
 async function init() {
   await loadUser();
-  await Promise.all([loadProjects(), loadInvoices()]);
+  await Promise.all([loadProjects(), loadInvoices(), loadClientQuotes()]);
   renderDashboard();
   initChat();
 }
@@ -817,10 +841,132 @@ function logout() {
   window.location.href = '/portal-login';
 }
 
+// ============ CLIENT QUOTES ============
+let allClientQuotes = [];
+
+async function loadClientQuotes() {
+  try {
+    const res = await fetch('/api/quotes?limit=100', { headers });
+    const data = await res.json();
+    allClientQuotes = data.quotes || [];
+    renderClientQuotes();
+  } catch (e) { console.error(e); }
+}
+
+function renderClientQuotes() {
+  const el = document.getElementById('quotes-list-portal');
+  if (!allClientQuotes.length) {
+    el.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);padding:3rem;text-align:center;"><span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--muted2);display:block;margin-bottom:1rem;">description</span><p style="color:var(--muted);">Aucun devis pour le moment.</p></div>';
+    return;
+  }
+  el.innerHTML = allClientQuotes.map(q => {
+    const statusColors = { brouillon:'#888', envoye:'#f39c12', accepte:'#2ecc71', refuse:'#e74c3c', expire:'#888' };
+    const statusLabels = { brouillon:'Brouillon', envoye:'En attente', accepte:'Accept\u00e9', refuse:'Refus\u00e9', expire:'Expir\u00e9' };
+    const canAct = q.status === 'envoye';
+    return `
+      <div style="background:var(--card);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+          <div>
+            <div style="font-family:var(--font-h);font-weight:700;color:var(--accent);font-size:0.8rem;">${escHtml(q.quoteNumber)}</div>
+            <div style="font-weight:600;font-size:1rem;margin-top:0.25rem;">${escHtml(q.title)}</div>
+          </div>
+          <div style="text-align:right;">
+            <span style="display:inline-block;padding:0.25rem 0.75rem;border:1px solid ${statusColors[q.status]||'#888'};color:${statusColors[q.status]||'#888'};font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">${statusLabels[q.status]||q.status}</span>
+            <div style="font-family:var(--font-h);font-weight:700;font-size:1.1rem;margin-top:0.5rem;">${fmt(q.total)}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-sm" style="border:1px solid var(--border);background:transparent;color:var(--text);" onclick="viewQuoteDetail('${q._id}')"><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;">visibility</span> Voir le d\u00e9tail</button>
+          ${canAct ? `
+            <button class="btn btn-sm btn-primary" onclick="acceptQuote('${q._id}')"><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;">check_circle</span> Accepter</button>
+            <button class="btn btn-sm" style="border:1px solid var(--border);background:transparent;color:var(--text);" onclick="requestQuoteModification('${q._id}')"><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;">edit_note</span> Demander une modification</button>
+          ` : ''}
+          ${q.validUntil ? `<span style="font-size:0.75rem;color:var(--muted);margin-left:auto;">Valable jusqu'au ${formatDate(q.validUntil)}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function viewQuoteDetail(id) {
+  const q = allClientQuotes.find(x => x._id === id);
+  if (!q) return;
+  document.getElementById('qm-title').textContent = q.quoteNumber + ' \u2014 ' + q.title;
+  
+  const itemsHTML = (q.items || []).map(i => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid var(--border);">${escHtml(i.description)}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);text-align:center;">${i.quantity}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;">${fmt(i.unitPrice)}</td>
+      <td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;">${fmt(i.quantity * i.unitPrice)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('qm-body').innerHTML = `
+    <table style="width:100%;margin-bottom:1rem;">
+      <thead><tr style="font-size:0.7rem;text-transform:uppercase;color:var(--muted);">
+        <th style="padding:8px;text-align:left;">Description</th>
+        <th style="padding:8px;text-align:center;">Qt\u00e9</th>
+        <th style="padding:8px;text-align:right;">P.U.</th>
+        <th style="padding:8px;text-align:right;">Total</th>
+      </tr></thead>
+      <tbody>${itemsHTML}</tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;gap:2rem;padding:1rem 0;border-top:1px solid var(--border);">
+      <div style="text-align:right;"><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Sous-total</div><div style="font-family:var(--font-h);font-weight:700;">${fmt(q.subtotal)}</div></div>
+      <div style="text-align:right;"><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;">TVA (${q.taxRate}%)</div><div style="font-family:var(--font-h);font-weight:700;">${fmt(q.taxAmount)}</div></div>
+      <div style="text-align:right;"><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Total TTC</div><div style="font-family:var(--font-h);font-weight:700;font-size:1.2rem;color:var(--accent);">${fmt(q.total)}</div></div>
+    </div>
+    ${q.notes ? `<p style="font-size:0.85rem;color:var(--muted);margin-top:0.5rem;">${escHtml(q.notes)}</p>` : ''}
+    ${q.conditions ? `<p style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-top:0.5rem;">${escHtml(q.conditions)}</p>` : ''}
+    ${q.status === 'envoye' ? `
+      <div style="display:flex;gap:0.75rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+        <button class="btn btn-primary" onclick="acceptQuote('${q._id}');document.getElementById('quote-modal').classList.remove('show');">Accepter ce devis</button>
+        <button class="btn" style="border:1px solid var(--border);background:transparent;color:var(--text);" onclick="requestQuoteModification('${q._id}');document.getElementById('quote-modal').classList.remove('show');">Demander une modification</button>
+      </div>
+    ` : ''}
+  `;
+  document.getElementById('quote-modal').classList.add('show');
+}
+
+async function acceptQuote(id) {
+  if (!confirm('Confirmez-vous l\'acceptation de ce devis ? Une facture sera g\u00e9n\u00e9r\u00e9e automatiquement.')) return;
+  try {
+    const res = await fetch('/api/quotes/' + id, {
+      method: 'PUT', headers, body: JSON.stringify({ status: 'accepte', respondedAt: new Date().toISOString() })
+    });
+    if (res.ok) {
+      alert('Devis accept\u00e9 ! Une facture a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e. Merci de votre confiance !');
+      loadClientQuotes();
+      loadInvoices();
+      loadProjects();
+    } else {
+      alert('Erreur lors de l\'acceptation.');
+    }
+  } catch(e) { alert('Erreur r\u00e9seau.'); }
+}
+
+function requestQuoteModification(id) {
+  const comments = prompt('Expliquez les modifications souhait\u00e9es :');
+  if (!comments) return;
+  fetch('/api/quotes/public/' + id + '/request-modification', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comments })
+  }).then(r => {
+    if (r.ok) {
+      alert('Votre demande de modification a \u00e9t\u00e9 envoy\u00e9e. Nous reviendrons vers vous rapidement.');
+      loadClientQuotes();
+    } else {
+      alert('Erreur lors de l\'envoi.');
+    }
+  }).catch(() => alert('Erreur r\u00e9seau.'));
+}
+
 // Check hash on load
 if (window.location.hash) {
   const section = window.location.hash.replace('#', '');
-  if (['dashboard', 'projects', 'invoices', 'messages', 'requests'].includes(section)) {
+  if (['dashboard', 'projects', 'quotes', 'invoices', 'messages', 'requests'].includes(section)) {
     showSection(section);
   }
 }

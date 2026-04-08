@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande de modification du devis — Pirabel Labs</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<style>
+.rdv-hero{padding:8rem var(--px-page) 3rem;text-align:center;max-width:800px;margin:0 auto;}
+.rdv-hero h1{font-family:var(--font-headline);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:1rem;}
+.rdv-hero p{color:var(--on-surface-variant);font-size:1.05rem;}
+.form-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;max-width:600px;margin:0 auto 6rem;border-radius:4px;}
+.field{margin-bottom:1.5rem;}
+.field label{display:block;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-variant);margin-bottom:0.6rem;font-weight:700;}
+.field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:1rem;color:var(--on-surface);font-size:1rem;font-family:inherit;outline:none;min-height:150px;resize:vertical;}
+.field textarea:focus{border-color:var(--primary);}
+.btn-primary{background:var(--primary);color:#5c1900;border:none;padding:1rem 2rem;font-weight:700;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;width:100%;font-family:inherit;}
+.btn-primary:hover{background:#ff6a1a;}
+.alert{padding:1rem;margin-bottom:1.5rem;font-size:0.9rem;border-radius:4px;}
+.alert-success{background:rgba(46,204,113,0.1);color:#2ecc71;border:1px solid rgba(46,204,113,0.3);}
+.alert-error{background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.3);}
+</style>
+</head>
+<body>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+  </div>
+</nav>
+
+<section class="rdv-hero">
+  <h1>Ajuster notre proposition</h1>
+  <p>Dites-nous ce que vous aimeriez modifier dans le devis. Nous le réviserons rapidement pour qu'il corresponde parfaitement à vos attentes.</p>
+</section>
+
+<section class="form-side" id="form-container">
+  <div id="alert-box"></div>
+  <form id="modification-form" onsubmit="submitModification(event)">
+    <div class="field">
+      <label>Vos commentaires, questions ou ajustements souhaités</label>
+      <textarea id="comments" required placeholder="Par exemple: 'Pouvons-nous retirer la prestation X ?' ou 'Est-il possible de modifier les modalités de paiement ?'"></textarea>
+    </div>
+    <button type="submit" class="btn-primary" id="submit-btn">Envoyer ma demande de révision</button>
+  </form>
+</section>
+
+<footer class="footer">
+  <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. Tous droits réservés.</span></div>
+</footer>
+
+<script>
+async function submitModification(e) {
+  e.preventDefault();
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('id');
+  if (!orderId) {
+    return showAlert('Lien invalide. Aucun numéro de devis trouvé.', 'error');
+  }
+
+  const comments = document.getElementById('comments').value;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  try {
+    const res = await fetch('/api/orders/public/' + orderId + '/request-modification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ comments })
+    });
+    
+    if (!res.ok) {
+      throw new Error('Erreur');
+    }
+    
+    showAlert('Votre demande a bien été envoyée. Notre expert vous répondra avec un devis ajusté dans les plus brefs délais !', 'success');
+    document.getElementById('modification-form').reset();
+    btn.style.display = 'none';
+  } catch (err) {
+    showAlert('Une erreur est survenue. Veuillez réessayer.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Envoyer ma demande de révision';
+  }
+}
+
+function showAlert(msg, type) {
+  document.getElementById('alert-box').innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+}
+</script>
+</body>
+</html>

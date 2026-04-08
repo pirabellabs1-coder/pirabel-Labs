@@ -66,6 +66,7 @@
     { "src": "/carrieres", "dest": "/carrieres.html" },
     { "src": "/candidature", "dest": "/candidature.html" },
     { "src": "/rendez-vous", "dest": "/rendez-vous.html" },
+    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
     { "src": "/status", "dest": "/status.html" },
     { "src": "/avis", "dest": "/avis.html" },
     { "src": "/guides$", "dest": "/guides/index.html" },
@@ -84,6 +85,10 @@
     {
       "path": "/api/cron",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/reminders",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

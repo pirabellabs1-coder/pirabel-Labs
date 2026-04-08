@@ -80,4 +80,45 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/cron/reminders - 15 minute interval cron to send meeting reminders
+router.get('/reminders', async (req, res) => {
+  try {
+    const cronSecret = req.headers['authorization'];
+    if (cronSecret !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV !== 'development') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const Appointment = require('../models/Appointment');
+    const { sendMeetingReminder } = require('../config/email');
+    
+    const now = new Date();
+    // Look for appointments in the next 45 minutes
+    const futureLimit = new Date(now.getTime() + 45 * 60000);
+
+    const upcomingAppointments = await Appointment.find({
+      status: { $in: ['planifie', 'confirme'] },
+      date: { $gte: now, $lte: futureLimit },
+      reminderSent: false
+    });
+
+    let sentCount = 0;
+    for (const appt of upcomingAppointments) {
+      if (appt.with && appt.with.email) {
+        try {
+          await sendMeetingReminder(appt);
+          appt.reminderSent = true;
+          await appt.save();
+          sentCount++;
+        } catch (err) {
+          console.error('[CRON] Erreur envoi rappel RDV:', err.message);
+        }
+      }
+    }
+
+    res.json({ success: true, remindersSent: sentCount, timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

@@ -549,6 +549,87 @@ async function sendApplicationStatusUpdate(candidateEmail, candidateName, jobTit
   );
 }
 
+// --- ORDERS: ADVANCED AUTOMATION ---
+async function sendOrderStatusUpdate(order, newStatus) {
+  let subject = "Mise à jour concernant votre demande — Pirabel Labs";
+  let content = "Le statut de votre demande a évolué.";
+  
+  if (newStatus === 'en_traitement') {
+    subject = "Votre demande est en cours d'analyse — Pirabel Labs";
+    content = `Nous vous confirmons la bonne réception de votre demande concernant <strong>${order.service}</strong>.<br><br>Notre équipe étudie actuellement vos besoins avec une grande attention et reviendra vers vous très prochainement avec une proposition adaptée.`;
+  } else if (newStatus === 'acceptee') {
+    subject = "Bienvenue chez Pirabel Labs !";
+    content = `Nous sommes ravis de vous compter parmi nos clients ! Votre demande pour <strong>${order.service}</strong> est officiellement validée.<br><br>Un expert va prendre contact avec vous rapidement pour organiser le lancement stratégique du projet.`;
+  } else if (newStatus === 'refusee') {
+    subject = "Suite à votre demande — Pirabel Labs";
+    content = `Après étude approfondie de votre demande pour <strong>${order.service}</strong>, nous sommes au regret de vous informer que nous ne pourrons pas y donner suite actuellement, car notre charge de travail ou l'adéquation du projet ne nous permet pas de vous garantir le niveau d'excellence exigé par Pirabel Labs.<br><br>Nous vous remercions sincèrement pour l'intérêt que vous nous avez porté et vous souhaitons de belles réussites.`;
+  } else {
+    return false;
+  }
+  
+  const html = masterTemplate({
+    title: subject,
+    body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p><p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${content}</p>`,
+    cta: 'Voir le site',
+    ctaUrl: SITE()
+  });
+  
+  return sendEmail(order.email, subject, html);
+}
+
+async function sendQuoteInteraction(order) {
+  const subject = `Votre devis pour ${order.service} est prêt !`;
+  const urlRdv = `${SITE()}/rendez-vous`;
+  const urlModif = `${SITE()}/modifier-devis.html?id=${order._id}`;
+  
+  const html = masterTemplate({
+    headerType: 'hero',
+    preheader: "Proposition commerciale Pirabel Labs",
+    title: "Votre Devis Sur-Mesure",
+    subtitle: `Projet : ${order.service}`,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Suite à notre analyse de votre besoin pour la prestation <strong>${order.service}</strong>, nous avons le plaisir de vous faire parvenir notre proposition détaillée.</p>
+      
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:24px 0;text-align:center;">
+        <h3 style="color:#e5e2e1;font-size:18px;margin-top:0;">Comment souhaitez-vous procéder ?</h3>
+        <p style="color:rgba(229,226,225,0.5);font-size:14px;margin-bottom:20px;">Choisissez l'option qui vous convient le mieux :</p>
+        
+        <a href="${urlRdv}" style="display:inline-block;padding:12px 24px;background:#FF5500;color:#000;text-decoration:none;font-weight:700;font-size:14px;border-radius:2px;margin:0 10px 10px 0;white-space:nowrap;">📅 Planifier un Appel (Validation)</a>
+        
+        <a href="${urlModif}" style="display:inline-block;padding:12px 24px;background:rgba(255,255,255,0.05);color:#e5e2e1;text-decoration:none;font-weight:700;font-size:14px;border:1px solid rgba(229,226,225,0.2);margin:0 10px 10px 0;white-space:nowrap;">✏️ Demander une modification</a>
+      </div>
+      
+      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Vous trouverez en PJ (ou prochainement envoyé par un conseiller) le détail financier exact.</p>
+    `,
+    cta: 'Planifier un Appel',
+    ctaUrl: urlRdv,
+    ctaSecondary: 'Demander une modification',
+    ctaSecondaryUrl: urlModif
+  });
+  
+  return sendEmail(order.email, subject, html);
+}
+
+async function sendMeetingReminder(appointment) {
+  const subject = `Rappel : Appel Pirabel Labs dans 30 minutes`;
+  const html = masterTemplate({
+    title: "Votre RDV approche",
+    subtitle: `Sujet : ${appointment.title}`,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${appointment.with.name || ''},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Ceci est un simple rappel de notre appel prévu dans 30 minutes.</p>
+      <div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;">
+        <p style="margin:0;font-size:14px;color:#e5e2e1;"><strong>Lien / Lieu :</strong> ${appointment.meetingLink || appointment.location || 'Voir agenda'}</p>
+      </div>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">À tout de suite !</p>
+    `,
+    cta: 'Rejoindre la réunion',
+    ctaUrl: appointment.meetingLink || SITE()
+  });
+  return sendEmail(appointment.with.email, subject, html);
+}
+
 // Legacy wrapper for campaigns
 function emailTemplate(title, content, ctaText, ctaUrl) {
   return masterTemplate({ title, body: content, cta: ctaText, ctaUrl });
@@ -558,6 +639,7 @@ module.exports = {
   sendEmail, sendOTP, notifyNewOrder, notifyProjectUpdate,
   sendInvoiceNotification, sendWelcome, sendProspection, sendNewsletter,
   notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
+  sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,
   emailTemplate, masterTemplate,
   prospectionEmail, newsletterEmail, welcomeEmail,
   applicationStatusEmail, applicationConfirmationEmail, newApplicationAdminEmail,

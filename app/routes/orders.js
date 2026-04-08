@@ -192,4 +192,30 @@ router.post('/:id/convert', auth, adminOrEmployee, async (req, res) => {
   }
 });
 
+// POST /api/orders/:id/email - Send manual email to prospect (quotes, status updates)
+router.post('/:id/email', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Commande non trouvée' });
+    
+    const subject = sanitize(req.body.subject || '', 200);
+    const body = req.body.body || '';
+    if (!subject || !body) return res.status(400).json({ error: 'Sujet et contenu requis' });
+    
+    const { masterTemplate, sendEmail } = require('../config/email');
+    const html = masterTemplate({
+      title: subject,
+      body: `<p>${body.replace(/\n/g, '<br>')}</p>`,
+      cta: 'Aller sur le site',
+      ctaUrl: process.env.SITE_URL || 'https://www.pirabellabs.com'
+    });
+    
+    await sendEmail(order.email, subject, html);
+    
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

@@ -15,16 +15,16 @@
 <style>
 .hero-careers{padding:10rem var(--px-page) 5rem;text-align:center;max-width:900px;margin:0 auto;}
 .hero-careers h1{font-family:var(--font-headline);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;}
-.hero-careers h1 span{color:var(--primary);}
+.hero-careers h1 span{color:#FF5500;}
 .hero-careers p{font-size:1.15rem;color:var(--on-surface-variant);max-width:600px;margin:0 auto;}
 .jobs{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
 .job{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;transition:border-color .3s,transform .3s;text-decoration:none;color:var(--on-surface);display:flex;flex-direction:column;}
-.job:hover{border-color:var(--primary);transform:translateY(-4px);}
-.job-type{display:inline-block;background:rgba(255,85,0,.1);color:var(--primary);padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;align-self:flex-start;}
+.job:hover{border-color:#FF5500;transform:translateY(-4px);}
+.job-type{display:inline-block;background:rgba(255,85,0,.1);color:#FF5500;padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;align-self:flex-start;}
 .job h3{font-family:var(--font-headline);font-size:1.25rem;font-weight:700;margin-bottom:.5rem;}
 .job-meta{font-size:.8rem;color:var(--on-surface-variant);margin-bottom:1rem;}
 .job-desc{font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;flex:1;}
-.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:var(--primary);font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;}
+.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:#FF5500;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;}
 .empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--on-surface-variant);}
 </style>
 </head>
@@ -128,7 +128,7 @@ fetch('/api/recruitment/jobs/public')
   .then(data => {
     const list = document.getElementById('jobs-list');
     if (!data.jobs || !data.jobs.length) {
-      list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucune offre ouverte pour le moment</h2><p>Envoyez-nous une candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:var(--primary);">contact@pirabellabs.com</a></p></div>';
+      list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucune offre ouverte pour le moment</h2><p>Envoyez-nous une candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p></div>';
       return;
     }
     list.innerHTML = data.jobs.map(j => `

@@ -1,6 +1,5 @@
 // sidebar.js — Injecte la sidebar Admin complète dans toutes les pages
-// Usage: Mettre <nav class="sidebar-nav" id="sidebar-nav"></nav> dans l'aside
-// et inclure cette script dans le document
+// Remplace tout contenu hardcodé dans .sidebar-nav
 
 (function() {
   const path = window.location.pathname;
@@ -44,23 +43,30 @@
     ]}
   ];
 
-  let html = '';
-  sections.forEach(sec => {
-    html += `<div class="sidebar-section">${sec.title}</div>`;
-    sec.links.forEach(link => {
-      const linkPath = link.href.replace(/^\//, '');
-      const isActive = linkPath === current;
-      html += `<a href="${link.href}" class="sidebar-link${isActive ? ' active' : ''}"><span class="material-symbols-outlined">${link.icon}</span> ${link.label}</a>`;
+  function buildHTML() {
+    let html = '';
+    sections.forEach(sec => {
+      html += `<div class="sidebar-section">${sec.title}</div>`;
+      sec.links.forEach(link => {
+        const linkPath = link.href.replace(/^\//, '');
+        const isActive = linkPath === current;
+        html += `<a href="${link.href}" class="sidebar-link${isActive ? ' active' : ''}"><span class="material-symbols-outlined">${link.icon}</span> ${link.label}</a>`;
+      });
     });
-  });
+    return html;
+  }
 
-  // Inject into any sidebar-nav element
-  document.addEventListener('DOMContentLoaded', function() {
-    const navEls = document.querySelectorAll('.sidebar-nav, #sidebar-nav');
-    navEls.forEach(el => { el.innerHTML = html; });
-  });
+  function inject() {
+    // Replace all sidebar-nav elements (including those with hardcoded content)
+    const navEls = document.querySelectorAll('.sidebar-nav, #sidebar-nav, aside .sidebar-nav, aside nav');
+    navEls.forEach(el => { el.innerHTML = buildHTML(); });
+  }
 
-  // Also try immediately (for scripts loaded after DOM)
-  const navEls = document.querySelectorAll('.sidebar-nav, #sidebar-nav');
-  navEls.forEach(el => { el.innerHTML = html; });
+  // Try immediately and after DOM ready
+  inject();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  }
+  // One final pass after all deferred scripts
+  window.addEventListener('load', inject);
 })();

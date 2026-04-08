@@ -21,6 +21,44 @@ router.get('/', auth, adminOrEmployee, async (req, res) => {
   }
 });
 
+// GET /api/employees/salary-alerts — Get salary payment alerts
+router.get('/salary-alerts', auth, adminOnly, async (req, res) => {
+  try {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const dayOfMonth = now.getDate();
+
+    const employees = await Employee.find({ status: 'actif', salary: { $gt: 0 } });
+    const alerts = [];
+
+    employees.forEach(emp => {
+      const paidThisMonth = emp.salaryPayments.some(p =>
+        (p.month === currentMonth || p.mois === currentMonth) && (p.status === 'paye' || p.status === 'paid')
+      );
+      if (!paidThisMonth && dayOfMonth >= (emp.payDay || 5)) {
+        const daysLate = dayOfMonth - (emp.payDay || 5);
+        alerts.push({
+          employeeId: emp._id,
+          _id: emp._id,
+          name: emp.name,
+          employeeName: emp.name,
+          salary: emp.salary,
+          payDay: emp.payDay || 5,
+          daysLate,
+          month: currentMonth,
+          message: daysLate === 0 ? `Salaire du mois en cours à payer (${emp.salary.toLocaleString('fr-FR')} €)` : `Salaire impayé depuis ${daysLate} jour(s) (${emp.salary.toLocaleString('fr-FR')} €)`,
+          severity: daysLate > 5 ? 'haute' : daysLate > 2 ? 'moyenne' : 'basse'
+        });
+      }
+    });
+
+    // Return as array directly (frontend compatibility)
+    res.json(alerts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/employees/:id
 router.get('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
@@ -149,13 +187,19 @@ router.post('/:id/salary', auth, adminOnly, async (req, res) => {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employe non trouve' });
 
-    const { month, amount, notes } = req.body;
+    // Support both mois/montant (frontend) and month/amount (legacy)
+    const month = req.body.mois || req.body.month;
+    const amount = req.body.montant || req.body.amount;
+    const notes = req.body.notes || '';
+
     employee.salaryPayments.push({
       amount: amount || employee.salary,
+      mois: month,
       month,
+      paidAt: Date.now(),
       paidDate: Date.now(),
       status: 'paye',
-      notes: notes || ''
+      notes
     });
     await employee.save();
 
@@ -175,36 +219,6 @@ router.post('/:id/salary', auth, adminOnly, async (req, res) => {
   }
 });
 
-// GET /api/employees/salary-alerts — Get salary payment alerts
-router.get('/salary-alerts', auth, adminOnly, async (req, res) => {
-  try {
-    const now = new Date();
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const dayOfMonth = now.getDate();
-
-    const employees = await Employee.find({ status: 'actif', salary: { $gt: 0 } });
-    const alerts = [];
-
-    employees.forEach(emp => {
-      const paidThisMonth = emp.salaryPayments.some(p => p.month === currentMonth && p.status === 'paye');
-      if (!paidThisMonth && dayOfMonth >= (emp.payDay || 5)) {
-        const daysLate = dayOfMonth - (emp.payDay || 5);
-        alerts.push({
-          employeeId: emp._id,
-          name: emp.name,
-          salary: emp.salary,
-          payDay: emp.payDay || 5,
-          daysLate,
-          month: currentMonth,
-          severity: daysLate > 5 ? 'haute' : daysLate > 2 ? 'moyenne' : 'basse'
-        });
-      }
-    });
-
-    res.json({ alerts });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// (salary-alerts is defined earlier, before /:id, to avoid route conflict)
 
 module.exports = router;

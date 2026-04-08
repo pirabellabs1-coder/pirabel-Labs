@@ -12,7 +12,7 @@
 <script src="/js/sidebar.js"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
-.kanban{display:grid;grid-template-columns:repeat(7,minmax(220px,1fr));gap:.75rem;overflow-x:auto;padding-bottom:1rem;}
+.kanban{display:grid;grid-template-columns:repeat(7,minmax(200px,1fr));gap:.75rem;overflow-x:auto;padding-bottom:1rem;-webkit-overflow-scrolling:touch;min-height:50vh;}
 .kanban-col{background:var(--card);border:1px solid var(--border);min-height:60vh;display:flex;flex-direction:column;}
 .kanban-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;display:flex;justify-content:space-between;}
 .kanban-body{padding:.5rem;display:flex;flex-direction:column;gap:.5rem;flex:1;overflow-y:auto;max-height:75vh;}

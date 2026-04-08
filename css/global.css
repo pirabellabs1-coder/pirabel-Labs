@@ -201,7 +201,7 @@ input, textarea, select { font-family: inherit; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 3rem;
+  padding: 0.75rem 3rem;
   max-width: 100%;
 }
 .nav-logo {
@@ -215,8 +215,9 @@ input, textarea, select { font-family: inherit; }
 }
 .nav-logo img,
 .nav-logo-img {
-  height: 100px;
+  height: 60px;
   width: auto;
+  transition: height 0.3s var(--ease);
 }
 .footer-logo-img {
   height: 40px;
@@ -291,7 +292,9 @@ input, textarea, select { font-family: inherit; }
   background: rgba(14, 14, 14, 0.95);
   backdrop-filter: blur(30px);
 }
-.nav.scrolled .nav-inner { padding-top: 1rem; padding-bottom: 1rem; }
+.nav.scrolled .nav-inner { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.nav.scrolled .nav-logo img,
+.nav.scrolled .nav-logo-img { height: 40px; }
 
 /* Mobile menu */
 .nav-hamburger {

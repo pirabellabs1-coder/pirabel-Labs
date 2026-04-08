@@ -70,5 +70,29 @@
     document.addEventListener('DOMContentLoaded', inject);
   }
   // One final pass after all deferred scripts
-  window.addEventListener('load', inject);
+  window.addEventListener('load', () => {
+    inject();
+    // Extra delayed pass to survive any late-loading scripts
+    setTimeout(inject, 500);
+    setTimeout(inject, 1500);
+  });
+
+  // Watch for any scripts that try to overwrite the sidebar
+  const observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      if (m.target.classList && m.target.classList.contains('sidebar-nav')) {
+        const hasCommercial = m.target.innerHTML.includes('Commercial');
+        if (!hasCommercial) {
+          inject();
+          break;
+        }
+      }
+    }
+  });
+  const sidebar = document.querySelector('.sidebar-nav');
+  if (sidebar) observer.observe(sidebar, { childList: true, subtree: true });
+  else document.addEventListener('DOMContentLoaded', () => {
+    const s = document.querySelector('.sidebar-nav');
+    if (s) observer.observe(s, { childList: true, subtree: true });
+  });
 })();

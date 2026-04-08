@@ -129,85 +129,133 @@ views.forEach(v => {
 app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 
+// SMTP diagnostic endpoint — test connection and env vars
+app.get('/api/email-diagnostic', async (req, res) => {
+  const nodemailer = require('nodemailer');
+  const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
+  
+  const SMTP_HOST = clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
+  const SMTP_PORT = parseInt(clean(process.env.SMTP_PORT)) || 587;
+  const SMTP_USER = clean(process.env.SMTP_USER);
+  const SMTP_PASS = clean(process.env.SMTP_PASS);
+  const FROM_EMAIL = clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
+  const ADMIN_EMAIL = clean(process.env.ADMIN_EMAIL) || FROM_EMAIL;
+  
+  const diagnostic = {
+    smtp_host: SMTP_HOST,
+    smtp_port: SMTP_PORT,
+    smtp_user_set: !!SMTP_USER,
+    smtp_user_preview: SMTP_USER ? SMTP_USER.substring(0, 8) + '...' : 'NOT SET',
+    smtp_pass_set: !!SMTP_PASS,
+    smtp_pass_length: SMTP_PASS ? SMTP_PASS.length : 0,
+    from_email: FROM_EMAIL,
+    admin_email: ADMIN_EMAIL,
+    connection_test: null
+  };
+  
+  if (SMTP_USER && SMTP_PASS) {
+    try {
+      const testTransport = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_PORT === 465,
+        auth: { user: SMTP_USER, pass: SMTP_PASS },
+        connectionTimeout: 8000,
+        greetingTimeout: 5000,
+        tls: { rejectUnauthorized: false }
+      });
+      await testTransport.verify();
+      diagnostic.connection_test = 'SUCCESS — SMTP connected OK';
+    } catch (err) {
+      diagnostic.connection_test = `FAILED — ${err.code || ''} ${err.message}`;
+    }
+  } else {
+    diagnostic.connection_test = 'SKIPPED — SMTP credentials missing';
+  }
+  
+  res.json(diagnostic);
+});
 
-// Admin cleanup endpoint — remove demo/test orders + leads, keep Ultimauto
-// Usage (logged-in admin): POST /api/admin/cleanup-demos?keep=ultimauto
-// Or dry run: GET /api/admin/cleanup-demos?keep=ultimauto&dryRun=1
-app.all('/api/admin/cleanup-demos', async (req, res) => {
+
+// Admin hard reset endpoint — clears all DB but keeps Ultimauto & Ronan
+// Usage: GET /api/admin/hard-reset-db
+app.all('/api/admin/hard-reset-db', async (req, res) => {
   try {
     const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
-    // Run auth + adminOnly manually
+    // Ensure admin only (even GET is protected)
     await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
     if (res.headersSent) return;
     await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
     if (res.headersSent) return;
 
+    const modelsToKeep = ['ultimauto', 'ronan'];
+    const keepRegex = new RegExp(modelsToKeep.join('|'), 'i');
+
     const Order = require(path.join(modelsPath, 'Order'));
     const Lead = require(path.join(modelsPath, 'Lead'));
+    const Client = require(path.join(modelsPath, 'Client'));
+    const Quote = require(path.join(modelsPath, 'Quote'));
+    const Invoice = require(path.join(modelsPath, 'Invoice'));
+    const Project = require(path.join(modelsPath, 'Project'));
+    const Task = require(path.join(modelsPath, 'Task'));
+    const Revenue = require(path.join(modelsPath, 'Revenue'));
+    const Deal = require(path.join(modelsPath, 'Deal'));
+    const Appointment = require(path.join(modelsPath, 'Appointment'));
 
-    const keepRaw = (req.query.keep || req.body?.keep || 'ultimauto').toString().trim();
-    const dryRun = req.query.dryRun === '1' || req.body?.dryRun === true;
-    const keepRegex = new RegExp(keepRaw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    // Keep IDs
+    const ordersToKeep = await Order.find({ $or: [{ name: keepRegex }, { email: keepRegex }] });
+    const leadsToKeep = await Lead.find({ $or: [{ 'visitor.name': keepRegex }, { 'visitor.email': keepRegex }] });
+    const clientsToKeep = await Client.find({ $or: [{ name: keepRegex }, { email: keepRegex }, { company: keepRegex }] });
+    
+    const clientIdsToKeep = clientsToKeep.map(c => c._id);
+    const quotesToKeep = await Quote.find({ client: { $in: clientIdsToKeep } });
+    const invoicesToKeep = await Invoice.find({ client: { $in: clientIdsToKeep } });
+    const projectsToKeep = await Project.find({ client: { $in: clientIdsToKeep } });
 
-    // Find orders to keep
-    const ordersToKeep = await Order.find({
-      $or: [
-        { name: keepRegex },
-        { email: keepRegex },
-        { website: keepRegex },
-        { message: keepRegex }
-      ]
-    }).select('_id name email');
-
-    // Find leads to keep
-    const leadsToKeep = await Lead.find({
-      $or: [
-        { 'visitor.name': keepRegex },
-        { 'visitor.email': keepRegex },
-        { 'visitor.company': keepRegex },
-        { 'visitor.website': keepRegex },
-        { conversationSummary: keepRegex }
-      ]
-    }).select('_id visitor.name visitor.email');
-
-    const keepOrderIds = ordersToKeep.map(o => o._id);
-    const keepLeadIds = leadsToKeep.map(l => l._id);
-
-    const ordersToDeleteCount = await Order.countDocuments({ _id: { $nin: keepOrderIds } });
-    const leadsToDeleteCount = await Lead.countDocuments({ _id: { $nin: keepLeadIds } });
-
-    if (dryRun) {
-      return res.json({
-        dryRun: true,
-        keep: keepRaw,
-        ordersKept: ordersToKeep.length,
-        ordersToDelete: ordersToDeleteCount,
-        leadsKept: leadsToKeep.length,
-        leadsToDelete: leadsToDeleteCount,
-        keptOrders: ordersToKeep,
-        keptLeads: leadsToKeep
-      });
-    }
-
-    const orderResult = await Order.deleteMany({ _id: { $nin: keepOrderIds } });
-    const leadResult = await Lead.deleteMany({ _id: { $nin: keepLeadIds } });
+    // Perform deletions
+    const deleted = {
+      orders: await Order.deleteMany({ _id: { $nin: ordersToKeep.map(o => o._id) } }),
+      leads: await Lead.deleteMany({ _id: { $nin: leadsToKeep.map(l => l._id) } }),
+      clients: await Client.deleteMany({ _id: { $nin: clientIdsToKeep } }),
+      quotes: await Quote.deleteMany({ _id: { $nin: quotesToKeep.map(q => q._id) } }),
+      invoices: await Invoice.deleteMany({ _id: { $nin: invoicesToKeep.map(i => i._id) } }),
+      projects: await Project.deleteMany({ _id: { $nin: projectsToKeep.map(p => p._id) } }),
+      tasks: await Task.deleteMany({}), // Clear all tasks
+      revenue: await Revenue.deleteMany({}), // Wipes revenue counters
+      deals: await Deal.deleteMany({}), // Wipes Pipeline CRM
+      appointments: await Appointment.deleteMany({}) // Clear Calendar
+    };
 
     res.json({
       success: true,
-      keep: keepRaw,
-      ordersDeleted: orderResult.deletedCount,
-      ordersKept: ordersToKeep.length,
-      leadsDeleted: leadResult.deletedCount,
-      leadsKept: leadsToKeep.length,
-      keptOrders: ordersToKeep,
-      keptLeads: leadsToKeep
+      message: "Database strongly reset. Kept Ultimauto & Ronan.",
+      kept: {
+        clients: clientsToKeep.length,
+        orders: ordersToKeep.length,
+        quotes: quotesToKeep.length,
+        invoices: invoicesToKeep.length,
+        projects: projectsToKeep.length
+      },
+      deleted: {
+        orders: deleted.orders.deletedCount,
+        leads: deleted.leads.deletedCount,
+        clients: deleted.clients.deletedCount,
+        quotes: deleted.quotes.deletedCount,
+        invoices: deleted.invoices.deletedCount,
+        projects: deleted.projects.deletedCount,
+        tasks: deleted.tasks.deletedCount,
+        revenue: deleted.revenue.deletedCount,
+        deals: deleted.deals.deletedCount,
+        appointments: deleted.appointments.deletedCount,
+      }
     });
+
   } catch (err) {
-    if (!res.headersSent) {
-      res.status(500).json({ error: err.message });
-    }
+    console.error('Reset error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 // Email diagnostic endpoint
 app.get('/api/test-email', async (req, res) => {

@@ -341,7 +341,7 @@ function newsletterEmail(recipientName, options = {}) {
 // SEND FUNCTIONS
 // ========================================
 
-async function sendEmail(to, subject, html) {
+async function sendEmail(to, subject, html, opts = {}) {
   if (!SMTP_USER || !SMTP_PASS) {
     console.error('[email] MISSING SMTP_USER/SMTP_PASS env vars - cannot send email to', to);
     return false;
@@ -351,7 +351,15 @@ async function sendEmail(to, subject, html) {
     return false;
   }
   try {
-    const info = await transporter.sendMail({ from: FROM(), to, subject, html });
+    const mailOptions = { 
+      from: opts.from || FROM(), 
+      to, 
+      subject, 
+      html 
+    };
+    if (opts.replyTo) mailOptions.replyTo = opts.replyTo;
+
+    const info = await transporter.sendMail(mailOptions);
     console.log(`[email] OK to=${to} subject="${subject}" messageId=${info.messageId} accepted=${(info.accepted || []).length} rejected=${(info.rejected || []).length}`);
     return true;
   } catch (err) {

@@ -446,17 +446,23 @@ const originalUpdateDetailStatus = updateDetailStatus;
 updateDetailStatus = async function() {
   const newStatus = document.getElementById('detail-status-select').value;
   if (newStatus === 'acceptee') {
-    // Check if it's already converted to prevent duplicating
     if(currentOrder.convertedToClient || currentOrder.convertedToProject) {
         toast('Cette commande est déjà convertie en projet/client.', 'info');
         return originalUpdateDetailStatus();
     }
-    // Offer to automatically convert it
     toast('La validation lance la conversion automatique en Client...', 'info');
     openConvertModal();
     return;
   }
-  return originalUpdateDetailStatus();
+  await originalUpdateDetailStatus();
+  // Inform admin that an automatic email was sent to the prospect
+  if (newStatus === 'devis_envoye') {
+    toast('📧 Devis interactif envoyé automatiquement au prospect !', 'success');
+  } else if (newStatus === 'en_traitement') {
+    toast('📧 Email "En cours d\'analyse" envoyé au prospect', 'success');
+  } else if (newStatus === 'refusee') {
+    toast('📧 Email d\'information envoyé au prospect', 'success');
+  }
 };
 
 const originalViewOrder = viewOrder;

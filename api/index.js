@@ -102,6 +102,7 @@ app.use('/api/notifications', require(path.join(routesPath, 'notifications')));
 app.use('/api/search', require(path.join(routesPath, 'search')));
 app.use('/api/tasks', require(path.join(routesPath, 'tasks')));
 app.use('/api/appointments', require(path.join(routesPath, 'appointments')));
+app.use('/api/v2/admin', require(path.join(routesPath, 'admin-api')));
 app.use('/api/quotes', require(path.join(routesPath, 'quotes')));
 app.use('/api/deals', require(path.join(routesPath, 'deals')));
 app.use('/api/email-templates', require(path.join(routesPath, 'email-templates')));
@@ -121,7 +122,7 @@ app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'po
 app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });

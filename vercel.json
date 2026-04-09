@@ -49,6 +49,8 @@
     { "src": "/email-templates", "dest": "/api/index.js" },
     { "src": "/time-tracking", "dest": "/api/index.js" },
     { "src": "/reviews-admin", "dest": "/api/index.js" },
+    { "src": "/api-docs", "dest": "/api/index.js" },
+    { "src": "/gerer-rendez-vous", "dest": "/api/index.js" },
     { "src": "/health", "dest": "/api/index.js" },
     { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },

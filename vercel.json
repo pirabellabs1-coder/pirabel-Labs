@@ -33,6 +33,8 @@
     { "src": "/messages", "dest": "/api/index.js" },
     { "src": "/articles", "dest": "/api/index.js" },
     { "src": "/analytics", "dest": "/api/index.js" },
+    { "src": "/mon-espace", "dest": "/client_portal_v4p8w1n7x9k2m_access_secure/index.html" },
+    { "src": "/espace-client-4p8w1n", "dest": "/mon-espace", "status": 301 },
     { "src": "/portal", "dest": "/api/index.js" },
 
     { "src": "/portal-login", "dest": "/api/index.js" },

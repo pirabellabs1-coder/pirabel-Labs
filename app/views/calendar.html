@@ -253,17 +253,26 @@ async function drop(ev, dateStr) {
   const newDate = new Date(dateStr);
   newDate.setHours(oldDate.getHours(), oldDate.getMinutes());
 
-  if (!confirm(`Déplacer "${appt.title}" au ${newDate.toLocaleDateString('fr-FR')} ?`)) return;
+  // Feedback visuel immédiat
+  toast('Déplacement en cours...', 'info');
 
   try {
-    await api(`/appointments/${id}`, {
+    const res = await api(`/appointments/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ date: newDate.toISOString(), rescheduleReason: 'Déplacement manuel via calendrier' })
+      body: JSON.stringify({ 
+        date: newDate.toISOString(), 
+        rescheduleReason: 'Déplacement manuel via calendrier' 
+      })
     });
-    toast('Rendez-vous déplacé');
-    loadAppts();
+    
+    if (res && !res.error) {
+      toast('Rendez-vous déplacé avec succès');
+      loadAppts();
+    } else {
+      toast(res.error || 'Erreur lors du déplacement', 'error');
+    }
   } catch (err) {
-    toast('Erreur lors du déplacement', 'error');
+    toast('Erreur réseau lors du déplacement', 'error');
   }
 }
 

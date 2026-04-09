@@ -34,7 +34,7 @@
     { "src": "/articles", "dest": "/api/index.js" },
     { "src": "/analytics", "dest": "/api/index.js" },
     { "src": "/portal", "dest": "/api/index.js" },
-    { "src": "/admin_x9k2m7v4p8w1n_secure_access_2026", "dest": "/api/index.js" },
+
     { "src": "/portal-login", "dest": "/api/index.js" },
     { "src": "/notes", "dest": "/api/index.js" },
     { "src": "/prospects", "dest": "/api/index.js" },
@@ -77,7 +77,7 @@
     { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
     { "src": "/(blog)/([^/]+)$", "dest": "/$1/$2.html" },
-    { "src": "/client_portal_v4p8w1n7x9k2m_access_secure", "dest": "/api/index.js" },
+
     { "src": "/llms\\.txt", "dest": "/llms.txt" },
     { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },
     { "src": "/.well-known/(.*)", "dest": "/.well-known/$1" }

@@ -145,6 +145,7 @@ app.get('/recruitment', (req, res) => res.sendFile(path.join(__dirname, 'views',
 app.get('/candidates', (req, res) => res.sendFile(path.join(__dirname, 'views', 'candidates.html')));
 app.get('/tasks', (req, res) => res.sendFile(path.join(__dirname, 'views', 'tasks.html')));
 app.get('/calendar', (req, res) => res.sendFile(path.join(__dirname, 'views', 'calendar.html')));
+app.get('/gerer-rendez-vous.html', (req, res) => res.sendFile(path.join(__dirname, 'views', 'gerer-rendez-vous.html')));
 app.get('/api-docs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'api-docs.html')));
 
 // Blocked routes

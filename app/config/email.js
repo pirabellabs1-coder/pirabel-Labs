@@ -647,7 +647,8 @@ function appointmentConfirmationEmail(appt) {
     month: 'long', 
     year: 'numeric', 
     hour: '2-digit', 
-    minute: '2-digit' 
+    minute: '2-digit',
+    timeZone: 'Europe/Paris'
   });
 
   return masterTemplate({
@@ -687,6 +688,7 @@ module.exports = {
   sendEmail, sendOTP, notifyNewOrder, notifyProjectUpdate,
   sendInvoiceNotification, sendWelcome, sendProspection, sendNewsletter,
   notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
+  sendAppointmentConfirmation,
   sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,
   emailTemplate, masterTemplate,
   prospectionEmail, newsletterEmail, welcomeEmail,

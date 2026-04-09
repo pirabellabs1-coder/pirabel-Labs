@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gérer votre Rendez-vous | Pirabel Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.manage-container { max-width: 600px; margin: 8rem auto; padding: 0 2rem; }
+.card { background: var(--surface-container); border: 1px solid var(--outline-variant); padding: 2.5rem; }
+.status-tag { display: inline-block; padding: 4px 12px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+.status-planifie { background: rgba(255, 85, 0, 0.1); color: var(--primary); }
+.status-annule { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+.field { margin-bottom: 1.5rem; }
+.field label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--on-surface-variant); margin-bottom: 0.5rem; font-weight: 700; }
+.field textarea, .field input { width: 100%; background: var(--surface); border: 1px solid var(--outline-variant); padding: 0.75rem 1rem; color: var(--on-surface); outline: none; }
+.btn-group { display: flex; gap: 1rem; margin-top: 2rem; }
+.btn-sec { background: transparent; border: 1px solid var(--outline-variant); color: var(--on-surface); padding: 0.75rem 1.5rem; font-weight: 700; cursor: pointer; flex: 1; }
+.btn-primary { background: var(--primary); color: #5c1900; border: none; padding: 0.75rem 1.5rem; font-weight: 700; cursor: pointer; flex: 1; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="noise-overlay"></div>
+<div class="manage-container">
+  <div id="loading" style="text-align:center;">Chargement de votre rendez-vous...</div>
+  
+  <div id="content" class="hidden">
+    <div class="card">
+      <div id="status-box" class="status-tag"></div>
+      <h1 id="appt-title" style="font-family: var(--font-headline); font-size: 1.8rem; margin-bottom: 0.5rem;"></h1>
+      <p id="appt-date" style="color: var(--on-surface-variant); margin-bottom: 2rem;"></p>
+
+      <div id="actions-box">
+        <div class="field">
+          <label>Motif de modification / annulation *</label>
+          <textarea id="reason" placeholder="Ex: Contretemps professionnel, besoin de décaler le créneau..." rows="3"></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn-sec" onclick="cancelAppt()">Annuler le RDV</button>
+          <button class="btn-primary" onclick="showReschedule()">Replanifier</button>
+        </div>
+      </div>
+
+      <div id="reschedule-box" class="hidden" style="margin-top: 2rem; border-top: 1px solid var(--outline-variant); padding-top: 2rem;">
+        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Choisir une nouvelle date</h3>
+        <div class="field">
+          <input type="datetime-local" id="new-date">
+        </div>
+        <div class="btn-group">
+          <button class="btn-sec" onclick="hideReschedule()">Retour</button>
+          <button class="btn-primary" onclick="confirmReschedule()">Confirmer le report</button>
+        </div>
+      </div>
+
+      <div id="success-box" class="hidden" style="margin-top: 2rem; text-align: center; color: var(--primary);">
+        <span class="material-symbols-outlined" style="font-size: 3rem;">check_circle</span>
+        <p id="success-msg" style="margin-top: 1rem; font-weight: 700;"></p>
+        <a href="/" style="display:inline-block; margin-top: 1.5rem; color: var(--on-surface); font-size: 0.8rem; text-decoration: underline;">Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
+let appt = null;
+
+if (!token) {
+  document.getElementById('loading').textContent = 'Lien de gestion invalide (token manquant).';
+} else {
+  loadAppt();
+}
+
+async function loadAppt() {
+  try {
+    const r = await fetch(`/api/appointments/manage/${token}`);
+    if (!r.ok) throw new Error('Impossible de charger le rendez-vous.');
+    appt = await r.json();
+    
+    document.getElementById('appt-title').textContent = appt.title;
+    const d = new Date(appt.date);
+    document.getElementById('appt-date').textContent = d.toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+    
+    const statusBox = document.getElementById('status-box');
+    statusBox.textContent = appt.status === 'planifie' ? 'Prévu' : (appt.status === 'annule' ? 'Annulé' : appt.status);
+    statusBox.className = 'status-tag status-' + appt.status;
+
+    if (appt.status === 'annule') {
+      document.getElementById('actions-box').classList.add('hidden');
+    }
+
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('content').classList.remove('hidden');
+  } catch (err) {
+    document.getElementById('loading').textContent = err.message;
+  }
+}
+
+async function cancelAppt() {
+  const reason = document.getElementById('reason').value.trim();
+  if (!reason) return alert('Veuillez indiquer une raison pour l\'annulation.');
+  if (!confirm('Voulez-vous vraiment annuler ce rendez-vous ?')) return;
+
+  try {
+    const r = await fetch(`/api/appointments/cancel/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason })
+    });
+    if (!r.ok) throw new Error('Erreur lors de l\'annulation.');
+    
+    showSuccess('Votre rendez-vous a bien été annulé.');
+  } catch (err) { alert(err.message); }
+}
+
+function showReschedule() {
+  const reason = document.getElementById('reason').value.trim();
+  if (!reason) return alert('Veuillez indiquer une raison avant de replanifier.');
+  document.getElementById('actions-box').classList.add('hidden');
+  document.getElementById('reschedule-box').classList.remove('hidden');
+}
+
+function hideReschedule() {
+  document.getElementById('reschedule-box').classList.add('hidden');
+  document.getElementById('actions-box').classList.remove('hidden');
+}
+
+async function confirmReschedule() {
+  const date = document.getElementById('new-date').value;
+  const reason = document.getElementById('reason').value.trim();
+  if (!date) return alert('Veuillez sélectionner une nouvelle date.');
+
+  try {
+    const r = await fetch(`/api/appointments/reschedule/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, reason })
+    });
+    if (!r.ok) throw new Error('Erreur lors de la replanification.');
+    
+    showSuccess('Votre rendez-vous a été reporté avec succès.');
+  } catch (err) { alert(err.message); }
+}
+
+function showSuccess(msg) {
+  document.getElementById('actions-box').classList.add('hidden');
+  document.getElementById('reschedule-box').classList.add('hidden');
+  document.getElementById('success-box').classList.remove('hidden');
+  document.getElementById('success-msg').textContent = msg;
+}
+</script>
+</body>
+</html>

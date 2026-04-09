@@ -146,7 +146,11 @@ let draggingId = null;
 
 async function api(url, opts = {}) {
   const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
-  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  if (r.status === 401) { 
+    // Rediriger vers l'URL d'accès admin configurée (ou la racine d'admin par défaut)
+    window.location.href = '/admin_x9k2m7v4p8w1n_secure_access_2026'; 
+    return; 
+  }
   return r.json();
 }
 
@@ -261,7 +265,8 @@ async function drop(ev, dateStr) {
       method: 'PUT',
       body: JSON.stringify({ 
         date: newDate.toISOString(), 
-        rescheduleReason: 'Déplacement manuel via calendrier' 
+        status: 'planifie',
+        rescheduleReason: 'Déplacement manuel via calendrier admin' 
       })
     });
     

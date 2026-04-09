@@ -12,10 +12,14 @@
 <script src="/js/sidebar.js"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
-.kanban{display:grid;grid-template-columns:repeat(7,minmax(200px,1fr));gap:.75rem;overflow-x:auto;padding-bottom:1rem;-webkit-overflow-scrolling:touch;min-height:50vh;}
+.kanban{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;padding-bottom:2rem;min-height:50vh;}
 .kanban-col{background:var(--card);border:1px solid var(--border);min-height:60vh;display:flex;flex-direction:column;}
 .kanban-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;display:flex;justify-content:space-between;}
-.kanban-body{padding:.5rem;display:flex;flex-direction:column;gap:.5rem;flex:1;overflow-y:auto;max-height:75vh;}
+.kanban-body{padding:.75rem;display:flex;flex-direction:column;gap:.75rem;flex:1;min-height:100px;}
+@media(max-width:600px){
+  .topbar-header-wrap{flex-direction:column;align-items:flex-start !important;gap:0.5rem !important;padding:1rem 0;}
+  .kanban{grid-template-columns:1fr;}
+}
 .app-card{background:var(--bg);border:1px solid var(--border);padding:.75rem;cursor:grab;transition:border-color .2s, transform .2s;}
 .app-card:hover{border-color:var(--accent);}
 .app-card.dragging{opacity:.5;}
@@ -68,8 +72,8 @@
 </aside>
 
 <div class="main">
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:1rem;">
+  <header class="topbar" style="height:auto;min-height:60px;padding:0.5rem 2rem;">
+    <div class="topbar-header-wrap" style="display:flex;align-items:center;gap:1rem;">
       <div class="topbar-title">Candidatures</div>
       <select id="filter-job" onchange="loadApps()" style="background:var(--card);border:1px solid var(--border);padding:.5rem .75rem;color:var(--text);font-size:.75rem;">
         <option value="">Toutes les offres</option>

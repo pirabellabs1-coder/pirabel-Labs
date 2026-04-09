@@ -34,13 +34,15 @@
       { href: '/analytics', icon: 'analytics', label: 'Analytics' },
       { href: '/reviews-admin', icon: 'star', label: 'Avis clients' }
     ]},
-    { title: 'Finance', links: [
+    { title: 'Facturation & Finance', links: [
+      { href: '/quotes', icon: 'request_quote', label: 'Devis' },
       { href: '/invoices', icon: 'receipt_long', label: 'Factures' },
-      { href: '/revenue', icon: 'monitoring', label: 'Revenue' }
+      { href: '/revenue', icon: 'monitoring', label: 'Revenus' }
     ]},
     { title: 'Système', links: [
       { href: '/notes', icon: 'sticky_note_2', label: 'Notes' },
       { href: '/logs', icon: 'history', label: 'Logs' },
+      { href: '/api-docs', icon: 'api', label: 'Documentation API' },
       { href: '/settings', icon: 'settings', label: 'Paramètres' }
     ]}
   ];

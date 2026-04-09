@@ -70,12 +70,19 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inject);
   }
+
+  // Force injection multiple times to bypass any other scripts
+  let attempts = 0;
+  const forceInject = setInterval(() => {
+    inject();
+    attempts++;
+    if (attempts > 10) clearInterval(forceInject);
+  }, 500);
+
   // One final pass after all deferred scripts
   window.addEventListener('load', () => {
     inject();
-    // Extra delayed pass to survive any late-loading scripts
-    setTimeout(inject, 500);
-    setTimeout(inject, 1500);
+    setTimeout(inject, 2000);
   });
 
   // Watch for any scripts that try to overwrite the sidebar

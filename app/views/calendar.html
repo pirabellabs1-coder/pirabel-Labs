@@ -3,301 +3,247 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendrier | Pirabel Labs Admin</title>
+<title>Calendrier — Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
-<script src="/js/dashboard-ui.js" defer></script>
-<script src="/js/sidebar.js"></script>
-<script src="/js/admin-topbar.js" defer></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <style>
-.cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;}
-.cal-nav{display:flex;gap:.5rem;align-items:center;}
-.cal-nav button{background:var(--card);border:1px solid var(--border);color:var(--text);padding:.5rem .75rem;cursor:pointer;font-family:inherit;}
-.cal-nav button:hover{border-color:var(--accent);color:var(--accent);}
-.cal-month{font-family:var(--font-h);font-size:1.25rem;font-weight:700;text-transform:capitalize;min-width:200px;text-align:center;}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);background:var(--card);border:1px solid var(--border);}
-.cal-day-head{padding:.75rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;font-weight:700;border-bottom:1px solid var(--border);background:var(--bg);}
-.cal-cell{min-height:110px;padding:.5rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;cursor:pointer;transition:background .2s;}
-.cal-cell:hover{background:rgba(255,85,0,.04);}
-.cal-cell.other{opacity:.3;background:var(--bg);}
-.cal-cell.today{background:rgba(255,85,0,.08);}
-.cal-cell.today .cal-num{color:var(--accent);font-weight:800;}
-.cal-num{font-size:.85rem;font-weight:600;margin-bottom:.3rem;}
-.cal-event{background:var(--accent);color:#000;padding:.15rem .35rem;font-size:.65rem;font-weight:600;margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
-.cal-event.appointment{background:#3498db;color:#fff;}
-.cal-event.deadline{background:#e74c3c;color:#fff;}
-.cal-event.interview{background:#9b59b6;color:#fff;}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
-.modal-bg.show{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;}
-.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.modal-body{padding:1.5rem;}
-.field{margin-bottom:1rem;}
-.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
-.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
-.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
-.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
-.btn-danger{background:transparent;color:#e74c3c;border:1px solid rgba(231,76,60,.3);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
-.public-link{display:flex;gap:.5rem;align-items:center;background:var(--bg);padding:.75rem;border:1px solid var(--border);font-size:.75rem;}
-.public-link span{flex:1;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+:root {
+  --fc-border-color: var(--outline-variant);
+  --fc-daygrid-event-dot-width: 8px;
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: var(--outline-variant);
+  --fc-button-text-color: var(--on-surface);
+  --fc-button-active-bg-color: var(--primary);
+  --fc-button-active-border-color: var(--primary);
+  --fc-button-hover-bg-color: rgba(255,85,0,0.1);
+}
+.app { display: flex; min-height: 100vh; background: var(--surface); }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.content { flex: 1; padding: 2rem; overflow-y: auto; }
+
+/* Styles FullCalendar Premium */
+#calendar-card { background: var(--surface-container); border: 1px solid var(--outline-variant); padding: 1.5rem; }
+.fc .fc-toolbar-title { font-family: var(--font-headline); font-weight: 700; text-transform: capitalize; font-size: 1.5rem; }
+.fc .fc-col-header-cell-cushion { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 12px 0; color: var(--on-surface-variant); }
+.fc-event { cursor: move; border: none; padding: 2px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.fc-v-event { background: var(--primary)!important; }
+.fc-h-event { background: var(--primary)!important; }
+.fc-event-main { color: #5c1900; font-weight: 700; font-size: 0.75rem; }
+
+/* Modals */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+.modal-bg.show { display: flex; }
+.modal { background: var(--surface-container); border: 1px solid var(--outline-variant); max-width: 500px; width: 100%; }
+.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--outline-variant); display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 1.5rem; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--on-surface-variant); margin-bottom: .4rem; font-weight: 700; }
+.field input, .field textarea, .field select { width: 100%; background: var(--surface); border: 1px solid var(--outline-variant); padding: .7rem 1rem; color: var(--on-surface); font-size: .85rem; outline: none; }
+.btn-primary { background: var(--primary); color: #5c1900; border: none; padding: .75rem 1.5rem; font-weight: 700; font-size: .8rem; text-transform: uppercase; cursor: pointer; }
+
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+.toast { background: var(--primary); color: #5c1900; padding: 1rem 2rem; margin-bottom: 10px; font-weight: 700; animation: slideIn 0.3s ease-out; }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 </style>
 </head>
 <body>
 <div class="toast-container" id="toasts"></div>
 <div class="app">
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">PIRABEL LABS</div>
-  <nav class="sidebar-nav">
-    <div class="sidebar-section">Principal</div>
-    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
-    <a href="/calendar" class="sidebar-link active"><span class="material-symbols-outlined">event</span> Calendrier</a>
-    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
-    <div class="sidebar-section">Gestion</div>
-    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
-    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
-    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
-    <div class="sidebar-section">Marketing</div>
-    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
-    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
-    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-    <div class="sidebar-section">Finance</div>
-    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
-    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <div class="sidebar-section">Système</div>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
-  </nav>
-</aside>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">PIRABEL LABS</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+      <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+      <a href="/calendar" class="sidebar-link active"><span class="material-symbols-outlined">event</span> Calendrier</a>
+      <div class="sidebar-section">Gestion</div>
+      <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+      <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    </nav>
+  </aside>
 
-<div class="main">
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <div class="topbar-title">Calendrier</div>
-    </div>
-    <div class="topbar-actions">
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title">Calendrier Interactif</div>
       <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau RDV</button>
-    </div>
-  </header>
+    </header>
 
-  <div class="content">
-    <div class="public-link" style="margin-bottom:1rem;">
-      <span class="material-symbols-outlined" style="font-size:1rem;color:var(--accent);">link</span>
-      <span id="public-url">Lien public de prise de RDV : /rendez-vous.html</span>
-      <button class="btn-secondary" style="padding:.4rem .8rem;font-size:.7rem;" onclick="copyPublicLink()">Copier</button>
-    </div>
-
-    <div class="cal-toolbar">
-      <div class="cal-nav">
-        <button onclick="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
-        <div class="cal-month" id="cal-month"></div>
-        <button onclick="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
-        <button onclick="goToday()" style="margin-left:.5rem;font-size:.75rem;">Aujourd'hui</button>
-      </div>
-      <div style="display:flex;gap:.5rem;font-size:.7rem;color:var(--muted);align-items:center;">
-        <span style="display:inline-block;width:10px;height:10px;background:#3498db;"></span> RDV
-        <span style="display:inline-block;width:10px;height:10px;background:#e74c3c;margin-left:.5rem;"></span> Deadline
-        <span style="display:inline-block;width:10px;height:10px;background:#9b59b6;margin-left:.5rem;"></span> Entretien
+    <div class="content">
+      <div id="calendar-card">
+        <div id="calendar"></div>
       </div>
     </div>
-    <div class="calendar" id="calendar"></div>
   </div>
-</div>
 </div>
 
-<div class="modal-bg" id="modal"><div class="modal">
-  <div class="modal-header">
-    <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Rendez-vous</h3>
-    <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
-  </div>
-  <div class="modal-body">
-    <div class="field"><label>Titre *</label><input id="f-title" placeholder="Consultation Ultimauto"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div class="field"><label>Type</label><select id="f-type"><option value="consultation">Consultation</option><option value="demo">Démo</option><option value="kickoff">Kickoff</option><option value="review">Revue</option><option value="entretien">Entretien</option><option value="autre">Autre</option></select></div>
-      <div class="field"><label>Statut</label><select id="f-status"><option value="planifie">Planifié</option><option value="confirme">Confirmé</option><option value="termine">Terminé</option><option value="annule">Annulé</option></select></div>
+<!-- Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title" style="margin:0;">Rendez-vous</h3>
+      <button onclick="closeModal()" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;">×</button>
     </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;">
-      <div class="field"><label>Date & heure *</label><input type="datetime-local" id="f-date"></div>
-      <div class="field"><label>Durée (min)</label><input type="number" id="f-duration" value="30"></div>
-    </div>
-    <div class="field"><label>Avec (nom)</label><input id="f-name"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="modal-body">
+      <div class="field"><label>Titre *</label><input id="f-title" placeholder="Ex: Consultation SEO"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="field"><label>Type</label><select id="f-type"><option value="consultation">Consultation</option><option value="demo">Démo</option><option value="kickoff">Kickoff</option><option value="autre">Autre</option></select></div>
+        <div class="field"><label>Statut</label><select id="f-status"><option value="planifie">Planifié</option><option value="confirme">Confirmé</option><option value="annule">Annulé</option></select></div>
+      </div>
+      <div class="field"><label>Date & Heure *</label><input type="datetime-local" id="f-date"></div>
+      <div class="field"><label>Client (Nom)</label><input id="f-name"></div>
       <div class="field"><label>Email</label><input type="email" id="f-email"></div>
-      <div class="field"><label>Téléphone</label><input id="f-phone"></div>
-    </div>
-    <div class="field"><label>Lien visio / Lieu</label><input id="f-location" value="Visioconférence"></div>
-    <div class="field"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div>
-    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
-      <button class="btn-danger" id="del-btn" style="margin-right:auto;display:none;" onclick="deleteAppt()">Supprimer</button>
-      <button class="btn-secondary" onclick="closeModal()">Annuler</button>
-      <button class="btn-primary" onclick="saveAppt()">Enregistrer</button>
+      <div class="field"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;">
+        <button class="btn-primary" style="background:#e74c3c;color:#fff;margin-right:auto;display:none;" id="del-btn" onclick="deleteAppt()">Supprimer</button>
+        <button class="btn-primary" onclick="saveAppt()">Enregistrer</button>
+      </div>
     </div>
   </div>
-</div></div>
+</div>
 
+<script src="/js/sidebar.js"></script>
 <script>
-let currentDate = new Date();
-let allAppts = [];
+let calendar;
 let editingId = null;
 
-async function api(url, opts = {}) {
-  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
-  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
-  return r.json();
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl = document.getElementById('calendar');
+  calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'fr',
+    firstDay: 1,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listWeek'
+    },
+    editable: true,
+    events: async function(info, successCallback, failureCallback) {
+      try {
+        const r = await fetch(`/api/appointments?from=${info.start.toISOString()}&to=${info.end.toISOString()}`);
+        const data = await r.json();
+        const evts = (data.appointments || []).map(a => ({
+          id: a._id,
+          title: a.title,
+          start: a.date,
+          backgroundColor: a.status === 'annule' ? '#444' : (a.type === 'consultation' ? '#FF5500' : '#41e4c0'),
+          extendedProps: { ...a }
+        }));
+        successCallback(evts);
+      } catch (e) { failureCallback(e); }
+    },
+    
+    // DRAG & DROP
+    eventDrop: async function(info) {
+      if (!confirm(`Déplacer "${info.event.title}" au ${info.event.start.toLocaleString()} ?`)) {
+        info.revert();
+        return;
+      }
+      try {
+        const r = await fetch(`/api/appointments/${info.event.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            date: info.event.start.toISOString(),
+            rescheduleReason: 'Déplacement manuel via calendrier'
+          })
+        });
+        if (!r.ok) throw new Error();
+        toast('Rendez-vous déplacé !');
+      } catch (e) {
+        toast('Erreur lors du déplacement', 'error');
+        info.revert();
+      }
+    },
 
-function toast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = 'toast toast-' + type;
-  t.textContent = msg;
-  document.getElementById('toasts').appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
-
-function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
-
-async function loadAppts() {
-  const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
-  const data = await api(`/appointments?from=${start.toISOString()}&to=${end.toISOString()}`);
-  allAppts = data.appointments || [];
-  render();
-}
-
-function render() {
-  document.getElementById('cal-month').textContent = currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-  const cal = document.getElementById('calendar');
-  const headers = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-  let html = headers.map(h => `<div class="cal-day-head">${h}</div>`).join('');
-
-  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-  let startOffset = firstDay.getDay() - 1;
-  if (startOffset < 0) startOffset = 6;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  for (let i = 0; i < startOffset; i++) {
-    const d = new Date(firstDay);
-    d.setDate(d.getDate() - (startOffset - i));
-    html += renderCell(d, true);
-  }
-  for (let day = 1; day <= lastDay.getDate(); day++) {
-    const d = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    html += renderCell(d, false, d.getTime() === today.getTime());
-  }
-  const totalCells = startOffset + lastDay.getDate();
-  const remaining = (7 - (totalCells % 7)) % 7;
-  for (let i = 1; i <= remaining; i++) {
-    const d = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, i);
-    html += renderCell(d, true);
-  }
-  cal.innerHTML = html;
-}
-
-function renderCell(date, other, today) {
-  const dayAppts = allAppts.filter(a => {
-    const ad = new Date(a.date);
-    return ad.getDate() === date.getDate() && ad.getMonth() === date.getMonth() && ad.getFullYear() === date.getFullYear();
+    eventClick: function(info) {
+      openEdit(info.event.extendedProps._id);
+    }
   });
-  const events = dayAppts.slice(0, 3).map(a => `
-    <div class="cal-event ${a.type === 'entretien' ? 'interview' : 'appointment'}" onclick="event.stopPropagation();openEdit('${a._id}')" title="${escapeHtml(a.title)}">
-      ${new Date(a.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} ${escapeHtml(a.title)}
-    </div>
-  `).join('');
-  const more = dayAppts.length > 3 ? `<div style="font-size:.6rem;color:var(--muted);">+${dayAppts.length - 3}</div>` : '';
-  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T09:00`;
-  return `
-    <div class="cal-cell ${other ? 'other' : ''} ${today ? 'today' : ''}" onclick="openCreateAt('${dateStr}')">
-      <div class="cal-num">${date.getDate()}</div>
-      ${events}${more}
-    </div>
-  `;
+  calendar.render();
+});
+
+function toast(msg, type='success') {
+  const t = document.getElementById('toasts');
+  const d = document.createElement('div');
+  d.className = 'toast';
+  if(type === 'error') d.style.background = '#e74c3c';
+  d.textContent = msg;
+  t.appendChild(d);
+  setTimeout(() => d.remove(), 3000);
 }
 
-function prevMonth() { currentDate.setMonth(currentDate.getMonth() - 1); loadAppts(); }
-function nextMonth() { currentDate.setMonth(currentDate.getMonth() + 1); loadAppts(); }
-function goToday() { currentDate = new Date(); loadAppts(); }
-
-function copyPublicLink() {
-  navigator.clipboard.writeText(window.location.origin + '/rendez-vous.html');
-  toast('Lien copié');
-}
-
-function openCreate() { openCreateAt(new Date().toISOString().slice(0, 16)); }
-function openCreateAt(dateStr) {
+function openCreate() {
   editingId = null;
-  document.getElementById('modal-title').textContent = 'Nouveau rendez-vous';
+  document.getElementById('modal-title').textContent = 'Nouveau Rendez-vous';
   document.getElementById('del-btn').style.display = 'none';
-  ['f-title', 'f-name', 'f-email', 'f-phone', 'f-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-type').value = 'consultation';
-  document.getElementById('f-status').value = 'planifie';
-  document.getElementById('f-date').value = dateStr;
-  document.getElementById('f-duration').value = 30;
-  document.getElementById('f-location').value = 'Visioconférence';
+  document.getElementById('f-date').value = new Date().toISOString().slice(0, 16);
   document.getElementById('modal').classList.add('show');
 }
 
-function openEdit(id) {
-  const a = allAppts.find(x => x._id === id);
-  if (!a) return;
-  editingId = id;
-  document.getElementById('modal-title').textContent = 'Éditer le rendez-vous';
-  document.getElementById('del-btn').style.display = 'inline-block';
-  document.getElementById('f-title').value = a.title || '';
-  document.getElementById('f-type').value = a.type || 'consultation';
-  document.getElementById('f-status').value = a.status || 'planifie';
-  const d = new Date(a.date);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  document.getElementById('f-date').value = d.toISOString().slice(0, 16);
-  document.getElementById('f-duration').value = a.duration || 30;
-  document.getElementById('f-name').value = a.with?.name || '';
-  document.getElementById('f-email').value = a.with?.email || '';
-  document.getElementById('f-phone').value = a.with?.phone || '';
-  document.getElementById('f-location').value = a.location || '';
-  document.getElementById('f-notes').value = a.notes || '';
-  document.getElementById('modal').classList.add('show');
+async function openEdit(id) {
+  try {
+    const r = await fetch(`/api/appointments/${id}`); // Fallback or search in local events
+    // Pour simplifier ici, comme on a les extendedProps :
+    const a = calendar.getEventById(id).extendedProps;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Modifier le Rendez-vous';
+    document.getElementById('del-btn').style.display = 'block';
+    document.getElementById('f-title').value = a.title;
+    document.getElementById('f-type').value = a.type || 'consultation';
+    document.getElementById('f-status').value = a.status || 'planifie';
+    document.getElementById('f-date').value = new Date(a.date).toISOString().slice(0, 16);
+    document.getElementById('f-name').value = a.with?.name || '';
+    document.getElementById('f-email').value = a.with?.email || '';
+    document.getElementById('f-notes').value = a.notes || '';
+    document.getElementById('modal').classList.add('show');
+  } catch(e) {}
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
 async function saveAppt() {
   const body = {
-    title: document.getElementById('f-title').value.trim(),
+    title: document.getElementById('f-title').value,
     type: document.getElementById('f-type').value,
     status: document.getElementById('f-status').value,
     date: document.getElementById('f-date').value,
-    duration: parseInt(document.getElementById('f-duration').value) || 30,
     with: {
-      name: document.getElementById('f-name').value.trim(),
-      email: document.getElementById('f-email').value.trim(),
-      phone: document.getElementById('f-phone').value.trim()
+      name: document.getElementById('f-name').value,
+      email: document.getElementById('f-email').value
     },
-    location: document.getElementById('f-location').value.trim(),
-    notes: document.getElementById('f-notes').value.trim()
+    notes: document.getElementById('f-notes').value
   };
-  if (!body.title || !body.date) return toast('Titre et date requis', 'error');
-  const url = editingId ? '/appointments/' + editingId : '/appointments';
+  
   const method = editingId ? 'PUT' : 'POST';
-  await api(url, { method, body: JSON.stringify(body) });
-  toast('Sauvegardé');
-  closeModal();
-  loadAppts();
+  const url = editingId ? `/api/appointments/${editingId}` : '/api/appointments';
+  
+  try {
+    const r = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(!r.ok) throw new Error();
+    toast('Enregistré avec succès');
+    calendar.refetchEvents();
+    closeModal();
+  } catch(e) { toast('Erreur lors de l\'enregistrement', 'error'); }
 }
 
 async function deleteAppt() {
-  if (!editingId || !confirm('Supprimer ce rendez-vous ?')) return;
-  await api('/appointments/' + editingId, { method: 'DELETE' });
-  toast('Supprimé');
-  closeModal();
-  loadAppts();
+  if(!confirm('Supprimer ce rendez-vous ?')) return;
+  try {
+    const r = await fetch(`/api/appointments/${editingId}`, { method: 'DELETE' });
+    if(!r.ok) throw new Error();
+    toast('Supprimé');
+    calendar.refetchEvents();
+    closeModal();
+  } catch(e) { toast('Erreur de suppression', 'error'); }
 }
-
-document.getElementById('public-url').textContent = 'Lien public de prise de RDV : ' + window.location.origin + '/rendez-vous.html';
-loadAppts();
 </script>
 </body>
 </html>

@@ -16,9 +16,17 @@ const appointmentSchema = new mongoose.Schema({
   application: { type: mongoose.Schema.Types.ObjectId, ref: 'Application' },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   location: { type: String, default: 'Visioconférence' },
-  meetingLink: { type: String, default: '' },
   notes: { type: String, default: '' },
   status: { type: String, enum: ['planifie', 'confirme', 'en_cours', 'termine', 'annule', 'no_show'], default: 'planifie' },
+  cancelReason: { type: String, default: '' },
+  rescheduleReason: { type: String, default: '' },
+  secretToken: { type: String, unique: true, sparse: true },
+  history: [{
+    oldDate: Date,
+    newDate: Date,
+    changedAt: { type: Date, default: Date.now },
+    reason: String
+  }],
   reminderSent: { type: Boolean, default: false },
   source: { type: String, default: 'admin' },
   createdAt: { type: Date, default: Date.now },

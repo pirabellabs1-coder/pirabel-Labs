@@ -625,7 +625,7 @@ async function sendMeetingReminder(appointment) {
     title: "Votre RDV approche",
     subtitle: `Sujet : ${appointment.title}`,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${appointment.with.name || ''},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${appointment.with?.name || ''},</p>
       <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Ceci est un simple rappel de notre appel prévu dans 30 minutes.</p>
       <div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;">
         <p style="margin:0;font-size:14px;color:#e5e2e1;"><strong>Lien / Lieu :</strong> ${appointment.meetingLink || appointment.location || 'Voir agenda'}</p>
@@ -635,7 +635,47 @@ async function sendMeetingReminder(appointment) {
     cta: 'Rejoindre la réunion',
     ctaUrl: appointment.meetingLink || SITE()
   });
-  return sendEmail(appointment.with.email, subject, html);
+  return sendEmail(appointment.with?.email, subject, html);
+}
+
+// --- APPOINTMENTS: CONFIRMATION & MANAGEMENT ---
+function appointmentConfirmationEmail(appt) {
+  const manageUrl = `${SITE()}/gerer-rendez-vous.html?token=${appt.secretToken}`;
+  const dateStr = new Date(appt.date).toLocaleString('fr-FR', { 
+    weekday: 'long', 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: `Confirmation de votre rendez-vous chez Pirabel Labs`,
+    title: 'Rendez-vous Confirmé',
+    subtitle: appt.title,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour <strong>${appt.with?.name}</strong>,</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous vous confirmons que votre rendez-vous a bien été enregistré. Nous avons hâte d'échanger avec vous sur votre projet.</p>
+      
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:28px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Date & Heure</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:700;color:#e5e2e1;text-transform:capitalize;">${dateStr}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mode</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;color:#FF5500;">${appt.location || 'Visioconférence'}</td></tr>
+        </table>
+        ${appt.notes ? `<p style="margin:16px 0 0;font-size:13px;color:rgba(229,226,225,0.5);font-style:italic;">Notes : ${appt.notes}</p>` : ''}
+      </div>
+      
+      <p style="font-size:14px;line-height:1.6;color:rgba(229,226,225,0.5);text-align:center;">Un empêchement ? Vous pouvez replanifier ou annuler votre rendez-vous à tout moment via le bouton ci-dessous.</p>
+    `,
+    cta: 'Modifier mon rendez-vous',
+    ctaUrl: manageUrl
+  });
+}
+
+async function sendAppointmentConfirmation(email, appt) {
+  return sendEmail(email, `Confirmation de votre rendez-vous — Pirabel Labs`, appointmentConfirmationEmail(appt));
 }
 
 // Legacy wrapper for campaigns

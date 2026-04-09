@@ -1,249 +1,199 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calendrier — Pirabel Labs Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <style>
-:root {
-  --fc-border-color: var(--outline-variant);
-  --fc-daygrid-event-dot-width: 8px;
-  --fc-button-bg-color: transparent;
-  --fc-button-border-color: var(--outline-variant);
-  --fc-button-text-color: var(--on-surface);
-  --fc-button-active-bg-color: var(--primary);
-  --fc-button-active-border-color: var(--primary);
-  --fc-button-hover-bg-color: rgba(255,85,0,0.1);
-}
-.app { display: flex; min-height: 100vh; background: var(--surface); }
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.content { flex: 1; padding: 2rem; overflow-y: auto; }
-
-/* Styles FullCalendar Premium */
-#calendar-card { background: var(--surface-container); border: 1px solid var(--outline-variant); padding: 1.5rem; }
-.fc .fc-toolbar-title { font-family: var(--font-headline); font-weight: 700; text-transform: capitalize; font-size: 1.5rem; }
-.fc .fc-col-header-cell-cushion { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 12px 0; color: var(--on-surface-variant); }
-.fc-event { cursor: move; border: none; padding: 2px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-.fc-v-event { background: var(--primary)!important; }
-.fc-h-event { background: var(--primary)!important; }
-.fc-event-main { color: #5c1900; font-weight: 700; font-size: 0.75rem; }
-
-/* Modals */
-.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
-.modal-bg.show { display: flex; }
-.modal { background: var(--surface-container); border: 1px solid var(--outline-variant); max-width: 500px; width: 100%; }
-.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--outline-variant); display: flex; justify-content: space-between; align-items: center; }
-.modal-body { padding: 1.5rem; }
-.field { margin-bottom: 1rem; }
-.field label { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--on-surface-variant); margin-bottom: .4rem; font-weight: 700; }
-.field input, .field textarea, .field select { width: 100%; background: var(--surface); border: 1px solid var(--outline-variant); padding: .7rem 1rem; color: var(--on-surface); font-size: .85rem; outline: none; }
-.btn-primary { background: var(--primary); color: #5c1900; border: none; padding: .75rem 1.5rem; font-weight: 700; font-size: .8rem; text-transform: uppercase; cursor: pointer; }
-
-.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-.toast { background: var(--primary); color: #5c1900; padding: 1rem 2rem; margin-bottom: 10px; font-weight: 700; animation: slideIn 0.3s ease-out; }
-@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.admin-layout{display:flex;min-height:100vh;background:var(--surface);}
+.main-content{flex:1;padding:2rem;overflow-y:auto;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+h1{font-family:var(--font-headline);font-size:1.75rem;font-weight:700;}
+.calendar-grid{background:var(--surface-container);border:1px solid var(--outline-variant);display:grid;grid-template-columns:repeat(7,1fr);min-height:600px;box-shadow:var(--shadow-m);}
+.cal-h{padding:1rem;text-align:center;border-bottom:1px solid var(--outline-variant);font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--on-surface-variant);font-weight:700;}
+.cal-d{border-right:1px solid var(--outline-variant);border-bottom:1px solid var(--outline-variant);padding:.75rem;min-height:120px;transition:background .2s;position:relative;}
+.cal-d:nth-child(7n){border-right:none;}
+.cal-d:hover{background:rgba(255,85,0,0.03);}
+.cal-d.today{background:rgba(255,85,0,0.08);}
+.cal-d.other-month{opacity:0.3;pointer-events:none;}
+.day-num{font-size:.85rem;font-weight:700;margin-bottom:.75rem;display:block;}
+.appt-list{display:flex;flex-direction:column;gap:4px;}
+.appt-item{background:var(--primary);color:#5c1900;padding:4px 8px;font-size:10px;font-weight:700;border-radius:2px;cursor:grab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
+.appt-item:active{cursor:grabbing;}
+.appt-item:hover{filter:brightness(1.1);}
+.appt-item.type-consultation{border-left:3px solid #6c5ce7;}
+.appt-item.type-kickoff{border-left:3px solid #00b894;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000;}
+.modal-content{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;width:400px;max-width:90vw;}
+.field{margin-bottom:1.25rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--on-surface-variant);margin-bottom:.5rem;font-weight:700;}
+.field input, .field select, .field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:.75rem;color:var(--on-surface);font-size:.9rem;outline:none;}
+.field textarea{min-height:80px;resize:vertical;}
+.btn-save{background:var(--primary);color:#5c1900;border:none;padding:1rem;font-weight:700;width:100%;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit;}
+.drop-over{background:rgba(255,85,0,0.1) !important;}
 </style>
 </head>
 <body>
-<div class="toast-container" id="toasts"></div>
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">PIRABEL LABS</div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-section">Principal</div>
-      <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-      <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
-      <a href="/calendar" class="sidebar-link active"><span class="material-symbols-outlined">event</span> Calendrier</a>
-      <div class="sidebar-section">Gestion</div>
-      <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
-      <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
-    </nav>
-  </aside>
-
-  <div class="main">
-    <header class="topbar">
-      <div class="topbar-title">Calendrier Interactif</div>
-      <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau RDV</button>
+<div class="admin-layout">
+  <div id="sidebar-target"></div>
+  <main class="main-content">
+    <header class="header">
+      <h1 id="month-title">Chargement...</h1>
+      <div style="display:flex;gap:1rem;">
+        <div style="display:flex;border:1px solid var(--outline-variant);">
+          <button onclick="prevMonth()" style="padding:.5rem;background:transparent;border:none;color:var(--on-surface);cursor:pointer;"><span class="material-symbols-outlined">chevron_left</span></button>
+          <button onclick="nextMonth()" style="padding:.5rem;background:transparent;border:none;color:var(--on-surface);cursor:pointer;"><span class="material-symbols-outlined">chevron_right</span></button>
+        </div>
+        <button class="btn-save" style="width:auto;padding:0.75rem 1.5rem;" onclick="openModal()">+ Nouveau RDV</button>
+      </div>
     </header>
-
-    <div class="content">
-      <div id="calendar-card">
-        <div id="calendar"></div>
-      </div>
-    </div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+  </main>
+</div>
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 style="margin-bottom:1.5rem;font-family:var(--font-headline);">Modifier le RDV</h2>
+    <form id="appt-form" onsubmit="saveAppointment(event)">
+      <div class="field"><label>Titre</label><input type="text" name="title" required id="f-title"></div>
+      <div class="field"><label>Type</label><select name="type" id="f-type"><option value="consultation">Consultation découverte</option><option value="kickoff">Kick-off projet</option><option value="review">Review technique</option><option value="autre">Autre</option></select></div>
+      <div class="field"><label>Date & Heure</label><input type="datetime-local" name="date" required id="f-date"></div>
+      <div class="field"><label>Notes</label><textarea name="notes" id="f-notes"></textarea></div>
+      <button type="submit" class="btn-save">Enregistrer</button>
+      <button type="button" class="btn-save" style="background:transparent;color:var(--on-surface-variant);margin-top:0.5rem;" onclick="closeModal()">Annuler</button>
+    </form>
   </div>
 </div>
-
-<!-- Modal -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modal-title" style="margin:0;">Rendez-vous</h3>
-      <button onclick="closeModal()" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="field"><label>Titre *</label><input id="f-title" placeholder="Ex: Consultation SEO"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="field"><label>Type</label><select id="f-type"><option value="consultation">Consultation</option><option value="demo">Démo</option><option value="kickoff">Kickoff</option><option value="autre">Autre</option></select></div>
-        <div class="field"><label>Statut</label><select id="f-status"><option value="planifie">Planifié</option><option value="confirme">Confirmé</option><option value="annule">Annulé</option></select></div>
-      </div>
-      <div class="field"><label>Date & Heure *</label><input type="datetime-local" id="f-date"></div>
-      <div class="field"><label>Client (Nom)</label><input id="f-name"></div>
-      <div class="field"><label>Email</label><input type="email" id="f-email"></div>
-      <div class="field"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div>
-      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;">
-        <button class="btn-primary" style="background:#e74c3c;color:#fff;margin-right:auto;display:none;" id="del-btn" onclick="deleteAppt()">Supprimer</button>
-        <button class="btn-primary" onclick="saveAppt()">Enregistrer</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="/js/sidebar.js"></script>
 <script>
-let calendar;
-let editingId = null;
+let currentMonth = new Date();
+let appointments = [];
+let draggingId = null;
 
-document.addEventListener('DOMContentLoaded', function() {
-  const calendarEl = document.getElementById('calendar');
-  calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'fr',
-    firstDay: 1,
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,listWeek'
-    },
-    editable: true,
-    events: async function(info, successCallback, failureCallback) {
-      try {
-        const r = await fetch(`/api/appointments?from=${info.start.toISOString()}&to=${info.end.toISOString()}`);
-        const data = await r.json();
-        const evts = (data.appointments || []).map(a => ({
-          id: a._id,
-          title: a.title,
-          start: a.date,
-          backgroundColor: a.status === 'annule' ? '#444' : (a.type === 'consultation' ? '#FF5500' : '#41e4c0'),
-          extendedProps: { ...a }
-        }));
-        successCallback(evts);
-      } catch (e) { failureCallback(e); }
-    },
+async function loadAppointments() {
+  try {
+    const r = await fetch('/api/appointments');
+    const data = await r.json();
+    appointments = data.appointments || [];
+    renderCalendar();
+  } catch (err) { console.error(err); }
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  const title = document.getElementById('month-title');
+  title.textContent = currentMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  grid.innerHTML = '';
+  const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  days.forEach(d => grid.innerHTML += `<div class="cal-h">${d}</div>`);
+  const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+  const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+  let startOffset = firstDay.getDay() - 1;
+  if (startOffset < 0) startOffset = 6;
+  for (let i = 0; i < startOffset; i++) {
+    const d = new Date(firstDay); d.setDate(d.getDate() - (startOffset - i));
+    grid.innerHTML += `<div class="cal-d other-month"><span class="day-num">${d.getDate()}</span></div>`;
+  }
+  const today = new Date();
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    const d = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i);
+    const dateStr = d.toISOString().split('T')[0];
+    const isToday = d.toDateString() === today.toDateString();
+    const dayAppts = appointments.filter(a => new Date(a.date).toDateString() === d.toDateString());
     
-    // DRAG & DROP
-    eventDrop: async function(info) {
-      if (!confirm(`Déplacer "${info.event.title}" au ${info.event.start.toLocaleString()} ?`)) {
-        info.revert();
-        return;
-      }
-      try {
-        const r = await fetch(`/api/appointments/${info.event.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            date: info.event.start.toISOString(),
-            rescheduleReason: 'Déplacement manuel via calendrier'
-          })
-        });
-        if (!r.ok) throw new Error();
-        toast('Rendez-vous déplacé !');
-      } catch (e) {
-        toast('Erreur lors du déplacement', 'error');
-        info.revert();
-      }
-    },
+    let apptsHtml = dayAppts.map(a => `
+      <div class="appt-item type-${a.type}" 
+           draggable="true" 
+           ondragstart="handleDragStart(event, '${a._id}')"
+           title="${a.title}">
+        ${new Date(a.date).getHours()}:${new Date(a.date).getMinutes().toString().padStart(2,'0')} ${a.title}
+      </div>`).join('');
 
-    eventClick: function(info) {
-      openEdit(info.event.extendedProps._id);
-    }
-  });
-  calendar.render();
-});
-
-function toast(msg, type='success') {
-  const t = document.getElementById('toasts');
-  const d = document.createElement('div');
-  d.className = 'toast';
-  if(type === 'error') d.style.background = '#e74c3c';
-  d.textContent = msg;
-  t.appendChild(d);
-  setTimeout(() => d.remove(), 3000);
+    grid.innerHTML += `
+      <div class="cal-d ${isToday ? 'today' : ''}" 
+           id="day-${dateStr}"
+           ondragover="handleDragOver(event)" 
+           onpadding="handleDragLeave(event)"
+           ondrop="handleDrop(event, '${dateStr}')">
+        <span class="day-num">${i}</span>
+        <div class="appt-list">${apptsHtml}</div>
+      </div>`;
+  }
 }
 
-function openCreate() {
-  editingId = null;
-  document.getElementById('modal-title').textContent = 'Nouveau Rendez-vous';
-  document.getElementById('del-btn').style.display = 'none';
-  document.getElementById('f-date').value = new Date().toISOString().slice(0, 16);
-  document.getElementById('modal').classList.add('show');
+// Drag & Drop Handlers
+function handleDragStart(e, id) {
+  draggingId = id;
+  e.dataTransfer.setData('text/plain', id);
+  e.target.style.opacity = '0.5';
 }
 
-async function openEdit(id) {
-  try {
-    const r = await fetch(`/api/appointments/${id}`); // Fallback or search in local events
-    // Pour simplifier ici, comme on a les extendedProps :
-    const a = calendar.getEventById(id).extendedProps;
-    editingId = id;
-    document.getElementById('modal-title').textContent = 'Modifier le Rendez-vous';
-    document.getElementById('del-btn').style.display = 'block';
-    document.getElementById('f-title').value = a.title;
-    document.getElementById('f-type').value = a.type || 'consultation';
-    document.getElementById('f-status').value = a.status || 'planifie';
-    document.getElementById('f-date').value = new Date(a.date).toISOString().slice(0, 16);
-    document.getElementById('f-name').value = a.with?.name || '';
-    document.getElementById('f-email').value = a.with?.email || '';
-    document.getElementById('f-notes').value = a.notes || '';
-    document.getElementById('modal').classList.add('show');
-  } catch(e) {}
+function handleDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drop-over');
 }
 
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('drop-over');
+}
 
-async function saveAppt() {
-  const body = {
-    title: document.getElementById('f-title').value,
-    type: document.getElementById('f-type').value,
-    status: document.getElementById('f-status').value,
-    date: document.getElementById('f-date').value,
-    with: {
-      name: document.getElementById('f-name').value,
-      email: document.getElementById('f-email').value
-    },
-    notes: document.getElementById('f-notes').value
-  };
+async function handleDrop(e, dateStr) {
+  e.preventDefault();
+  const id = draggingId;
+  const targetDay = e.currentTarget;
+  targetDay.classList.remove('drop-over');
   
-  const method = editingId ? 'PUT' : 'POST';
-  const url = editingId ? `/api/appointments/${editingId}` : '/api/appointments';
-  
+  const appt = appointments.find(a => a._id === id);
+  if (!appt) return;
+
+  const oldDate = new Date(appt.date);
+  const newDate = new Date(dateStr);
+  newDate.setHours(oldDate.getHours(), oldDate.getMinutes());
+
+  if (!confirm(`Déplacer "${appt.title}" au ${newDate.toLocaleDateString()} ?`)) return;
+
   try {
-    const r = await fetch(url, {
-      method,
+    const r = await fetch(`/api/appointments/${id}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ 
+        date: newDate.toISOString(),
+        rescheduleReason: 'Déplacement manuel via calendrier admin' 
+      })
     });
-    if(!r.ok) throw new Error();
-    toast('Enregistré avec succès');
-    calendar.refetchEvents();
-    closeModal();
-  } catch(e) { toast('Erreur lors de l\'enregistrement', 'error'); }
+    if (r.ok) {
+      loadAppointments();
+    } else {
+      alert('Erreur lors de la mise à jour');
+    }
+  } catch (err) {
+    alert('Erreur réseau');
+  }
 }
 
-async function deleteAppt() {
-  if(!confirm('Supprimer ce rendez-vous ?')) return;
+function prevMonth() { currentMonth.setMonth(currentMonth.getMonth() - 1); renderCalendar(); }
+function nextMonth() { currentMonth.setMonth(currentMonth.getMonth() + 1); renderCalendar(); }
+function openModal() { document.getElementById('modal').style.display = 'flex'; }
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+async function saveAppointment(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
   try {
-    const r = await fetch(`/api/appointments/${editingId}`, { method: 'DELETE' });
-    if(!r.ok) throw new Error();
-    toast('Supprimé');
-    calendar.refetchEvents();
-    closeModal();
-  } catch(e) { toast('Erreur de suppression', 'error'); }
+    const r = await fetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (r.ok) { loadAppointments(); closeModal(); e.target.reset(); }
+  } catch (err) { alert('Erreur'); }
 }
+
+loadAppointments();
 </script>
 </body>
 </html>

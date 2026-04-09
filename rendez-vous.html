@@ -14,23 +14,9 @@
 <link rel="stylesheet" href="css/global.css">
 <style>
 .rdv-hero{padding:8rem var(--px-page) 3rem;text-align:center;max-width:800px;margin:0 auto;}
-.rdv-hero h1{font-family:var(--font-headline);font-size:clamp(2.5rem,6vw,4rem);font-weight:800;line-height:1;letter-spacing:-2px;margin-bottom:1.5rem;}
+.rdv-hero h1{font-family:var(--font-headline);font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:1rem;}
 .rdv-hero h1 span{color:var(--primary);}
-.rdv-hero p{color:var(--on-surface-variant);font-size:1.15rem;max-width:600px;margin:0 auto;}
-
-/* Choice Selector */
-.choices{max-width:var(--max-w);margin:0 auto 4rem;padding:0 var(--px-page);display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
-@media(max-width:768px){.choices{grid-template-columns:1fr;}}
-.choice-card{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(0.4, 0, 0.2, 1);position:relative;overflow:hidden;}
-.choice-card:hover{border-color:var(--primary);transform:translateY(-8px);background:rgba(255,85,0,0.02);}
-.choice-card.active{border-color:var(--primary);background:rgba(255,85,0,0.05);box-shadow:0 20px 40px rgba(0,0,0,0.3);}
-.choice-icon{font-size:3rem;color:var(--primary);margin-bottom:1.5rem;display:block;}
-.choice-card h2{font-family:var(--font-headline);font-size:1.75rem;margin-bottom:1rem;font-weight:700;}
-.choice-card p{color:var(--on-surface-variant);font-size:.95rem;line-height:1.6;}
-
-.booking-section{display:none;animation:fadeIn 0.6s ease-out;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
+.rdv-hero p{color:var(--on-surface-variant);font-size:1.05rem;}
 .booking{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;}
 @media(max-width:900px){.booking{grid-template-columns:1fr;}}
 .calendar-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
@@ -90,51 +76,44 @@
     <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
+<div class="mobile-nav">
+  <a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="/carrieres">Carrières</a><a href="/contact">Contact</a>
+  <a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
+</div>
 
 <section class="rdv-hero">
-  <h1>Prêt à <span>propulser</span> votre projet ?</h1>
-  <p>Choisissez l'option qui vous convient le mieux pour échanger avec nos experts.</p>
+  <h1>Réservez un <span>rendez-vous</span></h1>
+  <p>Discutons de votre projet en 30 minutes. C'est gratuit et sans engagement.</p>
 </section>
 
-<section class="choices">
-  <div class="choice-card" onclick="showSection('booking')">
-    <span class="material-symbols-outlined choice-icon">calendar_month</span>
-    <h2>Prendre un rendez-vous</h2>
-    <p>Réservez un créneau de 30 minutes dans notre agenda pour une consultation stratégique gratuite.</p>
-  </div>
-  <div class="choice-card" onclick="window.location.href='/contact'">
-    <span class="material-symbols-outlined choice-icon">mail</span>
-    <h2>Nous envoyer un message</h2>
-    <p>Vous avez une question rapide ou un cahier des charges ? Contactez-nous via notre formulaire.</p>
-  </div>
-</section>
-
-<section class="booking-section" id="booking-section">
-  <div class="booking">
-    <div class="calendar-side">
-      <div class="cal-head">
-        <button onclick="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
-        <h2 id="cal-month"></h2>
-        <button onclick="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div class="slots"><h3 id="slots-title">Sélectionnez une date</h3><div class="slot-grid" id="slots-grid"></div></div>
+<section class="booking">
+  <div class="calendar-side">
+    <div style="display:flex;gap:1.25rem;margin-bottom:2rem;border-bottom:1px solid rgba(92,64,55,0.1);padding-bottom:1rem;">
+      <button type="button" class="text-small" style="background:transparent;border:none;color:var(--primary);font-weight:800;cursor:default;text-transform:uppercase;letter-spacing:1.5px;border-bottom:2px solid var(--primary);padding-bottom:4px;">1. Prendre RDV direct</button>
+      <a href="/contact.html" class="text-small" style="background:transparent;border:none;color:var(--on-surface-variant);font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:color 0.3s;" onmouseover="this.style.color='var(--on-surface)'" onmouseout="this.style.color='var(--on-surface-variant)'">2. Formulaire de contact</a>
     </div>
-    <div class="form-side">
-      <h2>Vos coordonnées</h2>
-      <div id="alert"></div>
-      <div class="summary" id="summary" style="display:none;">RDV sélectionné : <strong id="summary-text"></strong></div>
-      <form id="form" onsubmit="submitBooking(event)">
-        <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
-        <div class="field"><label>Type de RDV</label><select name="type"><option value="consultation">Consultation découverte</option><option value="demo">Démo de nos services</option><option value="kickoff">Kick-off projet</option><option value="autre">Autre</option></select></div>
-        <div class="field"><label>Prénom & Nom *</label><input type="text" name="name" required></div>
-        <div class="field"><label>Email *</label><input type="email" name="email" required></div>
-        <div class="field"><label>Téléphone</label><input type="tel" name="phone"></div>
-        <div class="field"><label>Entreprise</label><input type="text" name="company"></div>
-        <div class="field"><label>Sujet du RDV</label><textarea name="notes" placeholder="Parlez-nous de votre projet..."></textarea></div>
-        <button type="submit" class="btn-rdv" id="submit-btn" disabled>Sélectionnez d'abord un créneau</button>
-      </form>
+    <div class="cal-head">
+      <button onclick="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
+      <h2 id="cal-month"></h2>
+      <button onclick="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
     </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="slots"><h3 id="slots-title">Sélectionnez une date</h3><div class="slot-grid" id="slots-grid"></div></div>
+  </div>
+  <div class="form-side">
+    <h2>Vos coordonnées</h2>
+    <div id="alert"></div>
+    <div class="summary" id="summary" style="display:none;">RDV sélectionné : <strong id="summary-text"></strong></div>
+    <form id="form" onsubmit="submitBooking(event)">
+      <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
+      <div class="field"><label>Type de RDV</label><select name="type"><option value="consultation">Consultation découverte</option><option value="demo">Démo de nos services</option><option value="kickoff">Kick-off projet</option><option value="autre">Autre</option></select></div>
+      <div class="field"><label>Prénom & Nom *</label><input type="text" name="name" required></div>
+      <div class="field"><label>Email *</label><input type="email" name="email" required></div>
+      <div class="field"><label>Téléphone</label><input type="tel" name="phone"></div>
+      <div class="field"><label>Entreprise</label><input type="text" name="company"></div>
+      <div class="field"><label>Sujet du RDV</label><textarea name="notes" placeholder="Parlez-nous de votre projet..."></textarea></div>
+      <button type="submit" class="btn-rdv" id="submit-btn" disabled>Sélectionnez d'abord un créneau</button>
+    </form>
   </div>
 </section>
 
@@ -152,11 +131,6 @@
 let currentDate = new Date();
 let selectedDate = null;
 let selectedSlot = null;
-
-function showSection(id) {
-  document.getElementById(id + '-section').style.display = 'block';
-  window.scrollTo({ top: document.getElementById(id + '-section').offsetTop - 100, behavior: 'smooth' });
-}
 
 function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 

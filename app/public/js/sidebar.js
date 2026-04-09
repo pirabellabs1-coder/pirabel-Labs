@@ -3,8 +3,8 @@
 
 (function() {
   const path = window.location.pathname;
-  // Don't inject admin sidebar on the client portal
-  if (path === '/portal' || path === '/portal-login' || path.startsWith('/espace-client')) return;
+  // Don't inject admin sidebar on the client portal or secret login paths
+  if (path === '/portal' || path === '/portal-login' || path.startsWith('/espace-client') || path.includes('client_portal')) return;
   const current = path.replace(/^\//, '').replace(/\.html$/, '') || 'dashboard';
 
   const sections = [
@@ -15,7 +15,6 @@
       { href: '/tasks', icon: 'task_alt', label: 'Tâches' }
     ]},
     { title: 'Commercial', links: [
-      { href: '/quotes', icon: 'description', label: 'Devis' },
       { href: '/pipeline', icon: 'view_kanban', label: 'Pipeline CRM' },
       { href: '/email-templates', icon: 'mail', label: 'Templates Email' }
     ]},
@@ -34,9 +33,10 @@
       { href: '/analytics', icon: 'analytics', label: 'Analytics' },
       { href: '/reviews-admin', icon: 'star', label: 'Avis clients' }
     ]},
-    { title: 'Finance', links: [
+    { title: 'Facturation & Finance', links: [
+      { href: '/quotes', icon: 'request_quote', label: 'Devis' },
       { href: '/invoices', icon: 'receipt_long', label: 'Factures' },
-      { href: '/revenue', icon: 'monitoring', label: 'Revenue' }
+      { href: '/revenue', icon: 'monitoring', label: 'Revenus' }
     ]},
     { title: 'Système', links: [
       { href: '/notes', icon: 'sticky_note_2', label: 'Notes' },

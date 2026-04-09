@@ -4,7 +4,7 @@
  *
  * Identifiants par defaut:
  *   Email:    admin@pirabel-labs.com
- *   Mot de passe: PirabelAdmin2026!
+ *   Mot de passe: Pir@bel_Admin_2026_#8xPv4qZ2!
  *   Role:     admin
  */
 
@@ -30,7 +30,7 @@ async function seed() {
     const admin = await User.create({
       name: 'Admin Pirabel',
       email: 'admin@pirabel-labs.com',
-      password: 'PirabelAdmin2026!',
+      password: 'Pir@bel_Admin_2026_#8xPv4qZ2!',
       role: 'admin',
       isActive: true
     });
@@ -39,7 +39,7 @@ async function seed() {
     console.log('  COMPTE ADMIN CREE AVEC SUCCES');
     console.log('================================');
     console.log('  Email:      admin@pirabel-labs.com');
-    console.log('  Mot de passe: PirabelAdmin2026!');
+    console.log('  Mot de passe: Pir@bel_Admin_2026_#8xPv4qZ2!');
     console.log('  Role:       admin');
     console.log('  ID:         ' + admin._id);
     console.log('================================');

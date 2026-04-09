@@ -97,6 +97,24 @@ function limitBody(maxFields = 20) {
   };
 }
 
+// --- GLOBAL RECURSIVE SANITIZATION ---
+function globalSanitize(req, res, next) {
+  const sanitizeValue = (val) => {
+    if (typeof val === 'string') return sanitize(val, 10000);
+    if (val && typeof val === 'object') {
+      for (let k in val) {
+        val[k] = sanitizeValue(val[k]);
+      }
+    }
+    return val;
+  };
+
+  if (req.body) req.body = sanitizeValue(req.body);
+  if (req.query) req.query = sanitizeValue(req.query);
+  if (req.params) req.params = sanitizeValue(req.params);
+  next();
+}
+
 module.exports = {
   securityHeaders,
   rateLimit,
@@ -104,5 +122,6 @@ module.exports = {
   sanitizeEmail,
   isValidEmail,
   honeypotCheck,
-  limitBody
+  limitBody,
+  globalSanitize
 };

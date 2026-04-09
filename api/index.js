@@ -20,8 +20,9 @@ async function connectDB() {
 }
 
 // Security middleware
-const { securityHeaders } = require(path.join(__dirname, '..', 'app', 'middleware', 'security'));
+const { securityHeaders, globalSanitize } = require(path.join(__dirname, '..', 'app', 'middleware', 'security'));
 app.use(securityHeaders);
+app.use(globalSanitize); // Global XSS protection
 
 // CORS — restrict to known origins
 const ALLOWED_ORIGINS = [
@@ -109,9 +110,9 @@ app.use('/api/reviews', require(path.join(routesPath, 'reviews')));
 app.use('/api/cron', require(path.join(routesPath, 'cron')));
 app.use('/api/status', require(path.join(routesPath, 'status')));
 
-// Secret admin/client URLs
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-client-4p8w1n';
+// Secret admin/client URLs (Consistent with server.js)
+const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';
+const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'client_portal_v4p8w1n7x9k2m_access_secure';
 
 app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'login.html')));
 app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));

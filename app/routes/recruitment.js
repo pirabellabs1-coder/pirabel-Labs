@@ -103,6 +103,18 @@ router.post('/jobs/:slug/apply', applyLimiter, honeypotCheck('website_url'), lim
     if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis' });
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
 
+    // Security check: If base64 CV is provided, ensure it's a PDF
+    let cvUrl = req.body.cvUrl || '';
+    if (cvUrl.startsWith('data:')) {
+      if (!cvUrl.startsWith('data:application/pdf;base64,')) {
+        return res.status(400).json({ error: 'Seuls les fichiers PDF sont acceptés pour le CV.' });
+      }
+      // Content length check (base64 is ~33% larger than binary)
+      if (cvUrl.length > 7 * 1024 * 1024) { // ~5MB max binary
+        return res.status(400).json({ error: 'Le fichier est trop volumineux (5Mo max).' });
+      }
+    }
+
     const app = await Application.create({
       jobOffer: job._id,
       jobTitle: job.title,
@@ -112,8 +124,8 @@ router.post('/jobs/:slug/apply', applyLimiter, honeypotCheck('website_url'), lim
       linkedin: sanitize(req.body.linkedin || '', 300),
       portfolio: sanitize(req.body.portfolio || '', 300),
       coverLetter: sanitize(req.body.coverLetter || '', 5000),
-      cvUrl: sanitize(req.body.cvUrl || '', 500000),
-      cvFilename: sanitize(req.body.cvFilename || '', 200),
+      cvUrl: sanitize(cvUrl, 8000000),
+      cvFilename: sanitize(req.body.cvFilename || 'cv.pdf', 200),
       source: sanitize(req.body.source || 'site', 50)
     });
 

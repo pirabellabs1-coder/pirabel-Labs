@@ -397,15 +397,33 @@ Réponds UNIQUEMENT en JSON valide avec cette structure:
     });
 
     const aiData = await response.json();
-    const text = aiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    
+    if (!response.ok) {
+      console.error("Gemini API Error:", aiData);
+      return res.json({ success: false, error: `Erreur API Google Gemini: ${aiData.error?.message || 'Inconnue'}` });
+    }
+
+    let text = aiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    
+    // Nettoyer les balises Markdown éventuelles si le modèle en renvoie
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return res.json({ success: false, error: 'Réponse IA invalide' });
+    if (!jsonMatch) {
+      console.error("Format IA Invalide:", text);
+      return res.json({ success: false, error: 'Réponse IA invalide (format inattendu)' });
+    }
 
-    const proposal = JSON.parse(jsonMatch[0]);
-    res.json({ success: true, proposal });
+    try {
+      const proposal = JSON.parse(jsonMatch[0]);
+      res.json({ success: true, proposal });
+    } catch (parseError) {
+      console.error("JSON Parse Error:", parseError, text);
+      res.json({ success: false, error: 'Erreur lors du traitement des données IA.' });
+    }
   } catch (err) {
+    console.error("Erreur serveur generation devis:", err);
     res.status(500).json({ error: err.message });
   }
 });

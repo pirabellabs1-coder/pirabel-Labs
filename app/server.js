@@ -59,8 +59,9 @@ io.on('connection', (socket) => {
 connectDB();
 
 // Security middleware
-const { securityHeaders } = require('./middleware/security');
+const { securityHeaders, globalSanitize } = require('./middleware/security');
 app.use(securityHeaders);
+app.use(globalSanitize); // Global XSS protection
 
 // CORS — restrict to known origins
 const ALLOWED_ORIGINS = [
@@ -110,13 +111,10 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/appointments', require('./routes/appointments'));
 
 // ============================================
-// SECRET ACCESS URLs
-// Admin:  /pirabel-admin-7x9k2m
-// Client: /espace-client-4p8w1n
+// SECRET ACCESS URLs (Move to .env on production)
 // ============================================
-
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-client-4p8w1n';
+const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';
+const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'client_portal_v4p8w1n7x9k2m_access_secure';
 
 // Admin login (secret URL)
 app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html')));

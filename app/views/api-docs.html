@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Documentation | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<style>
+:root {
+  --code-bg: #1a1a1a;
+  --endpoint-get: #61affe;
+}
+.doc-container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+.endpoint-card { 
+  background: var(--surface-container); 
+  border: 1px solid var(--outline-variant); 
+  border-radius: 8px; 
+  margin-bottom: 2rem; 
+  overflow: hidden; 
+}
+.endpoint-header { 
+  padding: 1rem 1.5rem; 
+  background: rgba(255,255,255,0.03); 
+  display: flex; 
+  align-items: center; 
+  gap: 1rem; 
+  border-bottom: 1px solid var(--outline-variant);
+}
+.method { 
+  background: var(--endpoint-get); 
+  color: #000; 
+  font-weight: 800; 
+  padding: 0.25rem 0.75rem; 
+  border-radius: 4px; 
+  font-size: 0.75rem; 
+}
+.path { font-family: monospace; font-size: 1rem; color: var(--on-surface); }
+.endpoint-body { padding: 1.5rem; }
+.doc-section-title { 
+  font-size: 0.7rem; 
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  color: var(--on-surface-variant); 
+  margin-bottom: 1rem; 
+  font-weight: 700;
+}
+.code-block { 
+  background: var(--code-bg); 
+  padding: 1rem; 
+  border-radius: 4px; 
+  font-family: monospace; 
+  font-size: 0.85rem; 
+  color: #dcdccc; 
+  position: relative;
+  margin-top: 0.5rem;
+}
+.copy-btn { 
+  position: absolute; 
+  top: 0.5rem; 
+  right: 0.5rem; 
+  background: rgba(255,255,255,0.1); 
+  border: none; 
+  color: #fff; 
+  padding: 4px 8px; 
+  font-size: 0.65rem; 
+  cursor: pointer; 
+  border-radius: 4px;
+}
+.copy-btn:hover { background: var(--primary); color: #000; }
+pre { margin: 0; white-space: pre-wrap; word-break: break-all; }
+</style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">PIRABEL LABS</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+      <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+      <div class="sidebar-section">Système</div>
+      <a href="/api-docs" class="sidebar-link active"><span class="material-symbols-outlined">api</span> Documentation API</a>
+      <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="doc-container">
+      <h1 style="font-family: var(--font-headline); font-size: 2.5rem; margin-bottom: 1rem;">Documentation API <span style="color:var(--primary)">Admin</span></h1>
+      <p style="color: var(--on-surface-variant); margin-bottom: 3rem;">Interface de récupération des données centralisée pour Pirabel Labs. Toutes les requêtes nécessitent une authentification administrateur.</p>
+
+      <!-- STATS -->
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="path">/api/v2/admin/stats</span>
+        </div>
+        <div class="endpoint-body">
+          <p style="margin-bottom:1.5rem;">Récupère les statistiques globales (comptages) de tous les modules de la plateforme.</p>
+          <div class="doc-section-title">Exemple de Réponse</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+            <pre>{
+  "success": true,
+  "stats": {
+    "clients": 142,
+    "employees": 12,
+    "prospects": 45,
+    "appointments": 89,
+    "users": 5
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENTS -->
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="path">/api/v2/admin/clients</span>
+        </div>
+        <div class="endpoint-body">
+          <p style="margin-bottom:1.5rem;">Récupère la liste complète des clients enregistrés.</p>
+          <div class="doc-section-title">Structure des données</div>
+          <div class="code-block">
+            <pre>[
+  {
+    "_id": "60f7a...",
+    "companyName": "Ultimauto",
+    "contactName": "Marc Durant",
+    "email": "contact@ultimauto.fr",
+    "status": "active",
+    "createdAt": "2026-03-01T10:00:00Z"
+  },
+  ...
+]</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPLOYEES -->
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="path">/api/v2/admin/employees</span>
+        </div>
+        <div class="endpoint-body">
+          <p style="margin-bottom:1.5rem;">Récupère la liste des employés et leurs départements.</p>
+        </div>
+      </div>
+
+      <!-- PROSPECTS -->
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="path">/api/v2/admin/prospects</span>
+        </div>
+        <div class="endpoint-body">
+          <p style="margin-bottom:1.5rem;">Récupère les leads qualifiés issus du site public.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  navigator.clipboard.writeText(pre.textContent);
+  btn.textContent = 'COPIÉ !';
+  setTimeout(() => btn.textContent = 'COPIER', 2000);
+}
+</script>
+</body>
+</html>

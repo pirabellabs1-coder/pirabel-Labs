@@ -41,6 +41,7 @@
     { title: 'Système', links: [
       { href: '/notes', icon: 'sticky_note_2', label: 'Notes' },
       { href: '/logs', icon: 'history', label: 'Logs' },
+      { href: '/api-docs', icon: 'api', label: 'Documentation API' },
       { href: '/settings', icon: 'settings', label: 'Paramètres' }
     ]}
   ];

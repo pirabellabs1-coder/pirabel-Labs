@@ -128,13 +128,55 @@ router.get('/prospects', async (req, res) => {
 });
 
 /**
- * @route   GET /api/v2/admin/users
- * @desc    Récupérer les utilisateurs du système (sans les mots de passe)
+ * @route   GET /api/v2/admin/appointments
+ * @desc    Récupérer tous les rendez-vous
  */
-router.get('/users', async (req, res) => {
+router.get('/appointments', async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
-    res.json({ success: true, count: users.length, data: users });
+    const apps = await Appointment.find().sort({ start: -1 }).limit(100);
+    res.json({ success: true, count: apps.length, data: apps });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * @route   GET /api/v2/admin/invoices
+ * @desc    Récupérer les factures (Finance)
+ */
+router.get('/invoices', async (req, res) => {
+  try {
+    const Invoice = require('../models/Invoice');
+    const invoices = await Invoice.find().sort({ createdAt: -1 }).limit(50);
+    res.json({ success: true, count: invoices.length, data: invoices });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * @route   GET /api/v2/admin/projects
+ * @desc    Récupérer les projets en cours
+ */
+router.get('/projects', async (req, res) => {
+  try {
+    const Project = require('../models/Project');
+    const projects = await Project.find().sort({ updatedAt: -1 });
+    res.json({ success: true, count: projects.length, data: projects });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * @route   GET /api/v2/admin/revenue
+ * @desc    Récupérer les données financières (Analytique)
+ */
+router.get('/revenue', async (req, res) => {
+  try {
+    const Revenue = require('../models/Revenue');
+    const data = await Revenue.find().sort({ month: -1 }).limit(12);
+    res.json({ success: true, data });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

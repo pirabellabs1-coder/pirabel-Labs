@@ -11,77 +11,146 @@
 <script src="/js/sidebar.js?v=CACHE_BUST_FINAL"></script>
 <style>
 :root {
-  --code-bg: #1a1a1a;
+  --code-bg: #0e0e0e;
   --endpoint-get: #ff5500;
+  --accent-soft: rgba(255, 85, 0, 0.1);
 }
-.doc-container { max-width: 1100px; padding: 1rem 0; }
+
+/* Glassmorphism Effect */
+.glass-card {
+  background: rgba(25, 25, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.doc-container { max-width: 1200px; padding: 2rem 0; }
+
+/* API Key Management UI */
+.key-manager {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(255,85,0,0.05) 0%, rgba(0,0,0,0) 100%);
+  border: 1px solid var(--accent-soft);
+  border-radius: 16px;
+}
+
+.key-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.key-list-item:last-child { border-bottom: none; }
+
+.new-key-reveal {
+  background: var(--accent-soft);
+  border: 1px dashed var(--accent);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  display: none;
+}
+
+/* Endpoint UI */
 .endpoint-card { 
   background: var(--card); 
   border: 1px solid var(--border); 
-  border-radius: 8px; 
-  margin-bottom: 2rem; 
-  overflow: hidden; 
+  border-radius: 12px; 
+  margin-bottom: 2.5rem; 
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
+.endpoint-card:hover { transform: translateY(-2px); border-color: rgba(255,85,0,0.3); }
+
 .endpoint-header { 
-  padding: 1rem 1.5rem; 
+  padding: 1.25rem 1.75rem; 
   background: rgba(255,255,255,0.02); 
   display: flex; 
   align-items: center; 
-  gap: 1rem; 
+  gap: 1.25rem; 
   border-bottom: 1px solid var(--border);
 }
 .method { 
   background: var(--accent); 
   color: #000; 
   font-weight: 800; 
-  padding: 0.25rem 0.75rem; 
-  border-radius: 4px; 
+  padding: 0.35rem 0.85rem; 
+  border-radius: 6px; 
   font-size: 0.75rem; 
+  letter-spacing: 0.05em;
 }
-.path { font-family: var(--font-h); font-size: 0.9375rem; color: var(--text); font-weight: 600; }
-.endpoint-body { padding: 1.5rem; }
-.doc-section-title { 
-  font-size: 0.6875rem; 
-  text-transform: uppercase; 
-  letter-spacing: 0.1em; 
-  color: var(--muted); 
-  margin-bottom: 1rem; 
-  font-weight: 700;
+.path { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; color: var(--text); font-weight: 700; }
+
+.endpoint-body { padding: 1.75rem; }
+
+.curl-block {
+    background: #000;
+    padding: 1.25rem;
+    border-radius: 8px;
+    font-family: 'Inter', monospace;
+    font-size: 0.8125rem;
+    color: #41e4c0; /* Teal for commands */
+    position: relative;
+    margin: 1rem 0;
+    border: 1px solid rgba(65, 228, 192, 0.1);
 }
+
 .code-block { 
   background: var(--code-bg); 
-  padding: 1rem; 
-  border-radius: 4px; 
-  font-family: monospace; 
+  padding: 1.25rem; 
+  border-radius: 8px; 
+  font-family: 'Inter', monospace; 
   font-size: 0.8125rem; 
-  color: var(--text); 
+  color: #e5e2e1; 
   position: relative;
   margin-top: 0.5rem;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.03);
 }
+
 .copy-btn { 
   position: absolute; 
-  top: 0.5rem; 
-  right: 0.5rem; 
+  top: 0.75rem; 
+  right: 0.75rem; 
   background: rgba(255,255,255,0.05); 
   border: 1px solid rgba(255,255,255,0.1); 
   color: var(--muted); 
-  padding: 4px 8px; 
-  font-size: 0.625rem; 
+  padding: 5px 10px; 
+  font-size: 0.65rem; 
   cursor: pointer; 
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
-.copy-btn:hover { background: var(--accent); color: #000; border-color: transparent; }
-pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+.copy-btn:hover { background: var(--accent); color: #000; border-color: transparent; font-weight: 600; }
+
+.btn-add {
+  background: var(--accent);
+  color: #000;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-delete { background: rgba(255,0,0,0.1); color: #ff4444; border: 1px solid rgba(255,0,0,0.2); padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+.btn-delete:hover { background: #ff4444; color: #fff; }
+
+pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">PIRABEL LABS</div>
-    <nav class="sidebar-nav">
-      <!-- Injecté dynamiquement -->
-    </nav>
+    <nav class="sidebar-nav"></nav>
   </aside>
 
   <div class="main">
@@ -96,8 +165,42 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
 
     <div class="content">
       <div class="doc-container">
-        <h1 style="font-family: var(--font-h); font-size: 2rem; margin-bottom: 1rem; font-weight: 800;">Spécifications <span style="color:var(--accent)">Admin API</span></h1>
-        <p style="color: var(--muted); margin-bottom: 3rem; font-size: 0.875rem; max-width: 600px;">Interface de récupération des données centralisée pour Pirabel Labs. Toutes les requêtes nécessitent une authentification administrateur via Bearer Token.</p>
+        <header style="margin-bottom: 4rem;">
+            <h1 style="font-family: var(--font-h); font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800;">Spécifications <span style="color:var(--accent)">Admin API</span></h1>
+            <p style="color: var(--muted); font-size: 1rem; max-width: 700px; line-height: 1.6;">
+                Interface de récupération des données centralisée pour Pirabel Labs. 
+                Utilisez ces endpoints pour connecter vos outils d'automatisation (N8N, Make, etc.) 
+                ou vos tableaux de bord externes.
+            </p>
+        </header>
+
+        <!-- API KEY MANAGEMENT SECTION -->
+        <section class="key-manager glass-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                <div>
+                    <h2 style="font-size:1.25rem; font-weight:700; margin-bottom:0.25rem;">Gestion des Clefs API</h2>
+                    <p style="color:var(--muted); font-size:0.8rem;">Créez et gérez des clés pour vos différents projets d'intégration.</p>
+                </div>
+                <button class="btn-add" onclick="createNewKey()">
+                    <span class="material-symbols-outlined">add</span> Créer une clef
+                </button>
+            </div>
+
+            <div id="new-key-reveal" class="new-key-reveal">
+                <div style="font-weight:700; font-size:0.75rem; color:var(--accent); margin-bottom:0.5rem; text-transform:uppercase;">Clef générée (S'affiche une seule fois !)</div>
+                <div style="display:flex; gap:1rem; align-items:center;">
+                    <code id="generated-key-val" style="flex:1; background:rgba(0,0,0,0.3); padding:0.75rem; border-radius:4px; font-weight:700; color:#fff;">pb_live_xxxxxxxxxxxxxxxx</code>
+                    <button class="btn-add" style="padding:0.5rem 1rem;" onclick="copyToClipboard(document.getElementById('generated-key-val').textContent, this)">COPIER</button>
+                </div>
+            </div>
+
+            <div id="keys-list">
+                <div style="text-align:center; padding:2rem; color:var(--muted);">Chargement de vos clefs...</div>
+            </div>
+        </section>
+
+        <!-- ENDPOINTS SECTIONS -->
+        <h2 style="font-size:1.5rem; margin-bottom:2rem; font-weight:800; border-left:4px solid var(--accent); padding-left:1rem;">Endpoints Disponibles</h2>
 
         <!-- STATS -->
         <div class="endpoint-card">
@@ -106,10 +209,17 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
             <span class="path">/api/v2/admin/stats</span>
           </div>
           <div class="endpoint-body">
-            <p style="margin-bottom:1.5rem; font-size: 0.875rem;">Récupère les statistiques globales (comptages) de tous les modules de la plateforme.</p>
-            <div class="doc-section-title">Exemple de Réponse</div>
+            <p style="margin-bottom:1.5rem; font-size: 0.875rem; color:var(--muted);">Récupère les statistiques globales condensées (comptages) de tous les modules de la plateforme.</p>
+            
+            <div class="doc-section-title">Commande CURL (Copier/Coller)</div>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/stats" \
+     -H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+
+            <div class="doc-section-title">Exemple de Réponse JSON</div>
             <div class="code-block">
-              <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
               <pre>{
   "success": true,
   "stats": {
@@ -131,8 +241,16 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
             <span class="path">/api/v2/admin/clients</span>
           </div>
           <div class="endpoint-body">
-            <p style="margin-bottom:1.5rem; font-size: 0.875rem;">Récupère la liste complète des clients enregistrés.</p>
-            <div class="doc-section-title">Structure des données</div>
+            <p style="margin-bottom:1.5rem; font-size: 0.875rem; color:var(--muted);">Récupère la liste complète des clients avec leurs informations de contact et statuts.</p>
+            
+            <div class="doc-section-title">Commande CURL</div>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/clients" \
+     -H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+
+            <div class="doc-section-title">Structure attendue</div>
             <div class="code-block">
               <pre>[
   {
@@ -140,8 +258,7 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
     "companyName": "Ultimauto",
     "contactName": "Marc Durant",
     "email": "contact@ultimauto.fr",
-    "status": "active",
-    "createdAt": "2026-03-01T10:00:00Z"
+    "status": "active"
   }
 ]</pre>
             </div>
@@ -155,7 +272,14 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
             <span class="path">/api/v2/admin/employees</span>
           </div>
           <div class="endpoint-body">
-            <p style="margin-bottom:1.5rem; font-size: 0.875rem;">Récupère la liste des employés et leurs départements.</p>
+            <p style="margin-bottom:1.5rem; font-size: 0.875rem; color:var(--muted);">Flux de données pour la synchronisation de vos outils de RH externes.</p>
+            
+            <div class="doc-section-title">Commande CURL</div>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/employees" \
+     -H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
           </div>
         </div>
 
@@ -166,7 +290,14 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
             <span class="path">/api/v2/admin/prospects</span>
           </div>
           <div class="endpoint-body">
-            <p style="margin-bottom:1.5rem; font-size: 0.875rem;">Récupère les leads qualifiés issus du site public.</p>
+            <p style="margin-bottom:1.5rem; font-size: 0.875rem; color:var(--muted);">Récupération des nouveaux prospects pour injection automatique dans un CRM tiers.</p>
+            
+            <div class="doc-section-title">Commande CURL</div>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/prospects" \
+     -H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
           </div>
         </div>
 
@@ -176,12 +307,91 @@ pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
 </div>
 
 <script>
-function copyCode(btn) {
-  const pre = btn.nextElementSibling;
-  navigator.clipboard.writeText(pre.textContent);
-  btn.textContent = 'COPIÉ !';
-  setTimeout(() => btn.textContent = 'COPIER', 2000);
+const token = localStorage.getItem('token');
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+// Load API Keys
+async function loadKeys() {
+    try {
+        const res = await fetch('/api/v2/admin/keys', { headers });
+        const data = await res.json();
+        if (data.success) {
+            const list = document.getElementById('keys-list');
+            if (data.keys.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--muted); font-size:0.85rem;">Aucune clef API active.</div>';
+                return;
+            }
+            list.innerHTML = data.keys.map(k => `
+                <div class="key-list-item">
+                    <div>
+                        <div style="font-weight:700; font-size:0.9rem;">${k.name}</div>
+                        <div style="font-size:0.75rem; color:var(--muted); font-family:monospace;">ID: ${k.prefix}...</div>
+                    </div>
+                    <div style="display:flex; gap:1rem; align-items:center;">
+                        <div style="font-size:0.7rem; color:var(--muted);">Dernière utilisation: ${k.lastUsed ? new Date(k.lastUsed).toLocaleDateString() : 'Jamais'}</div>
+                        <button class="btn-delete" onclick="deleteKey('${k._id}')">RÉVOQUER</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch(e) { console.error(e); }
 }
+
+// Create New Key
+async function createNewKey() {
+    const name = prompt('Donnez un nom à cette clef (ex: n8n-automation) :');
+    if (!name) return;
+
+    try {
+        const res = await fetch('/api/v2/admin/keys', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (data.success) {
+            const reveal = document.getElementById('new-key-reveal');
+            document.getElementById('generated-key-val').textContent = data.key;
+            reveal.style.display = 'block';
+            loadKeys();
+            reveal.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert(data.error);
+        }
+    } catch(e) { console.error(e); }
+}
+
+// Delete Key
+async function deleteKey(id) {
+    if (!confirm('Êtes-vous sûr de vouloir révoquer cette clef ? Tout outil l\'utilisant perdra l\'accès.')) return;
+    try {
+        const res = await fetch('/api/v2/admin/keys/' + id, {
+            method: 'DELETE',
+            headers
+        });
+        const data = await res.json();
+        if (data.success) loadKeys();
+    } catch(e) { console.error(e); }
+}
+
+function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text);
+    const oldText = btn.textContent;
+    btn.textContent = 'COPIÉ !';
+    btn.style.background = '#41e4c0';
+    setTimeout(() => {
+        btn.textContent = oldText;
+        btn.style.background = 'var(--accent)';
+    }, 2000);
+}
+
+function copyCode(btn) {
+    const pre = btn.nextElementSibling;
+    copyToClipboard(pre.textContent, btn);
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', loadKeys);
 </script>
 </body>
 </html>

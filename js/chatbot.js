@@ -1746,6 +1746,24 @@
 
   function getContextualButtons() {
     var ctx = getPageContext();
+    if (isEn) {
+      switch (ctx) {
+        case 'seo': return ['Free SEO Audit', 'SEO Pricing?', 'I have a project'];
+        case 'web': return ['How much for a site?', 'Which CMS to choose?', 'I have a project'];
+        case 'social': return ['Community management price?', 'Which platform?', 'I have a project'];
+        case 'ads': return ['Minimum budget?', 'Google vs Meta?', 'I have a project'];
+        case 'email': return ['CRM setup', 'Emailing strategy', 'I have a project'];
+        case 'ia': return ['Chatbot for my site', 'Automate my tasks', 'I have a project'];
+        case 'branding': return ['Logo price?', 'Brand book', 'I have a project'];
+        case 'video': return ['Corporate video', 'Social content', 'I have a project'];
+        case 'funnel': return ['Landing page', 'Sales funnel', 'I have a project'];
+        case 'formation': return ['Available training?', 'Pricing', 'I have a project'];
+        case 'consulting': return ['Digital audit', 'Strategy', 'I have a project'];
+        case 'services': return ['Which service fits me?', 'Pricing', 'I have a project'];
+        case 'contact': return ['Book a Call', 'WhatsApp', 'Quick Question'];
+        default: return ['Discover services', 'I have a project', 'Pricing'];
+      }
+    }
     switch (ctx) {
       case 'seo': return ['Audit SEO gratuit', 'Tarif SEO ?', 'J\'ai un projet'];
       case 'web': return ['Combien coûte un site ?', 'Quel CMS choisir ?', 'J\'ai un projet'];
@@ -1924,16 +1942,16 @@
     + '<div class="pb-chat-body" id="pb-chat-body">'
     + '<div id="pb-intro" class="pb-intro-form">'
     + '<div class="pb-lea-avatar">L</div>'
-    + '<h4>Salut ! Moi c\'est Lea &#128075;</h4>'
-    + '<p>Consultante digitale chez Pirabel Labs.<br>Je t\'aide à trouver la meilleure solution pour booster ton business en ligne.</p>'
-    + '<input type="text" id="pb-name" placeholder="Ton prenom *" autocomplete="given-name" />'
-    + '<input type="email" id="pb-email" placeholder="Ton email (optionnel)" autocomplete="email" />'
-    + '<button id="pb-start-btn">Discuter avec Lea</button>'
-    + '<a class="pb-skip" id="pb-skip-btn">Continuer sans me présenter</a>'
+    + '<h4>' + (isEn ? 'Hi! I\'m Lea' : 'Salut ! Moi c\'est Lea') + ' &#128075;</h4>'
+    + '<p>' + (isEn ? 'Digital consultant at Pirabel Labs.<br>I help you find the best solution to boost your business online.' : 'Consultante digitale chez Pirabel Labs.<br>Je t\'aide à trouver la meilleure solution pour booster ton business en ligne.') + '</p>'
+    + '<input type="text" id="pb-name" placeholder="' + (isEn ? 'Your first name *' : 'Ton prenom *') + '" autocomplete="given-name" />'
+    + '<input type="email" id="pb-email" placeholder="' + (isEn ? 'Your email (optional)' : 'Ton email (optionnel)') + '" autocomplete="email" />'
+    + '<button id="pb-start-btn">' + (isEn ? 'Chat with Lea' : 'Discuter avec Lea') + '</button>'
+    + '<a class="pb-skip" id="pb-skip-btn">' + (isEn ? 'Continue without intro' : 'Continuer sans me présenter') + '</a>'
     + '</div>'
     + '</div>'
     + '<div class="pb-chat-input" id="pb-input-area" style="display:none;">'
-    + '<input type="text" id="pb-msg-input" placeholder="Écris ton message..." autocomplete="off" />'
+    + '<input type="text" id="pb-msg-input" placeholder="' + (isEn ? 'Write your message...' : 'Écris ton message...') + '" autocomplete="off" />'
     + '<button id="pb-send-btn" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>'
     + '</div>'
     + '<div class="pb-powered">Propulsé par <a href="https://pirabellabs.com" target="_blank">Pirabel Labs</a></div>'

@@ -7,9 +7,7 @@
 <meta name="description" content="Rejoignez Pirabel Labs, agency digital marketing. Découvrez our offres d'emploi en CDI, freelance, stage and alternance.">
 <link rel="icon" type="image/png" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/favicon.png">
-<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/carrieres">
-<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/carrieres">
-<script src="/public/js/language-manager.js"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -32,12 +30,11 @@
 .empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--on-surface-variant);}
 </style>
 
-<style>
-.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
+
+<style>.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
 .lang-switch a{padding:.5rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.5);transition:all .2s;}
 .lang-switch a:hover{color:#fff;}
-.lang-switch a.active{background:#FF5500;color:#fff;}
-</style>
+.lang-switch a.active{background:#FF5500;color:#fff;}</style>
 </head>
 <body>
 <!-- Noise & Atmosphere -->
@@ -52,8 +49,8 @@
    <a href="/en/" class="link-underline">L'AGENCE</a>
    <a href="/en/services" class="link-underline">SERVICES</a>
    <a href="/en/blog" class="link-underline">BLOG</a>
-   <a href="/en/resultats" class="link-underline">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
-   <a href="/en/a-propos" class="link-underline">À PROPOS</a>
+   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/avis" class="link-underline">AVIS</a>
+   <a href="/en/a-propos" class="link-underline">ABOUT</a>
    <a href="/en/carrieres" class="link-underline active">CARRIÈRES</a>
    <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
     <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
@@ -62,7 +59,7 @@
    </div>
   </div>
   <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
-  <a href="/en/contact" class="nav-cta">Audit Gratuit</a>
+  <a href="/en/contact" class="nav-cta">Free Audit</a>
   <div class="nav-hamburger"><span></span><span></span><span></span></div>
  </div>
 </nav>
@@ -72,7 +69,7 @@
  <a href="/en/">Home</a>
  <a href="/en/services">Services</a>
  <a href="/en/blog">Blog</a>
- <a href="/en/resultats">Results</a><a href="/avis">Avis</a>
+ <a href="/en/resultats">Results</a><a href="/en/avis">Reviews</a>
  <a href="/en/a-propos">About</a>
  <a href="/en/carrieres">Careers</a>
  <a href="/en/contact">Contact</a>
@@ -93,7 +90,7 @@
  <div class="footer-grid">
   <div>
    <div class="footer-logo">PIRABEL LABS</div>
-   <p class="footer-desc">L'agency digitale premium au service de your growth. Nous construisons les standards de demain for les businesss les more ambitieuses.</p>
+   <p class="footer-desc">The premium digital agency for your growth. Nous construisons les standards de demain for les businesss les more ambitieuses.</p>
   </div>
   <div>
    <div class="footer-title">Services</div>
@@ -107,15 +104,15 @@
    </ul>
   </div>
   <div>
-   <div class="footer-title">Ressources</div>
+   <div class="footer-title">Resources</div>
    <ul class="footer-links">
     <li><a href="guides/">Guides</a></li>
-    <li><a href="/en/resultats">Études de cas</a></li>
+    <li><a href="/en/resultats">Case Studies</a></li>
     <li><a href="/en/a-propos">About</a></li>
     <li><a href="/en/carrieres">Careers</a></li>
     <li><a href="/en/faq">FAQ</a></li>
-    <li><a href="/avis">Avis clients</a></li>
-    <li><a href="/status">Statut services</a></li>
+    <li><a href="/en/avis">Avis clients</a></li>
+    <li><a href="/en/status">Statut services</a></li>
    </ul>
   </div>
   <div>
@@ -131,7 +128,7 @@
   <span>&copy; 2026 Pirabel Labs. All rights reserved.</span>
   <div style="display:flex;gap:2rem;">
    <a href="/en/mentions-legales">Legal Notice</a>
-   <a href="/en/politique-confidentialite">Confidentialité</a>
+   <a href="/en/politique-confidentialite">Privacy</a>
   </div>
  </div>
 </footer>
@@ -164,6 +161,8 @@ fetch('/api/recruitment/jobs/public')
 function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 </script>
 
-<div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/carrieres.html">EN</a></div>
+
+
+<div class="lang-switch"><a href="/carrieres">FR</a><a href="#" class="active">EN</a></div>
 </body>
 </html>

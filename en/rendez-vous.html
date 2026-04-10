@@ -6,6 +6,7 @@
 <title>Book an appointment — Pirabel Labs</title>
 <meta name="description" content="Réservez un créneau free with un consultant Pirabel Labs for discuter de your project digital.">
 <link rel="icon" type="image/png" href="../img/favicon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -56,12 +57,11 @@
 .honeypot{position:absolute;left:-9999px;}
 </style>
 
-<style>
-.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
+
+<style>.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
 .lang-switch a{padding:.5rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.5);transition:all .2s;}
 .lang-switch a:hover{color:#fff;}
-.lang-switch a.active{background:#FF5500;color:#fff;}
-</style>
+.lang-switch a.active{background:#FF5500;color:#fff;}</style>
 </head>
 <body>
 <div class="noise-overlay"></div>
@@ -74,12 +74,12 @@
    <a href="/en/" class="link-underline">L'AGENCE</a>
    <a href="/en/services" class="link-underline">SERVICES</a>
    <a href="/en/blog" class="link-underline">BLOG</a>
-   <a href="/en/resultats" class="link-underline">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
-   <a href="/en/a-propos" class="link-underline">À PROPOS</a>
+   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/avis" class="link-underline">AVIS</a>
+   <a href="/en/a-propos" class="link-underline">ABOUT</a>
    <a href="/en/carrieres" class="link-underline">CARRIÈRES</a>
   </div>
   <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
-  <a href="/en/contact" class="nav-cta">Audit Gratuit</a>
+  <a href="/en/contact" class="nav-cta">Free Audit</a>
   <div class="nav-hamburger"><span></span><span></span><span></span></div>
  </div>
 </nav>
@@ -112,7 +112,7 @@
    <div class="field"><label>Type de RDV</label><select name="type"><option value="consultation">Consultation découverte</option><option value="demo">Démo de our services</option><option value="kickoff">Kick-off projet</option><option value="autre">Autre</option></select></div>
    <div class="field"><label>Prénom & Nom *</label><input type="text" name="name" required></div>
    <div class="field"><label>Email *</label><input type="email" name="email" required></div>
-   <div class="field"><label>Téléphone</label><input type="tel" name="phone"></div>
+   <div class="field"><label>Phone</label><input type="tel" name="phone"></div>
    <div class="field"><label>Entreprise</label><input type="text" name="company"></div>
    <div class="field"><label>Subject du RDV</label><textarea name="notes" placeholder="Tell us about your project..."></textarea></div>
    <button type="submit" class="btn-rdv" id="submit-btn" disabled>Sélectionnez d'abord un créneau</button>
@@ -122,10 +122,10 @@
 
 <footer class="footer">
  <div class="footer-grid">
-  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agency digitale premium au service de your growth.</p></div>
-  <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="/en/services">Services</a></li><li><a href="/en/contact">Contact</a></li><li><a href="/en/carrieres">Careers</a></li></ul></div>
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency for your growth.</p></div>
+  <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/services">Services</a></li><li><a href="/en/contact">Contact</a></li><li><a href="/en/carrieres">Careers</a></li></ul></div>
  </div>
- <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Confidentialité</a></div></div>
+ <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Privacy</a></div></div>
 </footer>
 
 <script src="js/config.js"></script>
@@ -206,6 +206,8 @@ function showAlert(msg, type) { document.getElementById('alert').innerHTML = '<d
 renderCalendar();
 </script>
 
-<div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/rendez-vous.html">EN</a></div>
+
+
+<div class="lang-switch"><a href="/rendez-vous">FR</a><a href="#" class="active">EN</a></div>
 </body>
 </html>

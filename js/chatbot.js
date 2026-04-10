@@ -384,7 +384,9 @@
       "Salut ! Tu lis notre blog ? Si tu as des questions sur un sujet, je suis là pour approfondir.",
       "Hey ! Le content marketing t'intéresse ? Je peux t'en dire plus sur nos stratégies."
     ]
-  };l  // -- Discovery responses (phase 2) --
+  };
+
+  // -- Discovery responses (phase 2) --
   var DISCOVERY_RESPONSES = {
     askSector: isEn ? [
       "To give you the best advice, tell me... what's your industry?",
@@ -517,9 +519,6 @@
       "Top! That leaves us room to go for ambitious results. I already have ideas for you."
     ] : [
       "Excellent ! Avec ce budget, on peut vraiment déployer une stratégie complète et aggressive. Les résultats vont suivre.",
-      "Top ! Ça nous laisse de la marge pour aller chercher des résultats ambitieux. J'ai déjà des idées pour toi."
-    ]
-  };udget, on peut vraiment déployer une stratégie complète et aggressive. Les résultats vont suivre.",
       "Top ! Ça nous laisse de la marge pour aller chercher des résultats ambitieux. J'ai déjà des idées pour toi."
     ]
   };
@@ -2268,6 +2267,59 @@
     isOpen: function () { return isOpen; },
     setSoundEnabled: function (enabled) { soundEnabled = !!enabled; }
   };
+
+  // =====================================================================
+  //  SECTION 28 — UTILITY FUNCTIONS
+  // =====================================================================
+  function pickUnused(arr, key) {
+    if (!arr || arr.length === 0) return null;
+    if (!STATE.usedResponses[key]) STATE.usedResponses[key] = [];
+    var unused = arr.filter(function (r) { return STATE.usedResponses[key].indexOf(r) === -1; });
+    if (unused.length === 0) {
+      STATE.usedResponses[key] = [];
+      unused = arr;
+    }
+    var res = unused[Math.floor(Math.random() * unused.length)];
+    STATE.usedResponses[key].push(res);
+    return res;
+  }
+
+  function replaceName(text) {
+    if (!text) return '';
+    return text.replace(/{name}/g, STATE.visitor.name || (isEn ? 'friend' : 'mon ami'));
+  }
+
+  function formatTimestamp() {
+    var now = new Date();
+    return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  }
+
+  function normalize(text) {
+    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function stripHtml(html) {
+    var tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function saveMsg(convId, name, email, text, role) {
+    try {
+      fetch('/api/chat/save-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: convId,
+          name: name,
+          email: email,
+          text: text,
+          role: role,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(function () { });
+    } catch (e) { }
+  }
 
   // =====================================================================
   //  END OF CHATBOT

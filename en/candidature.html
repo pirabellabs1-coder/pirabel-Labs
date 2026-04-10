@@ -3,52 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Candidature — Pirabel Labs</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<title>Application — Pirabel Labs</title>
+<meta name="description" content="Postulez à our offres d'emploi chez Pirabel Labs.">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/global.css">
 <style>
-:root{--accent:#FF5500;--bg:#0a0a0a;--card:#141414;--border:#2a2a2a;--text:#e5e2e1;--muted:#888;--font-h:'Space Grotesk',sans-serif;--font-b:'Inter',sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.6;}
-.nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-.logo{font-family:var(--font-h);font-weight:700;font-size:1.25rem;color:var(--accent);text-decoration:none;}
-.nav-links a{color:var(--text);text-decoration:none;font-size:.85rem;margin-left:2rem;}
-.nav-links a:hover{color:var(--accent);}
-.container{max-width:900px;margin:0 auto;padding:8rem 2rem 4rem;display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;}
+.container{max-width:900px;margin:0 auto;padding:8rem var(--px-page) 4rem;display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;}
 @media(max-width:800px){.container{grid-template-columns:1fr;}}
-.job-info{background:var(--card);border:1px solid var(--border);padding:2rem;height:fit-content;position:sticky;top:6rem;}
-.job-type{display:inline-block;background:rgba(255,85,0,.1);color:var(--accent);padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;}
-.job-info h1{font-family:var(--font-h);font-size:1.6rem;font-weight:700;line-height:1.2;margin-bottom:.5rem;}
-.job-meta{font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;}
+.job-info{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;height:fit-content;position:sticky;top:6rem;}
+.job-type{display:inline-block;background:rgba(255,85,0,.1);color:var(--primary);padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;}
+.job-info h1{font-family:var(--font-headline);font-size:1.6rem;font-weight:700;line-height:1.2;margin-bottom:.5rem;}
+.job-meta{font-size:.8rem;color:var(--on-surface-variant);margin-bottom:1.5rem;}
 .job-section{margin-top:1.25rem;}
-.job-section h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-family:var(--font-h);font-weight:700;margin-bottom:.6rem;}
-.job-section ul{list-style:none;font-size:.85rem;color:var(--muted);}
+.job-section h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);font-family:var(--font-headline);font-weight:700;margin-bottom:.6rem;}
+.job-section ul{list-style:none;font-size:.85rem;color:var(--on-surface-variant);}
 .job-section li{padding:.3rem 0;padding-left:1rem;position:relative;}
-.job-section li::before{content:'';position:absolute;left:0;top:.7rem;width:6px;height:1px;background:var(--accent);}
-.job-section p{font-size:.85rem;color:var(--muted);}
-.form{background:var(--card);border:1px solid var(--border);padding:2rem;}
-.form h2{font-family:var(--font-h);font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;}
+.job-section li::before{content:'';position:absolute;left:0;top:.7rem;width:6px;height:1px;background:var(--primary);}
+.job-section p{font-size:.85rem;color:var(--on-surface-variant);}
+.form{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
+.form h2{font-family:var(--font-headline);font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;}
 .field{margin-bottom:1.25rem;}
-.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
-.field input,.field textarea{width:100%;background:var(--bg);border:1px solid var(--border);padding:.85rem 1rem;color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;}
-.field input:focus,.field textarea:focus{border-color:var(--accent);}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--on-surface-variant);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:.85rem 1rem;color:var(--on-surface);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.field input:focus,.field textarea:focus{border-color:var(--primary);}
 .field textarea{min-height:140px;resize:vertical;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 @media(max-width:500px){.field-row{grid-template-columns:1fr;}}
-.cv-upload{background:var(--bg);border:1px dashed var(--border);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;}
-.cv-upload:hover{border-color:var(--accent);}
+.cv-upload{background:var(--surface);border:1px dashed var(--outline-variant);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;}
+.cv-upload:hover{border-color:var(--primary);}
 .cv-upload input{display:none;}
-.cv-upload .icon{color:var(--accent);font-size:2rem;}
-.cv-upload .text{font-size:.85rem;color:var(--muted);margin-top:.5rem;}
-.cv-upload.has-file{border-color:var(--accent);}
-.btn{background:var(--accent);color:#5c1900;border:none;padding:1rem 2rem;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;width:100%;font-family:inherit;transition:background .2s;}
-.btn:hover{background:#ff6a1a;}
-.btn:disabled{opacity:.5;cursor:not-allowed;}
+.cv-upload .icon{color:var(--primary);font-size:2rem;}
+.cv-upload .text{font-size:.85rem;color:var(--on-surface-variant);margin-top:.5rem;}
+.cv-upload.has-file{border-color:var(--primary);}
+.btn-apply{background:var(--primary);color:#5c1900;border:none;padding:1rem 2rem;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;width:100%;font-family:inherit;transition:background .2s;}
+.btn-apply:hover{background:#ff6a1a;}
+.btn-apply:disabled{opacity:.5;cursor:not-allowed;}
 .alert{padding:1rem;margin-bottom:1rem;font-size:.85rem;}
 .alert-success{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3);}
 .alert-error{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.3);}
 .honeypot{position:absolute;left:-9999px;}
-.empty{text-align:center;padding:6rem 2rem;color:var(--muted);grid-column:1/-1;}
+.empty{text-align:center;padding:6rem 2rem;color:var(--on-surface-variant);grid-column:1/-1;}
 </style>
 
 <style>
@@ -59,17 +58,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-heigh
 </style>
 </head>
 <body>
-<nav class="nav">
-  <a href="/en/" class="logo">PIRABEL LABS</a>
-  <div class="nav-links">
-    <a href="/carrieres.html">Toutes les offres</a>
-  </div>
-</nav>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
 
-<div class="container" id="container">
-  <div class="empty">Chargement de l'offre...</div>
+<nav class="nav">
+ <div class="nav-inner">
+  <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+  <div class="nav-links">
+   <a href="/en/" class="link-underline">L'AGENCE</a>
+   <a href="/en/services" class="link-underline">SERVICES</a>
+   <a href="/en/blog" class="link-underline">BLOG</a>
+   <a href="/en/resultats" class="link-underline">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
+   <a href="/en/a-propos" class="link-underline">À PROPOS</a>
+   <a href="/en/carrieres" class="link-underline">CARRIÈRES</a>
+  </div>
+  <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
+  <a href="/en/contact" class="nav-cta">Audit Gratuit</a>
+  <div class="nav-hamburger"><span></span><span></span><span></span></div>
+ </div>
+</nav>
+<div class="mobile-nav">
+ <a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/carrieres">Careers</a><a href="/en/contact">Contact</a>
+ <a href="/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
 </div>
 
+<div class="container" id="container">
+ <div class="empty">Chargement de l'offre...</div>
+</div>
+
+<footer class="footer">
+ <div class="footer-grid">
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agency digitale premium au service de your growth.</p></div>
+  <div><div class="footer-title">Ressources</div><ul class="footer-links"><li><a href="/en/carrieres">Toutes les offres</a></li><li><a href="/en/a-propos">About</a></li><li><a href="/en/contact">Contact</a></li></ul></div>
+ </div>
+ <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Confidentialité</a></div></div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/global.js?v=4"></script>
 <script>
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -77,128 +103,71 @@ let cvDataUrl = '';
 let cvFilename = '';
 
 if (!slug) {
-  document.getElementById('container').innerHTML = '<div class="empty">Lien invalide. <a href="/carrieres.html" style="color:var(--accent);">Voir toutes les offres</a></div>';
+ document.getElementById('container').innerHTML = '<div class="empty">Lien invalide. <a href="/en/carrieres" style="color:var(--primary);">See alles les offres</a></div>';
 } else {
-  fetch('/api/recruitment/jobs/public/' + slug)
-    .then(r => r.json())
-    .then(job => {
-      if (job.error) {
-        document.getElementById('container').innerHTML = '<div class="empty">' + job.error + '</div>';
-        return;
-      }
-      renderJob(job);
-    })
-    .catch(() => {
-      document.getElementById('container').innerHTML = '<div class="empty">Erreur de chargement</div>';
-    });
+ fetch('/api/recruitment/jobs/public/' + slug)
+  .then(r => r.json())
+  .then(job => {
+   if (job.error) { document.getElementById('container').innerHTML = '<div class="empty">' + job.error + '</div>'; return; }
+   renderJob(job);
+  })
+  .catch(() => { document.getElementById('container').innerHTML = '<div class="empty">Error de chargement</div>'; });
 }
 
 function renderJob(job) {
-  const reqs = (job.requirements || []).map(r => '<li>' + escapeHtml(r) + '</li>').join('');
-  const benefits = (job.benefits || []).map(b => '<li>' + escapeHtml(b) + '</li>').join('');
-
-  document.getElementById('container').innerHTML = `
-    <div class="job-info">
-      <span class="job-type">${escapeHtml(job.type)}</span>
-      <h1>${escapeHtml(job.title)}</h1>
-      <div class="job-meta">${escapeHtml(job.department || '')} ${job.location ? '· ' + escapeHtml(job.location) : ''} ${job.salary ? '· ' + escapeHtml(job.salary) : ''}</div>
-      ${job.description ? `<div class="job-section"><h3>Description</h3><p>${escapeHtml(job.description)}</p></div>` : ''}
-      ${reqs ? `<div class="job-section"><h3>Pré-requis</h3><ul>${reqs}</ul></div>` : ''}
-      ${benefits ? `<div class="job-section"><h3>Avantages</h3><ul>${benefits}</ul></div>` : ''}
-    </div>
-    <div class="form">
-      <h2>Apply</h2>
-      <div id="alert"></div>
-      <form id="form" onsubmit="submitForm(event)">
-        <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
-        <div class="field-row">
-          <div class="field"><label>First Name & Nom *</label><input type="text" name="name" required></div>
-          <div class="field"><label>Email *</label><input type="email" name="email" required></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Phone</label><input type="tel" name="phone"></div>
-          <div class="field"><label>LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></div>
-        </div>
-        <div class="field"><label>Portfolio / Site</label><input type="url" name="portfolio" placeholder="https://"></div>
-        <div class="field"><label>CV (PDF)</label>
-          <label class="cv-upload" id="cv-label">
-            <input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)">
-            <span class="material-symbols-outlined icon">upload_file</span>
-            <div class="text" id="cv-text">Cliquez pour téléverser votre CV (PDF, max 5MB)</div>
-          </label>
-        </div>
-        <div class="field"><label>Lettre de motivation *</label><textarea name="coverLetter" required placeholder="Présentez-vous, parlez de votre parcours et de votre motivation..."></textarea></div>
-        <button type="submit" class="btn" id="submit-btn">Envoyer ma candidature</button>
-      </form>
-    </div>
-  `;
+ const reqs = (job.requirements || []).map(r => '<li>' + escapeHtml(r) + '</li>').join('');
+ const benefits = (job.benefits || []).map(b => '<li>' + escapeHtml(b) + '</li>').join('');
+ document.getElementById('container').innerHTML = `
+  <div class="job-info">
+   <span class="job-type">${escapeHtml(job.type)}</span>
+   <h1>${escapeHtml(job.title)}</h1>
+   <div class="job-meta">${escapeHtml(job.department || '')} ${job.location ? '· ' + escapeHtml(job.location) : ''} ${job.salary ? '· ' + escapeHtml(job.salary) : ''}</div>
+   ${job.description ? `<div class="job-section"><h3>Description</h3><p>${escapeHtml(job.description)}</p></div>` : ''}
+   ${reqs ? `<div class="job-section"><h3>Pré-requis</h3><ul>${reqs}</ul></div>` : ''}
+   ${benefits ? `<div class="job-section"><h3>Avantages</h3><ul>${benefits}</ul></div>` : ''}
+  </div>
+  <div class="form">
+   <h2>Apply</h2>
+   <div id="alert"></div>
+   <form id="form" onsubmit="submitForm(event)">
+    <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
+    <div class="field-row"><div class="field"><label>Prénom & Nom *</label><input type="text" name="name" required></div><div class="field"><label>Email *</label><input type="email" name="email" required></div></div>
+    <div class="field-row"><div class="field"><label>Téléphone</label><input type="tel" name="phone"></div><div class="field"><label>LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></div></div>
+    <div class="field"><label>Portfolio / Site</label><input type="url" name="portfolio" placeholder="https://"></div>
+    <div class="field"><label>CV (PDF)</label><label class="cv-upload" id="cv-label"><input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)"><span class="material-symbols-outlined icon">upload_file</span><div class="text" id="cv-text">Cliquez for téléverser your CV (PDF, max 5MB)</div></label></div>
+    <div class="field"><label>Lettre de motivation *</label><textarea name="coverLetter" required placeholder="Présentez-vous..."></textarea></div>
+    <button type="submit" class="btn-apply" id="submit-btn">Send ma candidature</button>
+   </form>
+  </div>
+ `;
 }
 
 function handleCv(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showAlert('Fichier trop volumineux (max 5MB)', 'error');
-    e.target.value = '';
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = function (ev) {
-    cvDataUrl = ev.target.result;
-    cvFilename = file.name;
-    document.getElementById('cv-label').classList.add('has-file');
-    document.getElementById('cv-text').textContent = '✓ ' + file.name;
-  };
-  reader.readAsDataURL(file);
+ const file = e.target.files[0]; if (!file) return;
+ if (file.size > 5 * 1024 * 1024) { showAlert('Fichier trop volumineux (max 5MB)', 'error'); e.target.value = ''; return; }
+ const reader = new FileReader();
+ reader.onload = function (ev) { cvDataUrl = ev.target.result; cvFilename = file.name; document.getElementById('cv-label').classList.add('has-file'); document.getElementById('cv-text').textContent = '✓ ' + file.name; };
+ reader.readAsDataURL(file);
 }
 
 async function submitForm(e) {
-  e.preventDefault();
-  const form = e.target;
-  const data = Object.fromEntries(new FormData(form));
-  data.cvUrl = cvDataUrl;
-  data.cvFilename = cvFilename;
-  data.source = 'site_carrieres';
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Envoi en cours...';
-
-  try {
-    const r = await fetch('/api/recruitment/jobs/' + slug + '/apply', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await r.json();
-    if (result.error) {
-      showAlert(result.error, 'error');
-      btn.disabled = false;
-      btn.textContent = 'Envoyer ma candidature';
-    } else {
-      showAlert(result.message || 'Candidature envoyée avec succès !', 'success');
-      form.reset();
-      document.getElementById('cv-label').classList.remove('has-file');
-      document.getElementById('cv-text').textContent = 'Cliquez pour téléverser votre CV';
-      cvDataUrl = '';
-      cvFilename = '';
-      btn.textContent = 'Envoyée ✓';
-    }
-  } catch (err) {
-    showAlert('Erreur réseau, réessayez', 'error');
-    btn.disabled = false;
-    btn.textContent = 'Envoyer ma candidature';
-  }
+ e.preventDefault();
+ const form = e.target;
+ const data = Object.fromEntries(new FormData(form));
+ data.cvUrl = cvDataUrl; data.cvFilename = cvFilename; data.source = 'site_carrieres';
+ const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Envoi en cours...';
+ try {
+  const r = await fetch('/api/recruitment/jobs/' + slug + '/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+  const result = await r.json();
+  if (result.error) { showAlert(result.error, 'error'); btn.disabled = false; btn.textContent = 'Send ma candidature'; }
+  else { showAlert(result.message || 'Application envoyée with succès !', 'success'); form.reset(); document.getElementById('cv-label').classList.remove('has-file'); document.getElementById('cv-text').textContent = 'Cliquez for téléverser your CV'; cvDataUrl = ''; cvFilename = ''; btn.textContent = 'Envoyée ✓'; }
+ } catch (err) { showAlert('Error réseau, réessayez', 'error'); btn.disabled = false; btn.textContent = 'Send ma candidature'; }
 }
 
-function showAlert(msg, type) {
-  document.getElementById('alert').innerHTML = '<div class="alert alert-' + type + '">' + escapeHtml(msg) + '</div>';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
+function showAlert(msg, type) { document.getElementById('alert').innerHTML = '<div class="alert alert-' + type + '">' + escapeHtml(msg) + '</div>'; window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 </script>
 
-<div class="lang-switch"><a href="/candidature.html">FR</a><a href="#" class="active">EN</a></div>
+<div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/candidature.html">EN</a></div>
 </body>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portail Client | Pirabel Labs</title>
+<script>
+ // Autoriser l'accès via /mon-espace or le chemin sécurisé
+ const validPaths = ['client_portal', 'mon-espace'];
+ if (!validPaths.some(p => window.location.pathname.includes(p))) {
+  // window.location.href = '/404'; // Désactivé temporairement for test
+ }
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#141313;color:#e5e2e1;font-family:sans-serif;height:100vh;display:flex;align-items:center;justify-content:center;}
+.box{width:100%;max-width:400px;padding:2rem;text-align:center;}
+input{width:100%;padding:1rem;margin:1rem 0;background:#000;border:1px solid #333;color:#fff;}
+button{width:100%;padding:1rem;background:#FF5500;border:none;color:#000;font-weight:700;cursor:pointer;}
+</style>
+
+<style>
+.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
+.lang-switch a{padding:.5rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.5);transition:all .2s;}
+.lang-switch a:hover{color:#fff;}
+.lang-switch a.active{background:#FF5500;color:#fff;}
+</style>
+</head>
+<body>
+<div class="box">
+ <h2>Espace Client Sécurisé</h2>
+ <form id="portalForm">
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Mot de Passe" required>
+  <button type="submit">Se Connecter</button>
+ </form>
+</div>
+<script>
+document.getElementById('portalForm').addEventListener('submit', async (e) => {
+ e.preventDefault();
+ const email = document.getElementById('email').value;
+ const password = document.getElementById('password').value;
+ const res = await fetch('/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password })
+ });
+ const data = await res.json();
+ if (data.success) {
+  localStorage.setItem('token', data.token);
+  window.location.href = '/portal';
+ } else { alert(data.error || 'Error'); }
+});
+</script>
+
+<div class="lang-switch"><a href="/client_portal_v4p8w1n7x9k2m_access_secure">FR</a><a href="#" class="active">EN</a></div>
+</body>
+</html>

@@ -47,63 +47,63 @@
 <div class="dot-grid"></div>
 
 <nav class="nav">
-  <div class="nav-inner">
-    <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
-    <div class="nav-links">
-      <a href="/en/">HOME</a>
-      <a href="/en/services.html">SERVICES</a>
-      <a href="/en/blog">BLOG</a>
-      <a href="guides/">GUIDES</a>
-      <a href="/en/results.html">RESULTS</a><a href="/en/reviews.html" class="active">REVIEWS</a>
-      <a href="/en/about.html">ABOUT</a>
-      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
-        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">FR</span>
-        <span style="opacity:0.3;">|</span>
-        <span onclick="window.switchLanguage('en')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">EN</span>
-      </div>
-    </div>
-    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Space</a>
-    <a href="/en/contact.html" class="nav-cta">Free Audit</a>
-    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+ <div class="nav-inner">
+  <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+  <div class="nav-links">
+   <a href="/en/">HOME</a>
+   <a href="/en/services.html">SERVICES</a>
+   <a href="/en/blog">BLOG</a>
+   <a href="guides/">GUIDES</a>
+   <a href="/en/results.html">RESULTS</a><a href="/en/reviews.html" class="active">REVIEWS</a>
+   <a href="/en/about.html">ABOUT</a>
+   <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+    <span onclick="window.switchLanguage('fr')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">FR</span>
+    <span style="opacity:0.3;">|</span>
+    <span onclick="window.switchLanguage('en')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">EN</span>
+   </div>
   </div>
+  <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Space</a>
+  <a href="/en/contact.html" class="nav-cta">Free Audit</a>
+  <div class="nav-hamburger"><span></span><span></span><span></span></div>
+ </div>
 </nav>
 <div class="mobile-nav">
-  <a href="/en/">Home</a><a href="/en/services.html">Services</a><a href="/en/blog">Blog</a><a href="/en/results.html">Results</a><a href="/en/reviews.html">Reviews</a><a href="/en/about.html">About</a><a href="/en/contact.html">Contact</a>
-  <a href="/espace-client-4p8w1n" style="color:#FF5500;">My Space</a>
+ <a href="/en/">Home</a><a href="/en/services.html">Services</a><a href="/en/blog">Blog</a><a href="/en/results.html">Results</a><a href="/en/reviews.html">Reviews</a><a href="/en/about.html">About</a><a href="/en/contact.html">Contact</a>
+ <a href="/espace-client-4p8w1n" style="color:#FF5500;">My Space</a>
 </div>
 
 <div id="reviews-page">
-  <section class="reviews-hero"><h1>Our Clients <span>Speak</span></h1><p>Discover what our clients say about their experience with Pirabel Labs.</p></section>
-  <section class="reviews-grid" id="reviews-list"><div class="empty">Loading...</div></section>
+ <section class="reviews-hero"><h1>Our Clients <span>Speak</span></h1><p>Discover what our clients say about their experience with Pirabel Labs.</p></section>
+ <section class="reviews-grid" id="reviews-list"><div class="empty">Loading...</div></section>
 </div>
 
 <div id="form-page" style="display:none;">
-  <section class="reviews-hero"><h1>Your <span>Opinion</span> Matters</h1><p>Thank you for taking a moment to share your experience.</p></section>
-  <div class="form-container">
-    <div class="field"><label>Rating</label><div class="star-input" id="star-input"></div></div>
-    <div class="field"><label>Title (optional)</label><input id="f-title" placeholder="Excellent collaboration!"></div>
-    <div class="field"><label>Your Review *</label><textarea id="f-comment" rows="5" placeholder="Describe your experience..."></textarea></div>
-    <button class="btn-submit" onclick="submitReview()">Send my review</button>
-    <div id="form-msg" style="margin-top:1rem;text-align:center;display:none;"></div>
-  </div>
+ <section class="reviews-hero"><h1>Your <span>Opinion</span> Matters</h1><p>Thank you for taking a moment to share your experience.</p></section>
+ <div class="form-container">
+  <div class="field"><label>Rating</label><div class="star-input" id="star-input"></div></div>
+  <div class="field"><label>Title (optional)</label><input id="f-title" placeholder="Excellent collaboration!"></div>
+  <div class="field"><label>Your Review *</label><textarea id="f-comment" rows="5" placeholder="Describe your experience..."></textarea></div>
+  <button class="btn-submit" onclick="submitReview()">Send my review</button>
+  <div id="form-msg" style="margin-top:1rem;text-align:center;display:none;"></div>
+ </div>
 </div>
 
 <div id="thanks-page" style="display:none;">
-  <section class="reviews-hero" style="padding-top:12rem;">
-    <h1>Thank you! 🎉</h1>
-    <p>Your review has been recorded. It will be published after validation.</p>
-    <a href="/en/" style="display:inline-block;margin-top:2rem;color:#FF5500;text-decoration:none;font-weight:600;">← Back to site</a>
-  </section>
+ <section class="reviews-hero" style="padding-top:12rem;">
+  <h1>Thank you! 🎉</h1>
+  <p>Your review has been recorded. It will be published after validation.</p>
+  <a href="/en/" style="display:inline-block;margin-top:2rem;color:#FF5500;text-decoration:none;font-weight:600;">← Back to site</a>
+ </section>
 </div>
 
 <footer class="footer">
-  <div class="footer-grid">
-    <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency at the service of your growth.</p></div>
-    <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="seo-agency/">SEO</a></li><li><a href="web-design-agency/">Websites</a></li><li><a href="ai-automation-agency/">AI & Auto</a></li></ul></div>
-    <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="guides/">Guides</a></li><li><a href="/en/results.html">Case Studies</a></li><li><a href="/en/about.html">About Us</a></li></ul></div>
-    <div><div class="footer-title">Contact</div><ul class="footer-links"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><a href="/en/contact.html">Form</a></li></ul></div>
-  </div>
-  <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/legal-mentions.html">Legal Mentions</a><a href="/en/privacy-policy.html">Privacy</a></div></div>
+ <div class="footer-grid">
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency at the service of your growth.</p></div>
+  <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="seo-agency/">SEO</a></li><li><a href="web-design-agency/">Websites</a></li><li><a href="ai-automation-agency/">AI & Auto</a></li></ul></div>
+  <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="guides/">Guides</a></li><li><a href="/en/results.html">Case Studies</a></li><li><a href="/en/about.html">About Us</a></li></ul></div>
+  <div><div class="footer-title">Contact</div><ul class="footer-links"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><a href="/en/contact.html">Form</a></li></ul></div>
+ </div>
+ <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/legal-mentions.html">Legal Mentions</a><a href="/en/privacy-policy.html">Privacy</a></div></div>
 </footer>
 
 <script src="../js/config.js"></script>
@@ -114,37 +114,37 @@ const reviewToken = params.get('token');
 let selectedRating = 5;
 
 if (reviewToken) {
-  document.getElementById('reviews-page').style.display = 'none';
-  document.getElementById('form-page').style.display = 'block';
-  const starEl = document.getElementById('star-input');
-  for (let i = 1; i <= 5; i++) {
-    const s = document.createElement('span'); s.textContent = '★'; s.dataset.val = i;
-    if (i <= 5) s.classList.add('active');
-    s.onclick = () => { selectedRating = i; starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i)); };
-    starEl.appendChild(s);
-  }
-  fetch('/api/reviews/submit/' + reviewToken).then(r => r.json()).then(d => { if (d.alreadySubmitted) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; } });
+ document.getElementById('reviews-page').style.display = 'none';
+ document.getElementById('form-page').style.display = 'block';
+ const starEl = document.getElementById('star-input');
+ for (let i = 1; i <= 5; i++) {
+  const s = document.createElement('span'); s.textContent = '★'; s.dataset.val = i;
+  if (i <= 5) s.classList.add('active');
+  s.onclick = () => { selectedRating = i; starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i)); };
+  starEl.appendChild(s);
+ }
+ fetch('/api/reviews/submit/' + reviewToken).then(r => r.json()).then(d => { if (d.alreadySubmitted) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; } });
 } else {
-  fetch('/api/reviews/public').then(r => r.json()).then(d => {
-    const reviews = d.reviews || [];
-    document.getElementById('reviews-list').innerHTML = reviews.length ? reviews.map(r => `
-      <div class="review">
-        <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-        ${r.title ? `<div style="font-weight:700;margin-bottom:.5rem;">${esc(r.title)}</div>` : ''}
-        <div class="review-text">"${esc(r.comment)}"</div>
-        <div class="review-author">${esc(r.name)}</div>
-        <div class="review-company">${esc(r.company)} ${r.service ? ' · ' + esc(r.service) : ''}</div>
-      </div>
-    `).join('') : '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">No reviews published yet</h2></div>';
-  }).catch(() => document.getElementById('reviews-list').innerHTML = '<div class="empty">Error loading reviews</div>');
+ fetch('/api/reviews/public').then(r => r.json()).then(d => {
+  const reviews = d.reviews || [];
+  document.getElementById('reviews-list').innerHTML = reviews.length ? reviews.map(r => `
+   <div class="review">
+    <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+    ${r.title ? `<div style="font-weight:700;margin-bottom:.5rem;">${esc(r.title)}</div>` : ''}
+    <div class="review-text">"${esc(r.comment)}"</div>
+    <div class="review-author">${esc(r.name)}</div>
+    <div class="review-company">${esc(r.company)} ${r.service ? ' · ' + esc(r.service) : ''}</div>
+   </div>
+  `).join('') : '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">No reviews published yet</h2></div>';
+ }).catch(() => document.getElementById('reviews-list').innerHTML = '<div class="empty">Error loading reviews</div>');
 }
 
 async function submitReview() {
-  const comment = document.getElementById('f-comment').value.trim();
-  if (!comment) return alert('Please write a review');
-  const r = await fetch('/api/reviews/submit/' + reviewToken, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment }) });
-  const d = await r.json();
-  if (d.success) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; }
+ const comment = document.getElementById('f-comment').value.trim();
+ if (!comment) return alert('Please write a review');
+ const r = await fetch('/api/reviews/submit/' + reviewToken, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment }) });
+ const d = await r.json();
+ if (d.success) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; }
 }
 function esc(s) { return (s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 </script>

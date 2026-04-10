@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devis | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.q-row{display:grid;grid-template-columns:120px 1fr 120px 100px 120px 80px;gap:.75rem;align-items:center;padding:.85rem 1rem;border-bottom:1px solid var(--border);}
+.q-row.head{background:var(--bg);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+.q-row:hover:not(.head){background:rgba(255,85,0,.04);}
+.badge{display:inline-block;padding:.2rem .55rem;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+.b-brouillon{background:rgba(255,255,255,.05);color:var(--muted);}
+.b-envoye{background:rgba(52,152,219,.15);color:#3498db;}
+.b-accepte{background:rgba(46,204,113,.15);color:#2ecc71;}
+.b-refuse{background:rgba(231,76,60,.15);color:#e74c3c;}
+.b-expire{background:rgba(155,89,182,.15);color:#9b59b6;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:760px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-body{padding:1.5rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;font-family:var(--font-b);outline:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+.field textarea{min-height:80px;resize:vertical;}
+.item-row{display:grid;grid-template-columns:1fr 80px 100px 100px 30px;gap:.5rem;align-items:center;margin-bottom:.5rem;}
+.item-row input{padding:.5rem .75rem;font-size:.8rem;}
+.item-del{background:transparent;border:1px solid var(--border);color:#e74c3c;cursor:pointer;width:30px;height:30px;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.5rem 1rem;font-weight:600;font-size:.75rem;cursor:pointer;}
+.totals-box{background:var(--bg);border:1px solid var(--border);padding:1rem;margin-top:1rem;}
+.totals-row{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem;}
+.totals-row.grand{border-top:2px solid var(--accent);padding-top:.75rem;margin-top:.5rem;font-size:1rem;font-weight:800;color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/reviews" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/quotes" class="sidebar-link active"><span class="material-symbols-outlined">description</span> Devis</a>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <a href="/time" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Time tracking</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates email</a>
+    <a href="/status-page" class="sidebar-link"><span class="material-symbols-outlined">monitor_heart</span> Statut</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;"><div class="topbar-title">Devis</div></div>
+    <div class="topbar-actions">
+      <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau devis</button>
+    </div>
+  </header>
+  <div class="content">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
+      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Total</div><div style="font-size:1.75rem;font-weight:800;" id="s-total">0</div></div>
+      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Envoyés</div><div style="font-size:1.75rem;font-weight:800;color:#3498db;" id="s-sent">0</div></div>
+      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Acceptés</div><div style="font-size:1.75rem;font-weight:800;color:#2ecc71;" id="s-accepted">0</div></div>
+      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Conversion</div><div style="font-size:1.75rem;font-weight:800;color:var(--accent);" id="s-conv">0%</div></div>
+      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">CA gagné</div><div style="font-size:1.75rem;font-weight:800;color:var(--accent);" id="s-won">0€</div></div>
+    </div>
+    <div class="card" style="padding:0;">
+      <div class="q-row head"><div>Numéro</div><div>Titre</div><div>Client</div><div>Total</div><div>Statut</div><div>Actions</div></div>
+      <div id="quotes-list"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal"><div class="modal">
+  <div class="modal-header">
+    <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Nouveau devis</h3>
+    <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="field"><label>Titre du devis *</label><input id="f-title" placeholder="Refonte site e-commerce"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="field"><label>Client</label><select id="f-client"><option value="">— Sélectionner —</option></select></div>
+      <div class="field"><label>Statut</label><select id="f-status"><option value="brouillon">Brouillon</option><option value="envoye">Envoyé</option><option value="accepte">Accepté</option><option value="refuse">Refusé</option><option value="expire">Expiré</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="field"><label>Nom client (manuel)</label><input id="f-clientName" placeholder="Si pas dans la liste"></div>
+      <div class="field"><label>Email client</label><input id="f-clientEmail" type="email"></div>
+      <div class="field"><label>Société</label><input id="f-clientCompany"></div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="f-description"></textarea></div>
+
+    <label style="display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;">Lignes</label>
+    <div class="item-row" style="font-size:.65rem;color:var(--muted);text-transform:uppercase;font-weight:700;"><div>Description</div><div>Qté</div><div>P.U.</div><div>Total</div><div></div></div>
+    <div id="items"></div>
+    <button class="btn-secondary" onclick="addItem()" style="margin-top:.5rem;">+ Ajouter une ligne</button>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div class="field"><label>TVA %</label><input id="f-taxRate" type="number" value="20" onchange="recalc()"></div>
+      <div class="field"><label>Devise</label><select id="f-currency"><option>EUR</option><option>USD</option><option>XOF</option><option>MAD</option></select></div>
+      <div class="field"><label>Valable jusqu'au</label><input id="f-validUntil" type="date"></div>
+    </div>
+
+    <div class="field"><label>Lien de paiement (manuel — Stripe checkout, PayPal, virement…)</label><input id="f-paymentLink" placeholder="https://"></div>
+    <div class="field"><label>Notes</label><textarea id="f-notes"></textarea></div>
+    <div class="field"><label>Conditions</label><textarea id="f-terms" placeholder="Conditions de paiement, livraison…"></textarea></div>
+
+    <div class="totals-box">
+      <div class="totals-row"><span>Sous-total HT</span><span id="t-sub">0,00 €</span></div>
+      <div class="totals-row"><span>TVA</span><span id="t-tax">0,00 €</span></div>
+      <div class="totals-row grand"><span>TOTAL TTC</span><span id="t-total">0,00 €</span></div>
+    </div>
+
+    <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
+      <button class="btn-primary" onclick="save()" style="flex:1;">Enregistrer</button>
+      <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div></div>
+
+<script>
+let editId = null, items = [], currentClients = [];
+
+async function loadStats() {
+  const r = await fetch('/api/quotes/stats', { credentials: 'include' });
+  const s = await r.json();
+  document.getElementById('s-total').textContent = s.total || 0;
+  document.getElementById('s-sent').textContent = s.sent || 0;
+  document.getElementById('s-accepted').textContent = s.accepted || 0;
+  document.getElementById('s-conv').textContent = (s.conversionRate || 0) + '%';
+  document.getElementById('s-won').textContent = (s.acceptedValue || 0).toLocaleString('fr-FR') + '€';
+}
+
+async function loadList() {
+  const r = await fetch('/api/quotes', { credentials: 'include' });
+  const data = await r.json();
+  const list = document.getElementById('quotes-list');
+  if (!data.quotes || !data.quotes.length) {
+    list.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--muted);">Aucun devis. Créez votre premier devis.</div>';
+    return;
+  }
+  list.innerHTML = data.quotes.map(q => `
+    <div class="q-row">
+      <div style="font-family:monospace;font-weight:700;color:var(--accent);">${q.number}</div>
+      <div>${escapeHtml(q.title || '-')}</div>
+      <div style="font-size:.85rem;color:var(--muted);">${escapeHtml(q.client?.company || q.clientName || '-')}</div>
+      <div style="font-weight:700;">${(q.total || 0).toLocaleString('fr-FR')} ${q.currency || 'EUR'}</div>
+      <div><span class="badge b-${q.status}">${q.status}</span></div>
+      <div style="display:flex;gap:.3rem;">
+        <button onclick="editQuote('${q._id}')" title="Éditer" style="background:transparent;border:1px solid var(--border);color:var(--text);width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">edit</span></button>
+        <button onclick="sendQuote('${q._id}')" title="Envoyer" style="background:transparent;border:1px solid var(--border);color:#3498db;width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">send</span></button>
+        <button onclick="downloadPDF('${q._id}')" title="PDF" style="background:transparent;border:1px solid var(--border);color:var(--accent);width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">picture_as_pdf</span></button>
+        <button onclick="delQuote('${q._id}')" title="Supprimer" style="background:transparent;border:1px solid var(--border);color:#e74c3c;width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">delete</span></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadClients() {
+  try {
+    const r = await fetch('/api/clients', { credentials: 'include' });
+    const data = await r.json();
+    currentClients = data.clients || [];
+    document.getElementById('f-client').innerHTML = '<option value="">— Sélectionner —</option>' + currentClients.map(c => `<option value="${c._id}">${escapeHtml(c.company || c.contactName)}</option>`).join('');
+  } catch (e) {}
+}
+
+function openCreate() {
+  editId = null;
+  items = [];
+  document.getElementById('modal-title').textContent = 'Nouveau devis';
+  ['f-title','f-clientName','f-clientEmail','f-clientCompany','f-description','f-validUntil','f-paymentLink','f-notes','f-terms'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-client').value = '';
+  document.getElementById('f-status').value = 'brouillon';
+  document.getElementById('f-taxRate').value = 20;
+  document.getElementById('f-currency').value = 'EUR';
+  addItem();
+  document.getElementById('modal').classList.add('show');
+}
+
+async function editQuote(id) {
+  const r = await fetch('/api/quotes/' + id, { credentials: 'include' });
+  const q = await r.json();
+  editId = id;
+  document.getElementById('modal-title').textContent = 'Devis ' + q.number;
+  document.getElementById('f-title').value = q.title || '';
+  document.getElementById('f-client').value = q.client?._id || q.client || '';
+  document.getElementById('f-status').value = q.status || 'brouillon';
+  document.getElementById('f-clientName').value = q.clientName || '';
+  document.getElementById('f-clientEmail').value = q.clientEmail || '';
+  document.getElementById('f-clientCompany').value = q.clientCompany || '';
+  document.getElementById('f-description').value = q.description || '';
+  document.getElementById('f-taxRate').value = q.taxRate || 20;
+  document.getElementById('f-currency').value = q.currency || 'EUR';
+  document.getElementById('f-validUntil').value = q.validUntil ? new Date(q.validUntil).toISOString().slice(0, 10) : '';
+  document.getElementById('f-paymentLink').value = q.paymentLink || '';
+  document.getElementById('f-notes').value = q.notes || '';
+  document.getElementById('f-terms').value = q.terms || '';
+  items = (q.items || []).map(it => ({ description: it.description, quantity: it.quantity, unitPrice: it.unitPrice }));
+  if (!items.length) addItem();
+  renderItems();
+  recalc();
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+function addItem() {
+  items.push({ description: '', quantity: 1, unitPrice: 0 });
+  renderItems();
+}
+
+function removeItem(i) {
+  items.splice(i, 1);
+  renderItems();
+  recalc();
+}
+
+function renderItems() {
+  document.getElementById('items').innerHTML = items.map((it, i) => `
+    <div class="item-row">
+      <input value="${escapeHtml(it.description)}" placeholder="Description" oninput="items[${i}].description=this.value">
+      <input type="number" value="${it.quantity}" oninput="items[${i}].quantity=parseFloat(this.value)||0;recalc()">
+      <input type="number" value="${it.unitPrice}" step="0.01" oninput="items[${i}].unitPrice=parseFloat(this.value)||0;recalc()">
+      <div style="text-align:right;font-weight:700;font-size:.85rem;">${(it.quantity * it.unitPrice).toFixed(2)}</div>
+      <button class="item-del" onclick="removeItem(${i})"><span class="material-symbols-outlined" style="font-size:.9rem;">delete</span></button>
+    </div>
+  `).join('');
+}
+
+function recalc() {
+  const sub = items.reduce((s, it) => s + (it.quantity * it.unitPrice), 0);
+  const taxRate = parseFloat(document.getElementById('f-taxRate').value) || 0;
+  const tax = sub * taxRate / 100;
+  const cur = document.getElementById('f-currency').value;
+  const fmt = v => v.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + (cur === 'EUR' ? '€' : cur);
+  document.getElementById('t-sub').textContent = fmt(sub);
+  document.getElementById('t-tax').textContent = fmt(tax);
+  document.getElementById('t-total').textContent = fmt(sub + tax);
+  renderItems();
+}
+
+async function save() {
+  const data = {
+    title: document.getElementById('f-title').value,
+    client: document.getElementById('f-client').value || undefined,
+    status: document.getElementById('f-status').value,
+    clientName: document.getElementById('f-clientName').value,
+    clientEmail: document.getElementById('f-clientEmail').value,
+    clientCompany: document.getElementById('f-clientCompany').value,
+    description: document.getElementById('f-description').value,
+    items: items.filter(it => it.description),
+    taxRate: parseFloat(document.getElementById('f-taxRate').value) || 0,
+    currency: document.getElementById('f-currency').value,
+    validUntil: document.getElementById('f-validUntil').value || undefined,
+    paymentLink: document.getElementById('f-paymentLink').value,
+    notes: document.getElementById('f-notes').value,
+    terms: document.getElementById('f-terms').value
+  };
+  const url = editId ? '/api/quotes/' + editId : '/api/quotes';
+  const method = editId ? 'PUT' : 'POST';
+  const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) });
+  if (r.ok) { closeModal(); loadList(); loadStats(); }
+  else { alert('Erreur'); }
+}
+
+async function delQuote(id) {
+  if (!confirm('Supprimer ce devis ?')) return;
+  await fetch('/api/quotes/' + id, { method: 'DELETE', credentials: 'include' });
+  loadList(); loadStats();
+}
+
+async function sendQuote(id) {
+  if (!confirm('Envoyer ce devis par email au client ?')) return;
+  const r = await fetch('/api/quotes/' + id + '/send', { method: 'POST', credentials: 'include' });
+  const result = await r.json();
+  alert(result.success ? 'Envoyé !' : 'Erreur d\'envoi');
+  loadList();
+}
+
+async function downloadPDF(id) {
+  const r = await fetch('/api/quotes/' + id, { credentials: 'include' });
+  const q = await r.json();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFillColor(255, 85, 0);
+  doc.rect(0, 0, 210, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.text('PIRABEL LABS', 14, 18);
+  doc.setFontSize(12);
+  doc.text('DEVIS ' + q.number, 150, 18);
+  doc.setTextColor(40, 40, 40);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  let y = 45;
+  doc.text(q.title || '', 14, y);
+  y += 10;
+  doc.setFontSize(9);
+  doc.text('Client : ' + (q.clientName || q.client?.company || ''), 14, y); y += 5;
+  if (q.clientEmail) { doc.text('Email : ' + q.clientEmail, 14, y); y += 5; }
+  if (q.validUntil) { doc.text('Valable jusqu\'au : ' + new Date(q.validUntil).toLocaleDateString('fr-FR'), 14, y); y += 5; }
+  y += 5;
+  doc.setFillColor(255, 85, 0);
+  doc.rect(14, y, 182, 8, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.text('DESCRIPTION', 16, y + 5.5);
+  doc.text('QTE', 130, y + 5.5);
+  doc.text('PU', 150, y + 5.5);
+  doc.text('TOTAL', 175, y + 5.5);
+  y += 10;
+  doc.setTextColor(40, 40, 40);
+  (q.items || []).forEach(it => {
+    doc.text(String(it.description || '').substring(0, 60), 16, y);
+    doc.text(String(it.quantity), 130, y);
+    doc.text(String(it.unitPrice), 150, y);
+    doc.text(String((it.quantity * it.unitPrice).toFixed(2)), 175, y);
+    y += 6;
+  });
+  y += 5;
+  doc.setFontSize(10);
+  doc.text('Sous-total HT : ' + (q.subtotal || 0).toFixed(2) + ' ' + q.currency, 130, y); y += 5;
+  doc.text('TVA ' + q.taxRate + '% : ' + (q.tax || 0).toFixed(2) + ' ' + q.currency, 130, y); y += 5;
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 85, 0);
+  doc.text('TOTAL TTC : ' + (q.total || 0).toFixed(2) + ' ' + q.currency, 130, y);
+  if (q.paymentLink) {
+    y += 12;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(40, 40, 40);
+    doc.text('Lien de paiement : ' + q.paymentLink, 14, y);
+  }
+  if (q.notes) {
+    y += 12;
+    doc.text('Notes :', 14, y); y += 5;
+    doc.text(q.notes.substring(0, 200), 14, y);
+  }
+  doc.save('Devis-' + q.number + '.pdf');
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+loadStats();
+loadList();
+loadClients();
+</script>
+</body>
+</html>

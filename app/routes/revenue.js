@@ -108,4 +108,66 @@ router.get('/export', auth, adminOrEmployee, async (req, res) => {
   }
 });
 
+// GET /api/revenue/mrr - MRR / ARR / top clients / runway
+router.get('/mrr', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const Invoice = require('../models/Invoice');
+    const Client = require('../models/Client');
+    const Project = require('../models/Project');
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+
+    const paidThisMonth = await Invoice.aggregate([
+      { $match: { status: 'paid', paidDate: { $gte: monthStart, $lte: monthEnd } } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]);
+    const paidLastMonth = await Invoice.aggregate([
+      { $match: { status: 'paid', paidDate: { $gte: lastMonthStart, $lte: lastMonthEnd } } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]);
+
+    const mrr = paidThisMonth[0]?.total || 0;
+    const lastMRR = paidLastMonth[0]?.total || 0;
+    const mrrGrowth = lastMRR > 0 ? ((mrr - lastMRR) / lastMRR) * 100 : 0;
+    const arr = mrr * 12;
+
+    // Top clients by lifetime value
+    const topClients = await Invoice.aggregate([
+      { $match: { status: 'paid' } },
+      { $group: { _id: '$client', total: { $sum: '$total' }, count: { $sum: 1 } } },
+      { $sort: { total: -1 } },
+      { $limit: 5 },
+      { $lookup: { from: 'clients', localField: '_id', foreignField: '_id', as: 'client' } },
+      { $unwind: { path: '$client', preserveNullAndEmptyArrays: true } },
+      { $project: { _id: 1, total: 1, count: 1, name: '$client.company' } }
+    ]);
+
+    // Outstanding receivables
+    const outstanding = await Invoice.aggregate([
+      { $match: { status: { $in: ['sent', 'overdue'] } } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]);
+
+    // Active projects worth
+    const activeWorth = await Project.aggregate([
+      { $match: { status: { $in: ['en_attente', 'en_cours'] } } },
+      { $group: { _id: null, total: { $sum: '$budget' } } }
+    ]);
+
+    res.json({
+      mrr,
+      lastMRR,
+      mrrGrowth: Math.round(mrrGrowth * 10) / 10,
+      arr,
+      topClients,
+      outstanding: outstanding[0]?.total || 0,
+      activeWorth: activeWorth[0]?.total || 0,
+      activeClients: await Client.countDocuments({ status: 'actif' })
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 module.exports = router;

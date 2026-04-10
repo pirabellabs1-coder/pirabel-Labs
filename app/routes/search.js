@@ -8,6 +8,8 @@ const JobOffer = require('../models/JobOffer');
 const Article = require('../models/Article');
 const Lead = require('../models/Lead');
 const Invoice = require('../models/Invoice');
+const Quote = require('../models/Quote');
+const Review = require('../models/Review');
 const { auth, adminOrEmployee } = require('../middleware/auth');
 
 // GET /api/search?q=...
@@ -17,7 +19,7 @@ router.get('/', auth, adminOrEmployee, async (req, res) => {
     if (!q || q.length < 2) return res.json({ results: [] });
     const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 
-    const [clients, projects, orders, apps, jobs, articles, leads, invoices] = await Promise.all([
+    const [clients, projects, orders, apps, jobs, articles, leads, invoices, quotes, reviews] = await Promise.all([
       Client.find({ $or: [{ company: regex }, { contactName: regex }, { email: regex }] }).limit(5).select('company contactName email'),
       Project.find({ $or: [{ name: regex }, { description: regex }] }).limit(5).select('name status').populate('client', 'company'),
       Order.find({ $or: [{ name: regex }, { email: regex }, { service: regex }] }).limit(5).select('name email service status'),
@@ -25,7 +27,9 @@ router.get('/', auth, adminOrEmployee, async (req, res) => {
       JobOffer.find({ $or: [{ title: regex }, { department: regex }] }).limit(5).select('title slug status'),
       Article.find({ $or: [{ title: regex }, { excerpt: regex }] }).limit(5).select('title slug status'),
       Lead.find({ $or: [{ 'visitor.name': regex }, { 'visitor.email': regex }, { 'visitor.company': regex }] }).limit(5).select('visitor qualification.score'),
-      Invoice.find({ $or: [{ number: regex } ]}).limit(5).select('number total status').populate('client', 'company')
+      Invoice.find({ $or: [{ number: regex } ]}).limit(5).select('number total status').populate('client', 'company'),
+      Quote.find({ $or: [{ number: regex }, { title: regex }, { clientName: regex }] }).limit(5).select('number title clientName total status'),
+      Review.find({ $or: [{ name: regex }, { content: regex }, { company: regex }] }).limit(5).select('name rating status')
     ]);
 
     const results = [
@@ -36,7 +40,9 @@ router.get('/', auth, adminOrEmployee, async (req, res) => {
       ...jobs.map(j => ({ type: 'job', icon: 'work', title: j.title, subtitle: j.status, link: `/recruitment?id=${j._id}` })),
       ...articles.map(a => ({ type: 'article', icon: 'article', title: a.title, subtitle: a.status, link: `/articles?slug=${a.slug}` })),
       ...leads.map(l => ({ type: 'lead', icon: 'local_fire_department', title: l.visitor?.name || l.visitor?.email || 'Lead', subtitle: `Score: ${l.qualification?.score || 0}`, link: `/leads?id=${l._id}` })),
-      ...invoices.map(i => ({ type: 'invoice', icon: 'receipt_long', title: `Facture ${i.number}`, subtitle: `${i.total}€ - ${i.status}`, link: `/invoices?id=${i._id}` }))
+      ...invoices.map(i => ({ type: 'invoice', icon: 'receipt_long', title: `Facture ${i.number}`, subtitle: `${i.total}€ - ${i.status}`, link: `/invoices?id=${i._id}` })),
+      ...quotes.map(q => ({ type: 'quote', icon: 'description', title: `Devis ${q.number}`, subtitle: `${q.title} - ${q.total}€`, link: `/quotes?id=${q._id}` })),
+      ...reviews.map(r => ({ type: 'review', icon: 'star', title: r.name, subtitle: `${r.rating}/5 - ${r.status}`, link: `/reviews?id=${r._id}` }))
     ];
 
     res.json({ results, query: q, total: results.length });

@@ -101,6 +101,11 @@ app.use('/api/notifications', require(path.join(routesPath, 'notifications')));
 app.use('/api/search', require(path.join(routesPath, 'search')));
 app.use('/api/tasks', require(path.join(routesPath, 'tasks')));
 app.use('/api/appointments', require(path.join(routesPath, 'appointments')));
+app.use('/api/quotes', require(path.join(routesPath, 'quotes')));
+app.use('/api/reviews', require(path.join(routesPath, 'reviews')));
+app.use('/api/templates', require(path.join(routesPath, 'templates')));
+app.use('/api/time', require(path.join(routesPath, 'time')));
+app.use('/api/status', require(path.join(routesPath, 'status')));
 
 // Secret admin/client URLs
 const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m';
@@ -113,7 +118,7 @@ app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'po
 app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });

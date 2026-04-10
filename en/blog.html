@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google-site-verification" content="D1z_2IAyoP5o1qiCtsYMHgr71ojcSbhpcNOhD19b-tQ" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | Pirabel Labs &mdash; Actualit&eacute;s & Guides Marketing Digital</title>
+<meta name="description" content="D&eacute;couvrez nos articles sur le SEO, la website creation, l'IA, le marketing digital et la croissance en ligne. Guides, conseils et tendances.">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="canonical" href="https://www.pirabellabs.com/blog">
+    <link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/blog">
+    <link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/blog">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/illustrations.css">
+<style>
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2rem;}
+.blog-card{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);overflow:hidden;transition:transform 0.4s,border-color 0.3s;cursor:pointer;text-decoration:none;color:inherit;}
+.blog-card:hover{transform:translateY(-4px);border-color:rgba(255,87,8,0.2);}
+.blog-card__img{aspect-ratio:16/9;background:var(--surface-container-low);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.blog-card__img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.blog-card:hover .blog-card__img img{transform:scale(1.05);}
+.blog-card__body{padding:1.5rem;}
+.blog-card__cat{display:inline-block;font-family:var(--font-headline);font-size:0.625rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary-container);border:1px solid rgba(255,87,8,0.3);padding:0.2rem 0.6rem;margin-bottom:0.75rem;}
+.blog-card__title{font-family:var(--font-headline);font-size:1.125rem;font-weight:700;line-height:1.3;margin-bottom:0.5rem;}
+.blog-card__excerpt{font-size:0.875rem;color:rgba(229,226,225,0.5);line-height:1.6;margin-bottom:1rem;}
+.blog-card__meta{display:flex;align-items:center;gap:1rem;font-size:0.75rem;color:rgba(229,226,225,0.3);}
+.blog-filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;}
+.blog-filter{background:transparent;border:1px solid rgba(92,64,55,0.2);color:rgba(229,226,225,0.5);padding:0.4rem 1rem;font-family:var(--font-headline);font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;}
+.blog-filter:hover,.blog-filter.active{background:var(--primary-container);color:var(--on-primary);border-color:var(--primary-container);}
+.blog-pagination{display:flex;justify-content:center;gap:0.5rem;margin-top:3rem;}
+.blog-pagination button{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.15);color:var(--on-surface);padding:0.5rem 1rem;font-size:0.8125rem;cursor:pointer;transition:border-color 0.3s;}
+.blog-pagination button:hover,.blog-pagination button.active{border-color:var(--primary-container);color:var(--primary-container);}
+.blog-sidebar{display:flex;flex-direction:column;gap:2rem;}
+.blog-popular{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;}
+.blog-popular__title{font-family:var(--font-headline);font-size:0.875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--primary-container);margin-bottom:1rem;}
+.blog-popular__item{padding:0.75rem 0;border-bottom:1px solid rgba(92,64,55,0.08);display:flex;justify-content:space-between;align-items:center;}
+.blog-popular__item:last-child{border-bottom:none;}
+.blog-popular__item a{color:var(--on-surface);font-size:0.8125rem;font-weight:500;text-decoration:none;transition:color 0.3s;}
+.blog-popular__item a:hover{color:var(--primary-container);}
+.blog-popular__views{font-size:0.6875rem;color:rgba(229,226,225,0.3);}
+@media(max-width:900px){.blog-layout{grid-template-columns:1fr !important;}.blog-sidebar{order:2;}}
+@media(max-width:480px){.blog-grid{grid-template-columns:1fr !important;gap:1.25rem;}.blog-filters{gap:0.35rem;}.blog-filter{padding:0.3rem 0.7rem;font-size:0.6rem;}.blog-card__body{padding:1rem;}.blog-card__title{font-size:1rem;}}
+</style>
+
+    <meta property="og:title" content="Blog | Pirabel Labs — Actualités & Guides Marketing Digital">
+    <meta property="og:description" content="D&eacute;couvrez nos articles sur le SEO, la website creation, l'IA, le marketing digital et la croissance en ligne. Guides, conseils et tendances.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.pirabellabs.com/blog">
+    <meta property="og:site_name" content="Pirabel Labs">
+    <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Blog Pirabel Labs",
+  "description": "Articles sur le SEO, la website creation, l'IA, le marketing digital et la croissance en ligne.",
+  "url": "https://www.pirabellabs.com/blog",
+  "publisher": {"@type": "Organization", "name": "Pirabel Labs", "url": "https://www.pirabellabs.com"}
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-H0ZTTRYBQ7');
+</script>
+
+<style>
+.lang-switch{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;gap:0;border:1px solid rgba(255,85,0,.4);background:rgba(10,10,10,.9);backdrop-filter:blur(10px);font-family:'Space Grotesk',sans-serif;}
+.lang-switch a{padding:.5rem .85rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.5);transition:all .2s;}
+.lang-switch a:hover{color:#fff;}
+.lang-switch a.active{background:#FF5500;color:#fff;}
+</style>
+</head>
+<body>
+<div id="preloader"><div class="pre-logo">PIRABEL LABS</div><div class="pre-bar"><div class="pre-bar-fill"></div></div><div class="pre-pct">0%</div></div>
+<div id="progress-bar"></div>
+<div class="cursor-dot"></div><div class="cursor-ring"></div>
+<div class="noise-overlay"></div><div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div><div class="solar-orb solar-orb--secondary"></div>
+
+<nav class="nav"><div class="nav-inner">
+<a href="/en/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog" class="active">BLOG</a><a href="guides/">GUIDES</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>
+      <a href="/en/carrieres" class="link-underline">CAREERS</a></div>
+<a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
+<a href="/en/contact" class="nav-cta">Free Audit</a>
+<div class="nav-hamburger"><span></span><span></span><span></span></div>
+</div></nav>
+<div class="mobile-nav"><a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="guides/">Guides</a><a href="/en/resultats">R&eacute;sultats</a><a href="/en/a-propos">About</a>
+  <a href="/en/carrieres">Careers</a><a href="/en/contact">Contact</a><a href="/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
+</div>
+
+<!-- HERO -->
+<header class="section" style="padding-top:8rem;padding-bottom:3rem;">
+<div class="bg-text" style="top:15%;right:0;">BLOG</div>
+<div class="section-inner">
+  <span class="pill rv">Blog & Actualit&eacute;s</span>
+  <h1 class="text-hero rv" style="color:#FF5500;margin:1.5rem 0 1rem;">THE BLOG<br><span style="color:var(--on-surface);font-style:italic;">PIRABEL LABS.</span></h1>
+  <p class="text-body-lg rv" style="max-width:36rem;">Nos experts partagent leurs connaissances en SEO, marketing digital, IA et cr&eacute;ation web. Des articles concrets pour booster votre croissance.</p>
+</div>
+</header>
+
+<!-- FILTERS + CONTENT -->
+<section class="section section--low" style="padding-top:2rem;">
+<div class="section-inner">
+  <!-- Filters -->
+  <div class="blog-filters rv">
+    <button class="blog-filter active" data-cat="all">All</button>
+    <button class="blog-filter" data-cat="seo">SEO</button>
+    <button class="blog-filter" data-cat="web">Web</button>
+    <button class="blog-filter" data-cat="ia">IA</button>
+    <button class="blog-filter" data-cat="ads">Advertising</button>
+    <button class="blog-filter" data-cat="social">Social</button>
+    <button class="blog-filter" data-cat="design">Design</button>
+    <button class="blog-filter" data-cat="content">Content</button>
+    <button class="blog-filter" data-cat="email">Email</button>
+    <button class="blog-filter" data-cat="video">Video</button>
+    <button class="blog-filter" data-cat="analytics">Analytics</button>
+    <button class="blog-filter" data-cat="cro">CRO</button>
+  </div>
+
+  <!-- Blog Grid + Sidebar -->
+  <div class="blog-layout" style="display:grid;grid-template-columns:1fr 300px;gap:3rem;">
+    <div>
+      <div class="blog-grid" id="blog-grid">
+
+        <a href="blog/branding-identite-visuelle-construire-marque-forte" class="blog-card" data-cat="design">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=75" alt="Branding et identit&eacute; visuelle" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Design</span>
+            <h3 class="blog-card__title">Branding and Visual Identity : Construire une Marque Forte et M&eacute;morable</h3>
+            <p class="blog-card__excerpt">D&eacute;couvrez les &eacute;tapes cl&eacute;s pour b&acirc;tir une identit&eacute; de marque coh&eacute;rente : logo, couleurs, typographie et charte graphique.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>03 avr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/automation-marketing-guide-outils-strategies" class="blog-card" data-cat="ia">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75" alt="Automatisation marketing" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">IA</span>
+            <h3 class="blog-card__title">Marketing Automation : Complete Guide des Outils et Strat&eacute;gies</h3>
+            <p class="blog-card__excerpt">Email automation, CRM, chatbots, Make, Zapier, n8n &mdash; tout pour automatiser votre marketing et gagner en efficacit&eacute;.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>02 avr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/publicite-en-ligne-google-ads-meta-ads-guide" class="blog-card" data-cat="ads">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f2?w=600&q=75" alt="Google Ads et Meta Ads" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Ads</span>
+            <h3 class="blog-card__title">Online Advertising : Complete Guide Google Ads et Meta Ads</h3>
+            <p class="blog-card__excerpt">Structure de campagne, ciblage, budget, cr&eacute;atives et optimisation pour maximiser votre ROI.</p>
+            <div class="blog-card__meta"><span>13 min</span><span>01 avr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/strategie-social-media-reseaux-sociaux-2026" class="blog-card" data-cat="social">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=75" alt="Strat&eacute;gie social media" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Social</span>
+            <h3 class="blog-card__title">Social Media Strategy : Dominer les R&eacute;seaux Sociaux en 2026</h3>
+            <p class="blog-card__excerpt">Instagram, LinkedIn, TikTok &mdash; construisez une strat&eacute;gie social media gagnante avec un ROI mesurable.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>28 mars 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/creation-site-web-professionnel-etapes-essentielles" class="blog-card" data-cat="web">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=75" alt="Website creation" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Web</span>
+            <h3 class="blog-card__title">Professional Website Creation : The Essential Steps</h3>
+            <p class="blog-card__excerpt">Design UX/UI, d&eacute;veloppement, performance, SEO et maintenance pour un site web qui convertit.</p>
+            <div class="blog-card__meta"><span>13 min</span><span>25 mars 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/intelligence-artificielle-marketing-digital-2026" class="blog-card" data-cat="ia">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=75" alt="Artificial intelligence marketing" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">IA</span>
+            <h3 class="blog-card__title">Artificial Intelligence in Digital Marketing en 2026</h3>
+            <p class="blog-card__excerpt">Chatbots, personnalisation, analyse pr&eacute;dictive, g&eacute;n&eacute;ration de contenu &mdash; l'IA transforme le marketing.</p>
+            <div class="blog-card__meta"><span>14 min</span><span>20 mars 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/seo-referencement-naturel-guide-complet-2026" class="blog-card" data-cat="seo">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&q=75" alt="SEO r&eacute;f&eacute;rencement naturel" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">SEO</span>
+            <h3 class="blog-card__title">SEO and Organic Search : The Complete Guide pour 2026</h3>
+            <p class="blog-card__excerpt">Techniques avanc&eacute;es, strat&eacute;gies de contenu, SEO technique et netlinking pour dominer Google.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>15 mars 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/email-marketing-strategies-guide-complet" class="blog-card" data-cat="email">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=600&q=75" alt="Email marketing" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Email</span>
+            <h3 class="blog-card__title">Email Marketing : The Complete Guide des Strat&eacute;gies qui Convertissent</h3>
+            <p class="blog-card__excerpt">Segmentation, automation, A/B testing, d&eacute;livrabilit&eacute; et outils comme Brevo et Mailchimp.</p>
+            <div class="blog-card__meta"><span>10 min</span><span>05 mars 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/wordpress-vs-shopify-comparatif-cms-2026" class="blog-card" data-cat="web">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=75" alt="WordPress vs Shopify" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Web</span>
+            <h3 class="blog-card__title">WordPress vs Shopify : Quel CMS Choisir pour Votre Projet en 2026 ?</h3>
+            <p class="blog-card__excerpt">Comparison complet : fonctionnalit&eacute;s, co&ucirc;ts, SEO, e-commerce et extensions pour faire le bon choix.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>28 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/chatbot-ia-service-client-guide" class="blog-card" data-cat="ia">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=75" alt="AI Chatbot service client" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">IA</span>
+            <h3 class="blog-card__title">AI Chatbot : R&eacute;volutionner Votre Service Client et Booster Vos Conversions</h3>
+            <p class="blog-card__excerpt">D&eacute;ployez un chatbot intelligent pour automatiser le support, qualifier les leads et augmenter les ventes.</p>
+            <div class="blog-card__meta"><span>10 min</span><span>25 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/tiktok-marketing-strategies-2026" class="blog-card" data-cat="social">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&q=75" alt="TikTok marketing" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Social</span>
+            <h3 class="blog-card__title">TikTok Marketing : Strat&eacute;gies pour les Entreprises en 2026</h3>
+            <p class="blog-card__excerpt">Algorithme, formats, tendances, TikTok Ads &mdash; comment exploiter la plateforme pour votre marque.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>22 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/content-marketing-strategie-contenu-2026" class="blog-card" data-cat="content">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=75" alt="Content marketing strat&eacute;gie" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Content</span>
+            <h3 class="blog-card__title">Content Marketing : La Strat&eacute;gie de Contenu Ultime pour 2026</h3>
+            <p class="blog-card__excerpt">Strat&eacute;gie &eacute;ditoriale, pilier/cluster, SEO content, calendrier &eacute;ditorial et mesure du ROI.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>20 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/seo-local-guide-pme-commerces" class="blog-card" data-cat="seo">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600&q=75" alt="SEO local PME" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">SEO</span>
+            <h3 class="blog-card__title">Local SEO : Le Guide Ultime pour PME et Commerces de Proximit&eacute;</h3>
+            <p class="blog-card__excerpt">Google Business Profile, citations NAP, avis clients, mots-cl&eacute;s locaux et map pack.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>12 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/video-marketing-strategie-guide-2026" class="blog-card" data-cat="video">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&q=75" alt="Vid&eacute;o marketing" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Video</span>
+            <h3 class="blog-card__title">Video Marketing : La Strat&eacute;gie Compl&egrave;te pour Dominer en 2026</h3>
+            <p class="blog-card__excerpt">YouTube, Reels, TikTok, production, montage, storytelling vid&eacute;o et live streaming.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>10 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/optimisation-taux-conversion-cro-guide" class="blog-card" data-cat="cro">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=75" alt="CRO optimisation conversion" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">CRO</span>
+            <h3 class="blog-card__title">Conversion Rate Optimization (CRO) : Transformer Vos Visiteurs en Clients</h3>
+            <p class="blog-card__excerpt">A/B testing, UX, landing pages, heatmaps, copywriting persuasif et social proof.</p>
+            <div class="blog-card__meta"><span>13 min</span><span>05 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/linkedin-marketing-b2b-guide-complet" class="blog-card" data-cat="social">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=75" alt="LinkedIn marketing B2B" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Social</span>
+            <h3 class="blog-card__title">LinkedIn B2B Marketing : G&eacute;n&eacute;rer des Leads Qualifi&eacute;s en 2026</h3>
+            <p class="blog-card__excerpt">Social Selling Index, contenu LinkedIn, LinkedIn Ads, InMail et Sales Navigator.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>05 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/google-analytics-4-guide-debutant" class="blog-card" data-cat="analytics">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=75" alt="Google Analytics 4" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Analytics</span>
+            <h3 class="blog-card__title">Google Analytics 4 : Le Beginner's Guide pour Ma&icirc;triser GA4</h3>
+            <p class="blog-card__excerpt">&Eacute;v&eacute;nements, conversions, rapports, explorations, audiences et attribution dans GA4.</p>
+            <div class="blog-card__meta"><span>13 min</span><span>01 f&eacute;vr. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/tunnels-de-vente-sales-funnel-guide" class="blog-card" data-cat="cro">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&q=75" alt="Tunnels de vente sales funnel" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">CRO</span>
+            <h3 class="blog-card__title">Sales Funnels : Cr&eacute;er un Sales Funnel qui Convertit</h3>
+            <p class="blog-card__excerpt">TOFU/MOFU/BOFU, lead magnets, pages de capture, s&eacute;quences email, upsell et retargeting.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>28 janv. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/ux-design-tendances-2026" class="blog-card" data-cat="design">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&q=75" alt="UX design tendances" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Design</span>
+            <h3 class="blog-card__title">UX Design : The Must-Know Trends en 2026</h3>
+            <p class="blog-card__excerpt">Design thinking, accessibilit&eacute;, micro-interactions, dark mode, mobile-first et design system.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>28 janv. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/copywriting-techniques-vente-en-ligne" class="blog-card" data-cat="content">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=75" alt="Copywriting techniques" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Content</span>
+            <h3 class="blog-card__title">Copywriting : Persuasion Techniques pour Vendre en Ligne</h3>
+            <p class="blog-card__excerpt">AIDA, PAS, storytelling, titres accrocheurs, CTA puissants et pages de vente.</p>
+            <div class="blog-card__meta"><span>12 min</span><span>22 janv. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/marketing-automation-guide-entreprises" class="blog-card" data-cat="ia">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75" alt="Marketing automation" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">IA</span>
+            <h3 class="blog-card__title">Marketing Automation : Automatiser Votre Croissance en 2026</h3>
+            <p class="blog-card__excerpt">Workflows, scoring leads, CRM, Zapier, Make, n8n, HubSpot et Brevo automation.</p>
+            <div class="blog-card__meta"><span>13 min</span><span>18 janv. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/netlinking-backlinks-strategie-seo" class="blog-card" data-cat="seo">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&q=75" alt="Netlinking backlinks SEO" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">SEO</span>
+            <h3 class="blog-card__title">Link Building and Backlinks : La Strat&eacute;gie SEO Off-Page Compl&egrave;te</h3>
+            <p class="blog-card__excerpt">Guest blogging, broken link building, skyscraper technique et digital PR pour 2026.</p>
+            <div class="blog-card__meta"><span>14 min</span><span>12 janv. 2026</span></div>
+          </div>
+        </a>
+
+        <a href="blog/core-web-vitals-optimisation-performance" class="blog-card" data-cat="web">
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75" alt="Core Web Vitals performance" loading="lazy"></div>
+          <div class="blog-card__body">
+            <span class="blog-card__cat">Web</span>
+            <h3 class="blog-card__title">Core Web Vitals : Guide d'Optimisation des Performances Web</h3>
+            <p class="blog-card__excerpt">LCP, INP, CLS, PageSpeed, lazy loading, CDN, compression et cache pour 2026.</p>
+            <div class="blog-card__meta"><span>11 min</span><span>05 janv. 2026</span></div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+    <div class="blog-sidebar">
+      <!-- Popular articles -->
+      <div class="blog-popular">
+        <div class="blog-popular__title">Popular Articles</div>
+        <div id="popular-list">
+          <div class="blog-popular__item"><a href="blog/seo-referencement-naturel-guide-complet-2026">SEO : The Complete Guide 2026</a></div>
+          <div class="blog-popular__item"><a href="blog/intelligence-artificielle-marketing-digital-2026">L'IA dans le Marketing Digital</a></div>
+          <div class="blog-popular__item"><a href="blog/email-marketing-strategies-guide-complet">Email Marketing : Complete Guide</a></div>
+          <div class="blog-popular__item"><a href="blog/creation-site-web-professionnel-etapes-essentielles">Cr&eacute;ation de Site Web Pro</a></div>
+          <div class="blog-popular__item"><a href="blog/optimisation-taux-conversion-cro-guide">CRO : Optimiser les Conversions</a></div>
+          <div class="blog-popular__item"><a href="blog/publicite-en-ligne-google-ads-meta-ads-guide">Google Ads &amp; Meta Ads</a></div>
+          <div class="blog-popular__item"><a href="blog/branding-identite-visuelle-construire-marque-forte">Branding &amp; Identit&eacute; Visuelle</a></div>
+          <div class="blog-popular__item"><a href="blog/content-marketing-strategie-contenu-2026">Content Marketing 2026</a></div>
+        </div>
+      </div>
+      <!-- Newsletter -->
+      <div style="background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;">
+        <div style="font-family:var(--font-headline);font-size:0.875rem;font-weight:700;margin-bottom:0.75rem;">Newsletter</div>
+        <p style="font-size:0.8125rem;color:rgba(229,226,225,0.5);margin-bottom:1rem;">Receive our articles directly in your inbox.</p>
+        <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:0.5rem;">
+          <input type="email" id="sidebar-nl-email" placeholder="Your email" style="background:var(--surface);border:1px solid rgba(92,64,55,0.2);padding:0.625rem;color:var(--on-surface);font-size:0.8125rem;outline:none;">
+          <button onclick="subscribeNL()" style="background:#FF5500;color:#5c1900;border:none;padding:0.625rem;font-weight:700;font-size:0.75rem;text-transform:uppercase;cursor:pointer;">Subscribe</button>
+        </form>
+        <div id="sidebar-nl-success" style="display:none;color:#41e4c0;font-size:0.75rem;margin-top:0.5rem;">Successfully subscribed!</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+<div class="newsletter-inner">
+  <div class="newsletter-title">Stay Informed</div>
+  <p class="newsletter-desc">Receive our guides, tips and news directly in your inbox.</p>
+  <form class="newsletter-form" id="newsletter-form" onsubmit="return false;">
+    <input type="email" id="nl-email" placeholder="Your email" required>
+    <button type="submit" id="nl-btn">Subscribe</button>
+  </form>
+  <div class="newsletter-success" id="nl-success">&check; Successfully subscribed!</div>
+</div>
+</div>
+
+<footer class="footer">
+<div class="footer-grid">
+  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency serving your growth.</p></div>
+  <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO</a></li><li><a href="agence-creation-sites-web/">Websites</a></li><li><a href="agence-ia-automation/">IA</a></li><li><a href="agence-publicite-payante-sea-ads/">Ads</a></li><li><a href="agence-social-media/">Social</a></li><li><a href="agence-design-branding/">Branding</a></li></ul></div>
+  <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/blog">Blog</a></li><li><a href="guides/">Guides</a></li><li><a href="/en/resultats">Cas clients</a></li><li><a href="/en/a-propos">About</a>
+  <a href="/en/carrieres">Careers</a></li></ul></div>
+  <div><div class="footer-title">Cities</div><ul class="footer-links"><li><a href="#">Paris</a></li><li><a href="#">Cotonou</a></li><li><a href="#">Casablanca</a></li><li><a href="#">Dakar</a></li></ul></div>
+</div>
+<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Privacy Policy</a></div></div>
+</footer>
+
+<script src="js/global.js?v=4"></script>
+<script src="js/cookie-consent.js?v=1" defer></script>
+<script>
+// Static blog filtering
+document.querySelectorAll('.blog-filter').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.blog-filter').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var cat = btn.dataset.cat;
+    document.querySelectorAll('.blog-card').forEach(function(card) {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// Sidebar newsletter
+function subscribeNL() {
+  var email = document.getElementById('sidebar-nl-email');
+  if (!email || !email.value.trim()) return;
+  document.getElementById('sidebar-nl-success').style.display = 'block';
+  email.value = '';
+}
+</script>
+<script src="js/tracker.js" defer></script>
+<script src="/js/chatbot.js" defer></script>
+
+<div class="lang-switch"><a href="/blog.html">FR</a><a href="#" class="active">EN</a></div>
+</body>
+</html>

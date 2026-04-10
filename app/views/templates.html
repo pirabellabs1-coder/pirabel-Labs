@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Templates email | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.layout{display:grid;grid-template-columns:320px 1fr;gap:1rem;height:calc(100vh - 200px);min-height:500px;}
+.list-pane{background:var(--card);border:1px solid var(--border);overflow-y:auto;}
+.tpl-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.tpl-item:hover{background:var(--bg);}
+.tpl-item.active{background:var(--bg);border-left:3px solid var(--accent);}
+.tpl-name{font-weight:700;font-size:.85rem;margin-bottom:.25rem;}
+.tpl-cat{font-size:.65rem;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;}
+.tpl-meta{font-size:.7rem;color:var(--muted);margin-top:.25rem;}
+.editor-pane{background:var(--card);border:1px solid var(--border);padding:1.5rem;overflow-y:auto;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;font-family:inherit;}
+.field textarea{min-height:280px;resize:vertical;font-family:'Courier New',monospace;font-size:.8rem;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.btn-danger{background:transparent;color:#e74c3c;border:1px solid rgba(231,76,60,.3);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+.var-tag{display:inline-block;background:rgba(255,85,0,.15);color:var(--accent);padding:.2rem .55rem;font-size:.7rem;font-family:'Courier New',monospace;margin:.1rem;cursor:pointer;border:1px solid rgba(255,85,0,.3);}
+.var-tag:hover{background:rgba(255,85,0,.25);}
+.toolbar{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
+.actions-row{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;}
+@media(max-width:900px){.layout{grid-template-columns:1fr;height:auto;}.list-pane{max-height:300px;}}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/quotes" class="sidebar-link"><span class="material-symbols-outlined">description</span> Devis</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/reviews" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
+    <a href="/templates" class="sidebar-link active"><span class="material-symbols-outlined">mail</span> Templates</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <a href="/time" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Temps</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/status-page" class="sidebar-link"><span class="material-symbols-outlined">monitor_heart</span> Statut</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;"><div class="topbar-title">Templates email</div></div>
+    <div class="topbar-actions">
+      <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau template</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="toolbar">
+      <select id="cat-filter" onchange="loadTemplates()" style="background:var(--card);border:1px solid var(--border);padding:.5rem .8rem;color:var(--text);">
+        <option value="">Toutes les catégories</option>
+        <option value="welcome">Bienvenue</option>
+        <option value="follow_up">Relance</option>
+        <option value="quote">Devis</option>
+        <option value="invoice">Facture</option>
+        <option value="project">Projet</option>
+        <option value="recruitment">Recrutement</option>
+        <option value="newsletter">Newsletter</option>
+        <option value="other">Autre</option>
+      </select>
+    </div>
+
+    <div class="layout">
+      <div class="list-pane" id="list-pane">
+        <div class="empty">Chargement…</div>
+      </div>
+      <div class="editor-pane" id="editor-pane">
+        <div class="empty">Sélectionnez un template ou créez-en un nouveau</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+let allTemplates = [];
+let currentId = null;
+
+const COMMON_VARS = ['name', 'email', 'company', 'project', 'amount', 'date', 'link', 'firstname'];
+
+async function api(url, opts = {}) {
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+async function loadTemplates() {
+  const cat = document.getElementById('cat-filter').value;
+  const data = await api('/templates' + (cat ? '?category=' + cat : ''));
+  allTemplates = data.templates || [];
+  renderList();
+}
+
+function renderList() {
+  const pane = document.getElementById('list-pane');
+  if (!allTemplates.length) {
+    pane.innerHTML = '<div class="empty">Aucun template</div>';
+    return;
+  }
+  pane.innerHTML = allTemplates.map(t => `
+    <div class="tpl-item ${t._id === currentId ? 'active' : ''}" onclick="openEdit('${t._id}')">
+      <div class="tpl-name">${escapeHtml(t.name)}</div>
+      <div class="tpl-cat">${escapeHtml(t.category || 'other')}</div>
+      <div class="tpl-meta">${escapeHtml((t.subject || '').slice(0, 60))}${(t.subject || '').length > 60 ? '...' : ''}</div>
+    </div>
+  `).join('');
+}
+
+function openCreate() {
+  currentId = null;
+  renderEditor({ name: '', category: 'other', subject: '', body: '', variables: [] });
+}
+
+function openEdit(id) {
+  const t = allTemplates.find(x => x._id === id);
+  if (!t) return;
+  currentId = id;
+  renderEditor(t);
+  renderList();
+}
+
+function renderEditor(t) {
+  const pane = document.getElementById('editor-pane');
+  pane.innerHTML = `
+    <div class="field"><label>Nom du template *</label><input id="t-name" value="${escapeHtml(t.name)}"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="field"><label>Catégorie</label>
+        <select id="t-category">
+          <option value="welcome"${t.category==='welcome'?' selected':''}>Bienvenue</option>
+          <option value="follow_up"${t.category==='follow_up'?' selected':''}>Relance</option>
+          <option value="quote"${t.category==='quote'?' selected':''}>Devis</option>
+          <option value="invoice"${t.category==='invoice'?' selected':''}>Facture</option>
+          <option value="project"${t.category==='project'?' selected':''}>Projet</option>
+          <option value="recruitment"${t.category==='recruitment'?' selected':''}>Recrutement</option>
+          <option value="newsletter"${t.category==='newsletter'?' selected':''}>Newsletter</option>
+          <option value="other"${t.category==='other'||!t.category?' selected':''}>Autre</option>
+        </select>
+      </div>
+      <div class="field"><label>Variables (séparées par virgule)</label><input id="t-vars" value="${escapeHtml((t.variables || []).join(', '))}" placeholder="name, email, company"></div>
+    </div>
+    <div class="field"><label>Sujet *</label><input id="t-subject" value="${escapeHtml(t.subject)}" placeholder="Bienvenue {{name}} !"></div>
+    <div class="field">
+      <label>Corps HTML *</label>
+      <div style="margin-bottom:.4rem;">
+        ${COMMON_VARS.map(v => `<span class="var-tag" onclick="insertVar('{{${v}}}')">{{${v}}}</span>`).join('')}
+      </div>
+      <textarea id="t-body" placeholder="<h1>Bonjour {{name}}</h1>...">${escapeHtml(t.body)}</textarea>
+    </div>
+    <div class="actions-row">
+      ${currentId ? `<button class="btn-danger" style="margin-right:auto;" onclick="del()">Supprimer</button>` : ''}
+      <button class="btn-secondary" onclick="openCreate()">Réinitialiser</button>
+      <button class="btn-primary" onclick="save()">Enregistrer</button>
+    </div>
+  `;
+}
+
+function insertVar(v) {
+  const ta = document.getElementById('t-body');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  ta.value = ta.value.slice(0, start) + v + ta.value.slice(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + v.length;
+}
+
+async function save() {
+  const body = {
+    name: document.getElementById('t-name').value.trim(),
+    category: document.getElementById('t-category').value,
+    subject: document.getElementById('t-subject').value.trim(),
+    body: document.getElementById('t-body').value,
+    variables: document.getElementById('t-vars').value.split(',').map(s => s.trim()).filter(Boolean)
+  };
+  if (!body.name || !body.subject || !body.body) return toast('Champs requis manquants', 'error');
+  const url = currentId ? '/templates/' + currentId : '/templates';
+  const method = currentId ? 'PUT' : 'POST';
+  const r = await api(url, { method, body: JSON.stringify(body) });
+  if (r && r._id) {
+    currentId = r._id;
+    toast('Template enregistré');
+    await loadTemplates();
+    openEdit(currentId);
+  }
+}
+
+async function del() {
+  if (!currentId || !confirm('Supprimer ce template ?')) return;
+  await api('/templates/' + currentId, { method: 'DELETE' });
+  toast('Supprimé');
+  currentId = null;
+  document.getElementById('editor-pane').innerHTML = '<div class="empty">Sélectionnez un template ou créez-en un nouveau</div>';
+  loadTemplates();
+}
+
+loadTemplates();
+</script>
+</body>
+</html>

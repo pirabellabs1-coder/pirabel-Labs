@@ -108,6 +108,11 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/quotes', require('./routes/quotes'));
+app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/templates', require('./routes/templates'));
+app.use('/api/time', require('./routes/time'));
+app.use('/api/status', require('./routes/status'));
 
 // ============================================
 // SECRET ACCESS URLs

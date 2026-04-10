@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temps | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.timer-card{background:linear-gradient(135deg,rgba(255,85,0,.12),rgba(255,85,0,.02));border:1px solid var(--accent);padding:1.5rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.timer-display{font-size:2.5rem;font-weight:800;font-family:var(--font-h);color:var(--accent);font-variant-numeric:tabular-nums;}
+.timer-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.timer-form{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;flex:1;justify-content:flex-end;}
+.timer-form input,.timer-form select{background:var(--bg);border:1px solid var(--border);padding:.6rem .8rem;color:var(--text);font-size:.8rem;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat{background:var(--card);border:1px solid var(--border);padding:1rem;}
+.stat-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.stat-value{font-size:1.5rem;font-weight:800;}
+.entries-table{width:100%;background:var(--card);border:1px solid var(--border);border-collapse:collapse;}
+.entries-table th{text-align:left;padding:.85rem 1rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);}
+.entries-table td{padding:.85rem 1rem;font-size:.8rem;border-bottom:1px solid var(--border);}
+.entries-table tr:hover{background:rgba(255,85,0,.04);}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.65rem 1.25rem;font-weight:700;font-size:.75rem;text-transform:uppercase;cursor:pointer;}
+.btn-stop{background:#e74c3c;color:#fff;border:none;padding:.65rem 1.25rem;font-weight:700;font-size:.75rem;text-transform:uppercase;cursor:pointer;}
+.btn-mini{background:transparent;border:1px solid var(--border);color:var(--text);font-size:.65rem;padding:.3rem .55rem;cursor:pointer;}
+.btn-mini.danger:hover{border-color:#e74c3c;color:#e74c3c;}
+.badge{display:inline-block;padding:.2rem .5rem;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+.badge.running{background:rgba(46,204,113,.15);color:#2ecc71;}
+.badge.stopped{background:rgba(150,150,150,.15);color:var(--muted);}
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/quotes" class="sidebar-link"><span class="material-symbols-outlined">description</span> Devis</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/reviews" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
+    <a href="/templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <a href="/time" class="sidebar-link active"><span class="material-symbols-outlined">timer</span> Temps</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/status-page" class="sidebar-link"><span class="material-symbols-outlined">monitor_heart</span> Statut</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;"><div class="topbar-title">Suivi du temps</div></div>
+    <div class="topbar-actions"></div>
+  </header>
+
+  <div class="content">
+    <div class="timer-card">
+      <div>
+        <div class="timer-label">Chronomètre actif</div>
+        <div class="timer-display" id="timer-display">00:00:00</div>
+        <div id="timer-info" style="font-size:.75rem;color:var(--muted);"></div>
+      </div>
+      <div class="timer-form" id="timer-controls">
+        <select id="t-project"><option value="">— Projet —</option></select>
+        <input id="t-description" placeholder="Que faites-vous ?">
+        <button id="start-btn" class="btn-primary" onclick="startTimer()">▶ Démarrer</button>
+        <button id="stop-btn" class="btn-stop" onclick="stopTimer()" style="display:none;">■ Arrêter</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Aujourd'hui</div><div class="stat-value" id="s-today">0h</div></div>
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="s-total">0h</div></div>
+      <div class="stat"><div class="stat-label">Facturable</div><div class="stat-value" id="s-billable" style="color:#2ecc71;">0h</div></div>
+      <div class="stat"><div class="stat-label">Chronos actifs</div><div class="stat-value" id="s-running" style="color:var(--accent);">0</div></div>
+    </div>
+
+    <table class="entries-table">
+      <thead><tr><th>Date</th><th>Projet</th><th>Description</th><th>Durée</th><th>Statut</th><th></th></tr></thead>
+      <tbody id="entries-body"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<script>
+let runningEntry = null;
+let tickInterval = null;
+
+async function api(url, opts = {}) {
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function fmtDuration(min) {
+  if (!min) return '0min';
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h ? `${h}h${m.toString().padStart(2, '0')}` : `${m}min`;
+}
+
+function fmtTimer(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+async function loadProjects() {
+  try {
+    const d = await api('/projects');
+    const projects = d.projects || d || [];
+    document.getElementById('t-project').innerHTML = '<option value="">— Projet —</option>' + projects.map(p => `<option value="${p._id}">${escapeHtml(p.name)}</option>`).join('');
+  } catch (e) {}
+}
+
+async function loadStats() {
+  const s = await api('/time/stats');
+  document.getElementById('s-today').textContent = (s.todayHours || 0) + 'h';
+  document.getElementById('s-total').textContent = (s.totalHours || 0) + 'h';
+  document.getElementById('s-billable').textContent = (s.billableHours || 0) + 'h';
+  document.getElementById('s-running').textContent = s.running || 0;
+}
+
+async function loadEntries() {
+  const d = await api('/time');
+  const entries = d.entries || [];
+  runningEntry = entries.find(e => e.status === 'running');
+  updateTimerUI();
+  const body = document.getElementById('entries-body');
+  if (!entries.length) { body.innerHTML = '<tr><td colspan="6" class="empty">Aucune entrée</td></tr>'; return; }
+  body.innerHTML = entries.map(e => `
+    <tr>
+      <td>${new Date(e.startedAt).toLocaleString('fr-FR')}</td>
+      <td>${escapeHtml(e.project?.name || '-')}</td>
+      <td>${escapeHtml(e.description || '-')}</td>
+      <td>${e.status === 'running' ? '⏱ en cours' : fmtDuration(e.durationMinutes)}</td>
+      <td><span class="badge ${e.status}">${e.status}</span></td>
+      <td>${e.status === 'running' ? `<button class="btn-mini" onclick="stopOne('${e._id}')">Arrêter</button>` : `<button class="btn-mini danger" onclick="del('${e._id}')">×</button>`}</td>
+    </tr>
+  `).join('');
+}
+
+function updateTimerUI() {
+  if (runningEntry) {
+    document.getElementById('start-btn').style.display = 'none';
+    document.getElementById('stop-btn').style.display = 'inline-block';
+    document.getElementById('timer-info').textContent = (runningEntry.project?.name || 'Sans projet') + ' · ' + (runningEntry.description || '');
+    if (tickInterval) clearInterval(tickInterval);
+    tickInterval = setInterval(() => {
+      const sec = Math.floor((Date.now() - new Date(runningEntry.startedAt)) / 1000);
+      document.getElementById('timer-display').textContent = fmtTimer(sec);
+    }, 1000);
+  } else {
+    document.getElementById('start-btn').style.display = 'inline-block';
+    document.getElementById('stop-btn').style.display = 'none';
+    document.getElementById('timer-display').textContent = '00:00:00';
+    document.getElementById('timer-info').textContent = '';
+    if (tickInterval) { clearInterval(tickInterval); tickInterval = null; }
+  }
+}
+
+async function startTimer() {
+  const project = document.getElementById('t-project').value;
+  const description = document.getElementById('t-description').value.trim();
+  await api('/time/start', { method: 'POST', body: JSON.stringify({ project: project || null, description }) });
+  toast('Chrono démarré');
+  document.getElementById('t-description').value = '';
+  refresh();
+}
+
+async function stopTimer() {
+  if (!runningEntry) return;
+  await api('/time/' + runningEntry._id + '/stop', { method: 'POST' });
+  toast('Chrono arrêté');
+  refresh();
+}
+
+async function stopOne(id) {
+  await api('/time/' + id + '/stop', { method: 'POST' });
+  refresh();
+}
+
+async function del(id) {
+  if (!confirm('Supprimer cette entrée ?')) return;
+  await api('/time/' + id, { method: 'DELETE' });
+  toast('Supprimée');
+  refresh();
+}
+
+async function refresh() {
+  await loadStats();
+  await loadEntries();
+}
+
+(async function init() {
+  await loadProjects();
+  await refresh();
+  setInterval(refresh, 30000);
+})();
+</script>
+</body>
+</html>

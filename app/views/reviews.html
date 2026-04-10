@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avis clients | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem;border-bottom:1px solid var(--border);}
+.tab{background:none;border:none;color:var(--muted);padding:.75rem 1.25rem;cursor:pointer;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid transparent;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;}
+.review-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:.6rem;}
+.review-card.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+.review-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;}
+.review-author{font-weight:700;font-size:.9rem;}
+.review-meta{font-size:.7rem;color:var(--muted);}
+.stars{color:#f1c40f;letter-spacing:.05em;font-size:.95rem;}
+.review-content{font-size:.8rem;line-height:1.5;color:var(--text);}
+.review-actions{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:auto;padding-top:.6rem;border-top:1px solid var(--border);}
+.btn-mini{background:transparent;border:1px solid var(--border);color:var(--text);font-size:.65rem;padding:.35rem .65rem;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;}
+.btn-mini:hover{border-color:var(--accent);color:var(--accent);}
+.btn-mini.danger:hover{border-color:#e74c3c;color:#e74c3c;}
+.btn-mini.success:hover{border-color:#2ecc71;color:#2ecc71;}
+.badge{display:inline-block;padding:.2rem .55rem;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+.badge.pending{background:rgba(243,156,18,.15);color:#f39c12;}
+.badge.approved{background:rgba(46,204,113,.15);color:#2ecc71;}
+.badge.rejected{background:rgba(231,76,60,.15);color:#e74c3c;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat{background:var(--card);border:1px solid var(--border);padding:1rem;}
+.stat-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.stat-value{font-size:1.5rem;font-weight:800;}
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Principal</div>
+    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+    <div class="sidebar-section">Gestion</div>
+    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+    <a href="/quotes" class="sidebar-link"><span class="material-symbols-outlined">description</span> Devis</a>
+    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+    <div class="sidebar-section">Marketing</div>
+    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
+    <a href="/reviews" class="sidebar-link active"><span class="material-symbols-outlined">star</span> Avis clients</a>
+    <a href="/templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates</a>
+    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+    <div class="sidebar-section">Finance</div>
+    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+    <a href="/time" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Temps</a>
+    <div class="sidebar-section">Système</div>
+    <a href="/status-page" class="sidebar-link"><span class="material-symbols-outlined">monitor_heart</span> Statut</a>
+    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+  </nav>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;"><div class="topbar-title">Avis clients</div></div>
+    <div class="topbar-actions"></div>
+  </header>
+
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="s-total">0</div></div>
+      <div class="stat"><div class="stat-label">En attente</div><div class="stat-value" id="s-pending" style="color:#f39c12;">0</div></div>
+      <div class="stat"><div class="stat-label">Approuvés</div><div class="stat-value" id="s-approved" style="color:#2ecc71;">0</div></div>
+      <div class="stat"><div class="stat-label">Note moyenne</div><div class="stat-value" id="s-avg">-</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-status="">Tous</button>
+      <button class="tab" data-status="pending">En attente</button>
+      <button class="tab" data-status="approved">Approuvés</button>
+      <button class="tab" data-status="rejected">Rejetés</button>
+    </div>
+
+    <div id="reviews-list" class="review-grid"></div>
+  </div>
+</div>
+</div>
+
+<script>
+let allReviews = [];
+let currentFilter = '';
+
+async function api(url, opts = {}) {
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+
+async function loadReviews() {
+  const data = await api('/reviews' + (currentFilter ? '?status=' + currentFilter : ''));
+  allReviews = data.reviews || [];
+  renderReviews();
+  updateStats();
+}
+
+function updateStats() {
+  // Stats from full list (not filtered) — fetch separately
+  fetch('/api/reviews', { credentials: 'include' }).then(r => r.json()).then(d => {
+    const all = d.reviews || [];
+    document.getElementById('s-total').textContent = all.length;
+    document.getElementById('s-pending').textContent = all.filter(r => r.status === 'pending').length;
+    document.getElementById('s-approved').textContent = all.filter(r => r.status === 'approved').length;
+    const approved = all.filter(r => r.status === 'approved');
+    const avg = approved.length ? (approved.reduce((s, r) => s + (r.rating || 0), 0) / approved.length).toFixed(1) : '-';
+    document.getElementById('s-avg').textContent = avg + (avg !== '-' ? ' / 5' : '');
+  });
+}
+
+function renderReviews() {
+  const list = document.getElementById('reviews-list');
+  if (!allReviews.length) {
+    list.innerHTML = '<div class="empty" style="grid-column:1/-1;">Aucun avis</div>';
+    return;
+  }
+  list.innerHTML = allReviews.map(r => `
+    <div class="review-card ${r.featured ? 'featured' : ''}">
+      <div class="review-head">
+        <div>
+          <div class="review-author">${escapeHtml(r.name)}</div>
+          <div class="review-meta">${escapeHtml(r.role || '')}${r.role && r.company ? ' · ' : ''}${escapeHtml(r.company || '')}</div>
+          <div class="review-meta">${new Date(r.createdAt).toLocaleDateString('fr-FR')} · ${escapeHtml(r.email || '')}</div>
+        </div>
+        <span class="badge ${r.status}">${r.status}</span>
+      </div>
+      <div class="stars">${stars(r.rating)}</div>
+      ${r.title ? `<div style="font-weight:700;font-size:.85rem;">${escapeHtml(r.title)}</div>` : ''}
+      <div class="review-content">${escapeHtml(r.content)}</div>
+      ${r.service ? `<div class="review-meta">Service : ${escapeHtml(r.service)}</div>` : ''}
+      <div class="review-actions">
+        ${r.status !== 'approved' ? `<button class="btn-mini success" onclick="setStatus('${r._id}','approved')">Approuver</button>` : ''}
+        ${r.status !== 'rejected' ? `<button class="btn-mini danger" onclick="setStatus('${r._id}','rejected')">Rejeter</button>` : ''}
+        <button class="btn-mini" onclick="toggleFeatured('${r._id}',${!r.featured})">${r.featured ? 'Retirer vedette' : 'Mettre en vedette'}</button>
+        <button class="btn-mini danger" onclick="del('${r._id}')">Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function setStatus(id, status) {
+  await api('/reviews/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
+  toast('Statut mis à jour');
+  loadReviews();
+}
+
+async function toggleFeatured(id, featured) {
+  await api('/reviews/' + id, { method: 'PUT', body: JSON.stringify({ featured }) });
+  toast(featured ? 'Mis en vedette' : 'Retiré de la vedette');
+  loadReviews();
+}
+
+async function del(id) {
+  if (!confirm('Supprimer cet avis ?')) return;
+  await api('/reviews/' + id, { method: 'DELETE' });
+  toast('Supprimé');
+  loadReviews();
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentFilter = t.dataset.status;
+    loadReviews();
+  });
+});
+
+loadReviews();
+</script>
+</body>
+</html>

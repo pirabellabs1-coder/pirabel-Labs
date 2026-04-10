@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, lowercase: true, trim: true },
-  company: String,
-  role: String,
-  rating: { type: Number, required: true, min: 1, max: 5 },
-  title: String,
-  content: { type: String, required: true },
-  service: { type: String, enum: ['seo', 'web', 'ia', 'ads', 'social', 'design', 'video', 'email', 'content', 'cro', 'autre', ''], default: '' },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending', index: true },
-  featured: { type: Boolean, default: false },
   client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
-  approvedAt: Date,
-  source: { type: String, default: 'site' }
-}, { timestamps: true });
+  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
+  name: { type: String, required: true },
+  company: { type: String, default: '' },
+  email: { type: String, default: '' },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  title: { type: String, default: '' },
+  comment: { type: String, required: true },
+  service: { type: String, default: '' },
+  isPublic: { type: Boolean, default: false },
+  isApproved: { type: Boolean, default: false },
+  token: { type: String },
+  submittedAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now }
+});
 
-module.exports = mongoose.models.Review || mongoose.model('Review', reviewSchema);
+module.exports = mongoose.model('Review', reviewSchema);

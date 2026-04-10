@@ -2,74 +2,126 @@ const express = require('express');
 const router = express.Router();
 const Review = require('../models/Review');
 const { auth, adminOrEmployee } = require('../middleware/auth');
-const { sanitize, sanitizeEmail, isValidEmail, honeypotCheck, rateLimit } = require('../middleware/security');
+const crypto = require('crypto');
 
-const submitLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 3, message: 'Trop de soumissions', keyPrefix: 'review' });
+// GET /api/reviews — Admin: all reviews
+router.get('/', auth, async (req, res) => {
+  try {
+    const { isApproved, isPublic } = req.query;
+    const query = {};
+    if (isApproved !== undefined) query.isApproved = isApproved === 'true';
+    if (isPublic !== undefined) query.isPublic = isPublic === 'true';
+    const reviews = await Review.find(query)
+      .populate('client', 'company contactName')
+      .populate('project', 'name')
+      .sort({ createdAt: -1 });
+    res.json({ reviews });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-// PUBLIC: list approved reviews
+// GET /api/reviews/public — Public testimonials
 router.get('/public', async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 12;
-    const featured = req.query.featured === '1';
-    const q = { status: 'approved' };
-    if (featured) q.featured = true;
-    const reviews = await Review.find(q).sort({ featured: -1, createdAt: -1 }).limit(limit).select('-email -approvedAt');
-    const stats = await Review.aggregate([
-      { $match: { status: 'approved' } },
-      { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } }
-    ]);
-    res.json({ reviews, stats: stats[0] || { avg: 0, count: 0 } });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-// PUBLIC: submit
-router.post('/submit', submitLimiter, honeypotCheck('website_url'), async (req, res) => {
-  try {
-    const name = sanitize(req.body.name, 100);
-    const email = sanitizeEmail(req.body.email);
-    const company = sanitize(req.body.company || '', 100);
-    const role = sanitize(req.body.role || '', 100);
-    const rating = parseInt(req.body.rating);
-    const title = sanitize(req.body.title || '', 200);
-    const content = sanitize(req.body.content, 2000);
-    const service = sanitize(req.body.service || '', 30);
-
-    if (!name) return res.status(400).json({ error: 'Nom requis' });
-    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
-    if (!rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'Note 1-5 requise' });
-    if (!content || content.length < 10) return res.status(400).json({ error: 'Avis trop court (min 10 caracteres)' });
-
-    const r = await Review.create({ name, email, company, role, rating, title, content, service });
-    res.status(201).json({ success: true, message: 'Merci ! Votre avis sera publie apres moderation.' });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-// ADMIN: list all
-router.get('/', auth, adminOrEmployee, async (req, res) => {
-  try {
-    const { status } = req.query;
-    const q = status ? { status } : {};
-    const reviews = await Review.find(q).sort({ createdAt: -1 }).limit(200);
+    const reviews = await Review.find({ isPublic: true, isApproved: true })
+      .select('name company rating title comment service submittedAt')
+      .sort({ rating: -1, submittedAt: -1 })
+      .limit(20);
     res.json({ reviews });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
+// GET /api/reviews/submit/:token — Public review form
+router.get('/submit/:token', async (req, res) => {
+  try {
+    const review = await Review.findOne({ token: req.params.token });
+    if (!review) return res.status(404).json({ error: 'Lien invalide ou expiré' });
+    if (review.rating > 0) return res.json({ alreadySubmitted: true });
+    res.json({ name: review.name, company: review.company, service: review.service });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/reviews/submit/:token — Submit review
+router.post('/submit/:token', async (req, res) => {
+  try {
+    const review = await Review.findOne({ token: req.params.token });
+    if (!review) return res.status(404).json({ error: 'Lien invalide' });
+
+    review.rating = req.body.rating;
+    review.title = req.body.title || '';
+    review.comment = req.body.comment;
+    review.submittedAt = Date.now();
+    await review.save();
+
+    res.json({ success: true, message: 'Merci pour votre avis !' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/reviews — Admin create review request
+router.post('/', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const token = crypto.randomBytes(32).toString('hex');
+    const review = await Review.create({ ...req.body, token, rating: 0, comment: '' });
+    res.status(201).json(review);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/reviews/:id/send — Send review request email
+router.post('/:id/send', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const { sendEmail, masterTemplate } = require('../config/email');
+    const review = await Review.findById(req.params.id);
+    if (!review || !review.email) return res.status(400).json({ error: 'Pas d\'email' });
+
+    const SITE = process.env.SITE_URL || 'https://www.pirabellabs.com';
+    const html = masterTemplate({
+      preheader: 'Votre avis nous intéresse',
+      title: 'Comment s\'est passé votre projet ?',
+      subtitle: 'Votre avis compte',
+      body: `
+        <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${review.name},</p>
+        <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous espérons que vous êtes satisfait(e) de notre collaboration. Votre retour d'expérience nous aide à nous améliorer.</p>
+        <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Cela ne prend que 2 minutes :</p>
+      `,
+      cta: 'Donner mon avis',
+      ctaUrl: `${SITE}/avis?token=${review.token}`
+    });
+
+    const success = await sendEmail(review.email, 'Votre avis sur notre collaboration — Pirabel Labs', html);
+    res.json({ success });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/reviews/:id — Admin approve/publish
 router.put('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
-    const r = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (req.body.status === 'approved' && !r.approvedAt) {
-      r.approvedAt = new Date();
-      await r.save();
-    }
-    res.json(r);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+    const review = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!review) return res.status(404).json({ error: 'Avis non trouvé' });
+    res.json(review);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
+// DELETE /api/reviews/:id
 router.delete('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
     await Review.findByIdAndDelete(req.params.id);
     res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

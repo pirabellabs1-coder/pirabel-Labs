@@ -15,6 +15,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- AI & Bing Discovery -->
+<meta name="ai-content-declaration" content="Pirabel Labs: Catalogue de Services (SEO, Web, IA, Publicité)">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/services">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/services">
+<script src="/public/js/language-manager.js"></script>
+<link rel="alternate" type="text/markdown" href="/llms.txt">
+<link rel="alternate" type="application/llmspace+json" href="/llms-full.txt">
+
+<!-- Schema.org OfferCatalog -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Digital Marketing & Technology",
+  "provider": {
+    "@type": "Organization",
+    "name": "Pirabel Labs",
+    "url": "https://www.pirabellabs.com"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Services Pirabel Labs",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "SEO & Référencement Naturel"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Création de Sites Web & E-commerce"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Intelligence Artificielle & Automatisation (Agents, RAG)"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Publicité Payante (Google Ads, Meta Ads)"
+        }
+      }
+    ]
+  }
+}
+</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -361,9 +419,14 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
       <a href="/services" class="active">SERVICES</a>
       <a href="/blog">BLOG</a>
       <a href="guides/">GUIDES</a>
-      <a href="/resultats">RÉSULTATS</a>
+      <a href="/resultats">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
       <a href="/a-propos">À PROPOS</a>
       <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+      </div>
     </div>
     <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta">Audit Gratuit</a>
@@ -379,7 +442,7 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
   <a href="/services">Services</a>
   <a href="/blog">Blog</a>
   <a href="guides/">Guides</a>
-  <a href="/resultats">Résultats</a>
+  <a href="/resultats">Résultats</a><a href="/avis">Avis</a>
   <a href="/a-propos">À propos</a>
   <a href="/carrieres">Carrières</a>
   <a href="/contact">Contact</a>
@@ -949,7 +1012,7 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
         <li><a href="/">Accueil</a></li>
         <li><a href="/a-propos">À propos</a>
   <a href="/carrieres">Carrières</a></li>
-        <li><a href="/resultats">Résultats</a></li>
+        <li><a href="/resultats">Résultats</a><a href="/avis">Avis</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul></div>

@@ -196,4 +196,176 @@ router.get('/search', auth, adminOrEmployee, async (req, res) => {
   }
 });
 
+// GET /api/dashboard/insights — Enhanced financial dashboard
+router.get('/insights', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+
+    // Current month revenue
+    const thisMonthRev = await Revenue.aggregate([
+      { $match: { type: 'income', date: { $gte: startOfMonth } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+
+    // Last month revenue
+    const lastMonthRev = await Revenue.aggregate([
+      { $match: { type: 'income', date: { $gte: startOfLastMonth, $lte: endOfLastMonth } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+
+    // Current month expenses
+    const thisMonthExp = await Revenue.aggregate([
+      { $match: { type: 'expense', date: { $gte: startOfMonth } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+
+    // MRR (Monthly Recurring Revenue) — based on last 3 months average
+    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    const mrrData = await Revenue.aggregate([
+      { $match: { type: 'income', date: { $gte: threeMonthsAgo } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+    const mrr = Math.round((mrrData[0]?.total || 0) / 3);
+
+    // Top 5 clients by revenue
+    const topClients = await Revenue.aggregate([
+      { $match: { type: 'income', client: { $exists: true, $ne: null } } },
+      { $group: { _id: '$client', totalRevenue: { $sum: '$amount' }, count: { $sum: 1 } } },
+      { $sort: { totalRevenue: -1 } },
+      { $limit: 5 },
+      { $lookup: { from: 'clients', localField: '_id', foreignField: '_id', as: 'client' } },
+      { $unwind: { path: '$client', preserveNullAndEmptyArrays: true } }
+    ]);
+
+    // Pending invoice total
+    const pendingAmount = await Invoice.aggregate([
+      { $match: { status: { $in: ['envoyee', 'en_retard'] } } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]);
+
+    // Cash-in forecast (projected based on current deals + pending invoices)
+    const Deal = require('../models/Deal');
+    const openDeals = await Deal.aggregate([
+      { $match: { stage: { $nin: ['perdu', 'gagne'] } } },
+      { $group: { _id: null, weighted: { $sum: { $multiply: ['$value', { $divide: ['$probability', 100] }] } } } }
+    ]);
+
+    const currentMonth = thisMonthRev[0]?.total || 0;
+    const lastMonth = lastMonthRev[0]?.total || 0;
+    const growthRate = lastMonth > 0 ? ((currentMonth - lastMonth) / lastMonth * 100) : 0;
+
+    res.json({
+      currentMonth,
+      lastMonth,
+      growthRate: Math.round(growthRate * 10) / 10,
+      expenses: thisMonthExp[0]?.total || 0,
+      net: currentMonth - (thisMonthExp[0]?.total || 0),
+      mrr,
+      pendingInvoices: pendingAmount[0]?.total || 0,
+      forecast: openDeals[0]?.weighted || 0,
+      topClients: topClients.map(c => ({
+        name: c.client?.company || 'Inconnu',
+        revenue: c.totalRevenue,
+        transactions: c.count
+      }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/dashboard/alerts — Project deadline alerts
+router.get('/alerts', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const now = new Date();
+    const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+
+    // Overdue projects
+    const overdue = await Project.find({
+      status: { $in: ['en_cours', 'en_attente'] },
+      deadline: { $lt: now }
+    }).populate('client', 'company').select('name deadline status client');
+
+    // Due soon (next 3 days)
+    const dueSoon = await Project.find({
+      status: { $in: ['en_cours', 'en_attente'] },
+      deadline: { $gte: now, $lte: threeDaysFromNow }
+    }).populate('client', 'company').select('name deadline status client');
+
+    // Overdue invoices
+    const overdueInvoices = await Invoice.find({
+      status: { $in: ['envoyee', 'en_retard'] },
+      dueDate: { $lt: now }
+    }).populate('client', 'company').select('invoiceNumber total dueDate client');
+
+    res.json({
+      overdue: overdue.map(p => ({ ...p.toObject(), alertType: 'overdue' })),
+      dueSoon: dueSoon.map(p => ({ ...p.toObject(), alertType: 'due_soon' })),
+      overdueInvoices,
+      totalAlerts: overdue.length + dueSoon.length + overdueInvoices.length
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/dashboard/export/:type — Generic CSV export
+router.get('/export/:type', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const { type } = req.params;
+    let csv = '';
+    let filename = '';
+
+    switch (type) {
+      case 'clients': {
+        const data = await Client.find().sort({ createdAt: -1 });
+        csv = 'Entreprise,Contact,Email,Téléphone,Statut,Source,Date\n';
+        data.forEach(c => {
+          csv += `"${c.company}","${c.contactName}","${c.email}","${c.phone}","${c.status}","${c.source}","${new Date(c.createdAt).toLocaleDateString('fr-FR')}"\n`;
+        });
+        filename = 'clients';
+        break;
+      }
+      case 'projects': {
+        const data = await Project.find().populate('client', 'company').sort({ createdAt: -1 });
+        csv = 'Projet,Client,Service,Statut,Budget,Progression,Deadline\n';
+        data.forEach(p => {
+          csv += `"${p.name}","${p.client?.company || ''}","${p.service}","${p.status}",${p.budget},${p.progress}%,"${p.deadline ? new Date(p.deadline).toLocaleDateString('fr-FR') : ''}"\n`;
+        });
+        filename = 'projects';
+        break;
+      }
+      case 'invoices': {
+        const data = await Invoice.find().populate('client', 'company').sort({ createdAt: -1 });
+        csv = 'Numéro,Client,Montant,Statut,Date émission,Date échéance\n';
+        data.forEach(i => {
+          csv += `"${i.invoiceNumber}","${i.client?.company || ''}",${i.total},"${i.status}","${new Date(i.issueDate).toLocaleDateString('fr-FR')}","${i.dueDate ? new Date(i.dueDate).toLocaleDateString('fr-FR') : ''}"\n`;
+        });
+        filename = 'invoices';
+        break;
+      }
+      case 'orders': {
+        const data = await Order.find().sort({ createdAt: -1 });
+        csv = 'Nom,Email,Service,Statut,Date\n';
+        data.forEach(o => {
+          csv += `"${o.name}","${o.email}","${o.service}","${o.status}","${new Date(o.createdAt).toLocaleDateString('fr-FR')}"\n`;
+        });
+        filename = 'orders';
+        break;
+      }
+      default:
+        return res.status(400).json({ error: 'Type d\'export invalide' });
+    }
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}_${Date.now()}.csv`);
+    res.send('\uFEFF' + csv);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

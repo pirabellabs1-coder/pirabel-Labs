@@ -13,6 +13,10 @@
     <link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/en/">
+<script src="/public/js/language-manager.js"></script>
 
 <!-- Open Graph -->
 <meta property="og:title" content="Pirabel Labs | Agence Digitale Premium — SEO, Web, IA & Automatisation">
@@ -29,8 +33,9 @@
 <meta name="twitter:description" content="SEO, Web, IA, Automatisation, Branding. Resultats mesurables. Audit gratuit.">
 
 <!-- AI & Bing Discovery -->
-<meta name="ai-content-declaration" content="This website provides professional digital marketing services information">
-<link rel="alternate" type="text/plain" href="/llms.txt">
+<meta name="ai-content-declaration" content="Pirabel Labs: Agence digitale (SEO, IA, Web) - Data Optimization">
+<link rel="alternate" type="text/markdown" href="/llms.txt">
+<link rel="alternate" type="application/llmspace+json" href="/llms-full.txt">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,31 +48,25 @@
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/illustrations.css">
 
-<!-- Schema.org -->
+<!-- Schema.org (Optimized for AI/GEO) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
   "name": "Pirabel Labs",
   "url": "https://www.pirabellabs.com",
   "logo": "https://www.pirabellabs.com/img/logo.png",
-  "description": "Agence digitale premium specialisee en SEO, creation de sites web, IA et automatisation, branding et marketing digital.",
+  "description": "Agence de marketing digital et technologie basée à Paris, Cotonou et Casablanca. Dominez le digital par le SEO, l'Intelligence Artificielle et le Marketing.",
   "foundingDate": "2020",
   "email": "contact@pirabellabs.com",
   "telephone": "+16139273067",
   "areaServed": [
-    {"@type": "City", "name": "Paris"},
-    {"@type": "City", "name": "Lyon"},
-    {"@type": "City", "name": "Marseille"},
-    {"@type": "City", "name": "Cotonou"},
-    {"@type": "City", "name": "Casablanca"},
-    {"@type": "City", "name": "Dakar"},
-    {"@type": "City", "name": "Abidjan"},
-    {"@type": "City", "name": "Tunis"},
-    {"@type": "City", "name": "Montreal"},
-    {"@type": "City", "name": "Bruxelles"}
+    {"@type": "City", "name": "Paris", "containedInPlace": {"@type": "Country", "name": "France"}},
+    {"@type": "City", "name": "Cotonou", "containedInPlace": {"@type": "Country", "name": "Bénin"}},
+    {"@type": "City", "name": "Casablanca", "containedInPlace": {"@type": "Country", "name": "Maroc"}},
+    {"@type": "City", "name": "Montreal", "containedInPlace": {"@type": "Country", "name": "Canada"}}
   ],
-  "knowsAbout": ["SEO", "Web Development", "Artificial Intelligence", "Marketing Automation", "Branding", "Social Media Marketing", "Email Marketing", "Content Marketing", "PPC Advertising", "CRO"],
+  "knowsAbout": ["SEO", "Generative Engine Optimization (GEO)", "Web Development", "Artificial Intelligence", "RAG Integration", "Marketing Automation", "Social Media", "Email Marketing", "CRO"],
   "sameAs": [],
   "contactPoint": {
     "@type": "ContactPoint",
@@ -271,14 +270,19 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
     <div class="nav-links">
-      <a href="/" class="active">L'AGENCE</a>
+      <a href="/" class="active">ACCUEIL</a>
       <a href="/services" class="link-underline">SERVICES</a><a href="/blog">BLOG</a>
       <a href="guides/" class="link-underline">GUIDES</a>
-      <a href="/resultats" class="link-underline">RÉSULTATS</a>
+      <a href="/resultats" class="link-underline">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
       <a href="/a-propos" class="link-underline">À PROPOS</a>
       <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+      </div>
     </div>
-    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a class="nav-login" href="/mon-espace"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta btn-magnetic">Audit Gratuit</a>
     <div class="nav-hamburger">
       <span></span><span></span><span></span>
@@ -291,11 +295,11 @@
   <a href="/">Accueil</a>
   <a href="/services">Services</a><a href="/blog">Blog</a>
   <a href="guides/">Guides</a>
-  <a href="/resultats">Résultats</a>
+  <a href="/resultats">Résultats</a><a href="/avis">Avis</a>
   <a href="/a-propos">À propos</a>
   <a href="/carrieres">Carrières</a>
   <a href="/contact">Contact</a>
-<a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
+<a href="/mon-espace" style="color:#FF5500;">Mon Espace</a>
 </div>
 
 <!-- ============================================

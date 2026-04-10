@@ -1,19 +1,46 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const ApiKey = require('../models/ApiKey');
+const crypto = require('crypto');
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+    const authHeader = req.header('Authorization');
+    const token = req.cookies.token || authHeader?.replace('Bearer ', '');
+    
     if (!token) return res.status(401).json({ error: 'Acces non autorise' });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-    if (!user || !user.isActive) return res.status(401).json({ error: 'Utilisateur invalide' });
+    // 1. Essayer l'authentification par Clé API (si le token commence par pb_live_)
+    if (token.startsWith('pb_live_')) {
+      const hash = crypto.createHash('sha256').update(token).digest('hex');
+      const apiKeyDoc = await ApiKey.findOne({ key: hash, isActive: true }).populate('user');
+      
+      if (!apiKeyDoc || !apiKeyDoc.user || !apiKeyDoc.user.isActive) {
+        return res.status(401).json({ error: 'Cle API invalide ou inactive' });
+      }
 
-    req.user = user;
-    next();
+      // Mettre à jour la date de dernière utilisation
+      apiKeyDoc.lastUsed = new Date();
+      await apiKeyDoc.save();
+
+      req.user = apiKeyDoc.user;
+      req.isApiKey = true; // Flag pour savoir que c'est une requête API
+      return next();
+    }
+
+    // 2. Sinon, authentification JWT classique
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (!user || !user.isActive) return res.status(401).json({ error: 'Utilisateur invalide' });
+
+      req.user = user;
+      next();
+    } catch (jwtErr) {
+      return res.status(401).json({ error: 'Token invalide' });
+    }
   } catch (err) {
-    res.status(401).json({ error: 'Token invalide' });
+    res.status(500).json({ error: 'Erreur serveur lors de l\'authentification' });
   }
 };
 

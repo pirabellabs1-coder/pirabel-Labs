@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gérer mon rendez-vous — Pirabel Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<style>
+.container{max-width:600px;margin:8rem auto;padding:0 20px;}
+.card{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem;}
+.status-tag{display:inline-block;padding:4px 12px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:1.5rem;}
+.status-planifie{background:rgba(52,152,219,0.1);color:#3498db;}
+.status-confirme{background:rgba(46,204,113,0.1);color:#2ecc71;}
+.status-annule{background:rgba(231,76,60,0.1);color:#e74c3c;}
+h1{font-family:var(--font-headline);font-size:2rem;margin-bottom:.5rem;font-weight:800;letter-spacing:-1px;}
+.date-info{font-size:1.1rem;color:var(--primary);font-weight:600;margin-bottom:2rem;display:flex;align-items:center;gap:8px;}
+.info-row{margin-bottom:1rem;font-size:.9rem;color:var(--on-surface-variant);}
+.actions{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:500px){.actions{grid-template-columns:1fr;}}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:1rem;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;border:none;transition:all .3s;}
+.btn-reschedule{background:var(--primary);color:#5c1900;}
+.btn-cancel{background:transparent;border:1px solid var(--outline-variant);color:var(--on-surface);}
+.btn:hover{filter:brightness(1.2);}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.modal-content{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2.5rem;width:100%;max-width:500px;}
+.field{margin-bottom:1.5rem;}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--on-surface-variant);margin-bottom:.5rem;font-weight:700;}
+.field input, .field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:.8rem 1rem;color:var(--on-surface);font-size:.9rem;font-family:inherit;outline:none;}
+.field input:focus, .field textarea:focus{border-color:var(--primary);}
+</style>
+</head>
+<body>
+<div class="noise-overlay"></div>
+<div class="container" id="app">
+  <div id="loading" style="text-align:center;">Chargement de votre rendez-vous...</div>
+  <div id="content" style="display:none;">
+    <div class="card">
+      <div id="status" class="status-tag"></div>
+      <h1 id="title"></h1>
+      <div class="date-info"><span class="material-symbols-outlined">calendar_today</span> <span id="date-text"></span></div>
+      <div class="info-row" id="location-row"><strong>Lieu :</strong> <span id="location"></span></div>
+      <div class="info-row" id="notes-row"><strong>Notes :</strong> <p id="notes" style="margin-top:4px;"></p></div>
+      
+      <div class="actions" id="actions-bar">
+        <button class="btn btn-reschedule" onclick="openModal('reschedule')"><span class="material-symbols-outlined" style="font-size:1.1rem;">event_repeat</span> Replanifier</button>
+        <button class="btn btn-cancel" onclick="openModal('cancel')"><span class="material-symbols-outlined" style="font-size:1.1rem;">cancel</span> Annuler le RDV</button>
+      </div>
+      <div id="cancel-success" style="display:none;margin-top:2rem;color:var(--primary);font-weight:700;text-align:center;">
+        Rendez-vous annulé. Une notification a été envoyée à notre équipe.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cancellation -->
+<div class="modal" id="modal-cancel">
+  <div class="modal-content">
+    <h2 style="margin-bottom:1.5rem;font-family:var(--font-headline);">Annuler le rendez-vous</h2>
+    <p style="font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;">Veuillez nous indiquer la raison de votre annulation :</p>
+    <div class="field">
+      <label>Raison de l'annulation *</label>
+      <textarea id="cancel-reason" placeholder="Ex: Contretemps imprévu, déjà résolu..." required></textarea>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:flex-end;">
+      <button class="btn-cancel btn" style="padding:.6rem 1rem;" onclick="closeModal('cancel')">Retour</button>
+      <button class="btn-reschedule btn" style="padding:.6rem 1.5rem;" onclick="confirmCancel()">Confirmer l'annulation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Reschedule -->
+<div class="modal" id="modal-reschedule">
+  <div class="modal-content">
+    <h2 style="margin-bottom:1.5rem;font-family:var(--font-headline);">Replanifier</h2>
+    <div class="field">
+      <label>Nouvelle date & heure *</label>
+      <input type="datetime-local" id="new-date" required>
+    </div>
+    <div class="field">
+      <label>Raison du report *</label>
+      <textarea id="reschedule-reason" placeholder="Ex: Déplacement professionnel, besoin de plus de temps..." required></textarea>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:flex-end;">
+      <button class="btn-cancel btn" style="padding:.6rem 1rem;" onclick="closeModal('reschedule')">Retour</button>
+      <button class="btn-reschedule btn" style="padding:.6rem 1.5rem;" onclick="confirmReschedule()">Mettre à jour le RDV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = new URLSearchParams(window.location.search).get('token');
+let appt = null;
+
+async function init() {
+  if (!token) return document.getElementById('loading').textContent = 'Lien de gestion manquant.';
+  try {
+    const r = await fetch('/api/appointments/manage/' + token);
+    if (!r.ok) throw new Error('RDV introuvable');
+    appt = await r.json();
+    render();
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Erreur : ' + err.message;
+  }
+}
+
+function render() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+  document.getElementById('title').textContent = appt.title;
+  document.getElementById('status').textContent = appt.status;
+  document.getElementById('status').className = 'status-tag status-' + appt.status;
+  document.getElementById('date-text').textContent = new Date(appt.date).toLocaleString('fr-FR', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' });
+  document.getElementById('location').textContent = appt.location || 'Visioconférence';
+  document.getElementById('notes').textContent = appt.notes || 'Aucune note particulière.';
+  
+  if (appt.status === 'annule') {
+    document.getElementById('actions-bar').style.display = 'none';
+    document.getElementById('cancel-success').style.display = 'block';
+    document.getElementById('cancel-success').textContent = 'Ce rendez-vous est déjà annulé.';
+  }
+}
+
+function openModal(type) { document.getElementById('modal-' + type).style.display = 'flex'; }
+function closeModal(type) { document.getElementById('modal-' + type).style.display = 'none'; }
+
+async function confirmCancel() {
+  const reason = document.getElementById('cancel-reason').value.trim();
+  if (!reason) return alert('La raison est obligatoire.');
+  try {
+    const r = await fetch('/api/appointments/cancel/' + token, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason })
+    });
+    if (!r.ok) throw new Error('Erreur lors de l\'annulation');
+    location.reload();
+  } catch (err) { alert(err.message); }
+}
+
+async function confirmReschedule() {
+  const date = document.getElementById('new-date').value;
+  const reason = document.getElementById('reschedule-reason').value.trim();
+  if (!date || !reason) return alert('Date et raison obligatoires.');
+  try {
+    const r = await fetch('/api/appointments/reschedule/' + token, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, reason })
+    });
+    if (!r.ok) throw new Error('Erreur lors du report');
+    location.reload();
+  } catch (err) { alert(err.message); }
+}
+
+init();
+</script>
+</body>
+</html>

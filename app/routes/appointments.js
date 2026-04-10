@@ -8,6 +8,71 @@ const { rateLimit, sanitize, sanitizeEmail, isValidEmail, honeypotCheck, limitBo
 
 const bookLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Trop de demandes. Reessayez dans 15 minutes.', keyPrefix: 'book' });
 
+// ============ PUBLIC MANAGEMENT ============
+
+// GET /api/appointments/manage/:token
+router.get('/manage/:token', async (req, res) => {
+  try {
+    const appt = await Appointment.findOne({ secretToken: req.params.token });
+    if (!appt) return res.status(404).json({ error: 'Rendez-vous introuvable' });
+    res.json(appt);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST /api/appointments/cancel/:token
+router.post('/cancel/:token', limitBody(5), async (req, res) => {
+  try {
+    const { reason } = req.body;
+    if (!reason) return res.status(400).json({ error: 'Raison requise pour l\'annulation' });
+    const appt = await Appointment.findOneAndUpdate(
+      { secretToken: req.params.token },
+      { status: 'annule', cancelReason: sanitize(reason, 500) },
+      { new: true }
+    );
+    if (!appt) return res.status(404).json({ error: 'Rendez-vous introuvable' });
+    
+    Notification.create({
+      forRole: 'admin',
+      type: 'appointment',
+      title: `RDV Annulé : ${appt.with?.name}`,
+      message: `Raison : ${reason}`,
+      link: `/calendar?id=${appt._id}`,
+      icon: 'cancel'
+    }).catch(() => {});
+
+    res.json({ success: true, appointment: appt });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST /api/appointments/reschedule/:token
+router.post('/reschedule/:token', limitBody(10), async (req, res) => {
+  try {
+    const { date, reason } = req.body;
+    if (!date || !reason) return res.status(400).json({ error: 'Date et raison requises' });
+    
+    const appt = await Appointment.findOne({ secretToken: req.params.token });
+    if (!appt) return res.status(404).json({ error: 'Rendez-vous introuvable' });
+
+    const oldDate = appt.date;
+    appt.history.push({ oldDate, newDate: new Date(date), reason: sanitize(reason, 500) });
+    appt.date = new Date(date);
+    appt.rescheduleReason = sanitize(reason, 500);
+    appt.status = 'planifie'; // Reset to planifie if it was confirmed before
+    await appt.save();
+
+    Notification.create({
+      forRole: 'admin',
+      type: 'appointment',
+      title: `RDV Reporté : ${appt.with?.name}`,
+      message: `Nouvelle date : ${new Date(date).toLocaleString('fr-FR')}`,
+      link: `/calendar?id=${appt._id}`,
+      icon: 'event_repeat'
+    }).catch(() => {});
+
+    res.json({ success: true, appointment: appt });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ============ PUBLIC BOOKING ============
 
 // GET /api/appointments/availability?date=YYYY-MM-DD
@@ -58,6 +123,10 @@ router.post('/book', bookLimiter, honeypotCheck('website_url'), limitBody(10), a
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide' });
     if (!req.body.date) return res.status(400).json({ error: 'Date requise' });
 
+    // Dynamic import for crypto
+    const crypto = require('crypto');
+    const secretToken = crypto.randomBytes(32).toString('hex');
+
     const appt = await Appointment.create({
       title: sanitize(req.body.title || `Rendez-vous - ${name}`, 200),
       type: ['consultation', 'demo', 'kickoff', 'review', 'autre'].includes(req.body.type) ? req.body.type : 'consultation',
@@ -71,7 +140,8 @@ router.post('/book', bookLimiter, honeypotCheck('website_url'), limitBody(10), a
       },
       notes: sanitize(req.body.notes || '', 2000),
       location: sanitize(req.body.location || 'Visioconférence', 200),
-      source: 'public_form'
+      source: 'public_form',
+      secretToken
     });
 
     Notification.create({
@@ -83,10 +153,12 @@ router.post('/book', bookLimiter, honeypotCheck('website_url'), limitBody(10), a
       icon: 'event'
     }).catch(() => {});
 
-    // Await emails to ensure delivery on Vercel serverless
+    // Use refined email template system
+    const { sendEmail, sendAppointmentConfirmation } = require('../config/email');
     try {
+      // Admin notification (keep simple or use template)
       await sendEmail(
-        process.env.ADMIN_EMAIL || process.env.FROM_EMAIL || 'contact@pirabellabs.com',
+        process.env.ADMIN_EMAIL || 'contact@pirabellabs.com',
         `Nouveau rendez-vous : ${name}`,
         `<h2>Nouveau rendez-vous</h2>
         <p><strong>Avec :</strong> ${name} (${email})</p>
@@ -94,14 +166,10 @@ router.post('/book', bookLimiter, honeypotCheck('website_url'), limitBody(10), a
         <p><strong>Type :</strong> ${appt.type}</p>
         <p><strong>Notes :</strong> ${appt.notes || '-'}</p>`
       );
-      await sendEmail(
-        email,
-        `Rendez-vous confirme - Pirabel Labs`,
-        `<h2>Bonjour ${name},</h2>
-        <p>Votre rendez-vous est planifie pour le <strong>${new Date(appt.date).toLocaleString('fr-FR')}</strong>.</p>
-        <p>Vous recevrez le lien de visio par email avant le rendez-vous.</p>
-        <p>A bientot,<br>L'equipe Pirabel Labs</p>`
-      );
+      
+      // Client PREMIUM confirmation
+      await sendAppointmentConfirmation(email, appt);
+      
     } catch (err) { console.error('Appointment email error:', err); }
 
     if (req.app.get('io')) req.app.get('io').emit('new-appointment', { id: appt._id, name });

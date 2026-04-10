@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js?v=CACHE_BUST_FINAL"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -174,12 +175,17 @@
           </div>
         </div>
       </div>
-      <canvas id="gaChart" height="80"></canvas>
+      <div class="ga-chart-container">
+        <canvas id="gaChart"></canvas>
+      </div>
     </div>
     <style>
     .ga-btn{background:transparent;border:none;color:var(--muted);padding:.4rem .8rem;font-size:.7rem;font-family:inherit;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;}
     .ga-btn:hover{color:var(--text);}
     .ga-btn.ga-active{background:var(--accent);color:#000;font-weight:700;}
+    .ga-chart-container{position:relative;height:220px;width:100%;}
+    @media(max-width:900px){.ga-chart-container{height:160px;}.chart-row-3{grid-template-columns:1fr!important;}}
+    @media(max-width:600px){.ga-chart-container{height:120px;}.grid-2{grid-template-columns:1fr!important;}.search-wrap{display:none;}}
     </style>
 
     <!-- Charts Row 1: Revenue + Service Pie -->

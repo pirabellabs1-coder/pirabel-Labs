@@ -7,10 +7,12 @@
 <title>Contact | Pirabel Labs — Parlons de votre Projet</title>
 <meta name="description" content="Contactez Pirabel Labs pour un audit gratuit de votre présence digitale. Agence à Paris, Cotonou, Casablanca. Réponse sous 24h.">
 <link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/contact">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/contact">
+<script src="/js/language-manager.js"></script>
 <link rel="canonical" href="https://www.pirabellabs.com/contact">
-    <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/contact">
-    <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/contact">
-    <link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/contact">
+<link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/contact">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -53,13 +55,19 @@
 
 <nav class="nav"><div class="nav-inner">
 <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
-<div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="guides/">GUIDES</a><a href="/resultats">RÉSULTATS</a><a href="/a-propos">À PROPOS</a>
-      <a href="/carrieres" class="link-underline">CARRIÈRES</a></div>
+<div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="guides/">GUIDES</a><a href="/resultats">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a><a href="/a-propos">À PROPOS</a>
+      <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+      </div>
+    </div>
 <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta active">Contact</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
-<div class="mobile-nav"><a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="guides/">Guides</a><a href="/resultats">Résultats</a><a href="/a-propos">À propos</a>
+<div class="mobile-nav"><a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="guides/">Guides</a><a href="/resultats">Résultats</a><a href="/avis">Avis</a><a href="/a-propos">À propos</a>
   <a href="/carrieres">Carrières</a><a href="/contact">Contact</a><a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
 </div>
 
@@ -91,6 +99,26 @@
     </div>
   </div>
   <div style="flex:1;min-width:350px;">
+    <!-- DUAL TRACK CONVERSION -->
+    <div class="rv" style="margin-bottom:3rem; display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+      <div style="background:var(--surface-container-high); padding:2rem; border-radius:24px; border:1px solid rgba(255,85,0,0.1); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div>
+          <span class="material-symbols-outlined" style="color:#FF5500; font-size:2rem; margin-bottom:1rem;">calendar_today</span>
+          <h3 class="text-h4" style="margin-bottom:0.5rem;">Option 1 : Échange direct</h3>
+          <p class="text-body text-small" style="opacity:0.8; margin-bottom:1.5rem;">Réservez 15 minutes dès maintenant pour un audit flash.</p>
+        </div>
+        <a href="/rendez-vous" class="btn btn--orange" style="width:100%; justify-content:center;">Calendrier &rarr;</a>
+      </div>
+      <div style="background:var(--surface-container-low); padding:2rem; border-radius:24px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div>
+          <span class="material-symbols-outlined" style="color:var(--primary-container); font-size:2rem; margin-bottom:1rem;">description</span>
+          <h3 class="text-h4" style="margin-bottom:0.5rem;">Option 2 : Audit Détaillé</h3>
+          <p class="text-body text-small" style="opacity:0.8; margin-bottom:1.5rem;">Remplissez le formulaire pour une analyse approfondie.</p>
+        </div>
+        <button onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})" class="btn btn--secondary" style="width:100%; justify-content:center;">Formulaire &darr;</button>
+      </div>
+    </div>
+
     <form id="contact-form" class="rv" style="background:var(--surface-container-lowest);padding:3rem;border:1px solid rgba(92,64,55,0.1);">
       <h2 class="text-h3" style="margin-bottom:2rem;">Demandez votre audit gratuit</h2>
       <div id="form-success" style="display:none;background:rgba(65,228,192,0.1);border:1px solid rgba(65,228,192,0.3);color:#41e4c0;padding:1.5rem;text-align:center;margin-bottom:1.5rem;"><span class="material-symbols-outlined" style="font-size:2rem;display:block;margin-bottom:0.5rem;">check_circle</span>Demande envoy&eacute;e avec succ&egrave;s ! Nous vous recontactons sous 24h.</div>

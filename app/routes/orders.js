@@ -111,11 +111,17 @@ router.delete('/:id', auth, adminOrEmployee, async (req, res) => {
 // PUT /api/orders/:id
 router.put('/:id', auth, adminOrEmployee, async (req, res) => {
   try {
-    const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: 'Commande non trouvee' });
 
+    const previousStatus = order.status;
+    const newStatus = req.body.status;
+
+    Object.assign(order, req.body);
+    await order.save();
+
     // Auto-convert to client when status changes to "acceptee"
-    if (req.body.status === 'acceptee') {
+    if (newStatus === 'acceptee' && previousStatus !== 'acceptee') {
       let client = await Client.findOne({ email: order.email });
       if (!client) {
         client = await Client.create({
@@ -132,7 +138,6 @@ router.put('/:id', auth, adminOrEmployee, async (req, res) => {
       order.convertedToClient = client._id;
       await order.save();
 
-      // Log activity
       await Activity.create({
         type: 'client_created',
         description: `Client auto-cree depuis commande acceptee: ${order.name}`,
@@ -141,11 +146,26 @@ router.put('/:id', auth, adminOrEmployee, async (req, res) => {
         relatedId: client._id
       });
 
-      // Send welcome email (await to ensure delivery on Vercel serverless)
       try { await sendWelcome(client.email, client.contactName); }
       catch (err) { console.error('Welcome email error:', err); }
 
       return res.json({ order, client });
+    }
+
+    // Send automatic status email to prospect if status actually changed
+    // (excluding "acceptee" since it sends the Welcome email, unless we want both)
+    if (newStatus && newStatus !== previousStatus && newStatus !== 'acceptee') {
+      const { sendOrderStatusUpdate, sendQuoteInteraction } = require('../config/email');
+      try {
+        if (newStatus === 'devis_envoye') {
+          // Send the interactive quote
+          await sendQuoteInteraction(order);
+        } else {
+          await sendOrderStatusUpdate(order, newStatus);
+        }
+      } catch (err) {
+        console.error('Erreur envoi email statut demande:', err.message);
+      }
     }
 
     res.json(order);
@@ -187,6 +207,58 @@ router.post('/:id/convert', auth, adminOrEmployee, async (req, res) => {
     await order.save();
 
     res.json({ success: true, client, project, order });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/orders/:id/email - Send manual email to prospect (quotes, status updates)
+router.post('/:id/email', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Commande non trouvée' });
+    
+    const subject = sanitize(req.body.subject || '', 200);
+    const body = req.body.body || '';
+    if (!subject || !body) return res.status(400).json({ error: 'Sujet et contenu requis' });
+    
+    const { masterTemplate, sendEmail } = require('../config/email');
+    const html = masterTemplate({
+      title: subject,
+      body: `<p>${body.replace(/\n/g, '<br>')}</p>`,
+      cta: 'Aller sur le site',
+      ctaUrl: process.env.SITE_URL || 'https://www.pirabellabs.com'
+    });
+    
+    await sendEmail(order.email, subject, html);
+    
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/orders/public/:id/request-modification - Public route for prospects
+router.post('/public/:id/request-modification', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Commande introuvable' });
+
+    const comments = sanitize(req.body.comments || '', 2000);
+    if (!comments) return res.status(400).json({ error: 'Commentaires requis' });
+
+    // Update the order status back to nouvelle (or specific status if it existed) and append notes
+    order.status = 'nouvelle'; 
+    order.notes = (order.notes ? order.notes + '\n\n' : '') + `[Demande Modification Devis - ${new Date().toLocaleDateString('fr-FR')}]\n` + comments;
+    
+    await order.save();
+
+    // Optionally notify admin (we can emit an event or just let them see the "nouvelle" status)
+    if (req.app.get('io')) {
+      req.app.get('io').emit('new-order', { id: order._id, name: order.name, service: order.service + ' (Modification Devis)' });
+    }
+
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

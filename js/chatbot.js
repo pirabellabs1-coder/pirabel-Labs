@@ -23,8 +23,11 @@
   // =====================================================================
   //  SECTION 1 — CONFIGURATION
   // =====================================================================
+  var isEn = window.location.pathname.indexOf('/en/') !== -1;
+  var conversationId = localStorage.getItem('pb_chat_id') || '';
+
   var CONFIG = {
-    botName: 'Lea',
+    botName: isEn ? 'Lea' : 'Lea',
     companyName: 'Pirabel Labs',
     accentColor: '#FF5500',
     accentGradient: 'linear-gradient(135deg, #FF5500, #ff7733)',
@@ -42,7 +45,7 @@
     contactWhatsApp: '+1 613-927-3067',
     whatsAppLink: 'https://wa.me/16139273067',
     siteUrl: 'pirabellabs.com',
-    cities: 'Paris, Lyon, Marseille, Cotonou, Abidjan, Dakar, Casablanca, Tunis, Montreal, Bruxelles'
+    cities: isEn ? 'Paris, London, Montreal, New York, Casablanca' : 'Paris, Lyon, Marseille, Cotonou, Abidjan, Dakar, Casablanca, Tunis, Montreal, Bruxelles'
   };
 
   // =====================================================================
@@ -113,83 +116,40 @@
   // =====================================================================
   var SERVICES = {
     seo: {
-      name: 'SEO & Référencement',
+      name: isEn ? 'SEO & Search Engine Visibility' : 'SEO & Référencement',
       icon: '&#128269;',
-      priceRange: '800 - 3 000\u20ac/mois',
+      priceRange: isEn ? '800 - 3,000\u20ac/month' : '800 - 3 000\u20ac/mois',
       priceMin: 800,
       priceMax: 3000,
       monthly: true,
-      description: 'Dominer Google durablement',
-      details: [
-        'Audit SEO complet (technique, sémantique, concurrentiel)',
-        'Optimisation on-page et structure',
-        'Stratégie de contenu et mots-clés',
-        'Netlinking et backlinks de qualité',
-        'SEO local (Google Business Profile)',
-        'SEO technique (Core Web Vitals, vitesse)',
-        'Reporting mensuel détaillé'
-      ],
-      timeline: '3-6 mois pour des résultats significatifs',
-      caseStudy: 'Une PME locale est passée de 0 à 2 500 visites/mois en 6 mois avec notre stratégie SEO local.'
+      description: isEn ? 'Dominate Google sustainably' : 'Dominer Google durablement',
     },
     web: {
-      name: 'Création de Sites Web',
+      name: isEn ? 'Web Design & Development' : 'Création de Sites Web',
       icon: '&#127760;',
-      priceRange: '2 000 - 15 000\u20ac',
+      priceRange: isEn ? '2,000 - 15,000\u20ac' : '2 000 - 15 000\u20ac',
       priceMin: 2000,
       priceMax: 15000,
       monthly: false,
-      description: 'Sites qui convertissent',
-      details: [
-        'Sites vitrines WordPress',
-        'E-commerce Shopify / WooCommerce',
-        'Sites premium Webflow',
-        'Développement sur mesure (React, Node.js)',
-        'Design responsive mobile-first',
-        'SEO de base inclus',
-        'Formation + 30 jours de support'
-      ],
-      timeline: '2-8 semaines selon complexité',
-      caseStudy: 'Un client e-commerce a vu son CA augmenter de 340% en 8 mois après la refonte de son site.'
+      description: isEn ? 'Sites that convert visitors' : 'Sites qui convertissent',
     },
     ia: {
-      name: 'IA & Automatisation',
+      name: isEn ? 'AI & Automation' : 'IA & Automatisation',
       icon: '&#129302;',
-      priceRange: '1 500 - 5 000\u20ac',
+      priceRange: isEn ? '1,500 - 5,000\u20ac' : '1 500 - 5 000\u20ac',
       priceMin: 1500,
       priceMax: 5000,
       monthly: false,
-      description: 'Travailler plus intelligemment',
-      details: [
-        'Chatbots IA personnalises',
-        'Agents IA pour taches complexes',
-        'Workflows Make / Zapier / n8n',
-        'IA pour la création de contenu',
-        'Analyse prédictive',
-        'Integration IA dans les process existants'
-      ],
-      timeline: '2-4 semaines',
-      caseStudy: 'Une startup a réduit son coût d\'acquisition client de 65% grâce a l\'automatisation marketing.'
+      description: isEn ? 'Work smarter with AI' : 'Travailler plus intelligemment',
     },
     ads: {
-      name: 'Publicité en Ligne',
+      name: isEn ? 'Paid Advertising' : 'Publicité en Ligne',
       icon: '&#128226;',
-      priceRange: '500 - 5 000\u20ac/mois + budget pub',
+      priceRange: isEn ? '500 - 5,000\u20ac/month' : '500 - 5 000\u20ac/mois + budget pub',
       priceMin: 500,
       priceMax: 5000,
       monthly: true,
-      description: 'Acquisition rapide et mesurable',
-      details: [
-        'Google Ads (Search, Display, Shopping, YouTube)',
-        'Meta Ads (Facebook & Instagram)',
-        'LinkedIn Ads pour le B2B',
-        'TikTok Ads',
-        'A/B testing continu',
-        'Tracking des conversions (GTM)',
-        'Reporting et optimisation mensuelle'
-      ],
-      timeline: 'Résultats dès les premières semaines',
-      caseStudy: 'Un SaaS B2B a généré 180 leads qualifiés en 3 mois via LinkedIn Ads + content marketing.'
+      description: isEn ? 'Fast and measurable acquisition' : 'Acquisition rapide et mesurable',
     },
     social: {
       name: 'Social Media',
@@ -360,43 +320,67 @@
   ];
 
   // =====================================================================
-  //  SECTION 5 — RESPONSE BANKS (200+ variations)
-  // =====================================================================
-
-  // -- Greetings (phase 1) --
+  //  SECTION 5 — RESPONSE BA  // -- Greetings (phase 1) --
   var GREETINGS = {
-    default: [
+    default: isEn ? [
+      "Hi! I'm Lea, consultant at Pirabel Labs. Are you looking to boost your online presence?",
+      "Hey! I'm Lea from Pirabel Labs. Tell me, what brings you here today?",
+      "Hello! Lea here, digital consultant. How can I help you grow your business online?",
+      "Hi! I'm Lea. I'm here to help you find the best solution for your business. Shall we talk?"
+    ] : [
       "Salut ! Moi c'est Lea, consultante chez Pirabel Labs. Tu cherches à booster ta présence en ligne ?",
       "Hey ! Je suis Lea de Pirabel Labs. Dis-moi, qu'est-ce qui t'amène aujourd'hui ?",
       "Salut ! Lea ici, consultante digitale. Comment je peux t'aider à développer ton business en ligne ?",
       "Hello ! Moi c'est Lea. Je suis là pour t'aider à trouver la meilleure solution pour ton activité. On discute ?"
     ],
-    returning: [
+    returning: isEn ? [
+      "Hi again {name}! Good to see you back. Shall we pick up where we left off?",
+      "Hey {name}! Back for more? I'm here. What can I do for you?",
+      "{name}! It's a pleasure to see you again. Have new questions?"
+    ] : [
       "Re-salut {name} ! Contente de te revoir. On reprend où on en était ?",
       "Hey {name} ! De retour ? Super, je suis là. Qu'est-ce que je peux faire pour toi ?",
       "{name} ! Ça fait plaisir de te revoir. Tu as de nouvelles questions ?"
     ],
-    seo: [
+    seo: isEn ? [
+      "Hi! Interested in SEO? You're in the right place, it's our specialty. Tell me what's blocking you right now.",
+      "Hey! SEO is our passion at Pirabel Labs. Want more organic traffic? Let's talk about it."
+    ] : [
       "Salut ! Tu t'intéresses au SEO ? Tu es au bon endroit, c'est notre spécialité. Dis-moi ce qui te bloque en ce moment.",
       "Hey ! Le SEO, c'est notre passion chez Pirabel Labs. Tu veux plus de trafic organique ? On en parle ?"
     ],
-    web: [
+    web: isEn ? [
+      "Hi! Looking to create or redesign a website? Tell me what you have in mind, I'll guide you.",
+      "Hey! A web project in sight? I'm Lea, and I can help you find the best technical and design solution."
+    ] : [
       "Salut ! Tu cherches à créer ou refaire un site web ? Dis-moi ce que tu as en tête, je te guide.",
       "Hey ! Un projet web en vue ? Je suis Lea, et je peux t'aider à trouver la meilleure solution technique et design."
     ],
-    ads: [
+    ads: isEn ? [
+      "Hi! Want to launch online ads? We manage this every day. Tell me your objective.",
+      "Hey! Online advertising is direct acquisition. Do you want to generate leads or sales?"
+    ] : [
       "Salut ! Tu veux lancer de la pub en ligne ? On gère ça tous les jours. Dis-moi ton objectif.",
       "Hey ! La publicité en ligne, c'est de l'acquisition directe. Tu veux générer des leads ou des ventes ?"
     ],
-    services: [
+    services: isEn ? [
+      "Hi! Exploring our services? Tell me what interests you and I'll give you the details.",
+      "Hey! I'm Lea. Want to discover what we can do for you? Ask me your questions!"
+    ] : [
       "Salut ! Tu explores nos services ? Dis-moi ce qui t'intéresse et je te donne les détails.",
       "Hey ! Je suis Lea. Tu veux découvrir ce qu'on peut faire pour toi ? Pose-moi tes questions !"
     ],
-    ia: [
+    ia: isEn ? [
+      "Hi! Interested in AI? We're doing amazing things with it. Tell me what you'd like to automate.",
+      "Hey! Automation and AI is our cutting-edge domain. Want a chatbot, workflows...?"
+    ] : [
       "Salut ! L'IA te tente ? On fait des trucs incroyables avec. Dis-moi ce que tu aimerais automatiser.",
       "Hey ! L'automatisation et l'IA, c'est notre domaine de pointe. Tu veux un chatbot, des workflows... ?"
     ],
-    blog: [
+    blog: isEn ? [
+      "Hi! Reading our blog? If you have questions on a topic, I'm here to go deeper.",
+      "Hey! Interested in content marketing? I can tell you more about our strategies."
+    ] : [
       "Salut ! Tu lis notre blog ? Si tu as des questions sur un sujet, je suis là pour approfondir.",
       "Hey ! Le content marketing t'intéresse ? Je peux t'en dire plus sur nos stratégies."
     ]
@@ -404,30 +388,57 @@
 
   // -- Discovery responses (phase 2) --
   var DISCOVERY_RESPONSES = {
-    askSector: [
+    askSector: isEn ? [
+      "To give you the best advice, tell me... what's your industry?",
+      "What is your line of work? It helps me suggest the right solutions.",
+      "What exactly do you do? Every sector has its specificities and I love adapting to them.",
+      "Tell me about your business! What do you do?"
+    ] : [
       "Pour bien te conseiller, dis-moi un peu... tu es dans quel domaine ?",
       "C'est quoi ton secteur d'activité ? Ça m'aide à te proposer les bonnes solutions.",
       "Tu bosses dans quoi exactement ? Chaque secteur a ses spécificités et j'adore m'y adapter.",
       "Parle-moi de ton business ! Tu fais quoi comme activité ?"
     ],
-    askChallenge: [
+    askChallenge: isEn ? [
+      "And what's your biggest challenge right now on the digital side?",
+      "What frustrates you most about your online presence currently?",
+      "If you could solve ONE single problem in your digital marketing, which would it be?",
+      "What's not working as you'd like at the moment?"
+    ] : [
       "Et c'est quoi ton plus gros défi en ce moment côté digital ?",
       "Qu'est-ce qui te frustre le plus dans ta présence en ligne actuellement ?",
       "Si tu pouvais régler UN seul problème dans ton marketing digital, ce serait lequel ?",
       "Qu'est-ce qui marche pas comme tu voudrais en ce moment ?"
     ],
-    askPastEfforts: [
+    askPastEfforts: isEn ? [
+      "Have you already tried things? Agency, freelance, in-house...?",
+      "Have you attempted marketing actions before, or is it a new start?",
+      "Tell me, have you invested in digital before, or is it your first time?",
+      "Are you already working with someone on this or are you managing it yourself?"
+    ] : [
       "Tu as déjà essayé des choses ? Agence, freelance, en interne... ?",
       "T'as déjà tenté des actions marketing avant, ou c'est un nouveau départ ?",
       "Dis-moi, tu as déjà investi dans le digital avant, ou c'est ta première fois ?",
-      "Tu travailles déjà avec quelqu'un là-dessus ou tu gères tout seul ?"
+      "Tu travaille déjà avec quelqu'un là-dessus ou tu gères tout seul ?"
     ],
-    askWorkingNot: [
+    askWorkingNot: isEn ? [
+      "And right now, are there things working well in your marketing?",
+      "Do you have channels that already perform, even a little?",
+      "What gives you results today, even modest ones?"
+    ] : [
       "Et en ce moment, y'a des trucs qui marchent bien dans ton marketing ?",
       "Tu as des canaux qui performent déjà, même un peu ?",
       "Qu'est-ce qui te donne des résultats aujourd'hui, même modestes ?"
     ],
-    empathize: [
+    empathize: isEn ? [
+      "I totally understand. It's a problem we often see, and the good news is we know exactly how to solve it.",
+      "Oh yeah, that's frustrating. But you're not alone, many of our clients had the same worry before working with us.",
+      "I see the picture perfectly. It's a classic, and we have proven solutions for that.",
+      "That's a real hurdle, I understand. We've supported many clients with the same problem, and the results are always there.",
+      "Ok, I get it. It's exactly the kind of situation where we can make a real difference.",
+      "I understand you, it's a very common blocker. The good news? We know how to unblock it.",
+      "Ah yes, that's a sensitive point for many companies. But it's completely fixable."
+    ] : [
       "Je comprends totalement. C'est un problème qu'on voit souvent, et la bonne nouvelle c'est qu'on sait exactement comment le résoudre.",
       "Ah ouais, ça c'est frustrant. Mais t'es pas seul, beaucoup de nos clients avaient le même souci avant de bosser avec nous.",
       "Je vois parfaitement le tableau. C'est un classique, et on a des solutions éprouvées pour ça.",
@@ -436,13 +447,23 @@
       "Je te comprends, c'est super courant comme blocage. La bonne nouvelle ? On sait débloquer ça.",
       "Ah oui, ça c'est un point sensible pour beaucoup d'entreprises. Mais c'est tout à fait réglable."
     ],
-    projectDescription: [
+    projectDescription: isEn ? [
+      "Super interesting! Your project is clearly in our wheelhouse. We've supported clients with similar needs and it worked very well.",
+      "I love it! This is exactly the type of project where we excel. Let me ask you a few questions to refine.",
+      "Excellent! I see exactly what you need. We have all the expertise for that.",
+      "Very good, I have a good vision of your project. It's exciting and we have the experience to see it through."
+    ] : [
       "Super intéressant ! Ton projet est clairement dans nos cordes. On a accompagné des clients avec des besoins similaires et ça a très bien marché.",
       "J'adore ! C'est exactement le type de projet où on excelle. Laisse-moi te poser quelques questions pour affiner.",
       "Excellent ! Je vois bien ce dont tu as besoin. On a toute l'expertise pour ça.",
       "Très bien, j'ai une bonne vision de ton projet. C'est passionnant et on a l'expérience pour le mener à bien."
     ],
-    acknowledge: [
+    acknowledge: isEn ? [
+      "Ok, I'm taking note. This is super useful for making a tailored recommendation.",
+      "Perfect, thanks for the detail. It really helps me grasp your need.",
+      "Great, I understand better. We're moving forward well!",
+      "Message received! The more context you give me, the better my advice will be."
+    ] : [
       "Ok, je note. C'est super utile pour te faire une recommandation sur mesure.",
       "Parfait, merci pour le détail. Ça m'aide vraiment à cerner ton besoin.",
       "Super, je comprends mieux. On avance bien !",
@@ -452,30 +473,51 @@
 
   // -- Qualification responses (phase 3) --
   var QUALIFICATION_RESPONSES = {
-    askBudget: [
+    askBudget: isEn ? [
+      "And on the budget side, do you have a range in mind? Even approximate, it helps me propose the right formula.",
+      "To make a realistic recommendation, would you have a budget idea? No need to be precise, a range is enough.",
+      "Budget question, where do you roughly stand? We adapt to all sizes, I'm just asking to frame it well."
+    ] : [
       "Et côté budget, tu as une enveloppe en tête ? Même approximative, ça m'aide à te proposer la bonne formule.",
       "Pour te faire une reco réaliste, t'aurais une idée de budget ? Pas besoin d'être précis, une fourchette suffit.",
       "Question budget, tu te situes où à peu près ? On s'adapte à toutes les tailles, je te demande juste pour bien cadrer."
     ],
-    askTimeline: [
+    askTimeline: isEn ? [
+      "And in terms of timing, when is it for? Are you on a short term or planning ahead?",
+      "Is it an urgent project or do you have a bit of time in front of you?",
+      "When would you ideally like to launch this?"
+    ] : [
       "Et en termes de timing, c'est pour quand ? Tu es sur du court terme ou tu planifies à l'avance ?",
       "C'est un projet urgent ou tu as un peu de temps devant toi ?",
       "Tu voudrais lancer ça quand idéalement ?"
     ],
-    askDecisionMaker: [
+    askDecisionMaker: isEn ? [
+      "And is it you who decides on this project or do you need to talk to someone else?",
+      "Are you managing this yourself or are there other people involved in the decision?",
+      "Quick question: the final decision, is it you or must it be validated with a partner/boss?"
+    ] : [
       "Et c'est toi qui décides sur ce projet ou tu dois en parler à quelqu'un d'autre ?",
       "Tu gères ça tout seul ou y'a d'autres personnes impliquées dans la décision ?",
       "Question rapide : la décision finale, c'est toi ou faut valider avec un associé/boss ?"
     ],
-    budgetSmall: [
+    budgetSmall: isEn ? [
+      "No problem, we have solutions for all budgets. The important thing is to start intelligently and scale later.",
+      "Small budget doesn't mean small results! We can start smart and increase as results come in."
+    ] : [
       "Pas de souci, on a des formules pour tous les budgets. L'important c'est de commencer intelligemment et de scaler ensuite.",
       "Petit budget ne veut pas dire petits résultats ! On peut démarrer malin et augmenter au fur et à mesure des résultats."
     ],
-    budgetMedium: [
+    budgetMedium: isEn ? [
+      "It's a good budget to start seriously. We can do really impactful things with that.",
+      "With this envelope, we have enough to build something solid. I'll propose an optimal plan."
+    ] : [
       "C'est un bon budget pour démarrer sérieusement. On peut faire des choses vraiment impactantes avec ça.",
       "Avec cette enveloppe, on a de quoi construire quelque chose de solide. Je vais te proposer un plan optimal."
     ],
-    budgetLarge: [
+    budgetLarge: isEn ? [
+      "Excellent! With this budget, we can really deploy a complete and aggressive strategy. Results will follow.",
+      "Top! That leaves us room to go for ambitious results. I already have ideas for you."
+    ] : [
       "Excellent ! Avec ce budget, on peut vraiment déployer une stratégie complète et aggressive. Les résultats vont suivre.",
       "Top ! Ça nous laisse de la marge pour aller chercher des résultats ambitieux. J'ai déjà des idées pour toi."
     ]
@@ -491,34 +533,60 @@
 
   // -- Closing responses (phase 5) --
   var CLOSING_RESPONSES = {
-    hot: [
+    hot: isEn ? [
+      "{name}, your project is very clear and we're perfectly equipped to help you. The most effective next step is a 15-min call with our expert to make a concrete proposal. How does that sound?",
+      "Listen {name}, I think we're really meant to work together. What would you say to a quick call to map everything out?",
+      "{name}, we have everything you need. A small 15-20 min call and we'll make you a tailored offer. Shall we schedule that?",
+      "I feel we can really bring you results {name}. Next step? A free call with our expert to take action."
+    ] : [
       "{name}, ton projet est hyper clair et on est parfaitement équipés pour t'aider. Le plus efficace maintenant, c'est un appel de 15 min avec notre expert pour te faire une proposition concrète. Ça te dit ?",
       "Écoute {name}, je pense qu'on est vraiment faits pour bosser ensemble. Qu'est-ce que tu dirais d'un call rapide pour tout mettre à plat ?",
       "{name}, on a tout ce qu'il faut pour toi. Un petit appel de 15-20 min et on te fait une offre sur mesure. On planifie ça ?",
       "Je sens qu'on peut vraiment t'apporter des résultats {name}. Prochaine étape ? Un appel gratuit avec notre expert pour passer à l'action."
     ],
-    warm: [
+    warm: isEn ? [
+      "Thanks for all this info {name}! To move forward concretely, two options: a quick call with the team, or a quote by email within 24h. What do you prefer?",
+      "{name}, we can clearly bring you value. A chat with an expert or a quote by email? You choose.",
+      "We've made good progress {name}! To take the next step, I suggest either a call or a detailed quote by email. What works for you?",
+      "{name}, I can either schedule a call for you with one of our experts, or send you a personalized quote. Your choice?"
+    ] : [
       "Merci pour toutes ces infos {name} ! Pour avancer concrètement, deux options : un appel rapide avec l'équipe, ou un devis par email sous 24h. Tu préfères quoi ?",
       "{name}, on peut clairement t'apporter de la valeur. Un échange avec un expert ou un devis par email ? À toi de choisir.",
       "On a bien avancé {name} ! Pour passer à l'étape suivante, je te propose soit un call, soit un devis détaillé par email. Qu'est-ce qui t'arrange ?",
       "{name}, je peux soit te planifier un appel avec un de nos experts, soit t'envoyer un devis personnalisé. Tu choisis ?"
     ],
-    cold: [
+    cold: isEn ? [
+      "Don't hesitate to come back when you're ready {name}. If you want, I can send you a summary of our exchange by email?",
+      "We stay available {name}! In the meantime, do you want me to send you a summary with some personalized recommendations?",
+      "No pressure {name}. If you want to think about it, I can send you a recap by email so you have everything in front of you."
+    ] : [
       "N'hésite pas à revenir quand tu seras prêt {name}. Si tu veux, je peux t'envoyer un recapitulatif de notre échange par email ?",
       "On reste dispo {name} ! En attendant, tu veux que je t'envoie un résumé avec quelques recommandations personnalisées ?",
       "Pas de pression {name}. Si tu veux réfléchir, je peux t'envoyer un recap par email pour que tu aies tout sous les yeux."
     ],
-    askEmail: [
+    askEmail: isEn ? [
+      "To send you all that, what's your email?",
+      "Give me your email and I'll send it directly.",
+      "Your email address so I can transmit everything?"
+    ] : [
       "Pour t'envoyer tout ça, c'est quoi ton email ?",
       "File-moi ton email et je t'envoie ça direct.",
       "Ton adresse email pour que je te transmette tout ?"
     ],
-    askPhone: [
+    askPhone: isEn ? [
+      "And a number to call you back? That way our expert can contact you directly.",
+      "A quick phone number so we can call you back?",
+      "Can you leave me your phone so our team can get back to you?"
+    ] : [
       "Et un numéro où te rappeler ? Comme ça notre expert te contacte directement.",
       "Un petit numéro de tel pour qu'on puisse te rappeler ?",
       "Tu peux me laisser ton téléphone pour que notre équipe te recontacte ?"
     ],
-    askName: [
+    askName: isEn ? [
+      "By the way, what's your name? It's nicer for chatting!",
+      "Tell me, what's your first name?",
+      "How should I call you?"
+    ] : [
       "Au fait, tu t'appelles comment ? C'est plus sympa pour discuter !",
       "Dis-moi, c'est quoi ton prénom ?",
       "Comment je dois t'appeler ?"
@@ -526,7 +594,12 @@
   };
 
   // -- Thank you / goodbye --
-  var GOODBYE_RESPONSES = [
+  var GOODBYE_RESPONSES = isEn ? [
+    "Thank you {name}! It was a great exchange. If more questions come up, I'm here 24/7.",
+    "With pleasure {name}! Don't hesitate to come back. We're here to support you in your digital success.",
+    "Great exchange {name}! Talk soon. Until then, don't hesitate if you need anything.",
+    "Thank you {name}! It was a pleasure. See you soon!"
+  ] : [
     "Merci à toi {name} ! C'était un super échange. Si d'autres questions te viennent, je suis là 24h/24.",
     "Avec plaisir {name} ! N'hésite vraiment pas à revenir. On est là pour t'accompagner dans ta réussite digitale.",
     "Super échange {name} ! On se parle bientôt. D'ici là, n'hésite pas si tu as besoin de quoi que ce soit.",
@@ -535,37 +608,67 @@
 
   // -- Objection handling --
   var OBJECTION_HANDLERS = {
-    tooExpensive: [
+    tooExpensive: isEn ? [
+      "I understand that budget is important. But think about this: how much does it cost you NOT to be visible online? We always work in ROI mode. Every euro invested must bring back more.",
+      "It's normal to wonder about the price. We offer formulas adapted to every budget, and we can start small then scale when results are there.",
+      "I hear you. The thing is, our clients recover on average 3x their investment. And we have payment facilities if needed.",
+      "Tight budget? We can start with the essentials and ramp up progressively. The important thing is to start."
+    ] : [
       "Je comprends que le budget soit important. Mais pense à ça : combien te coûte le fait de NE PAS être visible en ligne ? On travaille toujours en mode ROI. Chaque euro investi doit en rapporter plus.",
       "C'est normal de se poser la question du prix. On propose des formules adaptées à chaque budget, et on peut commencer petit puis scaler quand les résultats sont là.",
       "Je t'entends. Le truc, c'est que nos clients récupèrent en moyenne 3x leur investissement. Et on a des facilités de paiement si besoin.",
       "Budget serre ? On peut démarrer avec l'essentiel et monter en puissance progressivement. L'important c'est de commencer."
     ],
-    alreadyHaveAgency: [
+    alreadyHaveAgency: isEn ? [
+      "Ok, and are you satisfied with what they do? If I ask you, it's because often clients who come to us are looking for a step up.",
+      "No problem! You can keep your agency and take us for a specific service. Or tell me what's missing and we'll see if we can complement.",
+      "It's good to already have someone. But if you're here, maybe there's an unmet need? Tell me what could be improved.",
+      "Ok! And concretely, what's not working with your current situation? We can intervene as a complement or replacement, you decide."
+    ] : [
       "Ok, et tu es satisfait de ce qu'ils font ? Si je te pose la question, c'est que souvent les clients qui viennent vers nous cherchent un cran au-dessus.",
       "Pas de souci ! Tu peux garder ton agence et nous prendre pour un service spécifique. Ou alors, dis-moi ce qui te manque et on voit si on peut compléter.",
       "C'est bien d'avoir déjà quelqu'un. Mais si tu es ici, c'est qu'il y a peut-être un besoin non couvert ? Dis-moi ce qui pourrait être amélioré.",
       "Ok ! Et concrètement, qu'est-ce qui ne va pas avec ta situation actuelle ? On peut intervenir en complément ou en remplacement, c'est toi qui décides."
     ],
-    noTime: [
+    noTime: isEn ? [
+      "Exactly! That's precisely why you need us. We manage everything from A to Z, you just validate. You save time, not the other way around.",
+      "Lack of time is the number one problem for our clients. And that's precisely where we step in: we free you from all digital marketing.",
+      "I understand, you're overwhelmed. But it's precisely our job to take charge of that for you. Our clients tell us it's the best investment they've made.",
+      "No time = even more need to delegate. We take care of everything, and you just have a monthly report to read. 10 minutes a month is all we ask of you."
+    ] : [
       "Justement ! C'est exactement pour ça que tu as besoin de nous. On gère tout de A à Z, tu n'as qu'à valider. Tu gagnes du temps, pas l'inverse.",
       "Le manque de temps, c'est le problème numéro 1 de nos clients. Et c'est précisément là où on intervient : on te libère de tout le marketing digital.",
       "Je comprends, tu es débordé. Mais c'est justement notre job de prendre ça en charge pour toi. Nos clients nous disent que c'est le meilleur investissement qu'ils aient fait.",
       "Pas de temps = encore plus besoin de déléguer. On s'occupe de tout, et tu as juste un reporting mensuel à lire. 10 minutes par mois, c'est tout ce qu'on te demande."
     ],
-    notSure: [
+    notSure: isEn ? [
+      "It's completely normal to hesitate. What if we started with a free audit? Zero commitment, we just show you what we can do for you.",
+      "No problem! We don't force you into anything. Start with a free audit, it's non-binding, and you decide then.",
+      "I understand. To help you decide, we offer a free audit and an offered consulting session. That way you see concretely what we can bring you.",
+      "No pressure. Let me send you a mini-analysis of your situation, it's free and non-binding. It will help you see more clearly."
+    ] : [
       "C'est tout à fait normal d'hésiter. Et si on commençait par un audit gratuit ? Zéro engagement, on te montre juste ce qu'on peut faire pour toi.",
       "Aucun problème ! On ne te force à rien. Commence par un audit gratuit, c'est sans engagement, et tu décides ensuite.",
       "Je comprends. Pour t'aider à te décider, on propose un audit gratuit et une session de conseil offerte. Comme ça tu vois concrètement ce qu'on peut t'apporter.",
       "Pas de pression. Laisse-moi t'envoyer une mini-analyse de ta situation, c'est gratuit et sans engagement. Ça t'aidera à y voir plus clair."
     ],
-    willThinkAboutIt: [
+    willThinkAboutIt: isEn ? [
+      "Of course, take time to think! In the meantime, here's what I advise you to keep in mind: every day without a digital strategy is lost opportunities. We're here when you're ready.",
+      "Completely normal. Thinking is important. Want me to send you a recap by email so you can come back to it with a rested mind?",
+      "No problem! I'll prepare a small document for you with my personalized recommendations. That way you have everything in front of you to think.",
+      "Take your time. But keep in mind that the audit is free and non-binding. It can precisely help you decide."
+    ] : [
       "Bien sûr, prends le temps de réfléchir ! En attendant, voici ce que je te conseille de garder en tête : chaque jour sans stratégie digitale, c'est des opportunités perdues. On est là quand tu es prêt.",
       "Tout à fait normal. Réfléchir c'est important. Tu veux que je t'envoie un recap par email pour que tu puisses y revenir à tête reposée ?",
       "Pas de souci ! Je te prépare un petit document avec mes recommandations personnalisées. Comme ça tu as tout sous les yeux pour réfléchir.",
       "Prends ton temps. Mais garde en tête que l'audit est gratuit et sans engagement. Ça peut justement t'aider à te décider."
     ],
-    tooSmall: [
+    tooSmall: isEn ? [
+      "We work with all company sizes! We have adapted solutions, and often it's the smallest structures that have the best return on investment.",
+      "Not a problem at all! Our best success stories often come from small structures. We adapt strategy and budget to your reality.",
+      "It's precisely the right time to invest in digital. Small businesses that get started early take a huge lead over the competition.",
+      "Size means nothing! What counts is ambition. We have clients who started alone and are now at 50 employees thanks to digital."
+    ] : [
       "On travaille avec toutes les tailles d'entreprises ! On a des solutions adaptées, et souvent c'est les plus petites structures qui ont le meilleur retour sur investissement.",
       "Pas du tout un problème ! Nos meilleures success stories viennent souvent de petites structures. On adapte la stratégie et le budget à ta réalité.",
       "C'est justement le bon moment pour investir dans le digital. Les petites entreprises qui s'y mettent tôt prennent une avance énorme sur la concurrence.",
@@ -650,14 +753,23 @@
   };
 
   // -- Process explanation --
-  var PROCESS_RESPONSES = [
+  var PROCESS_RESPONSES = isEn ? [
+    "Our 4-step method:<br><br><strong>1. Audit</strong> - We analyze your current situation deeply<br><strong>2. Strategy</strong> - We create a tailored action plan<br><strong>3. Execution</strong> - We deploy with regular checkpoints<br><strong>4. Optimization</strong> - We measure and improve continuously<br><br>Dedicated project manager from start to finish.",
+    "It's simple:<br>First a free 30-min call to understand your need. Then we make you a detailed proposal. If you like it, we launch. And we optimize continuously with regular reporting.",
+    "We operate in agile mode. That means short cycles, regular points, and total transparency. You know exactly where your project stands at all times."
+  ] : [
     "Notre méthode en 4 étapes :<br><br><strong>1. Audit</strong> - On analyse ta situation actuelle en profondeur<br><strong>2. Stratégie</strong> - On crée un plan d'action sur mesure<br><strong>3. Exécution</strong> - On déploie avec des points réguliers<br><strong>4. Optimisation</strong> - On mesure et on améliore en continu<br><br>Chef de projet dédié du début à la fin.",
     "C'est simple :<br>D'abord un appel de 30 min gratuit pour comprendre ton besoin. Ensuite on te fait une proposition détaillée. Si ça te plaît, on lance. Et on optimise en continu avec des reportings réguliers.",
     "On fonctionne en mode agile. Ça veut dire des cycles courts, des points réguliers, et de la transparence totale. Tu sais exactement où en est ton projet à tout moment."
   ];
 
   // -- Why Pirabel is différent --
-  var WHY_US_RESPONSES = [
+  var WHY_US_RESPONSES = isEn ? [
+    "What sets us apart? We are <strong>data-driven</strong> and <strong>IA-powered</strong>. We do nothing by feeling. Every action is measured and optimized for ROI.",
+    "3 things that make us different:<br>1. We're obsessed with results, not likes<br>2. We use AI to be more efficient<br>3. We have a multidisciplinary team (dev, design, marketing, data)",
+    "We're not just another agency. We're a growth partner. Our success is measured by your results. If you don't grow, we failed.",
+    "Total transparency, detailed reporting, and a team that responds in less than 24h. That's the Pirabel Labs difference."
+  ] : [
     "Ce qui nous différencie ? On est <strong>data-driven</strong> et <strong>IA-powered</strong>. On ne fait rien au feeling. Chaque action est mesurée et optimisée pour le ROI.",
     "3 trucs qui nous rendent différents :<br>1. On est obsédés par les résultats, pas par les likes<br>2. On utilise l'IA pour être plus efficaces<br>3. On a une équipe multidisciplinaire (dev, design, marketing, data)",
     "On est pas une agence de plus. On est un partenaire de croissance. Notre succès se mesure à tes résultats. Si tu grandis pas, on a échoué.",
@@ -665,14 +777,20 @@
   ];
 
   // -- Default fallback --
-  var DEFAULT_RESPONSES = [
+  var DEFAULT_RESPONSES = isEn ? [
+    "Hmm, I'm not sure I understood well. \ud83e\udd14 Could you rephrase your question? I'm here to help you on anything digital marketing related!",
+    "Sorry, I didn't quite catch that. Do you want to talk about your website, your online visibility, your social media, or something else?",
+    "I want to make sure I answer you correctly! Does your question concern one of our services (SEO, web creation, advertising, social media, AI) or something else?",
+    "Sorry, can you clarify a bit? For example, are you looking to get more customers, improve your site, or be more visible on Google?",
+    "I want to be sure I'm helping you! Tell me in a few words what your main need is: more traffic? A new site? Online ads? I adapt to you \ud83d\ude0a"
+  ] : [
     "Hmm, je ne suis pas sûre d'avoir bien compris. \ud83e\udd14 Tu pourrais reformuler ta question ? Je suis là pour t'aider sur tout ce qui touche au marketing digital !",
     "Pardon, je n'ai pas bien saisi. Tu veux qu'on parle de ton site web, de ta visibilité en ligne, de tes réseaux sociaux, ou d'autre chose ?",
     "Je veux m'assurer de bien te répondre ! Est-ce que ta question concerne un de nos services (SEO, création de site, publicité, réseaux sociaux, IA) ou autre chose ?",
     "Désolée, peux-tu préciser un peu ? Par exemple, tu cherches à avoir plus de clients, améliorer ton site, ou être plus visible sur Google ?",
     "Je veux être sûre de bien t'aider ! Dis-moi en quelques mots quel est ton besoin principal : plus de trafic ? Un nouveau site ? De la pub en ligne ? Je m'adapte à toi \ud83d\ude0a"
   ];
-  var DEFAULT_BUTTONS = ['Voir les services', 'J\'ai un projet', 'Tarifs', 'Parler à un humain'];
+  var DEFAULT_BUTTONS = isEn ? ['See services', 'I have a project', 'Pricing', 'Talk to a human'] : ['Voir les services', 'J\'ai un projet', 'Tarifs', 'Parler à un humain'];
 
   // =====================================================================
   //  SECTION 6 — SECTOR DETECTION
@@ -1628,6 +1746,24 @@
 
   function getContextualButtons() {
     var ctx = getPageContext();
+    if (isEn) {
+      switch (ctx) {
+        case 'seo': return ['Free SEO Audit', 'SEO Pricing?', 'I have a project'];
+        case 'web': return ['How much for a site?', 'Which CMS to choose?', 'I have a project'];
+        case 'social': return ['Community management price?', 'Which platform?', 'I have a project'];
+        case 'ads': return ['Minimum budget?', 'Google vs Meta?', 'I have a project'];
+        case 'email': return ['CRM setup', 'Emailing strategy', 'I have a project'];
+        case 'ia': return ['Chatbot for my site', 'Automate my tasks', 'I have a project'];
+        case 'branding': return ['Logo price?', 'Brand book', 'I have a project'];
+        case 'video': return ['Corporate video', 'Social content', 'I have a project'];
+        case 'funnel': return ['Landing page', 'Sales funnel', 'I have a project'];
+        case 'formation': return ['Available training?', 'Pricing', 'I have a project'];
+        case 'consulting': return ['Digital audit', 'Strategy', 'I have a project'];
+        case 'services': return ['Which service fits me?', 'Pricing', 'I have a project'];
+        case 'contact': return ['Book a Call', 'WhatsApp', 'Quick Question'];
+        default: return ['Discover services', 'I have a project', 'Pricing'];
+      }
+    }
     switch (ctx) {
       case 'seo': return ['Audit SEO gratuit', 'Tarif SEO ?', 'J\'ai un projet'];
       case 'web': return ['Combien coûte un site ?', 'Quel CMS choisir ?', 'J\'ai un projet'];
@@ -1651,7 +1787,7 @@
   // =====================================================================
   var css = '\n'
     // -- Chat Button --
-    + '#pb-chat-btn{position:fixed;bottom:24px;right:24px;z-index:9999;width:62px;height:62px;border-radius:50%;'
+    + '#pb-chat-btn{position:fixed;bottom:24px;right:100px;z-index:9999;width:62px;height:62px;border-radius:50%;'
     + 'background:' + CONFIG.accentGradient + ';border:none;cursor:pointer;'
     + 'box-shadow:0 4px 24px rgba(255,85,0,0.45);display:flex;align-items:center;justify-content:center;'
     + 'transition:transform .3s ease,box-shadow .3s ease;}\n'
@@ -1806,16 +1942,16 @@
     + '<div class="pb-chat-body" id="pb-chat-body">'
     + '<div id="pb-intro" class="pb-intro-form">'
     + '<div class="pb-lea-avatar">L</div>'
-    + '<h4>Salut ! Moi c\'est Lea &#128075;</h4>'
-    + '<p>Consultante digitale chez Pirabel Labs.<br>Je t\'aide à trouver la meilleure solution pour booster ton business en ligne.</p>'
-    + '<input type="text" id="pb-name" placeholder="Ton prenom *" autocomplete="given-name" />'
-    + '<input type="email" id="pb-email" placeholder="Ton email (optionnel)" autocomplete="email" />'
-    + '<button id="pb-start-btn">Discuter avec Lea</button>'
-    + '<a class="pb-skip" id="pb-skip-btn">Continuer sans me présenter</a>'
+    + '<h4>' + (isEn ? 'Hi! I\'m Lea' : 'Salut ! Moi c\'est Lea') + ' &#128075;</h4>'
+    + '<p>' + (isEn ? 'Digital consultant at Pirabel Labs.<br>I help you find the best solution to boost your business online.' : 'Consultante digitale chez Pirabel Labs.<br>Je t\'aide à trouver la meilleure solution pour booster ton business en ligne.') + '</p>'
+    + '<input type="text" id="pb-name" placeholder="' + (isEn ? 'Your first name *' : 'Ton prenom *') + '" autocomplete="given-name" />'
+    + '<input type="email" id="pb-email" placeholder="' + (isEn ? 'Your email (optional)' : 'Ton email (optionnel)') + '" autocomplete="email" />'
+    + '<button id="pb-start-btn">' + (isEn ? 'Chat with Lea' : 'Discuter avec Lea') + '</button>'
+    + '<a class="pb-skip" id="pb-skip-btn">' + (isEn ? 'Continue without intro' : 'Continuer sans me présenter') + '</a>'
     + '</div>'
     + '</div>'
     + '<div class="pb-chat-input" id="pb-input-area" style="display:none;">'
-    + '<input type="text" id="pb-msg-input" placeholder="Écris ton message..." autocomplete="off" />'
+    + '<input type="text" id="pb-msg-input" placeholder="' + (isEn ? 'Write your message...' : 'Écris ton message...') + '" autocomplete="off" />'
     + '<button id="pb-send-btn" aria-label="Envoyer"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>'
     + '</div>'
     + '<div class="pb-powered">Propulsé par <a href="https://pirabellabs.com" target="_blank">Pirabel Labs</a></div>'
@@ -2131,6 +2267,59 @@
     isOpen: function () { return isOpen; },
     setSoundEnabled: function (enabled) { soundEnabled = !!enabled; }
   };
+
+  // =====================================================================
+  //  SECTION 28 — UTILITY FUNCTIONS
+  // =====================================================================
+  function pickUnused(arr, key) {
+    if (!arr || arr.length === 0) return null;
+    if (!STATE.usedResponses[key]) STATE.usedResponses[key] = [];
+    var unused = arr.filter(function (r) { return STATE.usedResponses[key].indexOf(r) === -1; });
+    if (unused.length === 0) {
+      STATE.usedResponses[key] = [];
+      unused = arr;
+    }
+    var res = unused[Math.floor(Math.random() * unused.length)];
+    STATE.usedResponses[key].push(res);
+    return res;
+  }
+
+  function replaceName(text) {
+    if (!text) return '';
+    return text.replace(/{name}/g, STATE.visitor.name || (isEn ? 'friend' : 'mon ami'));
+  }
+
+  function formatTimestamp() {
+    var now = new Date();
+    return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  }
+
+  function normalize(text) {
+    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function stripHtml(html) {
+    var tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function saveMsg(convId, name, email, text, role) {
+    try {
+      fetch('/api/chat/save-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: convId,
+          name: name,
+          email: email,
+          text: text,
+          role: role,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(function () { });
+    } catch (e) { }
+  }
 
   // =====================================================================
   //  END OF CHATBOT

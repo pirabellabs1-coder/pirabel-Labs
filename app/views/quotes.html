@@ -6,39 +6,42 @@
 <title>Devis | Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js"></script>
 <script src="/js/admin-topbar.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-.q-row{display:grid;grid-template-columns:120px 1fr 120px 100px 120px 80px;gap:.75rem;align-items:center;padding:.85rem 1rem;border-bottom:1px solid var(--border);}
-.q-row.head{background:var(--bg);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
-.q-row:hover:not(.head){background:rgba(255,85,0,.04);}
-.badge{display:inline-block;padding:.2rem .55rem;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
-.b-brouillon{background:rgba(255,255,255,.05);color:var(--muted);}
-.b-envoye{background:rgba(52,152,219,.15);color:#3498db;}
-.b-accepte{background:rgba(46,204,113,.15);color:#2ecc71;}
-.b-refuse{background:rgba(231,76,60,.15);color:#e74c3c;}
-.b-expire{background:rgba(155,89,182,.15);color:#9b59b6;}
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:2rem;}
+.quote-card{background:var(--card);border:1px solid var(--border);padding:1.5rem;transition:border-color .3s,transform .2s;cursor:pointer;}
+.quote-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.quote-number{font-family:var(--font-h);font-weight:700;font-size:.8rem;color:var(--accent);margin-bottom:.5rem;}
+.quote-title{font-weight:600;font-size:1rem;margin-bottom:.5rem;}
+.quote-client{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;}
+.quote-footer{display:flex;justify-content:space-between;align-items:center;}
+.quote-total{font-family:var(--font-h);font-weight:700;font-size:1.1rem;}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}
 .modal-bg.show{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);max-width:760px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:700px;width:100%;max-height:90vh;overflow-y:auto;}
 .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .modal-body{padding:1.5rem;}
 .field{margin-bottom:1rem;}
 .field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
-.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;font-family:var(--font-b);outline:none;}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
-.field textarea{min-height:80px;resize:vertical;}
-.item-row{display:grid;grid-template-columns:1fr 80px 100px 100px 30px;gap:.5rem;align-items:center;margin-bottom:.5rem;}
-.item-row input{padding:.5rem .75rem;font-size:.8rem;}
-.item-del{background:transparent;border:1px solid var(--border);color:#e74c3c;cursor:pointer;width:30px;height:30px;}
-.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;}
-.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.5rem 1rem;font-weight:600;font-size:.75rem;cursor:pointer;}
-.totals-box{background:var(--bg);border:1px solid var(--border);padding:1rem;margin-top:1rem;}
-.totals-row{display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem;}
-.totals-row.grand{border-top:2px solid var(--accent);padding-top:.75rem;margin-top:.5rem;font-size:1rem;font-weight:800;color:var(--accent);}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
+.items-table{width:100%;margin:1rem 0;}
+.items-table th{text-align:left;font-size:.7rem;text-transform:uppercase;color:var(--muted);padding:.5rem;letter-spacing:.05em;}
+.items-table td{padding:.25rem .5rem;}
+.items-table input{background:var(--bg);border:1px solid var(--border);padding:.5rem;color:var(--text);font-size:.8rem;width:100%;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+.btn-danger{background:transparent;color:#e74c3c;border:1px solid rgba(231,76,60,.3);padding:.75rem 1rem;font-size:.8rem;cursor:pointer;}
+.btn-sm{padding:.4rem .8rem;font-size:.7rem;}
+.ai-btn{background:linear-gradient(135deg,#9b59b6,#3498db);color:#fff;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;}
+.totals-row{display:flex;justify-content:flex-end;gap:2rem;padding:.75rem 0;border-top:1px solid var(--border);margin-top:.5rem;}
+.totals-row div{text-align:right;}
+.totals-row .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;}
+.totals-row .value{font-family:var(--font-h);font-weight:700;font-size:1rem;}
+.totals-row .value.accent{color:var(--accent);}
 </style>
 </head>
 <body>
@@ -46,333 +49,365 @@
 <div class="app">
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">PIRABEL LABS</div>
-  <nav class="sidebar-nav">
-    <div class="sidebar-section">Principal</div>
-    <a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
-    <a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
-    <a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
-    <a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
-    <div class="sidebar-section">Gestion</div>
-    <a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
-    <a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
-    <a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
-    <a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
-    <div class="sidebar-section">Marketing</div>
-    <a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
-    <a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
-    <a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">local_fire_department</span> Leads</a>
-    <a href="/reviews" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
-    <a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
-    <div class="sidebar-section">Finance</div>
-    <a href="/quotes" class="sidebar-link active"><span class="material-symbols-outlined">description</span> Devis</a>
-    <a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
-    <a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
-    <a href="/time" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Time tracking</a>
-    <div class="sidebar-section">Système</div>
-    <a href="/templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates email</a>
-    <a href="/status-page" class="sidebar-link"><span class="material-symbols-outlined">monitor_heart</span> Statut</a>
-    <a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
-  </nav>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
 </aside>
 
 <div class="main">
   <header class="topbar">
-    <div style="display:flex;align-items:center;gap:1rem;"><div class="topbar-title">Devis</div></div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Devis / Propositions</div>
+    </div>
     <div class="topbar-actions">
+      <button class="ai-btn" onclick="openAI()"><span class="material-symbols-outlined" style="font-size:1rem;">auto_awesome</span> Générer par IA</button>
       <button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">add</span> Nouveau devis</button>
     </div>
   </header>
+
   <div class="content">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
-      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Total</div><div style="font-size:1.75rem;font-weight:800;" id="s-total">0</div></div>
-      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Envoyés</div><div style="font-size:1.75rem;font-weight:800;color:#3498db;" id="s-sent">0</div></div>
-      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Acceptés</div><div style="font-size:1.75rem;font-weight:800;color:#2ecc71;" id="s-accepted">0</div></div>
-      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">Conversion</div><div style="font-size:1.75rem;font-weight:800;color:var(--accent);" id="s-conv">0%</div></div>
-      <div class="card" style="padding:1.25rem;"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;">CA gagné</div><div style="font-size:1.75rem;font-weight:800;color:var(--accent);" id="s-won">0€</div></div>
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <select id="filter-status" onchange="loadQuotes()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.5rem 1rem;font-size:.8rem;">
+        <option value="">Tous les statuts</option>
+        <option value="brouillon">Brouillon</option>
+        <option value="envoye">Envoyé</option>
+        <option value="accepte">Accepté</option>
+        <option value="refuse">Refusé</option>
+        <option value="expire">Expiré</option>
+      </select>
+      <button class="btn-secondary btn-sm" onclick="exportCSV()"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">download</span> Export CSV</button>
     </div>
-    <div class="card" style="padding:0;">
-      <div class="q-row head"><div>Numéro</div><div>Titre</div><div>Client</div><div>Total</div><div>Statut</div><div>Actions</div></div>
-      <div id="quotes-list"></div>
+
+    <div class="quote-grid" id="quotes-list">
+      <div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1;">Chargement...</div>
     </div>
   </div>
 </div>
 </div>
 
+<!-- Quote Modal -->
 <div class="modal-bg" id="modal"><div class="modal">
   <div class="modal-header">
     <h3 id="modal-title" style="margin:0;font-family:var(--font-h);">Nouveau devis</h3>
     <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
   </div>
   <div class="modal-body">
-    <div class="field"><label>Titre du devis *</label><input id="f-title" placeholder="Refonte site e-commerce"></div>
+    <div class="field"><label>Sélectionner un client existant (optionnel)</label><select id="f-clientSelect" onchange="fillClientFromSelect()"><option value="">-- Nouveau client / Saisie manuelle --</option></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div class="field"><label>Client</label><select id="f-client"><option value="">— Sélectionner —</option></select></div>
-      <div class="field"><label>Statut</label><select id="f-status"><option value="brouillon">Brouillon</option><option value="envoye">Envoyé</option><option value="accepte">Accepté</option><option value="refuse">Refusé</option><option value="expire">Expiré</option></select></div>
+      <div class="field"><label>Titre *</label><input id="f-title" placeholder="Refonte site web"></div>
+      <div class="field"><label>Client (nom)</label><input id="f-clientName"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-      <div class="field"><label>Nom client (manuel)</label><input id="f-clientName" placeholder="Si pas dans la liste"></div>
       <div class="field"><label>Email client</label><input id="f-clientEmail" type="email"></div>
-      <div class="field"><label>Société</label><input id="f-clientCompany"></div>
+      <div class="field"><label>Entreprise</label><input id="f-clientCompany"></div>
+      <div class="field"><label>Statut</label>
+        <select id="f-status"><option value="brouillon">Brouillon</option><option value="envoye">Envoyé</option><option value="accepte">Accepté</option><option value="refuse">Refusé</option></select>
+      </div>
     </div>
-    <div class="field"><label>Description</label><textarea id="f-description"></textarea></div>
-
-    <label style="display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;">Lignes</label>
-    <div class="item-row" style="font-size:.65rem;color:var(--muted);text-transform:uppercase;font-weight:700;"><div>Description</div><div>Qté</div><div>P.U.</div><div>Total</div><div></div></div>
-    <div id="items"></div>
-    <button class="btn-secondary" onclick="addItem()" style="margin-top:.5rem;">+ Ajouter une ligne</button>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
-      <div class="field"><label>TVA %</label><input id="f-taxRate" type="number" value="20" onchange="recalc()"></div>
-      <div class="field"><label>Devise</label><select id="f-currency"><option>EUR</option><option>USD</option><option>XOF</option><option>MAD</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="field"><label>Taux TVA (%)</label><input id="f-taxRate" type="number" value="20"></div>
+      <div class="field"><label>Remise (€)</label><input id="f-discount" type="number" value="0"></div>
       <div class="field"><label>Valable jusqu'au</label><input id="f-validUntil" type="date"></div>
     </div>
+    <div class="field"><label>Lien de paiement</label><input id="f-paymentLink" placeholder="https://wise.com/pay/..."></div>
 
-    <div class="field"><label>Lien de paiement (manuel — Stripe checkout, PayPal, virement…)</label><input id="f-paymentLink" placeholder="https://"></div>
-    <div class="field"><label>Notes</label><textarea id="f-notes"></textarea></div>
-    <div class="field"><label>Conditions</label><textarea id="f-terms" placeholder="Conditions de paiement, livraison…"></textarea></div>
+    <h4 style="font-family:var(--font-h);margin:1rem 0 .5rem;">Lignes du devis</h4>
+    <table class="items-table">
+      <thead><tr><th>Description</th><th style="width:60px;">Qté</th><th style="width:100px;">P.U. (€)</th><th style="width:100px;">Total</th><th style="width:30px;"></th></tr></thead>
+      <tbody id="items-body"></tbody>
+    </table>
+    <button class="btn-secondary btn-sm" onclick="addItem()" style="margin-bottom:1rem;">+ Ajouter une ligne</button>
 
-    <div class="totals-box">
-      <div class="totals-row"><span>Sous-total HT</span><span id="t-sub">0,00 €</span></div>
-      <div class="totals-row"><span>TVA</span><span id="t-tax">0,00 €</span></div>
-      <div class="totals-row grand"><span>TOTAL TTC</span><span id="t-total">0,00 €</span></div>
+    <div class="totals-row">
+      <div><div class="label">Sous-total HT</div><div class="value" id="t-subtotal">0 €</div></div>
+      <div><div class="label">TVA</div><div class="value" id="t-tax">0 €</div></div>
+      <div><div class="label">Total TTC</div><div class="value accent" id="t-total">0 €</div></div>
     </div>
 
-    <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
-      <button class="btn-primary" onclick="save()" style="flex:1;">Enregistrer</button>
+    <div class="field"><label>Notes</label><textarea id="f-notes" rows="2"></textarea></div>
+    <div class="field"><label>Conditions</label><textarea id="f-conditions" rows="2">Conditions de paiement : 30 jours à réception de facture.</textarea></div>
+
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;">
+      <button class="btn-danger" id="del-btn" style="margin-right:auto;display:none;" onclick="deleteQuote()">Supprimer</button>
+      <button class="btn-secondary btn-sm" id="link-btn" style="display:none;" onclick="copyQuoteLink()"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">link</span> Copier le lien</button>
+      <button class="btn-secondary" onclick="sendQuote()" id="send-btn" style="display:none;"><span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">send</span> Envoyer</button>
       <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn-primary" onclick="saveQuote()">Enregistrer</button>
     </div>
   </div>
 </div></div>
 
+<!-- AI Modal -->
+<div class="modal-bg" id="ai-modal"><div class="modal" style="max-width:550px;">
+  <div class="modal-header">
+    <h3 style="margin:0;font-family:var(--font-h);">🤖 Générer un devis par IA</h3>
+    <button onclick="document.getElementById('ai-modal').classList.remove('show')" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="field"><label>Nom du client</label><input id="ai-client"></div>
+    <div class="field"><label>Service</label><input id="ai-service" placeholder="SEO, Site web, Ads..."></div>
+    <div class="field"><label>Budget indicatif</label><input id="ai-budget" placeholder="5000 €"></div>
+    <div class="field"><label>Brief / Demande *</label><textarea id="ai-brief" rows="4" placeholder="Décrivez le besoin du client..."></textarea></div>
+    <div style="text-align:right;"><button class="ai-btn" onclick="generateAI()" id="ai-go">Générer la proposition</button></div>
+    <div id="ai-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">⏳ Génération en cours...</div>
+  </div>
+</div></div>
+
 <script>
-let editId = null, items = [], currentClients = [];
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/pirabel-admin-7x9k2m';
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+let allQuotes = [];
+let allClients = [];
+let editingId = null;
 
-async function loadStats() {
-  const r = await fetch('/api/quotes/stats', { credentials: 'include' });
-  const s = await r.json();
-  document.getElementById('s-total').textContent = s.total || 0;
-  document.getElementById('s-sent').textContent = s.sent || 0;
-  document.getElementById('s-accepted').textContent = s.accepted || 0;
-  document.getElementById('s-conv').textContent = (s.conversionRate || 0) + '%';
-  document.getElementById('s-won').textContent = (s.acceptedValue || 0).toLocaleString('fr-FR') + '€';
-}
+// Sidebar
+document.getElementById('sidebar-nav').innerHTML = `
+<div class="sidebar-section">Principal</div>
+<a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+<a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a>
+<a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a>
+<a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+<div class="sidebar-section">Commercial</div>
+<a href="/quotes" class="sidebar-link active"><span class="material-symbols-outlined">description</span> Devis</a>
+<a href="/pipeline" class="sidebar-link"><span class="material-symbols-outlined">view_kanban</span> Pipeline CRM</a>
+<a href="/email-templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates Email</a>
+<div class="sidebar-section">Gestion</div>
+<a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a>
+<a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a>
+<a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a>
+<a href="/time-tracking" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Time Tracking</a>
+<a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+<div class="sidebar-section">Marketing</div>
+<a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a>
+<a href="/prospects" class="sidebar-link"><span class="material-symbols-outlined">person_search</span> Prospection</a>
+<a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">group_add</span> Leads</a>
+<a href="/articles" class="sidebar-link"><span class="material-symbols-outlined">article</span> Articles</a>
+<a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+<a href="/reviews-admin" class="sidebar-link"><span class="material-symbols-outlined">star</span> Avis clients</a>
+<div class="sidebar-section">Finance</div>
+<a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a>
+<a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+<div class="sidebar-section">Système</div>
+<a href="/notes" class="sidebar-link"><span class="material-symbols-outlined">sticky_note_2</span> Notes</a>
+<a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>
+`;
 
-async function loadList() {
-  const r = await fetch('/api/quotes', { credentials: 'include' });
-  const data = await r.json();
-  const list = document.getElementById('quotes-list');
-  if (!data.quotes || !data.quotes.length) {
-    list.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--muted);">Aucun devis. Créez votre premier devis.</div>';
-    return;
-  }
-  list.innerHTML = data.quotes.map(q => `
-    <div class="q-row">
-      <div style="font-family:monospace;font-weight:700;color:var(--accent);">${q.number}</div>
-      <div>${escapeHtml(q.title || '-')}</div>
-      <div style="font-size:.85rem;color:var(--muted);">${escapeHtml(q.client?.company || q.clientName || '-')}</div>
-      <div style="font-weight:700;">${(q.total || 0).toLocaleString('fr-FR')} ${q.currency || 'EUR'}</div>
-      <div><span class="badge b-${q.status}">${q.status}</span></div>
-      <div style="display:flex;gap:.3rem;">
-        <button onclick="editQuote('${q._id}')" title="Éditer" style="background:transparent;border:1px solid var(--border);color:var(--text);width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">edit</span></button>
-        <button onclick="sendQuote('${q._id}')" title="Envoyer" style="background:transparent;border:1px solid var(--border);color:#3498db;width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">send</span></button>
-        <button onclick="downloadPDF('${q._id}')" title="PDF" style="background:transparent;border:1px solid var(--border);color:var(--accent);width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">picture_as_pdf</span></button>
-        <button onclick="delQuote('${q._id}')" title="Supprimer" style="background:transparent;border:1px solid var(--border);color:#e74c3c;width:28px;height:28px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:.95rem;">delete</span></button>
+function toast(msg, type='success'){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),3000);}
+function fmt(n){return(n||0).toLocaleString('fr-FR')+' €';}
+function statusBadge(s){const m={'brouillon':'badge-done','envoye':'badge-pending','accepte':'badge-active','refuse':'badge-danger','expire':'badge-done'};return '<span class="badge '+(m[s]||'badge-done')+'">'+s+'</span>';}
+
+async function loadQuotes(){
+  const status = document.getElementById('filter-status').value;
+  const res = await fetch('/api/quotes?limit=100' + (status ? '&status='+status : ''), {headers});
+  const data = await res.json();
+  allQuotes = data.quotes || [];
+  const el = document.getElementById('quotes-list');
+  if(!allQuotes.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1;">Aucun devis</div>';return;}
+  el.innerHTML = allQuotes.map(q => `
+    <div class="quote-card" onclick="openEdit('${q._id}')">
+      <div class="quote-number">${q.quoteNumber}</div>
+      <div class="quote-title">${esc(q.title)}</div>
+      <div class="quote-client">${esc(q.clientName||q.clientCompany||'')} ${q.clientEmail?'· '+esc(q.clientEmail):''}</div>
+      <div class="quote-footer">
+        <div class="quote-total">${fmt(q.total)}</div>
+        ${statusBadge(q.status)}
       </div>
     </div>
   `).join('');
 }
 
+function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function openCreate(){
+  editingId=null;
+  document.getElementById('modal-title').textContent='Nouveau devis';
+  document.getElementById('del-btn').style.display='none';
+  document.getElementById('link-btn').style.display='none';
+  document.getElementById('send-btn').style.display='none';
+  ['f-title','f-clientName','f-clientEmail','f-clientCompany','f-notes','f-paymentLink'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-taxRate').value=20;
+  document.getElementById('f-discount').value=0;
+  document.getElementById('f-status').value='brouillon';
+  document.getElementById('f-validUntil').value='';
+  document.getElementById('f-conditions').value='Conditions de paiement : 30 jours à réception de facture.';
+  document.getElementById('items-body').innerHTML='';
+  addItem();addItem();
+  recalc();
+  document.getElementById('modal').classList.add('show');
+}
+
+function openEdit(id){
+  const q=allQuotes.find(x=>x._id===id);if(!q)return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='Modifier '+q.quoteNumber;
+  document.getElementById('del-btn').style.display='inline-block';
+  document.getElementById('link-btn').style.display='inline-flex';
+  document.getElementById('send-btn').style.display=q.status==='brouillon'?'inline-flex':'none';
+  document.getElementById('f-title').value=q.title||'';
+  document.getElementById('f-clientName').value=q.clientName||'';
+  document.getElementById('f-clientEmail').value=q.clientEmail||'';
+  document.getElementById('f-clientCompany').value=q.clientCompany||'';
+  document.getElementById('f-taxRate').value=q.taxRate||20;
+  document.getElementById('f-discount').value=q.discount||0;
+  document.getElementById('f-status').value=q.status||'brouillon';
+  document.getElementById('f-validUntil').value=q.validUntil?q.validUntil.split('T')[0]:'';
+  document.getElementById('f-paymentLink').value=q.paymentLink||'';
+  document.getElementById('f-notes').value=q.notes||'';
+  document.getElementById('f-conditions').value=q.conditions||'';
+  document.getElementById('items-body').innerHTML='';
+  (q.items||[]).forEach(i=>addItem(i));
+  if(!q.items||!q.items.length){addItem();}
+  recalc();
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+
+function addItem(data={}){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><input class="i-desc" value="${esc(data.description||'')}" oninput="recalc()"></td>
+    <td><input class="i-qty" type="number" value="${data.quantity||1}" min="1" oninput="recalc()"></td>
+    <td><input class="i-price" type="number" value="${data.unitPrice||0}" min="0" oninput="recalc()"></td>
+    <td style="font-weight:600;font-size:.85rem;" class="i-total">${fmt((data.quantity||1)*(data.unitPrice||0))}</td>
+    <td><button onclick="this.closest('tr').remove();recalc();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;">×</button></td>
+  `;
+  document.getElementById('items-body').appendChild(tr);
+}
+
+function recalc(){
+  let subtotal=0;
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const qty=parseFloat(tr.querySelector('.i-qty').value)||0;
+    const price=parseFloat(tr.querySelector('.i-price').value)||0;
+    const total=qty*price;
+    tr.querySelector('.i-total').textContent=fmt(total);
+    subtotal+=total;
+  });
+  const discount=parseFloat(document.getElementById('f-discount').value)||0;
+  const taxRate=parseFloat(document.getElementById('f-taxRate').value)||0;
+  const taxable=subtotal-discount;
+  const tax=taxable*(taxRate/100);
+  document.getElementById('t-subtotal').textContent=fmt(subtotal);
+  document.getElementById('t-tax').textContent=fmt(tax);
+  document.getElementById('t-total').textContent=fmt(taxable+tax);
+}
+
+function getItems(){
+  const items=[];
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const desc=tr.querySelector('.i-desc').value.trim();
+    const qty=parseFloat(tr.querySelector('.i-qty').value)||1;
+    const price=parseFloat(tr.querySelector('.i-price').value)||0;
+    if(desc)items.push({description:desc,quantity:qty,unitPrice:price,total:qty*price});
+  });
+  return items;
+}
+
+async function saveQuote(){
+  const body={
+    title:document.getElementById('f-title').value.trim(),
+    clientName:document.getElementById('f-clientName').value.trim(),
+    clientEmail:document.getElementById('f-clientEmail').value.trim(),
+    clientCompany:document.getElementById('f-clientCompany').value.trim(),
+    status:document.getElementById('f-status').value,
+    taxRate:parseFloat(document.getElementById('f-taxRate').value)||20,
+    discount:parseFloat(document.getElementById('f-discount').value)||0,
+    validUntil:document.getElementById('f-validUntil').value||undefined,
+    paymentLink:document.getElementById('f-paymentLink').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    conditions:document.getElementById('f-conditions').value.trim(),
+    items:getItems()
+  };
+  if(!body.title||!body.items.length)return toast('Titre et au moins une ligne requis','error');
+  const url=editingId?'/api/quotes/'+editingId:'/api/quotes';
+  const method=editingId?'PUT':'POST';
+  await fetch(url,{method,headers,body:JSON.stringify(body)});
+  toast('Devis sauvegardé');
+  closeModal();loadQuotes();
+}
+
+async function deleteQuote(){
+  if(!editingId||!confirm('Supprimer ce devis ?'))return;
+  await fetch('/api/quotes/'+editingId,{method:'DELETE',headers});
+  toast('Supprimé');closeModal();loadQuotes();
+}
+
+async function sendQuote(){
+  if(!editingId)return;
+  const res=await fetch('/api/quotes/'+editingId+'/send',{method:'POST',headers});
+  const data=await res.json();
+  toast(data.success?'Devis envoyé par email':'Echec envoi',data.success?'success':'error');
+  closeModal();loadQuotes();
+}
+
+function exportCSV(){window.location.href='/api/dashboard/export/invoices';}
+
+// AI Generation
+function openAI(){
+  ['ai-client','ai-service','ai-budget','ai-brief'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ai-loading').style.display='none';
+  document.getElementById('ai-go').style.display='flex';
+  document.getElementById('ai-modal').classList.add('show');
+}
+
+async function generateAI(){
+  const brief=document.getElementById('ai-brief').value.trim();
+  if(!brief)return toast('Décrivez le besoin du client','error');
+  document.getElementById('ai-loading').style.display='block';
+  document.getElementById('ai-go').style.display='none';
+  try{
+    const res=await fetch('/api/quotes/generate-ai',{method:'POST',headers,body:JSON.stringify({
+      brief,clientName:document.getElementById('ai-client').value,service:document.getElementById('ai-service').value,budget:document.getElementById('ai-budget').value
+    })});
+    const data=await res.json();
+    if(data.success&&data.proposal){
+      document.getElementById('ai-modal').classList.remove('show');
+      openCreate();
+      document.getElementById('f-title').value=data.proposal.title||'';
+      document.getElementById('f-clientName').value=document.getElementById('ai-client').value;
+      document.getElementById('f-notes').value=data.proposal.notes||'';
+      document.getElementById('f-conditions').value=data.proposal.conditions||'';
+      document.getElementById('items-body').innerHTML='';
+      (data.proposal.items||[]).forEach(i=>addItem(i));
+      recalc();
+      toast('Proposition générée par IA !');
+    } else {
+      toast(data.error||'Erreur IA','error');
+      document.getElementById('ai-loading').style.display='none';
+      document.getElementById('ai-go').style.display='flex';
+    }
+  }catch(e){toast('Erreur réseau','error');document.getElementById('ai-loading').style.display='none';document.getElementById('ai-go').style.display='flex';}
+}
+
 async function loadClients() {
   try {
-    const r = await fetch('/api/clients', { credentials: 'include' });
-    const data = await r.json();
-    currentClients = data.clients || [];
-    document.getElementById('f-client').innerHTML = '<option value="">— Sélectionner —</option>' + currentClients.map(c => `<option value="${c._id}">${escapeHtml(c.company || c.contactName)}</option>`).join('');
-  } catch (e) {}
+    const res = await fetch('/api/clients?limit=500', { headers });
+    const data = await res.json();
+    allClients = data.clients || data || [];
+    const sel = document.getElementById('f-clientSelect');
+    sel.innerHTML = '<option value="">-- Nouveau client / Saisie manuelle --</option>' +
+      allClients.map(c => `<option value="${c._id}" data-name="${esc(c.contactName||'')}" data-email="${esc(c.email||'')}" data-company="${esc(c.company||'')}">${esc(c.company || c.contactName || c.email)}</option>`).join('');
+  } catch(e) { console.error(e); }
 }
 
-function openCreate() {
-  editId = null;
-  items = [];
-  document.getElementById('modal-title').textContent = 'Nouveau devis';
-  ['f-title','f-clientName','f-clientEmail','f-clientCompany','f-description','f-validUntil','f-paymentLink','f-notes','f-terms'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-client').value = '';
-  document.getElementById('f-status').value = 'brouillon';
-  document.getElementById('f-taxRate').value = 20;
-  document.getElementById('f-currency').value = 'EUR';
-  addItem();
-  document.getElementById('modal').classList.add('show');
+function fillClientFromSelect() {
+  const sel = document.getElementById('f-clientSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if (!sel.value) return;
+  document.getElementById('f-clientName').value = opt.dataset.name || '';
+  document.getElementById('f-clientEmail').value = opt.dataset.email || '';
+  document.getElementById('f-clientCompany').value = opt.dataset.company || '';
 }
 
-async function editQuote(id) {
-  const r = await fetch('/api/quotes/' + id, { credentials: 'include' });
-  const q = await r.json();
-  editId = id;
-  document.getElementById('modal-title').textContent = 'Devis ' + q.number;
-  document.getElementById('f-title').value = q.title || '';
-  document.getElementById('f-client').value = q.client?._id || q.client || '';
-  document.getElementById('f-status').value = q.status || 'brouillon';
-  document.getElementById('f-clientName').value = q.clientName || '';
-  document.getElementById('f-clientEmail').value = q.clientEmail || '';
-  document.getElementById('f-clientCompany').value = q.clientCompany || '';
-  document.getElementById('f-description').value = q.description || '';
-  document.getElementById('f-taxRate').value = q.taxRate || 20;
-  document.getElementById('f-currency').value = q.currency || 'EUR';
-  document.getElementById('f-validUntil').value = q.validUntil ? new Date(q.validUntil).toISOString().slice(0, 10) : '';
-  document.getElementById('f-paymentLink').value = q.paymentLink || '';
-  document.getElementById('f-notes').value = q.notes || '';
-  document.getElementById('f-terms').value = q.terms || '';
-  items = (q.items || []).map(it => ({ description: it.description, quantity: it.quantity, unitPrice: it.unitPrice }));
-  if (!items.length) addItem();
-  renderItems();
-  recalc();
-  document.getElementById('modal').classList.add('show');
+function copyQuoteLink() {
+  if (!editingId) return;
+  const link = window.location.origin + '/api/quotes/public/' + editingId;
+  navigator.clipboard.writeText(link).then(() => toast('Lien copié !')).catch(() => { prompt('Copiez ce lien :', link); });
 }
 
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
-
-function addItem() {
-  items.push({ description: '', quantity: 1, unitPrice: 0 });
-  renderItems();
-}
-
-function removeItem(i) {
-  items.splice(i, 1);
-  renderItems();
-  recalc();
-}
-
-function renderItems() {
-  document.getElementById('items').innerHTML = items.map((it, i) => `
-    <div class="item-row">
-      <input value="${escapeHtml(it.description)}" placeholder="Description" oninput="items[${i}].description=this.value">
-      <input type="number" value="${it.quantity}" oninput="items[${i}].quantity=parseFloat(this.value)||0;recalc()">
-      <input type="number" value="${it.unitPrice}" step="0.01" oninput="items[${i}].unitPrice=parseFloat(this.value)||0;recalc()">
-      <div style="text-align:right;font-weight:700;font-size:.85rem;">${(it.quantity * it.unitPrice).toFixed(2)}</div>
-      <button class="item-del" onclick="removeItem(${i})"><span class="material-symbols-outlined" style="font-size:.9rem;">delete</span></button>
-    </div>
-  `).join('');
-}
-
-function recalc() {
-  const sub = items.reduce((s, it) => s + (it.quantity * it.unitPrice), 0);
-  const taxRate = parseFloat(document.getElementById('f-taxRate').value) || 0;
-  const tax = sub * taxRate / 100;
-  const cur = document.getElementById('f-currency').value;
-  const fmt = v => v.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + (cur === 'EUR' ? '€' : cur);
-  document.getElementById('t-sub').textContent = fmt(sub);
-  document.getElementById('t-tax').textContent = fmt(tax);
-  document.getElementById('t-total').textContent = fmt(sub + tax);
-  renderItems();
-}
-
-async function save() {
-  const data = {
-    title: document.getElementById('f-title').value,
-    client: document.getElementById('f-client').value || undefined,
-    status: document.getElementById('f-status').value,
-    clientName: document.getElementById('f-clientName').value,
-    clientEmail: document.getElementById('f-clientEmail').value,
-    clientCompany: document.getElementById('f-clientCompany').value,
-    description: document.getElementById('f-description').value,
-    items: items.filter(it => it.description),
-    taxRate: parseFloat(document.getElementById('f-taxRate').value) || 0,
-    currency: document.getElementById('f-currency').value,
-    validUntil: document.getElementById('f-validUntil').value || undefined,
-    paymentLink: document.getElementById('f-paymentLink').value,
-    notes: document.getElementById('f-notes').value,
-    terms: document.getElementById('f-terms').value
-  };
-  const url = editId ? '/api/quotes/' + editId : '/api/quotes';
-  const method = editId ? 'PUT' : 'POST';
-  const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) });
-  if (r.ok) { closeModal(); loadList(); loadStats(); }
-  else { alert('Erreur'); }
-}
-
-async function delQuote(id) {
-  if (!confirm('Supprimer ce devis ?')) return;
-  await fetch('/api/quotes/' + id, { method: 'DELETE', credentials: 'include' });
-  loadList(); loadStats();
-}
-
-async function sendQuote(id) {
-  if (!confirm('Envoyer ce devis par email au client ?')) return;
-  const r = await fetch('/api/quotes/' + id + '/send', { method: 'POST', credentials: 'include' });
-  const result = await r.json();
-  alert(result.success ? 'Envoyé !' : 'Erreur d\'envoi');
-  loadList();
-}
-
-async function downloadPDF(id) {
-  const r = await fetch('/api/quotes/' + id, { credentials: 'include' });
-  const q = await r.json();
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFillColor(255, 85, 0);
-  doc.rect(0, 0, 210, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.text('PIRABEL LABS', 14, 18);
-  doc.setFontSize(12);
-  doc.text('DEVIS ' + q.number, 150, 18);
-  doc.setTextColor(40, 40, 40);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  let y = 45;
-  doc.text(q.title || '', 14, y);
-  y += 10;
-  doc.setFontSize(9);
-  doc.text('Client : ' + (q.clientName || q.client?.company || ''), 14, y); y += 5;
-  if (q.clientEmail) { doc.text('Email : ' + q.clientEmail, 14, y); y += 5; }
-  if (q.validUntil) { doc.text('Valable jusqu\'au : ' + new Date(q.validUntil).toLocaleDateString('fr-FR'), 14, y); y += 5; }
-  y += 5;
-  doc.setFillColor(255, 85, 0);
-  doc.rect(14, y, 182, 8, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(9);
-  doc.text('DESCRIPTION', 16, y + 5.5);
-  doc.text('QTE', 130, y + 5.5);
-  doc.text('PU', 150, y + 5.5);
-  doc.text('TOTAL', 175, y + 5.5);
-  y += 10;
-  doc.setTextColor(40, 40, 40);
-  (q.items || []).forEach(it => {
-    doc.text(String(it.description || '').substring(0, 60), 16, y);
-    doc.text(String(it.quantity), 130, y);
-    doc.text(String(it.unitPrice), 150, y);
-    doc.text(String((it.quantity * it.unitPrice).toFixed(2)), 175, y);
-    y += 6;
-  });
-  y += 5;
-  doc.setFontSize(10);
-  doc.text('Sous-total HT : ' + (q.subtotal || 0).toFixed(2) + ' ' + q.currency, 130, y); y += 5;
-  doc.text('TVA ' + q.taxRate + '% : ' + (q.tax || 0).toFixed(2) + ' ' + q.currency, 130, y); y += 5;
-  doc.setFontSize(13);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(255, 85, 0);
-  doc.text('TOTAL TTC : ' + (q.total || 0).toFixed(2) + ' ' + q.currency, 130, y);
-  if (q.paymentLink) {
-    y += 12;
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(40, 40, 40);
-    doc.text('Lien de paiement : ' + q.paymentLink, 14, y);
-  }
-  if (q.notes) {
-    y += 12;
-    doc.text('Notes :', 14, y); y += 5;
-    doc.text(q.notes.substring(0, 200), 14, y);
-  }
-  doc.save('Devis-' + q.number + '.pdf');
-}
-
-function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
-
-loadStats();
-loadList();
 loadClients();
+loadQuotes();
 </script>
 </body>
 </html>

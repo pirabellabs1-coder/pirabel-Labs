@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avis Clients | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js"></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;}
+.review-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;}
+.review-stars{color:#f39c12;font-size:1rem;margin-bottom:.5rem;}
+.review-name{font-weight:700;font-size:.9rem;}
+.review-company{font-size:.75rem;color:var(--muted);margin-bottom:.5rem;}
+.review-comment{font-size:.85rem;color:var(--text);line-height:1.5;margin-bottom:.75rem;font-style:italic;}
+.review-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+.review-actions button{background:transparent;border:1px solid var(--border);color:var(--text);padding:.3rem .7rem;font-size:.7rem;cursor:pointer;transition:border-color .2s;}
+.review-actions button:hover{border-color:var(--accent);}
+.review-actions button.active{background:var(--accent);color:#5c1900;border-color:var(--accent);}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem;}.modal-bg.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);max-width:500px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-body{padding:1.5rem;}
+.field{margin-bottom:1rem;}.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:700;}
+.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
+.btn-primary{background:var(--accent);color:#5c1900;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;text-transform:uppercase;cursor:pointer;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:.75rem 1.5rem;font-size:.8rem;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="toast-container" id="toasts"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar"><div class="sidebar-logo">PIRABEL LABS</div><nav class="sidebar-nav" id="sidebar-nav"></nav></aside>
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+      <div class="topbar-title">Avis Clients</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-primary" onclick="openRequest()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">send</span> Demander un avis</button>
+    </div>
+  </header>
+  <div class="content">
+    <div class="review-grid" id="list"></div>
+  </div>
+</div>
+</div>
+<div class="modal-bg" id="modal"><div class="modal">
+  <div class="modal-header"><h3 style="margin:0;font-family:var(--font-h);">Demander un avis</h3><button onclick="document.getElementById('modal').classList.remove('show')" style="background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">×</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Nom du client *</label><input id="f-name"></div>
+    <div class="field"><label>Email *</label><input id="f-email" type="email"></div>
+    <div class="field"><label>Entreprise</label><input id="f-company"></div>
+    <div class="field"><label>Service</label><input id="f-service" placeholder="SEO, Web design..."></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;"><button class="btn-secondary" onclick="document.getElementById('modal').classList.remove('show')">Annuler</button><button class="btn-primary" onclick="sendRequest()">Créer & Envoyer</button></div>
+  </div>
+</div></div>
+<script>
+const token=localStorage.getItem('token');if(!token)window.location.href='/pirabel-admin-7x9k2m';
+const headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'};
+
+document.getElementById('sidebar-nav').innerHTML=`
+<div class="sidebar-section">Principal</div><a href="/dashboard" class="sidebar-link"><span class="material-symbols-outlined">dashboard</span> Dashboard</a><a href="/orders" class="sidebar-link"><span class="material-symbols-outlined">inbox</span> Demandes</a><a href="/calendar" class="sidebar-link"><span class="material-symbols-outlined">event</span> Calendrier</a><a href="/tasks" class="sidebar-link"><span class="material-symbols-outlined">task_alt</span> Tâches</a>
+<div class="sidebar-section">Commercial</div><a href="/quotes" class="sidebar-link"><span class="material-symbols-outlined">description</span> Devis</a><a href="/pipeline" class="sidebar-link"><span class="material-symbols-outlined">view_kanban</span> Pipeline CRM</a><a href="/email-templates" class="sidebar-link"><span class="material-symbols-outlined">mail</span> Templates Email</a>
+<div class="sidebar-section">Gestion</div><a href="/clients" class="sidebar-link"><span class="material-symbols-outlined">people</span> Clients</a><a href="/projects" class="sidebar-link"><span class="material-symbols-outlined">folder</span> Projets</a><a href="/employees" class="sidebar-link"><span class="material-symbols-outlined">badge</span> Employés</a><a href="/time-tracking" class="sidebar-link"><span class="material-symbols-outlined">timer</span> Time Tracking</a><a href="/recruitment" class="sidebar-link"><span class="material-symbols-outlined">work</span> Recrutement</a>
+<div class="sidebar-section">Marketing</div><a href="/campaigns" class="sidebar-link"><span class="material-symbols-outlined">campaign</span> Campagnes</a><a href="/leads" class="sidebar-link"><span class="material-symbols-outlined">group_add</span> Leads</a><a href="/analytics" class="sidebar-link"><span class="material-symbols-outlined">analytics</span> Analytics</a><a href="/reviews-admin" class="sidebar-link active"><span class="material-symbols-outlined">star</span> Avis</a>
+<div class="sidebar-section">Finance</div><a href="/invoices" class="sidebar-link"><span class="material-symbols-outlined">receipt_long</span> Factures</a><a href="/revenue" class="sidebar-link"><span class="material-symbols-outlined">monitoring</span> Revenue</a>
+<div class="sidebar-section">Système</div><a href="/settings" class="sidebar-link"><span class="material-symbols-outlined">settings</span> Paramètres</a>`;
+
+function toast(m,t='success'){const e=document.createElement('div');e.className='toast toast-'+t;e.textContent=m;document.getElementById('toasts').appendChild(e);setTimeout(()=>e.remove(),3000);}
+function stars(n){return '★'.repeat(n)+'☆'.repeat(5-n);}
+
+async function load(){
+  const r=await fetch('/api/reviews',{headers});
+  const d=await r.json();
+  const reviews=d.reviews||[];
+  document.getElementById('list').innerHTML=reviews.length?reviews.map(rv=>`
+    <div class="review-card">
+      <div class="review-stars">${rv.rating?stars(rv.rating):'<span style="color:var(--muted);">En attente...</span>'}</div>
+      <div class="review-name">${(rv.name||'').replace(/</g,'&lt;')}</div>
+      <div class="review-company">${(rv.company||'').replace(/</g,'&lt;')} ${rv.service?'· '+rv.service:''}</div>
+      ${rv.comment?`<div class="review-comment">"${rv.comment.replace(/</g,'&lt;')}"</div>`:'<div style="color:var(--muted);font-size:.8rem;margin:.5rem 0;">Pas encore de réponse</div>'}
+      <div class="review-actions">
+        <button class="${rv.isApproved?'active':''}" onclick="toggleApprove('${rv._id}',${!rv.isApproved})">${rv.isApproved?'✓ Approuvé':'Approuver'}</button>
+        <button class="${rv.isPublic?'active':''}" onclick="togglePublic('${rv._id}',${!rv.isPublic})">${rv.isPublic?'✓ Public':'Rendre public'}</button>
+        <button onclick="sendReminder('${rv._id}')">📧 Relancer</button>
+        <button onclick="delReview('${rv._id}')" style="color:#e74c3c;">Supprimer</button>
+      </div>
+    </div>
+  `).join(''):'<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:3rem;">Aucun avis. Demandez-en à vos clients !</div>';
+}
+
+function openRequest(){['f-name','f-email','f-company','f-service'].forEach(id=>document.getElementById(id).value='');document.getElementById('modal').classList.add('show');}
+
+async function sendRequest(){
+  const body={name:document.getElementById('f-name').value.trim(),email:document.getElementById('f-email').value.trim(),company:document.getElementById('f-company').value.trim(),service:document.getElementById('f-service').value.trim()};
+  if(!body.name||!body.email)return toast('Nom et email requis','error');
+  const r=await fetch('/api/reviews',{method:'POST',headers,body:JSON.stringify(body)});
+  const review=await r.json();
+  if(review._id){await fetch('/api/reviews/'+review._id+'/send',{method:'POST',headers});}
+  toast('Demande envoyée');document.getElementById('modal').classList.remove('show');load();
+}
+
+async function toggleApprove(id,val){await fetch('/api/reviews/'+id,{method:'PUT',headers,body:JSON.stringify({isApproved:val})});load();}
+async function togglePublic(id,val){await fetch('/api/reviews/'+id,{method:'PUT',headers,body:JSON.stringify({isPublic:val})});load();}
+async function sendReminder(id){await fetch('/api/reviews/'+id+'/send',{method:'POST',headers});toast('Relance envoyée');}
+async function delReview(id){if(!confirm('Supprimer ?'))return;await fetch('/api/reviews/'+id,{method:'DELETE',headers});load();}
+
+load();
+</script>
+</body>
+</html>

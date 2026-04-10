@@ -341,7 +341,7 @@ function newsletterEmail(recipientName, options = {}) {
 // SEND FUNCTIONS
 // ========================================
 
-async function sendEmail(to, subject, html) {
+async function sendEmail(to, subject, html, opts = {}) {
   if (!SMTP_USER || !SMTP_PASS) {
     console.error('[email] MISSING SMTP_USER/SMTP_PASS env vars - cannot send email to', to);
     return false;
@@ -351,7 +351,15 @@ async function sendEmail(to, subject, html) {
     return false;
   }
   try {
-    const info = await transporter.sendMail({ from: FROM(), to, subject, html });
+    const mailOptions = { 
+      from: opts.from || FROM(), 
+      to, 
+      subject, 
+      html 
+    };
+    if (opts.replyTo) mailOptions.replyTo = opts.replyTo;
+
+    const info = await transporter.sendMail(mailOptions);
     console.log(`[email] OK to=${to} subject="${subject}" messageId=${info.messageId} accepted=${(info.accepted || []).length} rejected=${(info.rejected || []).length}`);
     return true;
   } catch (err) {
@@ -392,6 +400,285 @@ async function sendNewsletter(email, name, options) {
   return sendEmail(email, options.subject_line || 'Pirabel Labs — Les tendances du mois', newsletterEmail(name, options));
 }
 
+// --- RECRUITMENT: NEW APPLICATION (admin notification) ---
+function newApplicationAdminEmail(app, job) {
+  return masterTemplate({
+    preheader: `Nouvelle candidature de ${app.name} pour ${job.title}`,
+    title: 'Nouvelle Candidature',
+    subtitle: `Poste : ${job.title} — ${new Date().toLocaleDateString('fr-FR')}`,
+    body: `
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:0 0 24px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Candidat</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:700;color:#e5e2e1;">${app.name}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Email</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><a href="mailto:${app.email}" style="color:#FF5500;">${app.email}</a></td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Téléphone</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.phone || 'Non renseigné'}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">LinkedIn</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.linkedin ? `<a href="${app.linkedin}" style="color:#FF5500;">Voir profil</a>` : '-'}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Portfolio</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.portfolio ? `<a href="${app.portfolio}" style="color:#FF5500;">Voir portfolio</a>` : '-'}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">CV</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.cvUrl ? `<a href="${app.cvUrl}" style="color:#FF5500;">${app.cvFilename || 'Télécharger'}</a>` : 'Non fourni'}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Poste</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><span style="background:rgba(255,85,0,0.15);color:#FF5500;padding:3px 10px;font-size:12px;font-weight:700;">${job.title}</span></td></tr>
+        </table>
+      </div>
+      ${app.coverLetter ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1px;">Lettre de motivation</p><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.7);line-height:1.7;">${app.coverLetter.replace(/\n/g, '<br>')}</p></div>` : ''}
+    `,
+    cta: 'Voir dans l\'admin',
+    ctaUrl: `${SITE()}/candidates`,
+    ctaSecondary: 'Répondre au candidat',
+    ctaSecondaryUrl: `mailto:${app.email}?subject=Re: Votre candidature - ${job.title}`
+  });
+}
+
+// --- RECRUITMENT: APPLICATION CONFIRMATION (to candidate) ---
+function applicationConfirmationEmail(candidateName, jobTitle) {
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: `Candidature reçue pour ${jobTitle}`,
+    title: 'Candidature enregistrée !',
+    subtitle: `Poste : ${jobTitle}`,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${candidateName},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous avons bien reçu votre candidature pour le poste de <strong style="color:#e5e2e1;">${jobTitle}</strong>. Merci de l'intérêt que vous portez à Pirabel Labs !</p>
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:24px 0;">
+        <div style="font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Prochaines étapes</div>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding:10px 0;border-bottom:1px solid rgba(92,64,55,0.1);">
+            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">1</div>
+            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Examen de votre dossier par notre équipe RH</span>
+          </td></tr>
+          <tr><td style="padding:10px 0;border-bottom:1px solid rgba(92,64,55,0.1);">
+            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">2</div>
+            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Présélection et retour sous 7 jours ouvrés</span>
+          </td></tr>
+          <tr><td style="padding:10px 0;">
+            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">3</div>
+            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Entretien avec notre équipe si votre profil est retenu</span>
+          </td></tr>
+        </table>
+      </div>
+      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Pour toute question, vous pouvez nous contacter directement à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p>
+    `,
+    cta: 'Découvrir Pirabel Labs',
+    ctaUrl: `${SITE()}/a-propos.html`
+  });
+}
+
+// --- RECRUITMENT: STATUS CHANGE (to candidate) ---
+const STATUS_MESSAGES = {
+  en_revue: {
+    subject: 'Votre candidature est en cours d\'examen',
+    headline: 'En cours d\'examen',
+    color: '#9b59b6',
+    message: 'Bonne nouvelle ! Notre équipe RH examine actuellement votre candidature avec attention. Vous recevrez une réponse dans les prochains jours.'
+  },
+  preselectionne: {
+    subject: 'Vous êtes présélectionné(e) !',
+    headline: 'Félicitations — Présélectionné(e) !',
+    color: '#e67e22',
+    message: 'Excellente nouvelle ! Votre profil a été présélectionné parmi de nombreux candidats. Notre équipe vous contactera très prochainement pour la suite du processus.'
+  },
+  entretien: {
+    subject: 'Invitation à un entretien — Pirabel Labs',
+    headline: 'Invitation à un entretien',
+    color: '#FF5500',
+    message: 'Nous avons le plaisir de vous inviter à un entretien avec notre équipe. Vous serez contacté(e) dans les 24h pour convenir d\'un créneau.'
+  },
+  test: {
+    subject: 'Exercice technique — Pirabel Labs',
+    headline: 'Phase de test technique',
+    color: '#1abc9c',
+    message: 'Votre candidature progresse ! Nous vous envoyons un exercice technique pour évaluer vos compétences. Consultez votre boîte mail pour les instructions détaillées.'
+  },
+  accepte: {
+    subject: '🎉 Votre candidature est acceptée !',
+    headline: 'Bienvenue dans l\'équipe !',
+    color: '#2ecc71',
+    message: 'Félicitations ! Nous avons le grand plaisir de vous informer que votre candidature a été sélectionnée. Notre équipe RH vous contactera dans les prochaines 24h pour finaliser les modalités d\'intégration.'
+  },
+  refuse: {
+    subject: 'Suite de votre candidature — Pirabel Labs',
+    headline: 'Réponse à votre candidature',
+    color: 'rgba(229,226,225,0.5)',
+    message: 'Nous vous remercions sincèrement pour l\'intérêt que vous portez à Pirabel Labs et pour le temps consacré à votre candidature. Après examen attentif de votre dossier, nous ne sommes malheureusement pas en mesure de donner une suite favorable à votre candidature pour ce poste. Nous conservons votre profil et reviendrons vers vous pour de futures opportunités.'
+  }
+};
+
+function applicationStatusEmail(candidateName, jobTitle, status, customNote) {
+  const cfg = STATUS_MESSAGES[status] || {
+    subject: 'Mise à jour de votre candidature',
+    headline: 'Mise à jour',
+    color: '#FF5500',
+    message: 'Votre candidature a été mise à jour.'
+  };
+
+  return masterTemplate({
+    preheader: cfg.subject,
+    title: cfg.headline,
+    subtitle: `Poste : ${jobTitle}`,
+    body: `
+      <div style="border-left:4px solid ${cfg.color};padding:16px 20px;background:rgba(0,0,0,0.2);margin:0 0 24px;">
+        <p style="margin:0;font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Mise à jour candidature</p>
+        <p style="margin:0;font-size:18px;font-weight:700;color:#e5e2e1;">${cfg.headline}</p>
+      </div>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${candidateName},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${cfg.message}</p>
+      ${customNote ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.8);line-height:1.6;"><strong style="color:#e5e2e1;">Note de notre équipe :</strong><br>${customNote.replace(/\n/g, '<br>')}</p></div>` : ''}
+      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Pour toute question, contactez-nous à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p>
+    `,
+    cta: status === 'accepte' ? 'Commencer l\'aventure' : 'Voir nos autres offres',
+    ctaUrl: status === 'accepte' ? `${SITE()}/carrieres.html` : `${SITE()}/carrieres.html`,
+    footer_extra: `<div style="background:rgba(255,85,0,0.05);border:1px solid rgba(255,85,0,0.1);padding:12px 16px;margin-bottom:16px;text-align:center;"><span style="font-size:11px;color:rgba(229,226,225,0.4);">Candidature • ${jobTitle} • Pirabel Labs</span></div>`
+  });
+}
+
+// Send functions for recruitment
+async function notifyNewApplication(app, job) {
+  const adminEmail = ADMIN_EMAIL();
+  return sendEmail(
+    adminEmail,
+    `🔔 Nouvelle candidature : ${app.name} — ${job.title}`,
+    newApplicationAdminEmail(app, job)
+  );
+}
+
+async function sendApplicationConfirmation(candidateEmail, candidateName, jobTitle) {
+  return sendEmail(
+    candidateEmail,
+    `Candidature reçue — ${jobTitle} | Pirabel Labs`,
+    applicationConfirmationEmail(candidateName, jobTitle)
+  );
+}
+
+async function sendApplicationStatusUpdate(candidateEmail, candidateName, jobTitle, status, note) {
+  const cfg = STATUS_MESSAGES[status];
+  if (!cfg) return false; // Don't send for 'nouveau' status (initial)
+  return sendEmail(
+    candidateEmail,
+    cfg.subject + ` — Pirabel Labs`,
+    applicationStatusEmail(candidateName, jobTitle, status, note)
+  );
+}
+
+// --- ORDERS: ADVANCED AUTOMATION ---
+async function sendOrderStatusUpdate(order, newStatus) {
+  let subject = "Mise à jour concernant votre demande — Pirabel Labs";
+  let content = "Le statut de votre demande a évolué.";
+  
+  if (newStatus === 'en_traitement') {
+    subject = "Votre demande est en cours d'analyse — Pirabel Labs";
+    content = `Nous vous confirmons la bonne réception de votre demande concernant <strong>${order.service}</strong>.<br><br>Notre équipe étudie actuellement vos besoins avec une grande attention et reviendra vers vous très prochainement avec une proposition adaptée.`;
+  } else if (newStatus === 'acceptee') {
+    subject = "Bienvenue chez Pirabel Labs !";
+    content = `Nous sommes ravis de vous compter parmi nos clients ! Votre demande pour <strong>${order.service}</strong> est officiellement validée.<br><br>Un expert va prendre contact avec vous rapidement pour organiser le lancement stratégique du projet.`;
+  } else if (newStatus === 'refusee') {
+    subject = "Suite à votre demande — Pirabel Labs";
+    content = `Après étude approfondie de votre demande pour <strong>${order.service}</strong>, nous sommes au regret de vous informer que nous ne pourrons pas y donner suite actuellement, car notre charge de travail ou l'adéquation du projet ne nous permet pas de vous garantir le niveau d'excellence exigé par Pirabel Labs.<br><br>Nous vous remercions sincèrement pour l'intérêt que vous nous avez porté et vous souhaitons de belles réussites.`;
+  } else {
+    return false;
+  }
+  
+  const html = masterTemplate({
+    title: subject,
+    body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p><p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${content}</p>`,
+    cta: 'Voir le site',
+    ctaUrl: SITE()
+  });
+  
+  return sendEmail(order.email, subject, html);
+}
+
+async function sendQuoteInteraction(order) {
+  const subject = `Votre devis pour ${order.service} est prêt !`;
+  const urlRdv = `${SITE()}/rendez-vous`;
+  const urlModif = `${SITE()}/modifier-devis.html?id=${order._id}`;
+  
+  const html = masterTemplate({
+    headerType: 'hero',
+    preheader: "Proposition commerciale Pirabel Labs",
+    title: "Votre Devis Sur-Mesure",
+    subtitle: `Projet : ${order.service}`,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Suite à notre analyse de votre besoin pour la prestation <strong>${order.service}</strong>, nous avons le plaisir de vous faire parvenir notre proposition détaillée.</p>
+      
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:24px 0;text-align:center;">
+        <h3 style="color:#e5e2e1;font-size:18px;margin-top:0;">Comment souhaitez-vous procéder ?</h3>
+        <p style="color:rgba(229,226,225,0.5);font-size:14px;margin-bottom:20px;">Choisissez l'option qui vous convient le mieux :</p>
+        
+        <a href="${urlRdv}" style="display:inline-block;padding:12px 24px;background:#FF5500;color:#000;text-decoration:none;font-weight:700;font-size:14px;border-radius:2px;margin:0 10px 10px 0;white-space:nowrap;">📅 Planifier un Appel (Validation)</a>
+        
+        <a href="${urlModif}" style="display:inline-block;padding:12px 24px;background:rgba(255,255,255,0.05);color:#e5e2e1;text-decoration:none;font-weight:700;font-size:14px;border:1px solid rgba(229,226,225,0.2);margin:0 10px 10px 0;white-space:nowrap;">✏️ Demander une modification</a>
+      </div>
+      
+      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Vous trouverez en PJ (ou prochainement envoyé par un conseiller) le détail financier exact.</p>
+    `,
+    cta: 'Planifier un Appel',
+    ctaUrl: urlRdv,
+    ctaSecondary: 'Demander une modification',
+    ctaSecondaryUrl: urlModif
+  });
+  
+  return sendEmail(order.email, subject, html);
+}
+
+async function sendMeetingReminder(appointment) {
+  const subject = `Rappel : Appel Pirabel Labs dans 30 minutes`;
+  const html = masterTemplate({
+    title: "Votre RDV approche",
+    subtitle: `Sujet : ${appointment.title}`,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${appointment.with?.name || ''},</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Ceci est un simple rappel de notre appel prévu dans 30 minutes.</p>
+      <div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;">
+        <p style="margin:0;font-size:14px;color:#e5e2e1;"><strong>Lien / Lieu :</strong> ${appointment.meetingLink || appointment.location || 'Voir agenda'}</p>
+      </div>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">À tout de suite !</p>
+    `,
+    cta: 'Rejoindre la réunion',
+    ctaUrl: appointment.meetingLink || SITE()
+  });
+  return sendEmail(appointment.with?.email, subject, html);
+}
+
+// --- APPOINTMENTS: CONFIRMATION & MANAGEMENT ---
+function appointmentConfirmationEmail(appt) {
+  const manageUrl = `${SITE()}/gerer-rendez-vous.html?token=${appt.secretToken}`;
+  const dateStr = new Date(appt.date).toLocaleString('fr-FR', { 
+    weekday: 'long', 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit',
+    timeZone: 'Europe/Paris'
+  });
+
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: `Confirmation de votre rendez-vous chez Pirabel Labs`,
+    title: 'Rendez-vous Confirmé',
+    subtitle: appt.title,
+    body: `
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour <strong>${appt.with?.name}</strong>,</p>
+      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous vous confirmons que votre rendez-vous a bien été enregistré. Nous avons hâte d'échanger avec vous sur votre projet.</p>
+      
+      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:28px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Date & Heure</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:700;color:#e5e2e1;text-transform:capitalize;">${dateStr}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mode</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;color:#FF5500;">${appt.location || 'Visioconférence'}</td></tr>
+        </table>
+        ${appt.notes ? `<p style="margin:16px 0 0;font-size:13px;color:rgba(229,226,225,0.5);font-style:italic;">Notes : ${appt.notes}</p>` : ''}
+      </div>
+      
+      <p style="font-size:14px;line-height:1.6;color:rgba(229,226,225,0.5);text-align:center;">Un empêchement ? Vous pouvez replanifier ou annuler votre rendez-vous à tout moment via le bouton ci-dessous.</p>
+    `,
+    cta: 'Modifier mon rendez-vous',
+    ctaUrl: manageUrl
+  });
+}
+
+async function sendAppointmentConfirmation(email, appt) {
+  return sendEmail(email, `Confirmation de votre rendez-vous — Pirabel Labs`, appointmentConfirmationEmail(appt));
+}
+
 // Legacy wrapper for campaigns
 function emailTemplate(title, content, ctaText, ctaUrl) {
   return masterTemplate({ title, body: content, cta: ctaText, ctaUrl });
@@ -400,6 +687,12 @@ function emailTemplate(title, content, ctaText, ctaUrl) {
 module.exports = {
   sendEmail, sendOTP, notifyNewOrder, notifyProjectUpdate,
   sendInvoiceNotification, sendWelcome, sendProspection, sendNewsletter,
+  notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
+  sendAppointmentConfirmation,
+  sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,
   emailTemplate, masterTemplate,
-  prospectionEmail, newsletterEmail, welcomeEmail
+  prospectionEmail, newsletterEmail, welcomeEmail,
+  applicationStatusEmail, applicationConfirmationEmail, newApplicationAdminEmail,
+  STATUS_MESSAGES
 };
+

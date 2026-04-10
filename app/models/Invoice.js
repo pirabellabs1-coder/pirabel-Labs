@@ -21,6 +21,7 @@ const invoiceSchema = new mongoose.Schema({
   dueDate: { type: Date },
   paidDate: { type: Date },
   notes: { type: String, default: '' },
+  paymentLink: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

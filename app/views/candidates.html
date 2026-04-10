@@ -9,12 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
-.kanban{display:grid;grid-template-columns:repeat(7,minmax(220px,1fr));gap:.75rem;overflow-x:auto;padding-bottom:1rem;}
+.kanban{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:1rem;padding-bottom:2rem;min-height:50vh;}
 .kanban-col{background:var(--card);border:1px solid var(--border);min-height:60vh;display:flex;flex-direction:column;}
 .kanban-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;display:flex;justify-content:space-between;}
-.kanban-body{padding:.5rem;display:flex;flex-direction:column;gap:.5rem;flex:1;overflow-y:auto;max-height:75vh;}
+.kanban-body{padding:.75rem;display:flex;flex-direction:column;gap:.75rem;flex:1;min-height:100px;}
+@media(max-width:600px){
+  .topbar-header-wrap{flex-direction:column;align-items:flex-start !important;gap:0.5rem !important;padding:1rem 0;}
+  .kanban{grid-template-columns:1fr;}
+}
 .app-card{background:var(--bg);border:1px solid var(--border);padding:.75rem;cursor:grab;transition:border-color .2s, transform .2s;}
 .app-card:hover{border-color:var(--accent);}
 .app-card.dragging{opacity:.5;}
@@ -67,8 +72,8 @@
 </aside>
 
 <div class="main">
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:1rem;">
+  <header class="topbar" style="height:auto;min-height:60px;padding:0.5rem 2rem;">
+    <div class="topbar-header-wrap" style="display:flex;align-items:center;gap:1rem;">
       <div class="topbar-title">Candidatures</div>
       <select id="filter-job" onchange="loadApps()" style="background:var(--card);border:1px solid var(--border);padding:.5rem .75rem;color:var(--text);font-size:.75rem;">
         <option value="">Toutes les offres</option>
@@ -192,19 +197,55 @@ async function openApp(id) {
     <div class="detail-row"><strong>CV</strong><div>${app.cvUrl ? `<a href="${escapeHtml(app.cvUrl)}" target="_blank" style="color:var(--accent);">${escapeHtml(app.cvFilename || 'Télécharger')}</a>` : '-'}</div></div>
     <div class="field" style="margin-top:1rem;"><label>Lettre de motivation</label><div style="background:var(--bg);padding:.75rem;border:1px solid var(--border);font-size:.8rem;white-space:pre-wrap;">${escapeHtml(app.coverLetter || 'Aucune')}</div></div>
     <div class="field"><label>Statut</label>
-      <select id="m-status">${STATUSES.map(s => `<option value="${s.key}" ${app.status === s.key ? 'selected' : ''}>${s.label}</option>`).join('')}</select>
+      <select id="m-status" onchange="updateEmailBody()">${STATUSES.map(s => `<option value="${s.key}" ${app.status === s.key ? 'selected' : ''}>${s.label}</option>`).join('')}</select>
     </div>
     <div class="field"><label>Note (1-5 étoiles)</label>
       <select id="m-rating">${[0, 1, 2, 3, 4, 5].map(n => `<option value="${n}" ${app.rating === n ? 'selected' : ''}>${n} étoile${n > 1 ? 's' : ''}</option>`).join('')}</select>
     </div>
     <div class="field"><label>Notes internes</label><textarea id="m-notes">${escapeHtml(app.notes || '')}</textarea></div>
+    
+    <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
+      <h4 style="margin-bottom:0.75rem; font-size:1rem; display:flex; align-items:center; gap:0.5rem;"><span class="material-symbols-outlined" style="font-size:1.1rem;color:var(--accent);">mail</span> Rédaction Email (Manuel)</h4>
+      <div class="field" style="margin-bottom:0.5rem;"><label style="font-size:0.75rem;">Sujet</label><input type="text" id="m-email-subject" value="Votre candidature - ${escapeHtml(app.jobTitle || 'Pirabel Labs')}"></div>
+      <div class="field"><label style="font-size:0.75rem;">Contenu (Pré-rempli selon le statut)</label><textarea id="m-email-body" rows="6"></textarea></div>
+    </div>
+    
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;">
-      <button class="btn-primary" onclick="saveApp()">Enregistrer</button>
-      <button class="btn-secondary" onclick="emailApp()"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">mail</span> Email</button>
+      <button class="btn-primary" onclick="saveApp()">Enregistrer les modifications</button>
+      <button class="btn-secondary" onclick="emailApp()">Envoyer cet email</button>
       <button class="btn-danger" onclick="deleteApp()" style="margin-left:auto;">Supprimer</button>
     </div>
   `;
   document.getElementById('modal').classList.add('show');
+  updateEmailBody();
+}
+
+function updateEmailBody() {
+  if (!currentApp) return;
+  const status = document.getElementById('m-status').value;
+  let body = `Bonjour ${currentApp.name},\n\n`;
+  
+  switch(status) {
+    case 'entretien':
+      body += "Suite à l'examen de votre candidature, nous avons le plaisir de vous informer que votre profil a retenu notre attention. Nous souhaitons vous inviter à un entretien pour discuter plus en détail de votre parcours.\n\nMerci de nous faire part de vos disponibilités pour les prochains jours.";
+      break;
+    case 'test':
+      body += "Votre candidature est toujours en cours d'évaluation. Pour passer à l'étape suivante, nous souhaiterions vous proposer un exercice technique pratique.\n\nVous trouverez les détails très prochainement par email.";
+      break;
+    case 'accepte':
+      body += "Nous avons l'immense plaisir de vous annoncer que votre candidature a été retenue ! Félicitations et bienvenue chez Pirabel Labs.\n\nNous vous enverrons rapidement les prochaines étapes.";
+      break;
+    case 'refuse':
+      body += "Nous vous remercions pour l'intérêt que vous avez porté à Pirabel Labs. Après étude attentive de votre profil, nous avons cependant décidé de ne pas y donner une suite favorable pour le moment.\n\nNous vous souhaitons une excellente continuation dans vos recherches.";
+      break;
+    case 'en_revue':
+    case 'preselectionne':
+      body += "Votre candidature est actuellement en cours d'examen par notre équipe de recrutement. Nous l'analysons avec attention et reviendrons vers vous d'ici peu.";
+      break;
+    default:
+      body += "Nous avons bien reçu votre candidature et vous en remercions.\n\nL'équipe RH.";
+  }
+  document.getElementById('m-email-body').value = body;
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); currentApp = null; }
@@ -226,12 +267,13 @@ async function saveApp() {
 
 async function emailApp() {
   if (!currentApp) return;
-  const subject = prompt('Sujet de l\'email :', `Votre candidature - ${currentApp.jobTitle}`);
-  if (!subject) return;
-  const body = prompt('Contenu :', `Bonjour ${currentApp.name},\n\n`);
-  if (!body) return;
+  const subject = document.getElementById('m-email-subject').value;
+  const body = document.getElementById('m-email-body').value;
+  
+  if (!subject || !body) return toast('Sujet et contenu requis', 'error');
+  
   const r = await api('/recruitment/applications/' + currentApp._id + '/email', { method: 'POST', body: JSON.stringify({ subject, body }) });
-  if (r.error) toast(r.error, 'error'); else toast('Email envoyé');
+  if (r.error) toast(r.error, 'error'); else toast('Email expédié au candidat !');
 }
 
 async function deleteApp() {

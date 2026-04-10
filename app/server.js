@@ -59,8 +59,9 @@ io.on('connection', (socket) => {
 connectDB();
 
 // Security middleware
-const { securityHeaders } = require('./middleware/security');
+const { securityHeaders, globalSanitize } = require('./middleware/security');
 app.use(securityHeaders);
+app.use(globalSanitize); // Global XSS protection
 
 // CORS — restrict to known origins
 const ALLOWED_ORIGINS = [
@@ -108,6 +109,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/v2/admin', require('./routes/admin-api'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/templates', require('./routes/templates'));
@@ -115,13 +117,10 @@ app.use('/api/time', require('./routes/time'));
 app.use('/api/status', require('./routes/status'));
 
 // ============================================
-// SECRET ACCESS URLs
-// Admin:  /pirabel-admin-7x9k2m
-// Client: /espace-client-4p8w1n
+// SECRET ACCESS URLs (Move to .env on production)
 // ============================================
-
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-client-4p8w1n';
+const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';
+const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'client_portal_v4p8w1n7x9k2m_access_secure';
 
 // Admin login (secret URL)
 app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html')));
@@ -151,6 +150,8 @@ app.get('/recruitment', (req, res) => res.sendFile(path.join(__dirname, 'views',
 app.get('/candidates', (req, res) => res.sendFile(path.join(__dirname, 'views', 'candidates.html')));
 app.get('/tasks', (req, res) => res.sendFile(path.join(__dirname, 'views', 'tasks.html')));
 app.get('/calendar', (req, res) => res.sendFile(path.join(__dirname, 'views', 'calendar.html')));
+app.get('/gerer-rendez-vous.html', (req, res) => res.sendFile(path.join(__dirname, 'views', 'gerer-rendez-vous.html')));
+app.get('/api-docs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'api-docs.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

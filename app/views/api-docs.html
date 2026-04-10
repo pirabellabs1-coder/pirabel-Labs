@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Documentation Master | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/sidebar.js?v=CACHE_BUST_FINAL"></script>
+<style>
+:root {
+  --code-bg: #0e0e0e;
+  --endpoint-get: #ff5500;
+  --accent-soft: rgba(255, 85, 0, 0.1);
+  --modal-bg: rgba(0, 0, 0, 0.85);
+}
+
+.doc-container { max-width: 1200px; padding: 2rem 0; }
+
+/* Custom Modal Styling - NO MORE BROWSER PROMPTS */
+.modal-overlay {
+    position: fixed; inset: 0; background: var(--modal-bg);
+    backdrop-filter: blur(8px); display: none;
+    align-items: center; justify-content: center; z-index: 9999;
+}
+.modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+.modal-card {
+    background: #1a1a1a; border: 1px solid var(--accent);
+    width: 100%; max-width: 450px; padding: 2.5rem; border-radius: 16px;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+/* Section Management Card */
+.key-manager {
+  margin-bottom: 4rem; padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(255,85,0,0.08) 0%, rgba(20,19,19,1) 100%);
+  border: 1px solid var(--accent-soft); border-radius: 20px;
+}
+
+/* Endpoint Design */
+.endpoint-card { 
+  background: rgba(26, 26, 26, 0.5); border: 1px solid var(--border); 
+  border-radius: 14px; margin-bottom: 3rem; overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.endpoint-card:hover { border-color: var(--accent); background: rgba(26, 26, 26, 0.8); }
+
+.endpoint-header { 
+  padding: 1.5rem 2rem; background: rgba(255,255,255,0.015); 
+  display: flex ; align-items: center; gap: 1.5rem; 
+  border-bottom: 1px solid var(--border);
+}
+.method { 
+  background: var(--accent); color: #000; font-weight: 900; 
+  padding: 0.4rem 1.2rem; border-radius: 8px; font-size: 0.8rem;
+}
+.path { font-family: 'Space Grotesk', sans-serif; font-size: 1.125rem; color: var(--text); font-weight: 700; letter-spacing: -0.01em; }
+
+.endpoint-body { padding: 2rem; }
+
+.curl-block {
+    background: #000; padding: 1.5rem; border-radius: 10px;
+    font-family: 'Inter', monospace; font-size: 0.85rem; color: #41e4c0;
+    position: relative; margin: 1.5rem 0; border: 1px solid rgba(65, 228, 192, 0.15);
+}
+
+.doc-section-title { 
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; 
+  color: var(--muted); margin-bottom: 1rem; font-weight: 800;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.doc-section-title::before { content: ''; width: 12px; height: 2px; background: var(--accent); }
+
+/* Schema Table */
+.params-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+.params-table th { text-align: left; padding: 0.8rem; border-bottom: 2px solid var(--border); color: var(--muted); text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.1em; }
+.params-table td { padding: 1rem 0.8rem; border-bottom: 1px solid var(--border); }
+.type-tag { background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 4px; color: #ffb59c; }
+
+/* Buttons & Toasts */
+.toast {
+    position: fixed; bottom: 2rem; right: 2rem; background: var(--accent);
+    color: #000; padding: 1rem 2rem; border-radius: 8px; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(255,85,0,0.3); transform: translateY(150%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000;
+}
+.toast.active { transform: translateY(0); }
+
+.copy-btn { 
+  position: absolute; top: 1rem; right: 1rem; 
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); 
+  color: #fff; padding: 6px 12px; font-size: 0.7rem; 
+  cursor: pointer; border-radius: 6px; font-weight: 600;
+}
+.copy-btn:hover { background: var(--accent); color: #000; border-color: transparent; }
+
+.btn-primary { background: var(--accent); color: #000; padding: 0.8rem 1.75rem; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.8rem 1.75rem; border-radius: 10px; cursor: pointer; }
+pre { margin: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="global-toast">Message envoyé !</div>
+
+<!-- CUSTOM MODAL FOR API KEY NAME -->
+<div class="modal-overlay" id="key-modal">
+    <div class="modal-card">
+        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Nouvelle Clef API</h3>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Donnez un nom unique à votre clé (ex: Projet N8N, Intégration Zapier).</p>
+        <div class="field" style="margin-bottom: 2rem;">
+            <input type="text" id="new-key-name" placeholder="Nom de la clef..." style="width: 100%; background: #000; border: 1px solid var(--border); padding: 1rem; border-radius: 8px; color: #fff; outline: none; border-color: var(--accent);">
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <button class="btn-secondary" onclick="closeKeyModal()">Annuler</button>
+            <button class="btn-primary" onclick="confirmKeyCreation()">Générer la clef</button>
+        </div>
+    </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">PIRABEL LABS</div>
+    <nav class="sidebar-nav"></nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:1.5rem;">
+        <button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="topbar-title">Spécifications de l'API</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="doc-container">
+        
+        <header style="margin-bottom: 5rem;">
+            <span style="color: var(--accent); font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.7rem;">Developer Hub</span>
+            <h1 style="font-family: var(--font-h); font-size: 3rem; font-weight: 800; margin: 1rem 0;">Documentation <span style="color:var(--accent)">Centrale</span></h1>
+            <p style="color: var(--muted); font-size: 1.125rem; max-width: 800px; line-height: 1.7;">
+                Automatisez vos flux de travail et connectez vos outils préférés à l'écosystème Pirabel Labs via notre API de données administrative sécurisée.
+            </p>
+        </header>
+
+        <!-- API KEYS HUB -->
+        <section class="key-manager">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+                <div>
+                    <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem;">Gouvernance des Clefs</h2>
+                    <p style="color:var(--muted); font-size:0.875rem;">Créez des accès spécifiques pour vos différents micro-services externes.</p>
+                </div>
+                <button class="btn-primary" onclick="openKeyModal()">
+                    <span class="material-symbols-outlined" style="vertical-align:middle; font-size:1.1rem; margin-right:0.5rem;">key</span> Créer une clef
+                </button>
+            </div>
+
+            <div id="new-key-reveal" style="display:none; background: rgba(255,85,0,0.15); border: 1px dashed var(--accent); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; position: relative; animation: fadeIn 0.5s ease;">
+                <div style="font-weight:900; font-size:0.65rem; color:var(--accent); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">Attention : Cette clef ne s'affichera qu'une seule fois !</div>
+                <div style="display:flex; gap:1.5rem; align-items:center;">
+                    <code id="generated-key-val" style="flex:1; background:#000; padding:1.25rem; border-radius:8px; font-weight:800; color:#fff; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.05);">pb_live_...</code>
+                    <button class="btn-primary" onclick="copyToClipboard(document.getElementById('generated-key-val').textContent, this)">COPIER</button>
+                </div>
+            </div>
+
+            <div id="keys-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                <!-- Loading state -->
+            </div>
+        </section>
+
+        <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:3rem; border-left:6px solid var(--accent); padding-left:1.5rem;">Encyclopédie des Endpoints</h2>
+
+        <!-- SECTION: ANALYTICS -->
+        <h3 style="font-size: 0.9rem; color:var(--accent); text-transform: uppercase; letter-spacing: 0.2em; margin: 4rem 0 2rem;">01. Statistiques & Traffic</h3>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/stats</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:2rem; color:var(--muted);">Agrégation en temps réel de tous les compteurs de la plateforme (Clients, Projets, Revenus).</p>
+            
+            <div class="doc-section-title">Paramètres de Header</div>
+            <table class="params-table">
+                <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td>Authorization</td><td><span class="type-tag">String</span></td><td>Format requis : <code>Bearer pb_live_...</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="doc-section-title">Test CURL</div>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/stats" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: GESTION CLIENTS -->
+        <h3 style="font-size: 0.9rem; color:var(--accent); text-transform: uppercase; letter-spacing: 0.2em; margin: 4rem 0 2rem;">02. Relation Client & Projets</h3>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/clients</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:1.5rem; color:var(--muted);">Extraction de la base de données clients complète pour synchronisation Mailchimp ou CRM.</p>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/clients" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/projects</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:1.5rem; color:var(--muted);">Récupère l'état d'avancement, les budgets et les échéances de tous les projets actifs.</p>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/projects" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: FINANCE -->
+        <h3 style="font-size: 0.9rem; color:var(--accent); text-transform: uppercase; letter-spacing: 0.2em; margin: 4rem 0 2rem;">03. Finance & Trésorerie</h3>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/invoices</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:1.5rem; color:var(--muted);">Liste des factures avec montants, taxes et statuts de paiement.</p>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/invoices" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/revenue</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:1.5rem; color:var(--muted);">Données historiques mensuelles des revenus pour analyse BI externe.</p>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/revenue" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: CALENDRIER -->
+        <h3 style="font-size: 0.9rem; color:var(--accent); text-transform: uppercase; letter-spacing: 0.2em; margin: 4rem 0 2rem;">04. Agenda & RH</h3>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="method">GET</span>
+            <span class="path">/api/v2/admin/appointments</span>
+          </div>
+          <div class="endpoint-body">
+            <p style="margin-bottom:1.5rem; color:var(--muted);">Accédez aux rendez-vous confirmés pour synchronisation avec Google Calendar ou Outlook.</p>
+            <div class="curl-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+                <pre>curl -X GET "https://www.pirabellabs.com/api/v2/admin/appointments" \
+-H "Authorization: Bearer VOTRE_CLE_API"</pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+function showToast(msg) {
+    const t = document.getElementById('global-toast');
+    t.textContent = msg;
+    t.classList.add('active');
+    setTimeout(() => t.classList.remove('active'), 3000);
+}
+
+// Key Management Logic
+function openKeyModal() { document.getElementById('key-modal').classList.add('active'); document.getElementById('new-key-name').focus(); }
+function closeKeyModal() { document.getElementById('key-modal').classList.remove('active'); document.getElementById('new-key-name').value = ''; }
+
+async function confirmKeyCreation() {
+    const name = document.getElementById('new-key-name').value.trim();
+    if (!name) return showToast('Veuillez entrer un nom !');
+    
+    try {
+        const res = await fetch('/api/v2/admin/keys', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (data.success) {
+            closeKeyModal();
+            const reveal = document.getElementById('new-key-reveal');
+            document.getElementById('generated-key-val').textContent = data.key;
+            reveal.style.display = 'block';
+            showToast('Clef API générée !');
+            loadKeys();
+        } else {
+            showToast(data.error);
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function loadKeys() {
+    try {
+        const res = await fetch('/api/v2/admin/keys', { headers });
+        const data = await res.json();
+        if (data.success) {
+            const list = document.getElementById('keys-list');
+            if (data.keys.length === 0) {
+                list.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--muted); background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--border);">Aucune clef API active.</div>';
+                return;
+            }
+            list.innerHTML = data.keys.map(k => `
+                <div style="background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; display:flex; flex-direction:column; justify-content:space-between;">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                            <span class="material-symbols-outlined" style="color:var(--accent);">shield</span>
+                            <span style="font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; font-weight:800;">Actif</span>
+                        </div>
+                        <div style="font-weight:800; font-size:1.1rem; margin-bottom:0.25rem;">${k.name}</div>
+                        <div style="font-size:0.75rem; color:var(--muted); font-family:monospace; margin-bottom:1rem;">ID: ${k.prefix}...</div>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+                        <div style="font-size:0.65rem; color:var(--muted);">Usage: ${k.lastUsed ? new Date(k.lastUsed).toLocaleDateString() : 'Jamais'}</div>
+                        <button style="color:#ff4444; background:transparent; border:none; font-size:0.7rem; font-weight:800; cursor:pointer;" onclick="deleteKey('${k._id}')">RÉVOQUER</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch(e) { console.error(e); }
+}
+
+async function deleteKey(id) {
+    if (!confirm('Êtes-vous sûr de vouloir révoquer cette clef ?')) return;
+    try {
+        const res = await fetch('/api/v2/admin/keys/' + id, { method: 'DELETE', headers });
+        const data = await res.json();
+        if (data.success) { showToast('Clef révoquée'); loadKeys(); }
+    } catch(e) { console.error(e); }
+}
+
+function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text);
+    const oldText = btn.textContent;
+    btn.textContent = 'COPIÉ !';
+    btn.style.background = '#41e4c0';
+    setTimeout(() => {
+        btn.textContent = oldText;
+        btn.style.background = 'var(--accent)';
+    }, 2000);
+}
+
+function copyCode(btn) {
+    const pre = btn.nextElementSibling;
+    copyToClipboard(pre.textContent, btn);
+}
+
+document.addEventListener('DOMContentLoaded', loadKeys);
+</script>
+</body>
+</html>

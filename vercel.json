@@ -33,8 +33,10 @@
     { "src": "/messages", "dest": "/api/index.js" },
     { "src": "/articles", "dest": "/api/index.js" },
     { "src": "/analytics", "dest": "/api/index.js" },
+    { "src": "/mon-espace", "dest": "/client_portal_v4p8w1n7x9k2m_access_secure/index.html" },
+    { "src": "/espace-client-4p8w1n", "dest": "/mon-espace", "status": 301 },
     { "src": "/portal", "dest": "/api/index.js" },
-    { "src": "/pirabel-admin-7x9k2m", "dest": "/api/index.js" },
+
     { "src": "/portal-login", "dest": "/api/index.js" },
     { "src": "/notes", "dest": "/api/index.js" },
     { "src": "/prospects", "dest": "/api/index.js" },
@@ -44,7 +46,15 @@
     { "src": "/candidates", "dest": "/api/index.js" },
     { "src": "/tasks", "dest": "/api/index.js" },
     { "src": "/calendar", "dest": "/api/index.js" },
+    { "src": "/quotes", "dest": "/api/index.js" },
+    { "src": "/pipeline", "dest": "/api/index.js" },
+    { "src": "/email-templates", "dest": "/api/index.js" },
+    { "src": "/time-tracking", "dest": "/api/index.js" },
+    { "src": "/reviews-admin", "dest": "/api/index.js" },
+    { "src": "/api-docs", "dest": "/api/index.js" },
+    { "src": "/gerer-rendez-vous", "dest": "/api/index.js" },
     { "src": "/health", "dest": "/api/index.js" },
+    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
     { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
     { "handle": "filesystem" },
     { "src": "/index$", "headers": { "Location": "/" }, "status": 308 },
@@ -54,12 +64,29 @@
     { "src": "/a-propos", "dest": "/a-propos.html" },
     { "src": "/faq", "dest": "/faq.html" },
     { "src": "/resultats", "dest": "/resultats.html" },
+    { "src": "/r%C3%A9sultats", "dest": "/resultats.html" },
     { "src": "/mentions-legales", "dest": "/mentions-legales.html" },
     { "src": "/politique-confidentialite", "dest": "/politique-confidentialite.html" },
     { "src": "/blog-article", "dest": "/blog-article.html" },
     { "src": "/carrieres", "dest": "/carrieres.html" },
     { "src": "/candidature", "dest": "/candidature.html" },
     { "src": "/rendez-vous", "dest": "/rendez-vous.html" },
+    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
+    { "src": "/status", "dest": "/status.html" },
+    { "src": "/avis", "dest": "/avis.html" },
+    { "src": "/en/services", "dest": "/en/services.html" },
+    { "src": "/en/contact", "dest": "/en/contact.html" },
+    { "src": "/en/about", "dest": "/en/about.html" },
+    { "src": "/en/results", "dest": "/en/results.html" },
+    { "src": "/en/reviews", "dest": "/en/reviews.html" },
+    { "src": "/en/careers", "dest": "/en/careers.html" },
+    { "src": "/en/legal-mentions", "dest": "/en/legal-mentions.html" },
+    { "src": "/en/privacy-policy", "dest": "/en/privacy-policy.html" },
+    { "src": "/en/guides$", "dest": "/en/guides/index.html" },
+    { "src": "/en/blog$", "dest": "/en/blog/index.html" },
+    { "src": "/en/guides/([^/]+)$", "dest": "/en/guides/$1.html" },
+    { "src": "/en/blog/([^/]+)$", "dest": "/en/blog/$1.html" },
+    { "src": "/en/([^/]+-agency|[^/]+-consultancy)$", "dest": "/en/$1/index.html" },
     { "src": "/guides$", "dest": "/guides/index.html" },
     { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
     { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },
@@ -91,5 +118,15 @@
     { "src": "/llms\\.txt", "dest": "/llms.txt" },
     { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },
     { "src": "/.well-known/(.*)", "dest": "/.well-known/$1" }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/reminders",
+      "schedule": "0 7 * * *"
+    }
   ]
 }

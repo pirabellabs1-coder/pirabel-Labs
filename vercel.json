@@ -74,6 +74,23 @@
     { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
     { "src": "/status", "dest": "/status.html" },
     { "src": "/avis", "dest": "/avis.html" },
+
+    /* === ENGLISH ROUTES === */
+    { "src": "/en/services", "dest": "/en/services.html" },
+    { "src": "/en/contact", "dest": "/en/contact.html" },
+    { "src": "/en/about", "dest": "/en/about.html" },
+    { "src": "/en/results", "dest": "/en/results.html" },
+    { "src": "/en/reviews", "dest": "/en/reviews.html" },
+    { "src": "/en/careers", "dest": "/en/careers.html" },
+    { "src": "/en/legal-mentions", "dest": "/en/legal-mentions.html" },
+    { "src": "/en/privacy-policy", "dest": "/en/privacy-policy.html" },
+    { "src": "/en/guides$", "dest": "/en/guides/index.html" },
+    { "src": "/en/blog$", "dest": "/en/blog/index.html" },
+    { "src": "/en/guides/([^/]+)$", "dest": "/en/guides/$1.html" },
+    { "src": "/en/blog/([^/]+)$", "dest": "/en/blog/$1.html" },
+    { "src": "/en/([^/]+-agency|[^/]+-consultancy)$", "dest": "/en/$1/index.html" },
+    /* ====================== */
+
     { "src": "/guides$", "dest": "/guides/index.html" },
     { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
     { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },

@@ -1,7 +1,48 @@
 /* ========================================================================
    PIRABEL LABS — Global JavaScript
-   Preloader, Custom Cursor, Scroll Progress, Nav, Reveal Animations
+   Preloader, Custom Cursor, Scroll Progress, Nav, Reveal Animations, i18n
    ======================================================================== */
+
+// --- I18N MANAGER (Global) ---
+(function() {
+    const LANG_KEY = 'pirabel_pref_lang';
+    const SUPPORTED_LANGS = ['fr', 'en'];
+    const DEFAULT_LANG = 'fr';
+    const URL_MAP = {
+        '/agence-seo-referencement-naturel/': '/en/seo-agency/',
+        '/agence-creation-sites-web/': '/en/web-design-agency/',
+        '/agence-ia-automatisation/': '/en/ai-automation-agency/',
+        '/agence-design-branding/': '/en/branding-agency/',
+        '/agence-publicite-payante-sea-ads/': '/en/paid-advertising-agency/',
+        '/agence-social-media/': '/en/social-media-agency/',
+        '/agence-email-marketing-crm/': '/en/email-marketing-agency/',
+        '/agence-video-motion-design/': '/en/video-production-agency/',
+        '/agence-sales-funnels-cro/': '/en/conversion-funnels-agency/',
+        '/agence-redaction-content-marketing/': '/en/content-marketing-agency/',
+        '/resultats': '/en/results',
+        '/avis': '/en/reviews',
+        '/contact': '/en/contact'
+    };
+    const REVERSE_MAP = {};
+    for (const [fr, en] of Object.entries(URL_MAP)) { REVERSE_MAP[en] = fr; }
+
+    window.switchLanguage = function(lang) {
+        if (!SUPPORTED_LANGS.includes(lang)) return;
+        localStorage.setItem(LANG_KEY, lang);
+        let current = window.location.pathname;
+        const clean = current.endsWith('/') && current.length > 1 ? current.slice(0, -1) : current;
+        let target = current;
+        if (lang === 'en') {
+            if (URL_MAP[clean]) target = URL_MAP[clean];
+            else if (!current.startsWith('/en/')) target = '/en' + (current === '/' ? '/' : current);
+        } else {
+            if (REVERSE_MAP[clean]) target = REVERSE_MAP[clean];
+            else if (current.startsWith('/en/')) target = current.replace('/en/', '/');
+        }
+        window.location.href = target;
+    };
+})();
+
 
 document.addEventListener('DOMContentLoaded', () => {
 

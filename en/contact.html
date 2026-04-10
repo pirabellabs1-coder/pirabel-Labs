@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Get a Free Audit | Pirabel Labs</title>
+<meta name="description" content="Contact Pirabel Labs for a free audit of your digital presence. Agency in Paris, Cotonou, Casablanca. Response within 24h.">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="../css/global.css">
+<style>
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 5rem;
+  align-items: center;
+}
+.contact-form {
+  background: var(--surface-container-low);
+  padding: 3rem;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 85, 0, 0.05);
+}
+.form-input {
+  width: 100%;
+  background: var(--surface-container-high);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.25rem;
+  border-radius: 12px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #FF5500;
+  background: var(--surface-container-highest);
+}
+@media (max-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pre-logo">PIRABEL LABS</div>
+  <div class="pre-bar"><div class="pre-bar-fill"></div></div>
+  <div class="pre-pct">0%</div>
+</div>
+
+<div id="progress-bar"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div>
+<div class="solar-orb solar-orb--secondary"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/en/">HOME</a>
+      <a href="/en/services">SERVICES</a>
+      <a href="/en/blog">BLOG</a>
+      <a href="/en/guides/">GUIDES</a>
+      <a href="/en/about">ABOUT</a>
+    </div>
+    <a href="/en/contact" class="nav-cta active">Free Audit</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="section" style="padding-top:10rem; padding-bottom:4rem;">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="rv">
+        <span class="pill">START A PROJECT</span>
+        <h1 class="text-hero" style="margin-top:1.5rem;">Let's Build the <span style="color:#FF5500;">Future</span> Together.</h1>
+        <p class="text-body-lg" style="margin-top:1.5rem; margin-bottom:3rem;">
+            Whether you're in Paris, London, or Montreal, we support you in your digital transformation. Tell us about your goals.
+        </p>
+        
+        <div style="display:flex; flex-direction:column; gap:2rem;">
+          <div>
+            <h4 style="color:#FF5500; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">Email</h4>
+            <p style="font-size:1.25rem;">contact@pirabellabs.com</p>
+          </div>
+          <div>
+            <h4 style="color:#FF5500; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">Global HQ</h4>
+            <p style="font-size:1.25rem;">Paris • Casablanca • Cotonou</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rv">
+        <form class="contact-form">
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:0.75rem; font-weight:700; opacity:0.6;">FULL NAME</label>
+            <input type="text" class="form-input" placeholder="John Doe" required>
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:0.75rem; font-weight:700; opacity:0.6;">EMAIL ADDRESS</label>
+            <input type="email" class="form-input" placeholder="john@company.com" required>
+          </div>
+          <div style="margin-bottom:2rem;">
+            <label style="font-size:0.75rem; font-weight:700; opacity:0.6;">YOUR PROJECT</label>
+            <textarea class="form-input" rows="5" placeholder="Tell us more about your needs..."></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary" style="width:100%;">SEND MESSAGE <span class="material-symbols-outlined">send</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">PIRABEL LABS</div>
+      <p class="footer-desc">Premium digital agency. Powered by the obsession for performance.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Pirabel Labs. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/global.js?v=4"></script>
+<script src="../js/chatbot.js" defer></script>
+</body>
+</html>

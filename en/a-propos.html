@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | Pirabel Labs — Performance Obsessed</title>
+<meta name="description" content="Discover Pirabel Labs, the premium digital agency supporting ambitious businesses. Our team, our values, our vision.">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/a-propos">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/a-propos">
+<script src="../public/js/language-manager.js"></script>
+<link rel="stylesheet" href="../css/global.css">
+<style>
+/* About-specific styles */
+.about-hero { min-height: 80vh; display: flex; align-items: center; padding-top: 5rem; }
+.value-card { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 12px; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/en/">HOME</a>
+      <a href="/en/services">SERVICES</a>
+      <a href="/en/blog">BLOG</a>
+      <a href="/en/guides/">GUIDES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; opacity:0.6;">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">EN</span>
+      </div>
+    </div>
+    <a class="nav-login" href="/mon-espace">Portal</a>
+    <a href="/en/contact" class="nav-cta">Free Audit</a>
+  </div>
+</nav>
+
+<section class="about-hero">
+  <div class="section-inner">
+    <span class="pill">Our Story</span>
+    <h1 style="font-size:4rem; margin:1.5rem 0;">Driven by <span style="color:#FF5500;">Digital Excellence</span></h1>
+    <p style="max-width:800px; opacity:0.7; font-size:1.2rem; line-height:1.7;">
+        Founded on the obsession for performance, Pirabel Labs is a bridge between advanced technology and human marketing strategy.
+    </p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:3rem; margin-top:5rem;">
+      <div class="value-card">
+        <h3 style="color:#FF5500; margin-bottom:1rem;">Innovation</h3>
+        <p style="opacity:0.7;">We use the latest AI and web technologies to stay ahead of the curve.</p>
+      </div>
+      <div class="value-card">
+        <h3 style="color:#FF5500; margin-bottom:1rem;">Integrity</h3>
+        <p style="opacity:0.7;">Full transparency in our processes and measurable results for every project.</p>
+      </div>
+      <div class="value-card">
+        <h3 style="color:#FF5500; margin-bottom:1rem;">Performance</h3>
+        <p style="opacity:0.7;">Our only KPI is your growth. We don't just deliver clicks, we deliver success.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="../public/js/main.js"></script>
+</body>
+</html>

@@ -6,6 +6,10 @@
 <title>Avis clients — Pirabel Labs</title>
 <meta name="description" content="Découvrez les avis de nos clients. Pirabel Labs, agence marketing digital de confiance.">
 <link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/avis">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/reviews">
+<script src="/public/js/language-manager.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -51,6 +55,11 @@
       <a href="/resultats" class="link-underline">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
       <a href="/a-propos" class="link-underline">À PROPOS</a>
       <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+      </div>
     </div>
     <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta">Audit Gratuit</a>

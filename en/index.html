@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pirabel Labs | Premium Digital Agency — SEO, Web, AI & Automation</title>
+<meta name="description" content="Pirabel Labs, your premium digital agency in Paris, Cotonou, and Casablanca. SEO, web creation, AI, automation, branding. Measurable results. Free audit.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://www.pirabellabs.com/en/">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/en/">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/favicon.png">
+
+<script src="../app/public/js/language-manager.js"></script>
+
+<!-- Open Graph -->
+<meta property="og:title" content="Pirabel Labs | Premium Digital Agency — SEO, Web, AI & Automation">
+<meta property="og:description" content="Premium digital agency in Paris, Cotonou, and Casablanca. SEO, web creation, AI, automation, branding. Measurable results.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/en/">
+<meta property="og:site_name" content="Pirabel Labs">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/illustrations.css">
+
+<style>
+/* ===== PAGE-SPECIFIC: Unique animations ===== */
+@keyframes heroReveal {
+  from { transform: translateY(110%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.hero-word { display: inline-block; overflow: hidden; }
+.hero-word span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: heroReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-word:nth-child(2) span { animation-delay: 0.12s; }
+.hero-word:nth-child(3) span { animation-delay: 0.24s; }
+.hero-word:nth-child(4) span { animation-delay: 0.36s; }
+.hero-word:nth-child(5) span { animation-delay: 0.48s; }
+.hero-word:nth-child(6) span { animation-delay: 0.6s; }
+.hero-word:nth-child(7) span { animation-delay: 0.72s; }
+
+.btn-magnetic { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.hero-mockup {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-6deg);
+  width: 550px;
+  aspect-ratio: 1;
+  background: var(--surface-container-lowest);
+  border: 1px solid rgba(92, 64, 55, 0.1);
+  box-shadow: 0 40px 100px rgba(255, 85, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-10px, 20px) scale(0.95); }
+}
+.solar-orb { animation: floatOrb 20s ease-in-out infinite; }
+.solar-orb--secondary { animation-delay: -10s; animation-duration: 25s; }
+
+.pricing-mid { background: #FF5500; color: #fff; transform: scale(1.05); z-index: 2; }
+@media (max-width: 900px) { .hero-mockup { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pre-logo">PIRABEL LABS</div>
+  <div class="pre-bar"><div class="pre-bar-fill"></div></div>
+  <div class="pre-pct">0%</div>
+</div>
+
+<div id="progress-bar"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="noise-overlay"></div>
+<div class="dot-grid"></div>
+<div class="solar-orb solar-orb--primary"></div>
+<div class="solar-orb solar-orb--secondary"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="/en/" class="active">HOME</a>
+      <a href="/en/services">SERVICES</a>
+      <a href="/en/blog">BLOG</a>
+      <a href="/en/guides/" class="link-underline">GUIDES</a>
+      <a href="/en/results">RESULTS</a>
+      <a href="/en/reviews" class="link-underline">REVIEWS</a>
+      <a href="/en/about">ABOUT</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; opacity:0.6; font-size:0.75rem; font-weight:700;">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; color:var(--primary-container); font-size:0.75rem; font-weight:700;">EN</span>
+      </div>
+    </div>
+    <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+    <a href="/en/contact" class="nav-cta btn-magnetic">Free Audit</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <a href="/en/">Home</a>
+  <a href="/en/services">Services</a><a href="/en/blog">Blog</a>
+  <a href="/en/guides/">Guides</a>
+  <a href="/en/results">Results</a><a href="/en/reviews">Reviews</a>
+  <a href="/en/about">About</a><a href="/en/contact">Contact</a>
+  <a href="/espace-client-4p8w1n" style="color:#FF5500;">My Space</a>
+</div>
+
+<!-- HERO -->
+<header class="section" style="min-height:100vh;display:flex;align-items:center;padding-top:8rem;">
+  <div class="bg-text" style="top:20%;right:0;">LABS</div>
+  <div class="section-inner" style="width:100%;">
+    <span class="pill rv">Premium Digital Agency</span>
+    <h1 class="text-hero" style="color:#FF5500;margin:1.5rem 0 2rem;">
+      <div class="hero-word"><span>THE DIGITAL</span></div>
+      <div class="hero-word"><span>AGENCY</span></div><br>
+      <div class="hero-word"><span>THAT</span></div>
+      <div class="hero-word"><span>DRIVES</span></div><br>
+      <div class="hero-word"><span>YOUR</span></div>
+      <div class="hero-word"><span style="color:var(--on-surface);">GROWTH.</span></div>
+    </h1>
+    <p class="text-body-lg rv" style="max-width:42rem;margin-bottom:3rem;">
+        SEO, custom web development, AI automation, digital advertising, branding — we support ambitious companies with tailored solutions that generate concrete and measurable results. From Paris to Casablanca, Montreal to Cotonou.
+    </p>
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;" class="rv">
+      <a href="/en/contact" class="btn btn--primary btn-magnetic">DOMINATE THE MARKET <span class="material-symbols-outlined">arrow_forward</span></a>
+      <a href="#services" class="btn btn--ghost btn-magnetic">OUR SERVICES</a>
+    </div>
+  </div>
+  <div class="hero-mockup" data-parallax="0.05">
+    <div class="illus illus-dashboard">
+      <div class="illus-dashboard__dots"><span></span><span></span><span></span></div>
+      <div class="illus-bars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>STRATEGIC SEO <span class="material-symbols-outlined">star</span></span>
+    <span>WEB DEVELOPMENT <span class="material-symbols-outlined">star</span></span>
+    <span>AI & AUTOMATION <span class="material-symbols-outlined">star</span></span>
+    <span>BRANDING <span class="material-symbols-outlined">star</span></span>
+    <span>SOCIAL MEDIA <span class="material-symbols-outlined">star</span></span>
+    <span>DIGITAL ADS <span class="material-symbols-outlined">star</span></span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section section--low" id="services">
+  <div class="section-inner">
+    <h2 class="text-h2 rv" style="text-align:center;margin-bottom:4rem;">OUR EXPERTISE</h2>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <a href="/en/seo-agency/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">01</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3">SEO & SEARCH ENGINE VISIBILITY</h3>
+            <p class="text-body">You deserve to be found on Google. We bring you to the first page with a tailored strategy, no shortcuts.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="/en/web-design-agency/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">02</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3">WEB DESIGN & DEVELOPMENT</h3>
+            <p class="text-body">High-performing sites that convert. Webflow, WordPress, Shopify, or custom — each project is unique.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+      <a href="/en/ai-automation-agency/" class="srv-row rv">
+        <div style="display:flex;align-items:center;gap:3rem;flex-wrap:wrap;">
+          <span class="srv-row__num">03</span>
+          <div style="flex:1;min-width:200px;">
+            <h3 class="text-h3">AI & AUTOMATION</h3>
+            <p class="text-body">Save time and money. We automate your repetitive processes with Make, n8n, Zapier, and custom AI agents.</p>
+          </div>
+          <div class="srv-row__arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">PIRABEL LABS</div>
+      <p class="footer-desc">The premium digital agency at the service of your growth. We build tomorrow's standards for the most ambitious companies.</p>
+    </div>
+    <div>
+      <div class="footer-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="/en/seo-agency/">SEO</a></li>
+        <li><a href="/en/web-design-agency/">Web Design</a></li>
+        <li><a href="/en/ai-automation-agency/">AI & Auto</a></li>
+        <li><a href="/en/paid-advertising-agency/">Paid Ads</a></li>
+        <li><a href="/en/social-media-agency/">Social Media</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Resources</div>
+      <ul class="footer-links">
+        <li><a href="/en/guides/">Guides</a></li>
+        <li><a href="/en/results">Results</a></li>
+        <li><a href="/en/about">About</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Pirabel Labs. All rights reserved.</span>
+    <div style="display:flex;gap:2rem;">
+      <a href="/en/legal-mentions.html">Legal Mentions</a>
+      <a href="/en/privacy-policy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/global.js?v=4"></script>
+<script src="../js/cookie-consent.js?v=1" defer></script>
+<script src="../js/tracker.js" defer></script>
+<script src="../js/chatbot.js" defer></script>
+</body>
+</html>

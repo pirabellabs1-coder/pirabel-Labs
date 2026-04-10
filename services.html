@@ -17,6 +17,11 @@
 
 <!-- AI & Bing Discovery -->
 <meta name="ai-content-declaration" content="Pirabel Labs: Catalogue de Services (SEO, Web, IA, Publicité)">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/services">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/services">
+<script src="/public/js/language-manager.js"></script>
 <link rel="alternate" type="text/markdown" href="/llms.txt">
 <link rel="alternate" type="application/llmspace+json" href="/llms-full.txt">
 
@@ -409,6 +414,11 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
       <a href="/resultats">RÉSULTATS</a><a href="/avis" class="link-underline">AVIS</a>
       <a href="/a-propos">À PROPOS</a>
       <a href="/carrieres" class="link-underline">CARRIÈRES</a>
+      <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
+        <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+        <span style="opacity:0.3;">|</span>
+        <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+      </div>
     </div>
     <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta">Audit Gratuit</a>

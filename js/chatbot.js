@@ -24,6 +24,7 @@
   //  SECTION 1 — CONFIGURATION
   // =====================================================================
   var isEn = window.location.pathname.indexOf('/en/') !== -1;
+  var conversationId = localStorage.getItem('pb_chat_id') || '';
 
   var CONFIG = {
     botName: isEn ? 'Lea' : 'Lea',
@@ -1787,7 +1788,7 @@
   // =====================================================================
   var css = '\n'
     // -- Chat Button --
-    + '#pb-chat-btn{position:fixed;bottom:24px;right:24px;z-index:9999;width:62px;height:62px;border-radius:50%;'
+    + '#pb-chat-btn{position:fixed;bottom:24px;right:100px;z-index:9999;width:62px;height:62px;border-radius:50%;'
     + 'background:' + CONFIG.accentGradient + ';border:none;cursor:pointer;'
     + 'box-shadow:0 4px 24px rgba(255,85,0,0.45);display:flex;align-items:center;justify-content:center;'
     + 'transition:transform .3s ease,box-shadow .3s ease;}\n'

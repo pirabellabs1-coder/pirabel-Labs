@@ -95,9 +95,23 @@
             Whether you're in Paris, London, or Montreal, we support you in your digital transformation. Tell us about your goals.
         </p>
 
-        <div style="margin-bottom:3rem; display:flex; gap:1rem; flex-wrap:wrap;">
-          <a href="/en/book-a-call" class="btn btn--orange">SCHEDULE A CALL <span class="material-symbols-outlined">calendar_today</span></a>
-          <p style="font-size:0.8rem; opacity:0.6; align-self:center;">Pick a time on our calendar &rarr;</p>
+        <div style="margin-bottom:3rem; display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+          <div style="background:var(--surface-container-high); padding:2rem; border-radius:24px; border:1px solid rgba(255,85,0,0.1); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <span class="material-symbols-outlined" style="color:#FF5500; font-size:2rem; margin-bottom:1rem;">calendar_today</span>
+              <h3 class="text-h4" style="margin-bottom:0.5rem; color:#fff;">Option 1: Direct Call</h3>
+              <p class="text-body text-small" style="opacity:0.8; margin-bottom:1.5rem;">Book 15 minutes now for a strategic audit.</p>
+            </div>
+            <a href="/en/book-a-call" class="btn btn--orange" style="width:100%; justify-content:center;">Calendar &rarr;</a>
+          </div>
+          <div style="background:var(--surface-container-low); padding:2rem; border-radius:24px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div>
+              <span class="material-symbols-outlined" style="color:var(--primary-container); font-size:2rem; margin-bottom:1rem;">description</span>
+              <h3 class="text-h4" style="margin-bottom:0.5rem; color:#fff;">Option 2: Detailed Audit</h3>
+              <p class="text-body text-small" style="opacity:0.8; margin-bottom:1.5rem;">Fill out the form for a deep analysis.</p>
+            </div>
+            <button onclick="document.querySelector('.contact-form').scrollIntoView({behavior:'smooth'})" class="btn btn--secondary" style="width:100%; justify-content:center;">Form &darr;</button>
+          </div>
         </div>
         
         <div style="display:flex; flex-direction:column; gap:2rem;">

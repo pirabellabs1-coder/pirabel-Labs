@@ -72,6 +72,8 @@
     { "src": "/en/avis$", "dest": "/en/avis.html" },
     { "src": "/en/modifier-devis$", "dest": "/en/modifier-devis.html" },
     { "src": "/en/gerer-rendez-vous$", "dest": "/en/gerer-rendez-vous.html" },
+    { "src": "/en/mon-espace$", "dest": "/en/client_portal_v4p8w1n7x9k2m_access_secure/index.html" },
+    { "src": "/en/espace-client-4p8w1n$", "dest": "/en/mon-espace", "status": 301 },
     { "src": "/en/guides$", "dest": "/en/guides/index.html" },
     { "src": "/en/(agence-[^/]+)$", "dest": "/en/$1/index.html" },
     { "src": "/en/(agence-[^/]+)/([^/]+)/([^/]+)$", "dest": "/en/$1/$2/$3.html" },

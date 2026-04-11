@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Careers — Pirabel Labs</title>
-<meta name="description" content="Rejoignez Pirabel Labs, agency digital marketing. Découvrez our offres d'emploi en CDI, freelance, stage and alternance.">
+<meta name="description" content="Join Pirabel Labs, a digital marketing agency. Discover our job openings: full-time, freelance, internships and apprenticeships.">
 <link rel="icon" type="image/png" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/favicon.png">
 
@@ -46,19 +46,19 @@
  <div class="nav-inner">
   <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
   <div class="nav-links">
-   <a href="/en/" class="link-underline">L'AGENCE</a>
+   <a href="/en/" class="link-underline">HOME</a>
    <a href="/en/services" class="link-underline">SERVICES</a>
    <a href="/en/blog" class="link-underline">BLOG</a>
-   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/avis" class="link-underline">AVIS</a>
+   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/avis" class="link-underline">REVIEWS</a>
    <a href="/en/a-propos" class="link-underline">ABOUT</a>
-   <a href="/en/carrieres" class="link-underline active">CARRIÈRES</a>
+   <a href="/en/carrieres" class="link-underline active">CAREERS</a>
    <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
     <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
     <span style="opacity:0.3;">|</span>
     <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
    </div>
   </div>
-  <a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
+  <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
   <a href="/en/contact" class="nav-cta">Free Audit</a>
   <div class="nav-hamburger"><span></span><span></span><span></span></div>
  </div>
@@ -73,16 +73,16 @@
  <a href="/en/a-propos">About</a>
  <a href="/en/carrieres">Careers</a>
  <a href="/en/contact">Contact</a>
- <a href="/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
+ <a href="/en/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
 </div>
 
 <section class="hero-careers">
- <h1>Rejoignez <span>Pirabel Labs</span></h1>
- <p>Construisons ensemble l'agency digital marketing de demain. Talents passionnés, projets ambitieux, équipe bienveillante.</p>
+ <h1>Join <span>Pirabel Labs</span></h1>
+ <p>Let's build the digital marketing agency of tomorrow together. Passionate talent, ambitious projects, supportive team.</p>
 </section>
 
 <section class="jobs" id="jobs-list">
- <div class="empty">Chargement offres...</div>
+ <div class="empty">Loading job listings...</div>
 </section>
 
 <!-- Footer (same as main site) -->
@@ -90,15 +90,15 @@
  <div class="footer-grid">
   <div>
    <div class="footer-logo">PIRABEL LABS</div>
-   <p class="footer-desc">The premium digital agency for your growth. Nous construisons les standards de demain for les businesss les more ambitieuses.</p>
+   <p class="footer-desc">The premium digital agency for your growth. We are building tomorrow's standards for the most ambitious businesses.</p>
   </div>
   <div>
    <div class="footer-title">Services</div>
    <ul class="footer-links">
-    <li><a href="agence-seo-referencement-naturel/">SEO & SEO</a></li>
-    <li><a href="agence-creation-sites-web/">Creation de Sites</a></li>
+    <li><a href="agence-seo-referencement-naturel/">SEO</a></li>
+    <li><a href="agence-creation-sites-web/">Websites</a></li>
     <li><a href="agence-ia-automation/">AI & Automation</a></li>
-    <li><a href="agence-publicite-payante-sea-ads/">Advertising Payante</a></li>
+    <li><a href="agence-publicite-payante-sea-ads/">Paid Advertising</a></li>
     <li><a href="agence-social-media/">Social Media</a></li>
     <li><a href="agence-design-branding/">Design & Branding</a></li>
    </ul>
@@ -106,21 +106,21 @@
   <div>
    <div class="footer-title">Resources</div>
    <ul class="footer-links">
-    <li><a href="guides/">Guides</a></li>
+    <li><a href="/en/guides/">Guides</a></li>
     <li><a href="/en/resultats">Case Studies</a></li>
     <li><a href="/en/a-propos">About</a></li>
     <li><a href="/en/carrieres">Careers</a></li>
     <li><a href="/en/faq">FAQ</a></li>
-    <li><a href="/en/avis">Avis clients</a></li>
-    <li><a href="/en/status">Statut services</a></li>
+    <li><a href="/en/avis">Client Reviews</a></li>
+    <li><a href="/en/status">Service Status</a></li>
    </ul>
   </div>
   <div>
    <div class="footer-title">Contact</div>
    <ul class="footer-links">
     <li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li>
-    <li><a href="/en/contact">Formulaire</a></li>
-    <li><a href="/en/rendez-vous">Prendre RDV</a></li>
+    <li><a href="/en/contact">Contact Form</a></li>
+    <li><a href="/en/rendez-vous">Book a Meeting</a></li>
    </ul>
   </div>
  </div>
@@ -141,11 +141,11 @@ fetch('/api/recruitment/jobs/public')
  .then(data => {
   const list = document.getElementById('jobs-list');
   if (!data.jobs || !data.jobs.length) {
-   list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucune offre ouverte for le moment</h2><p>Envoyez-nous a candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p></div>';
+   list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">No open positions at the moment</h2><p>Send us a spontaneous application at <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p></div>';
    return;
   }
   list.innerHTML = data.jobs.map(j => `
-   <a href="/candidature?slug=${j.slug}" class="job">
+   <a href="/en/candidature?slug=${j.slug}" class="job">
     <span class="job-type">${escapeHtml(j.type)}</span>
     <h3>${escapeHtml(j.title)}</h3>
     <div class="job-meta">${escapeHtml(j.department || '')} ${j.location ? '· ' + escapeHtml(j.location) : ''} ${j.salary ? '· ' + escapeHtml(j.salary) : ''}</div>
@@ -155,7 +155,7 @@ fetch('/api/recruitment/jobs/public')
   `).join('');
  })
  .catch(() => {
-  document.getElementById('jobs-list').innerHTML = '<div class="empty">Error de chargement. Réessayez more tard.</div>';
+  document.getElementById('jobs-list').innerHTML = '<div class="empty">Loading error. Please try again later.</div>';
  });
 
 function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }

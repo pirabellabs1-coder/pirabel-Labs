@@ -1,5 +1,3 @@
-import { next } from '@vercel/edge';
-
 const ENGLISH_COUNTRIES = new Set([
   'US', 'GB', 'AU', 'NZ', 'IE', 'ZA', 'GH', 'NG', 'KE', 'UG', 'TZ',
   'SG', 'PH', 'IN', 'PK', 'JM', 'TT', 'BB', 'BS', 'BZ', 'GY',
@@ -16,30 +14,35 @@ export default function middleware(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // Only redirect on FR pages (not /en/, not /api/, not assets)
+  // Only process FR HTML pages (skip /en/, /api/, assets)
   if (path.startsWith('/en/') || path.startsWith('/api/') ||
       path.startsWith('/img/') || path.startsWith('/css/') ||
       path.startsWith('/js/') || path.startsWith('/public/') ||
-      path.includes('.') && !path.endsWith('.html')) {
-    return next();
+      path.startsWith('/_next/')) {
+    return;
+  }
+
+  // Skip asset files
+  const ext = path.split('.').pop();
+  if (['png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','css','js','map','json','txt','xml'].includes(ext)) {
+    return;
   }
 
   // Check if user already chose a language (cookie)
   const cookies = request.headers.get('cookie') || '';
   const langMatch = cookies.match(/pirabel_lang=(\w+)/);
+
   if (langMatch) {
     const pref = langMatch[1];
     if (pref === 'en' && !path.startsWith('/en/')) {
       const enPath = '/en' + (path === '/' ? '/' : path);
       return Response.redirect(new URL(enPath, request.url), 307);
     }
-    // If pref is 'fr' or user is already on correct version, continue
-    return next();
+    return;
   }
 
-  // No cookie — detect language from geo then browser
+  // No cookie — detect from geo then browser
   const country = request.headers.get('x-vercel-ip-country') || '';
-
   let detectedLang = null;
 
   if (ENGLISH_COUNTRIES.has(country)) {
@@ -47,7 +50,6 @@ export default function middleware(request) {
   } else if (FRENCH_COUNTRIES.has(country)) {
     detectedLang = 'fr';
   } else {
-    // Fallback: check browser Accept-Language header
     const acceptLang = request.headers.get('accept-language') || '';
     const primary = acceptLang.split(',')[0].split('-')[0].toLowerCase();
     detectedLang = primary === 'en' ? 'en' : 'fr';
@@ -60,14 +62,11 @@ export default function middleware(request) {
     return response;
   }
 
-  // French user — set cookie and continue
-  const response = next();
-  response.headers.set('Set-Cookie', 'pirabel_lang=fr; Path=/; Max-Age=31536000; SameSite=Lax');
-  return response;
+  // French — no redirect needed, but we can't set cookie on passthrough
+  // Cookie will be set by language-manager.js client-side
+  return;
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|img/|css/|js/|public/|fonts/).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon\\.ico).*)'],
 };

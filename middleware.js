@@ -10,60 +10,69 @@ const FRENCH_COUNTRIES = new Set([
   'TD', 'CF', 'DJ', 'KM', 'RW', 'BI', 'MR', 'SC',
 ]);
 
+function redirect(url, lang) {
+  return new Response(null, {
+    status: 307,
+    headers: {
+      'Location': url,
+      'Set-Cookie': 'pirabel_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax',
+    },
+  });
+}
+
 export default function middleware(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // Only process FR HTML pages (skip /en/, /api/, assets)
-  if (path.startsWith('/en/') || path.startsWith('/api/') ||
+  // Skip: EN pages, API, assets
+  if (path.startsWith('/en/') || path.startsWith('/en') ||
+      path.startsWith('/api/') ||
       path.startsWith('/img/') || path.startsWith('/css/') ||
       path.startsWith('/js/') || path.startsWith('/public/') ||
-      path.startsWith('/_next/')) {
+      path.startsWith('/_next/') || path.startsWith('/_vercel/')) {
     return;
   }
 
   // Skip asset files
-  const ext = path.split('.').pop();
-  if (['png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','css','js','map','json','txt','xml'].includes(ext)) {
+  if (/\.(png|jpg|jpeg|gif|svg|ico|woff2?|ttf|css|js|map|json|txt|xml|webp|mp4|webm|pdf)$/i.test(path)) {
     return;
   }
 
-  // Check if user already chose a language (cookie)
+  // Check cookie for existing language preference
   const cookies = request.headers.get('cookie') || '';
   const langMatch = cookies.match(/pirabel_lang=(\w+)/);
 
   if (langMatch) {
     const pref = langMatch[1];
-    if (pref === 'en' && !path.startsWith('/en/')) {
+    if (pref === 'en') {
       const enPath = '/en' + (path === '/' ? '/' : path);
-      return Response.redirect(new URL(enPath, request.url), 307);
+      return redirect(new URL(enPath, request.url).toString(), 'en');
     }
+    // User prefers FR — let them through
     return;
   }
 
   // No cookie — detect from geo then browser
   const country = request.headers.get('x-vercel-ip-country') || '';
-  let detectedLang = null;
+  let detectedLang = 'fr';
 
   if (ENGLISH_COUNTRIES.has(country)) {
     detectedLang = 'en';
   } else if (FRENCH_COUNTRIES.has(country)) {
     detectedLang = 'fr';
   } else {
+    // Fallback: browser Accept-Language
     const acceptLang = request.headers.get('accept-language') || '';
     const primary = acceptLang.split(',')[0].split('-')[0].toLowerCase();
-    detectedLang = primary === 'en' ? 'en' : 'fr';
+    if (primary === 'en') detectedLang = 'en';
   }
 
   if (detectedLang === 'en') {
     const enPath = '/en' + (path === '/' ? '/' : path);
-    const response = Response.redirect(new URL(enPath, request.url), 307);
-    response.headers.set('Set-Cookie', 'pirabel_lang=en; Path=/; Max-Age=31536000; SameSite=Lax');
-    return response;
+    return redirect(new URL(enPath, request.url).toString(), 'en');
   }
 
-  // French — no redirect needed, but we can't set cookie on passthrough
-  // Cookie will be set by language-manager.js client-side
+  // French user — pass through (cookie set by client-side JS)
   return;
 }
 

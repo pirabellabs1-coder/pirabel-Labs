@@ -115,6 +115,7 @@ app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/templates', require('./routes/templates'));
 app.use('/api/time', require('./routes/time'));
 app.use('/api/status', require('./routes/status'));
+app.use('/api/outreach', require('./routes/outreach'));
 
 // ============================================
 // SECRET ACCESS URLs (Move to .env on production)

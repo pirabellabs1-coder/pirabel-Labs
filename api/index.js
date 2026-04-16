@@ -112,6 +112,7 @@ app.use('/api/templates', require(path.join(routesPath, 'templates')));
 app.use('/api/time', require(path.join(routesPath, 'time')));
 app.use('/api/cron', require(path.join(routesPath, 'cron')));
 app.use('/api/status', require(path.join(routesPath, 'status')));
+app.use('/api/outreach', require(path.join(routesPath, 'outreach')));
 
 // Secret admin/client URLs (Consistent with server.js)
 const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';

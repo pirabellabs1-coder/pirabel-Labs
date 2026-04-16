@@ -351,17 +351,21 @@ async function sendEmail(to, subject, html, opts = {}) {
     return false;
   }
   try {
-    const mailOptions = { 
-      from: opts.from || FROM(), 
-      to, 
-      subject, 
-      html 
+    const mailOptions = {
+      from: opts.from || FROM(),
+      to,
+      subject,
+      html
     };
     if (opts.replyTo) mailOptions.replyTo = opts.replyTo;
+    if (opts.cc) mailOptions.cc = opts.cc;
+    if (opts.bcc) mailOptions.bcc = opts.bcc;
 
     const info = await transporter.sendMail(mailOptions);
     console.log(`[email] OK to=${to} subject="${subject}" messageId=${info.messageId} accepted=${(info.accepted || []).length} rejected=${(info.rejected || []).length}`);
-    return true;
+    // Return info object (with messageId/accepted/rejected) when caller asks,
+    // otherwise keep legacy truthy return for backwards compatibility.
+    return opts.returnInfo ? info : true;
   } catch (err) {
     console.error(`[email] FAIL to=${to} subject="${subject}" code=${err.code} responseCode=${err.responseCode} message=${err.message}`);
     return false;

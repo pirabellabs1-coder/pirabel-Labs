@@ -187,14 +187,14 @@
 
 <ul>
 <li><strong>Événements collectés automatically :</strong> GA4 the enregistre without no configuration of your part. Ils include first_visit, session_start, page_view and user_engagement. These events constitute the base of your data.</li>
-<li><strong>Événements of mesure améliorée :</strong> collectés automatically lorsque the mesure améliorée is activée in the paramètres of your flux of data. Ils couvrent the scroll (défilement à 90 %), the clics sortants (outbound links), the recherche interne (view_search_results), the interactions video (video_start, video_progress, video_completee) and the téléchargements of fichiers (file_download).</li>
+<li><strong>Événements of mesure améliorée :</strong> collectés automatically when the mesure améliorée is activée in the paramètres of your flux of data. Ils couvrent the scroll (défilement à 90 %), the clics sortants (outbound links), the recherche interne (view_search_results), the interactions video (video_start, video_progress, video_completee) and the téléchargements of fichiers (file_download).</li>
 <li><strong>Événements recommandés :</strong> Google propose a liste d'events standardisés for different secteurs d'activity. For the e-commerce : add_to_cart, begin_checkout, purchase. For the generation of leads : generate_lead, sign_up. Utiliser these noms standardisés you gives accès à rapports prédéfinis and à features advanced.</li>
 <li><strong>Événements personalizeds :</strong> for all this that ne rentre not in the catégories précédentes, you can create your own events with the paramètres of your choix. For example : form_submit_contact, cta_click_pricing, chat_opened.</li>
 </ul>
 
 <h3>Create events personalizeds with GTM</h3>
 
-<p>Google Tag Manager is the tool of prédilection for create events personalizeds without intervention technical. The processus itself décompose en trois steps : define a déclencheur (trigger) that identifie the interaction à measure, create a balise (tag) GA4 Event that envoie the event, and publish the conteneur. For example, for track the clics on a bouton "Demander a quote", create a déclencheur of type "Clic" filtré on the element of the bouton, associez-le à a balise GA4 Event nommée request_quote and add paramètres like page_location and button_text for enrichir your analyses.</p>
+<p>Google Tag Manager is the tool of prédilection for create events personalizeds without intervention technical. The process itself décompose en trois steps : define a déclencheur (trigger) that identifie the interaction à measure, create a balise (tag) GA4 Event that envoie the event, and publish the conteneur. For example, for track the clics on a bouton "Demander a quote", create a déclencheur of type "Clic" filtré on the element of the bouton, associez-le à a balise GA4 Event nommée request_quote and add paramètres like page_location and button_text for enrichir your analyses.</p>
 
 <h2>Configurer the conversions strategics</h2>
 
@@ -204,7 +204,7 @@
 
 <ol>
 <li><strong>Site vitrine / generation of leads :</strong> soumission of formulaire of contact, clic on the numéro of téléphone, ouverture of the chat online, téléchargement d'un livre blanc, inscription à the newsletter.</li>
-<li><strong>E-commerce :</strong> achat (purchase), ajout to the panier (add_to_cart), début of processus of paiement (begin_checkout), inscription à a compte (sign_up).</li>
+<li><strong>E-commerce :</strong> achat (purchase), ajout to the panier (add_to_cart), début of process of paiement (begin_checkout), inscription à a compte (sign_up).</li>
 <li><strong>SaaS / application :</strong> inscription à the essai free, activation of the compte, passage to the forfait payant, usage d'une feature key.</li>
 <li><strong>Contenu / média :</strong> inscription à the newsletter, partage d'article, visionnage complete d'une video, engagement profond (plus of 5 minutes on the site).</li>
 </ol>
@@ -283,13 +283,13 @@
 
 <h3>Configurer the export BigQuery</h3>
 
-<p>The activation of the export BigQuery itself does en a few steps : accédez à Administration > Liens BigQuery in GA4, sélectionnez your projet Google Cloud (create-en a si necessary), choose between the export quotidien (data agrégées a fois par jour) and the export en continu (data en time quasi réel, recommandé), then validez. The data commenceront à affluer in BigQuery in the 24 heures. Notez that the stockage BigQuery is free jusqu'à 10 Go and the queries jusqu'à 1 To par mois, this that suffit largement for the plupart sites.</p>
+<p>The activation of the export BigQuery itself does en a few steps : accédez à Administration > Liens BigQuery in GA4, sélectionnez your projet Google Cloud (create-en a si necessary), choose between the export quotidien (data agrégées a fois par jour) and the export en continu (data en time quasi réel, recommandé), then validez. The data get startedont à affluer in BigQuery in the 24 heures. Notez that the stockage BigQuery is free jusqu'à 10 Go and the queries jusqu'à 1 To par mois, this that suffit largement for the plupart sites.</p>
 
 <blockquote>BigQuery is the saut qualitatif that transform GA4 d'un tool of reporting en a véritable plateform of business intelligence. Ne you laissez not intimider par the SQL : the queries of base are accessibles à all marketeur curieux, and the results justifient largement the investissement en apprentissage.</blockquote>
 
 <h2>The models d'attribution in GA4</h2>
 
-<p>The attribution is the processus that determines quel canal marketing reçoit the crédit d'une conversion. It is a question fondamentale for all marketeur : si a user découvre your brand via a advertising Facebook, revient via a recherche Google and convertit after avoir cliqué on a email, that obtient the mérite of the vente ?</p>
+<p>The attribution is the process that determines quel canal marketing reçoit the crédit d'une conversion. It is a question fondamentale for all marketeur : si a user découvre your brand via a advertising Facebook, revient via a recherche Google and convertit after avoir cliqué on a email, that obtient the mérite of the vente ?</p>
 
 <h3>The model d'attribution data-driven</h3>
 

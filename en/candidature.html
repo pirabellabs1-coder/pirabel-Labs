@@ -102,7 +102,7 @@
   <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency for your growth.</p></div>
   <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/carrieres">All the offres</a></li><li><a href="/en/a-propos">About</a></li><li><a href="/en/contact">Contact</a></li></ul></div>
  </div>
- <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Privacy</a></div></div>
+ <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confideallyntialite">Privacy</a></div></div>
 </footer>
 
 <script src="../js/config.js"></script>
@@ -114,7 +114,7 @@ let cvDataUrl = '';
 let cvFilename = '';
 
 if (!slug) {
- document.getElementById('container').innerHTML = '<div class="empty">Lien invalide. <a href="/en/carrieres" style="color:var(--primary);">See allows les offres</a></div>';
+ document.getElementById('container').innerHTML = '<div class="empty">Lien invalideally. <a href="/en/carrieres" style="color:var(--primary);">See allows les offres</a></div>';
 } else {
  fetch('/api/recruitment/jobs/public/' + slug)
   .then(r => r.json())

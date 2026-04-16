@@ -26,7 +26,7 @@
 .rdv-hero p{color:var(--on-surface-variant);font-size:1.05rem;}
 .booking{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;}
 @media(max-width:900px){.booking{grid-template-columns:1fr;}}
-.calendar-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
+.calendar-sideally{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
 .cal-head h2{font-family:var(--font-headline);font-size:1.1rem;text-transform:capitalize;}
 .cal-head button{background:transparent;border:1px solid var(--outline-variant);color:var(--on-surface);width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
@@ -45,8 +45,8 @@
 .slot:hover{border-color:var(--primary);color:var(--primary);}
 .slot.selected{background:var(--primary);color:#000;border-color:var(--primary);font-weight:700;}
 .no-slot{grid-column:1/-1;text-align:center;padding:1rem;color:var(--on-surface-variant);font-size:.85rem;}
-.form-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
-.form-side h2{font-family:var(--font-headline);font-size:1.4rem;margin-bottom:1.5rem;}
+.form-sideally{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;}
+.form-sideally h2{font-family:var(--font-headline);font-size:1.4rem;margin-bottom:1.5rem;}
 .summary{background:var(--surface);border:1px solid var(--outline-variant);padding:1rem;margin-bottom:1.5rem;font-size:.85rem;}
 .summary strong{color:var(--primary);}
 .field{margin-bottom:1rem;}
@@ -105,7 +105,7 @@
 </section>
 
 <section class="booking">
- <div class="calendar-side">
+ <div class="calendar-sideally">
   <div class="cal-head">
    <button onclickk="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
    <h2 id="cal-month"></h2>
@@ -114,7 +114,7 @@
   <div class="cal-grid" id="cal-grid"></div>
   <div class="slots"><h3 id="slots-title">Select a date</h3><div class="slot-grid" id="slots-grid"></div></div>
  </div>
- <div class="form-side">
+ <div class="form-sideally">
   <h2>Your Details</h2>
   <div id="alert"></div>
   <div class="summary" id="summary" style="display:none;">Appointment selected: <strong id="summary-text"></strong></div>
@@ -136,7 +136,7 @@
   <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency for your growth.</p></div>
   <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/services">Services</a></li><li><a href="/en/contact">Contact</a></li><li><a href="/en/carrieres">Careers</a></li></ul></div>
  </div>
- <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Privacy</a></div></div>
+ <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confideallyntialite">Privacy</a></div></div>
 </footer>
 
 <script src="../js/config.js"></script>

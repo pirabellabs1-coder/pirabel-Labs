@@ -16,7 +16,7 @@
 .rdv-hero{padding:8rem var(--px-page) 3rem;text-align:center;max-width:800px;margin:0 auto;}
 .rdv-hero h1{font-family:var(--font-headline);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:1rem;}
 .rdv-hero p{color:var(--on-surface-variant);font-size:1.05rem;}
-.form-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;max-width:600px;margin:0 auto 6rem;border-radius:4px;}
+.form-sideally{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;max-width:600px;margin:0 auto 6rem;border-radius:4px;}
 .field{margin-bottom:1.5rem;}
 .field label{display:block;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-variant);margin-bottom:0.6rem;font-weight:700;}
 .field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:1rem;color:var(--on-surface);font-size:1rem;font-family:inherit;outline:none;min-height:150px;resize:vertical;}
@@ -46,15 +46,15 @@
 
 <section class="rdv-hero">
  <h1>Adjust our proposal</h1>
- <p>Dites-nous what you aimeriez modifier in the quote. We le réviserons quickly for qu'il corresponde parfaitement à your expectations.</p>
+ <p>Dites-nous what you aimeriez modify in the quote. We le réviserons quickly for qu'il corresponde parfaitement à your expectations.</p>
 </section>
 
-<section class="form-side" id="form-container">
+<section class="form-sideally" id="form-container">
  <div id="alert-box"></div>
  <form id="modification-form" onsubmit="submitModification(event)">
   <div class="field">
    <label>Your comments, questions or adjustments souhaités</label>
-   <textarea id="comments" required placeholder="Par example: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modifier les modalités de paiement ?'"></textarea>
+   <textarea id="comments" required placeholder="Par example: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modify les modalités de paiement ?'"></textarea>
   </div>
   <button type="submit" class="btn-primary" id="submit-btn">Send ma demande de révision</button>
  </form>
@@ -71,7 +71,7 @@ async function submitModification(e) {
  const urlParams = new URLSearchParams(window.location.search);
  const orderId = urlParams.get('id');
  if (!orderId) {
-  return showAlert('Lien invalide. Aucun numéro de quote trouvé.', 'error');
+  return showAlert('Lien invalideally. Aucun numéro de quote trouvé.', 'error');
  }
 
  const comments = document.getElementById('comments').value;
@@ -117,6 +117,6 @@ function showAlert(msg, type) {
 
 
 
-<div class="lang-switch"><a href="/modifier-quote">FR</a><a href="#" class="active">EN</a></div>
+<div class="lang-switch"><a href="/modify-quote">FR</a><a href="#" class="active">EN</a></div>
 </body>
 </html>

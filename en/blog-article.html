@@ -69,12 +69,12 @@
 .article-body blockquote{border-left:3px solid var(--primary-container);padding:1.25rem 1.5rem;margin:2rem 0;background:rgba(255,87,8,0.03);}
 .article-body blockquote p{margin:0;font-style:italic;font-size:0.9375rem;color:rgba(229,226,225,0.7);line-height:1.7;}
 
-/* Sideallybar — sticky */
-.article-sideallybar{position:sticky;top:5rem;align-self:start;display:flex;flex-direction:column;gap:1.5rem;}
-.sideallybar-box{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;}
-.sideallybar-box-title{font-family:var(--font-headline);font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary-container);margin-bottom:1rem;}
-.sideallybar-toc a{display:block;padding:0.5rem 0;font-size:0.8125rem;color:rgba(229,226,225,0.5);border-bottom:1px solid rgba(92,64,55,0.06);transition:color 0.3s;text-decoration:none;}
-.sideallybar-toc a:hover{color:var(--primary-container);}
+/* Sidebar — sticky */
+.article-sidebar{position:sticky;top:5rem;align-self:start;display:flex;flex-direction:column;gap:1.5rem;}
+.sidebar-box{background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.1);padding:1.5rem;}
+.sidebar-box-title{font-family:var(--font-headline);font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary-container);margin-bottom:1rem;}
+.sidebar-toc a{display:block;padding:0.5rem 0;font-size:0.8125rem;color:rgba(229,226,225,0.5);border-bottom:1px solid rgba(92,64,55,0.06);transition:color 0.3s;text-decoration:none;}
+.sidebar-toc a:hover{color:var(--primary-container);}
 
 /* Share bar */
 .share-bar{display:flex;gap:0.75rem;margin:2rem 0;padding:1.25rem 0;border-top:1px solid rgba(92,64,55,0.1);border-bottom:1px solid rgba(92,64,55,0.1);flex-wrap:wrap;}
@@ -98,7 +98,7 @@
 /* Responsive */
 @media(max-width:900px){
  .article-layout{grid-template-columns:1fr;gap:2rem;}
- .article-sideallybar{position:static;order:-1;}
+ .article-sidebar{position:static;order:-1;}
  .article-cover img{max-height:250px;}
 }
 @media(max-width:600px){
@@ -138,13 +138,13 @@
 
 <nav class="nav"><div class="nav-inner">
 <a href="/en/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
-<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog" class="active">BLOG</a><a href="/en/guideallys/">GUIDES</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>
+<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog" class="active">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>
    <a href="/en/carrieres" class="link-underline">CAREERS</a></div>
 <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
 <a href="/en/contact" class="nav-cta">Free Audit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
-<div class="mobile-nav"><a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/guideallys/">Guideallys</a><a href="/en/a-propos">About</a>
+<div class="mobile-nav"><a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/guides/">Guides</a><a href="/en/a-propos">About</a>
  <a href="/en/carrieres">Careers</a><a href="/en/contact">Contact</a><a href="/en/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
 </div>
 
@@ -164,7 +164,7 @@
 <!-- Cover Image -->
 <div class="article-cover" id="article-cover" style="display:none;"></div>
 
-<!-- 2-Column Layout: Article + Sideallybar -->
+<!-- 2-Column Layout: Article + Sidebar -->
 <div class="article-layout">
  <!-- Main Content -->
  <div>
@@ -189,27 +189,27 @@
   </div>
  </div>
 
- <!-- Sideallybar -->
- <asideally class="article-sideallybar">
+ <!-- Sidebar -->
+ <asideally class="article-sidebar">
   <!-- Table of Contents -->
-  <div class="sideallybar-box">
-   <div class="sideallybar-box-title">Sommaire</div>
-   <div class="sideallybar-toc" id="article-toc"></div>
+  <div class="sidebar-box">
+   <div class="sidebar-box-title">Sommaire</div>
+   <div class="sidebar-toc" id="article-toc"></div>
   </div>
 
   <!-- Newsletter -->
-  <div class="sideallybar-box">
-   <div class="sideallybar-box-title">Newsletter</div>
+  <div class="sidebar-box">
+   <div class="sidebar-box-title">Newsletter</div>
    <p style="font-size:0.8125rem;color:rgba(229,226,225,0.5);margin-bottom:1rem;">Receive our articles par email.</p>
    <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:0.5rem;">
-    <input type="email" id="sideallybar-nl" placeholder="Your email" style="background:var(--surface);border:1px solid rgba(92,64,55,0.2);padding:0.5rem 0.75rem;color:var(--on-surface);font-size:0.8125rem;outline:none;">
-    <button onclickk="sideallybarNL()" style="background:#FF5500;color:#5c1900;border:none;padding:0.5rem;font-weight:700;font-size:0.6875rem;text-transform:uppercase;cursor:pointer;">Subscribe</button>
+    <input type="email" id="sidebar-nl" placeholder="Your email" style="background:var(--surface);border:1px solid rgba(92,64,55,0.2);padding:0.5rem 0.75rem;color:var(--on-surface);font-size:0.8125rem;outline:none;">
+    <button onclickk="sidebarNL()" style="background:#FF5500;color:#5c1900;border:none;padding:0.5rem;font-weight:700;font-size:0.6875rem;text-transform:uppercase;cursor:pointer;">Subscribe</button>
    </form>
-   <div id="sideallybar-nl-ok" style="display:none;color:#41e4c0;font-size:0.75rem;margin-top:0.5rem;">Inscrit !</div>
+   <div id="sidebar-nl-ok" style="display:none;color:#41e4c0;font-size:0.75rem;margin-top:0.5rem;">Inscrit !</div>
   </div>
 
   <!-- CTA -->
-  <div class="sideallybar-box" style="background:var(--primary-container);border-color:transparent;">
+  <div class="sidebar-box" style="background:var(--primary-container);border-color:transparent;">
    <div style="font-family:var(--font-headline);font-size:0.9375rem;font-weight:700;color:var(--on-primary);margin-bottom:0.5rem;">Need aideally ?</div>
    <p style="font-size:0.8125rem;color:rgba(92,25,0,0.7);margin-bottom:1rem;">Our experts transforment ces knowledge en concrete results.</p>
    <a href="/en/contact" style="display:block;background:var(--on-primary);color:var(--primary);text-align:center;padding:0.5rem;font-weight:700;font-size:0.75rem;text-transform:uppercase;text-decoration:none;">Free audit</a>
@@ -246,8 +246,8 @@
 <footer class="footer">
 <div class="footer-grid">
  <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">L'agency digitale premium.</p></div>
- <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agency-seo-referencement-naturel/">SEO</a></li><li><a href="agency-creation-sites-web/">Websites</a></li><li><a href="agency-ia-automatisation/">IA</a></li></ul></div>
- <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/blog">Blog</a></li><li><a href="/en/guideallys/">Guideallys</a></li><li><a href="/en/resultats">Case Studies</a></li></ul></div>
+ <div><div class="footer-title">Services</div><ul class="footer-links"><li><a href="agence-seo-referencement-naturel/">SEO</a></li><li><a href="agence-creation-sites-web/">Websites</a></li><li><a href="agence-ia-automatisation/">IA</a></li></ul></div>
+ <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/blog">Blog</a></li><li><a href="/en/guides/">Guides</a></li><li><a href="/en/resultats">Case Studies</a></li></ul></div>
 </div>
 <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span></div>
 </footer>
@@ -257,7 +257,7 @@
 <script src="../js/cookie-consent.js?v=1" defer></script>
 <script>
 const API = window.PIRABEL_API || 'http://localhost:3000';
-const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',videallyo:'Vid\u00e9o',email:'Email',content:'Content',cro:'CRO',general:'Actualit\u00e9s'};
+const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',video:'Vid\u00e9o',email:'Email',content:'Content',cro:'CRO',general:'Actualit\u00e9s'};
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -312,17 +312,17 @@ async function loadArticle() {
 
 loadArticle();
 
-// Sideallybar newsletter
-async function sideallybarNL() {
- const email = document.getElementById('sideallybar-nl')?.value?.trim();
+// Sidebar newsletter
+async function sidebarNL() {
+ const email = document.getElementById('sidebar-nl')?.value?.trim();
  if (!email) return;
  try {
   await fetch(API + '/api/campaigns/subscribers', {
    method: 'POST', headers: {'Content-Type':'application/json'},
    body: JSON.stringify({email, type:'newsletter', source:'blog_article'})
   });
-  document.getElementById('sideallybar-nl-ok').style.display = 'block';
-  document.getElementById('sideallybar-nl').value = '';
+  document.getElementById('sidebar-nl-ok').style.display = 'block';
+  document.getElementById('sidebar-nl').value = '';
  } catch(e) {}
 }
 </script>

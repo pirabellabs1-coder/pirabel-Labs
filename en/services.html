@@ -421,13 +421,13 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
    <a href="/en/services" class="active">SERVICES</a>
    <a href="/en/blog">BLOG</a>
    <a href="/en/guides/">GUIDES</a>
-   <a href="/en/resultats">RESULTS</a><a href="/en/avis" class="link-underline">REVIEWS</a>
+   <a href="/en/resultats">RESULTS</a><a href="/en/reviews" class="link-underline">REVIEWS</a>
    <a href="/en/a-propos">ABOUT</a>
    <a href="/en/carrieres" class="link-underline">CAREERS</a>
    <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
-    <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+    <span onclickk="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
     <span style="opacity:0.3;">|</span>
-    <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+    <span onclickk="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
    </div>
   </div>
   <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
@@ -444,7 +444,7 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
  <a href="/en/services">Services</a>
  <a href="/en/blog">Blog</a>
  <a href="/en/guides/">Guides</a>
- <a href="/en/resultats">Results</a><a href="/en/avis">Reviews</a>
+ <a href="/en/resultats">Results</a><a href="/en/reviews">Reviews</a>
  <a href="/en/a-propos">About</a>
  <a href="/en/carrieres">Careers</a>
  <a href="/en/contact">Contact</a>
@@ -1014,7 +1014,7 @@ footer{background:var(--bg);border-top:1px solid var(--b);padding:5rem 5.5% 3rem
     <li><a href="/en/">Home</a></li>
     <li><a href="/en/a-propos">About</a>
  <a href="/en/carrieres">Careers</a></li>
-    <li><a href="/en/resultats">Results</a><a href="/en/avis">Reviews</a></li>
+    <li><a href="/en/resultats">Results</a><a href="/en/reviews">Reviews</a></li>
     <li><a href="/en/blog">Blog</a></li>
     <li><a href="/en/contact">Contact</a></li>
    </ul></div>
@@ -1081,7 +1081,7 @@ document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
 
 /* ── FILTER ── */
 document.querySelectorAll('.f-btn').forEach(btn=>{
- btn.addEventListener('click',()=>{
+ btn.addEventListener('clickk',()=>{
   document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   const f=btn.dataset.f;
@@ -1094,7 +1094,7 @@ document.querySelectorAll('.f-btn').forEach(btn=>{
 
 /* ── FAQ ── */
 document.querySelectorAll('.faq-q').forEach(q=>{
- q.addEventListener('click',()=>{
+ q.addEventListener('clickk',()=>{
   const item=q.parentElement,a=item.querySelector('.faq-a'),open=item.classList.contains('open');
   document.querySelectorAll('.faq-item.open').forEach(i=>{
    i.classList.remove('open');i.querySelector('.faq-a').style.maxHeight='0';
@@ -1107,11 +1107,11 @@ document.querySelectorAll('.faq-q').forEach(q=>{
 const hamburger=document.querySelector('.nav-hamburger');
 const mobileNav=document.querySelector('.mobile-nav');
 if(hamburger&&mobileNav){
- hamburger.addEventListener('click',()=>{
+ hamburger.addEventListener('clickk',()=>{
   hamburger.classList.toggle('open');
   mobileNav.classList.toggle('open');
  });
- document.querySelectorAll('.mobile-nav a').forEach(a=>a.addEventListener('click',()=>{
+ document.querySelectorAll('.mobile-nav a').forEach(a=>a.addEventListener('clickk',()=>{
   hamburger.classList.remove('open');
   mobileNav.classList.remove('open');
  }));

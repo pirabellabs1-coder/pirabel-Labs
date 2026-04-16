@@ -100,12 +100,12 @@
 
 <nav class="nav"><div class="nav-inner">
 <a href="/en/" class="nav-logo"><img src="../../img/logo.png" alt="Pirabel Labs" class="nav-logo-img"></a>
-<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog" class="active">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/resultats">RESULTS</a><a href="/en/avis" class="link-underline">REVIEWS</a><a href="/en/a-propos">ABOUT</a></div>
+<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog" class="active">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/resultats">RESULTS</a><a href="/en/reviews" class="link-underline">REVIEWS</a><a href="/en/a-propos">ABOUT</a></div>
 <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
 <a href="/en/contact" class="nav-cta">Free Audit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
-<div class="mobile-nav"><a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/guides/">Guides</a><a href="/en/resultats">Results</a><a href="/en/avis">Reviews</a><a href="/en/a-propos">About</a><a href="/en/contact">Contact</a></div>
+<div class="mobile-nav"><a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/guides/">Guides</a><a href="/en/resultats">Results</a><a href="/en/reviews">Reviews</a><a href="/en/a-propos">About</a><a href="/en/contact">Contact</a></div>
 
 <header class="section article-header">
 <div class="section-inner">
@@ -124,11 +124,11 @@
 
 <h2>Introduction : why the performance web is a enjeu strategic</h2>
 
-<p>En 2026, <strong>53 % visitors mobiles abandonnent a site that met more of 3 secondes à charger</strong>. Each seconde of chargement additional réduit the conversions of 7 %, augmente the bounce rate of 11 % and does chuter customers are satisfiedion user of 16 %. The performance web is not a détail technical : it is a factor déterminant of your revenue online.</p>
+<p>En 2026, <strong>53 % visitors mobiles abandonnent a site that met more of 3 seconds à charger</strong>. Each seconde of chargement additional réduit the conversions of 7 %, augmente the bounce rate of 11 % and does chuter customers are satisfiedion user of 16 %. The performance web is not a détail technical : it is a factor déterminant of your revenue online.</p>
 
 <p>Google the a compris and a does Core Web Vitals a signal of classement officiel since 2021. En 2026, with the arrivée of the INP (Interaction to Next Paint) en remplacement of the FID, the exigences itself are still renforcées. The sites that offer an experience fast and fluide are récompensés in the search results, while the sites lents are gradually relégués.</p>
 
-<p>Ce guide technical completee, élaboré par the développeurs web of Pirabel Labs, you gives all the key for understand, measure and optimize your Core Web Vitals. Des optimisations d'images to the choix of the CDN, of the minification CSS to the cache serveur, each technical is détaillée with actions concrètes that you can mettre en oeuvre immediately.</p>
+<p>Ce guide technical completee, élaboré par the développeurs web of Pirabel Labs, you gives all the key for understand, measure and optimize your Core Web Vitals. Des optimisations d'images to the choice of the CDN, of the minification CSS to the cache serveur, each technical is détaillée with actions concrètes that you can mettre en oeuvre immediately.</p>
 
 <blockquote>The performance web is the fondement invisible of the user experience. A site beau but slow is a site that personne ne visitera deux fois.</blockquote>
 
@@ -141,13 +141,13 @@
 
 <h3>LCP (Largest Contentful Paint) : the vitesse of chargement perçue</h3>
 
-<p>The LCP mesure the time necessary for that the most large element visible of the page (une image hero, a bloc of text principal, a video) soit entirely rendu à the screen. It is the metric that correspond the most directly à the perception of vitesse par the user. <strong>The objective is a LCP lower à 2,5 secondes.</strong> Beyond 4 secondes, Google considère the experience like « médiocre ».</p>
+<p>The LCP mesure the time necessary for that the most large element visible of the page (une image hero, a bloc of text principal, a video) soit entirely rendu à the screen. It is the metric that correspond the most directly à the perception of vitesse par the user. <strong>The objective is a LCP lower à 2,5 seconds.</strong> Beyond 4 seconds, Google considère the experience like « médiocre ».</p>
 
 <p>The causes the most fréquentes of a bad LCP are the images non optimisées (format, taille, compression), the polices web that bloquent the rendu, the fichiers CSS and JavaScript volumineux that retardent the first affichage and the time of response serveur too longs (TTFB high).</p>
 
 <h3>INP (Interaction to Next Paint) : the réactivity to the interactions</h3>
 
-<p>The INP a remplacé the FID (First Input Delay) en mars 2024 like metric officielle d'interactivity. Contrairement to the FID that ne mesurait that the first interaction, the INP évalue the réactivity of the page on the together of the visite. Il mesure the time between a interaction user (clic, tap, appui clavier) and the update visuelle correspondante à the screen. <strong>The objective is a INP lower à 200 millisecondes.</strong></p>
+<p>The INP a remplacé the FID (First Input Delay) en mars 2024 like metric officielle d'interactivity. Contrairement to the FID that ne mesurait that the first interaction, the INP évalue the réactivity of the page on the together of the visite. Il mesure the time between a interaction user (click, tap, appui clavier) and the update visuelle correspondante à the screen. <strong>The objective is a INP lower à 200 milliseconds.</strong></p>
 
 <p>A bad INP is generally causé par of the JavaScript that bloque the thread main of the navigateur. The scripts tiers (analytics, advertisings, widgets sociaux), the managementnaires d'events lourds and the calculs complexes côté client are the coupables habituels. The enjeu is of s'assurer that the navigateur remains réactif à all moment, same during the exécution of scripts.</p>
 
@@ -193,18 +193,18 @@
 <p>The Time to First Byte (TTFB) is the time between the query of the navigateur and the réception of the first octet of response of the serveur. A TTFB high retarde all the chaîne of chargement. The objective is a TTFB lower à 800 ms.</p>
 
 <ul>
-<li><strong>Utiliser a CDN (Content Delivery Network) :</strong> a CDN like Cloudflare, Fastly or AWS CloudFront distribue your content since serveurs situés to the more près of your visitors. A user à Paris accède à a serveur parisien, not à a serveur américain.</li>
+<li><strong>Utiliser a CDN (Content Delivery Network) :</strong> a CDN like Cloudflare, Fastly or AWS CloudFront distribue your content since serveurs situés to the most près of your visitors. A user à Paris accède à a serveur parisien, not à a serveur américain.</li>
 <li><strong>Activer the cache serveur :</strong> the cache côté serveur (Varnish, Redis, Memcached) évite of recalculer the same page à each query. For the sites à content statique or semi-statique, the cache can reduce the TTFB of 90 %.</li>
 <li><strong>Choisir a hosting performant :</strong> a hosting mutualisé à 3 euros par month ne supportera never the performance of a VPS or of a serveur dédié. The hosting is a investment, not a dépense.</li>
 </ul>
 
 <h3>Éliminer the resources that bloquent the rendu</h3>
 
-<p>The fichiers CSS and JavaScript in the &lt;head&gt; bloquent the rendu of the page so much that they are not entirely téléchargés and analysés. Each fichier bloquant ajoute hundreds of millisecondes to the LCP.</p>
+<p>The fichiers CSS and JavaScript in the &lt;head&gt; bloquent the rendu of the page so much that they are not entirely téléchargés and analysés. Each fichier bloquant ajoute hundreds of milliseconds to the LCP.</p>
 
 <ul>
 <li><strong>CSS critique online :</strong> identify the CSS necessary for rendre the content visible au-dessus of the line of flottaison and integrate-le directly in the HTML with a balise &lt;style&gt;. The remains of the CSS can être chargé of way asynchrone.</li>
-<li><strong>Différer the JavaScript non critique :</strong> add the attribut defer or async à all the scripts that are not indispensables to the first rendu. The defer is generally préférable car he guarantees the ordre d'exécution.</li>
+<li><strong>Différer the JavaScript non critique :</strong> add the attribut defer or async à all the scripts that are not essentials to the first rendu. The defer is generally préférable car he guarantees the ordre d'exécution.</li>
 <li><strong>Minifier CSS and JavaScript :</strong> the minification supprime the espaces, the howaires and the caractères inutiles. Elle réduit typiquement the taille fichiers of 20 à 40 % without no changement fonctionnel.</li>
 </ul>
 
@@ -214,7 +214,7 @@
 
 <h3>Diviser the tasks longues (Long Tasks)</h3>
 
-<p>The navigateur utilise a only thread main for exécuter the JavaScript, calculer the styles, effectuer the mise en page and peindre the pixels. Lorsthan ae task JavaScript takes more of 50 ms, it bloque the thread main and empêche the navigateur of répondre to the interactions of the user. It is the cause numéro a bad scores INP.</p>
+<p>The navigateur uses a only thread main for exécuter the JavaScript, calculer the styles, effectuer the mise en page and peindre the pixels. Lorsthan ae task JavaScript takes more of 50 ms, it bloque the thread main and empêche the navigateur of répondre to the interactions of the user. It is the cause numéro a bad scores INP.</p>
 
 <p>The solution is of diviser the tasks longues en sous-tasks more shorts en utilisant technicals like <strong>requestAnimationFrame</strong>, <strong>setTimeout(fn, 0)</strong> or the API <strong>scheduler.yield()</strong> disponible in the navigateurs modernes. The idée is of rendre the contrôle to the navigateur between each sous-task for that he puisse traiter the interactions en attente.</p>
 
@@ -224,8 +224,8 @@
 
 <ul>
 <li><strong>Auditer regularly your scripts tiers :</strong> supprimez ceux that ne are more utilisés or whose the value ne justifie not the cost en performance.</li>
-<li><strong>Charger the scripts tiers en différé :</strong> no script tiers n'a need d'être chargé immediately. Use defer, async or the chargement conditionnel (charger the widget of chat only when the user scrolle or clique).</li>
-<li><strong>Utiliser façades (facades) :</strong> for the embeds lourds like the videos YouTube or the cartes Google Maps, listedz a image statique and ne chargez the embed réel that to the clic. This technical can économiser hundreds of kilooctets of JavaScript.</li>
+<li><strong>Charger the scripts tiers en différé :</strong> no script tiers n'a need d'être chargé immediately. Use defer, async or the chargement conditionsl (charger the widget of chat only when the user scrolle or clique).</li>
+<li><strong>Utiliser façades (facades) :</strong> for the embeds lourds like the videos YouTube or the cartes Google Maps, listedz a image statique and ne chargez the embed réel that to the click. This technical can économiser hundreds of kilooctets of JavaScript.</li>
 </ul>
 
 <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80" alt="Lignes of fibre optique illustrant the vitesse of transmission data" class="article-img" loading="lazy">
@@ -259,11 +259,11 @@
 
 <h2>The strategy of cache : servir instantanément</h2>
 
-<p>A cache well configuré allows you to servir pages en a few millisecondes to the lieu of hundreds of millisecondes. It is the optimisation with the best ratio effort/impact for the visitors récurrents.</p>
+<p>A cache well configuré allows you to servir pages en a few milliseconds to the lieu of hundreds of milliseconds. It is the optimisation with the best ratio effort/impact for the visitors récurrents.</p>
 
 <h3>The cache navigateur (headers HTTP)</h3>
 
-<p>Configurez headers Cache-Control appropriés for each type of resource. The resources statiques that ne changent never (images, polices, CSS/JS versionnés) must avoir a cache of a an (max-age=31536000) with a hash in the nom of fichier for the invalidation. The pages HTML must avoir a cache court (max-age=0, must-revalidate) for garantir that the visitors voient always the content à jour.</p>
+<p>Configurez headers Cache-Control appropriés for each type of resource. The resources statiques that ne changent never (images, polices, CSS/JS versionnés) must avoir a cache of a an (max-age=31536000) with a hash in the name of fichier for the invalidation. The pages HTML must avoir a cache court (max-age=0, must-revalidate) for garantir that the visitors voient always the content à jour.</p>
 
 <h3>The cache CDN</h3>
 

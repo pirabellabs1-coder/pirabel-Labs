@@ -9,10 +9,10 @@
 <meta name="twitter:site" content="@pirabellabs">
 <link rel="icon" type="image/png" href="../img/favicon.png">
 <link rel="apple-touch-icon" href="../img/favicon.png">
-<link rel="canonical" href="https://www.pirabellabs.com/en/avis">
-<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/avis">
-<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/avis">
-<link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/avis">
+<link rel="canonical" href="https://www.pirabellabs.com/en/reviews">
+<link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/reviews">
+<link rel="alternate" hreflang="en" href="https://www.pirabellabs.com/en/reviews">
+<link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/reviews">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,13 +65,13 @@
    <a href="/en/" class="link-underline">HOME</a>
    <a href="/en/services" class="link-underline">SERVICES</a>
    <a href="/en/blog" class="link-underline">BLOG</a>
-   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/avis" class="link-underline">REVIEWS</a>
+   <a href="/en/resultats" class="link-underline">RESULTS</a><a href="/en/reviews" class="link-underline">REVIEWS</a>
    <a href="/en/a-propos" class="link-underline">ABOUT</a>
    <a href="/en/carrieres" class="link-underline">CAREERS</a>
    <div class="lang-switcher" style="margin-left:1.5rem; display:flex; gap:0.5rem; align-items:center;">
-    <span onclick="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
+    <span onclickk="window.switchLanguage('fr')" style="cursor:pointer; font-weight:700; color:var(--primary-container);">FR</span>
     <span style="opacity:0.3;">|</span>
-    <span onclick="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
+    <span onclickk="window.switchLanguage('en')" style="cursor:pointer; opacity:0.6; hover:opacity:1;">EN</span>
    </div>
   </div>
   <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
@@ -80,7 +80,7 @@
  </div>
 </nav>
 <div class="mobile-nav">
- <a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/resultats">Results</a><a href="/en/avis">Reviews</a><a href="/en/a-propos">About</a><a href="/en/carrieres">Careers</a><a href="/en/contact">Contact</a>
+ <a href="/en/">Home</a><a href="/en/services">Services</a><a href="/en/blog">Blog</a><a href="/en/resultats">Results</a><a href="/en/reviews">Reviews</a><a href="/en/a-propos">About</a><a href="/en/carrieres">Careers</a><a href="/en/contact">Contact</a>
  <a href="/en/espace-client-4p8w1n" style="color:#FF5500;">My Account</a>
 </div>
 
@@ -95,7 +95,7 @@
   <div class="field"><label>Rating</label><div class="star-input" id="star-input"></div></div>
   <div class="field"><label>Title (optional)</label><input id="f-title" placeholder="Excellent collaboration!"></div>
   <div class="field"><label>Your review *</label><textarea id="f-comment" rows="5" placeholder="Describe your experience..."></textarea></div>
-  <button class="btn-submit" onclick="submitReview()">Submit my review</button>
+  <button class="btn-submit" onclickk="submitReview()">Submit my review</button>
   <div id="form-msg" style="margin-top:1rem;text-align:center;display:none;"></div>
  </div>
 </div>
@@ -132,7 +132,7 @@ if (reviewToken) {
  for (let i = 1; i <= 5; i++) {
   const s = document.createElement('span'); s.textContent = '★'; s.dataset.val = i;
   if (i <= 5) s.classList.add('active');
-  s.onclick = () => { selectedRating = i; starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i)); };
+  s.onclickk = () => { selectedRating = i; starEl.querySelectorAll('span').forEach(x => x.classList.toggle('active', x.dataset.val <= i)); };
   starEl.appendChild(s);
  }
  fetch('/api/reviews/submit/' + reviewToken).then(r => r.json()).then(d => { if (d.alreadySubmitted) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; } });
@@ -161,6 +161,6 @@ async function submitReview() {
 function esc(s) { return (s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 </script>
 
-<div class="lang-switch"><a href="/en/avis">FR</a><a href="#" class="active">EN</a></div>
+<div class="lang-switch"><a href="/en/reviews">FR</a><a href="#" class="active">EN</a></div>
 </body>
 </html>

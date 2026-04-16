@@ -104,6 +104,39 @@
     conversationHistory: []
   };
 
+  // Rehydrate persisted state from localStorage so memory survives page reloads.
+  try {
+    var savedState = localStorage.getItem('pb_chat_state');
+    if (savedState) {
+      var parsed = JSON.parse(savedState);
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.visitor) Object.assign(STATE.visitor, parsed.visitor);
+        if (parsed.qualification) Object.assign(STATE.qualification, parsed.qualification);
+        if (Array.isArray(parsed.problems)) STATE.problems = parsed.problems.slice(0, 20);
+        if (Array.isArray(parsed.interests)) STATE.interests = parsed.interests.slice(0, 20);
+        if (Array.isArray(parsed.topicsDiscussed)) STATE.topicsDiscussed = parsed.topicsDiscussed.slice(0, 30);
+        if (typeof parsed.phase === 'string') STATE.phase = parsed.phase;
+        if (typeof parsed.userMessageCount === 'number') STATE.userMessageCount = parsed.userMessageCount;
+        if (typeof parsed.messageCount === 'number') STATE.messageCount = parsed.messageCount;
+      }
+    }
+  } catch (e) { /* noop */ }
+
+  function persistState() {
+    try {
+      localStorage.setItem('pb_chat_state', JSON.stringify({
+        visitor: STATE.visitor,
+        qualification: STATE.qualification,
+        problems: STATE.problems,
+        interests: STATE.interests,
+        topicsDiscussed: STATE.topicsDiscussed,
+        phase: STATE.phase,
+        userMessageCount: STATE.userMessageCount,
+        messageCount: STATE.messageCount
+      }));
+    } catch (e) { /* noop */ }
+  }
+
   var conversationId = localStorage.getItem('pb_chat_id') || null;
   var messageQueue = [];
   var isProcessingQueue = false;
@@ -1129,6 +1162,7 @@
     }
 
     updateLeadScore();
+    persistState();
   }
 
   function updateLeadScore() {
@@ -1441,6 +1475,17 @@
     STATE.conversationHistory.push({ role: 'user', text: input, ts: Date.now() });
     STATE.history.push({ role: 'user', text: input, ts: Date.now() });
 
+    // Detect if the user refuses to share email — never re-ask after that.
+    if (STATE.waitingForEmail && !detectEmail(input)) {
+      var lower = (input || '').toLowerCase();
+      if (/\b(non|pas envie|préfère pas|prefere pas|pas maintenant|plus tard|pas mon email|je ne veux pas|pas d['’]email|pas de mail|je prefere pas|je préfère pas)\b/.test(lower)) {
+        STATE.emailRefused = true;
+        STATE.waitingForEmail = false;
+      }
+    }
+    // Mark email as asked if we were expecting it
+    if (STATE.waitingForEmail) STATE.emailAsked = true;
+
     // Local extraction (keeps STATE.visitor / qualification in sync for UI + lead capture)
     extractAllInfo(input);
 
@@ -1458,7 +1503,8 @@
       };
     });
 
-    // Snapshot of what we already know about the visitor
+    // Snapshot of what we already know about the visitor — persisted so Léa
+    // never has to ask twice for the same thing.
     var visitorPayload = {
       name: STATE.visitor.name || '',
       company: STATE.visitor.company || '',
@@ -1470,7 +1516,12 @@
     var qualPayload = {
       budget: STATE.qualification.budget || '',
       timeline: STATE.qualification.timeline || '',
-      decisionMaker: STATE.qualification.decisionMaker === true
+      decisionMaker: STATE.qualification.decisionMaker === true,
+      problems: (STATE.problems || []).slice(0, 10),
+      interests: (STATE.interests || []).slice(0, 10),
+      topicsDiscussed: (STATE.topicsDiscussed || []).slice(0, 10),
+      emailAsked: STATE.emailAsked === true,
+      emailRefused: STATE.emailRefused === true
     };
 
     // Show typing indicator immediately for better UX

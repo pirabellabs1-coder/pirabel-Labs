@@ -143,7 +143,7 @@
 
 <p>The LCP mesure the time necessary for that the most large element visible of the page (une image hero, a bloc of text principal, a video) soit entirely rendu à the screen. It is the metric that correspond the most directly à the perception of vitesse par the user. <strong>The objective is a LCP lower à 2,5 secondes.</strong> Beyond 4 secondes, Google considère the experience like « médiocre ».</p>
 
-<p>The causes the most fréquentes d'un bad LCP are the images non optimisées (format, taille, compression), the polices web that bloquent the rendu, the fichiers CSS and JavaScript volumineux that retardent the first affichage and the time of response serveur too longs (TTFB high).</p>
+<p>The causes the most fréquentes of a bad LCP are the images non optimisées (format, taille, compression), the polices web that bloquent the rendu, the fichiers CSS and JavaScript volumineux that retardent the first affichage and the time of response serveur too longs (TTFB high).</p>
 
 <h3>INP (Interaction to Next Paint) : the réactivity to the interactions</h3>
 
@@ -155,7 +155,7 @@
 
 <p>The CLS mesure the quantité of déplacements inexpecteds of the content visible during the chargement of the page. You connaissez this frustration : you are on the point of cliquer on a lien and soudain, a image itself charge au-dessus, all the content itself décale and you cliquez on the bad chose. It is exactly this that the CLS quantifie. <strong>The objective is a CLS lower à 0,1.</strong></p>
 
-<p>The causes main d'un bad CLS are the images and videos without dimensions explicites (width/height), the advertisings and embeds that s'insèrent dynamiquement, the polices web that provoquent a flash of text invisible (FOIT) or of text non stylisé (FOUT) and the content injecté dynamiquement au-dessus of the content existant.</p>
+<p>The causes main of a bad CLS are the images and videos without dimensions explicites (width/height), the advertisings and embeds that s'insèrent dynamiquement, the polices web that provoquent a flash of text invisible (FOIT) or of text non stylisé (FOUT) and the content injecté dynamiquement au-dessus of the content existant.</p>
 
 <h2>Mesurer your Core Web Vitals</h2>
 
@@ -179,7 +179,7 @@
 
 <h3>Optimiser the images : the levier numéro un</h3>
 
-<p>The images represent en average 50 % of the poids d'une page web. Leur optimisation is the levier the most puissant for improve the LCP.</p>
+<p>The images represent en average 50 % of the poids of a page web. Leur optimisation is the levier the most puissant for improve the LCP.</p>
 
 <ul>
 <li><strong>Adopter the formats modernes :</strong> WebP offers a compression 25 à 35 % highere to the JPEG à quality visuelle équivalente. AVIF, the format of new generation, pousse the compression still more loin with gains of 40 à 50 %. Use the balise &lt;picture&gt; with sources multiples for servir the format optimal according to the navigateur.</li>
@@ -195,7 +195,7 @@
 <ul>
 <li><strong>Utiliser a CDN (Content Delivery Network) :</strong> a CDN like Cloudflare, Fastly or AWS CloudFront distribue your content since serveurs situés to the more près of your visitors. A user à Paris accède à a serveur parisien, not à a serveur américain.</li>
 <li><strong>Activer the cache serveur :</strong> the cache côté serveur (Varnish, Redis, Memcached) évite of recalculer the same page à each query. For the sites à content statique or semi-statique, the cache can reduce the TTFB of 90 %.</li>
-<li><strong>Choisir a hosting performant :</strong> a hosting mutualisé à 3 euros par month ne supportera never the performance d'un VPS or d'un serveur dédié. The hosting is a investment, not a dépense.</li>
+<li><strong>Choisir a hosting performant :</strong> a hosting mutualisé à 3 euros par month ne supportera never the performance of a VPS or of a serveur dédié. The hosting is a investment, not a dépense.</li>
 </ul>
 
 <h3>Éliminer the resources that bloquent the rendu</h3>
@@ -214,7 +214,7 @@
 
 <h3>Diviser the tasks longues (Long Tasks)</h3>
 
-<p>The navigateur utilise a only thread main for exécuter the JavaScript, calculer the styles, effectuer the mise en page and peindre the pixels. Lorsqu'une task JavaScript takes more of 50 ms, it bloque the thread main and empêche the navigateur of répondre to the interactions of the user. It is the cause numéro a bad scores INP.</p>
+<p>The navigateur utilise a only thread main for exécuter the JavaScript, calculer the styles, effectuer the mise en page and peindre the pixels. Lorsthan ae task JavaScript takes more of 50 ms, it bloque the thread main and empêche the navigateur of répondre to the interactions of the user. It is the cause numéro a bad scores INP.</p>
 
 <p>The solution is of diviser the tasks longues en sous-tasks more shorts en utilisant technicals like <strong>requestAnimationFrame</strong>, <strong>setTimeout(fn, 0)</strong> or the API <strong>scheduler.yield()</strong> disponible in the navigateurs modernes. The idée is of rendre the contrôle to the navigateur between each sous-task for that he puisse traiter the interactions en attente.</p>
 
@@ -263,11 +263,11 @@
 
 <h3>The cache navigateur (headers HTTP)</h3>
 
-<p>Configurez headers Cache-Control appropriés for each type of resource. The resources statiques that ne changent never (images, polices, CSS/JS versionnés) must avoir a cache d'un an (max-age=31536000) with a hash in the nom of fichier for the invalidation. The pages HTML must avoir a cache court (max-age=0, must-revalidate) for garantir that the visitors voient always the content à jour.</p>
+<p>Configurez headers Cache-Control appropriés for each type of resource. The resources statiques that ne changent never (images, polices, CSS/JS versionnés) must avoir a cache of a an (max-age=31536000) with a hash in the nom of fichier for the invalidation. The pages HTML must avoir a cache court (max-age=0, must-revalidate) for garantir that the visitors voient always the content à jour.</p>
 
 <h3>The cache CDN</h3>
 
-<p>The CDN ajoute a couche of cache additional between your serveur and the visitors. Lorsqu'un visitor à Lyon demande your page, the CDN the sert since son point of presence lyonnais without never contacter your serveur d'origine. Configurez règles of cache CDN distinctes for the resources statiques (cache long) and the pages dynamiques (cache court with invalidation automatique lors updates).</p>
+<p>The CDN ajoute a couche of cache additional between your serveur and the visitors. Lorsthan a visitor à Lyon demande your page, the CDN the sert since son point of presence lyonnais without never contacter your serveur d'origine. Configurez règles of cache CDN distinctes for the resources statiques (cache long) and the pages dynamiques (cache court with invalidation automatique lors updates).</p>
 
 <h2>Checklist of performance : the actions prioritaires</h2>
 
@@ -290,7 +290,7 @@
 
 <p>The optimisation Core Web Vitals is not a projet ponctuel à coexpensive on a liste. It is a culture of the performanwhat must imprégner each decision technical and éditoriale. Each new image ajoutée, each new script intégré, each new feature déployée impacts the performance of your site. The enjeu is of maintain a level d'excellence constant in the time.</p>
 
-<p>The benefits d'un site performant dépassent largement the SEO. A site fast améliore the conversion rate, réduit the costs d'hosting (moins of bande passante consommée), améliore the accessibility for the users en connexion lente and renforce the perception of professionnalisme of your brand. Each milliseconde gagnée itself traduit par a best experience for your visitors and a best return on investment for your business.</p>
+<p>The benefits of a site performant dépassent largement the SEO. A site fast améliore the conversion rate, réduit the costs d'hosting (moins of bande passante consommée), améliore the accessibility for the users en connexion lente and renforce the perception of professionnalisme of your brand. Each milliseconde gagnée itself traduit par a best experience for your visitors and a best return on investment for your business.</p>
 
 <p>The team technical of Pirabel Labs réalise audits of performance completees and accompagne the businesses in the optimisation of their Core Web Vitals. <strong><a href="/en/contact" style="color:#FF5500;text-decoration:underline;">Contact Us for an audit of performance free</a></strong> and discover how a site ultra-rapide can transform your results online.</p>
 

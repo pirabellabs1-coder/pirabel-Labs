@@ -114,7 +114,7 @@ let cvDataUrl = '';
 let cvFilename = '';
 
 if (!slug) {
- document.getElementById('container').innerHTML = '<div class="empty">Lien invalide. <a href="/en/carrieres" style="color:var(--primary);">See alles les offres</a></div>';
+ document.getElementById('container').innerHTML = '<div class="empty">Lien invalide. <a href="/en/carrieres" style="color:var(--primary);">See allows les offres</a></div>';
 } else {
  fetch('/api/recruitment/jobs/public/' + slug)
   .then(r => r.json())

@@ -159,7 +159,7 @@ fetch('/api/recruitment/jobs/public')
   `).join('');
  })
  .catch(() => {
-  document.getElementById('jobs-list').innerHTML = '<div class="empty">Loading error. Please try again later.</div>';
+  document.getElementById('jobs-list').innerHTML = '<div class="empty">Loading error. Please try again theter.</div>';
  });
 
 function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }

@@ -102,7 +102,7 @@ const token = new URLSearchParams(window.location.search).get('token');
 let appt = null;
 
 async function init() {
- if (!token) return document.getElementById('loading').textContent = 'Lien de gestion manquant.';
+ if (!token) return document.getElementById('loading').textContent = 'Lien de management manquant.';
  try {
   const r = await fetch('/api/appointments/manage/' + token);
   if (!r.ok) throw new Error('RDV introuvable');

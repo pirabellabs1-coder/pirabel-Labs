@@ -46,7 +46,7 @@
 
 <section class="rdv-hero">
  <h1>Adjust our proposal</h1>
- <p>Dites-nous ce that you aimeriez modifier in le quote. Nous le réviserons rapidement for qu'il corresponde parfaitement à your attentes.</p>
+ <p>Dites-nous what you aimeriez modifier in the quote. Nous le réviserons quickly for qu'il corresponde parfaitement à your attentes.</p>
 </section>
 
 <section class="form-side" id="form-container">
@@ -54,7 +54,7 @@
  <form id="modification-form" onsubmit="submitModification(event)">
   <div class="field">
    <label>Your comments, questions or adjustments souhaités</label>
-   <textarea id="comments" required placeholder="Par exemple: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modifier les modalités de paiement ?'"></textarea>
+   <textarea id="comments" required placeholder="Par example: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modifier les modalités de paiement ?'"></textarea>
   </div>
   <button type="submit" class="btn-primary" id="submit-btn">Send ma demande de révision</button>
  </form>
@@ -100,7 +100,7 @@ async function submitModification(e) {
    throw new Error('Error');
   }
   
-  showAlert('Votre demande a bien été envoyée. Notre expert you répondra with un quote ajusté in les more brefs délais !', 'success');
+  showAlert('Votre demande a bien été envoyée. Notre expert you répondra with a quote ajusté in the more brefs délais !', 'success');
   document.getElementById('modification-form').reset();
   btn.style.display = 'none';
  } catch (err) {

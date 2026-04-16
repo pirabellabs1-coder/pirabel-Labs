@@ -120,48 +120,48 @@
 
 <div class="article-body">
 
-<h2>Why Google Analytics 4 is essential en 2026</h2>
+<h2>Why Google Analytics 4 is essential in 2026</h2>
 
-<p>Google Analytics 4 (GA4) s'est imposé like the tool d'analyse web of reference since the disparition définitive d'Universal Analytics en juillet 2024. En 2026, GA4 is non only the standard of the industrie but also a tool considerably more puissant and mature that à son lancement. <strong>Pourtant, a étude recente révèle that 65 % businesses n'exploitent not the moitié features of GA4</strong>, itself privant d'insights strategics for their growth.</p>
+<p>Google Analytics 4 (GA4) s'est imposé like the tool d'analyse web of reference since the disparition définitive d'Universal Analytics en juillet 2024. En 2026, GA4 is non only the standard of the industrie but also a tool considerably more puissant and mature that à son launch. <strong>Pourtant, a étude recente révèle that 65 % businesses n'exploitent not the moitié features of GA4</strong>, itself privant d'insights strategics for their growth.</p>
 
 <p>Contrairement à Universal Analytics that reposait on a model of sessions and of pages vues, GA4 adopte a model entirely basé on the events. Each interaction user -- a clic, a scroll, a visionnage of video, a achat, a recherche -- is enregistrée like a event. This approche offers a flexibilité and a granularité d'analyse without précédent, but it requires a véritable changement of mentalité for the marketeurs habitués à the ancienne interface.</p>
 
 <p>Ce guide was designed for you accompagner not à not in the maîtrise of GA4, that you partz of zéro or that you cherchiez à approfondir your connaissances. De the installation initiale à the exploitation advanced via BigQuery, each section is pensée for être immediately actionable.</p>
 
 <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Tableau of bord analytique with graphiques of performance and metrics" class="article-img" loading="lazy">
-<p class="article-img-caption">GA4 offers a vision completee of the parcours user thanks to son model basé on the events.</p>
+<p class="article-img-caption">GA4 offers a vision completeee of the parcours user thanks to son model basé on the events.</p>
 
-<blockquote>Without data fiables, each decision marketing is a pari. Google Analytics 4 transform the intuitions en certitudes and the suppositions en strategies éclairées. Investir in sa maîtrise is the best investissement marketing that you puissiez faire.</blockquote>
+<blockquote>Without data fiables, each decision marketing is a pari. Google Analytics 4 transform the intuitions en certitudes and the suppositions en strategies éclairées. Investir in sa maîtrise is the best investment marketing that you puissiez faire.</blockquote>
 
 <h2>The migration d'Universal Analytics toward GA4 : this that you need to savoir</h2>
 
-<p>Si you avez utilisé Universal Analytics during years, the transition toward GA4 can sembler déstabilisante. The interfaces, the metrics and same the philosophie of mesure are fundamentally different. Comprendre these differences is the first step for exploiter pleinement GA4.</p>
+<p>Si you have utilisé Universal Analytics during years, the transition toward GA4 can sembler déstabilisante. The interfaces, the metrics and same the philosophie of mesure are fundamentally different. Comprendre these differences is the first step for exploiter pleinement GA4.</p>
 
 <h3>The differences fondamentales between UA and GA4</h3>
 
 <ul>
-<li><strong>Modèle of data :</strong> UA était basé on the sessions (un groupe d'interactions during a period donnée). GA4 is basé on the events (chaque interaction is a event indépendant). This approche eventielle offers a vision more granulaire and more flexible of the comportement user.</li>
+<li><strong>Modèle of data :</strong> UA était basé on the sessions (un groupe d'interactions during a period donnée). GA4 is basé on the events (each interaction is a event indéduring). This approche eventielle offers a vision more granulaire and more flexible of the comportement user.</li>
 <li><strong>Métriques key :</strong> the bounce rate d'UA was remplacé par the engagement rate in GA4, a metric more relevante that mesure the sessions with a engagement significatif (plus of 10 secondes, to the less 2 pages vues or to the less a conversion).</li>
-<li><strong>Suivi cross-plateform :</strong> GA4 unifie the suivi web and application mobile in a only propriété, permettant of track a user on son parcours complete between navigateur and application.</li>
-<li><strong>Conservation data :</strong> GA4 conserve the data granulaires during 2 or 14 mois maximum (selon your configuration). The rapports agrégés remain disponibles indéfiniment, but the data d'exploration are limitées in the time.</li>
+<li><strong>Suivi cross-platform :</strong> GA4 unifie the suivi web and application mobile in a only propriété, allowstant of track a user on son parcours completee between navigateur and application.</li>
+<li><strong>Conservation data :</strong> GA4 conserve the data granulaires during 2 or 14 month maximum (selon your configuration). The rapports agrégés remain disponibles indéfiniment, but the data d'exploration are limitées in the time.</li>
 <li><strong>Intelligence artificielle :</strong> GA4 intègre models of machine learning for the insights automatiques, the prédictions of conversion, the alertes d'anomalies and the audiences prédictives.</li>
 </ul>
 
 <h3>The data historiques after the migration</h3>
 
-<p>A point crucial à understand : <strong>your data Universal Analytics are not imreachs in GA4</strong>. The deux plateforms collectent data of way indépendante. That's why he était essential of configure GA4 en parallèle d'UA dès 2023. Si you n'avez not of data historiques GA4, you devrez rebuild your benchmarks and your references of performance à partir data collectées since your installation.</p>
+<p>A point crucial à understand : <strong>your data Universal Analytics are not imreachs in GA4</strong>. The deux platforms collectent data of way indéduringe. That's why he était essential of configure GA4 en parallèle d'UA dès 2023. Si you n'have not of data historiques GA4, you devrez rebuild your benchmarks and your references of performance à partir data collectées since your installation.</p>
 
 <h2>Installer and configure GA4 correctly</h2>
 
-<p>The installation correcte of GA4 is the fondement of all analyse fiable. A configuration défaillante product data erronées that mèneront inévitablement à of mauvaises decisions marketing. Investissez the time necessary for faire the choses correctly dès the départ.</p>
+<p>The installation correcte of GA4 is the fondement of all analyse fiable. A configuration défaillante product data erronées that mèneront inévitablement à of mauvaises decisions marketing. Invest the time necessary for faire the choses correctly dès the départ.</p>
 
 <h3>Create a propriété GA4</h3>
 
 <ol>
 <li><strong>Access à Google Analytics</strong> (analytics.google.com) and connectez-vous with your compte Google.</li>
-<li><strong>Create a compte</strong> si you n'en avez pas, or sélectionnez a compte existant in the panneau d'administration.</li>
+<li><strong>Create a compte</strong> si you n'en have pas, or sélectionnez a compte existant in the panneau d'administration.</li>
 <li><strong>Create a new propriété GA4 :</strong> cliquez on "Create a propriété", renseignez the nom of your site, sélectionnez your fuseau horaire and your quotee. The choix of the fuseau horaire is important car he determines the bornes of your journées in the rapports.</li>
-<li><strong>Configurez the flux of data :</strong> choose "Web" like plateform and entrez the URL of your site. GA4 generatea a ID of mesure to the format G-XXXXXXXXXX.</li>
+<li><strong>Configurez the flux of data :</strong> choose "Web" like platform and entrez the URL of your site. GA4 generatea a ID of mesure to the format G-XXXXXXXXXX.</li>
 <li><strong>Activez the mesure améliorée :</strong> this feature collecte automatically events key without configuration additional (scrolls, clics sortants, recherches internes, interactions video, téléchargements of fichiers).</li>
 </ol>
 
@@ -170,8 +170,8 @@
 <p>You disposez of deux methods main for installer GA4 on your site :</p>
 
 <ul>
-<li><strong>Via Google Tag Manager (recommandé) :</strong> it is the method the most flexible and the most évolutive. Create a conteneur GTM, add the snippet GTM on all your pages, then configurez a balise GA4 in the interface GTM. This approche permet d'ajouter and of modifier events without toucher to the code source of your site.</li>
-<li><strong>Installation directe (gtag.js) :</strong> copiez the snippet JavaScript fourni par GA4 and collez-le in the <code>&lt;head&gt;</code> of each page of your site. Plus simple à set up but less flexible for the évolutions futures and the gestion advanced events.</li>
+<li><strong>Via Google Tag Manager (recommandé) :</strong> it is the method the most flexible and the most évolutive. Create a conteneur GTM, add the snippet GTM on all your pages, then configurez a balise GA4 in the interface GTM. This approche allows d'ajouter and of modifier events without touexpensive to the code source of your site.</li>
+<li><strong>Installation directe (gtag.js) :</strong> copiez the snippet JavaScript fourni par GA4 and collez-le in the <code>&lt;head&gt;</code> of each page of your site. Plus simple à set up but less flexible for the évolutions futures and the advanced management events.</li>
 </ul>
 
 <p>Quelle that soit the method choisie, <strong>vérifiez immediately that the data remontent correctly</strong> en consultant the rapport in real time of GA4 all en naviguant on your site in a other onglet.</p>
@@ -181,47 +181,47 @@
 
 <h2>Comprendre and maîtriser the events</h2>
 
-<p>The events are the cœur of GA4. Absolument all this that itself passe on your site is mesuré under form d'event. Comprendre the different catégories d'events and savoir create events personalizeds is the compétence the most importante à acquérir for exploiter GA4.</p>
+<p>The events are the cœur of GA4. Absolument all this that itself passe on your site is mesuré under form d'event. Comprendre the different catégories d'events and savoir create events customiseds is the compétence the most importante à acquérir for exploiter GA4.</p>
 
 <h3>The quatre types d'events GA4</h3>
 
 <ul>
 <li><strong>Événements collectés automatically :</strong> GA4 the enregistre without no configuration of your part. Ils include first_visit, session_start, page_view and user_engagement. These events constitute the base of your data.</li>
-<li><strong>Événements of mesure améliorée :</strong> collectés automatically when the mesure améliorée is activée in the paramètres of your flux of data. Ils couvrent the scroll (défilement à 90 %), the clics sortants (outbound links), the recherche interne (view_search_results), the interactions video (video_start, video_progress, video_completee) and the téléchargements of fichiers (file_download).</li>
+<li><strong>Événements of mesure améliorée :</strong> collectés automatically when the mesure améliorée is activée in the paramètres of your flux of data. Ils couvrent the scroll (défilement à 90 %), the clics sortants (outbound links), the research interne (view_search_results), the interactions video (video_start, video_progress, video_completeee) and the téléchargements of fichiers (file_download).</li>
 <li><strong>Événements recommandés :</strong> Google propose a liste d'events standardisés for different secteurs d'activity. For the e-commerce : add_to_cart, begin_checkout, purchase. For the generation of leads : generate_lead, sign_up. Utiliser these noms standardisés you gives accès à rapports prédéfinis and à features advanced.</li>
-<li><strong>Événements personalizeds :</strong> for all this that ne rentre not in the catégories précédentes, you can create your own events with the paramètres of your choix. For example : form_submit_contact, cta_click_pricing, chat_opened.</li>
+<li><strong>Événements customiseds :</strong> for all this that ne rentre not in the catégories précédentes, you can create your own events with the paramètres of your choix. For example : form_submit_contact, cta_click_pricing, chat_opened.</li>
 </ul>
 
-<h3>Create events personalizeds with GTM</h3>
+<h3>Create events customiseds with GTM</h3>
 
-<p>Google Tag Manager is the tool of prédilection for create events personalizeds without intervention technical. The process itself décompose en trois steps : define a déclencheur (trigger) that identifie the interaction à measure, create a balise (tag) GA4 Event that envoie the event, and publish the conteneur. For example, for track the clics on a bouton "Demander a quote", create a déclencheur of type "Clic" filtré on the element of the bouton, associez-le à a balise GA4 Event nommée request_quote and add paramètres like page_location and button_text for enrichir your analyses.</p>
+<p>Google Tag Manager is the tool of prédilection for create events customiseds without intervention technical. The process itself décompose en trois steps : define a déclencheur (trigger) that identifie the interaction à measure, create a balise (tag) GA4 Event that envoie the event, and publish the conteneur. For example, for track the clics on a bouton "Demander a quote", create a déclencheur of type "Clic" filtré on the element of the bouton, associez-le à a balise GA4 Event nommée request_quote and add paramètres like page_location and button_text for enrichir your analyses.</p>
 
 <h2>Configurer the conversions strategics</h2>
 
-<p>In GA4, a conversion is simply a event that you avez marqué like important for your business. <strong>The configuration conversions is the pivot of your analyse</strong> car it determines quels comportements user GA4 goes optimize and highlight in ses rapports.</p>
+<p>In GA4, a conversion is simply a event that you have marqué like important for your business. <strong>The configuration conversions is the pivot of your analyse</strong> car it determines quels comportements user GA4 goes optimize and highlight in ses rapports.</p>
 
-<h3>The conversions essentialles according to your activity</h3>
+<h3>The conversions essential according to your activity</h3>
 
 <ol>
-<li><strong>Site vitrine / generation of leads :</strong> soumission of formulaire of contact, clic on the numéro of téléphone, ouverture of the chat online, téléchargement d'un livre blanc, inscription à the newsletter.</li>
+<li><strong>Showcase site / generation of leads :</strong> soumission of formulaire of contact, clic on the numéro of téléphone, ouverture of the chat online, téléchargement d'un livre blanc, inscription à the newsletter.</li>
 <li><strong>E-commerce :</strong> achat (purchase), ajout to the panier (add_to_cart), début of process of paiement (begin_checkout), inscription à a compte (sign_up).</li>
 <li><strong>SaaS / application :</strong> inscription à the essai free, activation of the compte, passage to the forfait payant, usage d'une feature key.</li>
-<li><strong>Contenu / média :</strong> inscription à the newsletter, partage d'article, visionnage complete d'une video, engagement profond (plus of 5 minutes on the site).</li>
+<li><strong>Contenu / média :</strong> inscription à the newsletter, partage d'article, visionnage completee d'une video, engagement profond (plus of 5 minutes on the site).</li>
 </ol>
 
-<p>For brandr a event like conversion, accédez à Administration > Événements, then activez the toggle "Marquer like conversion" à côté of the event souhaité. You can also create conversions personalized in Administration > Conversions.</p>
+<p>For brandr a event like conversion, accédez à Administration > Événements, then activez the toggle "Marquer like conversion" à côté of the event souhaité. You can also create conversions customised in Administration > Conversions.</p>
 
 <h2>Naviguer in the rapports GA4</h2>
 
-<p>The interface of GA4 is organisée autour furthermoreieurs catégories of rapports that répondent each à questions strategics on your audience and ses comportements. Maîtriser this navigation is essential for extraire quickly the insights whose you avez need.</p>
+<p>The interface of GA4 is organisée autour furthermoreieurs catégories of rapports that répondent each à questions strategics on your audience and ses comportements. Maîtriser this navigation is essential for extraire quickly the insights whose you have need.</p>
 
 <h3>The rapports standard</h3>
 
 <ul>
 <li><strong>Rapports in real time :</strong> visualisez the activity en cours on your site (users actifs, pages consultées, events déclenchés, conversions en cours). Indispensable for vérifier the good fonctionnement of your tracking after a mise en production or a changement of configuration.</li>
 <li><strong>Rapports d'acquisition :</strong> comprenez d'où viennent your visitors. The rapport Vue d'together montre the canaux main (recherche organic, paid advertising, social media, direct, referral). The rapport Acquisition of trafic détaille the performance par source, médium and campagne.</li>
-<li><strong>Rapports d'engagement :</strong> analyze how the users interagissent with your content. Pages and screens montre the contents the most populaires. Événements liste all the interactions enregistrées. Conversions affiche the performance of your goals.</li>
-<li><strong>Rapports of monétisation :</strong> for the sites e-commerce, suivez the revenus, the products the most vendus, the panier moyen, the purchase journey and the prowordions the most effectives.</li>
+<li><strong>Rapports d'engagement :</strong> analyze how the users interagissent with your content. Pages and screens montre the contents the most populaires. Événements liste all the interactions enregistrées. Conversions listed the performance of your goals.</li>
+<li><strong>Rapports of monétisation :</strong> for the sites e-commerce, suivez the revenus, the products the most solds, the panier moyen, the purchase journey and the prowordions the most effectives.</li>
 <li><strong>Rapports of rétention :</strong> measure the fidélité of your audience with the taux of retour, the fréquence of visite, the value vie client and the analyses of cohortes.</li>
 <li><strong>Rapports démographiques :</strong> discover that are your visitors en termes d'âge, of genre, of localisation géographique, of langue and d'intérêts.</li>
 </ul>
@@ -233,9 +233,9 @@
 <h3>The types d'explorations disponibles</h3>
 
 <ul>
-<li><strong>Exploration en form libre :</strong> create tableaux croisés dynamiques personalizeds en combinant dimensions and metrics of your choix. It is the format the most flexible, ideal for the analyses ad hoc and the questions exploratoires.</li>
+<li><strong>Exploration en form libre :</strong> create tableaux croisés dynamiques customiseds en combinant dimensions and metrics of your choix. It is the format the most flexible, ideal for the analyses ad hoc and the questions exploratoires.</li>
 <li><strong>Exploration en entonnoir :</strong> visualisez the steps of the parcours user and identify the points of friction where the users abandonnent. Indispensable for optimize the tunnels of conversion.</li>
-<li><strong>Exploration of parcours :</strong> discover the chemins réels that take your users on your site, page after page. This visualisation arborescente révèle comportements inattendus and opportunities d'optimisation.</li>
+<li><strong>Exploration of parcours :</strong> discover the chemins réels that take your users on your site, page after page. This visualisation arborescente révèle comportements inexpecteds and opportunities d'optimisation.</li>
 <li><strong>Chevauchement of segments :</strong> comparez visuellement the recoupements between different segments d'audience for identify sous-groupes à strong potential.</li>
 <li><strong>Analyse of cohortes :</strong> suivez the comportement of groupes d'users to the fil of the time for understand the rétention, the fidélité and the value vie client.</li>
 <li><strong>Durée of vie of the user :</strong> analyze the metrics cumulées on the totalité of the cycle of vie d'un user, of sa first visite à ses conversions the most recentes.</li>
@@ -246,26 +246,26 @@
 
 <h3>Create a exploration en entonnoir effective</h3>
 
-<p>The analyse en entonnoir is probably the exploration the most précieuse for the businesses online. For the create : sélectionnez "Exploration en entonnoir" in the models, define the steps of your parcours (for example : page_view of the page product > add_to_cart > begin_checkout > purchase), then analyze the conversion rate between each step. Use the segments for comparer the performance par source of trafic, par appareil or par type d'user.</p>
+<p>The analyse en entonnoir is probably the exploration the most précieuse for the businesses online. For the create : sélectionnez "Exploration en entonnoir" in the models, define the steps of your parcours (for example : page_view of the page product > add_to_cart > begin_checkout > purchase), then analyze the conversion rate between each step. Use the segments for comparer the performance par source of trafic, par appareil or by type d'user.</p>
 
 <h2>Audiences and segments : cibler with preciseion</h2>
 
 <p>The audiences in GA4 are groupes d'users définis according to criterions comportementaux, démographiques or technologiques. Elles servent deux objectives majeurs : the analyse (segmenter your rapports) and the activation (exporter toward Google Ads for the remarketing).</p>
 
-<h3>Create audiences personalized</h3>
+<h3>Create audiences customised</h3>
 
 <p>GA4 allows you to create audiences with a granularité remarquable. Voici examples d'audiences strategics à configure :</p>
 
 <ul>
 <li><strong>Visiteurs à strong intention :</strong> users ayant consulté more of 3 pages product and passé more of 5 minutes on the site without convert. Ciblez-les en remarketing with a offers spéciale.</li>
-<li><strong>Abandonnistes of panier :</strong> users ayant déclenché the event add_to_cart but not purchase in the 7 latest jours. The segment the most rentable en remarketing e-commerce.</li>
-<li><strong>Clients fidèles :</strong> users ayant effectué to the less 2 achats in the 90 latest jours. Proposez-leur a programme of fidélité or products complémentaires.</li>
+<li><strong>Abandonnistes of panier :</strong> users ayant déclenché the event add_to_cart but not purchase in the 7 latest days. The segment the most rentable en remarketing e-commerce.</li>
+<li><strong>Clients fidèles :</strong> users ayant effectué to the less 2 achats in the 90 latest days. Proposez-leur a programme of fidélité or products complémentaires.</li>
 <li><strong>Lecteurs engagés :</strong> users ayant lu to the less 3 articles of blog with a time d'engagement moyen higher à 2 minutes. Proposez-leur a lead magnet or a inscription à the newsletter.</li>
 </ul>
 
 <h3>The audiences prédictives</h3>
 
-<p>GA4 utilise the machine learning for create audiences prédictives that anticipent the comportement futur of your users. <strong>The audiences prédictives identifient the users susceptibles of convert or of churner in the 7 prochains jours</strong>, you permettant d'agir proactivement rather that réactivement. For that these audiences soient disponibles, your propriété must avoir a volume suffisant of data (au minimum 1 000 users with the comportement cible and 1 000 sans).</p>
+<p>GA4 utilise the machine learning for create audiences prédictives that anticipent the comportement futur of your users. <strong>The audiences prédictives identifient the users susceptibles of convert or of churner in the 7 prochains days</strong>, you allowstant d'agir proactivement rather that réactivement. For that these audiences soient disponibles, your propriété must avoir a volume suffisant of data (au minimum 1 000 users with the comportement cible and 1 000 sans).</p>
 
 <h2>BigQuery : exploiter your data brutes GA4</h2>
 
@@ -274,26 +274,26 @@
 <h3>Why use BigQuery with GA4</h3>
 
 <ul>
-<li><strong>Conservation illimitée :</strong> contrairement to the rapports GA4 that limitent the data granulaires à 2 or 14 mois, BigQuery conserve your data also longtime that you the want to.</li>
-<li><strong>Analyses advanced :</strong> SQL allows you tos queries impossibles in the interface GA4, like analyses of parcours complexes, calculs of LTV (lifetime value) personalizeds or corrélations between comportements and conversions.</li>
+<li><strong>Conservation illimitée :</strong> contrairement to the rapports GA4 that limitent the data granulaires à 2 or 14 month, BigQuery conserve your data also longtime that you the want to.</li>
+<li><strong>Analyses advanced :</strong> SQL allows you tos queries impossibles in the interface GA4, like analyses of parcours complexes, calculs of LTV (lifetime value) customiseds or corrélations between comportements and conversions.</li>
 <li><strong>Croisement of data :</strong> combinez your data GA4 with data provenant of your CRM, of your database product or d'autres sources for a vision à 360 degrés of your customers.</li>
-<li><strong>Visualisation advanced :</strong> connectez BigQuery à Looker Studio, Tableau or Power BI for create dashboards on mesure that répondent exactement to the needs of your team.</li>
+<li><strong>Visualisation advanced :</strong> connectez BigQuery à Looker Studio, Tableau or Power BI for create dashboards on mesure that répondent exactly to the needs of your team.</li>
 <li><strong>Machine learning :</strong> use BigQuery ML for create your own models prédictifs basés on your data GA4 (prédiction of conversion, segmentation automatique, détection d'anomalies).</li>
 </ul>
 
 <h3>Configurer the export BigQuery</h3>
 
-<p>The activation of the export BigQuery itself does en a few steps : accédez à Administration > Liens BigQuery in GA4, sélectionnez your projet Google Cloud (create-en a si necessary), choose between the export quotidien (data agrégées a fois par jour) and the export en continu (data en time quasi réel, recommandé), then validez. The data get startedont à affluer in BigQuery in the 24 heures. Notez that the stockage BigQuery is free jusqu'à 10 Go and the queries jusqu'à 1 To par mois, this that suffit largement for the plupart sites.</p>
+<p>The activation of the export BigQuery itself does en a few steps : accédez à Administration > Liens BigQuery in GA4, sélectionnez your projet Google Cloud (create-en a si necessary), choose between the export quotidien (data agrégées a fois par jour) and the export en continu (data en time quasi réel, recommandé), then validez. The data get startedont à affluer in BigQuery in the 24 heures. Notez that the stockage BigQuery is free jusqu'à 10 Go and the queries jusqu'à 1 To par month, this that suffit largement for the plupart sites.</p>
 
-<blockquote>BigQuery is the saut qualitatif that transform GA4 d'un tool of reporting en a véritable plateform of business intelligence. Ne you laissez not intimider par the SQL : the queries of base are accessibles à all marketeur curieux, and the results justifient largement the investissement en apprentissage.</blockquote>
+<blockquote>BigQuery is the saut qualitatif that transform GA4 d'un tool of reporting en a véritable platform of business intelligence. Ne you laissez not intimider par the SQL : the queries of base are accessibles à all marketeur curieux, and the results justifient largement the investment en apprentissage.</blockquote>
 
 <h2>The models d'attribution in GA4</h2>
 
-<p>The attribution is the process that determines quel canal marketing reçoit the crédit d'une conversion. It is a question fondamentale for all marketeur : si a user découvre your brand via a advertising Facebook, revient via a recherche Google and convertit after avoir cliqué on a email, that obtient the mérite of the vente ?</p>
+<p>The attribution is the process that determines quel canal marketing reçoit the crédit d'une conversion. It is a question fondamentale for all marketeur : si a user découvre your brand via a advertising Facebook, revient via a recherche Google and converts after avoir cliqué on a email, that obtient the mérite of the vente ?</p>
 
 <h3>The model d'attribution data-driven</h3>
 
-<p>GA4 utilise par défaut a model d'attribution basé on the data (data-driven attribution) that s'appuie on the apprentissage automatique for analyze the parcours of conversion réels of your users and attribuer a poids à each point of contact en fonction of sa contribution effective à the conversion. Ce model is nettement more precise that the approches simplistes like the last clic or the first clic.</p>
+<p>GA4 utilise par défaut a model d'attribution basé on the data (data-driven attribution) that s'appuie on the apprentissage automatique for analyze the parcours of conversion réels of your users and attribuer a poids à each point of contact based on of sa contribution effective à the conversion. Ce model is nettement more precise that the approches simplistes like the last clic or the first clic.</p>
 
 <h3>The other models disponibles</h3>
 
@@ -302,18 +302,18 @@
 <li><strong>Premier clic :</strong> 100 % of the crédit to the first canal that a introduit the user. Utile for évaluer the canaux d'acquisition pure.</li>
 <li><strong>Linéaire :</strong> the crédit is réparti équitablement between all the points of contact. A good point of départ si you manquez of data for the model data-driven.</li>
 <li><strong>Dégrowth in the time :</strong> the points of contact the most proches of the conversion reçoivent more of crédit. Adapté to the cycles d'achat courts.</li>
-<li><strong>Basé on the position :</strong> 40 % to the first contact, 40 % to the dernier, 20 % répartis between the points intermédiaires. A good compromis between first clic and last clic.</li>
+<li><strong>Basé on the position :</strong> 40 % to the first contact, 40 % to the dernier, 20 % répartis between the points intermédiaires. A good compromis betweon first clic and last clic.</li>
 </ul>
 
 <p><strong>The rapport "Compareason of models" in GA4 you allows you to visualiser the impact of each model on the attribution of your conversions</strong>, canal par canal. It is a exercice révélateur that montre often that some canaux are systematically sous-évalués par the last clic (comme the content organic or the social media that play a rôle of discovery en début of parcours).</p>
 
 <h2>Conclusion : exploiter GA4 for prendre of best decisions</h2>
 
-<p>Google Analytics 4 is biadditionally that a tool of comptage of visites : it is a system d'aide à the decision qui, correctly configuré and exploité, can transform the performance of your digital marketing. The courbe d'apprentissage can sembler intimidante, but the benefits en termes of compréhension of your audience, d'optimisation of your investissements and of growth of your activity are considerables.</p>
+<p>Google Analytics 4 is biadditionally that a tool of comptage of visites : it is a system d'aide à the decision qui, correctly configuré and exploité, can transform the performance of your digital marketing. The courbe d'apprentissage can sembler intimidante, but the benefits en termes of compréhension of your audience, d'optimisation of your investments and of growth of your activity are considerables.</p>
 
 <p>The businesses that maîtrisent GA4 ne itself contentent not of measure their performance : they include why some campagnes fonctionnent and d'autres non, they identifient the segments d'audience the most rentables, they optimisent each step of the customer journey and they anticipent the comportements futurs thanks to thex models prédictifs. It is this intelligence data-driven that does the difference between a growth aléatoire and a growth pilotée.</p>
 
-<p>At Pirabel Labs, we support our clients in the configuration, the personnalisation and the exploitation of GA4 and BigQuery. De the installation initiale à the creation of tableaux of bord advanced on Looker Studio, our team analytics met son expertise à your service for that each decision marketing soit guidée par data fiables and actionnables.</p>
+<p>At Pirabel Labs, we support our clients in the configuration, the customisation and the exploitation of GA4 and BigQuery. De the installation initiale à the creation of tableaux of bord advanced on Looker Studio, our team analytics met son expertise à your service for that each decision marketing soit guidée par data fiables and actionnables.</p>
 
 <p><strong><a href="/en/contact" style="color:#FF5500;text-decoration:underline;">Contact Pirabel Labs</a></strong> for a free audit of your configuration analytics and discover the insights strategics that you manquez peut-être.</p>
 

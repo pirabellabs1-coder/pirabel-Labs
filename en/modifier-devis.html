@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demande de modification du devis — Pirabel Labs</title>
+<title>Quote modification request — Pirabel Labs</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" href="../img/favicon.png">
 
@@ -45,15 +45,15 @@
 </nav>
 
 <section class="rdv-hero">
- <h1>Ajuster our proposition</h1>
- <p>Dites-nous ce that you aimeriez modifier in le devis. Nous le réviserons rapidement for qu'il corresponde parfaitement à your attentes.</p>
+ <h1>Adjust our proposal</h1>
+ <p>Dites-nous ce that you aimeriez modifier in le quote. Nous le réviserons rapidement for qu'il corresponde parfaitement à your attentes.</p>
 </section>
 
 <section class="form-side" id="form-container">
  <div id="alert-box"></div>
  <form id="modification-form" onsubmit="submitModification(event)">
   <div class="field">
-   <label>Vos commentaires, questions or ajustements souhaités</label>
+   <label>Your comments, questions or adjustments souhaités</label>
    <textarea id="comments" required placeholder="Par exemple: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modifier les modalités de paiement ?'"></textarea>
   </div>
   <button type="submit" class="btn-primary" id="submit-btn">Send ma demande de révision</button>
@@ -71,7 +71,7 @@ async function submitModification(e) {
  const urlParams = new URLSearchParams(window.location.search);
  const orderId = urlParams.get('id');
  if (!orderId) {
-  return showAlert('Lien invalide. Aucun numéro de devis trouvé.', 'error');
+  return showAlert('Lien invalide. Aucun numéro de quote trouvé.', 'error');
  }
 
  const comments = document.getElementById('comments').value;
@@ -100,7 +100,7 @@ async function submitModification(e) {
    throw new Error('Error');
   }
   
-  showAlert('Votre demande a bien été envoyée. Notre expert you répondra with un devis ajusté in les more brefs délais !', 'success');
+  showAlert('Votre demande a bien été envoyée. Notre expert you répondra with un quote ajusté in les more brefs délais !', 'success');
   document.getElementById('modification-form').reset();
   btn.style.display = 'none';
  } catch (err) {
@@ -117,6 +117,6 @@ function showAlert(msg, type) {
 
 
 
-<div class="lang-switch"><a href="/modifier-devis">FR</a><a href="#" class="active">EN</a></div>
+<div class="lang-switch"><a href="/modifier-quote">FR</a><a href="#" class="active">EN</a></div>
 </body>
 </html>

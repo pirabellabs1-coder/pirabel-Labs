@@ -1545,6 +1545,31 @@
           return;
         }
 
+        // Merge server-side extracted info back into STATE (belt-and-braces
+        // so we never lose an info Léa spotted that the client-side regex missed)
+        if (data.extractedInfo && typeof data.extractedInfo === 'object') {
+          var ei = data.extractedInfo;
+          if (ei.email && !STATE.visitor.email) {
+            STATE.visitor.email = ei.email;
+            try { localStorage.setItem('pb_chat_email', ei.email); } catch (e) {}
+          }
+          if (ei.phone && !STATE.visitor.phone) STATE.visitor.phone = ei.phone;
+          if (ei.website && !STATE.visitor.website) STATE.visitor.website = ei.website;
+          if (ei.budget && !STATE.qualification.budget) STATE.qualification.budget = ei.budget;
+          if (ei.timeline && !STATE.qualification.timeline) STATE.qualification.timeline = ei.timeline;
+          if (ei.decisionMaker === true) STATE.qualification.decisionMaker = true;
+        }
+        if (Array.isArray(data.detectedInterests)) {
+          data.detectedInterests.forEach(function (interest) {
+            if (interest && STATE.interests.indexOf(interest) === -1) {
+              STATE.interests.push(interest);
+            }
+          });
+        }
+        // Refresh score + persist after merging
+        if (typeof updateLeadScore === 'function') { try { updateLeadScore(); } catch (e) {} }
+        persistState();
+
         // Trigger closing flow when we have a hot lead and enough turns
         var closingDue = (
           STATE.qualification.score >= 55 &&

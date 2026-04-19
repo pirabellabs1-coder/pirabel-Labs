@@ -12,12 +12,32 @@
 <script src="/js/sidebar.js"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
-.status-nouveau{background:rgba(229,226,225,0.1);color:var(--muted);}
-.status-contacte{background:rgba(255,181,156,0.15);color:var(--warning);}
-.status-intéressé{background:rgba(65,228,192,0.1);color:var(--teal);}
-.status-converti{background:rgba(255,85,0,0.1);color:var(--accent);}
-.status-perdu{background:rgba(255,180,171,0.15);color:var(--danger);}
+.status-nouveau    { background:rgba(229,226,225,0.10); color:var(--muted); }
+.status-contacte   { background:rgba(255,181,156,0.15); color:var(--warning); }
+.status-intéressé  { background:rgba(65,228,192,0.12); color:var(--teal); }
+.status-rdv_pris   { background:rgba(65,228,192,0.20); color:var(--teal); }
+.status-negociation{ background:rgba(255,85,0,0.12);   color:var(--accent); }
+.status-converti   { background:rgba(255,85,0,0.18);   color:var(--accent); font-weight:600; }
+.status-perdu      { background:rgba(255,180,171,0.15); color:var(--danger); }
+.status-no_reply   { background:rgba(148,148,148,0.15); color:var(--muted); }
+.temp-chaud{background:rgba(255,85,0,0.15);color:#FF5500;}
+.temp-tiede{background:rgba(255,181,156,0.15);color:#ffb59c;}
+.temp-froid{background:rgba(120,180,255,0.12);color:#78b4ff;}
 .prospect-actions{display:flex;gap:0.25rem;flex-wrap:wrap;}
+.stat-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:0.35rem;}
+.stat-label{font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:var(--font-b);}
+.stat-value{font-size:1.75rem;font-weight:700;color:var(--text);font-family:var(--font-a);letter-spacing:-1px;}
+.stat-delta{font-size:0.7rem;color:var(--muted);}
+.timeline-item{border-left:2px solid rgba(255,85,0,0.3);padding:0.75rem 0 0.75rem 1rem;position:relative;}
+.timeline-item::before{content:'';position:absolute;left:-5px;top:1rem;width:8px;height:8px;background:#FF5500;border-radius:50%;}
+.timeline-item.type-status_change::before{background:#78b4ff;}
+.timeline-item.type-email_replied::before{background:#41e4c0;}
+.timeline-item.type-meeting_booked::before{background:#ffb59c;}
+.timeline-type{font-size:0.7rem;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+.timeline-subject{font-weight:600;color:var(--text);margin:0.25rem 0;font-size:0.875rem;}
+.timeline-date{font-size:0.7rem;color:var(--muted);}
+.cta-row{display:grid;grid-template-columns:1fr 2fr;gap:0.5rem;margin-top:0.5rem;}
+.email-preview{background:#0e0e0e;border:1px solid var(--border);padding:1rem;max-height:400px;overflow-y:auto;font-size:0.85rem;}
 </style>
 </head>
 <body>
@@ -61,23 +81,45 @@
       <div class="topbar-title">Prospection</div>
     </div>
     <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="runFollowups()" title="Lancer les relances maintenant"><span class="material-symbols-outlined" style="font-size:1rem;">reply</span> Relances auto</button>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-symbols-outlined" style="font-size:1rem;">add</span> Ajouter prospect</button>
       <button class="topbar-btn" onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span></button>
     </div>
   </header>
 
   <div class="content">
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;" id="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total prospects</div><div class="stat-value" id="st-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Contactés</div><div class="stat-value" id="st-contacted">—</div></div>
+      <div class="stat-card"><div class="stat-label">Intéressés</div><div class="stat-value" id="st-interested">—</div><div class="stat-delta" id="st-interested-rate"></div></div>
+      <div class="stat-card"><div class="stat-label">RDV pris</div><div class="stat-value" id="st-meetings">—</div></div>
+      <div class="stat-card"><div class="stat-label">Convertis</div><div class="stat-value" id="st-converted">—</div><div class="stat-delta" id="st-conv-rate"></div></div>
+      <div class="stat-card"><div class="stat-label">Emails envoyés</div><div class="stat-value" id="st-emails">—</div></div>
+    </div>
+
     <!-- Toolbar -->
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-      <input type="text" id="search-input" placeholder="Rechercher un prospect..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;flex:1;min-width:200px;" oninput="loadProspects()">
-      <select id="filter-status" onchange="loadProspects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;appearance:none;min-width:160px;">
-        <option value="">Tous les statuts</option>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <input type="text" id="search-input" placeholder="Rechercher..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;flex:1;min-width:200px;" oninput="debouncedLoad()">
+      <select id="filter-status" onchange="loadProspects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;min-width:160px;">
+        <option value="">Tous statuts</option>
         <option value="nouveau">Nouveau</option>
         <option value="contacte">Contacté</option>
         <option value="intéressé">Intéressé</option>
+        <option value="rdv_pris">RDV pris</option>
+        <option value="negociation">Négociation</option>
         <option value="converti">Converti</option>
         <option value="perdu">Perdu</option>
+        <option value="no_reply">Sans réponse</option>
       </select>
+      <select id="filter-temp" onchange="loadProspects()" style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;min-width:120px;">
+        <option value="">Tout</option>
+        <option value="chaud">Chaud</option>
+        <option value="tiede">Tiède</option>
+        <option value="froid">Froid</option>
+      </select>
+      <input type="text" id="filter-campaign" placeholder="Campagne..." style="background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;min-width:140px;" oninput="debouncedLoad()">
     </div>
 
     <!-- Prospects Table -->
@@ -85,13 +127,15 @@
       <table>
         <thead>
           <tr>
-            <th>Nom</th>
+            <th>Contact</th>
             <th>Entreprise</th>
-            <th>Email</th>
             <th>Statut</th>
-            <th>Emails envoyés</th>
+            <th>Temp.</th>
+            <th>Score</th>
+            <th>Emails</th>
             <th>Dernier contact</th>
-            <th>Actions</th>
+            <th>Prochaine relance</th>
+            <th style="width:140px;">Actions</th>
           </tr>
         </thead>
         <tbody id="prospects-body"></tbody>
@@ -103,55 +147,47 @@
 
 <!-- Add/Edit Prospect Modal -->
 <div class="modal-overlay" id="modal">
-  <div class="modal" style="max-width:650px;">
+  <div class="modal" style="max-width:700px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-title" id="modal-title">Ajouter un prospect</div>
     <form class="dash-form" id="prospect-form" onsubmit="saveProspect(event)">
       <input type="hidden" id="prospect-id">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group">
-          <label>Nom du contact *</label>
-          <input type="text" id="f-contactName" required>
-        </div>
-        <div class="form-group">
-          <label>Email *</label>
-          <input type="email" id="f-email" required>
-        </div>
-        <div class="form-group">
-          <label>Entreprise</label>
-          <input type="text" id="f-company">
-        </div>
-        <div class="form-group">
-          <label>Téléphone</label>
-          <input type="tel" id="f-phone">
-        </div>
-        <div class="form-group">
-          <label>Site web</label>
-          <input type="url" id="f-website" placeholder="https://">
-        </div>
-        <div class="form-group">
-          <label>Secteur</label>
-          <input type="text" id="f-sector">
-        </div>
-        <div class="form-group">
-          <label>Statut</label>
+        <div class="form-group"><label>Nom du contact *</label><input type="text" id="f-contactName" required></div>
+        <div class="form-group"><label>Email *</label><input type="email" id="f-email" required></div>
+        <div class="form-group"><label>Entreprise</label><input type="text" id="f-company"></div>
+        <div class="form-group"><label>Téléphone</label><input type="tel" id="f-phone"></div>
+        <div class="form-group"><label>Site web</label><input type="url" id="f-website" placeholder="https://"></div>
+        <div class="form-group"><label>Secteur</label><input type="text" id="f-sector"></div>
+        <div class="form-group"><label>Ville</label><input type="text" id="f-city"></div>
+        <div class="form-group"><label>Pays</label><input type="text" id="f-country"></div>
+        <div class="form-group"><label>Statut</label>
           <select id="f-status">
             <option value="nouveau">Nouveau</option>
             <option value="contacte">Contacté</option>
             <option value="intéressé">Intéressé</option>
+            <option value="rdv_pris">RDV pris</option>
+            <option value="negociation">Négociation</option>
             <option value="converti">Converti</option>
             <option value="perdu">Perdu</option>
+            <option value="no_reply">Sans réponse</option>
           </select>
         </div>
+        <div class="form-group"><label>Température</label>
+          <select id="f-temperature">
+            <option value="froid">Froid</option>
+            <option value="tiede">Tiède</option>
+            <option value="chaud">Chaud</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Score (0-100)</label><input type="number" id="f-score" min="0" max="100" value="0"></div>
+        <div class="form-group"><label>Valeur estimée (€)</label><input type="number" id="f-estimatedValue" min="0" value="0"></div>
+        <div class="form-group"><label>Campagne</label><input type="text" id="f-campaign" placeholder="ex: coaches-paris-oct"></div>
+        <div class="form-group"><label>Prochaine relance</label><input type="datetime-local" id="f-nextFollowUpAt"></div>
       </div>
-      <div class="form-group">
-        <label>Problème identifié</label>
-        <textarea id="f-problem" rows="3" placeholder="Quel problème ce prospect cherche à résoudre..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Notes</label>
-        <textarea id="f-notes" rows="2" placeholder="Notes internes..."></textarea>
-      </div>
+      <div class="form-group"><label>Problème identifié</label><textarea id="f-problem" rows="2"></textarea></div>
+      <div class="form-group"><label>Opportunité / angle</label><textarea id="f-opportunity" rows="2"></textarea></div>
+      <div class="form-group"><label>Notes</label><textarea id="f-notes" rows="2"></textarea></div>
       <div style="display:flex;gap:1rem;margin-top:1rem;">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
         <button type="button" class="btn btn-ghost" onclick="closeModal()">Annuler</button>
@@ -160,41 +196,73 @@
   </div>
 </div>
 
-<!-- Send Email Modal -->
+<!-- Send Email Modal with CTA builder -->
 <div class="modal-overlay" id="email-modal">
-  <div class="modal" style="max-width:600px;">
+  <div class="modal" style="max-width:760px;">
     <button class="modal-close" onclick="closeEmailModal()">&times;</button>
     <div class="modal-title">Envoyer un email</div>
-    <form class="dash-form" id="email-form" onsubmit="sendEmail(event)">
+    <form class="dash-form" id="email-form" onsubmit="sendProspectEmail(event)">
       <input type="hidden" id="email-prospect-id">
-      <div class="form-group">
-        <label>Destinataire</label>
-        <input type="text" id="email-to" disabled style="opacity:0.6;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>Destinataire</label><input type="text" id="email-to" disabled style="opacity:0.6;"></div>
+        <div class="form-group"><label>Langue</label>
+          <select id="email-lang"><option value="fr">Français</option><option value="en">English</option></select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Objet *</label>
-        <input type="text" id="email-subject" required placeholder="Objet de l'email">
+      <div class="form-group"><label>Objet *</label><input type="text" id="email-subject" required></div>
+      <div class="form-group"><label>Preheader (texte d'aperçu inbox)</label><input type="text" id="email-preheader" placeholder="Ex: Idée concrète pour +30% de visibilité Google..."></div>
+      <div class="form-group"><label>Corps du message (HTML autorisé) *</label><textarea id="email-body" rows="10" required placeholder="<p>Bonjour [Nom],</p>..."></textarea></div>
+
+      <div style="border-top:1px solid var(--border);margin:1.25rem 0 1rem;padding-top:1rem;">
+        <div class="stat-label" style="margin-bottom:0.5rem;">Bouton d'action principal (CTA)</div>
+        <div class="cta-row">
+          <input type="text" id="cta-primary-label" placeholder="Texte du bouton (ex: Réserver un appel)">
+          <input type="url" id="cta-primary-url" placeholder="https://...">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Titre</label>
-        <input type="text" id="email-title" placeholder="Titre affiché dans l'email">
+
+      <div style="margin-bottom:1rem;">
+        <div class="stat-label" style="margin-bottom:0.5rem;">Lien secondaire (optionnel)</div>
+        <div class="cta-row">
+          <input type="text" id="cta-secondary-label" placeholder="Texte du lien">
+          <input type="url" id="cta-secondary-url" placeholder="https://...">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Contenu du message *</label>
-        <textarea id="email-body" rows="8" required placeholder="Rédigez votre message..."></textarea>
-      </div>
-      <div style="display:flex;gap:1rem;margin-top:1rem;">
+
+      <div style="display:flex;gap:1rem;align-items:center;margin-top:1rem;">
         <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:1rem;">send</span> Envoyer</button>
+        <button type="button" class="btn btn-ghost" onclick="previewEmail()"><span class="material-symbols-outlined" style="font-size:1rem;">visibility</span> Aperçu</button>
         <button type="button" class="btn btn-ghost" onclick="closeEmailModal()">Annuler</button>
       </div>
+
+      <div id="email-preview" class="email-preview" style="display:none;margin-top:1rem;"></div>
     </form>
+  </div>
+</div>
+
+<!-- Timeline Modal -->
+<div class="modal-overlay" id="timeline-modal">
+  <div class="modal" style="max-width:700px;">
+    <button class="modal-close" onclick="closeTimeline()">&times;</button>
+    <div class="modal-title" id="timeline-title">Historique du prospect</div>
+    <div id="timeline-meta" style="margin-bottom:1rem;font-size:0.85rem;color:var(--muted);"></div>
+    <div id="timeline-body" style="max-height:500px;overflow-y:auto;"></div>
+    <div style="display:flex;gap:0.5rem;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus('intéressé')">Intéressé</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus('rdv_pris')">RDV pris</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus('negociation')">Négociation</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus('converti')">Converti</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus('perdu')">Perdu</button>
+    </div>
   </div>
 </div>
 
 <script>
 const token = localStorage.getItem('token');
 if (!token) window.location.href = '/pirabel-admin-7x9k2m';
-const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const authHeaders = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+let currentTimelineId = null;
+
 function toast(msg, type='success') {
   const c = document.getElementById('toasts');
   if (!c) return alert(msg);
@@ -205,6 +273,7 @@ function toast(msg, type='success') {
   c.appendChild(t);
   setTimeout(() => { t.style.animation = 'toastOut 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
 }
+
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.name) {
   document.getElementById('user-name').textContent = user.name;
@@ -212,187 +281,250 @@ if (user.name) {
   document.getElementById('user-role').textContent = user.role === 'admin' ? 'Administrateur' : 'Employé';
 }
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/pirabel-admin-7x9k2m'; }
-function formatDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
 
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '-'; }
+function fmtDateTime(d){ return d ? new Date(d).toLocaleString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-'; }
+function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function statusBadge(status) {
   const cls = 'status-' + (status || 'nouveau');
-  const labels = { 'nouveau': 'Nouveau', 'contacte': 'Contacté', 'intéressé': 'Intéressé', 'converti': 'Converti', 'perdu': 'Perdu' };
+  const labels = {nouveau:'Nouveau',contacte:'Contacté','intéressé':'Intéressé',rdv_pris:'RDV pris',negociation:'Négociation',converti:'Converti',perdu:'Perdu',no_reply:'Sans réponse'};
   return '<span class="badge ' + cls + '">' + (labels[status] || status) + '</span>';
 }
+function tempBadge(t){ if(!t) return ''; return '<span class="badge temp-' + t + '">' + t + '</span>'; }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+let _searchTimer;
+function debouncedLoad(){ clearTimeout(_searchTimer); _searchTimer = setTimeout(loadProspects, 350); }
 
-// Load prospects
 async function loadProspects() {
   try {
-    const search = document.getElementById('search-input').value;
+    const q = document.getElementById('search-input').value;
     const status = document.getElementById('filter-status').value;
-    let url = '/api/prospects?';
-    if (search) url += 'search=' + encodeURIComponent(search) + '&';
-    if (status) url += 'status=' + encodeURIComponent(status);
-
-    const res = await fetch(url, { headers });
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement prospects', 'error'); return; }
+    const temperature = document.getElementById('filter-temp').value;
+    const campaign = document.getElementById('filter-campaign').value;
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (status) params.set('status', status);
+    if (temperature) params.set('temperature', temperature);
+    if (campaign) params.set('campaign', campaign);
+    const res = await fetch('/api/outreach/prospects-admin?' + params.toString(), { headers: authHeaders });
+    if (!res.ok) { const e = await res.json(); toast(e.error || 'Erreur chargement', 'error'); return; }
     const data = await res.json();
-    const prospects = data.prospects || data;
-
-    document.getElementById('prospects-body').innerHTML = prospects.map(p =>
-      '<tr>' +
-        '<td style="font-weight:600;">' + escapeHtml(p.contactName) + '</td>' +
-        '<td>' + escapeHtml(p.company || '-') + '</td>' +
-        '<td>' + escapeHtml(p.email) + '</td>' +
-        '<td>' + statusBadge(p.status) + '</td>' +
-        '<td style="text-align:center;">' + (p.emailsSent || 0) + '</td>' +
-        '<td>' + formatDate(p.lastContactédAt || p.updatedAt) + '</td>' +
-        '<td>' +
-          '<div class="prospect-actions">' +
-            '<button class="btn btn-sm btn-ghost" onclick="editProspect(\'' + p._id + '\')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.875rem;">edit</span></button>' +
-            '<button class="btn btn-sm btn-ghost" onclick="openEmailModal(\'' + p._id + '\', \'' + escapeHtml(p.email) + '\', \'' + escapeHtml(p.contactName) + '\')" title="Envoyer email"><span class="material-symbols-outlined" style="font-size:0.875rem;">email</span></button>' +
-            (p.status !== 'converti' ? '<button class="btn btn-sm btn-ghost" onclick="convertProspect(\'' + p._id + '\', \'' + escapeHtml(p.contactName) + '\')" title="Convertir en client"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--teal);">person_add</span></button>' : '') +
-            '<button class="btn btn-sm btn-ghost" onclick="deleteProspect(\'' + p._id + '\')" title="Supprimer"><span class="material-symbols-outlined" style="font-size:0.875rem;color:var(--danger);">delete</span></button>' +
-          '</div>' +
-        '</td>' +
-      '</tr>'
-    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Aucun prospect trouvé</td></tr>';
-  } catch (e) { console.error('Prospects error:', e); }
+    renderStats(data);
+    renderRows(data.prospects || []);
+  } catch (e) { console.error(e); toast('Erreur chargement prospects','error'); }
 }
 
-// Open add/edit modal
-function openModal(prospect) {
-  document.getElementById('modal').classList.add('open');
-  document.getElementById('modal-title').textContent = prospect ? 'Modifier le prospect' : 'Ajouter un prospect';
+function renderStats(data){
+  const byStatus = {};
+  let totalEmails = 0;
+  (data.stats || []).forEach(s => { byStatus[s._id || 'nouveau'] = s; totalEmails += s.emailsSent || 0; });
+  const total = data.total || 0;
+  const contacted = (byStatus.contacte?.count||0) + (byStatus['intéressé']?.count||0) + (byStatus.rdv_pris?.count||0) + (byStatus.negociation?.count||0) + (byStatus.converti?.count||0) + (byStatus.no_reply?.count||0);
+  const interested = byStatus['intéressé']?.count || 0;
+  const meetings = byStatus.rdv_pris?.count || 0;
+  const converted = byStatus.converti?.count || 0;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-contacted').textContent = contacted;
+  document.getElementById('st-interested').textContent = interested;
+  document.getElementById('st-meetings').textContent = meetings;
+  document.getElementById('st-converted').textContent = converted;
+  document.getElementById('st-emails').textContent = totalEmails;
+  const iRate = contacted ? ((interested/contacted)*100).toFixed(1)+'% taux' : '';
+  const cRate = contacted ? ((converted/contacted)*100).toFixed(1)+'% conv.' : '';
+  document.getElementById('st-interested-rate').textContent = iRate;
+  document.getElementById('st-conv-rate').textContent = cRate;
+}
 
+function renderRows(prospects){
+  const body = document.getElementById('prospects-body');
+  if (!prospects.length) { body.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem;">Aucun prospect trouvé</td></tr>'; return; }
+  body.innerHTML = prospects.map(p => {
+    const next = p.nextFollowUpAt ? fmtDate(p.nextFollowUpAt) : '-';
+    return '<tr>'
+      + '<td><div style="font-weight:600;">' + esc(p.contactName) + '</div><div style="font-size:0.75rem;color:var(--muted);">' + esc(p.email) + '</div></td>'
+      + '<td>' + esc(p.company || '-') + (p.sector ? '<div style="font-size:0.72rem;color:var(--muted);">' + esc(p.sector) + '</div>' : '') + '</td>'
+      + '<td>' + statusBadge(p.status) + '</td>'
+      + '<td>' + tempBadge(p.temperature) + '</td>'
+      + '<td style="text-align:center;">' + (p.score || 0) + '</td>'
+      + '<td style="text-align:center;">' + (p.emailsSent || 0) + '</td>'
+      + '<td style="font-size:0.78rem;">' + fmtDate(p.lastContactedAt) + '</td>'
+      + '<td style="font-size:0.78rem;">' + next + '</td>'
+      + '<td><div class="prospect-actions">'
+        + '<button class="btn btn-sm btn-ghost" onclick="openTimeline(\'' + p._id + '\')" title="Timeline"><span class="material-symbols-outlined" style="font-size:0.9rem;">history</span></button>'
+        + '<button class="btn btn-sm btn-ghost" onclick="openEmailModalFor(\'' + p._id + '\', \'' + esc(p.email) + '\', \'' + esc(p.contactName) + '\', \'' + esc(p.company || '') + '\')" title="Envoyer email"><span class="material-symbols-outlined" style="font-size:0.9rem;color:#FF5500;">mail</span></button>'
+        + '<button class="btn btn-sm btn-ghost" onclick="editProspect(\'' + p._id + '\')" title="Modifier"><span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span></button>'
+        + '<button class="btn btn-sm btn-ghost" onclick="deleteProspect(\'' + p._id + '\')" title="Supprimer"><span class="material-symbols-outlined" style="font-size:0.9rem;color:var(--danger);">delete</span></button>'
+      + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+function openModal(prospect){
+  const form = document.getElementById('prospect-form'); form.reset();
+  document.getElementById('prospect-id').value = prospect ? prospect._id : '';
+  document.getElementById('modal-title').textContent = prospect ? 'Modifier prospect' : 'Ajouter prospect';
   if (prospect) {
-    document.getElementById('prospect-id').value = prospect._id;
-    document.getElementById('f-contactName').value = prospect.contactName || '';
-    document.getElementById('f-email').value = prospect.email || '';
-    document.getElementById('f-company').value = prospect.company || '';
-    document.getElementById('f-phone').value = prospect.phone || '';
-    document.getElementById('f-website').value = prospect.website || '';
-    document.getElementById('f-sector').value = prospect.sector || '';
-    document.getElementById('f-status').value = prospect.status || 'nouveau';
-    document.getElementById('f-problem').value = prospect.problem || '';
-    document.getElementById('f-notes').value = prospect.notes || '';
-  } else {
-    document.getElementById('prospect-form').reset();
-    document.getElementById('prospect-id').value = '';
+    const fields = ['contactName','email','company','phone','website','sector','city','country','status','temperature','score','estimatedValue','campaign','problem','opportunity','notes'];
+    for (const f of fields) { const el = document.getElementById('f-' + f); if (el) el.value = prospect[f] || (typeof prospect[f] === 'number' ? 0 : ''); }
+    if (prospect.nextFollowUpAt) {
+      document.getElementById('f-nextFollowUpAt').value = new Date(prospect.nextFollowUpAt).toISOString().slice(0,16);
+    }
   }
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+
+async function editProspect(id){
+  const res = await fetch('/api/outreach/prospect-detail/' + id, { headers: authHeaders });
+  if (!res.ok) return toast('Erreur','error');
+  const { prospect } = await res.json();
+  openModal(prospect);
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-// Save prospect
-async function saveProspect(e) {
-  e.preventDefault();
+async function saveProspect(ev){
+  ev.preventDefault();
   const id = document.getElementById('prospect-id').value;
-  const body = {
+  const payload = {
     contactName: document.getElementById('f-contactName').value,
     email: document.getElementById('f-email').value,
     company: document.getElementById('f-company').value,
     phone: document.getElementById('f-phone').value,
     website: document.getElementById('f-website').value,
     sector: document.getElementById('f-sector').value,
+    city: document.getElementById('f-city').value,
+    country: document.getElementById('f-country').value,
     status: document.getElementById('f-status').value,
+    temperature: document.getElementById('f-temperature').value,
+    score: Number(document.getElementById('f-score').value || 0),
+    estimatedValue: Number(document.getElementById('f-estimatedValue').value || 0),
+    campaign: document.getElementById('f-campaign').value,
     problem: document.getElementById('f-problem').value,
+    opportunity: document.getElementById('f-opportunity').value,
     notes: document.getElementById('f-notes').value
   };
+  const nextFu = document.getElementById('f-nextFollowUpAt').value;
+  if (nextFu) payload.nextFollowUpAt = new Date(nextFu).toISOString();
 
   try {
-    let res;
-    if (id) {
-      res = await fetch('/api/prospects/' + id, { method: 'PUT', headers, body: JSON.stringify(body) });
-    } else {
-      res = await fetch('/api/prospects', { method: 'POST', headers, body: JSON.stringify(body) });
-    }
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur sauvegarde prospect', 'error'); return; }
-    closeModal();
-    loadProspects();
-  } catch (e) {
-    console.error('Save prospect error:', e);
-    toast('Erreur lors de la sauvegarde', 'error');
-  }
+    const url = id ? '/api/outreach/prospect/' + id : '/api/prospects';
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, headers: authHeaders, body: JSON.stringify(payload) });
+    if (!res.ok) { const e = await res.json(); toast(e.error || 'Erreur','error'); return; }
+    toast(id ? 'Prospect mis à jour' : 'Prospect ajouté','success');
+    closeModal(); loadProspects();
+  } catch (e) { toast('Erreur réseau','error'); }
 }
 
-// Edit prospect
-async function editProspect(id) {
-  try {
-    const res = await fetch('/api/prospects/' + id, { headers });
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur chargement prospect', 'error'); return; }
-    const prospect = await res.json();
-    openModal(prospect);
-  } catch (e) { console.error('Edit prospect error:', e); }
-}
-
-// Delete prospect
-async function deleteProspect(id) {
+async function deleteProspect(id){
   if (!confirm('Supprimer ce prospect ?')) return;
-  try {
-    const res = await fetch('/api/prospects/' + id, { method: 'DELETE', headers });
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur suppression', 'error'); return; }
-    loadProspects();
-  } catch (e) { console.error('Delete prospect error:', e); }
+  const res = await fetch('/api/prospects/' + id, { method: 'DELETE', headers: authHeaders });
+  if (res.ok) { toast('Supprimé','success'); loadProspects(); } else toast('Erreur','error');
 }
 
-// Convert prospect to client
-async function convertProspect(id, name) {
-  if (!confirm('Convertir "' + name + '" en client ? Le prospect sera mis à jour en statut "converti".')) return;
-  try {
-    const res = await fetch('/api/prospects/' + id + '/convert', { method: 'POST', headers });
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur conversion', 'error'); return; }
-    toast('Prospect converti en client avec succès', 'success');
-    loadProspects();
-  } catch (e) {
-    console.error('Convert error:', e);
-    toast('Erreur lors de la conversion', 'error');
-  }
-}
-
-// Email modal
-function openEmailModal(prospectId, email, name) {
-  document.getElementById('email-modal').classList.add('open');
-  document.getElementById('email-prospect-id').value = prospectId;
+// ========== Email modal ==========
+let currentEmailProspect = null;
+function openEmailModalFor(id, email, name, company){
+  currentEmailProspect = { id, email, name, company };
+  document.getElementById('email-prospect-id').value = id;
   document.getElementById('email-to').value = name + ' <' + email + '>';
   document.getElementById('email-subject').value = '';
-  document.getElementById('email-title').value = '';
-  document.getElementById('email-body').value = '';
+  document.getElementById('email-body').value = '<p>Bonjour ' + (name.split(' ')[0] || '') + ',</p>\n<p>Je me permets de vous écrire après avoir regardé ' + (company || 'votre activité') + '…</p>\n<p>[Votre message ici]</p>\n<p>Cordialement,<br>Gildas</p>';
+  document.getElementById('email-preheader').value = '';
+  // Primary CTA = lien direct vers le calendrier de prise de RDV
+  document.getElementById('cta-primary-label').value = 'Réserver un RDV dans le calendrier';
+  document.getElementById('cta-primary-url').value = 'https://www.pirabellabs.com/rendez-vous';
+  document.getElementById('cta-secondary-label').value = 'Voir nos résultats clients';
+  document.getElementById('cta-secondary-url').value = 'https://www.pirabellabs.com/resultats';
+  document.getElementById('email-preview').style.display = 'none';
+  document.getElementById('email-modal').classList.add('open');
 }
+function closeEmailModal(){ document.getElementById('email-modal').classList.remove('open'); }
 
-function closeEmailModal() {
-  document.getElementById('email-modal').classList.remove('open');
-}
-
-// Send email
-async function sendEmail(e) {
-  e.preventDefault();
-  const prospectId = document.getElementById('email-prospect-id').value;
-  const body = {
-    subject: document.getElementById('email-subject').value,
-    title: document.getElementById('email-title').value,
-    message: document.getElementById('email-body').value
+function buildEmailPayload(){
+  const body = document.getElementById('email-body').value;
+  const subject = document.getElementById('email-subject').value;
+  const lang = document.getElementById('email-lang').value;
+  const preheader = document.getElementById('email-preheader').value;
+  const template = {
+    body, lang, preheader,
+    primaryCta: (document.getElementById('cta-primary-label').value && document.getElementById('cta-primary-url').value)
+      ? { label: document.getElementById('cta-primary-label').value, url: document.getElementById('cta-primary-url').value } : null,
+    secondaryCta: (document.getElementById('cta-secondary-label').value && document.getElementById('cta-secondary-url').value)
+      ? { label: document.getElementById('cta-secondary-label').value, url: document.getElementById('cta-secondary-url').value } : null
   };
-
-  try {
-    const res = await fetch('/api/prospects/' + prospectId + '/email', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) { const err = await res.json(); toast(err.error || 'Erreur envoi email', 'error'); return; }
-    toast('Email envoyé avec succès', 'success');
-    closeEmailModal();
-    loadProspects();
-  } catch (e) {
-    console.error('Send email error:', e);
-    toast('Erreur lors de l\'envoi de l\'email', 'error');
-  }
+  return {
+    to: currentEmailProspect.email,
+    subject,
+    template,
+    contactName: currentEmailProspect.name,
+    company: currentEmailProspect.company
+  };
 }
 
-// Init
+async function previewEmail(){
+  // Local preview using same structure as server template
+  const t = buildEmailPayload().template;
+  const cta = t.primaryCta ? ('<div style="text-align:center;margin:20px 0;"><a style="display:inline-block;padding:14px 32px;background:#FF5500;color:#111;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:13px;" href="' + esc(t.primaryCta.url) + '">' + esc(t.primaryCta.label) + '</a></div>') : '';
+  const sec = t.secondaryCta ? ('<p style="text-align:center;"><a href="' + esc(t.secondaryCta.url) + '" style="color:#FF5500;">' + esc(t.secondaryCta.label) + '</a></p>') : '';
+  const html = '<div style="padding:1rem;background:#1a1a1a;color:#e5e2e1;">' + t.body + cta + sec + '<div style="margin-top:1rem;border-top:1px solid #333;padding-top:0.5rem;font-size:0.75rem;color:#888;">Gildas Lissanon · Pirabel Labs · pirabellabs.com</div></div>';
+  const pv = document.getElementById('email-preview'); pv.innerHTML = html; pv.style.display = 'block';
+}
+
+async function sendProspectEmail(ev){
+  ev.preventDefault();
+  const payload = buildEmailPayload();
+  if (!payload.subject || !payload.template.body) return toast('Objet et corps requis','error');
+  if (!confirm('Envoyer cet email à ' + payload.to + ' ?')) return;
+  try {
+    const res = await fetch('/api/outreach/send-admin', { method: 'POST', headers: authHeaders, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!res.ok) return toast(data.error || 'Erreur envoi','error');
+    toast('Email envoyé ✓','success');
+    closeEmailModal(); loadProspects();
+  } catch (e) { toast('Erreur réseau','error'); }
+}
+
+// ========== Timeline ==========
+async function openTimeline(id){
+  currentTimelineId = id;
+  const res = await fetch('/api/outreach/prospect-detail/' + id, { headers: authHeaders });
+  if (!res.ok) return toast('Erreur','error');
+  const { prospect } = await res.json();
+  document.getElementById('timeline-title').textContent = prospect.contactName + (prospect.company ? ' · ' + prospect.company : '');
+  document.getElementById('timeline-meta').innerHTML = statusBadge(prospect.status) + ' ' + tempBadge(prospect.temperature) + ' · ' + (prospect.emailsSent||0) + ' emails · ' + (prospect.estimatedValue ? prospect.estimatedValue.toLocaleString('fr-FR') + ' €' : 'valeur non estimée');
+  const events = (prospect.timeline || []).slice().reverse();
+  const typeLabels = { email_sent:'Email envoyé', email_opened:'Email ouvert', email_replied:'Réponse reçue', status_change:'Changement statut', note:'Note', meeting_booked:'RDV pris' };
+  document.getElementById('timeline-body').innerHTML = events.map(e => (
+    '<div class="timeline-item type-' + esc(e.type) + '">'
+    + '<div class="timeline-type">' + (typeLabels[e.type] || e.type) + '</div>'
+    + (e.subject ? '<div class="timeline-subject">' + esc(e.subject) + '</div>' : '')
+    + '<div class="timeline-date">' + fmtDateTime(e.at) + '</div>'
+    + '</div>'
+  )).join('') || '<div style="color:var(--muted);padding:1rem;">Aucun événement</div>';
+  document.getElementById('timeline-modal').classList.add('open');
+}
+function closeTimeline(){ document.getElementById('timeline-modal').classList.remove('open'); currentTimelineId = null; }
+async function quickStatus(status){
+  if (!currentTimelineId) return;
+  const res = await fetch('/api/outreach/prospect/' + currentTimelineId, { method: 'PUT', headers: authHeaders, body: JSON.stringify({ status }) });
+  if (!res.ok) return toast('Erreur','error');
+  toast('Statut mis à jour','success');
+  openTimeline(currentTimelineId); // refresh
+  loadProspects();
+}
+
+// ========== Auto follow-ups ==========
+async function runFollowups(){
+  if (!confirm('Lancer la campagne de relances automatiques maintenant ?\n\nCela envoie des relances aux prospects contactés il y a 4+ jours sans réponse.')) return;
+  try {
+    const res = await fetch('/api/outreach/run-followups', { method: 'POST', headers: authHeaders });
+    const data = await res.json();
+    if (!res.ok) return toast(data.error || 'Erreur','error');
+    toast('Relances lancées : ' + (data.sent || 0) + ' email(s)','success');
+    loadProspects();
+  } catch (e) { toast('Erreur','error'); }
+}
+
 loadProspects();
 </script>
 </body>

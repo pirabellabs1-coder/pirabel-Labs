@@ -68,11 +68,24 @@ router.get('/', async (req, res) => {
       await inv.save();
     }
 
+    // Also run prospect follow-ups (cold-outreach relances) — merged here
+    // to stay within the 2-cron Hobby plan limit.
+    let followupsResult = { sent: 0, failed: 0, candidatesFound: 0 };
+    try {
+      const outreach = require('./outreach');
+      if (outreach && typeof outreach.runFollowupBatch === 'function') {
+        followupsResult = await outreach.runFollowupBatch({ limit: 6 });
+      }
+    } catch (e) {
+      console.error('[cron] follow-up batch error:', e.message);
+    }
+
     res.json({
       success: true,
       quotesReminded: results.reminders,
       errors: results.errors,
       overdueInvoices: overdueInvoices.length,
+      followups: followupsResult,
       timestamp: new Date().toISOString()
     });
   } catch (err) {

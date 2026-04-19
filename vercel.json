@@ -122,10 +122,6 @@
     {
       "path": "/api/cron/reminders",
       "schedule": "0 7 * * *"
-    },
-    {
-      "path": "/api/outreach/cron-followups",
-      "schedule": "30 9,14 * * 1-5"
     }
   ]
 }

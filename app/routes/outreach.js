@@ -580,8 +580,11 @@ async function cronHandler(req, res) {
 router.get('/cron-followups', requireCronAuth, cronHandler);
 router.post('/cron-followups', requireCronAuth, cronHandler);
 
-// Expose for reuse
-module.exports.runFollowupBatch = runFollowupBatch;
+// Expose the batch function on the router itself so other modules can
+// `require('./outreach').runFollowupBatch(...)` — this survives the
+// `module.exports = router` assignment that comes next.
+router.runFollowupBatch = runFollowupBatch;
 
 module.exports = router;
-// Named export (runFollowupBatch) is attached above for reuse if ever needed.
+// Note: runFollowupBatch is attached on `router` above so
+// `require('./outreach').runFollowupBatch` still resolves.

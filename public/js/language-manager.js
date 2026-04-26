@@ -140,4 +140,102 @@
 
         window.location.href = newPath;
     };
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Language suggestion banner: if the current page language differs from
+    // the visitor's preferred language AND we have a known mapping for the
+    // current page, show a discreet, dismissable suggestion banner.
+    // ─────────────────────────────────────────────────────────────────────
+    function pageLanguage() {
+        if (window.location.pathname.startsWith('/en/') || window.location.pathname === '/en') {
+            return 'en';
+        }
+        return 'fr';
+    }
+
+    function browserLangPreference() {
+        const langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'fr'];
+        for (const l of langs) {
+            const code = l.split('-')[0].toLowerCase();
+            if (SUPPORTED_LANGS.includes(code)) return code;
+        }
+        return null;
+    }
+
+    function buildAlternateUrl(toLang) {
+        const rawPath = window.location.pathname;
+        const path = normalizePath(rawPath);
+        if (toLang === 'en') {
+            if (URL_MAP[path]) return URL_MAP[path];
+            for (const frPrefix in SECTION_PREFIXES_FR_TO_EN) {
+                if (rawPath.startsWith(frPrefix)) return SECTION_PREFIXES_FR_TO_EN[frPrefix];
+            }
+            return null;
+        } else {
+            if (REVERSE_MAP[path]) return REVERSE_MAP[path];
+            for (const enPrefix in SECTION_PREFIXES_EN_TO_FR) {
+                if (rawPath.startsWith(enPrefix)) return SECTION_PREFIXES_EN_TO_FR[enPrefix];
+            }
+            return null;
+        }
+    }
+
+    const BANNER_DISMISS_KEY = 'pirabel_banner_dismissed';
+
+    function showLanguageBanner() {
+        // Guard: skip if user explicitly stored a preference (they chose this lang)
+        if (localStorage.getItem(LANG_KEY)) return;
+        // Guard: skip if dismissed this session
+        if (sessionStorage.getItem(BANNER_DISMISS_KEY) === '1') return;
+        // Guard: skip if no DOM (e.g., before body)
+        if (!document.body) return;
+
+        const pageLang = pageLanguage();
+        const prefLang = browserLangPreference();
+        if (!prefLang || prefLang === pageLang) return;
+
+        const targetUrl = buildAlternateUrl(prefLang);
+        if (!targetUrl) return;
+
+        const labels = prefLang === 'fr'
+            ? { msg: 'Voir cette page en français ?', cta: 'Passer en français', dismiss: 'Non merci' }
+            : { msg: 'View this page in English?',    cta: 'Switch to English',    dismiss: 'No thanks' };
+
+        const wrap = document.createElement('div');
+        wrap.id = 'pirabel-lang-banner';
+        wrap.setAttribute('role', 'region');
+        wrap.setAttribute('aria-label', 'Language suggestion');
+        wrap.style.cssText = [
+            'position:fixed', 'left:1rem', 'right:1rem', 'bottom:1rem',
+            'max-width:560px', 'margin:0 auto',
+            'background:#1a1a1a', 'color:#f5f0eb',
+            'border:1px solid rgba(255,85,0,0.4)', 'border-radius:12px',
+            'padding:1rem 1.25rem',
+            'box-shadow:0 8px 24px rgba(0,0,0,0.45)',
+            'font-family:Inter,system-ui,-apple-system,sans-serif',
+            'font-size:0.95rem', 'line-height:1.4',
+            'z-index:9999',
+            'display:flex', 'gap:0.75rem', 'align-items:center', 'flex-wrap:wrap'
+        ].join(';');
+        wrap.innerHTML = `
+            <span style="flex:1 1 200px;">${labels.msg}</span>
+            <button type="button" id="pirabel-lang-cta" style="background:#FF5500;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;">${labels.cta}</button>
+            <button type="button" id="pirabel-lang-dismiss" aria-label="Dismiss" style="background:transparent;color:#aaa;border:1px solid #555;padding:0.5rem 0.85rem;border-radius:6px;cursor:pointer;font-weight:500;">${labels.dismiss}</button>
+        `;
+        document.body.appendChild(wrap);
+        document.getElementById('pirabel-lang-cta').addEventListener('click', function() {
+            localStorage.setItem(LANG_KEY, prefLang);
+            window.location.href = targetUrl;
+        });
+        document.getElementById('pirabel-lang-dismiss').addEventListener('click', function() {
+            sessionStorage.setItem(BANNER_DISMISS_KEY, '1');
+            wrap.remove();
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showLanguageBanner);
+    } else {
+        showLanguageBanner();
+    }
 })();

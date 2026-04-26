@@ -9,95 +9,852 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://pirabellabs.com https://*.pirabellabs.com https://www.bing.com https://*.bing.com https://*.clarity.ms https://region1.google-analytics.com; frame-ancestors 'self'" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tiny.cloud https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://pirabellabs.com https://*.pirabellabs.com https://www.bing.com https://*.bing.com https://*.clarity.ms https://region1.google-analytics.com; frame-ancestors 'self'"
+        }
       ]
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/dashboard", "dest": "/api/index.js" },
-    { "src": "/clients", "dest": "/api/index.js" },
-    { "src": "/projects", "dest": "/api/index.js" },
-    { "src": "/orders", "dest": "/api/index.js" },
-    { "src": "/employees", "dest": "/api/index.js" },
-    { "src": "/invoices", "dest": "/api/index.js" },
-    { "src": "/revenue", "dest": "/api/index.js" },
-    { "src": "/settings", "dest": "/api/index.js" },
-    { "src": "/campaigns", "dest": "/api/index.js" },
-    { "src": "/messages", "dest": "/api/index.js" },
-    { "src": "/articles", "dest": "/api/index.js" },
-    { "src": "/analytics", "dest": "/api/index.js" },
-    { "src": "/mon-espace", "dest": "/client_portal_v4p8w1n7x9k2m_access_secure/index.html" },
-    { "src": "/espace-client-4p8w1n", "dest": "/mon-espace", "status": 301 },
-    { "src": "/portal", "dest": "/api/index.js" },
-
-    { "src": "/portal-login", "dest": "/api/index.js" },
-    { "src": "/notes", "dest": "/api/index.js" },
-    { "src": "/prospects", "dest": "/api/index.js" },
-    { "src": "/leads", "dest": "/api/index.js" },
-    { "src": "/logs", "dest": "/api/index.js" },
-    { "src": "/recruitment", "dest": "/api/index.js" },
-    { "src": "/candidates", "dest": "/api/index.js" },
-    { "src": "/tasks", "dest": "/api/index.js" },
-    { "src": "/calendar", "dest": "/api/index.js" },
-    { "src": "/quotes", "dest": "/api/index.js" },
-    { "src": "/pipeline", "dest": "/api/index.js" },
-    { "src": "/email-templates", "dest": "/api/index.js" },
-    { "src": "/time-tracking", "dest": "/api/index.js" },
-    { "src": "/reviews-admin", "dest": "/api/index.js" },
-    { "src": "/api-docs", "dest": "/api/index.js" },
-    { "src": "/gerer-rendez-vous", "dest": "/api/index.js" },
-    { "src": "/health", "dest": "/api/index.js" },
-    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
-    { "src": "/(?!api/)(.+)\\.html$", "headers": { "Location": "/$1" }, "status": 308 },
-    { "handle": "filesystem" },
-    { "src": "/index$", "headers": { "Location": "/" }, "status": 308 },
-    { "src": "/services", "dest": "/services.html" },
-    { "src": "/blog", "dest": "/blog.html" },
-    { "src": "/contact", "dest": "/contact.html" },
-    { "src": "/a-propos", "dest": "/a-propos.html" },
-    { "src": "/faq", "dest": "/faq.html" },
-    { "src": "/resultats", "dest": "/resultats.html" },
-    { "src": "/r%C3%A9sultats", "dest": "/resultats.html" },
-    { "src": "/mentions-legales", "dest": "/mentions-legales.html" },
-    { "src": "/politique-confidentialite", "dest": "/politique-confidentialite.html" },
-    { "src": "/blog-article", "dest": "/blog-article.html" },
-    { "src": "/carrieres", "dest": "/carrieres.html" },
-    { "src": "/candidature", "dest": "/candidature.html" },
-    { "src": "/rendez-vous", "dest": "/rendez-vous.html" },
-    { "src": "/modifier-devis", "dest": "/modifier-devis.html" },
-    { "src": "/status", "dest": "/status.html" },
-    { "src": "/avis", "dest": "/avis.html" },
-    { "src": "/en/services", "dest": "/en/services.html" },
-    { "src": "/en/contact", "dest": "/en/contact.html" },
-    { "src": "/en/about", "dest": "/en/about.html" },
-    { "src": "/en/results", "dest": "/en/results.html" },
-    { "src": "/en/reviews", "dest": "/en/reviews.html" },
-    { "src": "/en/careers", "dest": "/en/careers.html" },
-    { "src": "/en/legal-mentions", "dest": "/en/legal-mentions.html" },
-    { "src": "/en/privacy-policy", "dest": "/en/privacy-policy.html" },
-    { "src": "/en/guides$", "dest": "/en/guides/index.html" },
-    { "src": "/en/blog$", "dest": "/en/blog/index.html" },
-    { "src": "/en/guides/([^/]+)$", "dest": "/en/guides/$1.html" },
-    { "src": "/en/blog/([^/]+)$", "dest": "/en/blog/$1.html" },
-    { "src": "/en/([^/]+-agency|[^/]+-consultancy)$", "dest": "/en/$1/index.html" },
-    { "src": "/guides$", "dest": "/guides/index.html" },
-    { "src": "/(agence-[^/]+)$", "dest": "/$1/index.html" },
-    { "src": "/(agence-[^/]+)/([^/]+)$", "dest": "/$1/$2.html" },
-    { "src": "/(consulting-digital|formation-digitale|outils-digitaux)$", "dest": "/$1/index.html" },
-    { "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$", "dest": "/$1/$2.html" },
-    { "src": "/(guides)/([^/]+)$", "dest": "/$1/$2.html" },
-    { "src": "/(blog)/([^/]+)$", "dest": "/$1/$2.html" },
-
-    { "src": "/llms\\.txt", "dest": "/llms.txt" },
-    { "src": "/llms-full\\.txt", "dest": "/llms-full.txt" },
-    { "src": "/.well-known/(.*)", "dest": "/.well-known/$1" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/clients",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/projects",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/orders",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/employees",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/invoices",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/revenue",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/settings",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/campaigns",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/messages",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/articles",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/analytics",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/mon-espace",
+      "dest": "/client_portal_v4p8w1n7x9k2m_access_secure/index.html"
+    },
+    {
+      "src": "/espace-client-4p8w1n",
+      "dest": "/mon-espace",
+      "status": 301
+    },
+    {
+      "src": "/portal",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/portal-login",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/notes",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/prospects",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/leads",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/logs",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/recruitment",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/candidates",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/tasks",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/calendar",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/quotes",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/pipeline",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/email-templates",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/time-tracking",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/reviews-admin",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/api-docs",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/gerer-rendez-vous",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/modifier-devis",
+      "dest": "/modifier-devis.html"
+    },
+    {
+      "src": "/(?!api/)(.+)\\.html$",
+      "headers": {
+        "Location": "/$1"
+      },
+      "status": 308
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/index$",
+      "headers": {
+        "Location": "/"
+      },
+      "status": 308
+    },
+    {
+      "src": "/services",
+      "dest": "/services.html"
+    },
+    {
+      "src": "/blog",
+      "dest": "/blog.html"
+    },
+    {
+      "src": "/contact",
+      "dest": "/contact.html"
+    },
+    {
+      "src": "/a-propos",
+      "dest": "/a-propos.html"
+    },
+    {
+      "src": "/faq",
+      "dest": "/faq.html"
+    },
+    {
+      "src": "/resultats",
+      "dest": "/resultats.html"
+    },
+    {
+      "src": "/r%C3%A9sultats",
+      "dest": "/resultats.html"
+    },
+    {
+      "src": "/mentions-legales",
+      "dest": "/mentions-legales.html"
+    },
+    {
+      "src": "/politique-confidentialite",
+      "dest": "/politique-confidentialite.html"
+    },
+    {
+      "src": "/blog-article",
+      "dest": "/blog-article.html"
+    },
+    {
+      "src": "/carrieres",
+      "dest": "/carrieres.html"
+    },
+    {
+      "src": "/candidature",
+      "dest": "/candidature.html"
+    },
+    {
+      "src": "/rendez-vous",
+      "dest": "/rendez-vous.html"
+    },
+    {
+      "src": "/modifier-devis",
+      "dest": "/modifier-devis.html"
+    },
+    {
+      "src": "/status",
+      "dest": "/status.html"
+    },
+    {
+      "src": "/avis",
+      "dest": "/avis.html"
+    },
+    {
+      "src": "/en/services",
+      "dest": "/en/services.html"
+    },
+    {
+      "src": "/en/contact",
+      "dest": "/en/contact.html"
+    },
+    {
+      "src": "/en/about",
+      "dest": "/en/about.html"
+    },
+    {
+      "src": "/en/results",
+      "dest": "/en/results.html"
+    },
+    {
+      "src": "/en/reviews",
+      "dest": "/en/reviews.html"
+    },
+    {
+      "src": "/en/careers",
+      "dest": "/en/careers.html"
+    },
+    {
+      "src": "/en/legal-mentions",
+      "dest": "/en/legal-mentions.html"
+    },
+    {
+      "src": "/en/privacy-policy",
+      "dest": "/en/privacy-policy.html"
+    },
+    {
+      "src": "/en/guides$",
+      "dest": "/en/guides/index.html"
+    },
+    {
+      "src": "/en/blog$",
+      "dest": "/en/blog/index.html"
+    },
+    {
+      "src": "/en/blog/ai-chatbot-customer-service-guide",
+      "headers": {
+        "Location": "/en/blog/ai-chatbot-customer-service"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/ai-marketing-trends",
+      "headers": {
+        "Location": "/en/blog/ai-marketing-trends-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/branding-visual-identity-guide",
+      "headers": {
+        "Location": "/en/blog/branding-visual-identity"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/complete-seo-guide-2026",
+      "headers": {
+        "Location": "/en/blog/complete-seo-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/seo-guide-2026",
+      "headers": {
+        "Location": "/en/blog/complete-seo-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/content-strategy-2026",
+      "headers": {
+        "Location": "/en/blog/content-marketing-strategy-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/core-web-vitals-guide",
+      "headers": {
+        "Location": "/en/guides/core-web-vitals-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/core-web-vitals-performance-optimization",
+      "headers": {
+        "Location": "/en/guides/core-web-vitals-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/cro-optimization-complete-guide",
+      "headers": {
+        "Location": "/en/blog/cro-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/ecommerce-copywriting",
+      "headers": {
+        "Location": "/en/guides/ecommerce-copywriting-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/ecommerce-copywriting-techniques",
+      "headers": {
+        "Location": "/en/guides/ecommerce-copywriting-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/email-marketing-guide",
+      "headers": {
+        "Location": "/en/guides/email-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/email-marketing-complete-guide",
+      "headers": {
+        "Location": "/en/guides/email-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/ga4-guide-for-beginners",
+      "headers": {
+        "Location": "/en/blog/ga4-basics"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/linkedin-marketing-b2b-complete-guide",
+      "headers": {
+        "Location": "/en/blog/linkedin-b2b-marketing"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/local-seo-guide",
+      "headers": {
+        "Location": "/en/guides/local-seo-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/local-seo-guide-sme",
+      "headers": {
+        "Location": "/en/guides/local-seo-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/sales-funnel-strategy-guide",
+      "headers": {
+        "Location": "/en/blog/sales-funnel-strategy"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/social-strategy-2026",
+      "headers": {
+        "Location": "/en/blog/social-media-strategy-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/tiktok-marketing-2026",
+      "headers": {
+        "Location": "/en/blog/tiktok-marketing-strategies-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/ux-trends-2026",
+      "headers": {
+        "Location": "/en/blog/ux-design-trends-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/video-marketing-strategy-guide-2026",
+      "headers": {
+        "Location": "/en/blog/video-marketing-strategy"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/wordpress-vs-shopify-2026-comparison",
+      "headers": {
+        "Location": "/en/blog/wordpress-vs-shopify"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/online-advertising-google-meta-guide",
+      "headers": {
+        "Location": "/en/blog/ads-google-meta-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/automation-tools-guide",
+      "headers": {
+        "Location": "/en/blog/marketing-automation-tools-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/netlinking-backlinks-seo-strategy",
+      "headers": {
+        "Location": "/en/blog/link-building-strategy"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/blog/professional-website-creation-steps",
+      "headers": {
+        "Location": "/en/blog/website-creation-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ab-testing-mastery",
+      "headers": {
+        "Location": "/en/guides/ab-testing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/complete-ab-testing-guide",
+      "headers": {
+        "Location": "/en/guides/ab-testing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/advanced-retargeting",
+      "headers": {
+        "Location": "/en/guides/advanced-retargeting-strategies"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ai-chatbot-for-business-guide",
+      "headers": {
+        "Location": "/en/guides/ai-chatbot-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ai-marketing-agents-use-cases",
+      "headers": {
+        "Location": "/en/guides/ai-marketing-agents"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/automation-sequences",
+      "headers": {
+        "Location": "/en/guides/marketing-automation-sequences"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/building-editorial-strategy",
+      "headers": {
+        "Location": "/en/guides/editorial-strategy"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/community-management-best-practices",
+      "headers": {
+        "Location": "/en/guides/community-management"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/copywriting-techniques",
+      "headers": {
+        "Location": "/en/guides/copywriting-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/core-web-vitals-optimization",
+      "headers": {
+        "Location": "/en/guides/core-web-vitals-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/core-web-vitals-performance",
+      "headers": {
+        "Location": "/en/guides/core-web-vitals-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/corporate-video-success-guide",
+      "headers": {
+        "Location": "/en/guides/corporate-video-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ecommerce-copywriting",
+      "headers": {
+        "Location": "/en/guides/ecommerce-copywriting-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/e-commerce-copywriting-techniques",
+      "headers": {
+        "Location": "/en/guides/ecommerce-copywriting-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/email-marketing-mastery",
+      "headers": {
+        "Location": "/en/guides/email-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/complete-email-marketing-guide",
+      "headers": {
+        "Location": "/en/guides/email-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/email-open-rates-mastery",
+      "headers": {
+        "Location": "/en/guides/email-open-rates-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/improve-email-open-rates",
+      "headers": {
+        "Location": "/en/guides/email-open-rates-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ga4-mastery",
+      "headers": {
+        "Location": "/en/guides/ga4-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ga4-guide-for-beginners",
+      "headers": {
+        "Location": "/en/guides/ga4-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/google-ads-guide-for-beginners",
+      "headers": {
+        "Location": "/en/guides/google-ads-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/how-to-create-high-performance-website",
+      "headers": {
+        "Location": "/en/guides/high-performance-website"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/influence-marketing-complete-guide",
+      "headers": {
+        "Location": "/en/guides/influencer-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/landing-page-mastery",
+      "headers": {
+        "Location": "/en/guides/landing-page-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/perfect-landing-page-guide",
+      "headers": {
+        "Location": "/en/guides/landing-page-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/local-seo-mastery",
+      "headers": {
+        "Location": "/en/guides/local-seo-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/make-vs-zapier-comparison",
+      "headers": {
+        "Location": "/en/guides/make-vs-zapier"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/motion-design-guide",
+      "headers": {
+        "Location": "/en/guides/motion-design-marketing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/optimize-ad-budget",
+      "headers": {
+        "Location": "/en/guides/ad-budget-optimization"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/seo-guide-for-beginners",
+      "headers": {
+        "Location": "/en/guides/seo-basics"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/social-media-editorial-calendar-guide",
+      "headers": {
+        "Location": "/en/guides/social-media-calendar"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/social-video-formats",
+      "headers": {
+        "Location": "/en/guides/social-media-video-formats-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ux-design-conversion-principles",
+      "headers": {
+        "Location": "/en/guides/ux-conversion-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ux-design-2026",
+      "headers": {
+        "Location": "/en/blog/ux-design-trends-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ux-design-trends-2026",
+      "headers": {
+        "Location": "/en/blog/ux-design-trends-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/ux-trends-2026",
+      "headers": {
+        "Location": "/en/blog/ux-design-trends-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/branding-startup-guide",
+      "headers": {
+        "Location": "/en/guides/startup-branding"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/video-tools-guide",
+      "headers": {
+        "Location": "/en/guides/video-editing-tools-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/core-elements-visual-identity",
+      "headers": {
+        "Location": "/en/guides/visual-identity-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/visual-identity-core",
+      "headers": {
+        "Location": "/en/guides/visual-identity-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/website-cost-guide",
+      "headers": {
+        "Location": "/en/guides/website-pricing-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/webflow-vs-wordpress-comparison",
+      "headers": {
+        "Location": "/en/guides/webflow-vs-wordpress"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/choosing-configuring-crm-guide",
+      "headers": {
+        "Location": "/en/guides/crm-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/create-optimize-sales-funnels",
+      "headers": {
+        "Location": "/en/guides/sales-funnel-guide"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/social-media-strategy-2026",
+      "headers": {
+        "Location": "/en/blog/social-media-strategy-2026"
+      },
+      "status": 301
+    },
+    {
+      "src": "/en/guides/([^/]+)$",
+      "dest": "/en/guides/$1.html"
+    },
+    {
+      "src": "/en/blog/([^/]+)$",
+      "dest": "/en/blog/$1.html"
+    },
+    {
+      "src": "/en/([^/]+-agency|[^/]+-consultancy)$",
+      "dest": "/en/$1/index.html"
+    },
+    {
+      "src": "/guides$",
+      "dest": "/guides/index.html"
+    },
+    {
+      "src": "/(agence-[^/]+)$",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "/(agence-[^/]+)/([^/]+)$",
+      "dest": "/$1/$2.html"
+    },
+    {
+      "src": "/(consulting-digital|formation-digitale|outils-digitaux)$",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "/(consulting-digital|formation-digitale|outils-digitaux)/([^/]+)$",
+      "dest": "/$1/$2.html"
+    },
+    {
+      "src": "/(guides)/([^/]+)$",
+      "dest": "/$1/$2.html"
+    },
+    {
+      "src": "/(blog)/([^/]+)$",
+      "dest": "/$1/$2.html"
+    },
+    {
+      "src": "/llms\\.txt",
+      "dest": "/llms.txt"
+    },
+    {
+      "src": "/llms-full\\.txt",
+      "dest": "/llms-full.txt"
+    },
+    {
+      "src": "/.well-known/(.*)",
+      "dest": "/.well-known/$1"
+    }
   ],
   "crons": [
     {

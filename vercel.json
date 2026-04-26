@@ -854,6 +854,16 @@
     {
       "src": "/.well-known/(.*)",
       "dest": "/.well-known/$1"
+    },
+    {
+      "src": "/en/(.*)",
+      "status": 404,
+      "dest": "/en/404.html"
+    },
+    {
+      "src": "/(.*)",
+      "status": 404,
+      "dest": "/404.html"
     }
   ],
   "crons": [

@@ -72,6 +72,23 @@
         return DEFAULT_LANG;
     }
 
+    function setLangPreference(lang) {
+        // Persist in both localStorage (for client) and cookie (for edge middleware)
+        try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+        const days = 30;
+        const expires = new Date(Date.now() + days * 86400 * 1000).toUTCString();
+        document.cookie = LANG_KEY + '=' + lang + '; path=/; expires=' + expires + '; SameSite=Lax';
+    }
+
+    // Backfill cookie from localStorage on first load (for users who chose
+    // a language before the edge middleware was deployed).
+    (function backfillCookie() {
+        const stored = localStorage.getItem(LANG_KEY);
+        if (stored && document.cookie.indexOf(LANG_KEY + '=') === -1) {
+            setLangPreference(stored);
+        }
+    })();
+
     // Auto-redirect at section roots based on stored/browser language.
     // We only redirect at root entries (/, /en/) — NOT on deep pages,
     // so Google traffic to specific pages keeps its language.
@@ -92,7 +109,7 @@
 
     window.switchLanguage = function(lang) {
         if (!SUPPORTED_LANGS.includes(lang)) return;
-        localStorage.setItem(LANG_KEY, lang);
+        setLangPreference(lang);
 
         const rawPath = window.location.pathname;
         const path = normalizePath(rawPath);
@@ -224,7 +241,7 @@
         `;
         document.body.appendChild(wrap);
         document.getElementById('pirabel-lang-cta').addEventListener('click', function() {
-            localStorage.setItem(LANG_KEY, prefLang);
+            setLangPreference(prefLang);
             window.location.href = targetUrl;
         });
         document.getElementById('pirabel-lang-dismiss').addEventListener('click', function() {

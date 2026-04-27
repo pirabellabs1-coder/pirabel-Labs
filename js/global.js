@@ -3,43 +3,118 @@
    Preloader, Custom Cursor, Scroll Progress, Nav, Reveal Animations, i18n
    ======================================================================== */
 
-// --- I18N MANAGER (Global) ---
+// --- I18N MANAGER (Global, V3: trailing-slash safe + section prefix fallback) ---
 (function() {
     const LANG_KEY = 'pirabel_pref_lang';
     const SUPPORTED_LANGS = ['fr', 'en'];
     const DEFAULT_LANG = 'fr';
+
+    // FR (no trailing slash) -> EN canonical URL
     const URL_MAP = {
-        '/agence-seo-referencement-naturel/': '/en/seo-agency/',
-        '/agence-creation-sites-web/': '/en/web-design-agency/',
-        '/agence-ia-automatisation/': '/en/ai-automation-agency/',
-        '/agence-design-branding/': '/en/branding-agency/',
-        '/agence-publicite-payante-sea-ads/': '/en/paid-advertising-agency/',
-        '/agence-social-media/': '/en/social-media-agency/',
-        '/agence-email-marketing-crm/': '/en/email-marketing-agency/',
-        '/agence-video-motion-design/': '/en/video-production-agency/',
-        '/agence-sales-funnels-cro/': '/en/conversion-funnels-agency/',
-        '/agence-redaction-content-marketing/': '/en/content-marketing-agency/',
-        '/resultats': '/en/results',
-        '/avis': '/en/reviews',
-        '/contact': '/en/contact'
+        '/agence-seo-referencement-naturel': '/en/seo-agency/',
+        '/agence-creation-sites-web':         '/en/web-design-agency/',
+        '/agence-ia-automatisation':          '/en/ai-automation-agency/',
+        '/agence-design-branding':            '/en/branding-agency/',
+        '/agence-publicite-payante-sea-ads':  '/en/paid-advertising-agency/',
+        '/agence-social-media':               '/en/social-media-agency/',
+        '/agence-email-marketing-crm':        '/en/email-marketing-agency/',
+        '/agence-video-motion-design':        '/en/video-production-agency/',
+        '/agence-sales-funnels-cro':          '/en/conversion-funnels-agency/',
+        '/agence-redaction-content-marketing':'/en/content-marketing-agency/',
+        '/services':         '/en/services',
+        '/contact':          '/en/contact',
+        '/a-propos':         '/en/about',
+        '/resultats':        '/en/results',
+        '/avis':             '/en/reviews',
+        '/carrieres':        '/en/careers',
+        '/mentions-legales': '/en/legal-mentions',
+        '/politique-confidentialite': '/en/legal-mentions',
+        '/blog':             '/en/blog',
+        '/guides':           '/en/guides',
+        '/rendez-vous':      '/en/book-a-call',
+        '/':                 '/en/'
     };
+
+    const SECTION_PREFIXES_FR_TO_EN = {
+        '/agence-seo-referencement-naturel/': '/en/seo-agency/',
+        '/agence-creation-sites-web/':         '/en/web-design-agency/',
+        '/agence-ia-automatisation/':          '/en/ai-automation-agency/',
+        '/agence-design-branding/':            '/en/branding-agency/',
+        '/agence-publicite-payante-sea-ads/':  '/en/paid-advertising-agency/',
+        '/agence-social-media/':               '/en/social-media-agency/',
+        '/agence-email-marketing-crm/':        '/en/email-marketing-agency/',
+        '/agence-video-motion-design/':        '/en/video-production-agency/',
+        '/agence-sales-funnels-cro/':          '/en/conversion-funnels-agency/',
+        '/agence-redaction-content-marketing/':'/en/content-marketing-agency/',
+        '/blog/':   '/en/blog',
+        '/guides/': '/en/guides'
+    };
+
+    function normalizePath(p) {
+        return (p.length > 1 && p.endsWith('/')) ? p.slice(0, -1) : p;
+    }
+
     const REVERSE_MAP = {};
-    for (const [fr, en] of Object.entries(URL_MAP)) { REVERSE_MAP[en] = fr; }
+    const SECTION_PREFIXES_EN_TO_FR = {};
+    for (const fr in URL_MAP) {
+        REVERSE_MAP[normalizePath(URL_MAP[fr])] = fr;
+    }
+    for (const frP in SECTION_PREFIXES_FR_TO_EN) {
+        const enP = SECTION_PREFIXES_FR_TO_EN[frP];
+        SECTION_PREFIXES_EN_TO_FR[enP.endsWith('/') ? enP : enP + '/'] = frP;
+    }
+
+    function setLangPreference(lang) {
+        try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+        const expires = new Date(Date.now() + 30 * 86400 * 1000).toUTCString();
+        document.cookie = LANG_KEY + '=' + lang + '; path=/; expires=' + expires + '; SameSite=Lax';
+    }
+
+    // Backfill cookie from localStorage (for users who chose lang before edge middleware)
+    try {
+        const stored = localStorage.getItem(LANG_KEY);
+        if (stored && document.cookie.indexOf(LANG_KEY + '=') === -1) {
+            setLangPreference(stored);
+        }
+    } catch (e) {}
 
     window.switchLanguage = function(lang) {
         if (!SUPPORTED_LANGS.includes(lang)) return;
-        localStorage.setItem(LANG_KEY, lang);
-        let current = window.location.pathname;
-        const clean = current.endsWith('/') && current.length > 1 ? current.slice(0, -1) : current;
-        let target = current;
+        setLangPreference(lang);
+
+        const rawPath = window.location.pathname;
+        const path = normalizePath(rawPath);
+        let newPath = null;
+
         if (lang === 'en') {
-            if (URL_MAP[clean]) target = URL_MAP[clean];
-            else if (!current.startsWith('/en/')) target = '/en' + (current === '/' ? '/' : current);
+            if (path === '/en' || path.startsWith('/en/')) return;
+            if (URL_MAP[path]) {
+                newPath = URL_MAP[path];
+            } else {
+                for (const frPrefix in SECTION_PREFIXES_FR_TO_EN) {
+                    if (rawPath.startsWith(frPrefix) || (rawPath + '/').startsWith(frPrefix)) {
+                        newPath = SECTION_PREFIXES_FR_TO_EN[frPrefix];
+                        break;
+                    }
+                }
+                if (!newPath) newPath = '/en/';
+            }
         } else {
-            if (REVERSE_MAP[clean]) target = REVERSE_MAP[clean];
-            else if (current.startsWith('/en/')) target = current.replace('/en/', '/');
+            if (!path.startsWith('/en/') && path !== '/en') return;
+            if (REVERSE_MAP[path]) {
+                newPath = REVERSE_MAP[path];
+            } else {
+                for (const enPrefix in SECTION_PREFIXES_EN_TO_FR) {
+                    if (rawPath.startsWith(enPrefix)) {
+                        newPath = SECTION_PREFIXES_EN_TO_FR[enPrefix];
+                        break;
+                    }
+                }
+                if (!newPath) newPath = '/';
+            }
         }
-        window.location.href = target;
+
+        window.location.href = newPath;
     };
 })();
 

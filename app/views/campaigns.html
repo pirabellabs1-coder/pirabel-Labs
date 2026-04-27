@@ -47,7 +47,7 @@
   <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" id="user-avatar">A</div><div><div class="sidebar-username" id="user-name">Admin</div><div class="sidebar-role" id="user-role">Administrateur</div></div></div></div>
 </aside>
 
-<!-- Main Content -->
+<!-- Main Contenu -->
 <div class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:1rem;">
@@ -177,7 +177,7 @@
 const token = localStorage.getItem('token');
 if (!token) window.location.href = '/pirabel-admin-7x9k2m';
 
-const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const headers = { 'Authorization': 'Bearer ' + token, 'Contenu-Type': 'application/json' };
 function toast(msg, type='success') {
   const c = document.getElementById('toasts');
   if (!c) return alert(msg);

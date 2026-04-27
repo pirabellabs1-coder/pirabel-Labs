@@ -76,7 +76,7 @@ async function submitModification(e) {
     // Try quotes endpoint first, then orders
     let res = await fetch('/api/quotes/public/' + orderId + '/request-modification', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Contenu-Type': 'application/json' },
       body: JSON.stringify({ comments })
     });
     
@@ -84,7 +84,7 @@ async function submitModification(e) {
       // Fallback to orders endpoint
       res = await fetch('/api/orders/public/' + orderId + '/request-modification', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Contenu-Type': 'application/json' },
         body: JSON.stringify({ comments })
       });
     }

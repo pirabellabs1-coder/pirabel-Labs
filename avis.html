@@ -108,7 +108,7 @@
 </footer>
 
 <script src="js/config.js"></script>
-<script src="js/global.js?v=4"></script>
+<script src="js/global.js?v=5"></script>
 <script>
 const params = new URLSearchParams(window.location.search);
 const reviewToken = params.get('token');
@@ -143,7 +143,7 @@ if (reviewToken) {
 async function submitReview() {
   const comment = document.getElementById('f-comment').value.trim();
   if (!comment) return alert('Veuillez écrire un commentaire');
-  const r = await fetch('/api/reviews/submit/' + reviewToken, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment }) });
+  const r = await fetch('/api/reviews/submit/' + reviewToken, { method: 'POST', headers: { 'Contenu-Type': 'application/json' }, body: JSON.stringify({ rating: selectedRating, title: document.getElementById('f-title').value.trim(), comment }) });
   const d = await r.json();
   if (d.success) { document.getElementById('form-page').style.display = 'none'; document.getElementById('thanks-page').style.display = 'block'; }
 }

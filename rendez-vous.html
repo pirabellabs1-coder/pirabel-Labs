@@ -136,7 +136,7 @@
 </footer>
 
 <script src="js/config.js"></script>
-<script src="js/global.js?v=4"></script>
+<script src="js/global.js?v=5"></script>
 <script>
 let currentDate = new Date();
 let selectedDate = null;
@@ -202,7 +202,7 @@ async function submitBooking(e) {
   data.date = dt.toISOString(); data.title = (data.type === 'consultation' ? 'Consultation' : data.type) + ' - ' + data.name;
   const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Envoi...';
   try {
-    const r = await fetch('/api/appointments/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    const r = await fetch('/api/appointments/book', { method: 'POST', headers: { 'Contenu-Type': 'application/json' }, body: JSON.stringify(data) });
     const result = await r.json();
     if (result.error) { showAlert(result.error, 'error'); btn.disabled = false; btn.textContent = 'Confirmer le rendez-vous'; }
     else { showAlert('Rendez-vous confirmé ! Vous recevrez un email de confirmation.', 'success'); form.reset(); btn.textContent = 'Confirmé ✓'; }

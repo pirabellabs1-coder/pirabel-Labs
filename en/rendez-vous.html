@@ -107,9 +107,9 @@
 <section class="booking">
  <div class="calendar-sideally">
   <div class="cal-head">
-   <button onclickk="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
+   <button onclick="prevMonth()"><span class="material-symbols-outlined">chevron_left</span></button>
    <h2 id="cal-month"></h2>
-   <button onclickk="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
+   <button onclick="nextMonth()"><span class="material-symbols-outlined">chevron_right</span></button>
   </div>
   <div class="cal-grid" id="cal-grid"></div>
   <div class="slots"><h3 id="slots-title">Select a date</h3><div class="slot-grid" id="slots-grid"></div></div>
@@ -167,7 +167,7 @@ function renderCalendar() {
   const isSelected = selectedDate && d.toDateString() === selectedDate.toDateString();
   const cls = ['cal-d'];
   if (disabled) cls.push('disabled'); if (isToday) cls.push('today'); if (isSelected) cls.push('selected');
-  html += `<div class="${cls.join(' ')}" ${disabled ? '' : `onclickk="selectDate(${day})"`}>${day}</div>`;
+  html += `<div class="${cls.join(' ')}" ${disabled ? '' : `onclick="selectDate(${day})"`}>${day}</div>`;
  }
  grid.innerHTML = html;
 }
@@ -185,7 +185,7 @@ async function selectDate(day) {
   const r = await fetch('/api/appointments/availability?date=' + dateStr);
   const data = await r.json();
   if (!data.slots || !data.slots.length) { document.getElementById('slots-grid').innerHTML = '<div class="no-slot">No available time slots.</div>'; return; }
-  document.getElementById('slots-grid').innerHTML = data.slots.map(s => `<div class="slot" onclickk="selectSlot('${s}')">${s}</div>`).join('');
+  document.getElementById('slots-grid').innerHTML = data.slots.map(s => `<div class="slot" onclick="selectSlot('${s}')">${s}</div>`).join('');
  } catch (e) { document.getElementById('slots-grid').innerHTML = '<div class="no-slot">Error</div>'; }
 }
 

@@ -165,7 +165,7 @@
 
 <!-- 2-Column Layout: Article + Sidebar -->
 <div class="article-layout">
-  <!-- Main Content -->
+  <!-- Main Contenu -->
   <div>
     <div class="article-body" id="article-content">
       <p style="color:rgba(229,226,225,0.3);text-align:center;">Chargement de l'article...</p>
@@ -256,7 +256,7 @@
 <script src="js/cookie-consent.js?v=1" defer></script>
 <script>
 const API = window.PIRABEL_API || 'http://localhost:3000';
-const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',video:'Vid\u00e9o',email:'Email',content:'Content',cro:'CRO',general:'Actualit\u00e9s'};
+const catLabels = {seo:'SEO',web:'Web',ia:'IA',ads:'Ads',social:'Social',design:'Design',video:'Vid\u00e9o',email:'Email',content:'Contenu',cro:'CRO',general:'Actualit\u00e9s'};
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -317,7 +317,7 @@ async function sidebarNL() {
   if (!email) return;
   try {
     await fetch(API + '/api/campaigns/subscribers', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: {'Contenu-Type':'application/json'},
       body: JSON.stringify({email, type:'newsletter', source:'blog_article'})
     });
     document.getElementById('sidebar-nl-ok').style.display = 'block';

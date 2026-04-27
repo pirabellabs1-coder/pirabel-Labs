@@ -110,7 +110,7 @@ async function cancelAppt() {
   try {
     const r = await fetch(`/api/appointments/cancel/${token}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Contenu-Type': 'application/json' },
       body: JSON.stringify({ reason })
     });
     if (!r.ok) throw new Error('Erreur lors de l\'annulation.');
@@ -139,7 +139,7 @@ async function confirmReschedule() {
   try {
     const r = await fetch(`/api/appointments/reschedule/${token}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Contenu-Type': 'application/json' },
       body: JSON.stringify({ date, reason })
     });
     if (!r.ok) throw new Error('Erreur lors de la replanification.');

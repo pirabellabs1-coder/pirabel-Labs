@@ -164,7 +164,7 @@ async function submitForm(e) {
   data.cvUrl = cvDataUrl; data.cvFilename = cvFilename; data.source = 'site_carrieres';
   const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Envoi en cours...';
   try {
-    const r = await fetch('/api/recruitment/jobs/' + slug + '/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    const r = await fetch('/api/recruitment/jobs/' + slug + '/apply', { method: 'POST', headers: { 'Contenu-Type': 'application/json' }, body: JSON.stringify(data) });
     const result = await r.json();
     if (result.error) { showAlert(result.error, 'error'); btn.disabled = false; btn.textContent = 'Envoyer ma candidature'; }
     else { showAlert(result.message || 'Candidature envoyée avec succès !', 'success'); form.reset(); document.getElementById('cv-label').classList.remove('has-file'); document.getElementById('cv-text').textContent = 'Cliquez pour téléverser votre CV'; cvDataUrl = ''; cvFilename = ''; btn.textContent = 'Envoyée ✓'; }

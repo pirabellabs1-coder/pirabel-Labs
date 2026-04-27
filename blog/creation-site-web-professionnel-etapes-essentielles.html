@@ -279,7 +279,7 @@
 <li><strong>Minification et compression :</strong> Minifiez vos fichiers CSS, JavaScript et HTML. Activez la compression Gzip ou Brotli sur votre serveur. Brotli offre un taux de compression supérieur d'environ 20 % par rapport à Gzip.</li>
 <li><strong>Lazy loading :</strong> Différez le chargement des images et des vidéos situées hors de la zone visible. L'attribut natif <code>loading="lazy"</code> simplifie considérablement cette implémentation.</li>
 <li><strong>Mise en cache :</strong> Configurez des en-têtes de cache HTTP appropriés pour que les navigateurs conservent les ressources statiques. Utilisez le versionnement des fichiers (cache busting) pour garantir que les utilisateurs reçoivent toujours les versions à jour.</li>
-<li><strong>CDN (Content Delivery Network) :</strong> Distribuez vos contenus statiques via un réseau de serveurs répartis géographiquement. Des services comme Cloudflare, AWS CloudFront ou Fastly réduisent significativement les temps de chargement pour les utilisateurs éloignés de votre serveur d'origine.</li>
+<li><strong>CDN (Contenu Delivery Network) :</strong> Distribuez vos contenus statiques via un réseau de serveurs répartis géographiquement. Des services comme Cloudflare, AWS CloudFront ou Fastly réduisent significativement les temps de chargement pour les utilisateurs éloignés de votre serveur d'origine.</li>
 <li><strong>Optimisation des polices :</strong> Utilisez <code>font-display: swap</code> pour afficher un texte immédiatement avec une police de remplacement, puis basculer vers la police personnalisée une fois chargée. Limitez le nombre de variantes typographiques et hébergez les polices localement lorsque c'est possible.</li>
 </ul>
 
@@ -327,7 +327,7 @@
 
 <ul>
 <li><strong>Le certificat SSL/TLS :</strong> Chiffrez toutes les communications entre le navigateur et le serveur. Les certificats Let's Encrypt offrent un chiffrement gratuit et renouvelable automatiquement.</li>
-<li><strong>Les en-têtes de sécurité HTTP :</strong> Configurez les en-têtes Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options et Strict-Transport-Security pour protéger contre les attaques XSS, le clickjacking et les injections de contenu.</li>
+<li><strong>Les en-têtes de sécurité HTTP :</strong> Configurez les en-têtes Contenu-Security-Policy (CSP), X-Frame-Options, X-Contenu-Type-Options et Strict-Transport-Security pour protéger contre les attaques XSS, le clickjacking et les injections de contenu.</li>
 <li><strong>La protection contre les attaques courantes :</strong> Implémentez des mesures contre les injections SQL, les attaques par force brute, les attaques CSRF (Cross-Site Request Forgery) et les attaques DDoS. Un Web Application Firewall (WAF) offre une couche de protection supplémentaire efficace.</li>
 <li><strong>Les mises à jour régulières :</strong> Maintenez tous les composants à jour — système d'exploitation du serveur, logiciel serveur, CMS, plugins, dépendances. Les failles de sécurité connues sont la porte d'entrée principale des pirates.</li>
 <li><strong>Les sauvegardes automatisées :</strong> Mettez en place des sauvegardes automatiques quotidiennes, stockées sur un emplacement externe. Testez régulièrement la procédure de restauration pour vous assurer qu'elle fonctionne lorsque vous en aurez besoin.</li>

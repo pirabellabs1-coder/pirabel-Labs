@@ -110,7 +110,7 @@ let allApps = [];
 let currentApp = null;
 
 async function api(url, opts = {}) {
-  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+  const r = await fetch('/api' + url, { credentials: 'include', headers: { 'Contenu-Type': 'application/json' }, ...opts });
   if (r.status === 401) { window.location.href = '/pirabel-admin-7x9k2m'; return; }
   return r.json();
 }

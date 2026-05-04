@@ -2382,7 +2382,7 @@
 
   function saveMsg(convId, name, email, text, role) {
     try {
-      fetch('/api/chat/save-message', {
+      fetch('/api/chat/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

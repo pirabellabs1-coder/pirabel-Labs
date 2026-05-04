@@ -53,19 +53,17 @@ export default function middleware(request) {
   }
 
   // No cookie — detect from geo then browser
-  const country = request.headers.get('x-vercel-ip-country') || '';
+  // CF-IPCountry is set by Cloudflare (more reliable when CF proxies to Vercel)
+  const country = request.headers.get('cf-ipcountry')
+    || request.headers.get('x-vercel-ip-country')
+    || '';
   let detectedLang = 'fr';
 
   if (ENGLISH_COUNTRIES.has(country)) {
     detectedLang = 'en';
-  } else if (FRENCH_COUNTRIES.has(country)) {
-    detectedLang = 'fr';
-  } else {
-    // Fallback: browser Accept-Language
-    const acceptLang = request.headers.get('accept-language') || '';
-    const primary = acceptLang.split(',')[0].split('-')[0].toLowerCase();
-    if (primary === 'en') detectedLang = 'en';
   }
+  // For French countries, unknown countries, or empty country: stay FR (default)
+  // The site's primary language is French — only redirect to EN for confirmed English-speaking countries
 
   if (detectedLang === 'en') {
     const enPath = '/en' + (path === '/' ? '/' : path);

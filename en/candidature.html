@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Application — Pirabel Labs</title>
-<meta name="description" content="Postulez à our offres d'emploi chez Pirabel Labs.">
+<meta name="description" content="Apply for job openings at Pirabel Labs.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pirabellabs">
 <link rel="icon" type="image/png" href="../img/favicon.png">
@@ -94,13 +94,13 @@
 </div>
 
 <div class="container" id="container">
- <div class="empty">Chargement de l'offre...</div>
+ <div class="empty">Loading job offer...</div>
 </div>
 
 <footer class="footer">
  <div class="footer-grid">
   <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">The premium digital agency for your growth.</p></div>
-  <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/carrieres">All the offres</a></li><li><a href="/en/a-propos">About</a></li><li><a href="/en/contact">Contact</a></li></ul></div>
+  <div><div class="footer-title">Resources</div><ul class="footer-links"><li><a href="/en/carrieres">All positions</a></li><li><a href="/en/a-propos">About</a></li><li><a href="/en/contact">Contact</a></li></ul></div>
  </div>
  <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs. All rights reserved.</span><div style="display:flex;gap:2rem;"><a href="/en/mentions-legales">Legal Notice</a><a href="/en/politique-confidentialite">Privacy</a></div></div>
 </footer>
@@ -114,7 +114,7 @@ let cvDataUrl = '';
 let cvFilename = '';
 
 if (!slug) {
- document.getElementById('container').innerHTML = '<div class="empty">Lien invalideally. <a href="/en/carrieres" style="color:var(--primary);">See allows les offres</a></div>';
+ document.getElementById('container').innerHTML = '<div class="empty">Invalid link. <a href="/en/carrieres" style="color:var(--primary);">See all positions</a></div>';
 } else {
  fetch('/api/recruitment/jobs/public/' + slug)
   .then(r => r.json())
@@ -122,7 +122,7 @@ if (!slug) {
    if (job.error) { document.getElementById('container').innerHTML = '<div class="empty">' + job.error + '</div>'; return; }
    renderJob(job);
   })
-  .catch(() => { document.getElementById('container').innerHTML = '<div class="empty">Error de chargement</div>'; });
+  .catch(() => { document.getElementById('container').innerHTML = '<div class="empty">Loading error</div>'; });
 }
 
 function renderJob(job) {
@@ -134,20 +134,20 @@ function renderJob(job) {
    <h1>${escapeHtml(job.title)}</h1>
    <div class="job-meta">${escapeHtml(job.department || '')} ${job.location ? '· ' + escapeHtml(job.location) : ''} ${job.salary ? '· ' + escapeHtml(job.salary) : ''}</div>
    ${job.description ? `<div class="job-section"><h3>Description</h3><p>${escapeHtml(job.description)}</p></div>` : ''}
-   ${reqs ? `<div class="job-section"><h3>Pré-requis</h3><ul>${reqs}</ul></div>` : ''}
-   ${benefits ? `<div class="job-section"><h3>Avantages</h3><ul>${benefits}</ul></div>` : ''}
+   ${reqs ? `<div class="job-section"><h3>Requirements</h3><ul>${reqs}</ul></div>` : ''}
+   ${benefits ? `<div class="job-section"><h3>Benefits</h3><ul>${benefits}</ul></div>` : ''}
   </div>
   <div class="form">
    <h2>Apply</h2>
    <div id="alert"></div>
    <form id="form" onsubmit="submitForm(event)">
     <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
-    <div class="field-row"><div class="field"><label>First Name & Nom *</label><input type="text" name="name" required></div><div class="field"><label>Email *</label><input type="email" name="email" required></div></div>
+    <div class="field-row"><div class="field"><label>Full Name *</label><input type="text" name="name" required></div><div class="field"><label>Email *</label><input type="email" name="email" required></div></div>
     <div class="field-row"><div class="field"><label>Phone</label><input type="tel" name="phone"></div><div class="field"><label>LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></div></div>
     <div class="field"><label>Portfolio / Site</label><input type="url" name="portfolio" placeholder="https://"></div>
-    <div class="field"><label>CV (PDF)</label><label class="cv-upload" id="cv-label"><input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)"><span class="material-symbols-outlined icon">upload_file</span><div class="text" id="cv-text">Cliquez for téléverser your CV (PDF, max 5MB)</div></label></div>
-    <div class="field"><label>Lettre de motivation *</label><textarea name="coverLetter" required placeholder="Présentez-vous..."></textarea></div>
-    <button type="submit" class="btn-apply" id="submit-btn">Send ma candidature</button>
+    <div class="field"><label>CV (PDF)</label><label class="cv-upload" id="cv-label"><input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)"><span class="material-symbols-outlined icon">upload_file</span><div class="text" id="cv-text">Click to upload your CV (PDF, max 5MB)</div></label></div>
+    <div class="field"><label>Cover Letter *</label><textarea name="coverLetter" required placeholder="Introduce yourself..."></textarea></div>
+    <button type="submit" class="btn-apply" id="submit-btn">Submit my application</button>
    </form>
   </div>
  `;
@@ -155,7 +155,7 @@ function renderJob(job) {
 
 function handleCv(e) {
  const file = e.target.files[0]; if (!file) return;
- if (file.size > 5 * 1024 * 1024) { showAlert('Fichier trop volumineux (max 5MB)', 'error'); e.target.value = ''; return; }
+ if (file.size > 5 * 1024 * 1024) { showAlert('File too large (max 5MB)', 'error'); e.target.value = ''; return; }
  const reader = new FileReader();
  reader.onload = function (ev) { cvDataUrl = ev.target.result; cvFilename = file.name; document.getElementById('cv-label').classList.add('has-file'); document.getElementById('cv-text').textContent = '✓ ' + file.name; };
  reader.readAsDataURL(file);
@@ -166,13 +166,13 @@ async function submitForm(e) {
  const form = e.target;
  const data = Object.fromEntries(new FormData(form));
  data.cvUrl = cvDataUrl; data.cvFilename = cvFilename; data.source = 'site_carrieres';
- const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Envoi en cours...';
+ const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Submitting...';
  try {
   const r = await fetch('/api/recruitment/jobs/' + slug + '/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
   const result = await r.json();
-  if (result.error) { showAlert(result.error, 'error'); btn.disabled = false; btn.textContent = 'Send ma candidature'; }
-  else { showAlert(result.message || 'Application envoyée with succès !', 'success'); form.reset(); document.getElementById('cv-label').classList.remove('has-file'); document.getElementById('cv-text').textContent = 'Cliquez for téléverser your CV'; cvDataUrl = ''; cvFilename = ''; btn.textContent = 'Envoyée ✓'; }
- } catch (err) { showAlert('Error réseau, réessayez', 'error'); btn.disabled = false; btn.textContent = 'Send ma candidature'; }
+  if (result.error) { showAlert(result.error, 'error'); btn.disabled = false; btn.textContent = 'Submit my application'; }
+  else { showAlert(result.message || 'Application submitted successfully!', 'success'); form.reset(); document.getElementById('cv-label').classList.remove('has-file'); document.getElementById('cv-text').textContent = 'Click to upload your CV'; cvDataUrl = ''; cvFilename = ''; btn.textContent = 'Submitted ✓'; }
+ } catch (err) { showAlert('Network error, please try again', 'error'); btn.disabled = false; btn.textContent = 'Submit my application'; }
 }
 
 function showAlert(msg, type) { document.getElementById('alert').innerHTML = '<div class="alert alert-' + type + '">' + escapeHtml(msg) + '</div>'; window.scrollTo({ top: 0, behavior: 'smooth' }); }

@@ -42,7 +42,7 @@ h1{font-family:var(--font-headline);font-size:2rem;margin-bottom:.5rem;font-weig
 <body>
 <div class="noise-overlay"></div>
 <div class="container" id="app">
- <div id="loading" style="text-align:center;">Chargement de your appointment...</div>
+ <div id="loading" style="text-align:center;">Loading your appointment...</div>
  <div id="content" style="display:none;">
   <div class="card">
    <div id="status" class="status-tag"></div>
@@ -53,7 +53,7 @@ h1{font-family:var(--font-headline);font-size:2rem;margin-bottom:.5rem;font-weig
    
    <div class="actions" id="actions-bar">
     <button class="btn btn-reschedule" onclick="openModal('reschedule')"><span class="material-symbols-outlined" style="font-size:1.1rem;">event_repeat</span> Replanifier</button>
-    <button class="btn btn-cancel" onclick="openModal('cancel')"><span class="material-symbols-outlined" style="font-size:1.1rem;">cancel</span> Annuler le RDV</button>
+    <button class="btn btn-cancel" onclick="openModal('cancel')"><span class="material-symbols-outlined" style="font-size:1.1rem;">cancel</span> Cancel Appointment</button>
    </div>
    <div id="cancel-success" style="display:none;margin-top:2rem;color:var(--primary);font-weight:700;text-align:center;">
     Appointment annulé. Une notification a été envoyée à our team.
@@ -65,10 +65,10 @@ h1{font-family:var(--font-headline);font-size:2rem;margin-bottom:.5rem;font-weig
 <!-- Modal Cancellation -->
 <div class="modal" id="modal-cancel">
  <div class="modal-content">
-  <h2 style="margin-bottom:1.5rem;font-family:var(--font-headline);">Annuler le appointment</h2>
-  <p style="font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;">Veuillez we indiquer la raison de your annulation :</p>
+  <h2 style="margin-bottom:1.5rem;font-family:var(--font-headline);">Cancel Appointment</h2>
+  <p style="font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;">Please let us know the reason for your cancellation:</p>
   <div class="field">
-   <label>Raison de l'annulation *</label>
+   <label>Reason for cancellation *</label>
    <textarea id="cancel-reason" placeholder="Ex: Contretemps imprévu, déjà résolu..." required></textarea>
   </div>
   <div style="display:flex;gap:1rem;justify-content:flex-end;">
@@ -87,12 +87,12 @@ h1{font-family:var(--font-headline);font-size:2rem;margin-bottom:.5rem;font-weig
    <input type="datetime-local" id="new-date" required>
   </div>
   <div class="field">
-   <label>Raison du report *</label>
-   <textarea id="reschedule-reason" placeholder="Ex: Déplacement professionnel, need more de temps..." required></textarea>
+   <label>Reason for rescheduling *</label>
+   <textarea id="reschedule-reason" placeholder="E.g.: Business trip, need more time..." required></textarea>
   </div>
   <div style="display:flex;gap:1rem;justify-content:flex-end;">
    <button class="btn-cancel btn" style="padding:.6rem 1rem;" onclick="closeModal('reschedule')">Back</button>
-   <button class="btn-reschedule btn" style="padding:.6rem 1.5rem;" onclick="confirmReschedule()">Mettre à jour le RDV</button>
+   <button class="btn-reschedule btn" style="padding:.6rem 1.5rem;" onclick="confirmReschedule()">Update Appointment</button>
   </div>
  </div>
 </div>
@@ -102,7 +102,7 @@ const token = new URLSearchParams(window.location.search).get('token');
 let appt = null;
 
 async function init() {
- if (!token) return document.getElementById('loading').textContent = 'Lien de management manquant.';
+ if (!token) return document.getElementById('loading').textContent = 'Management link missing.';
  try {
   const r = await fetch('/api/appointments/manage/' + token);
   if (!r.ok) throw new Error('RDV introuvable');
@@ -157,7 +157,7 @@ async function confirmReschedule() {
    headers: { 'Content-Type': 'application/json' },
    body: JSON.stringify({ date, reason })
   });
-  if (!r.ok) throw new Error('Error lors du report');
+  if (!r.ok) throw new Error('Error during rescheduling');
   location.reload();
  } catch (err) { alert(err.message); }
 }

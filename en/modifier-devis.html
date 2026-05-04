@@ -16,7 +16,7 @@
 .rdv-hero{padding:8rem var(--px-page) 3rem;text-align:center;max-width:800px;margin:0 auto;}
 .rdv-hero h1{font-family:var(--font-headline);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:1rem;}
 .rdv-hero p{color:var(--on-surface-variant);font-size:1.05rem;}
-.form-sideally{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;max-width:600px;margin:0 auto 6rem;border-radius:4px;}
+.form-side{background:var(--surface-container);border:1px solid var(--outline-variant);padding:3rem 2rem;max-width:600px;margin:0 auto 6rem;border-radius:4px;}
 .field{margin-bottom:1.5rem;}
 .field label{display:block;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--on-surface-variant);margin-bottom:0.6rem;font-weight:700;}
 .field textarea{width:100%;background:var(--surface);border:1px solid var(--outline-variant);padding:1rem;color:var(--on-surface);font-size:1rem;font-family:inherit;outline:none;min-height:150px;resize:vertical;}
@@ -46,17 +46,17 @@
 
 <section class="rdv-hero">
  <h1>Adjust our proposal</h1>
- <p>Say-nous what you aimeriez modify in the quote. We le réviserons quickly for qu'il corresponde parfaitement à your expectations.</p>
+ <p>Tell us what you would like to modify in the quote. We will revise it quickly so that it perfectly matches your expectations.</p>
 </section>
 
-<section class="form-sideally" id="form-container">
+<section class="form-side" id="form-container">
  <div id="alert-box"></div>
  <form id="modification-form" onsubmit="submitModification(event)">
   <div class="field">
-   <label>Your comments, questions or adjustments souhaités</label>
-   <textarea id="comments" required placeholder="Par example: 'Pouvons-nous retirer la prestation X ?' or 'Est-il possible de modify les modalités de paiement ?'"></textarea>
+   <label>Your desired comments, questions or adjustments</label>
+   <textarea id="comments" required placeholder="For example: 'Can we remove service X?' or 'Is it possible to change the payment terms?'"></textarea>
   </div>
-  <button type="submit" class="btn-primary" id="submit-btn">Send ma demande de révision</button>
+  <button type="submit" class="btn-primary" id="submit-btn">Send my revision request</button>
  </form>
 </section>
 
@@ -71,13 +71,13 @@ async function submitModification(e) {
  const urlParams = new URLSearchParams(window.location.search);
  const orderId = urlParams.get('id');
  if (!orderId) {
-  return showAlert('Lien invalideally. Aucun numéro de quote trouvé.', 'error');
+  return showAlert('Invalid link. No quote number found.', 'error');
  }
 
  const comments = document.getElementById('comments').value;
  const btn = document.getElementById('submit-btn');
  btn.disabled = true;
- btn.textContent = 'Envoi en cours...';
+ btn.textContent = 'Sending...';
 
  try {
   // Try quotes endpoint first, then orders
@@ -100,13 +100,13 @@ async function submitModification(e) {
    throw new Error('Error');
   }
   
-  showAlert('Your demande a bien été envoyée. Notre expert you répondra with a quote ajusté in the most brefs délais !', 'success');
+  showAlert('Your request has been successfully sent. Our expert will respond with an adjusted quote as soon as possible!', 'success');
   document.getElementById('modification-form').reset();
   btn.style.display = 'none';
  } catch (err) {
-  showAlert('Une erreur is survenue. Veuillez réessayer.', 'error');
+  showAlert('An error occurred. Please try again.', 'error');
   btn.disabled = false;
-  btn.textContent = 'Send ma demande de révision';
+  btn.textContent = 'Send my revision request';
  }
 }
 

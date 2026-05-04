@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Test Case Studies</title></head>
+<body style="background:#111;color:#fff;font-family:sans-serif;padding:2rem;">
+<h1>Test Case Studies API</h1>
+<div id="output">Loading...</div>
+<div id="cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;"></div>
+<script>
+fetch('/api/case-studies?language=fr&limit=24')
+  .then(function(r){ 
+    document.getElementById('output').textContent = 'Status: ' + r.status;
+    return r.json(); 
+  })
+  .then(function(data){
+    document.getElementById('output').textContent = 'Found: ' + (data.caseStudies||[]).length + ' case studies';
+    var cards = document.getElementById('cards');
+    (data.caseStudies||[]).forEach(function(c){
+      cards.innerHTML += '<div style="background:#222;padding:1rem;border-radius:8px;">'
+        + (c.coverImage ? '<img src="'+c.coverImage+'" style="width:100%;border-radius:6px;margin-bottom:1rem;">' : '')
+        + '<div style="color:#FF5500;font-weight:bold;font-size:.8rem;">'+c.category.toUpperCase()+'</div>'
+        + '<div style="font-size:.7rem;color:#888;margin:.3rem 0;">'+c.client+'</div>'
+        + '<h3 style="font-size:1rem;margin:.5rem 0;">'+c.title+'</h3>'
+        + '<p style="font-size:.85rem;color:#aaa;">'+c.description+'</p>'
+        + '<div style="color:#FF5500;font-size:1.5rem;font-weight:900;margin-top:.5rem;">'+(c.metric||'')+'</div>'
+        + '</div>';
+    });
+  })
+  .catch(function(err){
+    document.getElementById('output').textContent = 'ERROR: ' + err.message;
+  });
+</script>
+</body></html>

@@ -30,6 +30,7 @@
       { href: '/prospects', icon: 'person_search', label: 'Prospection' },
       { href: '/leads', icon: 'group_add', label: 'Leads' },
       { href: '/articles', icon: 'article', label: 'Articles' },
+      { href: '/case-studies', icon: 'trophy', label: 'Études de cas' },
       { href: '/analytics', icon: 'analytics', label: 'Analytics' },
       { href: '/reviews-admin', icon: 'star', label: 'Avis clients' }
     ]},

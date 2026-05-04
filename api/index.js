@@ -113,6 +113,7 @@ app.use('/api/time', require(path.join(routesPath, 'time')));
 app.use('/api/cron', require(path.join(routesPath, 'cron')));
 app.use('/api/status', require(path.join(routesPath, 'status')));
 app.use('/api/outreach', require(path.join(routesPath, 'outreach')));
+app.use('/api/case-studies', require(path.join(routesPath, 'case-studies')));
 
 // Secret admin/client URLs (Consistent with server.js)
 const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';
@@ -125,7 +126,7 @@ app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'po
 app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous', 'case-studies'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });

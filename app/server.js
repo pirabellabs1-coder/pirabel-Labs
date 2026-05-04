@@ -116,6 +116,7 @@ app.use('/api/templates', require('./routes/templates'));
 app.use('/api/time', require('./routes/time'));
 app.use('/api/status', require('./routes/status'));
 app.use('/api/outreach', require('./routes/outreach'));
+app.use('/api/case-studies', require('./routes/case-studies'));
 
 // ============================================
 // SECRET ACCESS URLs (Move to .env on production)
@@ -153,6 +154,7 @@ app.get('/tasks', (req, res) => res.sendFile(path.join(__dirname, 'views', 'task
 app.get('/calendar', (req, res) => res.sendFile(path.join(__dirname, 'views', 'calendar.html')));
 app.get('/gerer-rendez-vous.html', (req, res) => res.sendFile(path.join(__dirname, 'views', 'gerer-rendez-vous.html')));
 app.get('/api-docs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'api-docs.html')));
+app.get('/case-studies', (req, res) => res.sendFile(path.join(__dirname, 'views', 'case-studies.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

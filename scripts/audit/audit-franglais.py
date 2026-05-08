@@ -26,15 +26,17 @@ SKIP_DIRS = (
 # Includes function words, accented chars, common verbs, articles.
 FR_TOKENS = [
     # Articles, pronouns, function words
+    # NOTE: "pour", "par", "plus", "creation", "service" are excluded — they
+    # are valid English words and produced too many false positives.
     r"\bnotre\b", r"\bnos\b", r"\bvotre\b", r"\bvos\b", r"\bnous\b", r"\bvous\b",
-    r"\bavec\b", r"\bsans\b", r"\bpour\b", r"\bpar\b", r"\bdans\b", r"\bsur\b(?!face|prise)",
+    r"\bavec\b", r"\bsans\b", r"\bdans\b",
     r"\bdes\b", r"\bdu\b", r"\bune\b", r"\bune\s", r"\bune,",
     r"\bcette\b", r"\bces\b", r"\bson\b", r"\bsa\b", r"\bses\b", r"\bleur\b", r"\bleurs\b",
     r"\bque\b", r"\bqui\b", r"\bdont\b", r"\boù\b",
     r"\best\b", r"\bsont\b", r"\bétait\b", r"\bétaient\b", r"\bsera\b",
-    r"\bplus\b(?!\sthan)", r"\bmoins\b", r"\btrès\b", r"\btrop\b", r"\bdéjà\b",
+    r"\bmoins\b", r"\btrès\b", r"\btrop\b", r"\bdéjà\b",
     r"\baussi\b", r"\bencore\b", r"\bjamais\b", r"\btoujours\b", r"\bsouvent\b",
-    r"\bbien\b(?!\sthan)", r"\bmieux\b",
+    r"\bmieux\b",
 
     # Common French verbs / phrases
     r"\bprend\s+en\s+charge\b", r"\bcoeur\s+de\s+m[ée]tier\b", r"\bsur[\s-]?mesure\b",
@@ -45,7 +47,9 @@ FR_TOKENS = [
     r"\bfaire\b", r"\bfait\b", r"\bfaites\b",
     r"\bgrâce\b", r"\bafin\b", r"\bdès\b",
     r"\bréf[ée]rencement\b", r"\bréseaux\b", r"\brésultats?\b",
-    r"\bstrat[ée]gique\b", r"\bcr[ée]ation\b", r"\bgestion\b",
+    r"\bstrat[ée]gique\b", r"\bgestion\b",
+    # creation kept out: valid EN word; only the accented form should fail
+    r"\bcréation\b",
 
     # Geo / business specific FR phrases that leaked
     r"\bcapitale\s+[ée]conomique\b", r"\bmarch[ée]\s+en\s+expansion\b",
@@ -73,6 +77,9 @@ ALLOWED = {
     "Etat", "État",  # state
     "Émilie", "Émile",
     "À propos",  # only if in nav comment
+    # Geographic place names
+    "Presqu'île", "Presqu'ile",
+    "Île-de-France", "Ile-de-France",
 }
 
 FR_PATTERNS = [re.compile(p, re.IGNORECASE | re.UNICODE) for p in FR_TOKENS]
@@ -95,8 +102,9 @@ def visible_text(html: str) -> str:
 
 
 def is_allowed(token: str) -> bool:
-    t = token.strip().strip(".,;:!?()[]{}")
-    return any(t == a or t in a or a in t for a in ALLOWED)
+    t = token.strip().strip(".,;:!?()[]{}").lower()
+    allowed_lower = [a.lower() for a in ALLOWED]
+    return any(t == a or t in a or a in t for a in allowed_lower)
 
 
 def find_fr_tokens(text: str) -> list:

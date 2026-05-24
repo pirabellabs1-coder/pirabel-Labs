@@ -139,6 +139,9 @@
 }
 .hero-word span {
   display: inline-block;
+  /* Visible par defaut (FCP perf). JS-ready body opt-in pour l'animation. */
+}
+body.js-ready .hero-word span {
   transform: translateY(110%);
   animation: heroReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

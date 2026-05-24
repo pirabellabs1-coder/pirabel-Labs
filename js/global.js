@@ -250,6 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- SCROLL REVEAL (IntersectionObserver) ---
+  // Mark body as js-ready so CSS opt-in reveal kicks in (perf: content stays
+  // visible by default in CSS, this enables the fade-in-on-scroll effect).
+  document.body.classList.add('js-ready');
   const revealEls = document.querySelectorAll('.rv');
   if (revealEls.length && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {

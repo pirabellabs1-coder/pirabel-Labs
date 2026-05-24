@@ -960,23 +960,25 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* --- SCROLL REVEAL --- */
+/* DEFAULT: visible (so Lighthouse + no-JS users see content immediately).
+   JS adds body.js-ready to opt in to the reveal-on-scroll animation. */
 .rv {
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 1;
+  transform: none;
   transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
 }
-.rv.in {
+body.js-ready .rv:not(.in) {
+  opacity: 0;
+  transform: translateY(40px);
+}
+body.js-ready .rv.in {
   opacity: 1;
   transform: translateY(0);
 }
-.rv--left {
-  transform: translateX(-40px);
-}
-.rv--left.in { transform: translateX(0); }
-.rv--scale {
-  transform: scale(0.95);
-}
-.rv--scale.in { transform: scale(1); }
+body.js-ready .rv--left:not(.in) { transform: translateX(-40px); }
+body.js-ready .rv--left.in { transform: translateX(0); }
+body.js-ready .rv--scale:not(.in) { transform: scale(0.95); }
+body.js-ready .rv--scale.in { transform: scale(1); }
 
 /* Stagger delays */
 .rv-d1 { transition-delay: 0.1s; }

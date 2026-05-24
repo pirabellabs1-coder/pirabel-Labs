@@ -273,8 +273,8 @@ input, textarea, select { font-family: inherit; }
 }
 .nav-cta {
   background: #FF5500;
-  color: var(--on-primary);
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 800;
   padding: 0.6rem 1.5rem;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -283,6 +283,18 @@ input, textarea, select { font-family: inherit; }
   transform: scale(0.95);
   white-space: nowrap;
   flex-shrink: 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+}
+/* A11y: cookie-consent + footer links contrast fix */
+.cb-accept, .cb-btn {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+.footer a, .footer-links a {
+  color: rgba(255,255,255,0.85) !important;
+}
+.footer-links a:hover {
+  color: #FF5500 !important;
 }
 .nav-cta:hover {
   transform: scale(1);

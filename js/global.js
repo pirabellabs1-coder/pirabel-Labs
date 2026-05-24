@@ -176,23 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   })();
 
-  // --- PRELOADER ---
+  // --- PRELOADER (removed 2026-05-24: blocked LCP, no UX benefit) ---
+  // Element no longer rendered; this stub is kept to avoid breaking pages
+  // that may have leftover preloader markup.
   const preloader = document.getElementById('preloader');
-  if (preloader) {
-    const barFill = preloader.querySelector('.pre-bar-fill');
-    const pctEl = preloader.querySelector('.pre-pct');
-    let pct = 0;
-    const interval = setInterval(() => {
-      pct += Math.random() * 15 + 5;
-      if (pct >= 100) {
-        pct = 100;
-        clearInterval(interval);
-        setTimeout(() => preloader.classList.add('done'), 300);
-      }
-      if (barFill) barFill.style.width = pct + '%';
-      if (pctEl) pctEl.textContent = Math.floor(pct) + '%';
-    }, 120);
-  }
+  if (preloader) { preloader.classList.add('done'); }
 
   // --- CUSTOM CURSOR ---
   const dot = document.querySelector('.cursor-dot');

@@ -156,43 +156,193 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
 </script>
 '''
 
-    # Mark lesson complete via localStorage
+    # Mark lesson complete + LMS sync (backend or localStorage fallback)
+    is_first_lesson = (module_idx == 1 and lesson_idx == 1)
     complete_btn = f'''
 <button class="lesson-complete-btn" id="complete-btn">
 <span class="material-symbols-outlined">check_circle</span>
 <span id="complete-label">{"Mark as completed" if is_en else "Marquer comme termine"}</span>
 </button>
+
+<!-- Enrollment gate modal (shown if user not enrolled and tries to access non-free lesson) -->
+<div class="enroll-modal" id="enroll-modal" style="display:none;">
+<div class="enroll-modal-overlay" onclick="document.getElementById('enroll-modal').style.display='none'"></div>
+<div class="enroll-modal-card">
+<button class="enroll-modal-close" onclick="document.getElementById('enroll-modal').style.display='none'" aria-label="Close">&times;</button>
+<h2>{"Free registration required" if is_en else "Inscription gratuite requise"}</h2>
+<p>{"Create your free account in 30 seconds to access the entire training, track your progress and earn your certificate." if is_en else "Creez votre compte gratuit en 30 secondes pour acceder a toute la formation, suivre votre progression et obtenir votre certificat."}</p>
+<form id="enroll-form" class="enroll-form">
+<input type="text" name="name" placeholder="{"Your name" if is_en else "Votre nom"}" required maxlength="80">
+<input type="email" name="email" placeholder="{"Your email" if is_en else "Votre email"}" required maxlength="160">
+<input type="password" name="password" placeholder="{"Choose a password (6+ chars)" if is_en else "Choisissez un mot de passe (6+ caracteres)"}" required minlength="6" maxlength="120">
+<button type="submit" class="btn btn--orange enroll-submit">{"Start the training" if is_en else "Commencer la formation"}</button>
+<p class="enroll-form-status" id="enroll-status"></p>
+<p class="enroll-login-link">{"Already registered?" if is_en else "Deja inscrit ?"} <a href="#" id="enroll-login-trigger">{"Sign in" if is_en else "Se connecter"}</a></p>
+</form>
+</div>
+</div>
+
 <script>
 (function(){{
-  const KEY = "completed-lessons";
-  const LESSON = "{slug}::m{module_idx}-l{lesson_idx}";
+  const FORMATION_SLUG = "{slug}";
+  const FORMATION_TITLE = "{html_lib.escape(f_title)[:200]}";
+  const MODULE_IDX = {module_idx};
+  const LESSON_IDX = {lesson_idx};
+  const LANG = "{lang}";
+  const IS_FIRST_LESSON = {str(is_first_lesson).lower()};
+
   const btn = document.getElementById('complete-btn');
   const label = document.getElementById('complete-label');
-  function getCompleted(){{
-    try {{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }} catch(e){{ return []; }}
+  const modal = document.getElementById('enroll-modal');
+  const form = document.getElementById('enroll-form');
+  const status = document.getElementById('enroll-status');
+  let isAuthenticated = false;
+  let isEnrolled = false;
+
+  // === Check session ===
+  async function checkSession(){{
+    try {{
+      const r = await fetch('/api/auth/me', {{ credentials: 'include' }});
+      if (r.ok) {{
+        isAuthenticated = true;
+        const me = await fetch('/api/lms/me', {{ credentials: 'include' }});
+        if (me.ok){{
+          const data = await me.json();
+          isEnrolled = (data.enrollments || []).some(e => e.formationSlug === FORMATION_SLUG);
+        }}
+      }}
+    }} catch(e) {{}}
+    update();
+    // Gate non-first lessons
+    if (!IS_FIRST_LESSON && !isEnrolled){{
+      modal.style.display = 'flex';
+    }}
   }}
-  function isCompleted(){{ return getCompleted().includes(LESSON); }}
+
   function update(){{
-    if (isCompleted()){{
-      btn.classList.add('completed');
-      label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
+    // localStorage fallback for completed badge
+    if (!isAuthenticated){{
+      const KEY = "completed-lessons";
+      try {{
+        const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+        const KEY_LESSON = FORMATION_SLUG + "::m" + MODULE_IDX + "-l" + LESSON_IDX;
+        if (list.includes(KEY_LESSON)){{
+          btn.classList.add('completed');
+          label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
+        }}
+      }} catch(e){{}}
+    }} else {{
+      fetch('/api/lms/my-progress?formation=' + encodeURIComponent(FORMATION_SLUG), {{ credentials: 'include' }})
+        .then(r => r.json())
+        .then(data => {{
+          const lesson = (data.lessons || []).find(l => l.moduleIdx === MODULE_IDX && l.lessonIdx === LESSON_IDX);
+          if (lesson && lesson.completed){{
+            btn.classList.add('completed');
+            label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
+          }}
+        }}).catch(()=>{{}});
     }}
   }}
-  btn.addEventListener('click', () => {{
-    const list = getCompleted();
-    if (list.includes(LESSON)){{
-      const idx = list.indexOf(LESSON);
-      list.splice(idx, 1);
-      btn.classList.remove('completed');
-      label.textContent = "{'Mark as completed' if is_en else 'Marquer comme termine'}";
-    }} else {{
-      list.push(LESSON);
+
+  btn.addEventListener('click', async () => {{
+    if (!isAuthenticated){{
+      // Save in localStorage + show registration modal
+      const KEY = "completed-lessons";
+      const KEY_LESSON = FORMATION_SLUG + "::m" + MODULE_IDX + "-l" + LESSON_IDX;
+      try {{
+        const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+        if (!list.includes(KEY_LESSON)) list.push(KEY_LESSON);
+        localStorage.setItem(KEY, JSON.stringify(list));
+      }} catch(e){{}}
+      btn.classList.add('completed');
+      label.textContent = "{'Completed ✓ - Register to sync progress' if is_en else 'Termine ✓ - Inscrivez-vous pour synchroniser'}";
+      modal.style.display = 'flex';
+      return;
+    }}
+    if (!isEnrolled){{
+      modal.style.display = 'flex';
+      return;
+    }}
+    // Authenticated + enrolled : sync to backend
+    try {{
+      await fetch('/api/lms/progress', {{
+        method: 'POST',
+        credentials: 'include',
+        headers: {{'Content-Type': 'application/json'}},
+        body: JSON.stringify({{ formationSlug: FORMATION_SLUG, moduleIdx: MODULE_IDX, lessonIdx: LESSON_IDX, completed: true }})
+      }});
       btn.classList.add('completed');
       label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
-    }}
-    localStorage.setItem(KEY, JSON.stringify(list));
+    }} catch(e){{}}
   }});
-  update();
+
+  // Enrollment form submit
+  if (form){{
+    form.addEventListener('submit', async (e) => {{
+      e.preventDefault();
+      status.textContent = "{'Creating your account...' if is_en else 'Creation du compte...'}";
+      status.style.color = '#888';
+      const fd = new FormData(form);
+      try {{
+        const r = await fetch('/api/lms/register', {{
+          method: 'POST',
+          credentials: 'include',
+          headers: {{'Content-Type': 'application/json'}},
+          body: JSON.stringify({{
+            name: fd.get('name'),
+            email: fd.get('email'),
+            password: fd.get('password'),
+            formationSlug: FORMATION_SLUG,
+            formationTitle: FORMATION_TITLE,
+            language: LANG
+          }})
+        }});
+        const data = await r.json();
+        if (r.ok && data.success){{
+          status.textContent = "{'Welcome! Reloading...' if is_en else 'Bienvenue ! Rechargement...'}";
+          status.style.color = '#4ade80';
+          setTimeout(() => window.location.reload(), 800);
+        }} else {{
+          status.textContent = data.error || "{'Error. Try with a different email.' if is_en else 'Erreur. Essayez avec un autre email.'}";
+          status.style.color = '#f97316';
+        }}
+      }} catch(err){{
+        status.textContent = "{'Network error.' if is_en else 'Erreur reseau.'}";
+        status.style.color = '#f97316';
+      }}
+    }});
+  }}
+
+  // Sign-in trigger
+  const loginTrigger = document.getElementById('enroll-login-trigger');
+  if (loginTrigger){{
+    loginTrigger.addEventListener('click', (e) => {{
+      e.preventDefault();
+      const email = prompt("{'Your email' if is_en else 'Votre email'}");
+      const password = prompt("{'Your password' if is_en else 'Votre mot de passe'}");
+      if (!email || !password) return;
+      fetch('/api/auth/login', {{
+        method: 'POST',
+        credentials: 'include',
+        headers: {{'Content-Type': 'application/json'}},
+        body: JSON.stringify({{ email, password }})
+      }}).then(r => r.json()).then(data => {{
+        if (data.success){{
+          // Auto-enroll
+          fetch('/api/lms/enroll', {{
+            method: 'POST',
+            credentials: 'include',
+            headers: {{'Content-Type': 'application/json'}},
+            body: JSON.stringify({{ formationSlug: FORMATION_SLUG, formationTitle: FORMATION_TITLE, language: LANG }})
+          }}).then(() => window.location.reload());
+        }} else {{
+          alert(data.error || 'Erreur de connexion');
+        }}
+      }});
+    }});
+  }}
+
+  checkSession();
 }})();
 </script>
 '''
@@ -275,6 +425,22 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
 .comment-date{{color:rgba(229,226,225,0.5);font-size:0.8rem;}}
 .comment-body{{color:rgba(229,226,225,0.8);line-height:1.6;margin:0;}}
 .comments-empty,.comments-loading{{color:rgba(229,226,225,0.4);text-align:center;padding:2rem;}}
+
+/* Enrollment modal */
+.enroll-modal{{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}}
+.enroll-modal-overlay{{position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);}}
+.enroll-modal-card{{position:relative;z-index:1;background:var(--surface-container);border:1px solid rgba(92,64,55,0.25);max-width:480px;width:100%;padding:2.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);}}
+.enroll-modal-close{{position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:rgba(229,226,225,0.5);font-size:1.75rem;cursor:pointer;line-height:1;}}
+.enroll-modal-close:hover{{color:var(--on-surface);}}
+.enroll-modal-card h2{{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:0 0 1rem;}}
+.enroll-modal-card p{{color:rgba(229,226,225,0.7);line-height:1.6;margin-bottom:1.5rem;}}
+.enroll-form{{display:grid;gap:0.75rem;}}
+.enroll-form input{{padding:0.85rem 1rem;background:var(--surface-container-low);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color 0.3s;}}
+.enroll-form input:focus{{border-color:var(--formation-accent);}}
+.enroll-submit{{margin-top:0.5rem;}}
+.enroll-form-status{{margin:0.5rem 0 0;font-size:0.85rem;color:#888;text-align:center;}}
+.enroll-login-link{{text-align:center;font-size:0.85rem;color:rgba(229,226,225,0.5);margin:1rem 0 0;}}
+.enroll-login-link a{{color:var(--formation-accent);text-decoration:underline;cursor:pointer;}}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H0ZTTRYBQ7');</script>

@@ -45,18 +45,26 @@ def make_skeleton_modules(formation):
     while len(module_titles) < n_modules:
         module_titles.append(f"Module avance {len(module_titles)+1}")
 
-    placeholder_html = f"""<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
+    placeholder_html = f"""<h2>Les points cles a maitriser</h2>
+<p>Cette le&ccedil;on couvre les fondamentaux indispensables pour reussir dans ce domaine. Voici la structure qui vous permettra de progresser de maniere methodique :</p>
 
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
+<h3>1. Comprendre avant d'agir</h3>
+<p>Avant toute mise en pratique, il est essentiel de saisir les principes sous-jacents. Trop de personnes se lancent dans la pratique sans avoir pose les fondations theoriques, ce qui conduit a des erreurs co&ucirc;teuses. Investissez du temps a comprendre le pourquoi avant le comment.</p>
 
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
+<h3>2. Appliquer sur un projet pilote</h3>
+<p>La theorie ne vaut que par sa mise en pratique. Choisissez un projet pilote a faible enjeu pour experimenter et valider vos acquis sans risque majeur. Les enseignements tires de ce premier essai vous serviront pour tous les suivants.</p>
+
+<h3>3. Mesurer avec des KPIs precis</h3>
+<p>Ce qui ne se mesure pas ne s'ameliore pas. Definissez d&egrave;s le depart 3 a 5 indicateurs cles qui vous permettront de juger objectivement les resultats de votre travail. Ces metriques doivent &ecirc;tre alignees sur vos objectifs business reels, pas sur des vanity metrics.</p>
+
+<h3>4. Iterer en continu</h3>
+<p>Le digital evolue constamment. Ce qui fonctionne aujourd'hui peut etre obsol&egrave;te dans 6 mois. Adoptez une posture d'apprentissage permanent et planifiez des cycles d'optimisation reguliers (mensuels au minimum).</p>
+
+<h3>5. Documenter et partager</h3>
+<p>Chaque apprentissage merite d'&ecirc;tre documente. Constituez un knowledge base interne (Notion, Confluence ou simple Google Doc) accessible a toute l'equipe. Cela evite de redecouvrir les m&ecirc;mes solutions et accelere la montee en competence de chacun.</p>
+
+<h2>Aller plus loin</h2>
+<p>Pour approfondir ce sujet et beneficier d'un accompagnement personnalise par nos experts, prenez rendez-vous pour un audit gratuit. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel a Abomey-Calavi et Cotonou.</p>
 """
 
     modules = []

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscrits Formations | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js"></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;}
+.stat-card .val{font-family:var(--font-h);font-size:1.875rem;font-weight:800;color:var(--accent);}
+.stat-card .lbl{color:var(--muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;margin-top:0.35rem;}
+.toolbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid var(--border);padding:0.625rem 1rem;color:var(--text);font-size:0.8125rem;font-family:var(--font-b);outline:none;}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
+.toolbar input{flex:1;min-width:200px;}
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+.progress-bar{display:inline-block;width:80px;height:6px;background:var(--border);position:relative;overflow:hidden;}
+.progress-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);}
+</style>
+</head>
+<body class="dashboard">
+<div class="layout">
+<!-- Sidebar handled by sidebar.js -->
+<main class="main">
+<header class="topbar">
+<h1>Inscrits Formations</h1>
+</header>
+
+<section class="content">
+<div class="stats-grid" id="stats-grid"></div>
+
+<div class="toolbar">
+<input type="search" id="search" placeholder="Rechercher (nom, email, formation...)">
+<select id="filter-formation">
+<option value="">Toutes les formations</option>
+</select>
+<button class="btn" onclick="loadEnrollments()"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+</div>
+
+<div class="card" style="overflow:auto;">
+<table id="enrollments-table" style="width:100%;border-collapse:collapse;">
+<thead>
+<tr style="border-bottom:1px solid var(--border);">
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Etudiant</th>
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Email</th>
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Formation</th>
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Inscrit le</th>
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Derniere activite</th>
+<th style="text-align:left;padding:0.75rem;font-size:0.7rem;color:var(--muted);text-transform:uppercase;">Actions</th>
+</tr>
+</thead>
+<tbody id="enrollments-body"><tr><td colspan="6" class="empty">Chargement...</td></tr></tbody>
+</table>
+</div>
+
+<!-- Detail panel -->
+<div id="detail-panel" style="display:none;margin-top:2rem;" class="card">
+<button onclick="document.getElementById('detail-panel').style.display='none'" style="float:right;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">&times;</button>
+<h2 id="detail-name" style="margin:0 0 1rem;font-family:var(--font-h);"></h2>
+<div id="detail-content"></div>
+</div>
+</section>
+</main>
+</div>
+
+<script>
+let allEnrollments = [];
+
+async function loadStats(){
+  try {
+    const r = await fetch('/api/lms/admin/stats', { credentials: 'include' });
+    const data = await r.json();
+    const grid = document.getElementById('stats-grid');
+    grid.innerHTML = `
+<div class="stat-card"><div class="val">${data.totalStudents || 0}</div><div class="lbl">Etudiants totaux</div></div>
+<div class="stat-card"><div class="val">${data.totalEnrollments || 0}</div><div class="lbl">Inscriptions</div></div>
+<div class="stat-card"><div class="val">${data.recentEnrollments || 0}</div><div class="lbl">30 derniers jours</div></div>
+<div class="stat-card"><div class="val">${data.totalLessonsCompleted || 0}</div><div class="lbl">Lecons completees</div></div>
+<div class="stat-card"><div class="val">${data.totalComments || 0}</div><div class="lbl">Commentaires</div></div>
+<div class="stat-card"><div class="val" style="color:${data.pendingComments > 0 ? '#fbbf24' : 'var(--accent)'};">${data.pendingComments || 0}</div><div class="lbl">A moderer</div></div>
+`;
+    // Top formations as filter options
+    const sel = document.getElementById('filter-formation');
+    (data.topFormations || []).forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f._id;
+      opt.textContent = (f.title || f._id) + ' (' + f.count + ')';
+      sel.appendChild(opt);
+    });
+  } catch (e) { console.error(e); }
+}
+
+async function loadEnrollments(){
+  const formation = document.getElementById('filter-formation').value;
+  const q = document.getElementById('search').value;
+  const url = '/api/lms/admin/enrollments?' + new URLSearchParams({ ...(formation && {formation}), ...(q && {q}), limit: 500 });
+  try {
+    const r = await fetch(url, { credentials: 'include' });
+    const data = await r.json();
+    allEnrollments = data.enrollments || [];
+    renderEnrollments();
+  } catch (e) {
+    document.getElementById('enrollments-body').innerHTML = '<tr><td colspan="6" class="empty">Erreur: ' + e.message + '</td></tr>';
+  }
+}
+
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderEnrollments(){
+  const tbody = document.getElementById('enrollments-body');
+  if (!allEnrollments.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">Aucun inscrit trouve.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allEnrollments.map(e => `
+<tr style="border-bottom:1px solid var(--border);">
+<td style="padding:0.75rem;font-weight:600;">${escapeHtml(e.user?.name || '-')}</td>
+<td style="padding:0.75rem;color:var(--muted);font-size:0.85rem;">${escapeHtml(e.user?.email || '-')}</td>
+<td style="padding:0.75rem;font-size:0.85rem;">${escapeHtml(e.formationTitle || e.formationSlug)}</td>
+<td style="padding:0.75rem;color:var(--muted);font-size:0.8rem;">${new Date(e.enrolledAt).toLocaleDateString('fr-FR')}</td>
+<td style="padding:0.75rem;color:var(--muted);font-size:0.8rem;">${new Date(e.lastAccessedAt).toLocaleDateString('fr-FR')}</td>
+<td style="padding:0.75rem;"><button class="btn-link" onclick="showDetail('${e.user?._id}','${escapeHtml(e.user?.name || '')}')">Voir details &rarr;</button></td>
+</tr>
+`).join('');
+}
+
+async function showDetail(userId, name){
+  if (!userId) return;
+  const panel = document.getElementById('detail-panel');
+  document.getElementById('detail-name').textContent = name;
+  document.getElementById('detail-content').innerHTML = '<p>Chargement...</p>';
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth' });
+  try {
+    const r = await fetch('/api/lms/admin/student/' + userId, { credentials: 'include' });
+    const data = await r.json();
+    const groupedProgress = {};
+    (data.progress || []).forEach(p => {
+      const key = p.formationSlug;
+      if (!groupedProgress[key]) groupedProgress[key] = { total: 0, completed: 0 };
+      groupedProgress[key].total++;
+      if (p.completed) groupedProgress[key].completed++;
+    });
+    let html = `<p><strong>${escapeHtml(data.user.email)}</strong> &middot; Membre depuis le ${new Date(data.user.createdAt).toLocaleDateString('fr-FR')}</p>`;
+    html += '<h3 style="margin-top:1.5rem;">Formations suivies</h3>';
+    if (!data.enrollments.length){ html += '<p class="empty">Aucune.</p>'; }
+    else {
+      html += '<table style="width:100%;border-collapse:collapse;margin-top:0.5rem;"><thead><tr><th style="text-align:left;padding:0.5rem;font-size:0.7rem;text-transform:uppercase;color:var(--muted);">Formation</th><th style="text-align:left;padding:0.5rem;font-size:0.7rem;text-transform:uppercase;color:var(--muted);">Progression</th><th style="text-align:left;padding:0.5rem;font-size:0.7rem;text-transform:uppercase;color:var(--muted);">Derniere activite</th></tr></thead><tbody>';
+      data.enrollments.forEach(en => {
+        const prog = groupedProgress[en.formationSlug] || { total: 0, completed: 0 };
+        html += `<tr><td style="padding:0.5rem;">${escapeHtml(en.formationTitle || en.formationSlug)}</td><td style="padding:0.5rem;">${prog.completed}/${prog.total || '?'} lecons completees</td><td style="padding:0.5rem;color:var(--muted);font-size:0.8rem;">${new Date(en.lastAccessedAt).toLocaleString('fr-FR')}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    }
+    html += '<h3 style="margin-top:1.5rem;">Commentaires (' + (data.comments || []).length + ')</h3>';
+    if (!data.comments.length){ html += '<p class="empty">Aucun.</p>'; }
+    else {
+      html += (data.comments || []).map(c => `<div style="background:var(--card);padding:1rem;margin-bottom:0.5rem;border-left:3px solid var(--accent);"><div style="font-size:0.75rem;color:var(--muted);">${new Date(c.createdAt).toLocaleString('fr-FR')} &middot; ${escapeHtml(c.lesson)} &middot; <em>${c.status}</em></div><p style="margin:0.5rem 0 0;">${escapeHtml(c.comment)}</p></div>`).join('');
+    }
+    document.getElementById('detail-content').innerHTML = html;
+  } catch (e) {
+    document.getElementById('detail-content').innerHTML = '<p>Erreur: ' + e.message + '</p>';
+  }
+}
+
+document.getElementById('search').addEventListener('input', () => {
+  clearTimeout(window._st);
+  window._st = setTimeout(loadEnrollments, 300);
+});
+document.getElementById('filter-formation').addEventListener('change', loadEnrollments);
+
+loadStats();
+loadEnrollments();
+</script>
+</body>
+</html>

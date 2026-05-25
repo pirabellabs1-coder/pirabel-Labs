@@ -76,6 +76,22 @@
 .comment-date{color:rgba(229,226,225,0.5);font-size:0.8rem;}
 .comment-body{color:rgba(229,226,225,0.8);line-height:1.6;margin:0;}
 .comments-empty,.comments-loading{color:rgba(229,226,225,0.4);text-align:center;padding:2rem;}
+
+/* Enrollment modal */
+.enroll-modal{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.enroll-modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);}
+.enroll-modal-card{position:relative;z-index:1;background:var(--surface-container);border:1px solid rgba(92,64,55,0.25);max-width:480px;width:100%;padding:2.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.enroll-modal-close{position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:rgba(229,226,225,0.5);font-size:1.75rem;cursor:pointer;line-height:1;}
+.enroll-modal-close:hover{color:var(--on-surface);}
+.enroll-modal-card h2{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:0 0 1rem;}
+.enroll-modal-card p{color:rgba(229,226,225,0.7);line-height:1.6;margin-bottom:1.5rem;}
+.enroll-form{display:grid;gap:0.75rem;}
+.enroll-form input{padding:0.85rem 1rem;background:var(--surface-container-low);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color 0.3s;}
+.enroll-form input:focus{border-color:var(--formation-accent);}
+.enroll-submit{margin-top:0.5rem;}
+.enroll-form-status{margin:0.5rem 0 0;font-size:0.85rem;color:#888;text-align:center;}
+.enroll-login-link{text-align:center;font-size:0.85rem;color:rgba(229,226,225,0.5);margin:1rem 0 0;}
+.enroll-login-link a{color:var(--formation-accent);text-decoration:underline;cursor:pointer;}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H0ZTTRYBQ7');</script>
@@ -113,18 +129,26 @@
 </div>
 
 <div class="lesson-content">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
+<h2>Les points cles a maitriser</h2>
+<p>Cette le&ccedil;on couvre les fondamentaux indispensables pour reussir dans ce domaine. Voici la structure qui vous permettra de progresser de maniere methodique :</p>
 
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
+<h3>1. Comprendre avant d'agir</h3>
+<p>Avant toute mise en pratique, il est essentiel de saisir les principes sous-jacents. Trop de personnes se lancent dans la pratique sans avoir pose les fondations theoriques, ce qui conduit a des erreurs co&ucirc;teuses. Investissez du temps a comprendre le pourquoi avant le comment.</p>
 
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
+<h3>2. Appliquer sur un projet pilote</h3>
+<p>La theorie ne vaut que par sa mise en pratique. Choisissez un projet pilote a faible enjeu pour experimenter et valider vos acquis sans risque majeur. Les enseignements tires de ce premier essai vous serviront pour tous les suivants.</p>
+
+<h3>3. Mesurer avec des KPIs precis</h3>
+<p>Ce qui ne se mesure pas ne s'ameliore pas. Definissez d&egrave;s le depart 3 a 5 indicateurs cles qui vous permettront de juger objectivement les resultats de votre travail. Ces metriques doivent &ecirc;tre alignees sur vos objectifs business reels, pas sur des vanity metrics.</p>
+
+<h3>4. Iterer en continu</h3>
+<p>Le digital evolue constamment. Ce qui fonctionne aujourd'hui peut etre obsol&egrave;te dans 6 mois. Adoptez une posture d'apprentissage permanent et planifiez des cycles d'optimisation reguliers (mensuels au minimum).</p>
+
+<h3>5. Documenter et partager</h3>
+<p>Chaque apprentissage merite d'&ecirc;tre documente. Constituez un knowledge base interne (Notion, Confluence ou simple Google Doc) accessible a toute l'equipe. Cela evite de redecouvrir les m&ecirc;mes solutions et accelere la montee en competence de chacun.</p>
+
+<h2>Aller plus loin</h2>
+<p>Pour approfondir ce sujet et beneficier d'un accompagnement personnalise par nos experts, prenez rendez-vous pour un audit gratuit. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel a Abomey-Calavi et Cotonou.</p>
 
 </div>
 
@@ -133,37 +157,186 @@
 <span class="material-symbols-outlined">check_circle</span>
 <span id="complete-label">Marquer comme termine</span>
 </button>
+
+<!-- Enrollment gate modal (shown if user not enrolled and tries to access non-free lesson) -->
+<div class="enroll-modal" id="enroll-modal" style="display:none;">
+<div class="enroll-modal-overlay" onclick="document.getElementById('enroll-modal').style.display='none'"></div>
+<div class="enroll-modal-card">
+<button class="enroll-modal-close" onclick="document.getElementById('enroll-modal').style.display='none'" aria-label="Close">&times;</button>
+<h2>Inscription gratuite requise</h2>
+<p>Creez votre compte gratuit en 30 secondes pour acceder a toute la formation, suivre votre progression et obtenir votre certificat.</p>
+<form id="enroll-form" class="enroll-form">
+<input type="text" name="name" placeholder="Votre nom" required maxlength="80">
+<input type="email" name="email" placeholder="Votre email" required maxlength="160">
+<input type="password" name="password" placeholder="Choisissez un mot de passe (6+ caracteres)" required minlength="6" maxlength="120">
+<button type="submit" class="btn btn--orange enroll-submit">Commencer la formation</button>
+<p class="enroll-form-status" id="enroll-status"></p>
+<p class="enroll-login-link">Deja inscrit ? <a href="#" id="enroll-login-trigger">Se connecter</a></p>
+</form>
+</div>
+</div>
+
 <script>
 (function(){
-  const KEY = "completed-lessons";
-  const LESSON = "marketing-digital-strategie-avancee::m1-l3";
+  const FORMATION_SLUG = "marketing-digital-strategie-avancee";
+  const FORMATION_TITLE = "Stratégie Marketing Digital Avancée : Frameworks et Growth";
+  const MODULE_IDX = 1;
+  const LESSON_IDX = 3;
+  const LANG = "fr";
+  const IS_FIRST_LESSON = false;
+
   const btn = document.getElementById('complete-btn');
   const label = document.getElementById('complete-label');
-  function getCompleted(){
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; }
+  const modal = document.getElementById('enroll-modal');
+  const form = document.getElementById('enroll-form');
+  const status = document.getElementById('enroll-status');
+  let isAuthenticated = false;
+  let isEnrolled = false;
+
+  // === Check session ===
+  async function checkSession(){
+    try {
+      const r = await fetch('/api/auth/me', { credentials: 'include' });
+      if (r.ok) {
+        isAuthenticated = true;
+        const me = await fetch('/api/lms/me', { credentials: 'include' });
+        if (me.ok){
+          const data = await me.json();
+          isEnrolled = (data.enrollments || []).some(e => e.formationSlug === FORMATION_SLUG);
+        }
+      }
+    } catch(e) {}
+    update();
+    // Gate non-first lessons
+    if (!IS_FIRST_LESSON && !isEnrolled){
+      modal.style.display = 'flex';
+    }
   }
-  function isCompleted(){ return getCompleted().includes(LESSON); }
+
   function update(){
-    if (isCompleted()){
-      btn.classList.add('completed');
-      label.textContent = "Termine ✓";
+    // localStorage fallback for completed badge
+    if (!isAuthenticated){
+      const KEY = "completed-lessons";
+      try {
+        const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+        const KEY_LESSON = FORMATION_SLUG + "::m" + MODULE_IDX + "-l" + LESSON_IDX;
+        if (list.includes(KEY_LESSON)){
+          btn.classList.add('completed');
+          label.textContent = "Termine ✓";
+        }
+      } catch(e){}
+    } else {
+      fetch('/api/lms/my-progress?formation=' + encodeURIComponent(FORMATION_SLUG), { credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          const lesson = (data.lessons || []).find(l => l.moduleIdx === MODULE_IDX && l.lessonIdx === LESSON_IDX);
+          if (lesson && lesson.completed){
+            btn.classList.add('completed');
+            label.textContent = "Termine ✓";
+          }
+        }).catch(()=>{});
     }
   }
-  btn.addEventListener('click', () => {
-    const list = getCompleted();
-    if (list.includes(LESSON)){
-      const idx = list.indexOf(LESSON);
-      list.splice(idx, 1);
-      btn.classList.remove('completed');
-      label.textContent = "Marquer comme termine";
-    } else {
-      list.push(LESSON);
+
+  btn.addEventListener('click', async () => {
+    if (!isAuthenticated){
+      // Save in localStorage + show registration modal
+      const KEY = "completed-lessons";
+      const KEY_LESSON = FORMATION_SLUG + "::m" + MODULE_IDX + "-l" + LESSON_IDX;
+      try {
+        const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+        if (!list.includes(KEY_LESSON)) list.push(KEY_LESSON);
+        localStorage.setItem(KEY, JSON.stringify(list));
+      } catch(e){}
+      btn.classList.add('completed');
+      label.textContent = "Termine ✓ - Inscrivez-vous pour synchroniser";
+      modal.style.display = 'flex';
+      return;
+    }
+    if (!isEnrolled){
+      modal.style.display = 'flex';
+      return;
+    }
+    // Authenticated + enrolled : sync to backend
+    try {
+      await fetch('/api/lms/progress', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ formationSlug: FORMATION_SLUG, moduleIdx: MODULE_IDX, lessonIdx: LESSON_IDX, completed: true })
+      });
       btn.classList.add('completed');
       label.textContent = "Termine ✓";
-    }
-    localStorage.setItem(KEY, JSON.stringify(list));
+    } catch(e){}
   });
-  update();
+
+  // Enrollment form submit
+  if (form){
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = "Creation du compte...";
+      status.style.color = '#888';
+      const fd = new FormData(form);
+      try {
+        const r = await fetch('/api/lms/register', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            name: fd.get('name'),
+            email: fd.get('email'),
+            password: fd.get('password'),
+            formationSlug: FORMATION_SLUG,
+            formationTitle: FORMATION_TITLE,
+            language: LANG
+          })
+        });
+        const data = await r.json();
+        if (r.ok && data.success){
+          status.textContent = "Bienvenue ! Rechargement...";
+          status.style.color = '#4ade80';
+          setTimeout(() => window.location.reload(), 800);
+        } else {
+          status.textContent = data.error || "Erreur. Essayez avec un autre email.";
+          status.style.color = '#f97316';
+        }
+      } catch(err){
+        status.textContent = "Erreur reseau.";
+        status.style.color = '#f97316';
+      }
+    });
+  }
+
+  // Sign-in trigger
+  const loginTrigger = document.getElementById('enroll-login-trigger');
+  if (loginTrigger){
+    loginTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = prompt("Votre email");
+      const password = prompt("Votre mot de passe");
+      if (!email || !password) return;
+      fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, password })
+      }).then(r => r.json()).then(data => {
+        if (data.success){
+          // Auto-enroll
+          fetch('/api/lms/enroll', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ formationSlug: FORMATION_SLUG, formationTitle: FORMATION_TITLE, language: LANG })
+          }).then(() => window.location.reload());
+        } else {
+          alert(data.error || 'Erreur de connexion');
+        }
+      });
+    });
+  }
+
+  checkSession();
 })();
 </script>
 

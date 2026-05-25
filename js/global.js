@@ -250,11 +250,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- SCROLL REVEAL (IntersectionObserver) ---
-  // Mark body as js-ready so CSS opt-in reveal kicks in (perf: content stays
-  // visible by default in CSS, this enables the fade-in-on-scroll effect).
-  document.body.classList.add('js-ready');
+  // STRATEGIE NO-FLASH:
+  // 1. CSS par defaut: .rv = opacity 1 (content visible immediately)
+  // 2. JS marque d'abord comme .in TOUS les elements deja in-viewport
+  //    (ils restent visibles, aucune animation a jouer)
+  // 3. Body recoit .js-ready, ce qui cache UNIQUEMENT les .rv:not(.in)
+  //    (donc seuls les elements below-the-fold sont caches initialement)
+  // 4. Observer fire en scroll, ajoute .in -> fade-in propre
   const revealEls = document.querySelectorAll('.rv');
   if (revealEls.length && 'IntersectionObserver' in window) {
+    // STEP 1: pre-mark in-viewport elements as already-in (no flash)
+    const viewportH = window.innerHeight;
+    revealEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < viewportH && rect.bottom > 0) {
+        el.classList.add('in');
+      }
+    });
+    // STEP 2: now safe to enable the hide-then-reveal cascade
+    document.body.classList.add('js-ready');
+    // STEP 3: observe still-hidden elements (below fold)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -263,7 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(el => observer.observe(el));
+    revealEls.forEach(el => {
+      if (!el.classList.contains('in')) observer.observe(el);
+    });
+  } else {
+    // Fallback no-observer: just mark body so other body.js-ready rules can apply
+    document.body.classList.add('js-ready');
   }
 
   // --- ANIMATED COUNTERS ---

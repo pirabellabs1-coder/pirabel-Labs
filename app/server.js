@@ -117,6 +117,7 @@ app.use('/api/time', require('./routes/time'));
 app.use('/api/status', require('./routes/status'));
 app.use('/api/outreach', require('./routes/outreach'));
 app.use('/api/case-studies', require('./routes/case-studies'));
+app.use('/api/lesson-comments', require('./routes/lesson-comments'));
 
 // ============================================
 // SECRET ACCESS URLs (Move to .env on production)

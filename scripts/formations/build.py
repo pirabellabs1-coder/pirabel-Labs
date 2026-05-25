@@ -9,6 +9,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 from catalog import FORMATIONS, LEVELS, CATEGORIES
 from template import render_page
+from lesson_template import render_lesson_page
 from content_seo import SEO_DEBUTANT_MODULES
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -222,7 +223,7 @@ def build_catalog_page(is_en=False):
 
 <div class="catalog-controls">
 <div class="catalog-search-wrap">
-<span class="catalog-search-icon material-symbols-outlined">search</span>
+<svg class="catalog-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
 <input type="search" class="catalog-search" id="formations-search" placeholder="{search_ph}" aria-label="{search_ph}">
 </div>
 <div class="catalog-filters" id="formations-filters">{filter_pills}</div>
@@ -308,22 +309,57 @@ def main():
     (formations_dir / 'index.html').write_text(build_catalog_page(is_en=False), encoding='utf-8')
     (formations_en_dir / 'index.html').write_text(build_catalog_page(is_en=True), encoding='utf-8')
 
-    # Formation pages
-    count = 0
+    # Formation pages + lesson pages
+    count_formations = 0
+    count_lessons = 0
     for f in FORMATIONS:
         slug = f['slug']
         modules = DETAILED_CONTENT.get(slug) or make_skeleton_modules(f)
-        # FR
+
+        # FR formation summary page
         page_fr = render_page(f, modules, is_en=False, css_prefix='../')
         (formations_dir / f'{slug}.html').write_text(page_fr, encoding='utf-8')
-        # EN
+        # EN formation summary page
         page_en = render_page(f, modules, is_en=True, css_prefix='../../')
         (formations_en_dir / f'{slug}.html').write_text(page_en, encoding='utf-8')
-        count += 2
+        count_formations += 2
+
+        # Create lesson subdirectory : /formations/<slug>/m<i>-l<j>.html
+        lesson_dir_fr = formations_dir / slug
+        lesson_dir_en = formations_en_dir / slug
+        lesson_dir_fr.mkdir(parents=True, exist_ok=True)
+        lesson_dir_en.mkdir(parents=True, exist_ok=True)
+
+        # Flatten lessons with their (module_idx, lesson_idx) for prev/next links
+        flat = []
+        for m_i, m in enumerate(modules, 1):
+            for l_i, l in enumerate(m.get('lessons', []), 1):
+                flat.append((m_i, l_i, m, l))
+
+        for idx, (m_i, l_i, m, l) in enumerate(flat):
+            prev_link = None
+            if idx > 0:
+                p_m_i, p_l_i, _, p_l = flat[idx - 1]
+                prev_link = {'href': f'm{p_m_i}-l{p_l_i}', 'title': p_l['title']}
+            next_link = None
+            if idx < len(flat) - 1:
+                n_m_i, n_l_i, _, n_l = flat[idx + 1]
+                next_link = {'href': f'm{n_m_i}-l{n_l_i}', 'title': n_l['title']}
+
+            # FR
+            html_fr = render_lesson_page(f, m_i, l_i, m, l, prev_link, next_link, modules, is_en=False)
+            (lesson_dir_fr / f'm{m_i}-l{l_i}.html').write_text(html_fr, encoding='utf-8')
+            # EN
+            prev_link_en = {**prev_link} if prev_link else None
+            next_link_en = {**next_link} if next_link else None
+            html_en = render_lesson_page(f, m_i, l_i, m, l, prev_link_en, next_link_en, modules, is_en=True)
+            (lesson_dir_en / f'm{m_i}-l{l_i}.html').write_text(html_en, encoding='utf-8')
+            count_lessons += 2
 
     print(f"Catalog pages: 2 (FR + EN)")
-    print(f"Formations pages: {count}")
-    print(f"Total: {count + 2}")
+    print(f"Formation summary pages: {count_formations}")
+    print(f"Lesson pages: {count_lessons}")
+    print(f"Total: {count_formations + count_lessons + 2}")
 
 
 if __name__ == '__main__':

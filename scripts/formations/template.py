@@ -72,26 +72,22 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
     for i, m in enumerate(modules, 1):
         toc_items += f'<li><a href="#module-{i}">{m["title"]}</a> <span style="color:rgba(229,226,225,0.4);font-size:0.85rem;">({len(m.get("lessons", []))} {"lessons" if is_en else "leçons"})</span></li>'
 
-    # Modules + lessons HTML
+    # Modules HTML : sommaire avec liens vers les pages lecons individuelles
     modules_html = ''
     for i, m in enumerate(modules, 1):
         lessons_html = ''
         for j, lesson in enumerate(m.get('lessons', []), 1):
-            content_html = lesson.get('content_html', f'<p><em>{("Detailed content coming soon." if is_en else "Contenu détaillé en cours de rédaction.")}</em></p>')
             duration = lesson.get('duration', 15)
-            lesson_id = f'm{i}l{j}'
+            lesson_url = f"{base_url_prefix}/formations/{slug}/m{i}-l{j}"
             lessons_html += f'''
-<article class="lesson" id="{lesson_id}">
-<header class="lesson-header">
+<a href="{lesson_url}" class="lesson-link">
 <span class="lesson-num">{i}.{j}</span>
-<h3 class="lesson-title">{html_lib.escape(lesson["title"])}</h3>
-<span class="lesson-duration">⏱ {duration} {"min" if is_en else "min"}</span>
-</header>
-<div class="lesson-body">
-{content_html}
-</div>
-</article>
-'''
+<span class="lesson-title">{html_lib.escape(lesson["title"])}</span>
+<span class="lesson-duration">{duration} min</span>
+</a>'''
+
+        first_lesson_url = f"{base_url_prefix}/formations/{slug}/m{i}-l1" if m.get('lessons') else '#'
+        start_label = "Start the module" if is_en else "Commencer le module"
         modules_html += f'''
 <section class="module" id="module-{i}">
 <header class="module-header">
@@ -99,13 +95,14 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 <h2 class="module-title">{html_lib.escape(m["title"])}</h2>
 {f'<p class="module-objective">{m["objective"]}</p>' if m.get('objective') else ''}
 <div class="module-meta">
-<span>📚 {len(m.get("lessons", []))} {"lessons" if is_en else "leçons"}</span>
-<span>⏱ ~{m.get("duration", 60)} {"min" if is_en else "min"}</span>
+<span>{len(m.get("lessons", []))} {"lessons" if is_en else "lecons"}</span>
+<span>~{m.get("duration", 60)} min</span>
 </div>
 </header>
 <div class="module-lessons">
 {lessons_html}
 </div>
+<a href="{first_lesson_url}" class="btn btn--orange module-start-btn">{start_label} &rarr;</a>
 </section>
 '''
 
@@ -176,24 +173,13 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 .module-title{{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:0 0 0.75rem;letter-spacing:-0.02em;}}
 .module-objective{{color:rgba(229,226,225,0.6);font-style:italic;margin-bottom:1rem;}}
 .module-meta{{display:flex;gap:1.5rem;font-size:0.85rem;color:rgba(229,226,225,0.5);}}
-.lesson{{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(92,64,55,0.1);}}
-.lesson:last-child{{border-bottom:none;margin-bottom:0;padding-bottom:0;}}
-.lesson-header{{display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;margin-bottom:1.25rem;}}
-.lesson-num{{display:inline-block;padding:0.3rem 0.7rem;background:var(--formation-accent);color:#0e0e0e;font-weight:800;font-size:0.85rem;font-family:var(--font-headline);}}
-.lesson-title{{font-family:var(--font-headline);font-size:1.25rem;font-weight:700;margin:0;flex:1;min-width:200px;letter-spacing:-0.01em;}}
-.lesson-duration{{color:rgba(229,226,225,0.5);font-size:0.85rem;}}
-.lesson-body{{color:rgba(229,226,225,0.78);line-height:1.85;font-size:1.0625rem;}}
-.lesson-body h4{{font-family:var(--font-headline);font-size:1.05rem;font-weight:600;color:var(--on-surface);margin:1.75rem 0 0.75rem;}}
-.lesson-body p{{margin-bottom:1rem;}}
-.lesson-body ul,.lesson-body ol{{margin:0.75rem 0 1.25rem;padding-left:1.5rem;}}
-.lesson-body li{{margin-bottom:0.4rem;}}
-.lesson-body strong{{color:var(--on-surface);font-weight:600;}}
-.lesson-body code{{background:rgba(255,87,0,0.08);color:var(--formation-accent);padding:0.15rem 0.4rem;border-radius:3px;font-size:0.9em;}}
-.lesson-body pre{{background:#0a0a0a;border:1px solid rgba(92,64,55,0.2);padding:1.25rem;overflow-x:auto;margin:1rem 0;font-size:0.85rem;}}
-.lesson-body blockquote{{border-left:3px solid var(--formation-accent);background:rgba(255,87,0,0.04);padding:1rem 1.5rem;margin:1.25rem 0;}}
-.lesson-body table{{width:100%;border-collapse:collapse;margin:1.25rem 0;}}
-.lesson-body th,.lesson-body td{{padding:0.75rem;border:1px solid rgba(92,64,55,0.15);text-align:left;}}
-.lesson-body th{{background:var(--surface-container);font-weight:600;}}
+.module-lessons{{margin-bottom:1.5rem;}}
+.lesson-link{{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--surface-container-low);margin-bottom:0.5rem;text-decoration:none;color:var(--on-surface);transition:transform 0.2s,background 0.2s;}}
+.lesson-link:hover{{background:var(--surface-container);transform:translateX(4px);}}
+.lesson-link .lesson-num{{flex-shrink:0;display:inline-block;padding:0.3rem 0.7rem;background:var(--formation-accent);color:#0e0e0e;font-weight:800;font-size:0.85rem;font-family:var(--font-headline);}}
+.lesson-link .lesson-title{{flex:1;font-weight:500;font-size:0.95rem;}}
+.lesson-link .lesson-duration{{color:rgba(229,226,225,0.45);font-size:0.85rem;flex-shrink:0;}}
+.module-start-btn{{margin-top:1rem;}}
 @media(max-width:640px){{
   .module{{padding:1.5rem;}}
   .formation-stats{{gap:1rem;}}
@@ -227,7 +213,7 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 <div class="formation-stat"><div class="val">{formation['modules']}</div><div class="lbl">{"Modules" if is_en else "Modules"}</div></div>
 <div class="formation-stat"><div class="val">{formation['lessons']}</div><div class="lbl">{"Lessons" if is_en else "Leçons"}</div></div>
 <div class="formation-stat"><div class="val">{formation['duration_h']}h</div><div class="lbl">{"Total duration" if is_en else "Durée totale"}</div></div>
-<div class="formation-stat"><div class="val">{total_words:,}</div><div class="lbl">{"Words" if is_en else "Mots"}</div></div>
+<div class="formation-stat"><div class="val">100%</div><div class="lbl">{"Free" if is_en else "Gratuit"}</div></div>
 </div>
 </div>
 </header>

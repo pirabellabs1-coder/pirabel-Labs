@@ -49,24 +49,13 @@
 .module-title{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:0 0 0.75rem;letter-spacing:-0.02em;}
 .module-objective{color:rgba(229,226,225,0.6);font-style:italic;margin-bottom:1rem;}
 .module-meta{display:flex;gap:1.5rem;font-size:0.85rem;color:rgba(229,226,225,0.5);}
-.lesson{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(92,64,55,0.1);}
-.lesson:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.lesson-header{display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;margin-bottom:1.25rem;}
-.lesson-num{display:inline-block;padding:0.3rem 0.7rem;background:var(--formation-accent);color:#0e0e0e;font-weight:800;font-size:0.85rem;font-family:var(--font-headline);}
-.lesson-title{font-family:var(--font-headline);font-size:1.25rem;font-weight:700;margin:0;flex:1;min-width:200px;letter-spacing:-0.01em;}
-.lesson-duration{color:rgba(229,226,225,0.5);font-size:0.85rem;}
-.lesson-body{color:rgba(229,226,225,0.78);line-height:1.85;font-size:1.0625rem;}
-.lesson-body h4{font-family:var(--font-headline);font-size:1.05rem;font-weight:600;color:var(--on-surface);margin:1.75rem 0 0.75rem;}
-.lesson-body p{margin-bottom:1rem;}
-.lesson-body ul,.lesson-body ol{margin:0.75rem 0 1.25rem;padding-left:1.5rem;}
-.lesson-body li{margin-bottom:0.4rem;}
-.lesson-body strong{color:var(--on-surface);font-weight:600;}
-.lesson-body code{background:rgba(255,87,0,0.08);color:var(--formation-accent);padding:0.15rem 0.4rem;border-radius:3px;font-size:0.9em;}
-.lesson-body pre{background:#0a0a0a;border:1px solid rgba(92,64,55,0.2);padding:1.25rem;overflow-x:auto;margin:1rem 0;font-size:0.85rem;}
-.lesson-body blockquote{border-left:3px solid var(--formation-accent);background:rgba(255,87,0,0.04);padding:1rem 1.5rem;margin:1.25rem 0;}
-.lesson-body table{width:100%;border-collapse:collapse;margin:1.25rem 0;}
-.lesson-body th,.lesson-body td{padding:0.75rem;border:1px solid rgba(92,64,55,0.15);text-align:left;}
-.lesson-body th{background:var(--surface-container);font-weight:600;}
+.module-lessons{margin-bottom:1.5rem;}
+.lesson-link{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--surface-container-low);margin-bottom:0.5rem;text-decoration:none;color:var(--on-surface);transition:transform 0.2s,background 0.2s;}
+.lesson-link:hover{background:var(--surface-container);transform:translateX(4px);}
+.lesson-link .lesson-num{flex-shrink:0;display:inline-block;padding:0.3rem 0.7rem;background:var(--formation-accent);color:#0e0e0e;font-weight:800;font-size:0.85rem;font-family:var(--font-headline);}
+.lesson-link .lesson-title{flex:1;font-weight:500;font-size:0.95rem;}
+.lesson-link .lesson-duration{color:rgba(229,226,225,0.45);font-size:0.85rem;flex-shrink:0;}
+.module-start-btn{margin-top:1rem;}
 @media(max-width:640px){
   .module{padding:1.5rem;}
   .formation-stats{gap:1rem;}
@@ -100,7 +89,7 @@
 <div class="formation-stat"><div class="val">6</div><div class="lbl">Modules</div></div>
 <div class="formation-stat"><div class="val">28</div><div class="lbl">Leçons</div></div>
 <div class="formation-stat"><div class="val">18h</div><div class="lbl">Durée totale</div></div>
-<div class="formation-stat"><div class="val">3,584</div><div class="lbl">Mots</div></div>
+<div class="formation-stat"><div class="val">100%</div><div class="lbl">Gratuit</div></div>
 </div>
 </div>
 </header>
@@ -125,105 +114,34 @@
 <h2 class="module-title">Strategie &amp; plateformes</h2>
 <p class="module-objective">Maitriser tous les aspects de 'strategie & plateformes' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 4 leçons</span>
-<span>⏱ ~72 min</span>
+<span>4 lecons</span>
+<span>~72 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m1l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m1-l1" class="lesson-link">
 <span class="lesson-num">1.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 1.1 : aspect 1 de &#x27;strategie &amp; plateformes&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m1l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 1.1 : aspect 1 de &#x27;strategie &amp; plateformes&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m1-l2" class="lesson-link">
 <span class="lesson-num">1.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 1.2 : aspect 2 de &#x27;strategie &amp; plateformes&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m1l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 1.2 : aspect 2 de &#x27;strategie &amp; plateformes&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m1-l3" class="lesson-link">
 <span class="lesson-num">1.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 1.3 : aspect 3 de &#x27;strategie &amp; plateformes&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m1l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 1.3 : aspect 3 de &#x27;strategie &amp; plateformes&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m1-l4" class="lesson-link">
 <span class="lesson-num">1.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 1.4 : aspect 4 de &#x27;strategie &amp; plateformes&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 1.4 : aspect 4 de &#x27;strategie &amp; plateformes&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m1-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 <section class="module" id="module-2">
@@ -232,105 +150,34 @@
 <h2 class="module-title">Contenu &amp; engagement</h2>
 <p class="module-objective">Maitriser tous les aspects de 'contenu & engagement' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 4 leçons</span>
-<span>⏱ ~72 min</span>
+<span>4 lecons</span>
+<span>~72 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m2l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m2-l1" class="lesson-link">
 <span class="lesson-num">2.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 2.1 : aspect 1 de &#x27;contenu &amp; engagement&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m2l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 2.1 : aspect 1 de &#x27;contenu &amp; engagement&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m2-l2" class="lesson-link">
 <span class="lesson-num">2.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 2.2 : aspect 2 de &#x27;contenu &amp; engagement&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m2l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 2.2 : aspect 2 de &#x27;contenu &amp; engagement&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m2-l3" class="lesson-link">
 <span class="lesson-num">2.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 2.3 : aspect 3 de &#x27;contenu &amp; engagement&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m2l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 2.3 : aspect 3 de &#x27;contenu &amp; engagement&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m2-l4" class="lesson-link">
 <span class="lesson-num">2.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 2.4 : aspect 4 de &#x27;contenu &amp; engagement&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 2.4 : aspect 4 de &#x27;contenu &amp; engagement&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m2-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 <section class="module" id="module-3">
@@ -339,105 +186,34 @@
 <h2 class="module-title">Community management</h2>
 <p class="module-objective">Maitriser tous les aspects de 'community management' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 4 leçons</span>
-<span>⏱ ~72 min</span>
+<span>4 lecons</span>
+<span>~72 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m3l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m3-l1" class="lesson-link">
 <span class="lesson-num">3.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 3.1 : aspect 1 de &#x27;community management&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m3l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 3.1 : aspect 1 de &#x27;community management&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m3-l2" class="lesson-link">
 <span class="lesson-num">3.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 3.2 : aspect 2 de &#x27;community management&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m3l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 3.2 : aspect 2 de &#x27;community management&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m3-l3" class="lesson-link">
 <span class="lesson-num">3.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 3.3 : aspect 3 de &#x27;community management&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m3l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 3.3 : aspect 3 de &#x27;community management&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m3-l4" class="lesson-link">
 <span class="lesson-num">3.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 3.4 : aspect 4 de &#x27;community management&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 3.4 : aspect 4 de &#x27;community management&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m3-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 <section class="module" id="module-4">
@@ -446,105 +222,34 @@
 <h2 class="module-title">Mesure de performance</h2>
 <p class="module-objective">Maitriser tous les aspects de 'mesure de performance' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 4 leçons</span>
-<span>⏱ ~72 min</span>
+<span>4 lecons</span>
+<span>~72 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m4l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m4-l1" class="lesson-link">
 <span class="lesson-num">4.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 4.1 : aspect 1 de &#x27;mesure de performance&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m4l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 4.1 : aspect 1 de &#x27;mesure de performance&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m4-l2" class="lesson-link">
 <span class="lesson-num">4.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 4.2 : aspect 2 de &#x27;mesure de performance&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m4l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 4.2 : aspect 2 de &#x27;mesure de performance&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m4-l3" class="lesson-link">
 <span class="lesson-num">4.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 4.3 : aspect 3 de &#x27;mesure de performance&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m4l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 4.3 : aspect 3 de &#x27;mesure de performance&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m4-l4" class="lesson-link">
 <span class="lesson-num">4.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 4.4 : aspect 4 de &#x27;mesure de performance&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 4.4 : aspect 4 de &#x27;mesure de performance&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m4-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 <section class="module" id="module-5">
@@ -553,105 +258,34 @@
 <h2 class="module-title">Publicite payante</h2>
 <p class="module-objective">Maitriser tous les aspects de 'publicite payante' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 4 leçons</span>
-<span>⏱ ~72 min</span>
+<span>4 lecons</span>
+<span>~72 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m5l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m5-l1" class="lesson-link">
 <span class="lesson-num">5.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 5.1 : aspect 1 de &#x27;publicite payante&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m5l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 5.1 : aspect 1 de &#x27;publicite payante&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m5-l2" class="lesson-link">
 <span class="lesson-num">5.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 5.2 : aspect 2 de &#x27;publicite payante&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m5l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 5.2 : aspect 2 de &#x27;publicite payante&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m5-l3" class="lesson-link">
 <span class="lesson-num">5.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 5.3 : aspect 3 de &#x27;publicite payante&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m5l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 5.3 : aspect 3 de &#x27;publicite payante&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m5-l4" class="lesson-link">
 <span class="lesson-num">5.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 5.4 : aspect 4 de &#x27;publicite payante&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 5.4 : aspect 4 de &#x27;publicite payante&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m5-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 <section class="module" id="module-6">
@@ -660,197 +294,54 @@
 <h2 class="module-title">Module avance 6</h2>
 <p class="module-objective">Maitriser tous les aspects de 'module avance 6' dans le cadre de 'Stratégie Social Media Complète : 5 Plateformes Maîtrisées'.</p>
 <div class="module-meta">
-<span>📚 8 leçons</span>
-<span>⏱ ~144 min</span>
+<span>8 lecons</span>
+<span>~144 min</span>
 </div>
 </header>
 <div class="module-lessons">
 
-<article class="lesson" id="m6l1">
-<header class="lesson-header">
+<a href="/formations/social-media-strategie-complete/m6-l1" class="lesson-link">
 <span class="lesson-num">6.1</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.1 : aspect 1 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l2">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.1 : aspect 1 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l2" class="lesson-link">
 <span class="lesson-num">6.2</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.2 : aspect 2 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l3">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.2 : aspect 2 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l3" class="lesson-link">
 <span class="lesson-num">6.3</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.3 : aspect 3 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l4">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.3 : aspect 3 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l4" class="lesson-link">
 <span class="lesson-num">6.4</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.4 : aspect 4 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l5">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.4 : aspect 4 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l5" class="lesson-link">
 <span class="lesson-num">6.5</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.5 : aspect 5 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l6">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.5 : aspect 5 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l6" class="lesson-link">
 <span class="lesson-num">6.6</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.6 : aspect 6 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l7">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.6 : aspect 6 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l7" class="lesson-link">
 <span class="lesson-num">6.7</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.7 : aspect 7 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
-</div>
-</article>
-
-<article class="lesson" id="m6l8">
-<header class="lesson-header">
+<span class="lesson-title">Le&amp;ccedil;on 6.7 : aspect 7 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
+<a href="/formations/social-media-strategie-complete/m6-l8" class="lesson-link">
 <span class="lesson-num">6.8</span>
-<h3 class="lesson-title">Le&amp;ccedil;on 6.8 : aspect 8 de &#x27;module avance 6&#x27;</h3>
-<span class="lesson-duration">⏱ 18 min</span>
-</header>
-<div class="lesson-body">
-<p><em>Cette le&ccedil;on sera enrichie prochainement avec un contenu detaille (2000-3000 mots) couvrant la theorie, des exemples concrets, des etapes pas-a-pas, des erreurs &agrave; eviter, des outils recommandes et des exercices pratiques.</em></p>
-
-<p>En attendant, voici les <strong>points cles &agrave; retenir</strong> sur ce sujet :</p>
-<ul>
-<li>Comprendre les principes fondamentaux avant de passer aux techniques avancees</li>
-<li>Appliquer immediatement sur un projet pilote pour valider les acquis</li>
-<li>Mesurer les resultats avec des KPIs precis</li>
-<li>Iterer et ameliorer en continu sur la base des donnees collectees</li>
-<li>Documenter les apprentissages pour l'equipe et les futures iterations</li>
-</ul>
-
-<p>Pour aller plus vite et beneficier d'un accompagnement personnalise sur ce sujet, prenez rendez-vous avec nos experts. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel &agrave; Abomey-Calavi et Cotonou.</p>
-
+<span class="lesson-title">Le&amp;ccedil;on 6.8 : aspect 8 de &#x27;module avance 6&#x27;</span>
+<span class="lesson-duration">18 min</span>
+</a>
 </div>
-</article>
-
-</div>
+<a href="/formations/social-media-strategie-complete/m6-l1" class="btn btn--orange module-start-btn">Commencer le module &rarr;</a>
 </section>
 
 </section>

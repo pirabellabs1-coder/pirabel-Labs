@@ -1,0 +1,342 @@
+#!/usr/bin/env python3
+"""Template d'une page lecon individuelle (style OpenClassrooms)."""
+import json
+import html as html_lib
+
+
+def slugify(text):
+    import re
+    text = text.lower()
+    text = re.sub(r'[à-â]', 'a', text)
+    text = re.sub(r'[è-ê]', 'e', text)
+    text = re.sub(r'[îï]', 'i', text)
+    text = re.sub(r'[ô]', 'o', text)
+    text = re.sub(r'[ûü]', 'u', text)
+    text = re.sub(r'[ç]', 'c', text)
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    return text.strip('-')[:60]
+
+
+def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
+                       prev_link, next_link, all_modules, is_en=False):
+    """Genere la page HTML d'une lecon individuelle.
+
+    formation : dict du catalog
+    module_idx, lesson_idx : 1-based indexes
+    module, lesson : le module et la lecon actuels
+    prev_link, next_link : dicts {'href': str, 'title': str} ou None
+    all_modules : pour le sommaire dans sidebar
+    """
+    from catalog import LEVELS, CATEGORIES
+    lang = 'en' if is_en else 'fr'
+    base_url = '/en' if is_en else ''
+    slug = formation['slug']
+    f_title = formation['title_en' if is_en else 'title_fr']
+    level_label, level_label_en, level_color = LEVELS[formation['level']]
+    level = level_label_en if is_en else level_label
+
+    formation_url = f"{base_url}/formations/{slug}"
+    canonical = f"https://www.pirabellabs.com{formation_url}/m{module_idx}-l{lesson_idx}"
+    href_fr = canonical.replace('/en/', '/')
+    href_en = canonical if is_en else canonical.replace('https://www.pirabellabs.com/', 'https://www.pirabellabs.com/en/')
+
+    page_title = f"{lesson['title']} - {f_title} | Pirabel Labs"
+    page_desc = f"{lesson['title'][:140]} - Module : {module['title'][:60]}"
+
+    # Sidebar TOC
+    toc_html = ''
+    for m_i, m in enumerate(all_modules, 1):
+        toc_html += f'<li class="toc-module"><div class="toc-module-title">{m_i}. {m["title"]}</div><ul class="toc-lessons">'
+        for l_i, l in enumerate(m.get('lessons', []), 1):
+            is_current = (m_i == module_idx and l_i == lesson_idx)
+            cls = ' class="active"' if is_current else ''
+            toc_html += f'<li{cls}><a href="{formation_url}/m{m_i}-l{l_i}">{m_i}.{l_i} {html_lib.escape(l["title"][:60])}{"..." if len(l["title"]) > 60 else ""}</a></li>'
+        toc_html += '</ul></li>'
+
+    # Progress
+    total_lessons = sum(len(m.get('lessons', [])) for m in all_modules)
+    current_lesson_global = sum(len(all_modules[i].get('lessons', [])) for i in range(module_idx - 1)) + lesson_idx
+    progress_pct = round(100 * current_lesson_global / total_lessons)
+
+    # Prev / Next buttons
+    prev_html = ''
+    if prev_link:
+        prev_label = "Previous" if is_en else "Precedent"
+        prev_html = f'<a href="{prev_link["href"]}" class="lesson-nav-btn lesson-nav-prev"><span class="lesson-nav-label">&larr; {prev_label}</span><span class="lesson-nav-title">{html_lib.escape(prev_link["title"][:50])}</span></a>'
+    next_html = ''
+    if next_link:
+        next_label = "Next" if is_en else "Suivant"
+        next_html = f'<a href="{next_link["href"]}" class="lesson-nav-btn lesson-nav-next"><span class="lesson-nav-label">{next_label} &rarr;</span><span class="lesson-nav-title">{html_lib.escape(next_link["title"][:50])}</span></a>'
+
+    # Nav links global
+    nav_links_fr = '<a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="/guides/">GUIDES</a><a href="/formations/" class="active">FORMATIONS</a><a href="/resultats">RESULTATS</a><a href="/a-propos">A PROPOS</a>'
+    nav_links_en = '<a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>'
+    nav_links = nav_links_en if is_en else nav_links_fr
+
+    # Comments anchor (custom backend system)
+    comments_section = f'''
+<section class="lesson-comments">
+<h2 class="lesson-comments-title">{"Comments & Questions" if is_en else "Commentaires & Questions"}</h2>
+<p class="lesson-comments-intro">{"Share your feedback, ask a question or help others by answering theirs." if is_en else "Partagez votre retour, posez une question ou aidez les autres en repondant aux leurs."}</p>
+
+<form id="comment-form" class="comment-form">
+<input type="text" name="name" placeholder="{"Your name" if is_en else "Votre nom"}" required maxlength="80">
+<input type="email" name="email" placeholder="{"Your email (not published)" if is_en else "Votre email (non publie)"}" required maxlength="160">
+<textarea name="comment" placeholder="{"Your comment or question..." if is_en else "Votre commentaire ou question..."}" required maxlength="3000" rows="4"></textarea>
+<button type="submit" class="btn btn--orange">{"Post comment" if is_en else "Publier le commentaire"}</button>
+<p class="comment-form-status" id="comment-status"></p>
+</form>
+
+<div class="comments-list" id="comments-list">
+<p class="comments-loading">{"Loading comments..." if is_en else "Chargement des commentaires..."}</p>
+</div>
+</section>
+
+<script>
+(function(){{
+  const LESSON_KEY = "{slug}::m{module_idx}-l{lesson_idx}";
+  const form = document.getElementById('comment-form');
+  const list = document.getElementById('comments-list');
+  const status = document.getElementById('comment-status');
+
+  function escapeHtml(s){{
+    return s.replace(/[&<>"']/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[c]));
+  }}
+
+  async function loadComments(){{
+    try {{
+      const r = await fetch('/api/lesson-comments?lesson=' + encodeURIComponent(LESSON_KEY));
+      const data = await r.json();
+      if (data.comments && data.comments.length){{
+        list.innerHTML = data.comments.map(c => `
+<div class="comment-item">
+<div class="comment-head"><strong>${{escapeHtml(c.name)}}</strong> <span class="comment-date">${{new Date(c.createdAt).toLocaleDateString('{lang}')}}</span></div>
+<p class="comment-body">${{escapeHtml(c.comment).replace(/\\n/g,'<br>')}}</p>
+</div>`).join('');
+      }} else {{
+        list.innerHTML = '<p class="comments-empty">{"Be the first to comment." if is_en else "Soyez le premier a commenter."}</p>';
+      }}
+    }} catch(e) {{
+      list.innerHTML = '<p class="comments-empty">{"Comments will be available shortly." if is_en else "Les commentaires seront disponibles sous peu."}</p>';
+    }}
+  }}
+
+  form.addEventListener('submit', async (e) => {{
+    e.preventDefault();
+    status.textContent = '';
+    const fd = new FormData(form);
+    try {{
+      const r = await fetch('/api/lesson-comments', {{
+        method: 'POST',
+        headers: {{'Content-Type':'application/json'}},
+        body: JSON.stringify({{
+          lesson: LESSON_KEY,
+          name: fd.get('name'),
+          email: fd.get('email'),
+          comment: fd.get('comment'),
+        }})
+      }});
+      const data = await r.json();
+      if (r.ok && data.success){{
+        status.textContent = '{"Your comment is awaiting moderation. Thank you!" if is_en else "Votre commentaire est en attente de moderation. Merci !"}';
+        status.style.color = '#4ade80';
+        form.reset();
+      }} else {{
+        status.textContent = data.error || '{"Error - try again." if is_en else "Erreur - reessayez."}';
+        status.style.color = '#f97316';
+      }}
+    }} catch(err) {{
+      status.textContent = '{"Network error - try again." if is_en else "Erreur reseau - reessayez."}';
+      status.style.color = '#f97316';
+    }}
+  }});
+
+  loadComments();
+}})();
+</script>
+'''
+
+    # Mark lesson complete via localStorage
+    complete_btn = f'''
+<button class="lesson-complete-btn" id="complete-btn">
+<span class="material-symbols-outlined">check_circle</span>
+<span id="complete-label">{"Mark as completed" if is_en else "Marquer comme termine"}</span>
+</button>
+<script>
+(function(){{
+  const KEY = "completed-lessons";
+  const LESSON = "{slug}::m{module_idx}-l{lesson_idx}";
+  const btn = document.getElementById('complete-btn');
+  const label = document.getElementById('complete-label');
+  function getCompleted(){{
+    try {{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }} catch(e){{ return []; }}
+  }}
+  function isCompleted(){{ return getCompleted().includes(LESSON); }}
+  function update(){{
+    if (isCompleted()){{
+      btn.classList.add('completed');
+      label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
+    }}
+  }}
+  btn.addEventListener('click', () => {{
+    const list = getCompleted();
+    if (list.includes(LESSON)){{
+      const idx = list.indexOf(LESSON);
+      list.splice(idx, 1);
+      btn.classList.remove('completed');
+      label.textContent = "{'Mark as completed' if is_en else 'Marquer comme termine'}";
+    }} else {{
+      list.push(LESSON);
+      btn.classList.add('completed');
+      label.textContent = "{'Completed ✓' if is_en else 'Termine ✓'}";
+    }}
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }});
+  update();
+}})();
+</script>
+'''
+
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{html_lib.escape(page_title)}</title>
+<meta name="description" content="{html_lib.escape(page_desc)}">
+<link rel="icon" type="image/png" href="../../img/favicon.png">
+<link rel="canonical" href="{canonical}">
+<link rel="alternate" hreflang="fr" href="{href_fr}">
+<link rel="alternate" hreflang="x-default" href="{href_fr}">
+<link rel="alternate" hreflang="en" href="{href_en}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"></noscript>
+<link rel="stylesheet" href="../../css/global.css">
+<style>
+:root{{--formation-accent:{level_color};}}
+.lesson-layout{{display:grid;grid-template-columns:280px 1fr;gap:2.5rem;max-width:80rem;margin:0 auto;padding:7rem var(--px-page) 3rem;}}
+@media(max-width:900px){{.lesson-layout{{grid-template-columns:1fr;}}.lesson-sidebar{{position:static!important;max-height:none!important;}}}}
+.lesson-sidebar{{position:sticky;top:6rem;align-self:flex-start;max-height:calc(100vh - 8rem);overflow-y:auto;padding-right:1rem;border-right:1px solid rgba(92,64,55,0.15);}}
+.lesson-sidebar h3{{font-family:var(--font-headline);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--formation-accent);margin-bottom:1rem;}}
+.lesson-sidebar ul{{list-style:none;padding:0;margin:0;}}
+.toc-module{{margin-bottom:1rem;}}
+.toc-module-title{{font-weight:700;color:var(--on-surface);font-size:0.9rem;margin-bottom:0.4rem;}}
+.toc-lessons{{padding-left:0.75rem;border-left:1px solid rgba(92,64,55,0.2);}}
+.toc-lessons li{{padding:0.3rem 0;}}
+.toc-lessons li a{{color:rgba(229,226,225,0.55);font-size:0.82rem;text-decoration:none;line-height:1.4;display:block;}}
+.toc-lessons li a:hover{{color:var(--on-surface);}}
+.toc-lessons li.active a{{color:var(--formation-accent);font-weight:600;}}
+.lesson-main{{min-width:0;}}
+.lesson-breadcrumb{{font-size:0.85rem;color:rgba(229,226,225,0.5);margin-bottom:1rem;}}
+.lesson-breadcrumb a{{color:rgba(229,226,225,0.7);}}
+.lesson-breadcrumb a:hover{{color:var(--formation-accent);}}
+.lesson-h1{{font-family:var(--font-headline);font-size:clamp(1.75rem,4vw,2.5rem);font-weight:800;letter-spacing:-0.02em;margin:0.5rem 0 1rem;line-height:1.2;}}
+.lesson-meta-bar{{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;padding:1rem 0;margin-bottom:2rem;border-top:1px solid rgba(92,64,55,0.15);border-bottom:1px solid rgba(92,64,55,0.15);font-size:0.85rem;color:rgba(229,226,225,0.55);}}
+.lesson-progress-bar{{flex:1;min-width:120px;height:6px;background:var(--surface-container-low);overflow:hidden;}}
+.lesson-progress-bar-fill{{height:100%;background:var(--formation-accent);width:{progress_pct}%;}}
+.lesson-content{{color:rgba(229,226,225,0.78);line-height:1.85;font-size:1.0625rem;}}
+.lesson-content h2{{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;letter-spacing:-0.02em;}}
+.lesson-content h3,.lesson-content h4{{font-family:var(--font-headline);font-size:1.15rem;font-weight:600;color:var(--on-surface);margin:1.5rem 0 0.75rem;}}
+.lesson-content p{{margin-bottom:1rem;}}
+.lesson-content ul,.lesson-content ol{{margin:0.75rem 0 1.25rem;padding-left:1.5rem;}}
+.lesson-content li{{margin-bottom:0.4rem;}}
+.lesson-content strong{{color:var(--on-surface);font-weight:600;}}
+.lesson-content code{{background:rgba(255,87,0,0.08);color:var(--formation-accent);padding:0.15rem 0.4rem;border-radius:3px;font-size:0.9em;}}
+.lesson-content blockquote{{border-left:3px solid var(--formation-accent);background:rgba(255,87,0,0.04);padding:1rem 1.5rem;margin:1.25rem 0;}}
+.lesson-content table{{width:100%;border-collapse:collapse;margin:1.25rem 0;}}
+.lesson-content th,.lesson-content td{{padding:0.75rem;border:1px solid rgba(92,64,55,0.15);text-align:left;}}
+.lesson-content th{{background:var(--surface-container);font-weight:600;}}
+
+.lesson-complete-btn{{display:inline-flex;align-items:center;gap:0.5rem;margin:2rem 0;padding:0.85rem 1.5rem;background:transparent;border:1px solid var(--formation-accent);color:var(--formation-accent);font-family:var(--font-headline);font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.3s;}}
+.lesson-complete-btn:hover{{background:var(--formation-accent);color:#0e0e0e;}}
+.lesson-complete-btn.completed{{background:var(--formation-accent);color:#0e0e0e;}}
+
+.lesson-nav{{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(92,64,55,0.15);}}
+.lesson-nav-btn{{display:flex;flex-direction:column;padding:1.25rem 1.5rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.15);text-decoration:none;color:var(--on-surface);transition:transform 0.3s,border-color 0.3s;}}
+.lesson-nav-btn:hover{{transform:translateY(-2px);border-color:var(--formation-accent);}}
+.lesson-nav-prev{{text-align:left;}}
+.lesson-nav-next{{text-align:right;grid-column:2;}}
+.lesson-nav-label{{font-size:0.75rem;color:var(--formation-accent);text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.4rem;}}
+.lesson-nav-title{{font-weight:600;font-size:0.95rem;}}
+
+.lesson-comments{{margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(92,64,55,0.15);}}
+.lesson-comments-title{{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;}}
+.lesson-comments-intro{{color:rgba(229,226,225,0.6);margin-bottom:1.5rem;}}
+.comment-form{{display:grid;gap:0.75rem;background:var(--surface-container-lowest);padding:1.5rem;margin-bottom:2rem;}}
+.comment-form input,.comment-form textarea{{padding:0.75rem 1rem;background:var(--surface-container-low);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color 0.3s;}}
+.comment-form input:focus,.comment-form textarea:focus{{border-color:var(--formation-accent);}}
+.comment-form textarea{{resize:vertical;min-height:80px;}}
+.comment-form-status{{margin:0;font-size:0.85rem;}}
+.comment-item{{padding:1.25rem;background:var(--surface-container-lowest);margin-bottom:0.75rem;border-left:3px solid var(--formation-accent);}}
+.comment-head{{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;font-size:0.9rem;}}
+.comment-date{{color:rgba(229,226,225,0.5);font-size:0.8rem;}}
+.comment-body{{color:rgba(229,226,225,0.8);line-height:1.6;margin:0;}}
+.comments-empty,.comments-loading{{color:rgba(229,226,225,0.4);text-align:center;padding:2rem;}}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-H0ZTTRYBQ7');</script>
+</head>
+<body>
+<div id="progress-bar"></div>
+<nav class="nav"><div class="nav-inner">
+<a href="{base_url}/" class="nav-logo"><img src="../../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
+<div class="nav-links">{nav_links}</div>
+<a class="nav-login" href="{base_url}/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> {"My Account" if is_en else "Mon Espace"}</a>
+<a href="{base_url}/contact" class="nav-cta">{"Free Audit" if is_en else "Audit Gratuit"}</a>
+<div class="nav-hamburger"><span></span><span></span><span></span></div>
+</div></nav>
+
+<main class="lesson-layout">
+<aside class="lesson-sidebar">
+<h3>{"Course outline" if is_en else "Sommaire de la formation"}</h3>
+<ul>{toc_html}</ul>
+</aside>
+
+<article class="lesson-main">
+<nav class="lesson-breadcrumb">
+<a href="{base_url}/formations/">{"Trainings" if is_en else "Formations"}</a> &rarr;
+<a href="{formation_url}">{html_lib.escape(f_title)}</a> &rarr;
+<span>{html_lib.escape(module["title"])}</span>
+</nav>
+
+<h1 class="lesson-h1">{html_lib.escape(lesson["title"])}</h1>
+
+<div class="lesson-meta-bar">
+<span>{"Module" if is_en else "Module"} {module_idx} &middot; {"Lesson" if is_en else "Lecon"} {lesson_idx}/{len(module.get("lessons", []))}</span>
+<span>&#x23F1; {lesson.get("duration", 15)} min</span>
+<span>{"Progress" if is_en else "Progression"} : {progress_pct}%</span>
+<div class="lesson-progress-bar"><div class="lesson-progress-bar-fill"></div></div>
+</div>
+
+<div class="lesson-content">
+{lesson.get('content_html', '<p><em>Content coming soon.</em></p>')}
+</div>
+
+{complete_btn}
+
+<div class="lesson-nav">
+{prev_html if prev_html else '<div></div>'}
+{next_html if next_html else '<div></div>'}
+</div>
+
+{comments_section}
+
+</article>
+</main>
+
+<footer class="footer">
+<div class="footer-grid">
+<div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">{"Premium digital agency. Headquartered in Abomey-Calavi, Benin." if is_en else "Agence digitale premium. Siege : Abomey-Calavi, Benin."}</p></div>
+<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="{base_url}/formations/">{"All trainings" if is_en else "Toutes les formations"}</a></li></ul></div>
+<div><div class="footer-title">{"Cities" if is_en else "Villes"}</div><ul class="footer-links"><li><a href="{base_url}/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="{base_url}/agence-seo-referencement-naturel/cotonou">Cotonou</a></li></ul></div>
+</div>
+<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span></div>
+</footer>
+<script src="../../js/global.js?v=5"></script>
+<script src="../../js/cookie-consent.js?v=1" defer></script>
+</body>
+</html>
+"""

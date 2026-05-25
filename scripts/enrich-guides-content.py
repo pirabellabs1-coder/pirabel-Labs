@@ -326,6 +326,8 @@ def build_enrichment(theme: dict, is_en: bool) -> str:
 
     return f'''
 {SENTINEL}
+<div class="article-body article-enriched" style="max-width:72rem;margin:0 auto;padding:0 var(--px-page) 3rem;">
+
 <section style="padding:3rem 0 1rem;">
 <h2>{L["h_errors"]}</h2>
 {errors_html}
@@ -347,6 +349,8 @@ def build_enrichment(theme: dict, is_en: bool) -> str:
 <h2>{L["h_faq"]}</h2>
 {faq_html}
 </section>
+
+</div>
 '''
 
 count = 0

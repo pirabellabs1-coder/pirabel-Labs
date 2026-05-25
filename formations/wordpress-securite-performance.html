@@ -50,6 +50,24 @@
 .module-objective{color:rgba(229,226,225,0.6);font-style:italic;margin-bottom:1rem;}
 .module-meta{display:flex;gap:1.5rem;font-size:0.85rem;color:rgba(229,226,225,0.5);}
 .module-lessons{margin-bottom:1.5rem;}
+
+/* Enrollment banner + modal */
+.formation-enroll-banner{margin-bottom:2.5rem;padding:1.75rem 2rem;background:linear-gradient(135deg,rgba(255,87,0,0.12),rgba(255,87,0,0.04));border:1px solid rgba(255,87,0,0.3);border-radius:4px;}
+.formation-enroll-content{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem;justify-content:space-between;}
+.formation-enroll-content strong{color:var(--on-surface);font-size:1.1rem;display:block;}
+@media(max-width:640px){.formation-enroll-content{flex-direction:column;align-items:flex-start;}}
+.enroll-modal{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.enroll-modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);}
+.enroll-modal-card{position:relative;z-index:1;background:var(--surface-container);border:1px solid rgba(92,64,55,0.25);max-width:480px;width:100%;padding:2.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.enroll-modal-close{position:absolute;top:0.75rem;right:1rem;background:none;border:none;color:rgba(229,226,225,0.5);font-size:1.75rem;cursor:pointer;line-height:1;}
+.enroll-modal-close:hover{color:var(--on-surface);}
+.enroll-modal-card h2{font-family:var(--font-headline);font-size:1.5rem;font-weight:700;margin:0 0 1rem;}
+.enroll-modal-card p{color:rgba(229,226,225,0.7);line-height:1.6;margin-bottom:1.5rem;}
+.enroll-form{display:grid;gap:0.75rem;}
+.enroll-form input{padding:0.85rem 1rem;background:var(--surface-container-low);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color 0.3s;}
+.enroll-form input:focus{border-color:var(--formation-accent);}
+.enroll-submit{margin-top:0.5rem;}
+.enroll-form-status{margin:0.5rem 0 0;font-size:0.85rem;color:#888;text-align:center;}
 .lesson-link{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--surface-container-low);margin-bottom:0.5rem;text-decoration:none;color:var(--on-surface);transition:transform 0.2s,background 0.2s;}
 .lesson-link:hover{background:var(--surface-container);transform:translateX(4px);}
 .lesson-link .lesson-num{flex-shrink:0;display:inline-block;padding:0.3rem 0.7rem;background:var(--formation-accent);color:#0e0e0e;font-weight:800;font-size:0.85rem;font-family:var(--font-headline);}
@@ -95,6 +113,96 @@
 </header>
 
 <div class="formation-body">
+
+<!-- Enrollment banner -->
+<div class="formation-enroll-banner" id="enroll-banner-summary">
+<div class="formation-enroll-content">
+<div>
+<strong>Inscription gratuite requise pour suivre cette formation</strong>
+<p style="margin:0.5rem 0 0;color:rgba(229,226,225,0.7);font-size:0.95rem;">Suivez votre progression, obtenez votre certificat et rejoignez la communaute. 30 secondes.</p>
+</div>
+<button class="btn btn--orange" id="open-enroll-modal" style="white-space:nowrap;padding:0.85rem 1.5rem;">S'inscrire gratuitement &rarr;</button>
+</div>
+</div>
+
+<!-- Enrollment modal -->
+<div class="enroll-modal" id="enroll-modal" style="display:none;">
+<div class="enroll-modal-overlay" onclick="document.getElementById('enroll-modal').style.display='none'"></div>
+<div class="enroll-modal-card">
+<button class="enroll-modal-close" onclick="document.getElementById('enroll-modal').style.display='none'" aria-label="Close">&times;</button>
+<h2>Inscription gratuite requise</h2>
+<p>Creez votre compte gratuit en 30 secondes pour acceder a toute la formation, suivre votre progression et obtenir votre certificat.</p>
+<form id="enroll-form-summary" class="enroll-form">
+<input type="text" name="name" placeholder="Votre nom" required maxlength="80">
+<input type="email" name="email" placeholder="Votre email" required maxlength="160">
+<input type="password" name="password" placeholder="Choisissez un mot de passe (6+ caracteres)" required minlength="6" maxlength="120">
+<button type="submit" class="btn btn--orange enroll-submit">Commencer la formation</button>
+<p class="enroll-form-status" id="enroll-status-summary"></p>
+</form>
+</div>
+</div>
+
+<script>
+(function(){
+  const FORMATION_SLUG = "wordpress-securite-performance";
+  const FORMATION_TITLE = "WordPress S\u00e9curit\u00e9 & Performance : Le Guide du Site Inviolable";
+  const LANG = "fr";
+  const banner = document.getElementById('enroll-banner-summary');
+  const modal = document.getElementById('enroll-modal');
+  const openBtn = document.getElementById('open-enroll-modal');
+  const form = document.getElementById('enroll-form-summary');
+  const status = document.getElementById('enroll-status-summary');
+
+  // Check session
+  fetch('/api/lms/me', { credentials: 'include' })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data && data.enrollments) {
+        const isEnrolled = data.enrollments.some(e => e.formationSlug === FORMATION_SLUG);
+        if (isEnrolled) {
+          // Hide banner if already enrolled
+          banner.style.display = 'none';
+        }
+      }
+    })
+    .catch(() => {});
+
+  if (openBtn) openBtn.addEventListener('click', () => modal.style.display = 'flex');
+
+  if (form) form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = "Creation du compte...";
+    status.style.color = '#888';
+    const fd = new FormData(form);
+    try {
+      const r = await fetch('/api/lms/register', {
+        method: 'POST', credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: fd.get('name'),
+          email: fd.get('email'),
+          password: fd.get('password'),
+          formationSlug: FORMATION_SLUG,
+          formationTitle: FORMATION_TITLE,
+          language: LANG
+        })
+      });
+      const data = await r.json();
+      if (r.ok && data.success) {
+        status.textContent = "Bienvenue ! Redirection vers la lecon 1...";
+        status.style.color = '#4ade80';
+        setTimeout(() => window.location.href = "/formations/" + FORMATION_SLUG + "/m1-l1", 1000);
+      } else {
+        status.textContent = data.error || "Erreur. Essayez avec un autre email.";
+        status.style.color = '#f97316';
+      }
+    } catch(err) {
+      status.textContent = "Erreur reseau.";
+      status.style.color = '#f97316';
+    }
+  });
+})();
+</script>
 
 <section class="formation-section">
 <h2 class="section-title">Sommaire</h2>

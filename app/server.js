@@ -158,6 +158,7 @@ app.get('/gerer-rendez-vous.html', (req, res) => res.sendFile(path.join(__dirnam
 app.get('/api-docs', (req, res) => res.sendFile(path.join(__dirname, 'views', 'api-docs.html')));
 app.get('/case-studies', (req, res) => res.sendFile(path.join(__dirname, 'views', 'case-studies.html')));
 app.get('/lms-students', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-students.html')));
+app.get('/lms-comments', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-comments.html')));
 
 // Blocked routes
 app.get('/login', (req, res) => res.status(404).send('Page non trouvee'));

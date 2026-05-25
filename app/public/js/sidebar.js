@@ -34,6 +34,10 @@
       { href: '/analytics', icon: 'analytics', label: 'Analytics' },
       { href: '/reviews-admin', icon: 'star', label: 'Avis clients' }
     ]},
+    { title: 'Academy & Formations', links: [
+      { href: '/lms-students', icon: 'school', label: 'Étudiants inscrits' },
+      { href: '/lms-comments', icon: 'forum', label: 'Commentaires à modérer' }
+    ]},
     { title: 'Facturation & Finance', links: [
       { href: '/quotes', icon: 'request_quote', label: 'Devis' },
       { href: '/invoices', icon: 'receipt_long', label: 'Factures' },

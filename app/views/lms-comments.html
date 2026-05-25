@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commentaires à modérer | Pirabel Labs Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="/js/dashboard-ui.js" defer></script>
+<script src="/js/sidebar.js"></script>
+<script src="/js/admin-topbar.js" defer></script>
+<style>
+.tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.tab-btn{background:transparent;border:none;color:var(--muted);padding:0.75rem 1.25rem;cursor:pointer;font-family:var(--font-b);font-size:0.85rem;border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.tab-btn .badge{background:var(--accent);color:#000;padding:0.1rem 0.5rem;font-size:0.7rem;margin-left:0.4rem;border-radius:10px;font-weight:700;}
+.comment-card{background:var(--card);border:1px solid var(--border);padding:1.25rem;margin-bottom:0.75rem;border-left:3px solid var(--accent);}
+.comment-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;font-size:0.75rem;}
+.comment-meta strong{color:var(--text);font-weight:600;font-size:0.85rem;}
+.comment-meta .email{color:var(--muted);}
+.comment-meta .date{color:var(--muted);}
+.comment-lesson{color:var(--accent);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;}
+.comment-body{color:var(--text);line-height:1.6;margin:0.5rem 0 1rem;}
+.comment-actions{display:flex;gap:0.5rem;}
+.btn-approve{background:#16a34a;color:#fff;padding:0.4rem 0.85rem;border:none;cursor:pointer;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.btn-approve:hover{background:#15803d;}
+.btn-spam{background:transparent;color:#f97316;padding:0.4rem 0.85rem;border:1px solid #f97316;cursor:pointer;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.btn-spam:hover{background:#f97316;color:#000;}
+.btn-delete{background:transparent;color:#ef4444;padding:0.4rem 0.85rem;border:1px solid #ef4444;cursor:pointer;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.btn-delete:hover{background:#ef4444;color:#fff;}
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+</style>
+</head>
+<body class="dashboard">
+<div class="layout">
+<main class="main">
+<header class="topbar">
+<h1>Commentaires des formations</h1>
+</header>
+
+<section class="content">
+<div class="tabs">
+<button class="tab-btn active" data-status="pending">À modérer <span class="badge" id="badge-pending">0</span></button>
+<button class="tab-btn" data-status="approved">Approuvés</button>
+<button class="tab-btn" data-status="spam">Spam</button>
+</div>
+
+<div id="comments-list"><p class="empty">Chargement...</p></div>
+</section>
+</main>
+</div>
+
+<script>
+let currentStatus = 'pending';
+
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function load(){
+  const list = document.getElementById('comments-list');
+  list.innerHTML = '<p class="empty">Chargement...</p>';
+  try {
+    const r = await fetch('/api/lesson-comments/admin?status=' + currentStatus, { credentials: 'include' });
+    const data = await r.json();
+    const comments = data.comments || [];
+    if (!comments.length){
+      list.innerHTML = '<p class="empty">Aucun commentaire ' + currentStatus + '.</p>';
+    } else {
+      list.innerHTML = comments.map(c => `
+<div class="comment-card" data-id="${c._id}">
+<div class="comment-lesson">${escapeHtml(c.lesson)}</div>
+<div class="comment-meta">
+<span><strong>${escapeHtml(c.name)}</strong> <span class="email">&middot; ${escapeHtml(c.email || '-')}</span></span>
+<span class="date">${new Date(c.createdAt).toLocaleString('fr-FR')}</span>
+</div>
+<p class="comment-body">${escapeHtml(c.comment).replace(/\\n/g,'<br>')}</p>
+<div class="comment-actions">
+${currentStatus !== 'approved' ? '<button class="btn-approve" onclick="approve(\\''+c._id+'\\')">✓ Approuver</button>' : ''}
+${currentStatus !== 'spam' ? '<button class="btn-spam" onclick="markSpam(\\''+c._id+'\\')">⚠ Spam</button>' : ''}
+<button class="btn-delete" onclick="del(\\''+c._id+'\\')">✕ Supprimer</button>
+</div>
+</div>
+`).join('');
+    }
+    // Update pending badge
+    if (currentStatus === 'pending'){
+      document.getElementById('badge-pending').textContent = comments.length;
+    } else {
+      try {
+        const r2 = await fetch('/api/lesson-comments/admin?status=pending', { credentials: 'include' });
+        const d2 = await r2.json();
+        document.getElementById('badge-pending').textContent = (d2.comments || []).length;
+      } catch(e){}
+    }
+  } catch (e){
+    list.innerHTML = '<p class="empty">Erreur: ' + e.message + '</p>';
+  }
+}
+
+async function approve(id){
+  if (!confirm('Approuver ce commentaire ?')) return;
+  await fetch('/api/lesson-comments/' + id + '/approve', { method: 'PATCH', credentials: 'include' });
+  load();
+}
+async function markSpam(id){
+  if (!confirm('Marquer comme spam ?')) return;
+  await fetch('/api/lesson-comments/' + id + '/spam', { method: 'PATCH', credentials: 'include' });
+  load();
+}
+async function del(id){
+  if (!confirm('Supprimer definitivement ce commentaire ?')) return;
+  await fetch('/api/lesson-comments/' + id, { method: 'DELETE', credentials: 'include' });
+  load();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentStatus = btn.dataset.status;
+    load();
+  });
+});
+
+load();
+</script>
+</body>
+</html>

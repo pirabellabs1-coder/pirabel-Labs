@@ -18,9 +18,19 @@
 <link rel="stylesheet" href="../../css/global.css">
 <style>
 :root{--formation-accent:#4ade80;}
-.lesson-layout{display:grid;grid-template-columns:280px 1fr;gap:2.5rem;max-width:80rem;margin:0 auto;padding:7rem var(--px-page) 3rem;}
-@media(max-width:900px){.lesson-layout{grid-template-columns:1fr;}.lesson-sidebar{position:static!important;max-height:none!important;}}
+.lesson-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:2.5rem;max-width:80rem;margin:0 auto;padding:7rem var(--px-page,5%) 3rem;}
+@media(max-width:900px){
+  .lesson-layout{grid-template-columns:1fr;gap:1.5rem;padding-top:6rem;}
+  .lesson-sidebar{position:static!important;max-height:none!important;border-right:none!important;border-bottom:1px solid rgba(92,64,55,0.15);padding:0 0 1.5rem 0!important;}
+}
 .lesson-sidebar{position:sticky;top:6rem;align-self:flex-start;max-height:calc(100vh - 8rem);overflow-y:auto;padding-right:1rem;border-right:1px solid rgba(92,64,55,0.15);}
+
+/* Enroll banner (always visible to non-enrolled users) */
+.enroll-banner{margin:1.5rem 0 2rem;padding:1.25rem 1.5rem;background:linear-gradient(135deg,rgba(255,87,0,0.15),rgba(255,87,0,0.05));border:1px solid rgba(255,87,0,0.3);border-radius:4px;}
+.enroll-banner-content{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between;}
+.enroll-banner-content strong{color:var(--on-surface);font-size:1rem;display:block;margin-bottom:0.25rem;}
+.enroll-banner-btn{white-space:nowrap;flex-shrink:0;padding:0.7rem 1.25rem;font-size:0.8rem;}
+@media(max-width:640px){.enroll-banner-content{flex-direction:column;align-items:flex-start;}}
 .lesson-sidebar h3{font-family:var(--font-headline);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--formation-accent);margin-bottom:1rem;}
 .lesson-sidebar ul{list-style:none;padding:0;margin:0;}
 .toc-module{margin-bottom:1rem;}
@@ -132,7 +142,12 @@
 <p>Principes clés :</p><ul><li>Chaque page accessible en max 3 clics depuis l'accueil</li><li>Anchor text descriptif (jamais 'cliquez ici')</li><li>Pages piliers reçoivent le plus de liens internes</li><li>Cluster pages linkent vers la page pilier de leur thématique</li><li>Audit régulier : Screaming Frog pour identifier les pages orphelines</li></ul>
 </div>
 
-
+<div class="enroll-banner" id="enroll-banner" style="display:none;">
+<div class="enroll-banner-content">
+<strong>📚 Cette le&ccedil;on est en acces gratuit.</strong> Pour acceder a la suite de la formation, suivre votre progression et obtenir votre certificat, inscrivez-vous gratuitement (30 secondes).
+<button class="btn btn--orange enroll-banner-btn" onclick="document.getElementById('enroll-modal').style.display='flex'">S'inscrire gratuitement &rarr;</button>
+</div>
+</div>
 <button class="lesson-complete-btn" id="complete-btn">
 <span class="material-symbols-outlined">check_circle</span>
 <span id="complete-label">Marquer comme termine</span>
@@ -187,9 +202,18 @@
       }
     } catch(e) {}
     update();
-    // Gate non-first lessons
+    // Always show enroll banner if NOT enrolled (visible CTA inscription)
+    if (!isEnrolled){
+      const banner = document.getElementById('enroll-banner');
+      if (banner) banner.style.display = 'block';
+    }
+    // Gate non-first lessons (force modal)
     if (!IS_FIRST_LESSON && !isEnrolled){
       modal.style.display = 'flex';
+    }
+    // On first lesson : auto-open modal after 60s of reading (soft gate)
+    if (IS_FIRST_LESSON && !isEnrolled){
+      setTimeout(() => { if (!isEnrolled) modal.style.display = 'flex'; }, 60000);
     }
   }
 

@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
-<script src="/js/sidebar.js?v=20260525-2"></script>
+<script src="/js/sidebar.js?v=20260525-3"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
 .tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
@@ -33,11 +33,20 @@
 .empty{text-align:center;padding:3rem;color:var(--muted);}
 </style>
 </head>
-<body class="dashboard">
-<div class="layout">
-<main class="main">
+<body>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav"><!-- injected by sidebar.js --></nav>
+</aside>
+
+<div class="main">
 <header class="topbar">
-<h1>Commentaires des formations</h1>
+<div style="display:flex;align-items:center;gap:1rem;">
+<button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+<h1 style="margin:0;font-family:var(--font-h);font-size:1.5rem;font-weight:700;">Commentaires des formations</h1>
+</div>
 </header>
 
 <section class="content">
@@ -49,7 +58,7 @@
 
 <div id="comments-list"><p class="empty">Chargement...</p></div>
 </section>
-</main>
+</div>
 </div>
 
 <script>
@@ -74,7 +83,7 @@ async function load(){
 <span><strong>${escapeHtml(c.name)}</strong> <span class="email">&middot; ${escapeHtml(c.email || '-')}</span></span>
 <span class="date">${new Date(c.createdAt).toLocaleString('fr-FR')}</span>
 </div>
-<p class="comment-body">${escapeHtml(c.comment).replace(/\\n/g,'<br>')}</p>
+<p class="comment-body">${escapeHtml(c.comment).replace(/\n/g,'<br>')}</p>
 <div class="comment-actions">
 ${currentStatus !== 'approved' ? '<button class="btn-approve" onclick="approve(\\''+c._id+'\\')">✓ Approuver</button>' : ''}
 ${currentStatus !== 'spam' ? '<button class="btn-spam" onclick="markSpam(\\''+c._id+'\\')">⚠ Spam</button>' : ''}
@@ -83,7 +92,6 @@ ${currentStatus !== 'spam' ? '<button class="btn-spam" onclick="markSpam(\\''+c.
 </div>
 `).join('');
     }
-    // Update pending badge
     if (currentStatus === 'pending'){
       document.getElementById('badge-pending').textContent = comments.length;
     } else {

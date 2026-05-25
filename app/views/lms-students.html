@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inscrits Formations | Pirabel Labs Admin</title>
+<title>Étudiants inscrits | Pirabel Labs Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/dashboard.css">
 <script src="/js/dashboard-ui.js" defer></script>
-<script src="/js/sidebar.js?v=20260525-2"></script>
+<script src="/js/sidebar.js?v=20260525-3"></script>
 <script src="/js/admin-topbar.js" defer></script>
 <style>
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
@@ -21,16 +21,24 @@
 .toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
 .toolbar input{flex:1;min-width:200px;}
 .empty{text-align:center;padding:3rem;color:var(--muted);}
-.progress-bar{display:inline-block;width:80px;height:6px;background:var(--border);position:relative;overflow:hidden;}
-.progress-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);}
+.btn-link{background:transparent;border:none;color:var(--accent);font-weight:600;cursor:pointer;font-size:0.85rem;}
+.btn-link:hover{text-decoration:underline;}
 </style>
 </head>
-<body class="dashboard">
-<div class="layout">
-<!-- Sidebar handled by sidebar.js -->
-<main class="main">
+<body>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">PIRABEL LABS</div>
+  <nav class="sidebar-nav"><!-- injected by sidebar.js --></nav>
+</aside>
+
+<div class="main">
 <header class="topbar">
-<h1>Inscrits Formations</h1>
+<div style="display:flex;align-items:center;gap:1rem;">
+<button class="hamburger-dash" onclick="document.getElementById('sidebar').classList.toggle('open')"><span class="material-symbols-outlined">menu</span></button>
+<h1 style="margin:0;font-family:var(--font-h);font-size:1.5rem;font-weight:700;">Étudiants inscrits</h1>
+</div>
 </header>
 
 <section class="content">
@@ -60,14 +68,13 @@
 </table>
 </div>
 
-<!-- Detail panel -->
 <div id="detail-panel" style="display:none;margin-top:2rem;" class="card">
 <button onclick="document.getElementById('detail-panel').style.display='none'" style="float:right;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;">&times;</button>
 <h2 id="detail-name" style="margin:0 0 1rem;font-family:var(--font-h);"></h2>
 <div id="detail-content"></div>
 </div>
 </section>
-</main>
+</div>
 </div>
 
 <script>
@@ -86,8 +93,8 @@ async function loadStats(){
 <div class="stat-card"><div class="val">${data.totalComments || 0}</div><div class="lbl">Commentaires</div></div>
 <div class="stat-card"><div class="val" style="color:${data.pendingComments > 0 ? '#fbbf24' : 'var(--accent)'};">${data.pendingComments || 0}</div><div class="lbl">A moderer</div></div>
 `;
-    // Top formations as filter options
     const sel = document.getElementById('filter-formation');
+    sel.innerHTML = '<option value="">Toutes les formations</option>';
     (data.topFormations || []).forEach(f => {
       const opt = document.createElement('option');
       opt.value = f._id;

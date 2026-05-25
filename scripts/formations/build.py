@@ -91,15 +91,25 @@ def make_skeleton_modules(formation):
 def build_catalog_page(is_en=False):
     """Genere la page catalog /formations/."""
     lang = 'en' if is_en else 'fr'
+    lang_path = 'en' if is_en else ''  # path prefix ('' for FR root)
     css_prefix = '../'
     base = '/en' if is_en else ''
-    title = "30 Free Trainings - Master Digital Marketing | Pirabel Labs Academy" if is_en else "30 Formations Gratuites - Marketing Digital | Pirabel Labs Academy"
+    title = "Pirabel Labs Academy - Free Trainings on Digital Marketing, SEO, AI, Web" if is_en else "Pirabel Labs Academy - Formations gratuites Marketing Digital, SEO, IA, Web"
     desc = "Free, comprehensive, hands-on online trainings. SEO, WordPress, Ads, AI, Design and more. By Pirabel Labs experts." if is_en else "Formations gratuites, completes et pratiques. SEO, WordPress, Publicite, IA, Design et plus. Par les experts de Pirabel Labs."
 
     # Group by category
     cards_by_cat = {}
     for f in FORMATIONS:
         cards_by_cat.setdefault(f['cat'], []).append(f)
+
+    # Filter pills (all categories + levels)
+    filter_pills = '<button class="filter-pill active" data-filter="all">' + ("All" if is_en else "Toutes") + '</button>'
+    for cat_key in cards_by_cat:
+        cat_name = CATEGORIES[cat_key][1 if is_en else 0]
+        filter_pills += f'<button class="filter-pill" data-filter="cat-{cat_key}">{cat_name}</button>'
+    for level_key, (level_fr, level_en, _color) in LEVELS.items():
+        level = level_en if is_en else level_fr
+        filter_pills += f'<button class="filter-pill" data-filter="level-{level_key}">{level}</button>'
 
     sections_html = ''
     for cat_key, cat_formations in cards_by_cat.items():
@@ -111,8 +121,10 @@ def build_catalog_page(is_en=False):
             f_short = f['short_en' if is_en else 'short_fr']
             level_label, level_label_en, level_color = LEVELS[f['level']]
             level = level_label_en if is_en else level_label
+            # data attrs for filter + search
+            search_text = (f_title + ' ' + f_short).lower().replace('"', '')
             cards += f'''
-<a href="/{lang}/formations/{slug}" class="formation-card">
+<a href="{base}/formations/{slug}" class="formation-card" data-cat="cat-{f['cat']}" data-level="level-{f['level']}" data-search="{search_text}">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:{level_color};color:#0e0e0e;">{level}</span>
     <span class="formation-card-stats">{f['duration_h']}h &middot; {f['lessons']} {"lessons" if is_en else "lecons"}</span>
@@ -122,11 +134,15 @@ def build_catalog_page(is_en=False):
   <span class="formation-card-cta">{"Start the training" if is_en else "Commencer la formation"} &rarr;</span>
 </a>'''
         sections_html += f'''
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-{cat_key}">
 <h2 class="catalog-cat-title">{cat_name}</h2>
 <div class="catalog-grid">{cards}</div>
 </section>
 '''
+
+    # No-results message
+    no_results = "No training matches your search." if is_en else "Aucune formation ne correspond a votre recherche."
+    search_ph = "Search a training, a topic, a tool..." if is_en else "Rechercher une formation, un sujet, un outil..."
 
     nav_links = ('<a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>'
         if is_en else
@@ -166,39 +182,112 @@ def build_catalog_page(is_en=False):
 .formation-card-title{{font-family:var(--font-headline);font-size:1.15rem;font-weight:700;line-height:1.3;margin:0 0 0.75rem;color:var(--on-surface);}}
 .formation-card-short{{font-size:0.9rem;line-height:1.65;color:rgba(229,226,225,0.7);margin-bottom:1.5rem;}}
 .formation-card-cta{{display:inline-block;font-size:0.85rem;font-weight:700;color:var(--primary-container);text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-headline);}}
+
+/* Filter + Search bar */
+.catalog-controls{{max-width:80rem;margin:0 auto 2rem;padding:0 var(--px-page);}}
+.catalog-search-wrap{{position:relative;margin-bottom:1.5rem;}}
+.catalog-search{{width:100%;padding:1rem 1.25rem 1rem 3rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:1rem;outline:none;transition:border-color 0.3s;}}
+.catalog-search:focus{{border-color:var(--primary-container);}}
+.catalog-search-icon{{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:rgba(229,226,225,0.4);pointer-events:none;}}
+.catalog-filters{{display:flex;flex-wrap:wrap;gap:0.5rem;}}
+.filter-pill{{padding:0.5rem 1rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.2);color:rgba(229,226,225,0.7);font-family:var(--font-headline);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.25s;}}
+.filter-pill:hover{{color:var(--on-surface);border-color:rgba(92,64,55,0.4);}}
+.filter-pill.active{{background:var(--primary-container);color:#0e0e0e;border-color:var(--primary-container);}}
+.no-results{{text-align:center;padding:4rem 2rem;color:rgba(229,226,225,0.5);font-size:1.1rem;display:none;}}
+.no-results.visible{{display:block;}}
+.catalog-results-count{{font-size:0.85rem;color:rgba(229,226,225,0.5);margin-top:1rem;}}
 </style>
 </head>
 <body>
 <div id="progress-bar"></div>
 <nav class="nav"><div class="nav-inner">
-<a href="/{lang}/" class="nav-logo"><img src="{css_prefix}img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
+<a href="{base}/" class="nav-logo"><img src="{css_prefix}img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
 <div class="nav-links">{nav_links}</div>
-<a class="nav-login" href="/{lang}/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> {"My Account" if is_en else "Mon Espace"}</a>
-<a href="/{lang}/contact" class="nav-cta">{"Free Audit" if is_en else "Audit Gratuit"}</a>
+<a class="nav-login" href="{base}/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> {"My Account" if is_en else "Mon Espace"}</a>
+<a href="{base}/contact" class="nav-cta">{"Free Audit" if is_en else "Audit Gratuit"}</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
 
 <main>
 <header class="catalog-hero">
-<h1>{"Pirabel Labs Academy" if is_en else "Pirabel Labs Academy"}</h1>
-<p>{"30 free, comprehensive trainings to master digital marketing, SEO, web creation, AI and more. From beginner to expert, built by our team of practitioners." if is_en else "30 formations gratuites et completes pour maitriser le marketing digital, le SEO, la creation web, l'IA et bien plus. Du debutant a l'expert, batties par notre equipe de praticiens."}</p>
+<h1>Pirabel Labs Academy</h1>
+<p>{"Free, comprehensive trainings to master digital marketing, SEO, web creation, AI and more. From beginner to expert, built by our team of practitioners. New trainings added regularly." if is_en else "Formations gratuites et completes pour maitriser le marketing digital, le SEO, la creation web, l'IA et bien plus. Du debutant a l'expert, batties par notre equipe de praticiens. De nouvelles formations sont ajoutees regulierement."}</p>
 <div class="catalog-stats">
-<div class="catalog-stat"><div class="val">30</div><div class="lbl">{"Trainings" if is_en else "Formations"}</div></div>
-<div class="catalog-stat"><div class="val">{sum(f['lessons'] for f in FORMATIONS)}</div><div class="lbl">{"Lessons" if is_en else "Lecons"}</div></div>
-<div class="catalog-stat"><div class="val">{sum(f['duration_h'] for f in FORMATIONS)}h</div><div class="lbl">{"Total duration" if is_en else "Duree totale"}</div></div>
+<div class="catalog-stat"><div class="val">{sum(f['lessons'] for f in FORMATIONS)}+</div><div class="lbl">{"Lessons" if is_en else "Lecons"}</div></div>
+<div class="catalog-stat"><div class="val">{sum(f['duration_h'] for f in FORMATIONS)}h+</div><div class="lbl">{"Total duration" if is_en else "Duree totale"}</div></div>
+<div class="catalog-stat"><div class="val">{len(CATEGORIES)}</div><div class="lbl">{"Categories" if is_en else "Categories"}</div></div>
 <div class="catalog-stat"><div class="val">100%</div><div class="lbl">{"Free" if is_en else "Gratuit"}</div></div>
 </div>
 </header>
 
+<div class="catalog-controls">
+<div class="catalog-search-wrap">
+<span class="catalog-search-icon material-symbols-outlined">search</span>
+<input type="search" class="catalog-search" id="formations-search" placeholder="{search_ph}" aria-label="{search_ph}">
+</div>
+<div class="catalog-filters" id="formations-filters">{filter_pills}</div>
+<div class="catalog-results-count" id="formations-count"></div>
+</div>
+
+<div id="formations-list">
 {sections_html}
+</div>
+
+<div class="no-results" id="formations-no-results">{no_results}</div>
+
+<script>
+(function(){{
+  const search = document.getElementById('formations-search');
+  const filters = document.querySelectorAll('#formations-filters .filter-pill');
+  const cards = document.querySelectorAll('.formation-card');
+  const sections = document.querySelectorAll('.catalog-section');
+  const noResults = document.getElementById('formations-no-results');
+  const countEl = document.getElementById('formations-count');
+  let activeFilter = 'all';
+  let query = '';
+
+  function applyFilters(){{
+    let visibleCount = 0;
+    cards.forEach(card => {{
+      const cat = card.dataset.cat;
+      const level = card.dataset.level;
+      const text = card.dataset.search;
+      const matchFilter = activeFilter === 'all' || cat === activeFilter || level === activeFilter;
+      const matchSearch = !query || text.indexOf(query) !== -1;
+      const visible = matchFilter && matchSearch;
+      card.style.display = visible ? '' : 'none';
+      if (visible) visibleCount++;
+    }});
+    // Hide empty sections
+    sections.forEach(section => {{
+      const visibleCards = section.querySelectorAll('.formation-card:not([style*="display: none"])');
+      section.style.display = visibleCards.length > 0 ? '' : 'none';
+    }});
+    noResults.classList.toggle('visible', visibleCount === 0);
+    countEl.textContent = visibleCount + ' ' + ({"'training' + (visibleCount !== 1 ? 's' : '')" if is_en else "'formation' + (visibleCount > 1 ? 's' : '')"});
+  }}
+
+  search.addEventListener('input', e => {{
+    query = e.target.value.toLowerCase().trim();
+    applyFilters();
+  }});
+  filters.forEach(pill => pill.addEventListener('click', () => {{
+    filters.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeFilter = pill.dataset.filter;
+    applyFilters();
+  }}));
+  applyFilters();
+}})();
+</script>
 
 </main>
 
 <footer class="footer">
 <div class="footer-grid">
 <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">{"Premium digital agency. Headquartered in Abomey-Calavi, Benin." if is_en else "Agence digitale premium. Siege : Abomey-Calavi, Benin."}</p></div>
-<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="/{lang}/formations/seo-debutant">SEO Debutant</a></li><li><a href="/{lang}/formations/wordpress-debutant">WordPress</a></li><li><a href="/{lang}/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="/{lang}/formations/">{"All trainings" if is_en else "Toutes les formations"}</a></li></ul></div>
-<div><div class="footer-title">{"Cities" if is_en else "Villes"}</div><ul class="footer-links"><li><a href="/{lang}/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="/{lang}/agence-seo-referencement-naturel/cotonou">Cotonou</a></li></ul></div>
+<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="{base}/formations/seo-debutant">SEO Debutant</a></li><li><a href="{base}/formations/wordpress-debutant">WordPress</a></li><li><a href="{base}/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="{base}/formations/">{"All trainings" if is_en else "Toutes les formations"}</a></li></ul></div>
+<div><div class="footer-title">{"Cities" if is_en else "Villes"}</div><ul class="footer-links"><li><a href="{base}/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="{base}/agence-seo-referencement-naturel/cotonou">Cotonou</a></li></ul></div>
 </div>
 <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span></div>
 </footer>

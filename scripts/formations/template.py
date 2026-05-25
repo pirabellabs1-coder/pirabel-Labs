@@ -205,10 +205,10 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 <body>
 <div id="progress-bar"></div>
 <nav class="nav"><div class="nav-inner">
-<a href="/{lang}/" class="nav-logo"><img src="{css_prefix}img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
+<a href="{base_url_prefix}/" class="nav-logo"><img src="{css_prefix}img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
 <div class="nav-links">{nav_links}</div>
-<a class="nav-login" href="/{lang}/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> {"My Account" if is_en else "Mon Espace"}</a>
-<a href="/{lang}/contact" class="nav-cta">{"Free Audit" if is_en else "Audit Gratuit"}</a>
+<a class="nav-login" href="{base_url_prefix}/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> {"My Account" if is_en else "Mon Espace"}</a>
+<a href="{base_url_prefix}/contact" class="nav-cta">{"Free Audit" if is_en else "Audit Gratuit"}</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
 
@@ -260,10 +260,10 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 <footer class="footer">
 <div class="footer-grid">
 <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">{"Premium digital agency. Headquartered in Abomey-Calavi, Benin." if is_en else "Agence digitale premium. Siège : Abomey-Calavi, Bénin."}</p></div>
-<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="/{lang}/formations/seo-debutant">SEO Débutant</a></li><li><a href="/{lang}/formations/wordpress-debutant">WordPress</a></li><li><a href="/{lang}/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="/{lang}/formations/">{"All trainings" if is_en else "Toutes les formations"}</a></li></ul></div>
-<div><div class="footer-title">{"Cities" if is_en else "Villes"}</div><ul class="footer-links"><li><a href="/{lang}/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="/{lang}/agence-seo-referencement-naturel/cotonou">Cotonou</a></li><li><a href="/{lang}/agence-seo-referencement-naturel/porto-novo">Porto-Novo</a></li><li><a href="/{lang}/agence-seo-referencement-naturel/parakou">Parakou</a></li></ul></div>
+<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="{base_url_prefix}/formations/seo-debutant">SEO Débutant</a></li><li><a href="{base_url_prefix}/formations/wordpress-debutant">WordPress</a></li><li><a href="{base_url_prefix}/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="{base_url_prefix}/formations/">{"All trainings" if is_en else "Toutes les formations"}</a></li></ul></div>
+<div><div class="footer-title">{"Cities" if is_en else "Villes"}</div><ul class="footer-links"><li><a href="{base_url_prefix}/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="{base_url_prefix}/agence-seo-referencement-naturel/cotonou">Cotonou</a></li><li><a href="{base_url_prefix}/agence-seo-referencement-naturel/porto-novo">Porto-Novo</a></li><li><a href="{base_url_prefix}/agence-seo-referencement-naturel/parakou">Parakou</a></li></ul></div>
 </div>
-<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span><div style="display:flex;gap:2rem;"><a href="/{lang}/mentions-legales">{"Legal notice" if is_en else "Mentions légales"}</a></div></div>
+<div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span><div style="display:flex;gap:2rem;"><a href="{base_url_prefix}/mentions-legales">{"Legal notice" if is_en else "Mentions légales"}</a></div></div>
 </footer>
 <script src="{css_prefix}js/global.js?v=5"></script>
 <script src="{css_prefix}js/cookie-consent.js?v=1" defer></script>

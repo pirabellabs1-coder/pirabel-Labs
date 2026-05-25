@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>30 Formations Gratuites - Marketing Digital | Pirabel Labs Academy</title>
+<title>Pirabel Labs Academy - Formations gratuites Marketing Digital, SEO, IA, Web</title>
 <meta name="description" content="Formations gratuites, completes et pratiques. SEO, WordPress, Publicite, IA, Design et plus. Par les experts de Pirabel Labs.">
 <link rel="canonical" href="https://www.pirabellabs.com/formations/">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/formations/">
@@ -32,35 +32,59 @@
 .formation-card-title{font-family:var(--font-headline);font-size:1.15rem;font-weight:700;line-height:1.3;margin:0 0 0.75rem;color:var(--on-surface);}
 .formation-card-short{font-size:0.9rem;line-height:1.65;color:rgba(229,226,225,0.7);margin-bottom:1.5rem;}
 .formation-card-cta{display:inline-block;font-size:0.85rem;font-weight:700;color:var(--primary-container);text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-headline);}
+
+/* Filter + Search bar */
+.catalog-controls{max-width:80rem;margin:0 auto 2rem;padding:0 var(--px-page);}
+.catalog-search-wrap{position:relative;margin-bottom:1.5rem;}
+.catalog-search{width:100%;padding:1rem 1.25rem 1rem 3rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.2);color:var(--on-surface);font-family:var(--font-body);font-size:1rem;outline:none;transition:border-color 0.3s;}
+.catalog-search:focus{border-color:var(--primary-container);}
+.catalog-search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:rgba(229,226,225,0.4);pointer-events:none;}
+.catalog-filters{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.filter-pill{padding:0.5rem 1rem;background:var(--surface-container-lowest);border:1px solid rgba(92,64,55,0.2);color:rgba(229,226,225,0.7);font-family:var(--font-headline);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.25s;}
+.filter-pill:hover{color:var(--on-surface);border-color:rgba(92,64,55,0.4);}
+.filter-pill.active{background:var(--primary-container);color:#0e0e0e;border-color:var(--primary-container);}
+.no-results{text-align:center;padding:4rem 2rem;color:rgba(229,226,225,0.5);font-size:1.1rem;display:none;}
+.no-results.visible{display:block;}
+.catalog-results-count{font-size:0.85rem;color:rgba(229,226,225,0.5);margin-top:1rem;}
 </style>
 </head>
 <body>
 <div id="progress-bar"></div>
 <nav class="nav"><div class="nav-inner">
-<a href="/fr/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
+<a href="/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
 <div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="/guides/">GUIDES</a><a href="/formations/" class="active">FORMATIONS</a><a href="/resultats">RESULTATS</a><a href="/a-propos">A PROPOS</a></div>
-<a class="nav-login" href="/fr/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
-<a href="/fr/contact" class="nav-cta">Audit Gratuit</a>
+<a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
+<a href="/contact" class="nav-cta">Audit Gratuit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
 
 <main>
 <header class="catalog-hero">
 <h1>Pirabel Labs Academy</h1>
-<p>30 formations gratuites et completes pour maitriser le marketing digital, le SEO, la creation web, l'IA et bien plus. Du debutant a l'expert, batties par notre equipe de praticiens.</p>
+<p>Formations gratuites et completes pour maitriser le marketing digital, le SEO, la creation web, l'IA et bien plus. Du debutant a l'expert, batties par notre equipe de praticiens. De nouvelles formations sont ajoutees regulierement.</p>
 <div class="catalog-stats">
-<div class="catalog-stat"><div class="val">30</div><div class="lbl">Formations</div></div>
-<div class="catalog-stat"><div class="val">795</div><div class="lbl">Lecons</div></div>
-<div class="catalog-stat"><div class="val">469h</div><div class="lbl">Duree totale</div></div>
+<div class="catalog-stat"><div class="val">795+</div><div class="lbl">Lecons</div></div>
+<div class="catalog-stat"><div class="val">469h+</div><div class="lbl">Duree totale</div></div>
+<div class="catalog-stat"><div class="val">10</div><div class="lbl">Categories</div></div>
 <div class="catalog-stat"><div class="val">100%</div><div class="lbl">Gratuit</div></div>
 </div>
 </header>
 
+<div class="catalog-controls">
+<div class="catalog-search-wrap">
+<span class="catalog-search-icon material-symbols-outlined">search</span>
+<input type="search" class="catalog-search" id="formations-search" placeholder="Rechercher une formation, un sujet, un outil..." aria-label="Rechercher une formation, un sujet, un outil...">
+</div>
+<div class="catalog-filters" id="formations-filters"><button class="filter-pill active" data-filter="all">Toutes</button><button class="filter-pill" data-filter="cat-seo">SEO & Référencement</button><button class="filter-pill" data-filter="cat-web">Création Web</button><button class="filter-pill" data-filter="cat-marketing">Marketing Digital</button><button class="filter-pill" data-filter="cat-ads">Publicité Payante</button><button class="filter-pill" data-filter="cat-social">Social Media</button><button class="filter-pill" data-filter="cat-content">Contenu & Copywriting</button><button class="filter-pill" data-filter="cat-email">Email Marketing</button><button class="filter-pill" data-filter="cat-design">Design & Branding</button><button class="filter-pill" data-filter="cat-ai">IA & Automatisation</button><button class="filter-pill" data-filter="cat-data">Data & Analytics</button><button class="filter-pill" data-filter="level-debutant">Débutant</button><button class="filter-pill" data-filter="level-intermediaire">Intermédiaire</button><button class="filter-pill" data-filter="level-avance">Avancé</button><button class="filter-pill" data-filter="level-expert">Expert</button></div>
+<div class="catalog-results-count" id="formations-count"></div>
+</div>
 
-<section class="catalog-section">
+<div id="formations-list">
+
+<section class="catalog-section" data-cat-section="cat-seo">
 <h2 class="catalog-cat-title">SEO & Référencement</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/seo-debutant" class="formation-card">
+<a href="/formations/seo-debutant" class="formation-card" data-cat="cat-seo" data-level="level-debutant" data-search="seo pour débutants : maîtrisez les fondamentaux du référencement apprenez à positionner votre site sur google de zéro, sans jargon. mots-clés, contenu, technique, on-page, et premiers backlinks.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">12h &middot; 25 lecons</span>
@@ -69,7 +93,7 @@
   <p class="formation-card-short">Apprenez à positionner votre site sur Google de zéro, sans jargon. Mots-clés, contenu, technique, on-page, et premiers backlinks.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/seo-intermediaire" class="formation-card">
+<a href="/formations/seo-intermediaire" class="formation-card" data-cat="cat-seo" data-level="level-intermediaire" data-search="seo intermédiaire : audit, optimisation et stratégies de croissance passez au niveau supérieur : audit technique complet, optimisation on-page avancée, stratégie de contenu cluster, netlinking.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">18h &middot; 30 lecons</span>
@@ -78,7 +102,7 @@
   <p class="formation-card-short">Passez au niveau supérieur : audit technique complet, optimisation on-page avancée, stratégie de contenu cluster, netlinking.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/seo-avance" class="formation-card">
+<a href="/formations/seo-avance" class="formation-card" data-cat="cat-seo" data-level="level-avance" data-search="seo avancé : technique, javascript, international et ia générative seo expert : crawl & indexation, javascript rendering, hreflang, structured data, core web vitals, seo pour llm.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">24h &middot; 32 lecons</span>
@@ -87,7 +111,7 @@
   <p class="formation-card-short">SEO expert : crawl & indexation, JavaScript rendering, hreflang, structured data, Core Web Vitals, SEO pour LLM.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/seo-local-google-business" class="formation-card">
+<a href="/formations/seo-local-google-business" class="formation-card" data-cat="cat-seo" data-level="level-intermediaire" data-search="seo local & google business profile : dominer votre zone optimisez votre fiche google business, gérez vos avis, construisez vos citations locales, dominez le pack local.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">10h &middot; 22 lecons</span>
@@ -98,10 +122,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-web">
 <h2 class="catalog-cat-title">Création Web</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/wordpress-debutant" class="formation-card">
+<a href="/formations/wordpress-debutant" class="formation-card" data-cat="cat-web" data-level="level-debutant" data-search="wordpress pour débutants : créez votre site de a à z de l'achat du nom de domaine au site live : hébergement, installation, thème, plugins essentiels, premier site pro.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">15h &middot; 28 lecons</span>
@@ -110,7 +134,7 @@
   <p class="formation-card-short">De l'achat du nom de domaine au site live : hébergement, installation, thème, plugins essentiels, premier site pro.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/wordpress-intermediaire" class="formation-card">
+<a href="/formations/wordpress-intermediaire" class="formation-card" data-cat="cat-web" data-level="level-intermediaire" data-search="wordpress intermédiaire : elementor, acf, custom post types devenez créateur wordpress autonome : page builders avancés, acf, cpt, child themes, performances, sécurité.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">20h &middot; 30 lecons</span>
@@ -119,7 +143,7 @@
   <p class="formation-card-short">Devenez créateur WordPress autonome : page builders avancés, ACF, CPT, child themes, performances, sécurité.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/wordpress-securite-performance" class="formation-card">
+<a href="/formations/wordpress-securite-performance" class="formation-card" data-cat="cat-web" data-level="level-avance" data-search="wordpress sécurité & performance : le guide du site inviolable sécurisez votre wordpress contre 99% des attaques, optimisez core web vitals, atteignez 95+ lighthouse mobile.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">12h &middot; 24 lecons</span>
@@ -128,7 +152,7 @@
   <p class="formation-card-short">Sécurisez votre WordPress contre 99% des attaques, optimisez Core Web Vitals, atteignez 95+ Lighthouse Mobile.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/shopify-marchand-debutant" class="formation-card">
+<a href="/formations/shopify-marchand-debutant" class="formation-card" data-cat="cat-web" data-level="level-debutant" data-search="shopify pour marchands débutants : lancez votre e-commerce boutique shopify de zéro à premières ventes : theme, produits, paiements (mobile money + stripe), livraison.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">14h &middot; 26 lecons</span>
@@ -139,10 +163,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-marketing">
 <h2 class="catalog-cat-title">Marketing Digital</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/marketing-digital-fondamentaux" class="formation-card">
+<a href="/formations/marketing-digital-fondamentaux" class="formation-card" data-cat="cat-marketing" data-level="level-debutant" data-search="marketing digital : fondamentaux complets pour entrepreneurs compréhension globale : persona, funnel, seo, ads, social, email, analytics. stratégie + exécution.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">16h &middot; 28 lecons</span>
@@ -151,7 +175,7 @@
   <p class="formation-card-short">Compréhension globale : persona, funnel, SEO, ads, social, email, analytics. Stratégie + exécution.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/marketing-digital-strategie-avancee" class="formation-card">
+<a href="/formations/marketing-digital-strategie-avancee" class="formation-card" data-cat="cat-marketing" data-level="level-avance" data-search="stratégie marketing digital avancée : frameworks et growth frameworks aarrr, ice, rice, north star, growth loops, brand x performance balance, attribution.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">22h &middot; 30 lecons</span>
@@ -160,7 +184,7 @@
   <p class="formation-card-short">Frameworks AARRR, ICE, RICE, North Star, growth loops, brand x performance balance, attribution.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/inbound-marketing-complet" class="formation-card">
+<a href="/formations/inbound-marketing-complet" class="formation-card" data-cat="cat-marketing" data-level="level-intermediaire" data-search="inbound marketing : attirer, convertir, fidéliser méthodologie hubspot complète : aimant content, lead magnets, nurturing, marketing automation, scoring.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">18h &middot; 28 lecons</span>
@@ -171,10 +195,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-ads">
 <h2 class="catalog-cat-title">Publicité Payante</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/google-ads-debutant" class="formation-card">
+<a href="/formations/google-ads-debutant" class="formation-card" data-cat="cat-ads" data-level="level-debutant" data-search="google ads pour débutants : premier compte rentable search, display, youtube, shopping : structure compte, mots-clés, créa, budget, tracking.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">14h &middot; 26 lecons</span>
@@ -183,7 +207,7 @@
   <p class="formation-card-short">Search, Display, YouTube, Shopping : structure compte, mots-clés, créa, budget, tracking.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/meta-ads-facebook-instagram" class="formation-card">
+<a href="/formations/meta-ads-facebook-instagram" class="formation-card" data-cat="cat-ads" data-level="level-intermediaire" data-search="meta ads maîtrise : facebook + instagram pour pme pixel, audiences, créas ugc, retargeting, cbo, catalog ads, attribution post-ios14.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">16h &middot; 28 lecons</span>
@@ -192,7 +216,7 @@
   <p class="formation-card-short">Pixel, audiences, créas UGC, retargeting, CBO, Catalog Ads, attribution post-iOS14.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/tiktok-ads-creator-economy" class="formation-card">
+<a href="/formations/tiktok-ads-creator-economy" class="formation-card" data-cat="cat-ads" data-level="level-intermediaire" data-search="tiktok ads & creator economy : virer sans brûler le budget tiktok ads manager, créas vidéo natives, spark ads, partenariats créateurs, mesure.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">12h &middot; 22 lecons</span>
@@ -203,10 +227,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-social">
 <h2 class="catalog-cat-title">Social Media</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/social-media-strategie-complete" class="formation-card">
+<a href="/formations/social-media-strategie-complete" class="formation-card" data-cat="cat-social" data-level="level-intermediaire" data-search="stratégie social media complète : 5 plateformes maîtrisées facebook, instagram, tiktok, linkedin, x : stratégie, calendrier, créa, community, kpis.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">18h &middot; 28 lecons</span>
@@ -215,7 +239,7 @@
   <p class="formation-card-short">Facebook, Instagram, TikTok, LinkedIn, X : stratégie, calendrier, créa, community, KPIs.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/linkedin-b2b-personal-branding" class="formation-card">
+<a href="/formations/linkedin-b2b-personal-branding" class="formation-card" data-cat="cat-social" data-level="level-intermediaire" data-search="linkedin b2b & personal branding pour dirigeants profil optimisé, contenu virale, inbound b2b, networking, sales navigator, lead gen forms.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">10h &middot; 20 lecons</span>
@@ -226,10 +250,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-content">
 <h2 class="catalog-cat-title">Contenu & Copywriting</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/copywriting-persuasif" class="formation-card">
+<a href="/formations/copywriting-persuasif" class="formation-card" data-cat="cat-content" data-level="level-intermediaire" data-search="copywriting persuasif : vendre par les mots frameworks aida, pas, bab, fab. headlines, hooks, ctas, landing pages, emails de vente.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">14h &middot; 26 lecons</span>
@@ -238,7 +262,7 @@
   <p class="formation-card-short">Frameworks AIDA, PAS, BAB, FAB. Headlines, hooks, CTAs, landing pages, emails de vente.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/content-marketing-strategique" class="formation-card">
+<a href="/formations/content-marketing-strategique" class="formation-card" data-cat="cat-content" data-level="level-intermediaire" data-search="content marketing stratégique : du brief à la mesure roi persona, piliers, calendrier, briefs, production, distribution multi-canal, mesure d'impact.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">16h &middot; 26 lecons</span>
@@ -247,7 +271,7 @@
   <p class="formation-card-short">Persona, piliers, calendrier, briefs, production, distribution multi-canal, mesure d'impact.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/redaction-seo-articles-qui-rankent" class="formation-card">
+<a href="/formations/redaction-seo-articles-qui-rankent" class="formation-card" data-cat="cat-content" data-level="level-debutant" data-search="rédaction seo : écrire des articles qui rankent en 2026 recherche d'intention, structure h2/h3, optimisation on-page, longueur idéale, nlp, eeat.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">12h &middot; 24 lecons</span>
@@ -258,10 +282,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-email">
 <h2 class="catalog-cat-title">Email Marketing</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/email-marketing-complet" class="formation-card">
+<a href="/formations/email-marketing-complet" class="formation-card" data-cat="cat-email" data-level="level-intermediaire" data-search="email marketing complet : délivrabilité, segmentation, automation spf/dkim/dmarc, segmentation rfm, séquences nurturing, design email, a/b tests, kpis.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">14h &middot; 26 lecons</span>
@@ -270,7 +294,7 @@
   <p class="formation-card-short">SPF/DKIM/DMARC, segmentation RFM, séquences nurturing, design email, A/B tests, KPIs.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/newsletter-monetisation-creator" class="formation-card">
+<a href="/formations/newsletter-monetisation-creator" class="formation-card" data-cat="cat-email" data-level="level-intermediaire" data-search="newsletter & creator economy : construire une audience payante beehiiv, substack, convertkit. growth, sponsoring, abonnements payants, communauté.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">12h &middot; 22 lecons</span>
@@ -281,10 +305,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-design">
 <h2 class="catalog-cat-title">Design & Branding</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/branding-identite-visuelle" class="formation-card">
+<a href="/formations/branding-identite-visuelle" class="formation-card" data-cat="cat-design" data-level="level-intermediaire" data-search="branding & identité visuelle : bâtir une marque mémorable positionnement, naming, logo, couleurs, typographie, charte, déclinaisons multi-supports.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">16h &middot; 26 lecons</span>
@@ -293,7 +317,7 @@
   <p class="formation-card-short">Positionnement, naming, logo, couleurs, typographie, charte, déclinaisons multi-supports.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/ui-design-figma-mastery" class="formation-card">
+<a href="/formations/ui-design-figma-mastery" class="formation-card" data-cat="cat-design" data-level="level-intermediaire" data-search="ui design & figma mastery : designer interfaces pro figma de a à z : auto layout, components, variants, design system, prototyping, handoff dev.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">20h &middot; 30 lecons</span>
@@ -302,7 +326,7 @@
   <p class="formation-card-short">Figma de A à Z : Auto Layout, components, variants, design system, prototyping, handoff dev.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/motion-design-after-effects-marketing" class="formation-card">
+<a href="/formations/motion-design-after-effects-marketing" class="formation-card" data-cat="cat-design" data-level="level-intermediaire" data-search="motion design after effects pour marketing after effects, animation logo, explainer videos, social videos, transitions, sound design.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">18h &middot; 28 lecons</span>
@@ -313,10 +337,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-ai">
 <h2 class="catalog-cat-title">IA & Automatisation</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/ia-generative-marketing" class="formation-card">
+<a href="/formations/ia-generative-marketing" class="formation-card" data-cat="cat-ai" data-level="level-debutant" data-search="ia générative pour marketing : chatgpt, claude, midjourney prompting avancé, génération contenu, visuels, voix, vidéo, workflows, productivité x10.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#4ade80;color:#0e0e0e;">Débutant</span>
     <span class="formation-card-stats">12h &middot; 24 lecons</span>
@@ -325,7 +349,7 @@
   <p class="formation-card-short">Prompting avancé, génération contenu, visuels, voix, vidéo, workflows, productivité x10.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/agents-ia-chatbots-entreprise" class="formation-card">
+<a href="/formations/agents-ia-chatbots-entreprise" class="formation-card" data-cat="cat-ai" data-level="level-avance" data-search="agents ia & chatbots entreprise : rag, function calling, production openai api, claude api, rag (vector dbs), agents make/n8n, déploiement, monitoring.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">24h &middot; 32 lecons</span>
@@ -334,7 +358,7 @@
   <p class="formation-card-short">OpenAI API, Claude API, RAG (vector DBs), agents Make/n8n, déploiement, monitoring.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/automatisation-make-zapier-n8n" class="formation-card">
+<a href="/formations/automatisation-make-zapier-n8n" class="formation-card" data-cat="cat-ai" data-level="level-intermediaire" data-search="automatisation make / zapier / n8n : workflows no-code comparatif, cas d'usage, scénarios complexes, intégrations, erreurs courantes, scaling.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">16h &middot; 28 lecons</span>
@@ -343,7 +367,7 @@
   <p class="formation-card-short">Comparatif, cas d'usage, scénarios complexes, intégrations, erreurs courantes, scaling.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/prompt-engineering-avance" class="formation-card">
+<a href="/formations/prompt-engineering-avance" class="formation-card" data-cat="cat-ai" data-level="level-avance" data-search="prompt engineering avancé : maîtriser chatgpt, claude, gemini few-shot, chain-of-thought, role prompting, system prompts, structured outputs, eval.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">14h &middot; 24 lecons</span>
@@ -354,10 +378,10 @@
 </a></div>
 </section>
 
-<section class="catalog-section">
+<section class="catalog-section" data-cat-section="cat-data">
 <h2 class="catalog-cat-title">Data & Analytics</h2>
 <div class="catalog-grid">
-<a href="/fr/formations/ga4-google-analytics-mastery" class="formation-card">
+<a href="/formations/ga4-google-analytics-mastery" class="formation-card" data-cat="cat-data" data-level="level-intermediaire" data-search="ga4 google analytics mastery : configuration et analyse setup ga4, events, conversions, audiences, attribution, bigquery, looker studio.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#fbbf24;color:#0e0e0e;">Intermédiaire</span>
     <span class="formation-card-stats">14h &middot; 26 lecons</span>
@@ -366,7 +390,7 @@
   <p class="formation-card-short">Setup GA4, events, conversions, audiences, attribution, BigQuery, Looker Studio.</p>
   <span class="formation-card-cta">Commencer la formation &rarr;</span>
 </a>
-<a href="/fr/formations/cro-conversion-optimization" class="formation-card">
+<a href="/formations/cro-conversion-optimization" class="formation-card" data-cat="cat-data" data-level="level-avance" data-search="cro : optimisation taux de conversion par les tests hypothèses, a/b tests, vwo/convert, heatmaps, user testing, psychologie comportementale.">
   <div class="formation-card-meta">
     <span class="formation-card-level" style="background:#f97316;color:#0e0e0e;">Avancé</span>
     <span class="formation-card-stats">16h &middot; 26 lecons</span>
@@ -377,14 +401,63 @@
 </a></div>
 </section>
 
+</div>
+
+<div class="no-results" id="formations-no-results">Aucune formation ne correspond a votre recherche.</div>
+
+<script>
+(function(){
+  const search = document.getElementById('formations-search');
+  const filters = document.querySelectorAll('#formations-filters .filter-pill');
+  const cards = document.querySelectorAll('.formation-card');
+  const sections = document.querySelectorAll('.catalog-section');
+  const noResults = document.getElementById('formations-no-results');
+  const countEl = document.getElementById('formations-count');
+  let activeFilter = 'all';
+  let query = '';
+
+  function applyFilters(){
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const level = card.dataset.level;
+      const text = card.dataset.search;
+      const matchFilter = activeFilter === 'all' || cat === activeFilter || level === activeFilter;
+      const matchSearch = !query || text.indexOf(query) !== -1;
+      const visible = matchFilter && matchSearch;
+      card.style.display = visible ? '' : 'none';
+      if (visible) visibleCount++;
+    });
+    // Hide empty sections
+    sections.forEach(section => {
+      const visibleCards = section.querySelectorAll('.formation-card:not([style*="display: none"])');
+      section.style.display = visibleCards.length > 0 ? '' : 'none';
+    });
+    noResults.classList.toggle('visible', visibleCount === 0);
+    countEl.textContent = visibleCount + ' ' + ('formation' + (visibleCount > 1 ? 's' : ''));
+  }
+
+  search.addEventListener('input', e => {
+    query = e.target.value.toLowerCase().trim();
+    applyFilters();
+  });
+  filters.forEach(pill => pill.addEventListener('click', () => {
+    filters.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeFilter = pill.dataset.filter;
+    applyFilters();
+  }));
+  applyFilters();
+})();
+</script>
 
 </main>
 
 <footer class="footer">
 <div class="footer-grid">
 <div><div class="footer-logo">PIRABEL LABS</div><p class="footer-desc">Agence digitale premium. Siege : Abomey-Calavi, Benin.</p></div>
-<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="/fr/formations/seo-debutant">SEO Debutant</a></li><li><a href="/fr/formations/wordpress-debutant">WordPress</a></li><li><a href="/fr/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="/fr/formations/">Toutes les formations</a></li></ul></div>
-<div><div class="footer-title">Villes</div><ul class="footer-links"><li><a href="/fr/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="/fr/agence-seo-referencement-naturel/cotonou">Cotonou</a></li></ul></div>
+<div><div class="footer-title">Formations</div><ul class="footer-links"><li><a href="/formations/seo-debutant">SEO Debutant</a></li><li><a href="/formations/wordpress-debutant">WordPress</a></li><li><a href="/formations/marketing-digital-fondamentaux">Marketing Digital</a></li><li><a href="/formations/">Toutes les formations</a></li></ul></div>
+<div><div class="footer-title">Villes</div><ul class="footer-links"><li><a href="/agence-seo-referencement-naturel/abomey-calavi">Abomey-Calavi</a></li><li><a href="/agence-seo-referencement-naturel/cotonou">Cotonou</a></li></ul></div>
 </div>
 <div class="footer-bottom"><span>&copy; 2026 Pirabel Labs.</span></div>
 </footer>

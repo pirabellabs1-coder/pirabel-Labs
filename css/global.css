@@ -483,6 +483,26 @@ input, textarea, select { font-family: inherit; }
   color: var(--surface);
 }
 
+/* Ghost button on dark/orange backgrounds (CTA sections) */
+.btn--ghost-white {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+}
+.btn--ghost-white:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+/* CTA buttons wrapper */
+.cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 .btn--text {
   background: transparent;
   padding: 0;

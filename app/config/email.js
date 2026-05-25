@@ -1,31 +1,16 @@
-const nodemailer = require('nodemailer');
+// ========================================
+// PROVIDER: Resend (HTTP API, no SMTP)
+// Migrated 2026-05-24 from Brevo SMTP (deliverability issues).
+// ========================================
 
 // Strip stray whitespace/newlines from env vars (Vercel sometimes keeps them)
 const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
 
-const SMTP_HOST = clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
-const SMTP_PORT = parseInt(clean(process.env.SMTP_PORT)) || 587;
-const SMTP_USER = clean(process.env.SMTP_USER);
-const SMTP_PASS = clean(process.env.SMTP_PASS);
-
-// Build transporter — single instance, optimized for Vercel serverless cold-starts
-const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_PORT === 465,
-  auth: { user: SMTP_USER, pass: SMTP_PASS },
-  // Vercel serverless: use short timeouts so we never block beyond 10s
-  connectionTimeout: 8000,
-  greetingTimeout: 5000,
-  socketTimeout: 8000,
-  // No pooling on serverless — each invocation is fresh
-  pool: false,
-  // TLS — Brevo accepts STARTTLS on 587
-  tls: { rejectUnauthorized: false }
-});
+const RESEND_API_KEY = clean(process.env.RESEND_API_KEY);
+const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
 // Log config once at module load (helps debugging in Vercel logs)
-console.log(`[email] SMTP host=${SMTP_HOST} port=${SMTP_PORT} user=${SMTP_USER ? SMTP_USER.substring(0, 6) + '...' : 'MISSING'}`);
+console.log(`[email] provider=Resend key=${RESEND_API_KEY ? RESEND_API_KEY.substring(0, 8) + '...' : 'MISSING'}`);
 
 const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
@@ -342,8 +327,8 @@ function newsletterEmail(recipientName, options = {}) {
 // ========================================
 
 async function sendEmail(to, subject, html, opts = {}) {
-  if (!SMTP_USER || !SMTP_PASS) {
-    console.error('[email] MISSING SMTP_USER/SMTP_PASS env vars - cannot send email to', to);
+  if (!RESEND_API_KEY) {
+    console.error('[email] MISSING RESEND_API_KEY env var - cannot send email to', to);
     return false;
   }
   if (!to) {
@@ -351,23 +336,48 @@ async function sendEmail(to, subject, html, opts = {}) {
     return false;
   }
   try {
-    const mailOptions = {
+    // Resend expects "to" as array
+    const toArray = Array.isArray(to) ? to : [to];
+    const payload = {
       from: opts.from || FROM(),
-      to,
+      to: toArray,
       subject,
-      html
+      html,
     };
-    if (opts.replyTo) mailOptions.replyTo = opts.replyTo;
-    if (opts.cc) mailOptions.cc = opts.cc;
-    if (opts.bcc) mailOptions.bcc = opts.bcc;
+    if (opts.replyTo) payload.reply_to = opts.replyTo;
+    if (opts.cc) payload.cc = Array.isArray(opts.cc) ? opts.cc : [opts.cc];
+    if (opts.bcc) payload.bcc = Array.isArray(opts.bcc) ? opts.bcc : [opts.bcc];
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`[email] OK to=${to} subject="${subject}" messageId=${info.messageId} accepted=${(info.accepted || []).length} rejected=${(info.rejected || []).length}`);
-    // Return info object (with messageId/accepted/rejected) when caller asks,
-    // otherwise keep legacy truthy return for backwards compatibility.
-    return opts.returnInfo ? info : true;
+    // Vercel serverless: AbortController for 9s timeout
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 9000);
+    let resp, body;
+    try {
+      resp = await fetch(RESEND_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+      });
+      body = await resp.json().catch(() => ({}));
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if (!resp.ok) {
+      console.error(`[email] FAIL to=${to} subject="${subject}" status=${resp.status} name=${body.name} msg=${body.message}`);
+      return false;
+    }
+
+    console.log(`[email] OK to=${to} subject="${subject}" id=${body.id}`);
+    return opts.returnInfo
+      ? { messageId: body.id, accepted: toArray, rejected: [], resend: body }
+      : true;
   } catch (err) {
-    console.error(`[email] FAIL to=${to} subject="${subject}" code=${err.code} responseCode=${err.responseCode} message=${err.message}`);
+    console.error(`[email] FAIL to=${to} subject="${subject}" error=${err.name} message=${err.message}`);
     return false;
   }
 }

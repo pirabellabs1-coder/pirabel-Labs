@@ -26,6 +26,7 @@
     { "src": "/js/(.*)", "headers": { "Cache-Control": "public, max-age=31536000, immutable" }, "continue": true },
     { "src": "/sitemap\\.xml", "headers": { "Cache-Control": "public, max-age=3600, must-revalidate" }, "continue": true },
     { "src": "/robots\\.txt", "headers": { "Cache-Control": "public, max-age=3600, must-revalidate" }, "continue": true },
+    { "src": "/((?!api/).+)\\.html$", "status": 301, "headers": { "Location": "/$1" } },
     { "src": "/public/(.*)", "dest": "/app/public/$1" },
     { "src": "/en/blog/email-marketing-strategies-guide-complete$", "status": 301, "headers": { "Location": "/en/blog/email-marketing-strategies-guide-complet" } },
     { "src": "/en/n8n-automation\\.html$", "status": 301, "headers": { "Location": "/en/agence-ia-automatisation/" } },

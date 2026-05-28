@@ -117,13 +117,23 @@ app.use('/api/case-studies', require(path.join(routesPath, 'case-studies')));
 app.use('/api/lesson-comments', require(path.join(routesPath, 'lesson-comments')));
 app.use('/api/lms', require(path.join(routesPath, 'lms')));
 
-// URLs admin/client : token long unguessable. Override possible via env var Vercel.
-// L'ancien secret etait expose en static (deja burnt) -> nouveau token + suppression du fallback obvious
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'gestion-v71k4724gxxyrmmb';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-1oiv0czkgvvm9k';
+// URLs admin/client : tokens unguessable. On enregistre PLUSIEURS paths (env var + nouveaux defaults)
+// pour eviter le glitch si env Vercel n'est pas a jour.
+const ADMIN_PATHS = new Set([
+  'gestion-v71k4724gxxyrmmb',
+  process.env.ADMIN_SECRET_PATH,
+].filter(Boolean));
+const CLIENT_PATHS = new Set([
+  'espace-1oiv0czkgvvm9k',
+  process.env.CLIENT_SECRET_PATH,
+].filter(Boolean));
 
-app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'login.html')));
-app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
+ADMIN_PATHS.forEach(p => {
+  app.get(`/${p}`, (req, res) => res.sendFile(path.join(viewsPath, 'login.html')));
+});
+CLIENT_PATHS.forEach(p => {
+  app.get(`/${p}`, (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
+});
 
 // Blocked routes : tout chemin obvious renvoie 404 generique
 const BLOCKED = ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator', '/portal-login'];

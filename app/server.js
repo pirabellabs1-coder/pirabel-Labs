@@ -166,11 +166,17 @@ app.get('/case-studies', (req, res) => res.sendFile(path.join(__dirname, 'views'
 app.get('/lms-students', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-students.html')));
 app.get('/lms-comments', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-comments.html')));
 
-// URLs admin/client : tokens unguessable via env vars
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'gestion-v71k4724gxxyrmmb';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-1oiv0czkgvvm9k';
-app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html')));
-app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'portal-login.html')));
+// URLs admin/client : tokens unguessable, multi-paths (env + defaults)
+const ADMIN_PATHS = new Set([
+  'gestion-v71k4724gxxyrmmb',
+  process.env.ADMIN_SECRET_PATH,
+].filter(Boolean));
+const CLIENT_PATHS = new Set([
+  'espace-1oiv0czkgvvm9k',
+  process.env.CLIENT_SECRET_PATH,
+].filter(Boolean));
+ADMIN_PATHS.forEach(p => app.get(`/${p}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html'))));
+CLIENT_PATHS.forEach(p => app.get(`/${p}`, (req, res) => res.sendFile(path.join(__dirname, 'views', 'portal-login.html'))));
 
 // Blocked routes - chemins obvious admin renvoient 404 generique (anti-bots)
 const BLOCKED = ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator', '/portal-login'];

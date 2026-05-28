@@ -137,8 +137,18 @@ views.forEach(v => {
 app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
 
-// SMTP diagnostic endpoint — test connection and env vars
+// SMTP diagnostic endpoint — admin-only (expose creds metadata)
 app.get('/api/email-diagnostic', async (req, res) => {
+  // Auth check inline pour eviter dependency hoist
+  try {
+    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
+    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+  } catch (e) {
+    return res.status(401).json({ error: 'Admin auth required' });
+  }
   const nodemailer = require('nodemailer');
   const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
   
@@ -185,16 +195,25 @@ app.get('/api/email-diagnostic', async (req, res) => {
 });
 
 
-// Admin hard reset endpoint — clears all DB but keeps Ultimauto & Ronan
-// Usage: GET /api/admin/hard-reset-db
-app.all('/api/admin/hard-reset-db', async (req, res) => {
+// Admin hard reset endpoint — POST + double-confirm token (anti-CSRF/prefetch)
+// Usage: POST /api/admin/hard-reset-db  body: { confirm: "WIPE-DB-CONFIRM" }
+app.post('/api/admin/hard-reset-db', async (req, res) => {
   try {
     const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
-    // Ensure admin only (even GET is protected)
     await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
     if (res.headersSent) return;
     await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
     if (res.headersSent) return;
+
+    // Double-confirm en clair pour eviter CSRF (img/prefetch ne peut pas envoyer un body POST avec ce token)
+    if (req.body?.confirm !== 'WIPE-DB-CONFIRM') {
+      return res.status(403).json({ error: 'Confirmation token manquant. body: { confirm: "WIPE-DB-CONFIRM" }' });
+    }
+
+    // Verifie aussi un header X-Requested-With (anti-CSRF basique)
+    if (req.headers['x-requested-with'] !== 'XMLHttpRequest') {
+      return res.status(403).json({ error: 'XHR header requis' });
+    }
 
     const modelsToKeep = ['ultimauto', 'ronan'];
     const keepRegex = new RegExp(modelsToKeep.join('|'), 'i');
@@ -265,8 +284,17 @@ app.all('/api/admin/hard-reset-db', async (req, res) => {
 });
 
 
-// Email diagnostic endpoint
+// Email test endpoint — admin-only (prevenir abus spam via SPF)
 app.get('/api/test-email', async (req, res) => {
+  try {
+    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
+    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
+    if (res.headersSent) return;
+  } catch (e) {
+    return res.status(401).json({ error: 'Admin auth required' });
+  }
   const cleanEnv = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
   const host = cleanEnv(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
   const port = parseInt(cleanEnv(process.env.SMTP_PORT)) || 587;

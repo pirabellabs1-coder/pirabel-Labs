@@ -72,14 +72,20 @@ const ALLOWED_ORIGINS = [
   'http://localhost:10000',
   'http://127.0.0.1:8080'
 ];
+// CORS strict : comparaison exacte (anti pirabellabs.com.attacker.com)
+const ALLOWED_SET = new Set(ALLOWED_ORIGINS);
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.some(o => origin.startsWith(o))) return callback(null, true);
+    if (ALLOWED_SET.has(origin)) return callback(null, true);
     callback(null, false);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
+
+// Trust proxy (Vercel) pour avoir le vrai req.ip (sinon X-Forwarded-For spoofable)
+app.set('trust proxy', 1);
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));

@@ -27,9 +27,11 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 };
 
 userSchema.methods.generateToken = function() {
-  return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET, {
-    expiresIn: '7d'
-  });
+  return jwt.sign(
+    { id: this._id, role: this.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d', algorithm: 'HS256', issuer: 'pirabel-labs' }
+  );
 };
 
 module.exports = mongoose.model('User', userSchema);

@@ -3,6 +3,16 @@ const User = require('../models/User');
 const ApiKey = require('../models/ApiKey');
 const crypto = require('crypto');
 
+// Garde-fou : crash explicite au boot si JWT_SECRET manquant en prod
+if (!process.env.JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: JWT_SECRET env var missing in production');
+  }
+  console.warn('[WARN] JWT_SECRET missing — using dev fallback (DO NOT use in production)');
+}
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-fallback-secret-do-not-use-in-production';
+const JWT_OPTS = { algorithms: ['HS256'], issuer: 'pirabel-labs' };
+
 const auth = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');
@@ -28,9 +38,9 @@ const auth = async (req, res, next) => {
       return next();
     }
 
-    // 2. Sinon, authentification JWT classique
+    // 2. Sinon, authentification JWT classique (algos lockes, issuer verifie)
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET, JWT_OPTS);
       const user = await User.findById(decoded.id);
       if (!user || !user.isActive) return res.status(401).json({ error: 'Utilisateur invalide' });
 

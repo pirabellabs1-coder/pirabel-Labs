@@ -2,6 +2,11 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /pirabel-admin-7x9k2m
+Disallow: /admin_x9k2m7v4p8w1n_secure_access_2026
+Disallow: /client_portal_v4p8w1n7x9k2m_access_secure
+Disallow: /mon-espace
+Disallow: /espace-client-4p8w1n
+Disallow: /portal
 Disallow: /portal-login
 Disallow: /dashboard
 Disallow: /clients
@@ -15,10 +20,23 @@ Disallow: /campaigns
 Disallow: /messages
 Disallow: /articles
 Disallow: /analytics
-Disallow: /portal
 Disallow: /notes
 Disallow: /prospects
 Disallow: /leads
+Disallow: /recruitment
+Disallow: /candidates
+Disallow: /tasks
+Disallow: /calendar
+Disallow: /quotes
+Disallow: /logs
+Disallow: /lms-students
+Disallow: /lms-comments
+Disallow: /reviews-admin
+Disallow: /api-docs
+Disallow: /modifier-devis
+Disallow: /gerer-rendez-vous
+Disallow: /app/
+Disallow: /test-cs
 
 # Major Search Engines — Explicitly Allowed
 User-agent: Googlebot

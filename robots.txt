@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /gestion-
+Disallow: /espace-
 Disallow: /pirabel-admin-7x9k2m
 Disallow: /admin_x9k2m7v4p8w1n_secure_access_2026
 Disallow: /client_portal_v4p8w1n7x9k2m_access_secure
@@ -8,6 +10,10 @@ Disallow: /mon-espace
 Disallow: /espace-client-4p8w1n
 Disallow: /portal
 Disallow: /portal-login
+Disallow: /login
+Disallow: /admin
+Disallow: /wp-admin
+Disallow: /wp-login.php
 Disallow: /dashboard
 Disallow: /clients
 Disallow: /projects

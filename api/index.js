@@ -117,15 +117,17 @@ app.use('/api/case-studies', require(path.join(routesPath, 'case-studies')));
 app.use('/api/lesson-comments', require(path.join(routesPath, 'lesson-comments')));
 app.use('/api/lms', require(path.join(routesPath, 'lms')));
 
-// Secret admin/client URLs (Consistent with server.js)
-const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'admin_x9k2m7v4p8w1n_secure_access_2026';
-const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'client_portal_v4p8w1n7x9k2m_access_secure';
+// URLs admin/client : token long unguessable. Override possible via env var Vercel.
+// L'ancien secret etait expose en static (deja burnt) -> nouveau token + suppression du fallback obvious
+const ADMIN_SECRET = process.env.ADMIN_SECRET_PATH || 'gestion-v71k4724gxxyrmmb';
+const CLIENT_SECRET = process.env.CLIENT_SECRET_PATH || 'espace-1oiv0czkgvvm9k';
 
 app.get(`/${ADMIN_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'login.html')));
 app.get(`/${CLIENT_SECRET}`, (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
 
-// Portal login route
-app.get('/portal-login', (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
+// Blocked routes : tout chemin obvious renvoie 404 generique
+const BLOCKED = ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator', '/portal-login'];
+BLOCKED.forEach(r => app.get(r, (_, res) => res.status(404).send('Not Found')));
 
 // Dashboard views
 const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous', 'case-studies', 'lms-students', 'lms-comments'];

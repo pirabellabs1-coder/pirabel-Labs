@@ -52,7 +52,7 @@
     {"@type": "Question", "name": "Qu'est-ce qu'un tunnel de vente (sales funnel) ?", "acceptedAnswer": {"@type": "Answer", "text": "Un tunnel de vente est un parcours structure qui guide vos visiteurs étape par étape vers l'achat. Au lieu de les laisser naviguer au hasard sur votre site, vous les accompagnez avec du contenu, des offres et des relances adaptés a chaque étape de leur reflexion. Resultat : plus de conversions et un panier moyen plus eleve."}},
     {"@type": "Question", "name": "Quel budget faut-il pour commencer en CRO ?", "acceptedAnswer": {"@type": "Answer", "text": "Notre formule Starter a 800 euros par mois est idéale pour demarrer. Elle comprend l'audit de conversion, deux landing pages optimisées et un premier cycle d'A/B testing. Le retour sur investissement est souvent visible des le premier mois grâce àux gains de conversion immédiats."}},
     {"@type": "Question", "name": "Le CRO fonctionne-t-il pour les petites entreprises ?", "acceptedAnswer": {"@type": "Answer", "text": "Absolument. Le CRO est même encore plus impactant pour les petites entreprises car chaque visiteur compte davantage. Si vous recevez 500 visiteurs par mois et que vous passez de 1% a 3% de conversion, vous triplez vos clients sans augmenter votre budget marketing."}},
-    {"@type": "Question", "name": "Quels outils utilisez-vous pour le CRO ?", "acceptedAnswer": {"@type": "Answer", "text": "Nous utilisons des outils professionnels comme Google Analytics 4, Hotjar pour les heatmaps et enregistrements de sessions, Google Optimize et VWO pour l'A/B testing, ainsi que des solutions de tracking avancées. Tous les outils sont configurés pour respecter le RGPD."}}
+    {"@type": "Question", "name": "Quels outils utilisez-vous pour le CRO ?", "acceptedAnswer": {"@type": "Answer", "text": "Nous utilisons des outils professionnels comme Google Analytics 4, Hotjar pour les heatmaps et enregistrements de sessions, GA4 + VWO ou AB Tasty et VWO pour l'A/B testing, ainsi que des solutions de tracking avancées. Tous les outils sont configurés pour respecter le RGPD."}}
   ]
 }
 </script>
@@ -98,8 +98,7 @@
 <nav class="nav"><div class="nav-inner">
 <a href="/" class="nav-logo"><img src="../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high" decoding="async"></a>
 <div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><div class="nav-group"><a href="/blog">RESSOURCES</a><div class="nav-dropdown"><a href="/blog">Blog</a><a href="/guides/">Guides</a><a href="/formations/">Formations</a></div></div><div class="nav-group"><a href="/a-propos">AGENCE</a><div class="nav-dropdown"><a href="/a-propos">A propos</a><a href="/resultats">Resultats</a><a href="/avis">Avis</a><a href="/carrieres">Carrieres</a></div></div><a href="/contact">CONTACT</a></div>
-<a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
-    <a href="/contact" class="nav-cta">Audit CRO Gratuit</a>
+<a href="/contact" class="nav-cta">Audit CRO Gratuit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
 <div class="mobile-nav">
@@ -443,7 +442,7 @@
 <details class="faq-item rv"><summary>Qu'est-ce qu'un tunnel de vente (sales funnel) ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Un tunnel de vente est un parcours structure qui guide vos visiteurs étape par étape vers l'achat. Au lieu de les laisser naviguer au hasard sur votre site, vous les accompagnez avec du contenu, des offres et des relances adaptés a chaque étape de leur reflexion : decouverte, consideration, decision. Resultat : plus de conversions, un panier moyen plus eleve, et des clients plus satisfaits.</div></details>
 <details class="faq-item rv"><summary>Quel budget faut-il pour commencer en CRO ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Notre formule Starter a 800 euros par mois est idéale pour demarrer. Elle comprend l'audit de conversion, deux landing pages optimisées et un premier cycle d'A/B testing. Le retour sur investissement est souvent visible des le premier mois grâce àux gains de conversion immédiats. Contrairement au SEO qui demande du temps, le CRO génère des résultats rapidement.</div></details>
 <details class="faq-item rv"><summary>Le CRO fonctionne-t-il pour les petites entreprises ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Absolument. Le CRO est même encore plus impactant pour les petites entreprises car chaque visiteur compte davantage. Si vous recevez 500 visiteurs par mois et que vous passez de 1% a 3% de conversion, vous triplez vos clients sans augmenter votre budget marketing. C'est l'un des leviers les plus rentables pour les entreprises avec un budget limite.</div></details>
-<details class="faq-item rv"><summary>Quels outils utilisez-vous pour le CRO ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Nous utilisons des outils professionnels comme Google Analytics 4 pour l'analyse de donnees, Hotjar pour les heatmaps et enregistrements de sessions, Google Optimize et VWO pour l'A/B testing, ainsi que des solutions de tracking avancées pour l'attribution multi-canal. Tous les outils sont configurés pour respecter le RGPD et proteger les données de vos visiteurs.</div></details>
+<details class="faq-item rv"><summary>Quels outils utilisez-vous pour le CRO ? <span class="material-symbols-outlined icon">expand_more</span></summary><div class="faq-answer">Nous utilisons des outils professionnels comme Google Analytics 4 pour l'analyse de donnees, Hotjar pour les heatmaps et enregistrements de sessions, GA4 + VWO ou AB Tasty et VWO pour l'A/B testing, ainsi que des solutions de tracking avancées pour l'attribution multi-canal. Tous les outils sont configurés pour respecter le RGPD et proteger les données de vos visiteurs.</div></details>
 </div>
 </section>
 
@@ -550,7 +549,29 @@
 <script src="../js/global.js?v=5" defer></script>
 <script src="../js/cookie-consent.js?v=1" defer></script>
 <script src="../js/tracker.js" defer></script>
-<script src="/js/chatbot.js" defer></script>
+<script>
+(function(){
+  if (window.__chatbotLoaded) return;
+  let loaded = false;
+  const path = (typeof location !== 'undefined' && location.pathname.split('/').filter(Boolean).length >= 2)
+    ? '../../js/chatbot.js'
+    : (location.pathname.split('/').filter(Boolean).length === 1 ? '../js/chatbot.js' : 'js/chatbot.js');
+  function load() {
+    if (loaded) return; loaded = true; window.__chatbotLoaded = true;
+    const s = document.createElement('script');
+    s.src = '/js/chatbot.js';
+    s.defer = true;
+    document.body.appendChild(s);
+    cleanup();
+  }
+  function cleanup() {
+    ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => removeEventListener(e, load, { passive: true }));
+  }
+  ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => addEventListener(e, load, { once: true, passive: true }));
+  // Fallback : si pas d'interaction, charger apres 5s
+  setTimeout(load, 5000);
+})();
+</script>
 
 <div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/agence-sales-funnels-cro/index.html">EN</a></div>
 </body>

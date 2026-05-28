@@ -11,4 +11,9 @@ const lessonCommentSchema = new mongoose.Schema({
   approvedAt: { type: Date },
 });
 
+
+// --- Indexes (audit Tech Lead) ---
+lessonCommentSchema.index({ formation: 1, createdAt: -1 });
+lessonCommentSchema.index({ approved: 1, createdAt: -1 });
+
 module.exports = mongoose.model('LessonComment', lessonCommentSchema);

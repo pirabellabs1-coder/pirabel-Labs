@@ -11,4 +11,9 @@ const messageSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+// --- Indexes (audit Tech Lead) ---
+messageSchema.index({ createdAt: -1 });
+messageSchema.index({ sender: 1, read: 1 });
+
 module.exports = mongoose.model('Message', messageSchema);

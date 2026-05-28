@@ -30,4 +30,9 @@ const projectSchema = new mongoose.Schema({
 
 projectSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+projectSchema.index({ client: 1, status: 1 });
+projectSchema.index({ status: 1 });
+
 module.exports = mongoose.model('Project', projectSchema);

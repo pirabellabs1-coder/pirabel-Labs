@@ -38,4 +38,9 @@ dealSchema.pre('save', function(next) {
   next();
 });
 
+
+// --- Indexes (audit Tech Lead) ---
+dealSchema.index({ stage: 1, updatedAt: -1 });
+dealSchema.index({ assignedTo: 1, stage: 1 });
+
 module.exports = mongoose.model('Deal', dealSchema);

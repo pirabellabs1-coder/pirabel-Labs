@@ -22,4 +22,10 @@ const clientSchema = new mongoose.Schema({
 
 clientSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+clientSchema.index({ email: 1 });
+clientSchema.index({ status: 1, createdAt: -1 });
+clientSchema.index({ user: 1 });
+
 module.exports = mongoose.model('Client', clientSchema);

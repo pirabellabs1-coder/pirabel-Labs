@@ -33,4 +33,10 @@ const applicationSchema = new mongoose.Schema({
 
 applicationSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+applicationSchema.index({ jobOffer: 1, status: 1 });
+applicationSchema.index({ email: 1 });
+applicationSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Application', applicationSchema);

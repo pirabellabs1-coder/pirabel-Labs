@@ -11,4 +11,8 @@ const otpSchema = new mongoose.Schema({
 
 otpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
+
+// --- Indexes (audit Tech Lead) ---
+otpSchema.index({ email: 1, purpose: 1 });
+
 module.exports = mongoose.model('OTP', otpSchema);

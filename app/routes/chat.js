@@ -392,10 +392,34 @@ router.post('/bot-reply', chatLimiter, limitBody(6), async (req, res) => {
   }
 });
 
-// GET /api/chat/public-messages/:conversationId — Load conversation history (public)
+// GET /api/chat/public-messages/:conversationId
+// Anti-leak : on requiert un cookie 'pl_conv' qui doit matcher le conversationId.
+// Le cookie est pose lors de la creation de la conversation (chatbot.js cote client).
 router.get('/public-messages/:conversationId', async (req, res) => {
   try {
-    const messages = await Message.find({ conversationId: req.params.conversationId })
+    const convId = String(req.params.conversationId || '').slice(0, 50);
+    if (!convId) return res.status(400).json({ error: 'conversationId requis' });
+
+    // Verifie ownership : cookie 'pl_conv' doit matcher OU user authentifie (admin/employee)
+    const cookieConv = req.cookies?.pl_conv;
+    const isOwner = cookieConv === convId;
+
+    // Sinon, verifier token admin
+    let isAdmin = false;
+    const token = req.cookies?.token;
+    if (token && process.env.JWT_SECRET) {
+      try {
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+        isAdmin = decoded.role === 'admin' || decoded.role === 'employee';
+      } catch {}
+    }
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ error: 'Acces refuse' });
+    }
+
+    const messages = await Message.find({ conversationId: convId })
       .sort({ createdAt: 1 })
       .limit(100)
       .select('sender content createdAt');

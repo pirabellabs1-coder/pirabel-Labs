@@ -47,4 +47,10 @@ const leadSchema = new mongoose.Schema({
 leadSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 leadSchema.pre('findOneAndUpdate', function(next) { this.set({ updatedAt: Date.now() }); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+leadSchema.index({ conversationId: 1 });
+leadSchema.index({ 'visitor.email': 1 });
+leadSchema.index({ 'qualification.level': 1, createdAt: -1 });
+
 module.exports = mongoose.model('Lead', leadSchema);

@@ -31,24 +31,9 @@ const checkRate = (key, max = 5, windowMs = 15 * 60 * 1000) => {
 };
 
 // POST /api/auth/register
-router.post('/register', async (req, res) => {
-  try {
-    const email = cleanEmail(req.body.email);
-    const name = cleanStr(req.body.name);
-    const password = String(req.body.password || '');
-    if (!email || !name || password.length < 8) return res.status(400).json({ error: 'Champs invalides (password min 8)' });
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ error: 'Cet email est deja utilise' });
-
-    // Public registration : ALWAYS client. admin/employee creation interne via script.
-    const user = await User.create({ name, email, password, role: 'client' });
-    const token = user.generateToken();
-
-    res.cookie('token', token, COOKIE_OPTS);
-    res.status(201).json({ success: true, user: { id: user._id, name: user.name, email: user.email, role: user.role }, token });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// POST /api/auth/register - DESACTIVE (spam). Utiliser /register-with-otp uniquement.
+router.post('/register', (_req, res) => {
+  return res.status(410).json({ error: 'Endpoint desactive. Utilisez /api/auth/send-otp puis /api/auth/register-with-otp.' });
 });
 
 // POST /api/auth/login

@@ -68,8 +68,7 @@
 <nav class="nav"><div class="nav-inner">
 <a href="/" class="nav-logo"><img src="../../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high" decoding="async"></a>
 <div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="../../guides/">GUIDES</a><a href="/resultats">RÉSULTATS</a><a href="/a-propos">À PROPOS</a></div>
-<a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
-    <a href="/contact" class="nav-cta">Audit Gratuit</a>
+<a href="/contact" class="nav-cta">Audit Gratuit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
 <div class="mobile-nav"><a href="/">Accueil</a><a href="/services">Services</a><a href="/blog">Blog</a><a href="../../guides/">Guides</a><a href="/a-propos">À propos</a><a href="/contact">Contact</a><a href="/espace-client-4p8w1n" style="color:#FF5500;">Mon Espace</a>
@@ -186,7 +185,29 @@
 <script src="../../js/global.js?v=5" defer></script>
 <script src="../../js/cookie-consent.js?v=1" defer></script>
 <script src="../../js/tracker.js" defer></script>
-<script src="/js/chatbot.js" defer></script>
+<script>
+(function(){
+  if (window.__chatbotLoaded) return;
+  let loaded = false;
+  const path = (typeof location !== 'undefined' && location.pathname.split('/').filter(Boolean).length >= 2)
+    ? '../../js/chatbot.js'
+    : (location.pathname.split('/').filter(Boolean).length === 1 ? '../js/chatbot.js' : 'js/chatbot.js');
+  function load() {
+    if (loaded) return; loaded = true; window.__chatbotLoaded = true;
+    const s = document.createElement('script');
+    s.src = '/js/chatbot.js';
+    s.defer = true;
+    document.body.appendChild(s);
+    cleanup();
+  }
+  function cleanup() {
+    ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => removeEventListener(e, load, { passive: true }));
+  }
+  ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => addEventListener(e, load, { once: true, passive: true }));
+  // Fallback : si pas d'interaction, charger apres 5s
+  setTimeout(load, 5000);
+})();
+</script>
 
 <div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/agence-ia-automatisation/zapier-automatisation/lyon.html">EN</a></div>
 </body>

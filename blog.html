@@ -101,7 +101,6 @@
 <nav class="nav"><div class="nav-inner">
 <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high" decoding="async"></a>
 <div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><div class="nav-group"><a href="/blog">RESSOURCES</a><div class="nav-dropdown"><a href="/blog">Blog</a><a href="/guides/">Guides</a><a href="/formations/">Formations</a></div></div><div class="nav-group"><a href="/a-propos">AGENCE</a><div class="nav-dropdown"><a href="/a-propos">A propos</a><a href="/resultats">Resultats</a><a href="/avis">Avis</a><a href="/carrieres">Carrieres</a></div></div><a href="/contact">CONTACT</a></div>
-<a class="nav-login" href="/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
 <a href="/contact" class="nav-cta">Audit Gratuit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
 </div></nav>
@@ -345,10 +344,10 @@
         </a>
 
         <a href="blog/marketing-automation-guide-entreprises" class="blog-card" data-cat="ia">
-          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75" alt="Marketing automation" loading="lazy"></div>
+          <div class="blog-card__img"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75" alt="automatisation marketing" loading="lazy"></div>
           <div class="blog-card__body">
             <span class="blog-card__cat">IA</span>
-            <h3 class="blog-card__title">Marketing Automation : Automatiser Votre Croissance en 2026</h3>
+            <h3 class="blog-card__title">automatisation marketing : Automatiser Votre Croissance en 2026</h3>
             <p class="blog-card__excerpt">Workflows, scoring leads, CRM, Zapier, Make, n8n, HubSpot et Brevo automation.</p>
             <div class="blog-card__meta"><span>13 min</span><span>18 janv. 2026</span></div>
           </div>
@@ -459,7 +458,29 @@ function subscribeNL() {
 }
 </script>
 <script src="js/tracker.js" defer></script>
-<script src="/js/chatbot.js" defer></script>
+<script>
+(function(){
+  if (window.__chatbotLoaded) return;
+  let loaded = false;
+  const path = (typeof location !== 'undefined' && location.pathname.split('/').filter(Boolean).length >= 2)
+    ? '../../js/chatbot.js'
+    : (location.pathname.split('/').filter(Boolean).length === 1 ? '../js/chatbot.js' : 'js/chatbot.js');
+  function load() {
+    if (loaded) return; loaded = true; window.__chatbotLoaded = true;
+    const s = document.createElement('script');
+    s.src = '/js/chatbot.js';
+    s.defer = true;
+    document.body.appendChild(s);
+    cleanup();
+  }
+  function cleanup() {
+    ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => removeEventListener(e, load, { passive: true }));
+  }
+  ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => addEventListener(e, load, { once: true, passive: true }));
+  // Fallback : si pas d'interaction, charger apres 5s
+  setTimeout(load, 5000);
+})();
+</script>
 
 <div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/blog.html">EN</a></div>
 </body>

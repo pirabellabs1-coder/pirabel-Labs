@@ -14,45 +14,75 @@ const { Server } = require('socket.io');
 const io = new Server(server, { cors: { origin: ['https://www.pirabellabs.com', 'https://pirabellabs.com', 'http://localhost:8080', 'http://localhost:10000'], methods: ['GET', 'POST'] } });
 app.set('io', io);
 
-// Socket.io connection handling
+// Socket.io middleware : auth JWT pour les messages admin
+const jwt = require('jsonwebtoken');
+io.use((socket, next) => {
+  // Extract token from auth header or cookie
+  const token = socket.handshake.auth?.token
+    || socket.handshake.headers?.cookie?.match(/token=([^;]+)/)?.[1];
+  socket.isAdmin = false;
+  if (token && process.env.JWT_SECRET) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+      socket.userId = decoded.id;
+      socket.isAdmin = decoded.role === 'admin' || decoded.role === 'employee';
+    } catch {}
+  }
+  next();
+});
+
 io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
-
   socket.on('join-conversation', (conversationId) => {
-    socket.join(conversationId);
+    const sanitized = String(conversationId || '').slice(0, 50);
+    if (sanitized) socket.join(sanitized);
   });
 
+  // Visitor message : tout le monde peut emettre
   socket.on('visitor-message', async (data) => {
-    const Message = require('./models/Message');
-    const { sanitize, sanitizeEmail } = require('./middleware/security');
-    const content = sanitize(data.content, 1000);
-    if (!content) return;
-    const msg = await Message.create({
-      conversationId: sanitize(data.conversationId, 50),
-      visitorName: sanitize(data.visitorName || 'Visiteur', 100),
-      visitorEmail: sanitizeEmail(data.visitorEmail || ''),
-      sender: 'visitor',
-      content
-    });
-    io.emit('new-message', msg);
-    socket.emit('message-saved', msg);
+    try {
+      const Message = require('./models/Message');
+      const { sanitize, sanitizeEmail } = require('./middleware/security');
+      const content = sanitize(data?.content, 1000);
+      if (!content) return;
+      const msg = await Message.create({
+        conversationId: sanitize(data?.conversationId, 50),
+        visitorName: sanitize(data?.visitorName || 'Visiteur', 100),
+        visitorEmail: sanitizeEmail(data?.visitorEmail || ''),
+        sender: 'visitor',
+        content
+      });
+      io.to(msg.conversationId).emit('new-message', msg);
+      socket.emit('message-saved', msg);
+    } catch (err) {
+      console.error('[socket] visitor-message error:', err.message);
+      socket.emit('error', { message: 'Message non delivre' });
+    }
   });
 
+  // Admin message : SEULEMENT si JWT admin/employee valide (anti-impersonation)
   socket.on('admin-message', async (data) => {
-    const Message = require('./models/Message');
-    const { sanitize } = require('./middleware/security');
-    const msg = await Message.create({
-      conversationId: sanitize(data.conversationId, 50),
-      sender: 'admin',
-      content: sanitize(data.content, 2000),
-      adminUser: data.adminUserId
-    });
-    io.to(data.conversationId).emit('admin-reply', msg);
+    if (!socket.isAdmin) {
+      return socket.emit('error', { message: 'Auth requise' });
+    }
+    try {
+      const Message = require('./models/Message');
+      const { sanitize } = require('./middleware/security');
+      const conversationId = sanitize(data?.conversationId, 50);
+      if (!conversationId) return;
+      const msg = await Message.create({
+        conversationId,
+        sender: 'admin',
+        content: sanitize(data?.content, 2000),
+        adminUser: socket.userId,
+      });
+      io.to(conversationId).emit('admin-reply', msg);
+    } catch (err) {
+      console.error('[socket] admin-message error:', err.message);
+      socket.emit('error', { message: 'Message non delivre' });
+    }
   });
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-  });
+  socket.on('disconnect', () => {});
 });
 
 // Connect to MongoDB

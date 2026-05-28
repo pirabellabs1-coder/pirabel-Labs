@@ -46,4 +46,10 @@ quoteSchema.pre('validate', async function(next) {
 
 quoteSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+quoteSchema.index({ status: 1, sentAt: 1 });
+quoteSchema.index({ client: 1, status: 1 });
+quoteSchema.index({ validUntil: 1 });
+
 module.exports = mongoose.model('Quote', quoteSchema);

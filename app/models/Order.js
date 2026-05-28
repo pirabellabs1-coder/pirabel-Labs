@@ -20,4 +20,10 @@ const orderSchema = new mongoose.Schema({
 
 orderSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 
+
+// --- Indexes (audit Tech Lead) ---
+orderSchema.index({ status: 1, createdAt: -1 });
+orderSchema.index({ email: 1 });
+orderSchema.index({ assignedTo: 1, status: 1 });
+
 module.exports = mongoose.model('Order', orderSchema);

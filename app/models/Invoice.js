@@ -35,4 +35,9 @@ invoiceSchema.pre('validate', async function(next) {
   next();
 });
 
+
+// --- Indexes (audit Tech Lead) ---
+invoiceSchema.index({ client: 1, status: 1 });
+invoiceSchema.index({ status: 1, dueDate: 1 });
+
 module.exports = mongoose.model('Invoice', invoiceSchema);

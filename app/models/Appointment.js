@@ -36,4 +36,9 @@ const appointmentSchema = new mongoose.Schema({
 appointmentSchema.pre('save', function(next) { this.updatedAt = Date.now(); next(); });
 appointmentSchema.index({ date: 1 });
 
+
+// --- Indexes (audit Tech Lead) ---
+appointmentSchema.index({ startTime: 1 });
+appointmentSchema.index({ status: 1, startTime: 1 });
+
 module.exports = mongoose.model('Appointment', appointmentSchema);

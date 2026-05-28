@@ -16,4 +16,9 @@ lessonProgressSchema.index(
   { unique: true }
 );
 
+
+// --- Indexes (audit Tech Lead) ---
+lessonProgressSchema.index({ user: 1, formation: 1 });
+lessonProgressSchema.index({ user: 1, completed: 1 });
+
 module.exports = mongoose.model('LessonProgress', lessonProgressSchema);

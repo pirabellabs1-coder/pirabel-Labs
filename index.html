@@ -87,7 +87,7 @@
     {"@type": "City", "name": "Abidjan", "containedInPlace": {"@type": "Country", "name": "Côte d'Ivoire"}},
     {"@type": "City", "name": "Montreal", "containedInPlace": {"@type": "Country", "name": "Canada"}}
   ],
-  "knowsAbout": ["SEO", "Generative Engine Optimization (GEO)", "Web Development", "Artificial Intelligence", "RAG Integration", "Marketing Automation", "Social Media", "Email Marketing", "CRO"],
+  "knowsAbout": ["SEO", "Generative Engine Optimization (GEO)", "Web Development", "Artificial Intelligence", "RAG Integration", "automatisation marketing", "Social Media", "Email Marketing", "CRO"],
   "sameAs": [],
   "contactPoint": [
     {
@@ -310,7 +310,6 @@ body.js-ready .hero-word span {
   <div class="nav-inner">
     <a href="/" class="nav-logo"><img src="img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high" decoding="async"></a>
     <div class="nav-links"><a href="/">ACCUEIL</a><a href="/services">SERVICES</a><div class="nav-group"><a href="/blog">RESSOURCES</a><div class="nav-dropdown"><a href="/blog">Blog</a><a href="/guides/">Guides</a><a href="/formations/">Formations</a></div></div><div class="nav-group"><a href="/a-propos">AGENCE</a><div class="nav-dropdown"><a href="/a-propos">A propos</a><a href="/resultats">Resultats</a><a href="/avis">Avis</a><a href="/carrieres">Carrieres</a></div></div><a href="/contact">CONTACT</a></div>
-    <a class="nav-login" href="/mon-espace"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> Mon Espace</a>
     <a href="/contact" class="nav-cta btn-magnetic">Audit Gratuit</a>
     <div class="nav-hamburger">
       <span></span><span></span><span></span>
@@ -327,7 +326,6 @@ body.js-ready .hero-word span {
   <a href="/a-propos">À propos</a>
   <a href="/carrieres">Carrières</a>
   <a href="/contact">Contact</a>
-<a href="/mon-espace" style="color:#FF5500;">Mon Espace</a>
 </div>
 
 <!-- ============================================
@@ -350,7 +348,7 @@ body.js-ready .hero-word span {
       SEO, cr&eacute;ation de sites web, automatisation IA, publicit&eacute; digitale, branding — nous accompagnons les entreprises ambitieuses avec des solutions sur mesure qui g&eacute;n&egrave;rent des r&eacute;sultats concrets et mesurables. De Paris &agrave; Cotonou, de Casablanca &agrave; Montr&eacute;al.
     </p>
     <div style="display:flex;flex-wrap:wrap;gap:1.5rem;" class="rv" style="animation-delay:1.2s;">
-      <a href="/contact" class="btn btn--primary btn-magnetic">DOMINER LE MARCHE <span class="material-symbols-outlined">arrow_forward</span></a>
+      <a href="/contact" class="btn btn--primary btn-magnetic">AUDIT GRATUIT 24H <span class="material-symbols-outlined">arrow_forward</span></a>
       <a href="#services" class="btn btn--ghost btn-magnetic">DECOUVRIR NOS SERVICES</a>
     </div>
   </div>
@@ -966,7 +964,29 @@ document.querySelectorAll('.card-hover-glow').forEach(card => {
 });
 </script>
 <script src="js/tracker.js" defer></script>
-<script src="/js/chatbot.js" defer></script>
+<script>
+(function(){
+  if (window.__chatbotLoaded) return;
+  let loaded = false;
+  const path = (typeof location !== 'undefined' && location.pathname.split('/').filter(Boolean).length >= 2)
+    ? '../../js/chatbot.js'
+    : (location.pathname.split('/').filter(Boolean).length === 1 ? '../js/chatbot.js' : 'js/chatbot.js');
+  function load() {
+    if (loaded) return; loaded = true; window.__chatbotLoaded = true;
+    const s = document.createElement('script');
+    s.src = '/js/chatbot.js';
+    s.defer = true;
+    document.body.appendChild(s);
+    cleanup();
+  }
+  function cleanup() {
+    ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => removeEventListener(e, load, { passive: true }));
+  }
+  ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => addEventListener(e, load, { once: true, passive: true }));
+  // Fallback : si pas d'interaction, charger apres 5s
+  setTimeout(load, 5000);
+})();
+</script>
 
 <div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/index.html">EN</a></div>
 </body>

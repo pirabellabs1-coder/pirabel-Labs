@@ -9,8 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=ac_unit,alternate_email,analytics,api,arrow_back,arrow_forward,article,auto_awesome,badge,bolt,business,calendar_today,campaign,chat,check,check_circle,chevron_left,chevron_right,close,conversion_path,dashboard,delete,delete_sweep,description,design_services,devices,download,edit,email,error,event,exit_to_app,expand_more,filter_alt,folder,folder_open,forum,group,group_add,history,hourglass_empty,inbox,info,key,language,local_fire_department,mail,menu,monitor_heart,monitoring,people,percent,person,person_add,person_search,play_arrow,public,radar,receipt_long,refresh,report_problem,save,schedule,send,settings,show_chart,star,sticky_note_2,stop,summarize,swap_vert,task_alt,thermostat,timer,touch_app,trending_down,trending_up,update,view_kanban,visibility,warning,web,work,work_history&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#141313;--surface:#1c1b1b;--card:#0e0e0e;--accent:#FF5500;--text:#e5e2e1;--muted:rgba(229,226,225,0.5);--border:rgba(92,64,55,0.15);}
+:root{--bg:#141313;--surface:#1c1b1b;--card:#0e0e0e;--accent:#FF5500;--text:#e5e2e1;--muted:rgba(229,226,225,0.5);--border:rgba(92,64,55,0.15);--ok:#41e4c0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.forgot-link{display:block;text-align:right;margin-top:0.5rem;font-size:0.75rem;color:var(--muted);text-decoration:none;transition:color 0.2s;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;}
+.forgot-link:hover{color:var(--accent);}
+.step{display:none;}
+.step.active{display:block;}
+.success-msg{background:rgba(65,228,192,0.1);border:1px solid rgba(65,228,192,0.3);color:var(--ok);padding:0.75rem;font-size:0.8125rem;margin-bottom:1.5rem;text-align:center;display:none;}
+.helper-text{color:var(--muted);font-size:0.8125rem;text-align:center;margin-bottom:1.5rem;line-height:1.5;}
 .noise{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.05;pointer-events:none;z-index:1000;}
 .orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;}
 .orb-1{width:500px;height:500px;background:rgba(255,87,8,0.08);top:-100px;left:-100px;}
@@ -52,58 +58,193 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <p class="subtitle">Espace Administration</p>
 
   <div id="error" class="error-msg"></div>
+  <div id="success" class="success-msg"></div>
 
-  <form id="loginForm">
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="email" placeholder="admin@pirabellabs.com" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" class="form-input" id="password" placeholder="Votre mot de passe" required>
-    </div>
-    <button type="submit" class="btn-login">
-      Se connecter <span class="material-symbols-outlined" style="font-size:1.125rem;">arrow_forward</span>
-    </button>
-  </form>
+  <!-- ETAPE 1 : Login normal -->
+  <div id="step-login" class="step active">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-input" id="email" name="email" placeholder="admin@pirabellabs.com" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="password" name="password" placeholder="Votre mot de passe" required autocomplete="current-password">
+        <button type="button" class="forgot-link" onclick="showStep('step-forgot')">Mot de passe oublie ?</button>
+      </div>
+      <button type="submit" class="btn-login">
+        Se connecter <span class="material-symbols-outlined" style="font-size:1.125rem;">arrow_forward</span>
+      </button>
+    </form>
 
-  <div class="divider">ou</div>
+    <div class="divider">ou</div>
 
-  <a href="/portal-login" style="display:block;text-align:center;padding:0.875rem;border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:0.875rem;transition:border-color 0.3s;">
-    Espace Client <span class="material-symbols-outlined" style="font-size:0.875rem;vertical-align:middle;">person</span>
-  </a>
+    <a href="/portal-login" style="display:block;text-align:center;padding:0.875rem;border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:0.875rem;transition:border-color 0.3s;">
+      Espace Client <span class="material-symbols-outlined" style="font-size:0.875rem;vertical-align:middle;">person</span>
+    </a>
+  </div>
+
+  <!-- ETAPE 2 : Demande de reset (email) -->
+  <div id="step-forgot" class="step">
+    <p class="helper-text">Saisissez votre email. Vous recevrez un code a 6 chiffres par email pour reinitialiser votre mot de passe.</p>
+    <form id="forgotForm">
+      <div class="form-group">
+        <label for="forgot-email" class="form-label">Email du compte</label>
+        <input type="email" class="form-input" id="forgot-email" name="email" placeholder="admin@pirabellabs.com" required autocomplete="username">
+      </div>
+      <button type="submit" class="btn-login">
+        Envoyer le code <span class="material-symbols-outlined" style="font-size:1.125rem;">send</span>
+      </button>
+    </form>
+    <button type="button" class="back-link" onclick="showStep('step-login')" style="background:none;border:none;cursor:pointer;width:100%;font-family:inherit;">&larr; Retour a la connexion</button>
+  </div>
+
+  <!-- ETAPE 3 : Saisie OTP + nouveau mot de passe -->
+  <div id="step-reset" class="step">
+    <p class="helper-text">Code envoye a <strong id="reset-email-display"></strong>.<br>Verifiez votre boite (et les spams) puis entrez le code recu.</p>
+    <form id="resetForm">
+      <input type="hidden" id="reset-email" name="email">
+      <div class="form-group">
+        <label for="reset-code" class="form-label">Code recu (6 chiffres)</label>
+        <input type="text" class="form-input" id="reset-code" name="code" placeholder="123456" required pattern="\d{6}" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="letter-spacing:0.5em;text-align:center;font-size:1.25rem;">
+      </div>
+      <div class="form-group">
+        <label for="reset-newpassword" class="form-label">Nouveau mot de passe (8 caracteres min)</label>
+        <input type="password" class="form-input" id="reset-newpassword" name="newPassword" placeholder="Nouveau mot de passe" required minlength="8" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-login">
+        Reinitialiser <span class="material-symbols-outlined" style="font-size:1.125rem;">check_circle</span>
+      </button>
+    </form>
+    <button type="button" class="back-link" onclick="showStep('step-login')" style="background:none;border:none;cursor:pointer;width:100%;font-family:inherit;">&larr; Retour a la connexion</button>
+  </div>
 
   <a href="/" class="back-link">&larr; Retour au site</a>
 </div>
 
 <script>
+const errorEl = document.getElementById('error');
+const successEl = document.getElementById('success');
+
+function showError(msg) {
+  successEl.style.display = 'none';
+  errorEl.textContent = msg;
+  errorEl.style.display = 'block';
+}
+function showSuccess(msg) {
+  errorEl.style.display = 'none';
+  successEl.textContent = msg;
+  successEl.style.display = 'block';
+}
+function clearMsg() {
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+}
+function showStep(stepId) {
+  clearMsg();
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+}
+
+// ETAPE 1 : Login
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  clearMsg();
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  const errorEl = document.getElementById('error');
-  errorEl.style.display = 'none';
-
   try {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
-
     if (data.success) {
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
       if (data.user.role === 'client') window.location.href = '/portal';
       else window.location.href = '/dashboard';
     } else {
-      errorEl.textContent = data.error || 'Erreur de connexion';
-      errorEl.style.display = 'block';
+      showError(data.error || 'Erreur de connexion');
     }
   } catch (err) {
-    errorEl.textContent = 'Erreur de connexion au serveur';
-    errorEl.style.display = 'block';
+    showError('Erreur de connexion au serveur');
+  }
+});
+
+// ETAPE 2 : Demande de reset (envoi du code par email)
+document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearMsg();
+  const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+  if (!email) return;
+  try {
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    // Reponse anti-enumeration : on dit toujours "code envoye"
+    if (res.ok) {
+      document.getElementById('reset-email').value = email;
+      document.getElementById('reset-email-display').textContent = email;
+      showStep('step-reset');
+      showSuccess('Si ce compte existe, un code a ete envoye. Verifiez votre boite mail.');
+    } else {
+      showError(data.error || 'Trop de demandes. Reessayez dans 15 minutes.');
+    }
+  } catch (err) {
+    showError('Erreur de connexion au serveur');
+  }
+});
+
+// ETAPE 3 : Saisie OTP + nouveau mot de passe
+document.getElementById('resetForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearMsg();
+  const email = document.getElementById('reset-email').value;
+  const code = document.getElementById('reset-code').value.trim();
+  const newPassword = document.getElementById('reset-newpassword').value;
+  if (!/^\d{6}$/.test(code)) return showError('Le code doit comporter 6 chiffres.');
+  if (newPassword.length < 8) return showError('Le mot de passe doit faire au moins 8 caracteres.');
+  try {
+    const res = await fetch('/api/auth/reset-password-confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code, newPassword })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showSuccess('Mot de passe mis a jour. Connexion en cours...');
+      // Auto-login
+      setTimeout(async () => {
+        try {
+          const r2 = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email, password: newPassword })
+          });
+          const d2 = await r2.json();
+          if (d2.success) {
+            localStorage.setItem('user', JSON.stringify(d2.user));
+            localStorage.setItem('token', d2.token);
+            window.location.href = d2.user.role === 'client' ? '/portal' : '/dashboard';
+          } else {
+            showSuccess('Mot de passe mis a jour. Retournez a la connexion.');
+            showStep('step-login');
+          }
+        } catch {
+          showStep('step-login');
+        }
+      }, 1200);
+    } else {
+      showError(data.error || 'Code invalide ou expire.');
+    }
+  } catch (err) {
+    showError('Erreur de connexion au serveur');
   }
 });
 </script>

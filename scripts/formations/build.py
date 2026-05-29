@@ -14,13 +14,50 @@ from content_seo import SEO_DEBUTANT_MODULES
 from content_generator import generate_lesson_content
 from lesson_titles import generate_lesson_titles
 from quiz_generator import render_quiz_page, render_certificate_page
+from content_seo_intermediaire import SEO_INTERMEDIAIRE_MODULES
 
 ROOT = Path(__file__).resolve().parents[2]
 
 # Cap des contenus detailles par slug
 DETAILED_CONTENT = {
     'seo-debutant': SEO_DEBUTANT_MODULES,
+    'seo-intermediaire': SEO_INTERMEDIAIRE_MODULES,
 }
+
+
+def merge_partial_detailed(formation, detailed_modules):
+    """Si DETAILED a moins de modules/lecons que le catalog, complete avec skeleton.
+
+    Permet d'integrer du contenu trainer partiel (10 lecons sur 30 ecrites avant
+    session limit) sans laisser de trous dans la formation.
+    """
+    n_modules_expected = formation['modules']
+    n_lessons_expected = formation['lessons']
+
+    total_lessons_detailed = sum(len(m.get('lessons', [])) for m in detailed_modules)
+    if len(detailed_modules) >= n_modules_expected and total_lessons_detailed >= n_lessons_expected:
+        return detailed_modules  # Complet
+
+    # Build skeleton then overlay detailed content for matching (module_idx, lesson_idx)
+    skeleton = make_skeleton_modules(formation)
+    detailed_index = {}  # (m_idx, l_idx) -> {title, duration, content_html}
+    for mi, m in enumerate(detailed_modules, 1):
+        for li, lesson in enumerate(m.get('lessons', []), 1):
+            detailed_index[(mi, li)] = lesson
+
+    for mi, sm in enumerate(skeleton, 1):
+        # If module in detailed and has matching index, use its title + objective + duration
+        if mi <= len(detailed_modules):
+            dm = detailed_modules[mi - 1]
+            if dm.get('title'): sm['title'] = dm['title']
+            if dm.get('objective'): sm['objective'] = dm['objective']
+        for li, sl in enumerate(sm.get('lessons', []), 1):
+            dl = detailed_index.get((mi, li))
+            if dl and dl.get('content_html'):
+                sl['title'] = dl.get('title', sl['title'])
+                sl['duration'] = dl.get('duration', sl['duration'])
+                sl['content_html'] = dl['content_html']
+    return skeleton
 
 
 def make_skeleton_modules(formation):
@@ -315,7 +352,11 @@ def main():
     count_lessons = 0
     for f in FORMATIONS:
         slug = f['slug']
-        modules = DETAILED_CONTENT.get(slug) or make_skeleton_modules(f)
+        detailed = DETAILED_CONTENT.get(slug)
+        if detailed:
+            modules = merge_partial_detailed(f, detailed)
+        else:
+            modules = make_skeleton_modules(f)
 
         # FR formation summary page
         page_fr = render_page(f, modules, is_en=False, css_prefix='../')

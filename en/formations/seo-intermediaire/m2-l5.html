@@ -117,7 +117,7 @@
 <div id="progress-bar"></div>
 <nav class="nav"><div class="nav-inner">
 <a href="/en/" class="nav-logo"><img src="../../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
-<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a></div>
+<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/mon-espace-eleve">MY SPACE</a><a href="/en/a-propos">ABOUT</a></div>
 <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
 <a href="/en/contact" class="nav-cta">Free Audit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
@@ -146,74 +146,82 @@
 </div>
 
 <div class="lesson-content">
-<p>Le referencement naturel a evolue : Google ne lit plus les sites de la meme facon qu&#x27;en 2015. Ce que vous apprenez ici tient compte des Helpful Content Updates et de la SGE.</p>
-
-<h2>1. Mise en oeuvre concrete pas-a-pas</h2>
-
-<p>Cette lecon (<strong>module 2, lecon 5</strong>) traite specifiquement de <em>maillage interne : architecture et silos thematiques</em> dans le cadre de la thematique <strong>Audit technique et on-page</strong>. C'est un pas important sur le chemin de la maitrise visee par cette formation, et l'effort que vous y investirez aura un impact direct sur la suite de votre parcours.</p>
-
-<p>Concretement, vous devez :</p>
-
+<h2>Pourquoi le maillage interne est sous-estime</h2>
+<p>Le maillage interne (internal linking) est le pilier le plus negligc des optimisations on-page. Pourtant, il influence directement trois facteurs critiques : la <strong>distribution du PageRank interne</strong>, la <strong>decouverte des pages</strong> par Googlebot et la <strong>comprehension thematique</strong> de votre site. Une etude Onely 2026 montre que les sites avec un maillage optimise rankent 38 % plus haut sur leurs requetes cibles que ceux avec un maillage chaotique.</p>
+<h2>Le concept de PageRank interne</h2>
+<p>PageRank est le nom de l'algorithme historique de Google qui mesure l'autorite d'une page selon les liens entrants. Bien qu'il ait evolue, le principe reste valide en interne : <strong>une page recoit du "jus" via les liens qui pointent vers elle</strong>, et le redistribue via les liens qu'elle envoie.</p>
+<p>Consequences pratiques :</p>
 <ul>
-<li>Definir un objectif chiffre clair pour maillage interne : architecture et silos thematiques.</li>
-<li>Identifier les 2-3 outils qui couvrent 80 % du besoin (parmi : Yoast SEO, Semrush, Screaming Frog).</li>
-<li>Mettre en place une routine de mesure : KPI principal + KPIs secondaires + frequence de revue.</li>
-<li>Documenter les decisions dans une page Notion / Google Doc accessible a l&#x27;equipe.</li>
-<li>Planifier une revue de progression a 30 jours, puis a 90 jours.</li>
+<li>Votre <strong>homepage</strong> a generalement le PageRank le plus eleve (plus de backlinks externes).</li>
+<li>Les pages a 1 clic de la home heritent d'une grande partie de ce jus.</li>
+<li>Les pages a 4-5 clics de profondeur ne recoivent quasi rien.</li>
+<li>Une page qui envoie 100 liens dilue plus son jus qu'une page qui en envoie 10.</li>
 </ul>
-
-<p>Maintenant que ce cadre est pose, attaquons les details qui font la difference entre quelqu'un qui maitrise vraiment et quelqu'un qui ne fait que reciter la theorie.</p>
-
-<h2>2. Comment Google interprete cela en 2026</h2>
-
-<p>Depuis l&#x27;arrivee de la Search Generative Experience (SGE), Google ne se contente plus de renvoyer 10 liens bleus : il synthetise et cite. Pour etre cite, vos contenus doivent etre structures (H2/H3 clairs), repondre directement a la question, et signaler une expertise reconnue (E-E-A-T).</p>
-
-<p>Concretement, dans votre cas, cela se traduit par 3 actions a haute valeur ajoutee : 1) faire un etat des lieux precis sans complaisance, 2) prioriser un seul axe de progres a la fois (ne pas vouloir tout corriger), 3) mesurer l'impact a 30 jours avec un KPI defini avant l'action. Cette discipline simple, repetee mois apres mois, fait la difference entre les pros et les amateurs.</p>
-
-<h2>3. Combien de temps avant de voir un resultat ?</h2>
-
-<p>30-60 jours pour des mots-cles longue traine peu concurrentiels. 3-6 mois pour des mots-cles moyens. 12-24 mois pour les requetes generiques tres concurrentielles. Le SEO se compose : un article publie aujourd&#x27;hui peut continuer a vous generer du trafic 5 ans plus tard.</p>
-
-<p>Outils recommandes pour cette etape (notre stack 2026) :</p>
+<p>Strategie : maillez intelligemment vos pages business critiques (services, produits phares, pillar pages) depuis votre homepage et vos articles a fort trafic.</p>
+<h2>Les 3 architectures classiques</h2>
+<h3>Architecture en silo (silos thematiques)</h3>
+<p>Structure pyramidale ou chaque grande thematique forme un silo etanche. Exemple pour un site de marketing digital :</p>
 <ul>
-<li><strong>Yoast SEO</strong> : couvre le besoin principal. Investissement justifie meme en debut de parcours.</li>
-<li><strong>Semrush</strong> : complement utile pour aller plus loin, surtout sur les projets plus ambitieux.</li>
-<li><strong>Screaming Frog</strong> : alternative ou complement selon votre contexte specifique.</li>
+<li>Home > SEO > {Audit SEO, Backlinks, Contenu SEO, SEO local}</li>
+<li>Home > Ads > {Google Ads, Meta Ads, TikTok Ads}</li>
+<li>Home > Email > {Brevo, Mailchimp, Klaviyo}</li>
 </ul>
-
-<h2>4. A faire des aujourd&#x27;hui :</h2>
-
+<p>Avantages : clarte thematique forte, transmission de l'autorite optimale au sein d'un sujet. Inconvenients : peut limiter la decouverte inter-thematiques.</p>
+<h3>Architecture topique (topic clusters)</h3>
+<p>Popularisee par HubSpot, basee sur une <strong>pillar page</strong> (page chapeau, 3 000-5 000 mots) et des <strong>cluster pages</strong> (5-15 articles satellites de 1 500-2 500 mots) qui linkent toutes vers la pillar et vice-versa.</p>
+<p>Exemple : Pillar "Guide Complet du SEO en 2026" + clusters "EEAT explique", "SGE et SEO", "Audit technique SEO", "Backlinks 2026", etc.</p>
+<p>C'est aujourd'hui l'architecture la plus recommandee pour les blogs B2B et les sites a contenu editorial.</p>
+<h3>Architecture plate</h3>
+<p>Toutes les pages sont a 1-2 clics de la home. Convient aux petits sites (moins de 100 pages) et e-commerces.</p>
+<h2>Les regles d'or du maillage</h2>
 <ol>
-<li>Prenez 10 minutes pour cartographier votre situation actuelle sur ce point precis.</li>
-<li>Identifiez UN seul levier d'amelioration (le plus impactant a vos yeux).</li>
-<li>Definissez une action concrete a executer dans les 7 jours, avec un livrable mesurable.</li>
-<li>Notez votre engagement dans votre outil de gestion (Notion, Google Doc, Trello).</li>
-<li>Planifiez une revue a J+7 pour mesurer l'impact et iterer.</li>
+<li><strong>Profondeur maximale 3 clics</strong> depuis la home pour les pages strategiques.</li>
+<li><strong>Liens contextuels</strong> dans le corps de texte plutot que dans les footers/sidebars (poids plus eleve).</li>
+<li><strong>Ancres descriptives</strong> avec mot-cle naturel ("guide complet du SEO local" plutot que "cliquez ici").</li>
+<li><strong>Variation des ancres</strong> : evitez de toujours utiliser la meme ancre vers une meme page (signal sur-optimisation).</li>
+<li><strong>3 a 8 liens internes par article</strong> long format.</li>
+<li><strong>Pas de liens entre pages cannibales</strong> (qui ciblent le meme mot-cle).</li>
 </ol>
-
-<p>Si vous bloquez sur l'execution, n'hesitez pas a poser votre question dans la section commentaires en bas de cette lecon. Notre equipe et la communaute des etudiants Pirabel Labs y repondent regulierement.</p>
-
-<h2>5. Questions frequentes</h2>
-
-<h3>Combien de temps pour maitriser &#x27;maillage interne : architecture et silos thematiques&#x27; ?</h3>
-<p>Comptez 2 a 4 semaines de pratique reguliere (1-2h par jour) pour atteindre un niveau operationnel autonome. La maitrise expert demande 6 a 12 mois et passe necessairement par 3-5 projets reels en conditions de production.</p>
-
-<h3>Quels sont les prerequis indispensables ?</h3>
-<p>Avoir deja mene 2-3 projets concrets dans le domaine (idealement avoir suivi le niveau Debutant). Familiarite avec les outils Yoast SEO / Semrush recommandee.</p>
-
-<h3>Comment integrer ces apprentissages au reste de la formation ?</h3>
-<p>Chaque lecon est concue pour s'articuler avec les suivantes : ce que vous apprenez ici prepare le module 3 ou nous approfondirons la thematique. Avancez lecon apres lecon, sans sauter d'etapes. La progression est calibree pour solidifier vos acquis et eviter les trous dans la maquette.</p>
-
-<h2>Aller plus loin avec Pirabel Labs</h2>
-
-<p>Si vous voulez accelerer votre progression et eviter les erreurs courantes en SEO, nos experts Pirabel Labs vous accompagnent en coaching personnalise (visio ou presentiel Cotonou / Abomey-Calavi). Audit gratuit en 24h.</p>
-
-<p style="margin-top:1.5rem;">
-<a href="/contact" class="btn btn--orange">Demander mon audit gratuit (24h)</a>
-&nbsp;
-<a href="/rendez-vous" class="btn btn--ghost-white">Reserver un coaching personnalise</a>
-</p>
-
+<h2>Detecter les pages orphelines</h2>
+<p>Une page orpheline est une page indexable sans aucun lien interne entrant. Elles sont quasi invisibles pour Google. Comment les detecter :</p>
+<ul>
+<li>Crawl Screaming Frog : onglet "Internal" > filtre Inlinks = 0.</li>
+<li>Comparaison sitemap XML vs crawl interne : les URLs presentes dans le sitemap mais absentes du crawl sont orphelines.</li>
+<li>Ahrefs Site Audit > Issues > Orphan pages.</li>
+</ul>
+<p>Action : ajoutez des liens internes depuis des pages a forte autorite et a sujet proche.</p>
+<h2>Liens depuis le menu, footer, sidebar</h2>
+<p>Tous les liens n'ont pas le meme poids :</p>
+<ul>
+<li><strong>Menu principal</strong> : poids tres eleve, visible sur toutes les pages. Reserve aux 5-7 pages strategiques.</li>
+<li><strong>Footer</strong> : poids modere. Utile pour pages legales et secondaires.</li>
+<li><strong>Sidebar</strong> : poids moyen. Bon pour articles connexes.</li>
+<li><strong>Corps de texte</strong> : poids maximal, surtout en debut d'article.</li>
+<li><strong>Breadcrumb</strong> : poids modere, ameliore l'UX et signale la hierarchie.</li>
+</ul>
+<h2>Outils pour analyser et optimiser</h2>
+<ul>
+<li><strong>Screaming Frog</strong> > onglet Internal > export pour visualiser les inlinks/outlinks.</li>
+<li><strong>Sitebulb</strong> > Crawl Map : visualisation graphique de l'architecture.</li>
+<li><strong>Plugin Link Whisper</strong> (WordPress, 77 USD) : suggestions automatiques de liens internes.</li>
+<li><strong>Plugin Internal Link Juicer</strong> (WordPress) : auto-mapping de mots-cles vers URLs.</li>
+<li><strong>Yoast Premium</strong> : suggestions de liens internes basees sur similarite contenu.</li>
+</ul>
+<h2>Cas pratique : optimisation du maillage pour un blog de 80 articles</h2>
+<p>Audit initial : 22 articles orphelins, profondeur moyenne 5,1 clics, articles cles a 4 clics, ratio inlinks moyens : 1,2 par article.</p>
+<p>Actions :</p>
+<ol>
+<li>Creation de 3 pillar pages (SEO, Ads, Email) maillees depuis la home et le menu.</li>
+<li>Attribution de chaque article a un cluster.</li>
+<li>Ajout de 4-6 liens contextuels dans chaque article vers pillar + autres cluster.</li>
+<li>Footer enrichi avec liens vers articles cles.</li>
+<li>Remaillage des articles orphelins depuis 2-3 articles thematiquement proches.</li>
+</ol>
+<p>Resultats apres 60 jours : profondeur moyenne reduite a 2,8 clics, articles cles a 2 clics, ratio inlinks moyen 4,7, trafic organique +42 %.</p>
+<h2>FAQ</h2>
+<p><strong>Trop de liens internes nuisent-ils ?</strong> Oui si exces (>30 liens par page) ou non pertinents. Restez naturel et utile pour l'utilisateur.</p>
+<p><strong>Faut-il mettre nofollow sur les liens internes ?</strong> Non, sauf cas particuliers (login, panier, pages de remerciement). Le PageRank Sculpting est inefficace depuis 2009.</p>
+<p>Pirabel Labs audite et optimise votre maillage interne. <a href="/contact">Demandez votre audit</a> ou <a href="/rendez-vous">prenez RDV 30 min</a>.</p>
 </div>
 
 <div class="enroll-banner" id="enroll-banner" style="display:none;">

@@ -117,7 +117,7 @@
 <div id="progress-bar"></div>
 <nav class="nav"><div class="nav-inner">
 <a href="/en/" class="nav-logo"><img src="../../img/logo.png" alt="Pirabel Labs" class="nav-logo-img" width="80" height="80" fetchpriority="high"></a>
-<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a></div>
+<div class="nav-links"><a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/mon-espace-eleve">MY SPACE</a><a href="/en/a-propos">ABOUT</a></div>
 <a class="nav-login" href="/en/espace-client-4p8w1n"><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">person</span> My Account</a>
 <a href="/en/contact" class="nav-cta">Free Audit</a>
 <div class="nav-hamburger"><span></span><span></span><span></span></div>
@@ -146,74 +146,66 @@
 </div>
 
 <div class="lesson-content">
-<p>Le SEO recompense la rigueur et la coherence. Dans cette lecon, nous abordons un aspect crucial qui differencie les sites qui dominent les SERP de ceux qui stagnent en page 4.</p>
-
-<h2>1. Templates et frameworks reutilisables</h2>
-
-<p>Cette lecon (<strong>module 2, lecon 3</strong>) traite specifiquement de <em>audit technique : crawler son site avec screaming frog</em> dans le cadre de la thematique <strong>Audit technique et on-page</strong>. C'est un pas important sur le chemin de la maitrise visee par cette formation, et l'effort que vous y investirez aura un impact direct sur la suite de votre parcours.</p>
-
-<p>Les essentiels a maitriser :</p>
-
+<h2>L'outil de reference de l'audit technique</h2>
+<p>Screaming Frog SEO Spider est depuis 15 ans le crawler de reference des agences SEO. Pour 149 GBP par an (environ 170 EUR), vous obtenez un outil desktop capable de crawler jusqu'a 500 URLs gratuitement et illimite en version payante. Pour les sites jusqu'a 100 000 URLs, c'est l'outil le plus efficace du marche.</p>
+<h2>Installation et configuration initiale</h2>
+<p>Telechargez depuis screamingfrog.co.uk pour Windows, macOS ou Linux. Installez et activez la licence si payante. Configuration recommandee avant premier crawl :</p>
 <ul>
-<li>Definir un objectif chiffre clair pour audit technique : crawler son site avec screaming frog.</li>
-<li>Identifier les 2-3 outils qui couvrent 80 % du besoin (parmi : Ahrefs, Semrush, Screaming Frog).</li>
-<li>Mettre en place une routine de mesure : KPI principal + KPIs secondaires + frequence de revue.</li>
-<li>Documenter les decisions dans une page Notion / Google Doc accessible a l&#x27;equipe.</li>
-<li>Planifier une revue de progression a 30 jours, puis a 90 jours.</li>
+<li><strong>Configuration > User-Agent</strong> : selectionnez Googlebot Smartphone pour simuler le mobile-first.</li>
+<li><strong>Configuration > Spider > Crawl</strong> : cochez "Check Links Outside of Start Folder" si vous voulez limiter au sous-domaine.</li>
+<li><strong>Configuration > Robots.txt</strong> : respectez le robots.txt ou ignorez-le selon l'analyse souhaitee.</li>
+<li><strong>Configuration > Rendering</strong> : pour les sites React/Vue/Angular, activez "JavaScript" pour le rendering complet.</li>
+<li><strong>Configuration > Speed</strong> : limitez a 5 threads et 5 URLs/s pour eviter de surcharger des petits serveurs.</li>
 </ul>
-
-<p>Avec ces fondamentaux en tete, attaquons les details qui font la difference entre quelqu'un qui maitrise vraiment et quelqu'un qui ne fait que reciter la theorie.</p>
-
-<h2>2. Combien de temps avant de voir un resultat ?</h2>
-
-<p>30-60 jours pour des mots-cles longue traine peu concurrentiels. 3-6 mois pour des mots-cles moyens. 12-24 mois pour les requetes generiques tres concurrentielles. Le SEO se compose : un article publie aujourd&#x27;hui peut continuer a vous generer du trafic 5 ans plus tard.</p>
-
-<p>Concretement, dans votre cas, cela se traduit par 3 actions a haute valeur ajoutee : 1) faire un etat des lieux precis sans complaisance, 2) prioriser un seul axe de progres a la fois (ne pas vouloir tout corriger), 3) mesurer l'impact a 30 jours avec un KPI defini avant l'action. Cette discipline simple, repetee mois apres mois, fait la difference entre les pros et les amateurs.</p>
-
-<h2>3. Comment Google interprete cela en 2026</h2>
-
-<p>Depuis l&#x27;arrivee de la Search Generative Experience (SGE), Google ne se contente plus de renvoyer 10 liens bleus : il synthetise et cite. Pour etre cite, vos contenus doivent etre structures (H2/H3 clairs), repondre directement a la question, et signaler une expertise reconnue (E-E-A-T).</p>
-
-<p>Outils recommandes pour cette etape (notre stack 2026) :</p>
-<ul>
-<li><strong>Ahrefs</strong> : couvre le besoin principal. Investissement justifie meme en debut de parcours.</li>
-<li><strong>Semrush</strong> : complement utile pour aller plus loin, surtout sur les projets plus ambitieux.</li>
-<li><strong>Screaming Frog</strong> : alternative ou complement selon votre contexte specifique.</li>
-</ul>
-
-<h2>4. Application immediate (10 min) :</h2>
-
+<h2>Lancer le premier crawl</h2>
+<p>Entrez l'URL de votre site dans le champ en haut, cliquez "Start". Le crawl dure de quelques minutes (petit site) a plusieurs heures (gros e-commerce). Pendant le crawl, naviguez dans les onglets pour analyser en temps reel.</p>
+<h2>Les 10 verifications critiques</h2>
 <ol>
-<li>Prenez 10 minutes pour cartographier votre situation actuelle sur ce point precis.</li>
-<li>Identifiez UN seul levier d'amelioration (le plus impactant a vos yeux).</li>
-<li>Definissez une action concrete a executer dans les 7 jours, avec un livrable mesurable.</li>
-<li>Notez votre engagement dans votre outil de gestion (Notion, Google Doc, Trello).</li>
-<li>Planifiez une revue a J+7 pour mesurer l'impact et iterer.</li>
+<li><strong>Codes reponse HTTP</strong> : onglet "Response Codes". Verifiez le ratio 200/3xx/4xx/5xx. Objectif : 95 %+ en 200, moins de 1 % en 4xx, 0 % en 5xx.</li>
+<li><strong>Titres de page (Title)</strong> : onglet "Page Titles". Verifiez longueur (50-60 caracteres), unicite, presence du mot-cle principal en debut.</li>
+<li><strong>Meta descriptions</strong> : longueur 150-160 caracteres, unicite, attractivite. 30 % des sites audites n'ont pas de meta description sur leurs pages cles.</li>
+<li><strong>Balises Hn</strong> : un seul H1 par page, hierarchie logique H1 > H2 > H3, presence du mot-cle dans H1.</li>
+<li><strong>Images</strong> : onglet "Images". Verifiez les alt text manquants (typiquement 40-60 % des images sur un site non optimise) et les images >100 Ko.</li>
+<li><strong>Canonical</strong> : onglet "Canonical". Verifiez que chaque page a une canonical self-referente ou pointe vers la version preferentielle.</li>
+<li><strong>Robots et meta robots</strong> : detectez les pages noindex involontaires.</li>
+<li><strong>Liens internes</strong> : onglet "Links". Identifiez les pages orphelines (sans liens entrants), les liens casses internes (404), la profondeur moyenne.</li>
+<li><strong>Liens externes</strong> : verifiez les liens sortants casses et les domaines suspects.</li>
+<li><strong>Donnees structurees</strong> : onglet "Structured Data" (necessite activation). Detecte les erreurs de schema.org.</li>
 </ol>
-
-<p>Si vous bloquez sur l'execution, n'hesitez pas a poser votre question dans la section commentaires en bas de cette lecon. Notre equipe et la communaute des etudiants Pirabel Labs y repondent regulierement.</p>
-
-<h2>5. Questions frequentes</h2>
-
-<h3>Combien de temps pour maitriser &#x27;audit technique : crawler son site avec screaming frog&#x27; ?</h3>
-<p>Comptez 2 a 4 semaines de pratique reguliere (1-2h par jour) pour atteindre un niveau operationnel autonome. La maitrise expert demande 6 a 12 mois et passe necessairement par 3-5 projets reels en conditions de production.</p>
-
-<h3>Quels sont les prerequis indispensables ?</h3>
-<p>Avoir deja mene 2-3 projets concrets dans le domaine (idealement avoir suivi le niveau Debutant). Familiarite avec les outils Ahrefs / Semrush recommandee.</p>
-
-<h3>Comment integrer ces apprentissages au reste de la formation ?</h3>
-<p>Chaque lecon est concue pour s'articuler avec les suivantes : ce que vous apprenez ici prepare le module 3 ou nous approfondirons la thematique. Avancez lecon apres lecon, sans sauter d'etapes. La progression est calibree pour solidifier vos acquis et eviter les trous dans la maquette.</p>
-
-<h2>Aller plus loin avec Pirabel Labs</h2>
-
-<p>Si vous voulez accelerer votre progression et eviter les erreurs courantes en SEO, nos experts Pirabel Labs vous accompagnent en coaching personnalise (visio ou presentiel Cotonou / Abomey-Calavi). Audit gratuit en 24h.</p>
-
-<p style="margin-top:1.5rem;">
-<a href="/contact" class="btn btn--orange">Demander mon audit gratuit (24h)</a>
-&nbsp;
-<a href="/rendez-vous" class="btn btn--ghost-white">Reserver un coaching personnalise</a>
-</p>
-
+<h2>Exports et reporting</h2>
+<p>Pour chaque onglet, exportez en CSV ou Excel. Combinez plusieurs exports dans un dashboard Google Sheets ou Looker Studio. Les exports indispensables pour un rapport client :</p>
+<ul>
+<li>Liste des URLs avec status code, title, meta, H1, longueur de contenu.</li>
+<li>Liste des erreurs 404 avec page d'origine pour redirections.</li>
+<li>Liste des images sans alt avec recommandations.</li>
+<li>Liste des pages avec title manquant ou duplique.</li>
+<li>Graphique de profondeur (crawl depth) avec heatmap.</li>
+</ul>
+<h2>Connexion aux APIs : Google Analytics, Search Console, PageSpeed</h2>
+<p>Screaming Frog peut se connecter aux APIs Google pour enrichir vos donnees :</p>
+<ul>
+<li>Connection a GSC : trafic et impressions par URL.</li>
+<li>Connection a GA4 : sessions, taux de rebond, conversions.</li>
+<li>Connection a PageSpeed Insights : Core Web Vitals par URL.</li>
+<li>Connection a Ahrefs/Majestic : nombre de backlinks par URL.</li>
+</ul>
+<p>Une fois enrichi, vous identifiez par exemple les pages avec beaucoup d'impressions mais faible CTR (probleme de title/meta), ou les pages a fort trafic mais LCP degrade (priorite performance).</p>
+<h2>Cas pratique : audit d'un site WordPress de 850 pages</h2>
+<p>Resultats typiques d'un premier audit :</p>
+<ul>
+<li>847 URLs crawlees, 12 erreurs 404, 4 redirections en chaine, 0 erreur 5xx.</li>
+<li>73 pages avec title duplique (categories WooCommerce mal configurees).</li>
+<li>120 pages sans meta description.</li>
+<li>320 images sans alt text.</li>
+<li>15 pages orphelines (anciennes pages produits non maillees).</li>
+<li>Profondeur moyenne : 4,2 clics (objectif : <3,5).</li>
+<li>Schema.org : Product manquant sur 87 fiches produits.</li>
+</ul>
+<p>Plan d'action priorise : (1) corriger les 404 et redirections, (2) reecrire les titles dupliques, (3) ajouter les meta descriptions manquantes, (4) batch-tag les alt text via plugin SEO, (5) remailler les pages orphelines, (6) implementer le schema Product.</p>
+<h2>FAQ</h2>
+<p><strong>Combien de temps pour un audit complet ?</strong> 4 a 8 heures pour un site de 1 000 pages, 2 a 5 jours pour un site de 10 000+ pages.</p>
+<p><strong>Alternatives a Screaming Frog ?</strong> Sitebulb (interface plus moderne), Oncrawl (cloud, gros sites), Botify (entreprise).</p>
+<p>Pirabel Labs realise des audits Screaming Frog avec rapport prioritise. <a href="/contact">Demandez votre audit</a> ou <a href="/rendez-vous">prenez RDV</a>.</p>
 </div>
 
 <div class="enroll-banner" id="enroll-banner" style="display:none;">

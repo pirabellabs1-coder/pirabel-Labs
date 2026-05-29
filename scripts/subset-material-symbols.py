@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Subset Material Symbols : collecte les icones utilisees + remplace l'URL par version subset.
+"""[DEPRECATED] Subset Material Symbols.
 
-Avant : charge tout Material Symbols (~150KB)
-Apres : charge seulement les icones utilisees (~10-15KB)
+ATTENTION : 259 icones differentes sont utilisees sur le site,
+ce qui depasse la limite Google Fonts (~2000 chars). Le subset CASSE
+le rendu (icones affichees comme texte 'CODE', 'SMART_TOY', etc.).
 
-Gain FCP : 300-500ms.
+Utiliser plutot scripts/fix-material-symbols-full-font.py qui garde
+la font complete (font file ~580KB cache 1x par visiteur).
 """
+import sys
+sys.exit('[DEPRECATED] Utilisez scripts/fix-material-symbols-full-font.py')
+
 import re
 from pathlib import Path
 from collections import Counter

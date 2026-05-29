@@ -1,0 +1,72 @@
+{
+  "applied": [
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "dup_in_file: disambiguate second 'Marketing automation' alt",
+      "before": "<a href=\"blog/marketing-automation-guide-entreprises\" class=\"blog-card\" data-cat=\"ia\">\n     <div class=\"blog-card__img\"><img src=\"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75\" alt=\"Marketing automation\" loading=\"lazy\"></div>",
+      "after": "<a href=\"blog/marketing-automation-guide-entreprises\" class=\"blog-card\" data-cat=\"ia\">\n     <div class=\"blog-card__img\"><img src=\"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75\" alt=\"Marketing automation workflows and lead scoring\" loading=\"lazy\"></div>"
+    }
+  ],
+  "skipped": [
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "<div class=\"blog-card__img\"><img src=\"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75\" alt=\"auto"
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Branding et identit&eacute; visuelle\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Strat&eacute;gie social media\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Cr&eacute;ation de site web\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"SEO r&eacute;f&eacute;rencement naturel\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Contenu marketing strat&eacute;gie\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Vid&eacute;o marketing\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Intelligence artificielle marketing\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Chatbot IA service client\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"CRO optimisation conversion\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"UX design tendances\""
+    },
+    {
+      "file": "C:\\Pirabel Labs\\temp_repo\\en\\blog.html",
+      "reason": "before_not_found",
+      "before": "alt=\"Automation marketing\""
+    }
+  ]
+}

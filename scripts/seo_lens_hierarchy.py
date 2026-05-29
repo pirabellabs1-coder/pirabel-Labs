@@ -238,68 +238,77 @@ def apply_fix(path: Path, src: str, h1_text: str) -> bool:
 # Each entry: (label, old_substring, new_substring)
 # Only patterns that preserve visual rendering (CSS class drives the size).
 STRUCTURAL_REPLACEMENTS = (
-    # 1. Lesson pages: sidebar TOC heading appears BEFORE the article H1 in DOM
-    #    order. Demote to <p> with a heading-styled class so visuals stay the
-    #    same (the class is just a label; no global CSS depends on the h3 tag).
+    # Lesson pages: sidebar TOC heading appears BEFORE the article H1 in DOM
+    # order. Demote to <p> with a role="heading" aria-level so semantics stay
+    # accessible but Google sees the article H1 first.
     (
         "lesson_sidebar_toc",
         "<h3>Sommaire de la formation</h3>",
         '<p class="lesson-sidebar-title" role="heading" aria-level="2">'
         'Sommaire de la formation</p>',
     ),
-    # 2. City-link cards in service pages use <h4 class="text-h4">…</h4>.
-    #    The visible size is driven by class="text-h4", so we can change
-    #    the tag h4 → h3 to remove the H2→H4 jump without any visual diff.
+    # Widen the inline CSS selector that styled the old <h3> so the new
+    # <p class="lesson-sidebar-title"> keeps the SAME visual treatment.
+    # (The selector .lesson-sidebar h3 still works for any leftover h3 cases.)
     (
-        "city_card_h4_to_h3",
-        '<h4 class="text-h4">',
-        '<h3 class="text-h4">',
-    ),
-    # 3. Process-step cards use <h5 class="text-h4">. Same logic: tag swap
-    #    h5 → h3 fixes H2→H5 jumps; visual size is driven by class.
-    (
-        "process_step_h5_to_h3",
-        '<h5 class="text-h4">',
-        '<h3 class="text-h4">',
+        "lesson_sidebar_css_widen",
+        ".lesson-sidebar h3{",
+        ".lesson-sidebar h3,.lesson-sidebar .lesson-sidebar-title{",
     ),
 )
+# Note: tag-swap fixes for <h4 class="text-h4">/<h5 class="text-h4"> cards are
+# handled by regex in apply_structural_replacements (they tolerate inline
+# style="" and other attrs after the class).
 
 
 def apply_structural_replacements(path: Path, src: str) -> tuple[str, list[str]]:
     """Apply all matching STRUCTURAL_REPLACEMENTS and return (new_src, applied_labels).
-    Must also close the swapped end tag where unambiguous."""
+
+    Two families:
+      1. literal-string demotion (sidebar TOC <h3> → <p>)
+      2. regex tag-swap for visual cards that already carry class="text-hN".
+         Visual size is driven by the CSS class, so swapping the tag is safe.
+    """
     new_src = src
     applied: list[str] = []
-    for label, old, new in STRUCTURAL_REPLACEMENTS:
-        if old not in new_src:
-            continue
-        count = new_src.count(old)
-        new_src = new_src.replace(old, new)
 
-        # If we changed an opening tag h4→h3 or h5→h3, also close the
-        # corresponding </h4>/</h5>. The repo's lesson/service templates emit
-        # one closing tag per opening tag on the same logical line, so a
-        # 1-for-1 swap is safe ONLY if the global count of </hN> matches
-        # what we just replaced. To stay defensive we use a regex that closes
-        # specifically the run of h4 → h3 just made.
-        if label == "city_card_h4_to_h3":
-            # close the matching </h4> tags that were opened by these cards.
-            # Pattern: any '<h3 class="text-h4">TEXT</h4>' produced by the
-            # replace above — rewrite the </h4> within that span only.
-            new_src = re.sub(
-                r'(<h3 class="text-h4">[^<]{1,200}?)</h4>',
-                r"\1</h3>",
-                new_src,
-            )
-        if label == "process_step_h5_to_h3":
-            # NB: opener carries class="text-h4" (process cards reuse h4 size)
-            new_src = re.sub(
-                r'(<h3 class="text-h4">[^<]{1,200}?)</h5>',
-                r"\1</h3>",
-                new_src,
-            )
-        applied.append(f"{label}:{count}")
-    if applied:
+    # ---- (1) literal-string demotions ----
+    for label, old, new in STRUCTURAL_REPLACEMENTS:
+        if old in new_src:
+            count = new_src.count(old)
+            new_src = new_src.replace(old, new)
+            applied.append(f"{label}:{count}")
+
+    # ---- (2) regex tag swap for class="text-h*" headings ----
+    # Any <h4 ...class="text-h4"...>TEXT</h4>  →  <h3 ...>TEXT</h3>
+    h4_pattern = re.compile(
+        r'<h4(\s+[^>]*class="[^"]*\btext-h4\b[^"]*"[^>]*)>(.*?)</h4>',
+        re.S,
+    )
+    n_h4 = 0
+    def _h4_swap(m):
+        nonlocal n_h4
+        n_h4 += 1
+        return f"<h3{m.group(1)}>{m.group(2)}</h3>"
+    new_src = h4_pattern.sub(_h4_swap, new_src)
+    if n_h4:
+        applied.append(f"card_h4_swap:{n_h4}")
+
+    # Any <h5 ...class="text-h4"...>TEXT</h5>  →  <h3 ...>TEXT</h3>
+    h5_pattern = re.compile(
+        r'<h5(\s+[^>]*class="[^"]*\btext-h4\b[^"]*"[^>]*)>(.*?)</h5>',
+        re.S,
+    )
+    n_h5 = 0
+    def _h5_swap(m):
+        nonlocal n_h5
+        n_h5 += 1
+        return f"<h3{m.group(1)}>{m.group(2)}</h3>"
+    new_src = h5_pattern.sub(_h5_swap, new_src)
+    if n_h5:
+        applied.append(f"card_h5_swap:{n_h5}")
+
+    if applied and new_src != src:
         try:
             path.write_text(new_src, encoding="utf-8")
         except OSError:

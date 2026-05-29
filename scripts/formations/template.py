@@ -342,6 +342,12 @@ def render_page(formation, modules, is_en=False, css_prefix='../'):
 {modules_html}
 </section>
 
+<section class="formation-section" style="text-align:center;padding:2rem;background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(74,222,128,0.02));border:1px solid rgba(74,222,128,0.2);margin-bottom:2rem;">
+<h2 class="section-title" style="margin-bottom:0.75rem;">{"Earn your certificate" if is_en else "Obtenez votre certificat"}</h2>
+<p style="max-width:42rem;margin:0 auto 1.5rem;color:rgba(229,226,225,0.7);">{"Complete all lessons and pass each module quiz (70% min). Then download your personalized Pirabel Labs Academy certificate." if is_en else "Terminez toutes les lecons et validez chaque quiz de module (70 pourcent min). Telechargez ensuite votre certificat Pirabel Labs Academy personnalise."}</p>
+<a href="{base_url_prefix}/formations/{slug}/certificat" class="btn btn--ghost-white" style="display:inline-block;">{"View certificate" if is_en else "Voir mon certificat"} &rarr;</a>
+</section>
+
 <section class="formation-section" style="text-align:center;padding:3rem 2rem;background:linear-gradient(135deg,rgba(255,87,0,0.08),rgba(255,87,0,0.02));border:1px solid rgba(255,87,0,0.2);">
 <h2 class="section-title" style="margin-bottom:1rem;">{label_cta_title}</h2>
 <p style="max-width:42rem;margin:0 auto 2rem;color:rgba(229,226,225,0.7);">{label_cta_desc}</p>

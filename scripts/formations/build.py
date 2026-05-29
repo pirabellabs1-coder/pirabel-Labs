@@ -11,6 +11,9 @@ from catalog import FORMATIONS, LEVELS, CATEGORIES
 from template import render_page
 from lesson_template import render_lesson_page
 from content_seo import SEO_DEBUTANT_MODULES
+from content_generator import generate_lesson_content
+from lesson_titles import generate_lesson_titles
+from quiz_generator import render_quiz_page, render_certificate_page
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -21,74 +24,64 @@ DETAILED_CONTENT = {
 
 
 def make_skeleton_modules(formation):
-    """Genere les modules+lecons en skeleton pour formations non encore detaillees."""
+    """Genere les modules+lecons avec contenu UNIQUE par formation/module/lecon.
+
+    Utilise content_generator pour produire ~600 mots unique par lecon, et
+    lesson_titles pour des intitules de lecon SEO-friendly et distinctifs.
+    """
     title = formation['title_fr']
-    short = formation['short_fr']
     n_modules = formation['modules']
     n_lessons_total = formation['lessons']
-    # Repartition equilibree
     lessons_per_module = max(3, n_lessons_total // n_modules)
 
-    cat_intros = {
-        'seo': "Comprendre les fondamentaux,Pratique : audit complet,Construire l'autorite,Optimisation continue,Cas d'usage avances",
-        'web': "Bases & installation,Design & structure,Plugins & extensions,Performance & securite,Lancement & maintenance",
-        'marketing': "Strategie globale,Acquisition,Conversion & retention,Mesure & analytics,Optimisation continue",
-        'ads': "Setup & comptes,Creation campagnes,Optimisation,Mesure & attribution,Scaling avance",
-        'social': "Strategie & plateformes,Contenu & engagement,Community management,Mesure de performance,Publicite payante",
-        'content': "Strategie editoriale,Techniques de redaction,Distribution multi-canal,Mesure ROI,Optimisation continue",
-        'email': "Setup infrastructure,Segmentation & listes,Sequences automatisees,Delivrabilite,KPIs & optimisation",
-        'design': "Fondamentaux design,Outils & workflow,Identite & system,Application multi-supports,Livraison professionnelle",
-        'ai': "Comprendre l'IA,Prompts & cas usage,Integration outils,Workflows avances,Production & monitoring",
-        'data': "Setup & tracking,Collecte donnees,Analyse & insights,Reporting,Optimisation data-driven",
+    # Titres de modules contextualises par categorie
+    cat_module_titles = {
+        'seo': "Comprendre les fondamentaux du SEO,Audit technique et on-page,Strategie de contenu SEO,Netlinking et autorite,Mesure, suivi et optimisation continue,Cas d'usage avances et SEO IA generative,Approfondissement et certification".split(','),
+        'web': "Bases et installation,Design et structure des pages,Plugins, themes et extensions,Performance et securite,Lancement, SEO et maintenance,Approfondissement et bonnes pratiques pro,Production scalable".split(','),
+        'marketing': "Strategie globale et persona,Acquisition multi-canal,Conversion et nurturing,Retention et fidelisation,Mesure et analytics,Frameworks growth et optimisation,Industrialisation".split(','),
+        'ads': "Setup compte et tracking,Recherche d'audience et de mots-cles,Creation et A/B test des creas,Optimisation des campagnes,Mesure, attribution et reporting,Scaling avance et automation,Strategies post-iOS14".split(','),
+        'social': "Strategie et choix des plateformes,Contenu et formats natifs,Community management et engagement,Mesure de performance,Publicite payante associee,Influence et partenariats createurs,Industrialisation".split(','),
+        'content': "Strategie editoriale et persona,Recherche de mots-cles et briefs,Techniques de redaction persuasive,Distribution multi-canal et SEO,Mesure du ROI editorial,Optimisation continue et refresh,Workflow scalable".split(','),
+        'email': "Setup infrastructure et delivrabilite,Construction et segmentation de la base,Sequences automatisees et nurturing,Design email et A/B test,KPIs et optimisation continue,Approfondissement deliverability,Strategies avancees".split(','),
+        'design': "Fondamentaux du design visuel,Outils et workflow professionnel,Identite et design system,Application multi-supports,Livraison aux developpeurs,Approfondissement et specialisation,Production en equipe".split(','),
+        'ai': "Comprendre l'IA generative,Prompts et cas d'usage marketing,Integration aux outils existants,Workflows avances et agents,Production, monitoring et evals,Approfondissement et veille techno,Scaling en entreprise".split(','),
+        'data': "Setup et tracking,Collecte et qualite des donnees,Analyse et insights actionnables,Reporting et data viz,Optimisation data-driven,Approfondissement attribution et MMM,Industrialisation".split(','),
     }
-    module_titles = cat_intros.get(formation['cat'], "Module 1,Module 2,Module 3,Module 4,Module 5").split(',')
+    module_titles = cat_module_titles.get(formation['cat'], ["Module " + str(i+1) for i in range(n_modules)])
     while len(module_titles) < n_modules:
         module_titles.append(f"Module avance {len(module_titles)+1}")
 
-    placeholder_html = f"""<h2>Les points cles a maitriser</h2>
-<p>Cette le&ccedil;on couvre les fondamentaux indispensables pour reussir dans ce domaine. Voici la structure qui vous permettra de progresser de maniere methodique :</p>
-
-<h3>1. Comprendre avant d'agir</h3>
-<p>Avant toute mise en pratique, il est essentiel de saisir les principes sous-jacents. Trop de personnes se lancent dans la pratique sans avoir pose les fondations theoriques, ce qui conduit a des erreurs co&ucirc;teuses. Investissez du temps a comprendre le pourquoi avant le comment.</p>
-
-<h3>2. Appliquer sur un projet pilote</h3>
-<p>La theorie ne vaut que par sa mise en pratique. Choisissez un projet pilote a faible enjeu pour experimenter et valider vos acquis sans risque majeur. Les enseignements tires de ce premier essai vous serviront pour tous les suivants.</p>
-
-<h3>3. Mesurer avec des KPIs precis</h3>
-<p>Ce qui ne se mesure pas ne s'ameliore pas. Definissez d&egrave;s le depart 3 a 5 indicateurs cles qui vous permettront de juger objectivement les resultats de votre travail. Ces metriques doivent &ecirc;tre alignees sur vos objectifs business reels, pas sur des vanity metrics.</p>
-
-<h3>4. Iterer en continu</h3>
-<p>Le digital evolue constamment. Ce qui fonctionne aujourd'hui peut etre obsol&egrave;te dans 6 mois. Adoptez une posture d'apprentissage permanent et planifiez des cycles d'optimisation reguliers (mensuels au minimum).</p>
-
-<h3>5. Documenter et partager</h3>
-<p>Chaque apprentissage merite d'&ecirc;tre documente. Constituez un knowledge base interne (Notion, Confluence ou simple Google Doc) accessible a toute l'equipe. Cela evite de redecouvrir les m&ecirc;mes solutions et accelere la montee en competence de chacun.</p>
-
-<h2>Aller plus loin</h2>
-<p>Pour approfondir ce sujet et beneficier d'un accompagnement personnalise par nos experts, prenez rendez-vous pour un audit gratuit. Nous proposons des sessions de coaching individuel ou en equipe, en visio ou en presentiel a Abomey-Calavi et Cotonou.</p>
-"""
+    # Titres de lecons uniques par formation (SEO-friendly)
+    lesson_titles_map = generate_lesson_titles(formation, module_titles, n_modules, n_lessons_total)
 
     modules = []
     lesson_idx = 1
     for i in range(n_modules):
-        module_title = module_titles[i] if i < len(module_titles) else f"Module {i+1}"
+        module_idx = i + 1
+        module_title = module_titles[i].strip() if i < len(module_titles) else f"Module {module_idx}"
         lessons = []
-        # Distribuer les lecons sur tous les modules de facon equilibree
         n_this_module = lessons_per_module
         if i == n_modules - 1:
             n_this_module = n_lessons_total - lesson_idx + 1
         for j in range(n_this_module):
-            lesson_title = f"Le&ccedil;on {i+1}.{j+1} : aspect {j+1} de '{module_title.lower()}'"
+            l_idx = j + 1
+            lesson_title = lesson_titles_map.get((module_idx, l_idx),
+                f"Aspect {l_idx} de '{module_title.lower()}'")
+            # Contenu UNIQUE genere via content_generator
+            content_html = generate_lesson_content(
+                formation, module_idx, l_idx, module_title, lesson_title
+            )
             lessons.append({
                 'title': lesson_title,
                 'duration': 18,
-                'content_html': placeholder_html,
+                'content_html': content_html,
             })
             lesson_idx += 1
             if lesson_idx > n_lessons_total:
                 break
         modules.append({
             'title': module_title,
-            'objective': f"Maitriser tous les aspects de '{module_title.lower()}' dans le cadre de '{title}'.",
+            'objective': f"Maitriser tous les aspects de {module_title.lower()} dans le cadre de la formation {title}.",
             'duration': n_this_module * 18,
             'lessons': lessons,
         })
@@ -364,10 +357,28 @@ def main():
             (lesson_dir_en / f'm{m_i}-l{l_i}.html').write_text(html_en, encoding='utf-8')
             count_lessons += 2
 
+        # QCM pages : 1 per module (FR + EN)
+        for m_i, m in enumerate(modules, 1):
+            quiz_fr = render_quiz_page(f, m_i, m['title'], modules, is_en=False)
+            (lesson_dir_fr / f'm{m_i}-quiz.html').write_text(quiz_fr, encoding='utf-8')
+            quiz_en = render_quiz_page(f, m_i, m['title'], modules, is_en=True)
+            (lesson_dir_en / f'm{m_i}-quiz.html').write_text(quiz_en, encoding='utf-8')
+
+        # Certificate page (FR + EN)
+        cert_fr = render_certificate_page(f, modules, is_en=False)
+        (lesson_dir_fr / 'certificat.html').write_text(cert_fr, encoding='utf-8')
+        cert_en = render_certificate_page(f, modules, is_en=True)
+        (lesson_dir_en / 'certificat.html').write_text(cert_en, encoding='utf-8')
+
+    count_quizzes = sum(f['modules'] for f in FORMATIONS) * 2  # FR + EN
+    count_certs = len(FORMATIONS) * 2
+
     print(f"Catalog pages: 2 (FR + EN)")
     print(f"Formation summary pages: {count_formations}")
     print(f"Lesson pages: {count_lessons}")
-    print(f"Total: {count_formations + count_lessons + 2}")
+    print(f"Quiz pages: {count_quizzes}")
+    print(f"Certificate pages: {count_certs}")
+    print(f"Total: {count_formations + count_lessons + count_quizzes + count_certs + 2}")
 
 
 if __name__ == '__main__':

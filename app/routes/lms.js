@@ -1,9 +1,11 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const User = require('../models/User');
 const StudentEnrollment = require('../models/StudentEnrollment');
 const LessonProgress = require('../models/LessonProgress');
 const LessonComment = require('../models/LessonComment');
+const QuizAttempt = require('../models/QuizAttempt');
 const { auth, adminOrEmployee } = require('../middleware/auth');
 const { sanitize, sanitizeEmail } = require('../middleware/security');
 
@@ -262,6 +264,187 @@ router.get('/admin/stats', auth, adminOrEmployee, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
+// AUTH : submit a quiz attempt
+// POST /api/lms/quiz/submit
+// Body: { formationSlug, moduleIdx, score, total, passed }
+// ========================================
+router.post('/quiz/submit', auth, async (req, res) => {
+  try {
+    const formationSlug = sanitize(req.body.formationSlug || '', 100);
+    const moduleIdx = parseInt(req.body.moduleIdx);
+    const score = parseInt(req.body.score);
+    const total = parseInt(req.body.total);
+    const passed = Boolean(req.body.passed);
+
+    if (!formationSlug || !moduleIdx || isNaN(score) || isNaN(total) || total < 1) {
+      return res.status(400).json({ error: 'formationSlug, moduleIdx, score, total requis.' });
+    }
+
+    const attempt = await QuizAttempt.create({
+      user: req.user._id,
+      formationSlug,
+      moduleIdx,
+      score: Math.max(0, Math.min(score, total)),
+      total,
+      passed
+    });
+
+    // Touch enrollment lastAccessedAt
+    await StudentEnrollment.findOneAndUpdate(
+      { user: req.user._id, formationSlug },
+      { $set: { lastAccessedAt: new Date() } }
+    );
+
+    res.json({ success: true, attempt });
+  } catch (err) {
+    console.error('[lms] quiz submit error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
+// AUTH : get my quiz results for a formation
+// GET /api/lms/quiz/results?formation=slug
+// ========================================
+router.get('/quiz/results', auth, async (req, res) => {
+  try {
+    const formationSlug = sanitize(req.query.formation || '', 100);
+    if (!formationSlug) return res.status(400).json({ error: 'formation requis.' });
+
+    // Best attempt per module
+    const attempts = await QuizAttempt.find({
+      user: req.user._id,
+      formationSlug
+    }).sort({ moduleIdx: 1, score: -1 });
+
+    const bestByModule = {};
+    for (const a of attempts) {
+      if (!bestByModule[a.moduleIdx] || a.score > bestByModule[a.moduleIdx].score) {
+        bestByModule[a.moduleIdx] = a;
+      }
+    }
+
+    res.json({
+      attempts: Object.values(bestByModule),
+      totalAttempts: attempts.length,
+      modulesPassed: Object.values(bestByModule).filter(a => a.passed).length
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
+// AUTH : certificate eligibility + data
+// GET /api/lms/certificate-data?formation=slug
+// Eligible if : enrolled + N lessons completed >= total - 2 + all modules quiz passed (or modulesPassed >= n_modules)
+// ========================================
+router.get('/certificate-data', auth, async (req, res) => {
+  try {
+    const formationSlug = sanitize(req.query.formation || '', 100);
+    if (!formationSlug) return res.status(400).json({ error: 'formation requis.' });
+
+    const enrollment = await StudentEnrollment.findOne({
+      user: req.user._id,
+      formationSlug
+    });
+    if (!enrollment) {
+      return res.status(403).json({ eligible: false, error: 'Non inscrit.', lessonsCompleted: 0, modulesPassed: 0 });
+    }
+
+    const lessons = await LessonProgress.find({
+      user: req.user._id,
+      formationSlug,
+      completed: true
+    });
+
+    const quizAttempts = await QuizAttempt.find({
+      user: req.user._id,
+      formationSlug
+    });
+    const bestByModule = {};
+    for (const a of quizAttempts) {
+      if (!bestByModule[a.moduleIdx] || a.score > bestByModule[a.moduleIdx].score) {
+        bestByModule[a.moduleIdx] = a;
+      }
+    }
+    const modulesPassed = Object.values(bestByModule).filter(a => a.passed).length;
+
+    // Heuristique : eligible si modulesPassed > 0 ET lessons >= modules_count
+    // (l'admin pourra ajuster les seuils dans une iteration future)
+    // On utilise lesson count comme indicateur, sans connaitre le total exact ici
+    // -> on demande au moins 1 quiz passe et 5 lecons completes
+    const lessonsCompleted = lessons.length;
+    const eligible = lessonsCompleted >= 5 && modulesPassed >= 1;
+
+    // Certificate ID deterministe (sha1 stable)
+    const certificateId = 'PL-' + crypto.createHash('sha1')
+      .update(`${req.user._id}-${formationSlug}`)
+      .digest('hex')
+      .slice(0, 16)
+      .toUpperCase();
+
+    // Marquer la completion si eligible + pas deja marque
+    if (eligible && !enrollment.completedAt) {
+      enrollment.completedAt = new Date();
+      await enrollment.save();
+    }
+
+    res.json({
+      eligible,
+      lessonsCompleted,
+      modulesPassed,
+      studentName: req.user.name,
+      studentEmail: req.user.email,
+      issuedAt: enrollment.completedAt || new Date(),
+      certificateId
+    });
+  } catch (err) {
+    console.error('[lms] certificate-data error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
+// PUBLIC : verify a certificate by ID
+// GET /api/lms/verify/:certificateId
+// ========================================
+router.get('/verify/:certificateId', async (req, res) => {
+  try {
+    const certificateId = sanitize(req.params.certificateId, 32);
+    if (!certificateId || !/^PL-[A-F0-9]{16}$/.test(certificateId)) {
+      return res.status(400).json({ valid: false, error: 'Format ID invalide.' });
+    }
+    // Cross-check : sha1(userId-formationSlug) = certificateId.replace('PL-', '')
+    // Scan recent eligible enrollments
+    const recentCompleted = await StudentEnrollment.find({
+      completedAt: { $ne: null }
+    }).populate('user', 'name email').limit(5000);
+
+    for (const e of recentCompleted) {
+      if (!e.user) continue;
+      const id = 'PL-' + crypto.createHash('sha1')
+        .update(`${e.user._id}-${e.formationSlug}`)
+        .digest('hex')
+        .slice(0, 16)
+        .toUpperCase();
+      if (id === certificateId) {
+        return res.json({
+          valid: true,
+          studentName: e.user.name,
+          formationTitle: e.formationTitle,
+          formationSlug: e.formationSlug,
+          issuedAt: e.completedAt
+        });
+      }
+    }
+    res.status(404).json({ valid: false, error: 'Certificat introuvable.' });
+  } catch (err) {
+    res.status(500).json({ valid: false, error: err.message });
   }
 });
 

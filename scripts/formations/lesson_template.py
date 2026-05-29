@@ -518,6 +518,12 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
 
 {complete_btn}
 
+{(lambda: f'''<div class="quiz-cta-banner" style="margin:2rem 0;padding:1.5rem;background:linear-gradient(135deg,rgba(74,222,128,0.12),rgba(74,222,128,0.04));border:1px solid rgba(74,222,128,0.3);border-radius:4px;text-align:center;">
+<strong style="font-size:1.05rem;display:block;margin-bottom:0.5rem;">{"You have finished this module!" if is_en else "Vous avez termine ce module !"}</strong>
+<p style="margin:0 0 1rem;color:rgba(229,226,225,0.7);font-size:0.95rem;">{"Validate your knowledge with the module quiz to unlock the next module." if is_en else "Validez vos acquis avec le quiz du module pour debloquer le suivant."}</p>
+<a href="{formation_url}/m{module_idx}-quiz" class="btn btn--orange" style="display:inline-block;padding:0.85rem 1.5rem;">{"Take the quiz" if is_en else "Passer le quiz"} &rarr;</a>
+</div>''')() if lesson_idx == len(module.get("lessons", [])) else ""}
+
 <div class="lesson-nav">
 {prev_html if prev_html else '<div></div>'}
 {next_html if next_html else '<div></div>'}

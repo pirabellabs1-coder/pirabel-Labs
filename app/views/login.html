@@ -163,8 +163,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     if (data.success) {
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
-      if (data.user.role === 'client') window.location.href = '/portal';
-      else window.location.href = '/dashboard';
+      await routeAfterLogin(data.user);
     } else {
       showError(data.error || 'Erreur de connexion');
     }
@@ -172,6 +171,38 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     showError('Erreur de connexion au serveur');
   }
 });
+
+// Routing intelligent : si ?next=... -> y aller. Sinon : admin -> /dashboard,
+// client AVEC enrollments LMS -> /mon-espace-eleve (etudiant), sinon -> /portal (CRM).
+async function routeAfterLogin(user){
+  // 1) Honorer ?next=... si URL safe (commence par /, pas //)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next');
+    if (next && next.startsWith('/') && !next.startsWith('//')){
+      window.location.href = next;
+      return;
+    }
+  } catch(e){}
+  // 2) Admin / employee -> dashboard CRM
+  if (user.role && user.role !== 'client'){
+    window.location.href = '/dashboard';
+    return;
+  }
+  // 3) Client : detecter si etudiant (enrollments) ou CRM client (projets)
+  try {
+    const r = await fetch('/api/lms/me', { credentials: 'include' });
+    if (r.ok){
+      const d = await r.json();
+      if ((d.enrollments || []).length > 0){
+        window.location.href = '/mon-espace-eleve';
+        return;
+      }
+    }
+  } catch(e){}
+  // 4) Par defaut : portal CRM
+  window.location.href = '/portal';
+}
 
 // ETAPE 2 : Demande de reset (envoi du code par email)
 document.getElementById('forgotForm').addEventListener('submit', async (e) => {
@@ -231,7 +262,7 @@ document.getElementById('resetForm').addEventListener('submit', async (e) => {
           if (d2.success) {
             localStorage.setItem('user', JSON.stringify(d2.user));
             localStorage.setItem('token', d2.token);
-            window.location.href = d2.user.role === 'client' ? '/portal' : '/dashboard';
+            await routeAfterLogin(d2.user);
           } else {
             showSuccess('Mot de passe mis a jour. Retournez a la connexion.');
             showStep('step-login');

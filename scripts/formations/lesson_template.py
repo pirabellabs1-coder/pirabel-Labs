@@ -40,8 +40,19 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
     href_fr = canonical.replace('/en/', '/')
     href_en = canonical if is_en else canonical.replace('https://www.pirabellabs.com/', 'https://www.pirabellabs.com/en/')
 
-    page_title = f"{lesson['title']} - {f_title} | Pirabel Labs"
-    page_desc = f"{lesson['title'][:140]} - Module : {module['title'][:60]}"
+    # SEO-friendly title : lesson title + brand only if total < 60 chars
+    lesson_t = lesson['title']
+    if len(lesson_t) > 50:
+        page_title = lesson_t[:65].rstrip()
+    else:
+        page_title = f"{lesson_t} | Pirabel Labs Academy"
+    # Meta description riche : lecon + module + duration + format
+    if is_en:
+        page_desc = f"Lesson {module_idx}.{lesson_idx}: {lesson_t[:80]}. Module {module_idx} of {f_title[:50]}. {lesson.get('duration', 15)} min, free training by Pirabel Labs Academy."
+    else:
+        page_desc = f"Lecon {module_idx}.{lesson_idx} : {lesson_t[:80]}. Module {module_idx} de {f_title[:50]}. {lesson.get('duration', 15)} min, formation gratuite Pirabel Labs Academy."
+    if len(page_desc) > 160:
+        page_desc = page_desc[:157].rstrip() + '...'
 
     # Sidebar TOC
     toc_html = ''

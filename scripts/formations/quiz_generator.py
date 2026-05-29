@@ -159,8 +159,12 @@ def render_quiz_page(formation, module_idx, module_title, all_modules, is_en=Fal
     f_title = formation['title_en' if is_en else 'title_fr']
     formation_url = f"{base_url}/formations/{slug}"
     canonical = f"https://www.pirabellabs.com{formation_url}/m{module_idx}-quiz"
-    page_title = f"Quiz Module {module_idx} : {module_title} - {f_title} | Pirabel Labs"
-    page_desc = f"QCM de validation du module {module_idx} ({module_title}) de la formation {f_title}. 5 questions pour valider vos acquis."
+    # SEO-friendly title cap a 65 chars
+    short_title = f"Quiz Module {module_idx} - {module_title}"
+    page_title = short_title[:65].rstrip()
+    page_desc = f"QCM de validation du module {module_idx} ({module_title[:50]}) de {f_title[:50]}. 5 questions, valider a 70 pour avancer."
+    if len(page_desc) > 160:
+        page_desc = page_desc[:157].rstrip() + '...'
 
     # Next module link
     n_modules = len(all_modules)

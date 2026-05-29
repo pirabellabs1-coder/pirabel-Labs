@@ -80,8 +80,8 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
         next_html = f'<a href="{next_link["href"]}" class="lesson-nav-btn lesson-nav-next"><span class="lesson-nav-label">{next_label} &rarr;</span><span class="lesson-nav-title">{html_lib.escape(next_link["title"][:50])}</span></a>'
 
     # Nav links global
-    nav_links_fr = '<a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="/guides/">GUIDES</a><a href="/formations/" class="active">FORMATIONS</a><a href="/resultats">RESULTATS</a><a href="/a-propos">A PROPOS</a>'
-    nav_links_en = '<a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/en/resultats">RESULTS</a><a href="/en/a-propos">ABOUT</a>'
+    nav_links_fr = '<a href="/">ACCUEIL</a><a href="/services">SERVICES</a><a href="/blog">BLOG</a><a href="/guides/">GUIDES</a><a href="/formations/" class="active">FORMATIONS</a><a href="/mon-espace-eleve">MON ESPACE</a><a href="/a-propos">A PROPOS</a>'
+    nav_links_en = '<a href="/en/">HOME</a><a href="/en/services">SERVICES</a><a href="/en/blog">BLOG</a><a href="/en/guides/">GUIDES</a><a href="/en/formations/" class="active">TRAININGS</a><a href="/mon-espace-eleve">MY SPACE</a><a href="/en/a-propos">ABOUT</a>'
     nav_links = nav_links_en if is_en else nav_links_fr
 
     # Comments anchor (custom backend system)

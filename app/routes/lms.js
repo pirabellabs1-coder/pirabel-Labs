@@ -268,6 +268,126 @@ router.get('/admin/stats', auth, adminOrEmployee, async (req, res) => {
 });
 
 // ========================================
+// AUTH : student dashboard (1-shot aggregate)
+// GET /api/lms/student-dashboard
+// Renvoie : user + enrollments enrichies (progress %, quiz scores, certificate state)
+// ========================================
+router.get('/student-dashboard', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Catalog metadata (lessons/modules count per formation)
+    // Mirror exactly catalog.py
+    const CATALOG = {
+      'seo-debutant': { lessons: 25, modules: 5 },
+      'seo-intermediaire': { lessons: 30, modules: 6 },
+      'seo-avance': { lessons: 32, modules: 7 },
+      'seo-local-google-business': { lessons: 22, modules: 5 },
+      'wordpress-debutant': { lessons: 28, modules: 5 },
+      'wordpress-intermediaire': { lessons: 30, modules: 6 },
+      'wordpress-securite-performance': { lessons: 24, modules: 5 },
+      'shopify-marchand-debutant': { lessons: 26, modules: 5 },
+      'marketing-digital-fondamentaux': { lessons: 28, modules: 6 },
+      'marketing-digital-strategie-avancee': { lessons: 30, modules: 6 },
+      'inbound-marketing-complet': { lessons: 28, modules: 5 },
+      'google-ads-debutant': { lessons: 26, modules: 5 },
+      'meta-ads-facebook-instagram': { lessons: 28, modules: 6 },
+      'tiktok-ads-creator-economy': { lessons: 22, modules: 5 },
+      'social-media-strategie-complete': { lessons: 28, modules: 6 },
+      'linkedin-b2b-personal-branding': { lessons: 20, modules: 5 },
+      'copywriting-persuasif': { lessons: 26, modules: 5 },
+      'content-marketing-strategique': { lessons: 26, modules: 5 },
+      'redaction-seo-articles-qui-rankent': { lessons: 24, modules: 5 },
+      'email-marketing-complet': { lessons: 26, modules: 5 },
+      'newsletter-monetisation-creator': { lessons: 22, modules: 5 },
+      'branding-identite-visuelle': { lessons: 26, modules: 6 },
+      'ui-design-figma-mastery': { lessons: 30, modules: 6 },
+      'motion-design-after-effects-marketing': { lessons: 28, modules: 5 },
+      'ia-generative-marketing': { lessons: 24, modules: 5 },
+      'agents-ia-chatbots-entreprise': { lessons: 32, modules: 7 },
+      'automatisation-make-zapier-n8n': { lessons: 28, modules: 6 },
+      'prompt-engineering-avance': { lessons: 24, modules: 5 },
+      'ga4-google-analytics-mastery': { lessons: 26, modules: 5 },
+      'cro-conversion-optimization': { lessons: 26, modules: 5 },
+    };
+
+    const [enrollments, allProgress, allQuizzes] = await Promise.all([
+      StudentEnrollment.find({ user: userId }).sort({ lastAccessedAt: -1 }),
+      LessonProgress.find({ user: userId }),
+      QuizAttempt.find({ user: userId }),
+    ]);
+
+    const formations = enrollments.map(e => {
+      const lessons = allProgress.filter(p => p.formationSlug === e.formationSlug);
+      const completed = lessons.filter(l => l.completed).length;
+      const quizzes = allQuizzes.filter(q => q.formationSlug === e.formationSlug);
+      const bestByModule = {};
+      for (const q of quizzes) {
+        if (!bestByModule[q.moduleIdx] || q.score > bestByModule[q.moduleIdx].score) {
+          bestByModule[q.moduleIdx] = q;
+        }
+      }
+      const passedQuizzes = Object.values(bestByModule).filter(q => q.passed).length;
+      const meta = CATALOG[e.formationSlug] || { lessons: 25, modules: 5 };
+      const progressPct = Math.min(100, Math.round((completed / meta.lessons) * 100));
+      const eligibleCertificate = completed >= 5 && passedQuizzes >= 1;
+
+      return {
+        slug: e.formationSlug,
+        title: e.formationTitle,
+        language: e.language,
+        enrolledAt: e.enrolledAt,
+        lastAccessedAt: e.lastAccessedAt,
+        completedAt: e.completedAt,
+        totalLessons: meta.lessons,
+        totalModules: meta.modules,
+        completedLessons: completed,
+        progressPct,
+        passedQuizzes,
+        bestQuizScores: Object.values(bestByModule).map(q => ({
+          moduleIdx: q.moduleIdx,
+          score: q.score,
+          total: q.total,
+          passed: q.passed,
+          attemptedAt: q.attemptedAt,
+        })),
+        eligibleCertificate,
+        certificateUrl: eligibleCertificate ? `/formations/${e.formationSlug}/certificat` : null,
+        resumeUrl: `/formations/${e.formationSlug}/m1-l1`,
+      };
+    });
+
+    // Aggregate stats
+    const totalLessonsAll = formations.reduce((s, f) => s + f.totalLessons, 0);
+    const completedAll = formations.reduce((s, f) => s + f.completedLessons, 0);
+    const certificatesEarned = formations.filter(f => f.eligibleCertificate).length;
+    const totalQuizPassed = formations.reduce((s, f) => s + f.passedQuizzes, 0);
+
+    res.json({
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+        memberSince: req.user.createdAt,
+      },
+      stats: {
+        formationsEnrolled: formations.length,
+        totalLessons: totalLessonsAll,
+        lessonsCompleted: completedAll,
+        completionRate: totalLessonsAll ? Math.round((completedAll / totalLessonsAll) * 100) : 0,
+        quizzesPassed: totalQuizPassed,
+        certificatesEarned,
+      },
+      formations,
+    });
+  } catch (err) {
+    console.error('[lms] student-dashboard error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
 // AUTH : submit a quiz attempt
 // POST /api/lms/quiz/submit
 // Body: { formationSlug, moduleIdx, score, total, passed }

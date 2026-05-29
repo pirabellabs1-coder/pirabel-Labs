@@ -196,6 +196,10 @@ app.get('/case-studies', (req, res) => res.sendFile(path.join(__dirname, 'views'
 app.get('/lms-students', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-students.html')));
 app.get('/lms-comments', (req, res) => res.sendFile(path.join(__dirname, 'views', 'lms-comments.html')));
 
+// Espace etudiant : page publique (auth check cote client)
+app.get('/mon-espace-eleve', (req, res) => res.sendFile(path.join(__dirname, 'views', 'student-space.html')));
+app.get('/student-space', (req, res) => res.sendFile(path.join(__dirname, 'views', 'student-space.html')));
+
 // URLs admin/client : tokens unguessable, multi-paths (env + defaults)
 const ADMIN_PATHS = new Set([
   'gestion-v71k4724gxxyrmmb',

@@ -140,10 +140,13 @@ const BLOCKED = ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php
 BLOCKED.forEach(r => app.get(r, (_, res) => res.status(404).send('Not Found')));
 
 // Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous', 'case-studies', 'lms-students', 'lms-comments'];
+const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous', 'case-studies', 'lms-students', 'lms-comments', 'student-space'];
 views.forEach(v => {
   app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
 });
+
+// Alias public : /mon-espace-eleve (auth verif cote client par fetch /api/lms/student-dashboard)
+app.get('/mon-espace-eleve', (req, res) => res.sendFile(path.join(viewsPath, 'student-space.html')));
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));

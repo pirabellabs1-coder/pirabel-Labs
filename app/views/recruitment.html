@@ -746,7 +746,7 @@ function renderJobs() {
   });
   const el = document.getElementById('jobs-list');
   if (!list.length){
-    el.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">work_off</span><h3>Aucune offre</h3><p>${allJobs.length ? 'Aucun resultat pour ces filtres.' : 'Creez votre premiere offre d\\'emploi en cliquant sur le bouton Nouvelle offre en haut a droite.'}</p>${!allJobs.length ? '<button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined">add</span> Nouvelle offre</button>' : ''}</div>`;
+    el.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">work_off</span><h3>Aucune offre</h3><p>${allJobs.length ? 'Aucun resultat pour ces filtres.' : "Creez votre premiere offre d'emploi en cliquant sur le bouton Nouvelle offre en haut a droite."}</p>${!allJobs.length ? '<button class="btn-primary" onclick="openCreate()"><span class="material-symbols-outlined">add</span> Nouvelle offre</button>' : ''}</div>`;
     return;
   }
   el.innerHTML = list.map(j => renderCard(j)).join('');
@@ -804,7 +804,7 @@ function openCreate(){
   job = blankJob();
   currentStep = 0;
   hydrateForm();
-  document.getElementById('wiz-title').textContent = 'Nouvelle offre d\\'emploi';
+  document.getElementById('wiz-title').textContent = "Nouvelle offre d'emploi";
   document.getElementById('wiz').classList.add('show');
   document.body.style.overflow = 'hidden';
   goStep(0);
@@ -1221,7 +1221,7 @@ async function duplicateJob(id){
 function closeJobPrompt(id, title){
   const box = document.getElementById('confirm-overlay');
   document.getElementById('confirm-title').textContent = `Fermer : ${title}`;
-  document.getElementById('confirm-text').textContent = 'L\\'offre restera visible sur la page publique avec un badge "Ferme", mais n\\'acceptera plus de candidatures.';
+  document.getElementById('confirm-text').textContent = "L'offre restera visible sur la page publique avec un badge Ferme, mais n'acceptera plus de candidatures.";
   document.getElementById('confirm-extra').innerHTML = `
     <label style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;display:block;">Raison de fermeture</label>
     <select id="close-reason">
@@ -1249,7 +1249,7 @@ async function reopenJob(id){
 function deleteJob(id, title){
   const box = document.getElementById('confirm-overlay');
   document.getElementById('confirm-title').textContent = `Supprimer : ${title}`;
-  document.getElementById('confirm-text').textContent = 'Action irreversible. L\\'offre ET toutes les candidatures associees seront definitivement supprimees. Considerez plutot la fermeture si vous voulez la garder visible.';
+  document.getElementById('confirm-text').textContent = "Action irreversible. L'offre ET toutes les candidatures associees seront definitivement supprimees. Considerez plutot la fermeture si vous voulez la garder visible.";
   document.getElementById('confirm-extra').innerHTML = '';
   document.getElementById('confirm-action').onclick = async () => {
     const res = await api('/recruitment/jobs/' + id, { method: 'DELETE' });

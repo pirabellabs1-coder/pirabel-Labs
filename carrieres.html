@@ -25,15 +25,40 @@
 .hero-careers h1{font-family:var(--font-headline);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;}
 .hero-careers h1 span{color:#FF5500;}
 .hero-careers p{font-size:1.15rem;color:var(--on-surface-variant);max-width:600px;margin:0 auto;}
-.jobs{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
-.job{background:var(--surface-container);border:1px solid var(--outline-variant);padding:2rem;transition:border-color .3s,transform .3s;text-decoration:none;color:var(--on-surface);display:flex;flex-direction:column;}
-.job:hover{border-color:#FF5500;transform:translateY(-4px);}
-.job-type{display:inline-block;background:rgba(255,85,0,.1);color:#FF5500;padding:.3rem .7rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:1rem;align-self:flex-start;}
-.job h3{font-family:var(--font-headline);font-size:1.25rem;font-weight:700;margin-bottom:.5rem;}
-.job-meta{font-size:.8rem;color:var(--on-surface-variant);margin-bottom:1rem;}
-.job-desc{font-size:.85rem;color:var(--on-surface-variant);margin-bottom:1.5rem;flex:1;}
-.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:#FF5500;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;}
-.empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--on-surface-variant);}
+.jobs-toolbar{max-width:var(--max-w);margin:0 auto 1.5rem;padding:0 var(--px-page);display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;}
+.jobs-count{font-family:var(--font-headline);font-size:.85rem;color:rgba(229,226,225,.55);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-right:auto;}
+.jobs-filter{display:flex;gap:.4rem;flex-wrap:wrap;}
+.jobs-filter-pill{padding:.5rem 1rem;background:transparent;border:1px solid rgba(92,64,55,.3);color:rgba(229,226,225,.65);font-family:var(--font-headline);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;cursor:pointer;transition:all .2s;}
+.jobs-filter-pill:hover{border-color:#FF5500;color:#fff;}
+.jobs-filter-pill.active{background:#FF5500;border-color:#FF5500;color:#fff;}
+.jobs{max-width:var(--max-w);margin:0 auto;padding:0 var(--px-page) 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;}
+.job{background:var(--surface-container);border:1px solid var(--outline-variant);padding:1.75rem;transition:border-color .3s,transform .3s,box-shadow .3s;text-decoration:none;color:var(--on-surface);display:flex;flex-direction:column;position:relative;}
+.job:hover{border-color:#FF5500;transform:translateY(-4px);box-shadow:0 16px 40px rgba(255,85,0,.1);}
+.job-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.85rem;align-items:center;}
+.job-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .65rem;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:var(--font-headline);border:1px solid transparent;}
+.job-badge.type{background:rgba(255,85,0,.1);color:#FF5500;}
+.job-badge.remote{background:rgba(46,204,113,.1);color:#2ecc71;}
+.job-badge.featured{background:rgba(255,85,0,.18);color:#fff;border-color:#FF5500;}
+.job-badge.urgent{background:rgba(231,76,60,.12);color:#e74c3c;border-color:rgba(231,76,60,.3);}
+.job-badge.closed{background:rgba(231,76,60,.12);color:#e74c3c;border-color:rgba(231,76,60,.35);}
+.job-badge.pause{background:rgba(243,156,18,.12);color:#f39c12;border-color:rgba(243,156,18,.35);}
+.job-badge .material-symbols-outlined{font-size:.85rem;}
+.job h3{font-family:var(--font-headline);font-size:1.2rem;font-weight:700;margin-bottom:.5rem;line-height:1.3;}
+.job-meta{font-size:.78rem;color:rgba(229,226,225,.55);margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:.4rem .85rem;align-items:center;}
+.job-meta span{display:inline-flex;align-items:center;gap:.25rem;}
+.job-meta .material-symbols-outlined{font-size:.9rem;}
+.job-salary{display:inline-block;padding:.4rem .75rem;background:rgba(255,85,0,.08);color:#FF5500;font-family:var(--font-headline);font-weight:700;font-size:.8rem;margin-bottom:1rem;border:1px solid rgba(255,85,0,.18);}
+.job-desc{font-size:.85rem;color:rgba(229,226,225,.7);margin-bottom:1.5rem;flex:1;line-height:1.55;}
+.job-cta{display:inline-flex;align-items:center;gap:.5rem;color:#FF5500;font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-headline);padding-top:1rem;border-top:1px solid rgba(92,64,55,.15);}
+.job-cta .material-symbols-outlined{font-size:1rem;transition:transform .2s;}
+.job:hover .job-cta .material-symbols-outlined{transform:translateX(3px);}
+.job.is-closed,.job.is-pause{opacity:.78;}
+.job.is-closed:hover,.job.is-pause:hover{opacity:.95;}
+.job.is-closed .job-cta{color:rgba(229,226,225,.5);}
+.job.is-pause .job-cta{color:#f39c12;}
+.empty{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:rgba(229,226,225,.55);}
+.empty h2{font-family:var(--font-headline);margin-bottom:1rem;color:rgba(229,226,225,.85);}
+.empty p{max-width:480px;margin:0 auto;}
 </style>
 
 <style>
@@ -89,6 +114,14 @@
   <p>Construisons ensemble l'agence marketing digital de demain. Talents passionnés, projets ambitieux, équipe bienveillante.</p>
 </section>
 
+<div class="jobs-toolbar">
+  <span class="jobs-count" id="jobs-count">Chargement...</span>
+  <div class="jobs-filter" id="jobs-filter">
+    <button class="jobs-filter-pill active" data-filter="all">Toutes</button>
+    <button class="jobs-filter-pill" data-filter="open">Ouvertes</button>
+    <button class="jobs-filter-pill" data-filter="closed">Fermees</button>
+  </div>
+</div>
 <section class="jobs" id="jobs-list">
   <div class="empty">Chargement des offres...</div>
 </section>
@@ -259,29 +292,99 @@
 <script src="js/config.js"></script>
 <script src="js/global.js?v=5" defer></script>
 <script>
+let ALL_JOBS = [];
+let CURRENT_FILTER = 'all';
+
+function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function formatSalary(j){
+  if (j.salaryHidden) return '';
+  if (j.salary) return j.salary;
+  if (!j.salaryMin && !j.salaryMax) return '';
+  const sym = { EUR:'€', USD:'$', GBP:'£', FCFA:'FCFA', MAD:'MAD', CAD:'CAD$' }[j.salaryCurrency] || j.salaryCurrency || '';
+  const per = { month:'/mois', year:'/an', day:'/jour', project:'(forfait)' }[j.salaryPeriod] || '';
+  if (j.salaryMin && j.salaryMax) return `${j.salaryMin.toLocaleString('fr-FR')} - ${j.salaryMax.toLocaleString('fr-FR')} ${sym} ${per}`;
+  if (j.salaryMax) return `Jusqu'a ${j.salaryMax.toLocaleString('fr-FR')} ${sym} ${per}`;
+  return `Des ${j.salaryMin.toLocaleString('fr-FR')} ${sym} ${per}`;
+}
+
+function renderJob(j){
+  const isClosed = j.status === 'ferme';
+  const isPause = j.status === 'pause';
+  const remLabel = { 'on-site':'Sur site', 'remote':'100% remote', 'hybrid':'Hybride' }[j.remoteMode] || '';
+  const closedReason = {
+    filled: 'Poste pourvu',
+    cancelled: 'Recrutement annule',
+    expired: 'Date limite depassee',
+    paused: 'En pause'
+  }[j.closedReason] || 'Recrutement cloture';
+
+  const badges = [
+    `<span class="job-badge type">${escapeHtml(j.type || 'CDI')}</span>`,
+    j.remoteMode === 'remote' ? '<span class="job-badge remote"><span class="material-symbols-outlined">public</span> Remote</span>' : '',
+    j.featured ? '<span class="job-badge featured"><span class="material-symbols-outlined">star</span> Vedette</span>' : '',
+    j.urgent && !isClosed ? '<span class="job-badge urgent"><span class="material-symbols-outlined">local_fire_department</span> Urgent</span>' : '',
+    isClosed ? `<span class="job-badge closed"><span class="material-symbols-outlined">lock</span> ${escapeHtml(closedReason)}</span>` : '',
+    isPause ? '<span class="job-badge pause"><span class="material-symbols-outlined">pause_circle</span> En pause</span>' : ''
+  ].filter(Boolean).join('');
+
+  const meta = [
+    j.department ? `<span><span class="material-symbols-outlined">business</span> ${escapeHtml(j.department)}</span>` : '',
+    j.location ? `<span><span class="material-symbols-outlined">location_on</span> ${escapeHtml(j.location)}</span>` : '',
+    remLabel ? `<span><span class="material-symbols-outlined">public</span> ${remLabel}</span>` : '',
+    j.experienceLevel && j.experienceLevel !== 'Indifferent' ? `<span><span class="material-symbols-outlined">trending_up</span> ${escapeHtml(j.experienceLevel)}</span>` : ''
+  ].filter(Boolean).join('');
+
+  const salary = formatSalary(j);
+  const description = j.shortDescription || j.description || '';
+  const desc = escapeHtml(description.slice(0, 160)) + (description.length > 160 ? '...' : '');
+  const cta = isClosed ? 'Voir les details &middot; Ferme' : (isPause ? 'Voir les details &middot; Pause' : 'Postuler maintenant');
+
+  return `
+    <a href="/candidature?slug=${j.slug}" class="job ${isClosed ? 'is-closed' : ''} ${isPause ? 'is-pause' : ''}">
+      <div class="job-badges">${badges}</div>
+      <h3>${escapeHtml(j.title)}</h3>
+      ${meta ? `<div class="job-meta">${meta}</div>` : ''}
+      ${salary ? `<div class="job-salary">${escapeHtml(salary)}</div>` : ''}
+      ${desc ? `<div class="job-desc">${desc}</div>` : ''}
+      <div class="job-cta">${cta} <span class="material-symbols-outlined">arrow_forward</span></div>
+    </a>`;
+}
+
+function render(){
+  const list = document.getElementById('jobs-list');
+  const countEl = document.getElementById('jobs-count');
+  let filtered = ALL_JOBS;
+  if (CURRENT_FILTER === 'open') filtered = ALL_JOBS.filter(j => j.status === 'ouvert');
+  else if (CURRENT_FILTER === 'closed') filtered = ALL_JOBS.filter(j => j.status === 'ferme' || j.status === 'pause');
+  const openCount = ALL_JOBS.filter(j => j.status === 'ouvert').length;
+  const closedCount = ALL_JOBS.filter(j => j.status === 'ferme' || j.status === 'pause').length;
+  countEl.textContent = `${openCount} ouverte${openCount > 1 ? 's' : ''} &middot; ${closedCount} fermee${closedCount > 1 ? 's' : ''}`;
+  if (!filtered.length){
+    list.innerHTML = `<div class="empty"><h2>${CURRENT_FILTER === 'closed' ? 'Aucune offre fermee a l\\'affichage' : (CURRENT_FILTER === 'open' ? 'Aucune offre ouverte actuellement' : 'Aucune offre publiee')}</h2><p>${CURRENT_FILTER === 'open' ? 'Revenez bientot ou envoyez une candidature spontanee a' : 'Envoyez-nous une candidature spontanee a'} <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(renderJob).join('');
+}
+
+document.querySelectorAll('.jobs-filter-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.jobs-filter-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    CURRENT_FILTER = p.dataset.filter;
+    render();
+  });
+});
+
 fetch('/api/recruitment/jobs/public')
   .then(r => r.json())
   .then(data => {
-    const list = document.getElementById('jobs-list');
-    if (!data.jobs || !data.jobs.length) {
-      list.innerHTML = '<div class="empty"><h2 style="font-family:var(--font-headline);margin-bottom:1rem;">Aucune offre ouverte pour le moment</h2><p>Envoyez-nous une candidature spontanée à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p></div>';
-      return;
-    }
-    list.innerHTML = data.jobs.map(j => `
-      <a href="/candidature?slug=${j.slug}" class="job">
-        <span class="job-type">${escapeHtml(j.type)}</span>
-        <h3>${escapeHtml(j.title)}</h3>
-        <div class="job-meta">${escapeHtml(j.department || '')} ${j.location ? '· ' + escapeHtml(j.location) : ''} ${j.salary ? '· ' + escapeHtml(j.salary) : ''}</div>
-        <div class="job-desc">${escapeHtml((j.description || '').slice(0, 140))}${(j.description || '').length > 140 ? '...' : ''}</div>
-        <div class="job-cta">Postuler <span class="material-symbols-outlined" style="font-size:1rem;">arrow_forward</span></div>
-      </a>
-    `).join('');
+    ALL_JOBS = data.jobs || [];
+    render();
   })
   .catch(() => {
-    document.getElementById('jobs-list').innerHTML = '<div class="empty">Erreur de chargement. Réessayez plus tard.</div>';
+    document.getElementById('jobs-list').innerHTML = '<div class="empty">Erreur de chargement. Reessayez plus tard.</div>';
   });
-
-function escapeHtml(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 </script>
 
 <div class="lang-switch"><a href="#" class="active">FR</a><a href="/en/carrieres.html">EN</a></div>

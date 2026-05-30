@@ -128,31 +128,94 @@ if (!slug) {
     .catch(() => { document.getElementById('container').innerHTML = '<div class="empty">Erreur de chargement</div>'; });
 }
 
+function formatSalary(j){
+  if (j.salaryHidden) return '';
+  if (j.salary) return j.salary;
+  if (!j.salaryMin && !j.salaryMax) return '';
+  const sym = { EUR:'€', USD:'$', GBP:'£', FCFA:'FCFA', MAD:'MAD', CAD:'CAD$' }[j.salaryCurrency] || j.salaryCurrency || '';
+  const per = { month:'/mois', year:'/an', day:'/jour', project:'(forfait)' }[j.salaryPeriod] || '';
+  if (j.salaryMin && j.salaryMax) return `${j.salaryMin.toLocaleString('fr-FR')} - ${j.salaryMax.toLocaleString('fr-FR')} ${sym} ${per}`;
+  if (j.salaryMax) return `Jusqu'a ${j.salaryMax.toLocaleString('fr-FR')} ${sym} ${per}`;
+  return `Des ${j.salaryMin.toLocaleString('fr-FR')} ${sym} ${per}`;
+}
+
 function renderJob(job) {
+  const isClosed = job.status === 'ferme';
+  const isPause = job.status === 'pause';
+  const isOpen = job.status === 'ouvert';
   const reqs = (job.requirements || []).map(r => '<li>' + escapeHtml(r) + '</li>').join('');
+  const missions = (job.missions || []).map(m => '<li>' + escapeHtml(m) + '</li>').join('');
+  const niceToHave = (job.niceToHave || []).map(n => '<li>' + escapeHtml(n) + '</li>').join('');
   const benefits = (job.benefits || []).map(b => '<li>' + escapeHtml(b) + '</li>').join('');
+  const process = (job.process || []).map(p => '<li>' + escapeHtml(p) + '</li>').join('');
+  const tools = (job.tools || []).map(t => `<span style="display:inline-block;padding:.3rem .65rem;background:rgba(255,85,0,.08);border:1px solid rgba(255,85,0,.2);color:#FF5500;font-family:var(--font-headline);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;margin-right:.35rem;margin-bottom:.35rem;">${escapeHtml(t)}</span>`).join('');
+  const salary = formatSalary(job);
+  const remLabel = { 'on-site':'Sur site', 'remote':'100% Remote', 'hybrid':'Hybride' }[job.remoteMode] || '';
+
+  const closedReason = {
+    filled: 'Poste pourvu',
+    cancelled: 'Recrutement annule',
+    expired: 'Date limite depassee',
+    paused: 'Mis en pause'
+  }[job.closedReason] || 'Recrutement cloture';
+
+  const statusBanner = isClosed
+    ? `<div style="background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.4);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start;">
+         <span class="material-symbols-outlined" style="color:#e74c3c;font-size:1.5rem;flex-shrink:0;margin-top:.15rem;">lock</span>
+         <div>
+           <h3 style="font-family:var(--font-headline);font-weight:700;font-size:1rem;margin-bottom:.4rem;color:#e74c3c;">Offre fermee &middot; ${escapeHtml(closedReason)}${job.hiredCount ? ' (' + job.hiredCount + ' personne' + (job.hiredCount > 1 ? 's' : '') + ' embauchee' + (job.hiredCount > 1 ? 's' : '') + ')' : ''}</h3>
+           <p style="font-size:.88rem;color:rgba(229,226,225,.75);line-height:1.55;margin-bottom:.6rem;">Cette offre n\\'accepte plus de candidatures. Vous pouvez consulter le detail du poste ci-dessous, mais le formulaire est desactive.</p>
+           <a href="/carrieres" style="color:#FF5500;font-family:var(--font-headline);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;">Voir les offres ouvertes &rarr;</a>
+         </div>
+       </div>`
+    : isPause
+    ? `<div style="background:rgba(243,156,18,.12);border:1px solid rgba(243,156,18,.4);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-start;">
+         <span class="material-symbols-outlined" style="color:#f39c12;font-size:1.5rem;flex-shrink:0;margin-top:.15rem;">pause_circle</span>
+         <div>
+           <h3 style="font-family:var(--font-headline);font-weight:700;font-size:1rem;margin-bottom:.4rem;color:#f39c12;">Offre en pause temporaire</h3>
+           <p style="font-size:.88rem;color:rgba(229,226,225,.75);line-height:1.55;margin-bottom:.6rem;">Le recrutement pour ce poste est temporairement suspendu. Revenez bientot ou envoyez une candidature spontanee a <a href="mailto:contact@pirabellabs.com" style="color:#f39c12;">contact@pirabellabs.com</a>.</p>
+         </div>
+       </div>`
+    : '';
+
+  const formHTML = isOpen
+    ? `<div class="form">
+        <h2>Postuler</h2>
+        <div id="alert"></div>
+        <form id="form" onsubmit="submitForm(event)">
+          <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
+          <div class="field-row"><div class="field"><label>Prenom &amp; Nom *</label><input type="text" name="name" required></div><div class="field"><label>Email *</label><input type="email" name="email" required></div></div>
+          <div class="field-row"><div class="field"><label>Telephone</label><input type="tel" name="phone"></div><div class="field"><label>LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></div></div>
+          <div class="field"><label>Portfolio / Site</label><input type="url" name="portfolio" placeholder="https://"></div>
+          <div class="field"><label>CV (PDF)</label><label class="cv-upload" id="cv-label"><input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)"><span class="material-symbols-outlined icon">upload_file</span><div class="text" id="cv-text">Cliquez pour televerser votre CV (PDF, max 5MB)</div></label></div>
+          <div class="field"><label>Lettre de motivation *</label><textarea name="coverLetter" required placeholder="Presentez-vous, expliquez votre interet pour ce poste et votre date de disponibilite..."></textarea></div>
+          <button type="submit" class="btn-apply" id="submit-btn">Envoyer ma candidature</button>
+        </form>
+      </div>`
+    : `<div class="form" style="opacity:.75;">
+        <h2>Candidature impossible</h2>
+        <p style="color:rgba(229,226,225,.7);font-size:.9rem;line-height:1.55;margin-bottom:1.5rem;">Cette offre n\\'accepte plus de candidatures. Decouvrez nos autres opportunites ou envoyez une candidature spontanee.</p>
+        <a href="/carrieres" style="display:block;text-align:center;padding:1rem;background:#FF5500;color:#fff;font-family:var(--font-headline);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;margin-bottom:.75rem;">Voir toutes les offres</a>
+        <a href="mailto:contact@pirabellabs.com" style="display:block;text-align:center;padding:1rem;border:1px solid rgba(92,64,55,.3);color:#fff;font-family:var(--font-headline);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;">Candidature spontanee</a>
+      </div>`;
+
   document.getElementById('container').innerHTML = `
     <div class="job-info">
-      <span class="job-type">${escapeHtml(job.type)}</span>
+      ${statusBanner}
+      <span class="job-type">${escapeHtml(job.type)}${job.remoteMode === 'remote' ? ' &middot; Remote' : ''}</span>
       <h1>${escapeHtml(job.title)}</h1>
-      <div class="job-meta">${escapeHtml(job.department || '')} ${job.location ? '· ' + escapeHtml(job.location) : ''} ${job.salary ? '· ' + escapeHtml(job.salary) : ''}</div>
-      ${job.description ? `<div class="job-section"><h3>Description</h3><p>${escapeHtml(job.description)}</p></div>` : ''}
-      ${reqs ? `<div class="job-section"><h3>Pré-requis</h3><ul>${reqs}</ul></div>` : ''}
+      <div class="job-meta">${escapeHtml(job.department || '')} ${job.location ? '&middot; ' + escapeHtml(job.location) : ''} ${remLabel ? '&middot; ' + escapeHtml(remLabel) : ''} ${job.experienceLevel && job.experienceLevel !== 'Indifferent' ? '&middot; ' + escapeHtml(job.experienceLevel) : ''}</div>
+      ${salary ? `<div style="display:inline-block;padding:.55rem 1rem;background:rgba(255,85,0,.08);color:#FF5500;font-family:var(--font-headline);font-weight:700;font-size:.85rem;border:1px solid rgba(255,85,0,.2);margin-bottom:1.5rem;">${escapeHtml(salary)}</div>` : ''}
+      ${job.shortDescription ? `<div style="border-left:3px solid #FF5500;padding-left:1rem;margin-bottom:1.5rem;font-style:italic;color:rgba(229,226,225,.85);font-size:1.02rem;line-height:1.6;">${escapeHtml(job.shortDescription)}</div>` : ''}
+      ${job.description ? `<div class="job-section"><h3>Description du poste</h3><p style="white-space:pre-wrap;">${escapeHtml(job.description)}</p></div>` : ''}
+      ${missions ? `<div class="job-section"><h3>Vos missions</h3><ul>${missions}</ul></div>` : ''}
+      ${reqs ? `<div class="job-section"><h3>Pre-requis</h3><ul>${reqs}</ul></div>` : ''}
+      ${niceToHave ? `<div class="job-section"><h3>Nice-to-have</h3><ul>${niceToHave}</ul></div>` : ''}
+      ${tools ? `<div class="job-section"><h3>Stack &amp; outils</h3><div>${tools}</div></div>` : ''}
       ${benefits ? `<div class="job-section"><h3>Avantages</h3><ul>${benefits}</ul></div>` : ''}
+      ${process ? `<div class="job-section"><h3>Process de recrutement</h3><ul>${process}</ul></div>` : ''}
     </div>
-    <div class="form">
-      <h2>Postuler</h2>
-      <div id="alert"></div>
-      <form id="form" onsubmit="submitForm(event)">
-        <input type="text" name="website_url" class="honeypot" tabindex="-1" autocomplete="off">
-        <div class="field-row"><div class="field"><label>Prénom & Nom *</label><input type="text" name="name" required></div><div class="field"><label>Email *</label><input type="email" name="email" required></div></div>
-        <div class="field-row"><div class="field"><label>Téléphone</label><input type="tel" name="phone"></div><div class="field"><label>LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></div></div>
-        <div class="field"><label>Portfolio / Site</label><input type="url" name="portfolio" placeholder="https://"></div>
-        <div class="field"><label>CV (PDF)</label><label class="cv-upload" id="cv-label"><input type="file" id="cv-input" accept=".pdf,.doc,.docx" onchange="handleCv(event)"><span class="material-symbols-outlined icon">upload_file</span><div class="text" id="cv-text">Cliquez pour téléverser votre CV (PDF, max 5MB)</div></label></div>
-        <div class="field"><label>Lettre de motivation *</label><textarea name="coverLetter" required placeholder="Présentez-vous..."></textarea></div>
-        <button type="submit" class="btn-apply" id="submit-btn">Envoyer ma candidature</button>
-      </form>
-    </div>
+    ${formHTML}
   `;
 }
 

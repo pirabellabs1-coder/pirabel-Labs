@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Migration sans casse : du local au serveur prod | Pirabel Labs Academy</title>
-<meta name="description" content="Lecon 4.5 : Migration sans casse : du local au serveur prod. Module 4 de WordPress Intermédiaire : Elementor, ACF, Custom P. 18 min, formation gratuite Pirab...">
+<meta name="description" content="Lecon 4.5 : Migration sans casse : du local au serveur prod. Module 4 de WordPress Intermédiaire : Elementor, ACF, Custom P. 16 min, formation gratuite Pirab...">
 <link rel="icon" type="image/png" href="../../img/favicon.png">
 <link rel="canonical" href="https://www.pirabellabs.com/formations/wordpress-intermediaire/m4-l5">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/formations/wordpress-intermediaire/m4-l5">
@@ -106,7 +106,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H0ZTTRYBQ7');</script>
 <meta property="og:title" content="Migration sans casse : du local au serveur prod | Pirabel Labs Academy">
-<meta property="og:description" content="Lecon 4.5 : Migration sans casse : du local au serveur prod. Module 4 de WordPress Intermédiaire : Elementor, ACF, Custom P. 18 min, formation gratuite Pirab...">
+<meta property="og:description" content="Lecon 4.5 : Migration sans casse : du local au serveur prod. Module 4 de WordPress Intermédiaire : Elementor, ACF, Custom P. 16 min, formation gratuite Pirab...">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://www.pirabellabs.com/formations/wordpress-intermediaire/m4-l5">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
@@ -125,94 +125,137 @@
 <main class="lesson-layout">
 <aside class="lesson-sidebar">
 <h3>Sommaire de la formation</h3>
-<ul><li class="toc-module"><div class="toc-module-title">1. Bases et installation</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m1-l1">1.1 Choisir entre WordPress, Webflow, Shopify ou code custom</a></li><li><a href="/formations/wordpress-intermediaire/m1-l2">1.2 Acheter un nom de domaine et configurer l&#x27;hebergement</a></li><li><a href="/formations/wordpress-intermediaire/m1-l3">1.3 Installer WordPress en moins de 15 minutes</a></li><li><a href="/formations/wordpress-intermediaire/m1-l4">1.4 Configurer les plugins essentiels (SEO, cache, securite)</a></li><li><a href="/formations/wordpress-intermediaire/m1-l5">1.5 Premiere prise en main de l&#x27;admin WordPress</a></li></ul></li><li class="toc-module"><div class="toc-module-title">2. Design et structure des pages</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m2-l1">2.1 Choisir un theme : criteres et erreurs a eviter</a></li><li><a href="/formations/wordpress-intermediaire/m2-l2">2.2 Personnaliser l&#x27;identite visuelle (logo, couleurs, polices)</a></li><li><a href="/formations/wordpress-intermediaire/m2-l3">2.3 Construire le menu et la navigation</a></li><li><a href="/formations/wordpress-intermediaire/m2-l4">2.4 Creer le footer et les widgets</a></li><li><a href="/formations/wordpress-intermediaire/m2-l5">2.5 Design responsive : tester sur mobile et tablette</a></li></ul></li><li class="toc-module"><div class="toc-module-title">3. Plugins</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m3-l1">3.1 Top 10 des plugins WordPress incontournables</a></li><li><a href="/formations/wordpress-intermediaire/m3-l2">3.2 Installer Elementor et construire sa premiere page</a></li><li><a href="/formations/wordpress-intermediaire/m3-l3">3.3 Optimiser les images : WebP, lazy load, compression</a></li><li><a href="/formations/wordpress-intermediaire/m3-l4">3.4 Securiser WordPress contre les attaques courantes</a></li><li><a href="/formations/wordpress-intermediaire/m3-l5">3.5 Sauvegardes automatiques et plan de continuite</a></li></ul></li><li class="toc-module"><div class="toc-module-title">4. themes et extensions</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m4-l1">4.1 Performance : optimiser le LCP, FID, CLS</a></li><li><a href="/formations/wordpress-intermediaire/m4-l2">4.2 Audit Lighthouse Mobile : objectif 90+</a></li><li><a href="/formations/wordpress-intermediaire/m4-l3">4.3 Hardening securite : 2FA, captcha, audit logs</a></li><li><a href="/formations/wordpress-intermediaire/m4-l4">4.4 Configurer un CDN (Cloudflare) gratuit</a></li><li class="active"><a href="/formations/wordpress-intermediaire/m4-l5">4.5 Migration sans casse : du local au serveur prod</a></li></ul></li><li class="toc-module"><div class="toc-module-title">5. Performance et securite</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m5-l1">5.1 Mise en ligne et configuration DNS</a></li><li><a href="/formations/wordpress-intermediaire/m5-l2">5.2 Setup Google Analytics 4 et Search Console</a></li><li><a href="/formations/wordpress-intermediaire/m5-l3">5.3 Indexation rapide : sitemap et ping Google</a></li><li><a href="/formations/wordpress-intermediaire/m5-l4">5.4 Maintenance : routines hebdo, mensuelles, annuelles</a></li><li><a href="/formations/wordpress-intermediaire/m5-l5">5.5 Refonte sans perdre du trafic SEO : checklist</a></li></ul></li><li class="toc-module"><div class="toc-module-title">6. Lancement</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m6-l1">6.1 Custom Post Types et Advanced Custom Fields</a></li><li><a href="/formations/wordpress-intermediaire/m6-l2">6.2 Child themes : personnaliser sans casser l&#x27;update</a></li><li><a href="/formations/wordpress-intermediaire/m6-l3">6.3 Hooks WordPress : actions et filtres essentiels</a></li><li><a href="/formations/wordpress-intermediaire/m6-l4">6.4 WP-CLI : automatiser les taches d&#x27;admin</a></li><li><a href="/formations/wordpress-intermediaire/m6-l5">6.5 Multisite WordPress : quand et comment l&#x27;utiliser</a></li></ul></li></ul>
+<ul><li class="toc-module"><div class="toc-module-title">1. Bases et installation</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m1-l1">1.1 Choisir entre WordPress, Webflow, Shopify ou code custom</a></li><li><a href="/formations/wordpress-intermediaire/m1-l2">1.2 Acheter un nom de domaine et configurer l&#x27;hebergement</a></li><li><a href="/formations/wordpress-intermediaire/m1-l3">1.3 Installer WordPress en moins de 15 minutes</a></li><li><a href="/formations/wordpress-intermediaire/m1-l4">1.4 Configurer les plugins essentiels (SEO, cache, securite)</a></li><li><a href="/formations/wordpress-intermediaire/m1-l5">1.5 Premiere prise en main de l&#x27;admin WordPress</a></li></ul></li><li class="toc-module"><div class="toc-module-title">2. Design et structure des pages</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m2-l1">2.1 Choisir un theme : criteres et erreurs a eviter</a></li><li><a href="/formations/wordpress-intermediaire/m2-l2">2.2 Personnaliser l&#x27;identite visuelle (logo, couleurs, polices)</a></li><li><a href="/formations/wordpress-intermediaire/m2-l3">2.3 Construire le menu et la navigation</a></li><li><a href="/formations/wordpress-intermediaire/m2-l4">2.4 Creer le footer et les widgets</a></li><li><a href="/formations/wordpress-intermediaire/m2-l5">2.5 Design responsive : tester sur mobile et tablette</a></li></ul></li><li class="toc-module"><div class="toc-module-title">3. Plugins themes et extensions</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m3-l1">3.1 Top 10 des plugins WordPress incontournables</a></li><li><a href="/formations/wordpress-intermediaire/m3-l2">3.2 Installer Elementor et construire sa premiere page</a></li><li><a href="/formations/wordpress-intermediaire/m3-l3">3.3 Optimiser les images : WebP, lazy load, compression</a></li><li><a href="/formations/wordpress-intermediaire/m3-l4">3.4 Securiser WordPress contre les attaques courantes</a></li><li><a href="/formations/wordpress-intermediaire/m3-l5">3.5 Sauvegardes automatiques et plan de continuite</a></li></ul></li><li class="toc-module"><div class="toc-module-title">4. Performance et securite</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m4-l1">4.1 Performance : optimiser le LCP, FID, CLS</a></li><li><a href="/formations/wordpress-intermediaire/m4-l2">4.2 Audit Lighthouse Mobile : objectif 90+</a></li><li><a href="/formations/wordpress-intermediaire/m4-l3">4.3 Hardening securite : 2FA, captcha, audit logs</a></li><li><a href="/formations/wordpress-intermediaire/m4-l4">4.4 Configurer un CDN (Cloudflare) gratuit</a></li><li class="active"><a href="/formations/wordpress-intermediaire/m4-l5">4.5 Migration sans casse : du local au serveur prod</a></li></ul></li><li class="toc-module"><div class="toc-module-title">5. Lancement SEO et maintenance</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m5-l1">5.1 Mise en ligne et configuration DNS</a></li><li><a href="/formations/wordpress-intermediaire/m5-l2">5.2 Setup Google Analytics 4 et Search Console</a></li><li><a href="/formations/wordpress-intermediaire/m5-l3">5.3 Indexation rapide : sitemap et ping Google</a></li><li><a href="/formations/wordpress-intermediaire/m5-l4">5.4 Maintenance : routines hebdo, mensuelles, annuelles</a></li><li><a href="/formations/wordpress-intermediaire/m5-l5">5.5 Refonte sans perdre du trafic SEO : checklist</a></li></ul></li><li class="toc-module"><div class="toc-module-title">6. Approfondissement et bonnes pratiques pro</div><ul class="toc-lessons"><li><a href="/formations/wordpress-intermediaire/m6-l1">6.1 Custom Post Types et Advanced Custom Fields</a></li><li><a href="/formations/wordpress-intermediaire/m6-l2">6.2 Child themes : personnaliser sans casser l&#x27;update</a></li><li><a href="/formations/wordpress-intermediaire/m6-l3">6.3 Hooks WordPress : actions et filtres essentiels</a></li><li><a href="/formations/wordpress-intermediaire/m6-l4">6.4 WP-CLI : automatiser les taches d&#x27;admin</a></li><li><a href="/formations/wordpress-intermediaire/m6-l5">6.5 Multisite WordPress : quand et comment l&#x27;utiliser</a></li></ul></li></ul>
 </aside>
 
 <article class="lesson-main">
 <nav class="lesson-breadcrumb">
 <a href="/formations/">Formations</a> &rarr;
 <a href="/formations/wordpress-intermediaire">WordPress Intermédiaire : Elementor, ACF, Custom Post Types</a> &rarr;
-<span>themes et extensions</span>
+<span>Performance et securite</span>
 </nav>
 
 <h1 class="lesson-h1">Migration sans casse : du local au serveur prod</h1>
 
 <div class="lesson-meta-bar">
 <span>Module 4 &middot; Lecon 5/5</span>
-<span>&#x23F1; 18 min</span>
+<span>&#x23F1; 16 min</span>
 <span>Progression : 67%</span>
 <div class="lesson-progress-bar"><div class="lesson-progress-bar-fill"></div></div>
 </div>
 
 <div class="lesson-content">
-<p>La creation web moderne mixe design, performance et marketing : negliger l&#x27;un des trois compromet les deux autres. Voyons ensemble ce qu&#x27;il en est ici.</p>
-
-<h2>1. Integration dans une strategie globale</h2>
-
-<p>Cette lecon (<strong>module 4, lecon 5</strong>) traite specifiquement de <em>migration sans casse : du local au serveur prod</em> dans le cadre de la thematique <strong>themes et extensions</strong>. C'est un pas important sur le chemin de la maitrise visee par cette formation, et l'effort que vous y investirez aura un impact direct sur la suite de votre parcours.</p>
-
-<p>Voici les points cles a retenir :</p>
-
+<p>La migration d un site WordPress du local (XAMPP, Local by Flywheel) vers le serveur de production est l etape ou se cassent 40 % des projets. Liens internes casses, images manquantes, base de donnees incomplete, URLs non rewriteees : le piege est partout. Cette lecon vous donne la methode Pirabel Labs en 8 etapes pour migrer sans aucune casse.</p>
+<h2>1. Preparation : checklist pre-migration</h2>
 <ul>
-<li>Definir un objectif chiffre clair pour migration sans casse : du local au serveur prod.</li>
-<li>Identifier les 2-3 outils qui couvrent 80 % du besoin (parmi : Next.js, Shopify, Webflow).</li>
-<li>Mettre en place une routine de mesure : KPI principal + KPIs secondaires + frequence de revue.</li>
-<li>Documenter les decisions dans une page Notion / Google Doc accessible a l&#x27;equipe.</li>
-<li>Planifier une revue de progression a 30 jours, puis a 90 jours.</li>
+<li>Hebergeur prod choisi et accessible.</li>
+<li>Domaine pointe vers l hebergeur (DNS).</li>
+<li>SSL active sur le domaine prod.</li>
+<li>Acces FTP / SSH au serveur prod.</li>
+<li>Acces phpMyAdmin ou CLI MySQL au serveur prod.</li>
+<li>Sauvegarde complete du site local + base de donnees.</li>
+<li>Liste des plugins payants avec licences (a re-activer apres migration).</li>
 </ul>
-
-<p>Maintenant que ce cadre est pose, attaquons les details qui font la difference entre quelqu'un qui maitrise vraiment et quelqu'un qui ne fait que reciter la theorie.</p>
-
-<h2>2. Le standard de qualite pro en 2026</h2>
-
-<p>Lighthouse Mobile &gt; 90 (Perf, A11y, Best Practices, SEO), Core Web Vitals dans le vert (LCP &lt; 2.5s, CLS &lt; 0.1, INP &lt; 200ms), responsive sans bug, accessibilite a minima conforme WCAG AA. Sans ces 4 elements, c&#x27;est un site amateur.</p>
-
-<p>Concretement, dans votre cas, cela se traduit par 3 actions a haute valeur ajoutee : 1) faire un etat des lieux precis sans complaisance, 2) prioriser un seul axe de progres a la fois (ne pas vouloir tout corriger), 3) mesurer l'impact a 30 jours avec un KPI defini avant l'action. Cette discipline simple, repetee mois apres mois, fait la difference entre les pros et les amateurs.</p>
-
-<h2>3. Le standard de qualite pro en 2026</h2>
-
-<p>Lighthouse Mobile &gt; 90 (Perf, A11y, Best Practices, SEO), Core Web Vitals dans le vert (LCP &lt; 2.5s, CLS &lt; 0.1, INP &lt; 200ms), responsive sans bug, accessibilite a minima conforme WCAG AA. Sans ces 4 elements, c&#x27;est un site amateur.</p>
-
-<p>Outils recommandes pour cette etape (notre stack 2026) :</p>
-<ul>
-<li><strong>Next.js</strong> : couvre le besoin principal. Investissement justifie meme en debut de parcours.</li>
-<li><strong>Shopify</strong> : complement utile pour aller plus loin, surtout sur les projets plus ambitieux.</li>
-<li><strong>Webflow</strong> : alternative ou complement selon votre contexte specifique.</li>
-</ul>
-
-<h2>4. Exercice pratique de 15 minutes :</h2>
-
+<h2>2. Methode A : plugin All-in-One WP Migration (le plus simple)</h2>
 <ol>
-<li>Prenez 10 minutes pour cartographier votre situation actuelle sur ce point precis.</li>
-<li>Identifiez UN seul levier d'amelioration (le plus impactant a vos yeux).</li>
-<li>Definissez une action concrete a executer dans les 7 jours, avec un livrable mesurable.</li>
-<li>Notez votre engagement dans votre outil de gestion (Notion, Google Doc, Trello).</li>
-<li>Planifiez une revue a J+7 pour mesurer l'impact et iterer.</li>
+<li>Local : installer All-in-One WP Migration + extension Unlimited Upload Size (gratuite via lien officiel).</li>
+<li>All-in-One > Export > To File.</li>
+<li>Telechargez le fichier .wpress.</li>
+<li>Prod : installer WordPress vierge + plugin All-in-One WP Migration.</li>
+<li>All-in-One > Import > From File > selectionnez le .wpress.</li>
+<li>Patientez 5 a 30 minutes selon la taille.</li>
+<li>Connectez-vous a /wp-admin et verifiez tout.</li>
 </ol>
-
-<p>Si vous bloquez sur l'execution, n'hesitez pas a poser votre question dans la section commentaires en bas de cette lecon. Notre equipe et la communaute des etudiants Pirabel Labs y repondent regulierement.</p>
-
-<h2>5. Questions frequentes</h2>
-
-<h3>Combien de temps pour maitriser &#x27;migration sans casse : du local au serveur prod&#x27; ?</h3>
-<p>Comptez 2 a 4 semaines de pratique reguliere (1-2h par jour) pour atteindre un niveau operationnel autonome. La maitrise expert demande 6 a 12 mois et passe necessairement par 3-5 projets reels en conditions de production.</p>
-
-<h3>Quels sont les prerequis indispensables ?</h3>
-<p>Avoir deja mene 2-3 projets concrets dans le domaine (idealement avoir suivi le niveau Debutant). Familiarite avec les outils Next.js / Shopify recommandee.</p>
-
-<h3>Comment integrer ces apprentissages au reste de la formation ?</h3>
-<p>Chaque lecon est concue pour s'articuler avec les suivantes : ce que vous apprenez ici prepare le module 5 ou nous approfondirons la thematique. Avancez lecon apres lecon, sans sauter d'etapes. La progression est calibree pour solidifier vos acquis et eviter les trous dans la maquette.</p>
-
-<h2>Aller plus loin avec Pirabel Labs</h2>
-
-<p>Besoin de monter votre site avec un mentor experimente ? Notre equipe creation web vous accompagne du brief au lancement. Devis gratuit personnalise.</p>
-
-<p style="margin-top:1.5rem;">
-<a href="/contact" class="btn btn--orange">Demander mon audit gratuit (24h)</a>
-&nbsp;
-<a href="/rendez-vous" class="btn btn--ghost-white">Reserver un coaching personnalise</a>
-</p>
-
+<p>Limite : fichier .wpress max 512 Mo gratuit, illimite avec l extension officielle. Au-dela de 2 Go, methode B preferable.</p>
+<h2>3. Methode B : Duplicator (gestion de gros sites)</h2>
+<ol>
+<li>Local : installer Duplicator (gratuit) ou Duplicator Pro (39 USD/an).</li>
+<li>Duplicator > Packages > Create New > Build.</li>
+<li>Telechargez 2 fichiers : archive.zip + installer.php.</li>
+<li>Prod : uploadez ces 2 fichiers a la racine (public_html) via FTP.</li>
+<li>Lancez https://votre-site.com/installer.php.</li>
+<li>Suivez le wizard : entrez les credentials DB prod, configurez les URLs.</li>
+<li>Duplicator extrait, importe la DB, met a jour les URLs.</li>
+</ol>
+<h2>4. Methode C : migration manuelle (controle total)</h2>
+<ol>
+<li>Local : exporter la DB via phpMyAdmin (SQL gzip).</li>
+<li>Local : compresser le dossier WordPress complet (ZIP).</li>
+<li>Prod : creer une nouvelle DB MySQL + user.</li>
+<li>Prod : importer le SQL via phpMyAdmin.</li>
+<li>Prod : uploader le ZIP et decompresser via cPanel File Manager.</li>
+<li>Prod : editer wp-config.php avec les credentials DB prod.</li>
+<li>Prod : faire un Search & Replace dans la DB pour remplacer les URLs (de http://localhost a https://votre-site.com). Outil : plugin Better Search Replace ou commande CLI wp search-replace.</li>
+<li>Prod : tester le site, regenerer les permaliens, vider le cache.</li>
+</ol>
+<h2>5. Verifications post-migration (60 minutes obligatoires)</h2>
+<ol>
+<li>Home + 5 pages cles s affichent correctement.</li>
+<li>Toutes les images chargent (pas de placeholders 404).</li>
+<li>Menu de navigation fonctionne.</li>
+<li>Formulaire contact envoie un email test.</li>
+<li>Sauvegardes automatiques activees.</li>
+<li>Plugins actives avec leurs licences (Rank Math, WP Rocket, Wordfence).</li>
+<li>Search Console : changer la propriete vers le nouveau domaine ou re-soumettre sitemap.</li>
+<li>Google Analytics : verifier que les hits arrivent.</li>
+<li>SSL valide (verifiez avec ssllabs.com/ssltest).</li>
+<li>Redirections 301 mises en place si l URL a change.</li>
+</ol>
+<h2>6. Cas particulier : migration ecommerce WooCommerce</h2>
+<p>Etapes supplementaires :</p>
+<ul>
+<li>Verifier que les commandes en cours ne se cassent pas (mettre WooCommerce en maintenance mode).</li>
+<li>Tester un achat test bout-en-bout post-migration.</li>
+<li>Reconfigurer les passerelles de paiement (Stripe, FedaPay, PayPal) avec les nouvelles URLs webhook.</li>
+<li>Verifier les emails transactionnels (commande, confirmation, expedition).</li>
+</ul>
+<h2>7. Switch DNS final</h2>
+<p>Si vous migrez d un hebergeur a un autre : 48h avant le D-day, baissez le TTL DNS a 300 secondes. Le jour J, changez les NS vers le nouvel hebergeur. Coupure utilisateur : 5 a 30 minutes selon propagation.</p>
+<h2>8. Plan de rollback</h2>
+<p>Gardez la sauvegarde complete pre-migration accessible pendant 30 jours. Si bug critique post-migration impossible a corriger en 2h, restaurez et investiguez sans pression.</p>
+<h2>FAQ</h2>
+<p><strong>Quelle methode pour debutant ?</strong></p>
+<p>All-in-One WP Migration. Le plus simple, gratuit jusqu a 512 Mo.</p>
+<p><strong>Combien de temps prend une migration complete ?</strong></p>
+<p>2 a 6 heures pour un site vitrine + checks. 1 a 2 jours pour un ecommerce complexe.</p>
+<p><strong>Que faire si le site est casse apres migration ?</strong></p>
+<p>1) Activer debug.log dans wp-config, 2) Regenerer les permaliens, 3) Verifier wp-config.php DB credentials, 4) Search & replace URLs, 5) Si rien ne marche, restaurer la sauvegarde et recommencer.</p>
+<blockquote>Une migration ratee coute 5 a 20 fois plus cher qu une migration bien preparee. Investissez 4h de checklist.</blockquote>
+<p>Pirabel Labs migre votre site avec garantie zero downtime : <a href="/contact">devis gratuit</a>.</p>
+<h2>Annexe : checklist post-migration en 30 points</h2>
+<ol>
+<li>Site accessible sur HTTPS.</li>
+<li>Redirection automatique HTTP > HTTPS.</li>
+<li>Redirection www vs non-www unifiee.</li>
+<li>SSL valide et A+ sur SSL Labs.</li>
+<li>Toutes les pages s affichent correctement.</li>
+<li>Toutes les images chargent (pas de 404).</li>
+<li>Tous les CSS et JS chargent.</li>
+<li>Menu de navigation fonctionne.</li>
+<li>Formulaire contact envoie un email test reussi.</li>
+<li>Newsletter inscription fonctionne.</li>
+<li>Search interne renvoie des resultats.</li>
+<li>Pagination blog fonctionne.</li>
+<li>Permaliens regeneres (Reglages > Permaliens > Save).</li>
+<li>Plugins payants reactivees avec leurs licences.</li>
+<li>Sauvegardes automatiques planifiees.</li>
+<li>Wordfence actif et scan complete.</li>
+<li>Robots.txt accessible et valide.</li>
+<li>Sitemap.xml accessible et valide.</li>
+<li>Search Console : changement de propriete ou re-soumission sitemap.</li>
+<li>Google Analytics : hits arrivent correctement.</li>
+<li>GTM ou tags marketing actifs.</li>
+<li>Pixel Meta / Google Ads actifs.</li>
+<li>Lighthouse mobile score 85+.</li>
+<li>Lighthouse desktop score 90+.</li>
+<li>Test responsive sur 3 devices reels.</li>
+<li>Test cross-browser (Chrome, Safari, Firefox, Edge).</li>
+<li>Cron jobs WordPress executes.</li>
+<li>Cache pages purges et reconstruit.</li>
+<li>CDN actif et opérationnel.</li>
+<li>Monitoring UptimeRobot configure.</li>
+</ol>
+<p>Cette checklist 30 points est appliquee a chaque migration Pirabel Labs et garantit zero regression post-bascule.</p>
 </div>
 
 <div class="enroll-banner" id="enroll-banner" style="display:none;">

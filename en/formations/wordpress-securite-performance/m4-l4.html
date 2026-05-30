@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Configurer un CDN (Cloudflare) gratuit | Pirabel Labs Academy</title>
-<meta name="description" content="Lesson 4.4: Configurer un CDN (Cloudflare) gratuit. Module 4 of WordPress Security &amp; Performance: The Hardened Sit. 18 min, free training by Pirabel Labs Aca...">
+<meta name="description" content="Lesson 4.4: Configurer un CDN (Cloudflare) gratuit. Module 4 of WordPress Security &amp; Performance: The Hardened Sit. 20 min, free training by Pirabel Labs Aca...">
 <link rel="icon" type="image/png" href="../../img/favicon.png">
 <link rel="canonical" href="https://www.pirabellabs.com/en/formations/wordpress-securite-performance/m4-l4">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/formations/wordpress-securite-performance/m4-l4">
@@ -105,13 +105,6 @@
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-H0ZTTRYBQ7');</script>
-<meta name="robots" content="noindex,follow">
-<meta property="og:title" content="Configurer un CDN (Cloudflare) gratuit | Pirabel Labs Academy">
-<meta property="og:description" content="Lesson 4.4: Configurer un CDN (Cloudflare) gratuit. Module 4 of WordPress Security &amp;amp; Performance: The Hardened Sit. 18 min, free training by Pirabel Labs Aca...">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.pirabellabs.com/en/formations/wordpress-securite-performance/m4-l4">
-<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
-<meta property="og:site_name" content="Pirabel Labs">
 </head>
 <body>
 <div id="progress-bar"></div>
@@ -126,94 +119,73 @@
 <main class="lesson-layout">
 <aside class="lesson-sidebar">
 <h3>Course outline</h3>
-<ul><li class="toc-module"><div class="toc-module-title">1. Bases et installation</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m1-l1">1.1 Choisir entre WordPress, Webflow, Shopify ou code custom</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l2">1.2 Acheter un nom de domaine et configurer l&#x27;hebergement</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l3">1.3 Installer WordPress en moins de 15 minutes</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l4">1.4 Configurer les plugins essentiels (SEO, cache, securite)</a></li></ul></li><li class="toc-module"><div class="toc-module-title">2. Design et structure des pages</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m2-l1">2.1 Choisir un theme : criteres et erreurs a eviter</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l2">2.2 Personnaliser l&#x27;identite visuelle (logo, couleurs, polices)</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l3">2.3 Construire le menu et la navigation</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l4">2.4 Creer le footer et les widgets</a></li></ul></li><li class="toc-module"><div class="toc-module-title">3. Plugins</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m3-l1">3.1 Top 10 des plugins WordPress incontournables</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l2">3.2 Installer Elementor et construire sa premiere page</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l3">3.3 Optimiser les images : WebP, lazy load, compression</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l4">3.4 Securiser WordPress contre les attaques courantes</a></li></ul></li><li class="toc-module"><div class="toc-module-title">4. themes et extensions</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m4-l1">4.1 Performance : optimiser le LCP, FID, CLS</a></li><li><a href="/en/formations/wordpress-securite-performance/m4-l2">4.2 Audit Lighthouse Mobile : objectif 90+</a></li><li><a href="/en/formations/wordpress-securite-performance/m4-l3">4.3 Hardening securite : 2FA, captcha, audit logs</a></li><li class="active"><a href="/en/formations/wordpress-securite-performance/m4-l4">4.4 Configurer un CDN (Cloudflare) gratuit</a></li></ul></li><li class="toc-module"><div class="toc-module-title">5. Performance et securite</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m5-l1">5.1 Mise en ligne et configuration DNS</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l2">5.2 Setup Google Analytics 4 et Search Console</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l3">5.3 Indexation rapide : sitemap et ping Google</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l4">5.4 Maintenance : routines hebdo, mensuelles, annuelles</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l5">5.5 Refonte sans perdre du trafic SEO : checklist</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l6">5.6 Mesurer la performance en performance et securite</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l7">5.7 Approfondissement performance et securite</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l8">5.8 Cas pratique : performance et securite</a></li></ul></li></ul>
+<ul><li class="toc-module"><div class="toc-module-title">1. Bases et installation</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m1-l1">1.1 Choisir entre WordPress, Webflow, Shopify ou code custom</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l2">1.2 Acheter un nom de domaine et configurer l&#x27;hebergement</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l3">1.3 Installer WordPress en moins de 15 minutes</a></li><li><a href="/en/formations/wordpress-securite-performance/m1-l4">1.4 Configurer les plugins essentiels (SEO, cache, securite)</a></li></ul></li><li class="toc-module"><div class="toc-module-title">2. Design et structure des pages</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m2-l1">2.1 Choisir un theme : criteres et erreurs a eviter</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l2">2.2 Personnaliser l&#x27;identite visuelle (logo, couleurs, polices)</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l3">2.3 Construire le menu et la navigation</a></li><li><a href="/en/formations/wordpress-securite-performance/m2-l4">2.4 Creer le footer et les widgets</a></li></ul></li><li class="toc-module"><div class="toc-module-title">3. Plugins themes et extensions</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m3-l1">3.1 Top 10 des plugins WordPress incontournables</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l2">3.2 Installer Elementor et construire sa premiere page</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l3">3.3 Optimiser les images : WebP, lazy load, compression</a></li><li><a href="/en/formations/wordpress-securite-performance/m3-l4">3.4 Securiser WordPress contre les attaques courantes</a></li></ul></li><li class="toc-module"><div class="toc-module-title">4. Performance et securite</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m4-l1">4.1 Performance : optimiser le LCP, FID, CLS</a></li><li><a href="/en/formations/wordpress-securite-performance/m4-l2">4.2 Audit Lighthouse Mobile : objectif 90+</a></li><li><a href="/en/formations/wordpress-securite-performance/m4-l3">4.3 Hardening securite : 2FA, captcha, audit logs</a></li><li class="active"><a href="/en/formations/wordpress-securite-performance/m4-l4">4.4 Configurer un CDN (Cloudflare) gratuit</a></li></ul></li><li class="toc-module"><div class="toc-module-title">5. Lancement SEO et maintenance</div><ul class="toc-lessons"><li><a href="/en/formations/wordpress-securite-performance/m5-l1">5.1 Mise en ligne et configuration DNS</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l2">5.2 Setup Google Analytics 4 et Search Console</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l3">5.3 Indexation rapide : sitemap et ping Google</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l4">5.4 Maintenance : routines hebdo, mensuelles, annuelles</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l5">5.5 Refonte sans perdre du trafic SEO : checklist</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l6">5.6 Mesurer la performance en performance et securite</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l7">5.7 Approfondissement performance et securite</a></li><li><a href="/en/formations/wordpress-securite-performance/m5-l8">5.8 Cas pratique : performance et securite</a></li></ul></li></ul>
 </aside>
 
 <article class="lesson-main">
 <nav class="lesson-breadcrumb">
 <a href="/en/formations/">Trainings</a> &rarr;
 <a href="/en/formations/wordpress-securite-performance">WordPress Security &amp; Performance: The Hardened Site Guide</a> &rarr;
-<span>themes et extensions</span>
+<span>Performance et securite</span>
 </nav>
 
 <h1 class="lesson-h1">Configurer un CDN (Cloudflare) gratuit</h1>
 
 <div class="lesson-meta-bar">
 <span>Module 4 &middot; Lesson 4/4</span>
-<span>&#x23F1; 18 min</span>
+<span>&#x23F1; 20 min</span>
 <span>Progress : 67%</span>
 <div class="lesson-progress-bar"><div class="lesson-progress-bar-fill"></div></div>
 </div>
 
 <div class="lesson-content">
-<p>Avant le code et les plugins, il y a la methode. Une demarche structuree vous evite 80 % des refactorings et reprises - cette lecon vous arme.</p>
+<p>Cloudflare gratuit est probablement le levier au meilleur ratio benefice/effort de tout l'ecosysteme WordPress en 2026: 30 minutes de configuration, zero euro de cout mensuel, gain immediat de 40 a 70% sur le LCP global, ajout d'un WAF basique, protection DDoS, et SSL gratuit. Cette lecon vous montre la procedure complete d'activation Cloudflare sur un WordPress, avec les options critiques a activer et les pieges qui transforment Cloudflare en source de bugs.</p>
 
-<h2>1. Mesure et optimisation continue</h2>
+<h2>1. Pourquoi Cloudflare sur WordPress</h2>
+<p>Cloudflare est un CDN edge avec 300+ POPs dans le monde, dont Cape Town, Johannesburg, Lagos, Nairobi, Casablanca, Tunis. Pour une audience africaine, cela ramene la latence de 180 ms (Paris vers Cotonou) a 30 ms (Lagos vers Cotonou). Le plan Free inclut: CDN illimite, SSL gratuit, protection DDoS basique, WAF basique avec 5 regles custom, page rules x3, Workers x100k/jour.</p>
 
-<p>Cette lecon (<strong>module 4, lecon 4</strong>) traite specifiquement de <em>configurer un cdn (cloudflare) gratuit</em> dans le cadre de la thematique <strong>themes et extensions</strong>. C'est un pas important sur le chemin de la maitrise visee par cette formation, et l'effort que vous y investirez aura un impact direct sur la suite de votre parcours.</p>
+<h2>2. Creer un compte et ajouter le site</h2>
+<p>Inscription sur <strong>cloudflare.com</strong>, plan Free. Add a Site > entrez votre domaine. Cloudflare scanne automatiquement vos DNS records existants. Verifiez la liste (A, AAAA, CNAME, MX, TXT) et ajustez si necessaire. Important: les MX et TXT email doivent rester en DNS only (nuage gris), pas en proxied (nuage orange), sinon les emails se cassent.</p>
 
-<p>Les criteres a verifier systematiquement :</p>
+<h2>3. Changer les nameservers</h2>
+<p>Cloudflare vous donne 2 nameservers (ex: <code>alex.ns.cloudflare.com, mia.ns.cloudflare.com</code>). Allez chez votre registrar (OVH, Gandi, etc.) et remplacez les nameservers actuels par ceux de Cloudflare. Propagation DNS: 5 minutes a 24 heures (en moyenne 30 minutes en 2026). Verifier la propagation sur <strong>whatsmydns.net</strong>.</p>
 
+<h2>4. SSL/TLS configuration</h2>
+<p>Onglet SSL/TLS: mode <strong>Full (strict)</strong> obligatoire si vous avez un certificat valide sur votre serveur (Let's Encrypt). Mode "Flexible" est dangereux car genere des boucles de redirection. Activez "Always Use HTTPS" et "Automatic HTTPS Rewrites" (corrige les URLs http dans le contenu).</p>
+
+<h2>5. Speed > Optimization</h2>
 <ul>
-<li>Definir un objectif chiffre clair pour configurer un cdn (cloudflare) gratuit.</li>
-<li>Identifier les 2-3 outils qui couvrent 80 % du besoin (parmi : Webflow, Elementor, WordPress).</li>
-<li>Mettre en place une routine de mesure : KPI principal + KPIs secondaires + frequence de revue.</li>
-<li>Documenter les decisions dans une page Notion / Google Doc accessible a l&#x27;equipe.</li>
-<li>Planifier une revue de progression a 30 jours, puis a 90 jours.</li>
+<li><strong>Auto Minify</strong>: cocher HTML, CSS, JS (mais si vous utilisez WP Rocket minify, decochez Cloudflare pour eviter le double minify qui casse parfois le JS)</li>
+<li><strong>Brotli</strong>: activer (compression 15-25% meilleure que Gzip)</li>
+<li><strong>Early Hints</strong>: activer (envoie 103 Early Hints, ameliore LCP)</li>
+<li><strong>Rocket Loader</strong>: NE PAS activer sur WordPress (casse souvent jQuery et conflits Elementor)</li>
 </ul>
 
-<p>Avec ces fondamentaux en tete, attaquons les details qui font la difference entre quelqu'un qui maitrise vraiment et quelqu'un qui ne fait que reciter la theorie.</p>
+<h2>6. Caching configuration</h2>
+<p>Onglet Caching > Configuration: <strong>Caching Level Standard</strong>, <strong>Browser Cache TTL: 1 month</strong>, <strong>Always Online: On</strong> (sert une version cache si origin down). Sur le plan Pro (25 USD/mois), activez <strong>Automatic Platform Optimization for WordPress</strong> (APO): cache des pages HTML complete en edge, gain LCP supplementaire 200-500 ms.</p>
 
-<h2>2. L&#x27;erreur classique a eviter</h2>
-
-<p>Vouloir un site &#x27;parfait&#x27; avant de le lancer. Le perfect is the enemy of done. Mettez en ligne avec 80 % de ce que vous avez prevu, recoltez les retours utilisateurs reels, et iterez en 2 semaines. Ce cycle vous fera gagner 6 mois face a la recherche du site parfait.</p>
-
-<p>Concretement, dans votre cas, cela se traduit par 3 actions a haute valeur ajoutee : 1) faire un etat des lieux precis sans complaisance, 2) prioriser un seul axe de progres a la fois (ne pas vouloir tout corriger), 3) mesurer l'impact a 30 jours avec un KPI defini avant l'action. Cette discipline simple, repetee mois apres mois, fait la difference entre les pros et les amateurs.</p>
-
-<h2>3. L&#x27;erreur classique a eviter</h2>
-
-<p>Vouloir un site &#x27;parfait&#x27; avant de le lancer. Le perfect is the enemy of done. Mettez en ligne avec 80 % de ce que vous avez prevu, recoltez les retours utilisateurs reels, et iterez en 2 semaines. Ce cycle vous fera gagner 6 mois face a la recherche du site parfait.</p>
-
-<p>Outils recommandes pour cette etape (notre stack 2026) :</p>
+<h2>7. Page Rules essentielles (Free: 3 max)</h2>
 <ul>
-<li><strong>Webflow</strong> : couvre le besoin principal. Investissement justifie meme en debut de parcours.</li>
-<li><strong>Elementor</strong> : complement utile pour aller plus loin, surtout sur les projets plus ambitieux.</li>
-<li><strong>WordPress</strong> : alternative ou complement selon votre contexte specifique.</li>
+<li><code>*votresite.com/wp-admin/*</code> > Cache Level: Bypass (jamais cacher l'admin)</li>
+<li><code>*votresite.com/wp-login.php*</code> > Cache Level: Bypass + Security Level: High</li>
+<li><code>*votresite.com/*</code> > Browser Cache TTL: a month + Cache Level: Standard</li>
 </ul>
 
-<h2>4. A faire des aujourd&#x27;hui :</h2>
+<h2>8. Firewall et securite</h2>
+<p>Onglet Security > WAF: activez les regles managees gratuites (Cloudflare Managed Ruleset basique). Onglet Security > Bots: activez "Bot Fight Mode" gratuit (bloque les bots evidents). Si vous etes attaque, activez temporairement "Under Attack Mode" qui demande un challenge JavaScript a chaque visiteur (utile pour 1 a 4 heures, jamais permanent).</p>
 
-<ol>
-<li>Prenez 10 minutes pour cartographier votre situation actuelle sur ce point precis.</li>
-<li>Identifiez UN seul levier d'amelioration (le plus impactant a vos yeux).</li>
-<li>Definissez une action concrete a executer dans les 7 jours, avec un livrable mesurable.</li>
-<li>Notez votre engagement dans votre outil de gestion (Notion, Google Doc, Trello).</li>
-<li>Planifiez une revue a J+7 pour mesurer l'impact et iterer.</li>
-</ol>
+<h2>9. Plugin WordPress Cloudflare officiel</h2>
+<p>Installez le plugin Cloudflare officiel. Connectez via API token (scope: Zone:Cache Purge + Zone:Read + Zone Settings:Edit). Utilite: purge automatique du cache Cloudflare quand vous modifiez un post, activation des optimisations WordPress recommandees en 1 clic, dev mode toggle.</p>
 
-<p>Si vous bloquez sur l'execution, n'hesitez pas a poser votre question dans la section commentaires en bas de cette lecon. Notre equipe et la communaute des etudiants Pirabel Labs y repondent regulierement.</p>
+<h2>10. Tests et validation</h2>
+<p>Apres setup, verifiez: <strong>(a)</strong> headers HTTP via curl: <code>curl -I https://votresite.com</code> doit montrer <code>server: cloudflare</code> et <code>cf-cache-status: HIT</code>, <strong>(b)</strong> PageSpeed Insights: le LCP doit avoir diminue, <strong>(c)</strong> webpagetest.org en localisation Lagos ou Johannesburg pour audience africaine, <strong>(d)</strong> ssllabs.com pour grade SSL A ou A+.</p>
 
-<h2>5. Questions frequentes</h2>
+<h2>FAQ</h2>
+<p><strong>Cloudflare casse-t-il les formulaires?</strong> Possible si le pays du visiteur est bloque. Verifier les logs Cloudflare Firewall events.</p>
+<p><strong>Pro vs Free?</strong> Pro a 25 USD/mois ajoute APO WordPress (gros gain LCP), Image Resizing, WAF avance. Rentable des 30 000 visites/mois.</p>
+<p><strong>Mon hebergeur dit que Cloudflare cache leur IP, est-ce un probleme?</strong> Non. Cloudflare expose son IP. Pour avoir l'IP visiteur reelle, activez le module Cloudflare True-Client-IP sur le serveur ou utilisez le plugin Cloudflare WP.</p>
 
-<h3>Combien de temps pour maitriser &#x27;configurer un cdn (cloudflare) gratuit&#x27; ?</h3>
-<p>Comptez 2 a 4 semaines de pratique reguliere (1-2h par jour) pour atteindre un niveau operationnel autonome. La maitrise expert demande 6 a 12 mois et passe necessairement par 3-5 projets reels en conditions de production.</p>
-
-<h3>Quels sont les prerequis indispensables ?</h3>
-<p>Bonne maitrise des fondamentaux ET 6+ mois d&#x27;experience sur le terrain. Comprehension de la mesure / des KPIs business. Connaissance des outils Webflow / Elementor.</p>
-
-<h3>Comment integrer ces apprentissages au reste de la formation ?</h3>
-<p>Chaque lecon est concue pour s'articuler avec les suivantes : ce que vous apprenez ici prepare le module 5 ou nous approfondirons la thematique. Avancez lecon apres lecon, sans sauter d'etapes. La progression est calibree pour solidifier vos acquis et eviter les trous dans la maquette.</p>
-
-<h2>Aller plus loin avec Pirabel Labs</h2>
-
-<p>Besoin de monter votre site avec un mentor experimente ? Notre equipe creation web vous accompagne du brief au lancement. Devis gratuit personnalise.</p>
-
-<p style="margin-top:1.5rem;">
-<a href="/contact" class="btn btn--orange">Demander mon audit gratuit (24h)</a>
-&nbsp;
-<a href="/rendez-vous" class="btn btn--ghost-white">Reserver un coaching personnalise</a>
-</p>
-
+<p>Configuration Cloudflare a deleguer? Demandez un <a href="/contact">audit gratuit</a> ou un <a href="/rendez-vous">rendez-vous</a> avec Pirabel Labs.</p>
 </div>
 
 <div class="enroll-banner" id="enroll-banner" style="display:none;">

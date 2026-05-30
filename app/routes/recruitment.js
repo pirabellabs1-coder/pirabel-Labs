@@ -17,23 +17,30 @@ function slugify(str) {
 
 // ============ JOB OFFERS ============
 
-// GET /api/recruitment/jobs/public — public list
+// GET /api/recruitment/jobs/public — public list (ouvert + ferme, jamais brouillon)
 router.get('/jobs/public', async (req, res) => {
   try {
-    const jobs = await JobOffer.find({ status: 'ouvert' })
-      .sort({ publishedAt: -1 })
-      .select('-__v');
+    const jobs = await JobOffer.find({ status: { $in: ['ouvert', 'ferme', 'pause'] } })
+      // Ouvertes d'abord (featured first), puis fermees (recentes en premier)
+      .sort({ status: 1, featured: -1, publishedAt: -1 })
+      .select('-__v -createdBy -updatedBy');
     res.json({ jobs });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// GET /api/recruitment/jobs/public/:slug — public detail
+// GET /api/recruitment/jobs/public/:slug — public detail (closed jobs viewable)
 router.get('/jobs/public/:slug', async (req, res) => {
   try {
-    const job = await JobOffer.findOne({ slug: req.params.slug, status: 'ouvert' });
+    const job = await JobOffer.findOne({
+      slug: req.params.slug,
+      status: { $in: ['ouvert', 'ferme', 'pause'] }
+    });
     if (!job) return res.status(404).json({ error: 'Offre introuvable' });
-    job.views = (job.views || 0) + 1;
-    job.save().catch(() => {});
+    // Track views only for live offers
+    if (job.status === 'ouvert') {
+      job.views = (job.views || 0) + 1;
+      job.save().catch(() => {});
+    }
     res.json(job);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -46,38 +53,154 @@ router.get('/jobs', auth, adminOrEmployee, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// Helper : sanitize array of strings
+function cleanList(arr, max = 30, itemMax = 500) {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(v => sanitize(String(v || ''), itemMax)).filter(Boolean).slice(0, max);
+}
+
+// Helper : extract clean fields from req.body (used by POST/PUT)
+function extractJobFields(body) {
+  const fields = {};
+  if (body.title !== undefined) fields.title = sanitize(body.title, 200);
+  if (body.department !== undefined) fields.department = sanitize(body.department || '', 100);
+  if (body.remoteMode !== undefined && ['on-site', 'remote', 'hybrid'].includes(body.remoteMode)) fields.remoteMode = body.remoteMode;
+  if (body.location !== undefined) fields.location = sanitize(body.location || '', 200);
+  if (body.type !== undefined && ['CDI', 'CDD', 'Stage', 'Freelance', 'Alternance', 'Mission'].includes(body.type)) fields.type = body.type;
+  if (body.experienceLevel !== undefined && ['Junior', 'Mid', 'Senior', 'Lead', 'Manager', 'Indifferent'].includes(body.experienceLevel)) fields.experienceLevel = body.experienceLevel;
+  if (body.experience !== undefined) fields.experience = sanitize(body.experience || '', 100);
+  if (body.shortDescription !== undefined) fields.shortDescription = sanitize(body.shortDescription || '', 280);
+  if (body.description !== undefined) fields.description = sanitize(body.description || '', 10000);
+  if (body.missions !== undefined) fields.missions = cleanList(body.missions, 20, 500);
+  if (body.requirements !== undefined) fields.requirements = cleanList(body.requirements, 20, 300);
+  if (body.niceToHave !== undefined) fields.niceToHave = cleanList(body.niceToHave, 20, 300);
+  if (body.benefits !== undefined) fields.benefits = cleanList(body.benefits, 20, 300);
+  if (body.process !== undefined) fields.process = cleanList(body.process, 10, 300);
+  if (body.tools !== undefined) fields.tools = cleanList(body.tools, 30, 60);
+  if (body.salaryMin !== undefined) fields.salaryMin = Math.max(0, parseInt(body.salaryMin) || 0);
+  if (body.salaryMax !== undefined) fields.salaryMax = Math.max(0, parseInt(body.salaryMax) || 0);
+  if (body.salaryCurrency !== undefined && ['EUR', 'FCFA', 'USD', 'GBP', 'MAD', 'CAD'].includes(body.salaryCurrency)) fields.salaryCurrency = body.salaryCurrency;
+  if (body.salaryPeriod !== undefined && ['month', 'year', 'day', 'project'].includes(body.salaryPeriod)) fields.salaryPeriod = body.salaryPeriod;
+  if (body.salaryHidden !== undefined) fields.salaryHidden = Boolean(body.salaryHidden);
+  if (body.salary !== undefined) fields.salary = sanitize(body.salary || '', 100);
+  if (body.status !== undefined && ['ouvert', 'ferme', 'brouillon', 'pause'].includes(body.status)) fields.status = body.status;
+  if (body.closedReason !== undefined && ['filled', 'cancelled', 'paused', 'expired', ''].includes(body.closedReason)) fields.closedReason = body.closedReason;
+  if (body.hiredCount !== undefined) fields.hiredCount = Math.max(0, parseInt(body.hiredCount) || 0);
+  if (body.featured !== undefined) fields.featured = Boolean(body.featured);
+  if (body.urgent !== undefined) fields.urgent = Boolean(body.urgent);
+  if (body.applicationDeadline !== undefined) fields.applicationDeadline = body.applicationDeadline ? new Date(body.applicationDeadline) : null;
+  if (body.startDate !== undefined) fields.startDate = body.startDate ? new Date(body.startDate) : null;
+  if (body.seoTitle !== undefined) fields.seoTitle = sanitize(body.seoTitle || '', 80);
+  if (body.seoDescription !== undefined) fields.seoDescription = sanitize(body.seoDescription || '', 200);
+  return fields;
+}
+
 // POST /api/recruitment/jobs — create job
-router.post('/jobs', auth, adminOnly, limitBody(20), async (req, res) => {
+router.post('/jobs', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
-    const title = sanitize(req.body.title, 200);
-    if (!title) return res.status(400).json({ error: 'Titre requis' });
-    let slug = slugify(req.body.slug || title);
+    const fields = extractJobFields(req.body);
+    if (!fields.title) return res.status(400).json({ error: 'Titre requis' });
+    let slug = slugify(req.body.slug || fields.title);
     let counter = 1;
-    while (await JobOffer.findOne({ slug })) { slug = slugify(title) + '-' + counter++; }
-    const job = await JobOffer.create({
-      title,
-      slug,
-      department: sanitize(req.body.department || '', 100),
-      location: sanitize(req.body.location || 'Remote', 100),
-      type: req.body.type || 'CDI',
-      description: sanitize(req.body.description || '', 5000),
-      requirements: Array.isArray(req.body.requirements) ? req.body.requirements.slice(0, 20).map(r => sanitize(r, 200)) : [],
-      benefits: Array.isArray(req.body.benefits) ? req.body.benefits.slice(0, 20).map(b => sanitize(b, 200)) : [],
-      salary: sanitize(req.body.salary || '', 100),
-      experience: sanitize(req.body.experience || '', 100),
-      status: ['ouvert', 'ferme', 'brouillon'].includes(req.body.status) ? req.body.status : 'ouvert'
-    });
+    while (await JobOffer.findOne({ slug })) { slug = slugify(fields.title) + '-' + counter++; }
+    fields.slug = slug;
+    fields.createdBy = req.user._id;
+    fields.updatedBy = req.user._id;
+    // Default status = brouillon if unspecified
+    if (!fields.status) fields.status = 'brouillon';
+    const job = await JobOffer.create(fields);
     res.status(201).json(job);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    console.error('[recruitment] create error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // PUT /api/recruitment/jobs/:id
-router.put('/jobs/:id', auth, adminOnly, async (req, res) => {
+router.put('/jobs/:id', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
-    const job = await JobOffer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const fields = extractJobFields(req.body);
+    fields.updatedBy = req.user._id;
+    // If slug provided manually, allow changing it (with collision check)
+    if (req.body.slug !== undefined) {
+      const newSlug = slugify(req.body.slug);
+      if (newSlug) {
+        const collision = await JobOffer.findOne({ slug: newSlug, _id: { $ne: req.params.id } });
+        if (!collision) fields.slug = newSlug;
+      }
+    }
+    const job = await JobOffer.findByIdAndUpdate(req.params.id, fields, { new: true, runValidators: true });
     if (!job) return res.status(404).json({ error: 'Offre introuvable' });
     res.json(job);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    console.error('[recruitment] update error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/recruitment/jobs/:id/duplicate — duplique une offre existante
+router.post('/jobs/:id/duplicate', auth, adminOnly, async (req, res) => {
+  try {
+    const original = await JobOffer.findById(req.params.id).lean();
+    if (!original) return res.status(404).json({ error: 'Offre introuvable' });
+    delete original._id;
+    delete original.createdAt;
+    delete original.updatedAt;
+    delete original.applicationCount;
+    delete original.views;
+    delete original.closedAt;
+    original.title = original.title + ' (copie)';
+    let slug = slugify(original.title);
+    let counter = 1;
+    while (await JobOffer.findOne({ slug })) { slug = slugify(original.title) + '-' + counter++; }
+    original.slug = slug;
+    original.status = 'brouillon';
+    original.createdBy = req.user._id;
+    original.updatedBy = req.user._id;
+    const job = await JobOffer.create(original);
+    res.status(201).json(job);
+  } catch (err) {
+    console.error('[recruitment] duplicate error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/recruitment/jobs/:id/close — ferme une offre avec raison
+router.post('/jobs/:id/close', auth, adminOrEmployee, async (req, res) => {
+  try {
+    const reason = ['filled', 'cancelled', 'paused', 'expired'].includes(req.body.reason) ? req.body.reason : 'filled';
+    const hiredCount = Math.max(0, parseInt(req.body.hiredCount) || 0);
+    const job = await JobOffer.findById(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Offre introuvable' });
+    job.status = reason === 'paused' ? 'pause' : 'ferme';
+    job.closedReason = reason;
+    job.hiredCount = hiredCount;
+    job.closedAt = new Date();
+    job.updatedBy = req.user._id;
+    await job.save();
+    res.json(job);
+  } catch (err) {
+    console.error('[recruitment] close error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/recruitment/jobs/:id/reopen — re-ouvre une offre fermee
+router.post('/jobs/:id/reopen', auth, adminOnly, async (req, res) => {
+  try {
+    const job = await JobOffer.findById(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Offre introuvable' });
+    job.status = 'ouvert';
+    job.closedReason = '';
+    job.closedAt = null;
+    job.publishedAt = new Date();
+    job.updatedBy = req.user._id;
+    await job.save();
+    res.json(job);
+  } catch (err) {
+    console.error('[recruitment] reopen error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // DELETE /api/recruitment/jobs/:id

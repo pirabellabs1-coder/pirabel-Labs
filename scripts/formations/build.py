@@ -16,6 +16,21 @@ from lesson_titles import generate_lesson_titles
 from quiz_generator import render_quiz_page, render_certificate_page
 from content_seo_intermediaire import SEO_INTERMEDIAIRE_MODULES
 
+# Trainer V4 outputs : safe import (skip if module missing / broken)
+def _safe_import(module_name, var_name):
+    try:
+        mod = __import__(module_name)
+        return getattr(mod, var_name, None)
+    except Exception as e:
+        print(f'[build] skip {module_name}: {e}')
+        return None
+
+SEO_AVANCE_MODULES = _safe_import('content_seo_avance', 'SEO_AVANCE_MODULES')
+SEO_LOCAL_MODULES = _safe_import('content_seo_local_google_business', 'SEO_LOCAL_GOOGLE_BUSINESS_MODULES')
+WORDPRESS_INT_MODULES = _safe_import('content_wordpress_intermediaire', 'WORDPRESS_INTERMEDIAIRE_MODULES')
+WORDPRESS_SEC_MODULES = _safe_import('content_wordpress_securite_performance', 'WORDPRESS_SECURITE_PERFORMANCE_MODULES')
+SHOPIFY_DEB_MODULES = _safe_import('content_shopify_marchand_debutant', 'SHOPIFY_MARCHAND_DEBUTANT_MODULES')
+
 ROOT = Path(__file__).resolve().parents[2]
 
 # Cap des contenus detailles par slug
@@ -23,6 +38,17 @@ DETAILED_CONTENT = {
     'seo-debutant': SEO_DEBUTANT_MODULES,
     'seo-intermediaire': SEO_INTERMEDIAIRE_MODULES,
 }
+for slug, content in [
+    ('seo-avance', SEO_AVANCE_MODULES),
+    ('seo-local-google-business', SEO_LOCAL_MODULES),
+    ('wordpress-intermediaire', WORDPRESS_INT_MODULES),
+    ('wordpress-securite-performance', WORDPRESS_SEC_MODULES),
+    ('shopify-marchand-debutant', SHOPIFY_DEB_MODULES),
+]:
+    if content:
+        DETAILED_CONTENT[slug] = content
+        n = sum(len(m.get('lessons', [])) for m in content)
+        print('[build] integrated trainer content for', slug, '(', n, 'lessons)')
 
 
 def merge_partial_detailed(formation, detailed_modules):

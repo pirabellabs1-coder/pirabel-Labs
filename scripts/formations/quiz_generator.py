@@ -159,9 +159,15 @@ def render_quiz_page(formation, module_idx, module_title, all_modules, is_en=Fal
     f_title = formation['title_en' if is_en else 'title_fr']
     formation_url = f"{base_url}/formations/{slug}"
     canonical = f"https://www.pirabellabs.com{formation_url}/m{module_idx}-quiz"
-    # SEO-friendly title cap a 65 chars
-    short_title = f"Quiz Module {module_idx} - {module_title}"
-    page_title = short_title[:65].rstrip()
+    # SEO-friendly title cap a 65 chars - include formation slug short to avoid dup titles
+    f_short = f_title.split(':')[0].split('-')[0].strip()
+    if len(f_short) > 28: f_short = f_short[:25].rstrip() + '...'
+    # Quiz title : Quiz M<i> + module title court + formation short
+    mod_short = module_title[:25].rstrip()
+    candidate = f"Quiz M{module_idx} {mod_short} - {f_short}"
+    if len(candidate) > 70:
+        candidate = f"Quiz M{module_idx} - {f_short}"
+    page_title = candidate
     page_desc = f"QCM de validation du module {module_idx} ({module_title[:50]}) de {f_title[:50]}. 5 questions, valider a 70 pour avancer."
     if len(page_desc) > 160:
         page_desc = page_desc[:157].rstrip() + '...'

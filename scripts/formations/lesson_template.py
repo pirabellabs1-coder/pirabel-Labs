@@ -40,12 +40,36 @@ def render_lesson_page(formation, module_idx, lesson_idx, module, lesson,
     href_fr = canonical.replace('/en/', '/')
     href_en = canonical if is_en else canonical.replace('https://www.pirabellabs.com/', 'https://www.pirabellabs.com/en/')
 
-    # SEO-friendly title : lesson title + brand only if total < 60 chars
+    # SEO title : lecon + formation context (eviter doublons inter-formations)
+    # Le slug court (3-4 mots) garantit l'unicite + reste sous 65 chars quand possible.
     lesson_t = lesson['title']
-    if len(lesson_t) > 50:
-        page_title = lesson_t[:65].rstrip()
+    # Discriminant formation : 2-3 mots du titre formation (premier segment avant : ou -)
+    f_short = f_title.split(':')[0].split('-')[0].strip()
+    # Cap a 30 chars pour le discriminant
+    if len(f_short) > 30:
+        f_short = f_short[:27].rstrip() + '...'
+
+    # Strategie :
+    # - Si lecon+formation court+brand <= 65 : tout
+    # - Si lecon+formation court <= 65 : on garde sans brand
+    # - Si lecon seule > 65 : on tronque lecon a 35 + formation court
+    # - Sinon on prend lecon + (formation court tronque)
+    brand_suffix = ' | Pirabel Labs'
+    full_v1 = f"{lesson_t} - {f_short}{brand_suffix}"
+    if len(full_v1) <= 65:
+        page_title = full_v1
     else:
-        page_title = f"{lesson_t} | Pirabel Labs Academy"
+        full_v2 = f"{lesson_t} - {f_short}"
+        if len(full_v2) <= 65:
+            page_title = full_v2
+        else:
+            # Tronquer le lesson title pour faire de la place au discriminant
+            max_lesson = 65 - len(f_short) - 5  # 5 chars pour ' - X '
+            if max_lesson < 25:
+                # Pas assez de place : on prefere lecon entiere quitte a depasser 65
+                page_title = lesson_t[:60].rstrip()
+            else:
+                page_title = lesson_t[:max_lesson].rstrip() + ' - ' + f_short
     # Meta description riche : lecon + module + duration + format
     if is_en:
         page_desc = f"Lesson {module_idx}.{lesson_idx}: {lesson_t[:80]}. Module {module_idx} of {f_title[:50]}. {lesson.get('duration', 15)} min, free training by Pirabel Labs Academy."

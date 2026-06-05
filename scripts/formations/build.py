@@ -30,6 +30,9 @@ SEO_LOCAL_MODULES = _safe_import('content_seo_local_google_business', 'SEO_LOCAL
 WORDPRESS_INT_MODULES = _safe_import('content_wordpress_intermediaire', 'WORDPRESS_INTERMEDIAIRE_MODULES')
 WORDPRESS_SEC_MODULES = _safe_import('content_wordpress_securite_performance', 'WORDPRESS_SECURITE_PERFORMANCE_MODULES')
 SHOPIFY_DEB_MODULES = _safe_import('content_shopify_marchand_debutant', 'SHOPIFY_MARCHAND_DEBUTANT_MODULES')
+MARKETING_FOND_MODULES = _safe_import('content_marketing_digital_fondamentaux', 'MARKETING_DIGITAL_FONDAMENTAUX_MODULES')
+MARKETING_AVANCE_MODULES = _safe_import('content_marketing_digital_strategie_avancee', 'MARKETING_DIGITAL_STRATEGIE_AVANCEE_MODULES')
+INBOUND_MODULES = _safe_import('content_inbound_marketing_complet', 'INBOUND_MARKETING_COMPLET_MODULES')
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -44,6 +47,9 @@ for slug, content in [
     ('wordpress-intermediaire', WORDPRESS_INT_MODULES),
     ('wordpress-securite-performance', WORDPRESS_SEC_MODULES),
     ('shopify-marchand-debutant', SHOPIFY_DEB_MODULES),
+    ('marketing-digital-fondamentaux', MARKETING_FOND_MODULES),
+    ('marketing-digital-strategie-avancee', MARKETING_AVANCE_MODULES),
+    ('inbound-marketing-complet', INBOUND_MODULES),
 ]:
     if content:
         DETAILED_CONTENT[slug] = content

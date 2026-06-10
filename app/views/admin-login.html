@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - Pirabel Labs</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/css/global.css">
+<style>
+body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:1rem; }
+.login-card { background:var(--bg-2); border:1px solid var(--border); padding:2.5rem; width:100%; max-width:24rem; }
+.login-card__brand { font-family:var(--font-display); font-weight:800; font-size:1.1rem; margin-bottom:.5rem; }
+.login-card__title { font-size:1.4rem; margin-bottom:.5rem; }
+.login-card__sub { color:var(--text-muted); font-size:.88rem; margin-bottom:2rem; }
+.alert { padding:.75rem 1rem; font-size:.85rem; margin-bottom:1rem; display:none; }
+.alert.show { display:block; }
+.alert--err { background:rgba(248,113,113,.1); color:#f87171; border:1px solid rgba(248,113,113,.3); }
+</style>
+</head>
+<body>
+<div class="login-card">
+  <div class="login-card__brand">Pirabel Labs</div>
+  <h1 class="login-card__title">Espace admin</h1>
+  <p class="login-card__sub">Connexion reservee. Acces non autorise journalise.</p>
+  <div id="alert" class="alert alert--err"></div>
+  <form id="loginForm" class="form">
+    <div class="field">
+      <label class="field__label" for="email">Email</label>
+      <input id="email" class="field__input" type="email" name="email" required autocomplete="email">
+    </div>
+    <div class="field">
+      <label class="field__label" for="password">Mot de passe</label>
+      <input id="password" class="field__input" type="password" name="password" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn--primary" id="submitBtn" style="width:100%;justify-content:center;">Se connecter</button>
+  </form>
+  <p style="margin-top:2rem;font-size:.8rem;color:var(--text-faint);text-align:center;"><a href="/" style="color:var(--text-faint);">&larr; Retour au site</a></p>
+</div>
+<script>
+(function(){
+  var form = document.getElementById('loginForm');
+  var btn = document.getElementById('submitBtn');
+  var alertEl = document.getElementById('alert');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    alertEl.classList.remove('show');
+    btn.disabled = true; btn.textContent = 'Connexion...';
+    var data = { email: document.getElementById('email').value, password: document.getElementById('password').value };
+    fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res && res.success) {
+          window.location.href = '/admin/leads';
+        } else {
+          alertEl.textContent = (res && res.error) || 'Erreur';
+          alertEl.classList.add('show');
+          btn.disabled = false; btn.textContent = 'Se connecter';
+        }
+      })
+      .catch(function(){
+        alertEl.textContent = 'Erreur reseau';
+        alertEl.classList.add('show');
+        btn.disabled = false; btn.textContent = 'Se connecter';
+      });
+  });
+})();
+</script>
+</body>
+</html>

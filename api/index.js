@@ -1,378 +1,268 @@
+/**
+ * Pirabel Labs - Vercel serverless entry point.
+ *
+ * Endpoints :
+ *   POST   /api/contact                 (public, soumission formulaire)
+ *   POST   /api/admin/login             (login admin)
+ *   POST   /api/admin/logout            (logout)
+ *   GET    /api/admin/me                (session check)
+ *   GET    /api/admin/leads             (liste leads, admin)
+ *   GET    /api/admin/leads/:id         (detail lead, admin)
+ *   PATCH  /api/admin/leads/:id         (update status/notes, admin)
+ *   DELETE /api/admin/leads/:id         (delete lead, admin)
+ *   GET    /api/health                  (status check)
+ *
+ * Admin views servies statiquement :
+ *   GET /pirabel-admin-7x9k2m -> app/views/admin-login.html
+ *   GET /admin/leads          -> app/views/admin-leads.html
+ */
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
-const mongoose = require('mongoose');
+const crypto = require('crypto');
+
+const connectDB = require('../app/config/db');
+const { sendEmail } = require('../app/config/email');
+const {
+  rateLimit, sanitize, sanitizeEmail, honeypotCheck, limitBody,
+  isValidEmail, securityHeaders, globalSanitize,
+} = require('../app/middleware/security');
+const { auth, adminOnly } = require('../app/middleware/auth');
+const User = require('../app/models/User');
+const Lead = require('../app/models/Lead');
 
 const app = express();
 
-// Connect to MongoDB (singleton)
-let isConnected = false;
-async function connectDB() {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, { bufferCommands: false });
-    isConnected = true;
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error('MongoDB error:', err.message);
-  }
-}
-
-// Security middleware
-const { securityHeaders, globalSanitize } = require(path.join(__dirname, '..', 'app', 'middleware', 'security'));
-app.use(securityHeaders);
-app.use(globalSanitize); // Global XSS protection
-
-// CORS — restrict to known origins
-const ALLOWED_ORIGINS = [
-  process.env.SITE_URL || 'https://www.pirabellabs.com',
-  'https://www.pirabellabs.com',
-  'https://pirabellabs.com',
-  'http://localhost:8080',
-  'http://localhost:10000',
-  'http://127.0.0.1:8080'
-];
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (server-to-server, curl, mobile apps)
-    if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.some(o => origin.startsWith(o))) return callback(null, true);
-    callback(null, false);
-  },
-  credentials: true
-}));
-
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// === Middlewares ===
+app.set('trust proxy', 1);
+app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
-// Serve dashboard static files
-app.use('/public', express.static(path.join(__dirname, '..', 'app', 'public')));
+const ALLOWED_ORIGINS = new Set([
+  'https://www.pirabellabs.com',
+  'https://pirabellabs.com',
+  'http://localhost:3000',
+  'http://localhost:3055',
+]);
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.has(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 
-// Connect to DB before every request
+app.use(securityHeaders);
+app.use(globalSanitize);
+
+// === DB connection (lazy, partagee entre invocations serverless) ===
+let dbReady = null;
+async function ensureDB() {
+  if (!dbReady) dbReady = connectDB();
+  return dbReady;
+}
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await ensureDB();
+    next();
+  } catch (e) {
+    return res.status(503).json({ error: 'Database indisponible.' });
+  }
 });
 
-// Load paths for Vercel
-const modelsPath = path.join(__dirname, '..', 'app', 'models');
-const configPath = path.join(__dirname, '..', 'app', 'config');
-const routesPath = path.join(__dirname, '..', 'app', 'routes');
-const middlewarePath = path.join(__dirname, '..', 'app', 'middleware');
-const viewsPath = path.join(__dirname, '..', 'app', 'views');
+// === PUBLIC : Contact form ===
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 5,
+  message: 'Trop de demandes. Reessayez dans 15 minutes.',
+  keyPrefix: 'contact',
+});
 
-// Override require paths for the app modules
-const Module = require('module');
-const originalResolve = Module._resolveFilename;
-Module._resolveFilename = function(request, parent, ...args) {
-  if (request.startsWith('../models/')) {
-    return originalResolve.call(this, path.join(modelsPath, request.replace('../models/', '')), parent, ...args);
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name, 120);
+    const email = sanitizeEmail(req.body.email);
+    const phone = sanitize(req.body.phone || '', 30);
+    const company = sanitize(req.body.company || '', 120);
+    const service = sanitize(req.body.service, 30);
+    const message = sanitize(req.body.message, 5000);
+
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
+    if (!['site-web', 'application', 'automatisation', 'seo', 'autre'].includes(service)) {
+      return res.status(400).json({ error: 'Service requis.' });
+    }
+    if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
+
+    const ipHash = crypto.createHash('sha256')
+      .update((req.ip || '') + (process.env.JWT_SECRET || ''))
+      .digest('hex').slice(0, 32);
+
+    const lead = await Lead.create({
+      name, email, phone, company, service, message,
+      source: 'site_contact',
+      userAgent: (req.headers['user-agent'] || '').slice(0, 500),
+      ipHash,
+    });
+
+    sendEmail({
+      to: process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      subject: '[Pirabel Labs] Nouvelle demande - ' + service,
+      html: '<h2>Nouvelle demande contact</h2>' +
+        '<p><strong>De :</strong> ' + escapeHtml(name) + ' &lt;' + escapeHtml(email) + '&gt;</p>' +
+        (phone ? '<p><strong>Telephone :</strong> ' + escapeHtml(phone) + '</p>' : '') +
+        (company ? '<p><strong>Entreprise :</strong> ' + escapeHtml(company) + '</p>' : '') +
+        '<p><strong>Service :</strong> ' + escapeHtml(service) + '</p>' +
+        '<hr><p style="white-space:pre-wrap;">' + escapeHtml(message) + '</p>' +
+        '<hr><p style="font-size:.85em;color:#888;">ID: ' + lead._id + '</p>',
+    }).catch(e => console.error('[contact] admin email error:', e.message));
+
+    sendEmail({
+      to: email,
+      subject: 'Pirabel Labs - Demande recue, reponse sous 24h',
+      html: '<h2>Bonjour ' + escapeHtml(name) + ',</h2>' +
+        '<p>Nous avons bien recu votre demande concernant <strong>' + escapeHtml(service) + '</strong>.</p>' +
+        '<p>Un membre de notre equipe vous repond sous 24h ouvres avec une premiere estimation et la prochaine etape proposee.</p>' +
+        '<p>A tres vite,<br>L\'equipe Pirabel Labs</p>',
+    }).catch(e => console.error('[contact] confirm email error:', e.message));
+
+    res.json({ success: true, message: 'Demande envoyee. Reponse sous 24h ouvres.' });
+  } catch (err) {
+    console.error('[contact] error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com' });
   }
-  if (request.startsWith('../config/')) {
-    return originalResolve.call(this, path.join(configPath, request.replace('../config/', '')), parent, ...args);
-  }
-  if (request.startsWith('../middleware/')) {
-    return originalResolve.call(this, path.join(middlewarePath, request.replace('../middleware/', '')), parent, ...args);
-  }
-  return originalResolve.call(this, request, parent, ...args);
+});
+
+// === ADMIN AUTH ===
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 10,
+  message: 'Trop de tentatives. Reessayez dans 15 minutes.',
+  keyPrefix: 'login',
+});
+
+const COOKIE_OPTS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: '/',
 };
 
-// API Routes
-app.use('/api/auth', require(path.join(routesPath, 'auth')));
-app.use('/api/clients', require(path.join(routesPath, 'clients')));
-app.use('/api/projects', require(path.join(routesPath, 'projects')));
-app.use('/api/orders', require(path.join(routesPath, 'orders')));
-app.use('/api/employees', require(path.join(routesPath, 'employees')));
-app.use('/api/invoices', require(path.join(routesPath, 'invoices')));
-app.use('/api/dashboard', require(path.join(routesPath, 'dashboard')));
-app.use('/api/campaigns', require(path.join(routesPath, 'email')));
-app.use('/api/chat', require(path.join(routesPath, 'chat')));
-app.use('/api/articles', require(path.join(routesPath, 'articles')));
-app.use('/api/analytics', require(path.join(routesPath, 'analytics')));
-app.use('/api/upload', require(path.join(routesPath, 'upload')));
-app.use('/api/settings', require(path.join(routesPath, 'settings')));
-app.use('/api/notes', require(path.join(routesPath, 'notes')));
-app.use('/api/prospects', require(path.join(routesPath, 'prospects')));
-app.use('/api/revenue', require(path.join(routesPath, 'revenue')));
-app.use('/api/logs', require(path.join(routesPath, 'logs')));
-app.use('/api/recruitment', require(path.join(routesPath, 'recruitment')));
-app.use('/api/notifications', require(path.join(routesPath, 'notifications')));
-app.use('/api/search', require(path.join(routesPath, 'search')));
-app.use('/api/tasks', require(path.join(routesPath, 'tasks')));
-app.use('/api/appointments', require(path.join(routesPath, 'appointments')));
-app.use('/api/v2/admin', require(path.join(routesPath, 'admin-api')));
-app.use('/api/quotes', require(path.join(routesPath, 'quotes')));
-app.use('/api/deals', require(path.join(routesPath, 'deals')));
-app.use('/api/email-templates', require(path.join(routesPath, 'email-templates')));
-app.use('/api/time-entries', require(path.join(routesPath, 'time-entries')));
-app.use('/api/reviews', require(path.join(routesPath, 'reviews')));
-app.use('/api/templates', require(path.join(routesPath, 'templates')));
-app.use('/api/time', require(path.join(routesPath, 'time')));
-app.use('/api/cron', require(path.join(routesPath, 'cron')));
-app.use('/api/status', require(path.join(routesPath, 'status')));
-app.use('/api/outreach', require(path.join(routesPath, 'outreach')));
-app.use('/api/case-studies', require(path.join(routesPath, 'case-studies')));
-app.use('/api/lesson-comments', require(path.join(routesPath, 'lesson-comments')));
-app.use('/api/lms', require(path.join(routesPath, 'lms')));
-
-// URLs admin/client : tokens unguessable. On enregistre PLUSIEURS paths (env var + nouveaux defaults)
-// pour eviter le glitch si env Vercel n'est pas a jour.
-const ADMIN_PATHS = new Set([
-  'gestion-v71k4724gxxyrmmb',
-  process.env.ADMIN_SECRET_PATH,
-].filter(Boolean));
-const CLIENT_PATHS = new Set([
-  'espace-1oiv0czkgvvm9k',
-  process.env.CLIENT_SECRET_PATH,
-].filter(Boolean));
-
-ADMIN_PATHS.forEach(p => {
-  app.get(`/${p}`, (req, res) => res.sendFile(path.join(viewsPath, 'login.html')));
-});
-CLIENT_PATHS.forEach(p => {
-  app.get(`/${p}`, (req, res) => res.sendFile(path.join(viewsPath, 'portal-login.html')));
-});
-
-// Blocked routes : tout chemin obvious renvoie 404 generique
-const BLOCKED = ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator', '/portal-login'];
-BLOCKED.forEach(r => app.get(r, (_, res) => res.status(404).send('Not Found')));
-
-// Dashboard views
-const views = ['dashboard', 'clients', 'projects', 'orders', 'employees', 'invoices', 'revenue', 'settings', 'campaigns', 'messages', 'articles', 'analytics', 'portal', 'notes', 'prospects', 'leads', 'logs', 'recruitment', 'candidates', 'tasks', 'calendar', 'quotes', 'reviews', 'templates', 'time', 'status-page', 'crm', 'pipeline', 'email-templates', 'time-tracking', 'reviews-admin', 'api-docs', 'gerer-rendez-vous', 'case-studies', 'lms-students', 'lms-comments', 'student-space'];
-views.forEach(v => {
-  app.get(`/${v}`, (req, res) => res.sendFile(path.join(viewsPath, `${v}.html`)));
-});
-
-// Alias public : /mon-espace-eleve (auth verif cote client par fetch /api/lms/student-dashboard)
-app.get('/mon-espace-eleve', (req, res) => res.sendFile(path.join(viewsPath, 'student-space.html')));
-
-// Health check
-app.get('/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
-app.get('/api/health', (req, res) => res.json({ status: 'ok', db: isConnected, timestamp: new Date().toISOString() }));
-
-// SMTP diagnostic endpoint — admin-only (expose creds metadata)
-app.get('/api/email-diagnostic', async (req, res) => {
-  // Auth check inline pour eviter dependency hoist
+app.post('/api/admin/login', loginLimiter, limitBody(5), async (req, res) => {
   try {
-    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
-    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-  } catch (e) {
-    return res.status(401).json({ error: 'Admin auth required' });
-  }
-  const nodemailer = require('nodemailer');
-  const clean = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
-  
-  const SMTP_HOST = clean(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
-  const SMTP_PORT = parseInt(clean(process.env.SMTP_PORT)) || 587;
-  const SMTP_USER = clean(process.env.SMTP_USER);
-  const SMTP_PASS = clean(process.env.SMTP_PASS);
-  const FROM_EMAIL = clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
-  const ADMIN_EMAIL = clean(process.env.ADMIN_EMAIL) || FROM_EMAIL;
-  
-  const diagnostic = {
-    smtp_host: SMTP_HOST,
-    smtp_port: SMTP_PORT,
-    smtp_user_set: !!SMTP_USER,
-    smtp_user_preview: SMTP_USER ? SMTP_USER.substring(0, 8) + '...' : 'NOT SET',
-    smtp_pass_set: !!SMTP_PASS,
-    smtp_pass_length: SMTP_PASS ? SMTP_PASS.length : 0,
-    from_email: FROM_EMAIL,
-    admin_email: ADMIN_EMAIL,
-    connection_test: null
-  };
-  
-  if (SMTP_USER && SMTP_PASS) {
-    try {
-      const testTransport = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_PORT === 465,
-        auth: { user: SMTP_USER, pass: SMTP_PASS },
-        connectionTimeout: 8000,
-        greetingTimeout: 5000,
-        tls: { rejectUnauthorized: false }
-      });
-      await testTransport.verify();
-      diagnostic.connection_test = 'SUCCESS — SMTP connected OK';
-    } catch (err) {
-      diagnostic.connection_test = `FAILED — ${err.code || ''} ${err.message}`;
+    const email = sanitizeEmail(req.body.email);
+    const password = String(req.body.password || '');
+    if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
+
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !user.isActive || user.role !== 'admin') {
+      return res.status(401).json({ error: 'Identifiants invalides.' });
     }
-  } else {
-    diagnostic.connection_test = 'SKIPPED — SMTP credentials missing';
-  }
-  
-  res.json(diagnostic);
-});
+    const ok = await user.comparePassword(password);
+    if (!ok) return res.status(401).json({ error: 'Identifiants invalides.' });
 
+    user.lastLogin = new Date();
+    await user.save();
 
-// Admin hard reset endpoint — POST + double-confirm token (anti-CSRF/prefetch)
-// Usage: POST /api/admin/hard-reset-db  body: { confirm: "WIPE-DB-CONFIRM" }
-app.post('/api/admin/hard-reset-db', async (req, res) => {
-  try {
-    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
-    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-
-    // Double-confirm en clair pour eviter CSRF (img/prefetch ne peut pas envoyer un body POST avec ce token)
-    if (req.body?.confirm !== 'WIPE-DB-CONFIRM') {
-      return res.status(403).json({ error: 'Confirmation token manquant. body: { confirm: "WIPE-DB-CONFIRM" }' });
-    }
-
-    // Verifie aussi un header X-Requested-With (anti-CSRF basique)
-    if (req.headers['x-requested-with'] !== 'XMLHttpRequest') {
-      return res.status(403).json({ error: 'XHR header requis' });
-    }
-
-    const modelsToKeep = ['ultimauto', 'ronan'];
-    const keepRegex = new RegExp(modelsToKeep.join('|'), 'i');
-
-    const Order = require(path.join(modelsPath, 'Order'));
-    const Lead = require(path.join(modelsPath, 'Lead'));
-    const Client = require(path.join(modelsPath, 'Client'));
-    const Quote = require(path.join(modelsPath, 'Quote'));
-    const Invoice = require(path.join(modelsPath, 'Invoice'));
-    const Project = require(path.join(modelsPath, 'Project'));
-    const Task = require(path.join(modelsPath, 'Task'));
-    const Revenue = require(path.join(modelsPath, 'Revenue'));
-    const Deal = require(path.join(modelsPath, 'Deal'));
-    const Appointment = require(path.join(modelsPath, 'Appointment'));
-
-    // Keep IDs
-    const ordersToKeep = await Order.find({ $or: [{ name: keepRegex }, { email: keepRegex }] });
-    const leadsToKeep = await Lead.find({ $or: [{ 'visitor.name': keepRegex }, { 'visitor.email': keepRegex }] });
-    const clientsToKeep = await Client.find({ $or: [{ name: keepRegex }, { email: keepRegex }, { company: keepRegex }] });
-    
-    const clientIdsToKeep = clientsToKeep.map(c => c._id);
-    const quotesToKeep = await Quote.find({ client: { $in: clientIdsToKeep } });
-    const invoicesToKeep = await Invoice.find({ client: { $in: clientIdsToKeep } });
-    const projectsToKeep = await Project.find({ client: { $in: clientIdsToKeep } });
-
-    // Perform deletions
-    const deleted = {
-      orders: await Order.deleteMany({ _id: { $nin: ordersToKeep.map(o => o._id) } }),
-      leads: await Lead.deleteMany({ _id: { $nin: leadsToKeep.map(l => l._id) } }),
-      clients: await Client.deleteMany({ _id: { $nin: clientIdsToKeep } }),
-      quotes: await Quote.deleteMany({ _id: { $nin: quotesToKeep.map(q => q._id) } }),
-      invoices: await Invoice.deleteMany({ _id: { $nin: invoicesToKeep.map(i => i._id) } }),
-      projects: await Project.deleteMany({ _id: { $nin: projectsToKeep.map(p => p._id) } }),
-      tasks: await Task.deleteMany({}), // Clear all tasks
-      revenue: await Revenue.deleteMany({}), // Wipes revenue counters
-      deals: await Deal.deleteMany({}), // Wipes Pipeline CRM
-      appointments: await Appointment.deleteMany({}) // Clear Calendar
-    };
-
-    res.json({
-      success: true,
-      message: "Database strongly reset. Kept Ultimauto & Ronan.",
-      kept: {
-        clients: clientsToKeep.length,
-        orders: ordersToKeep.length,
-        quotes: quotesToKeep.length,
-        invoices: invoicesToKeep.length,
-        projects: projectsToKeep.length
-      },
-      deleted: {
-        orders: deleted.orders.deletedCount,
-        leads: deleted.leads.deletedCount,
-        clients: deleted.clients.deletedCount,
-        quotes: deleted.quotes.deletedCount,
-        invoices: deleted.invoices.deletedCount,
-        projects: deleted.projects.deletedCount,
-        tasks: deleted.tasks.deletedCount,
-        revenue: deleted.revenue.deletedCount,
-        deals: deleted.deals.deletedCount,
-        appointments: deleted.appointments.deletedCount,
-      }
-    });
-
+    const token = user.generateToken();
+    res.cookie('token', token, COOKIE_OPTS);
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
-    console.error('Reset error:', err);
-    res.status(500).json({ error: err.message });
+    console.error('[login] error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
   }
 });
 
+app.post('/api/admin/logout', (req, res) => {
+  res.clearCookie('token', { path: '/' });
+  res.json({ success: true });
+});
 
-// Email test endpoint — admin-only (prevenir abus spam via SPF)
-app.get('/api/test-email', async (req, res) => {
+app.get('/api/admin/me', auth, adminOnly, (req, res) => {
+  res.json({ user: { id: req.user._id, name: req.user.name, email: req.user.email, role: req.user.role } });
+});
+
+// === ADMIN : LEADS ===
+app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
   try {
-    const { auth, adminOnly } = require(path.join(middlewarePath, 'auth'));
-    await new Promise((resolve, reject) => auth(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-    await new Promise((resolve, reject) => adminOnly(req, res, (err) => err ? reject(err) : resolve()));
-    if (res.headersSent) return;
-  } catch (e) {
-    return res.status(401).json({ error: 'Admin auth required' });
-  }
-  const cleanEnv = (v) => (v || '').toString().replace(/[\s\r\n]+$/g, '').replace(/^[\s\r\n]+/, '');
-  const host = cleanEnv(process.env.SMTP_HOST) || 'smtp-relay.brevo.com';
-  const port = parseInt(cleanEnv(process.env.SMTP_PORT)) || 587;
-  const user = cleanEnv(process.env.SMTP_USER);
-  const pass = cleanEnv(process.env.SMTP_PASS);
-  const from = cleanEnv(req.query.from || process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
-  const adminEmail = cleanEnv(process.env.ADMIN_EMAIL) || from;
-  const to = cleanEnv(req.query.to) || adminEmail;
-
-  // Diagnostic snapshot of what config we're actually using
-  const config = {
-    host, port,
-    secure: port === 465,
-    user: user ? (user.slice(0, 4) + '***@' + (user.split('@')[1] || '?')) : '(MANQUANT)',
-    passLength: pass ? pass.length : 0,
-    from, adminEmail, to
-  };
-
-  if (!user || !pass) {
-    return res.json({
-      success: false,
-      error: 'SMTP_USER ou SMTP_PASS manquant dans les variables Vercel',
-      config
-    });
-  }
-
-  try {
-    const nodemailer = require('nodemailer');
-    const transporter = nodemailer.createTransport({
-      host, port,
-      secure: port === 465,
-      auth: { user, pass },
-      debug: true,
-      logger: false
-    });
-
-    // Verify the connection first (catches most auth errors clearly)
-    await transporter.verify();
-
-    const info = await transporter.sendMail({
-      from: `"Pirabel Labs" <${from}>`,
-      to,
-      subject: 'Test Email Pirabel Labs — ' + new Date().toISOString(),
-      html: '<h1 style="color:#FF5500;">Test Pirabel Labs</h1><p>Email envoye le ' + new Date().toLocaleString('fr-FR') + '</p><p>FROM: ' + from + '</p><p>TO: ' + to + '</p>'
-    });
-    res.json({
-      success: true,
-      messageId: info.messageId,
-      response: info.response,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      config
-    });
+    const status = sanitize(req.query.status || '', 30);
+    const q = {};
+    if (['nouveau', 'lu', 'en_cours', 'converti', 'perdu'].includes(status)) q.status = status;
+    const leads = await Lead.find(q).sort({ createdAt: -1 }).limit(500);
+    const stats = await Lead.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
+    res.json({ leads, stats });
   } catch (err) {
-    res.json({
-      success: false,
-      error: err.message,
-      code: err.code,
-      command: err.command,
-      responseCode: err.responseCode,
-      config
-    });
+    console.error('[leads] list error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
   }
+});
+
+app.get('/api/admin/leads/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.params.id);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+    res.json(lead);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+app.patch('/api/admin/leads/:id', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.params.id);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+    if (req.body.status !== undefined && ['nouveau', 'lu', 'en_cours', 'converti', 'perdu'].includes(req.body.status)) {
+      lead.status = req.body.status;
+    }
+    if (req.body.internalNotes !== undefined) {
+      lead.internalNotes = sanitize(req.body.internalNotes, 5000);
+    }
+    await lead.save();
+    res.json(lead);
+  } catch (err) {
+    console.error('[leads] update error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+app.delete('/api/admin/leads/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const lead = await Lead.findByIdAndDelete(req.params.id);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// === HEALTH ===
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, time: new Date().toISOString() });
+});
+
+// === ADMIN STATIC VIEWS ===
+const ADMIN_LOGIN_PATH = '/' + (process.env.ADMIN_SECRET_PATH || 'pirabel-admin-7x9k2m');
+app.get(ADMIN_LOGIN_PATH, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-login.html'));
+});
+app.get('/admin/leads', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-leads.html'));
+});
+
+// Bloque URLs admin obvious
+['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator'].forEach(p => {
+  app.get(p, (req, res) => res.status(404).send('Not found'));
+});
+
+// === ERROR HANDLER ===
+app.use((err, req, res, next) => {
+  console.error('[unhandled]', err.message);
+  res.status(500).json({ error: 'Erreur serveur.' });
 });
 
 module.exports = app;

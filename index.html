@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pirabel Labs - Studio tech qui livre. Sites, applications, automatisation, SEO.</title>
-<meta name="description" content="Studio tech base au Benin. On livre des sites, applications, automatisations et SEO pour PME francophones, sans ping-pong, devis ferme sous 48h. 4 expertises, un seul interlocuteur.">
+<title>Pirabel Labs - Studio tech pour PME qui veulent scaler sans embaucher</title>
+<meta name="description" content="Studio tech base au Benin. On construit vos sites, applications, automatisations et SEO pour scaler sans recruter. Devis ferme sous 48h, livraison en sprints, un seul interlocuteur.">
 <link rel="canonical" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/">
 <link rel="icon" type="image/png" href="/img/favicon.png">
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Pirabel Labs - Studio tech qui livre">
-<meta property="og:description" content="Studio tech base au Benin. Sites, applications, automatisation, SEO pour PME francophones ambitieuses. Devis ferme sous 48h.">
+<meta property="og:title" content="Pirabel Labs - Studio tech pour PME qui veulent scaler">
+<meta property="og:description" content="On construit vos sites, applications, automatisations et SEO. Devis ferme sous 48h, un seul interlocuteur du brief a la mise en ligne.">
 <meta property="og:url" content="https://www.pirabellabs.com/">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:site_name" content="Pirabel Labs">
@@ -21,60 +21,415 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
 <style>
-.compare-table-wrap { overflow-x:auto; }
-.compare-table { width:100%; border-collapse:collapse; background:var(--bg-2); border:1px solid var(--border); min-width:640px; }
-.compare-table th, .compare-table td { padding:1rem; text-align:left; border-bottom:1px solid var(--border); font-size:.9rem; vertical-align:top; }
-.compare-table th { background:var(--surface); font-family:var(--font-display); font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); }
-.compare-table th:first-child { width:30%; }
-.compare-table th.us { background:var(--accent-soft); color:var(--accent); }
-.compare-table td.us { background:rgba(255,85,0,.06); color:var(--text); font-weight:500; }
-.compare-table td .material-symbols-outlined { font-size:1.1rem; vertical-align:middle; margin-right:.3rem; }
-.compare-table .icon-yes { color:var(--success); }
-.compare-table .icon-no { color:var(--text-faint); }
+/* ========== HOME-SPECIFIC ========== */
 
-.method-step { display:grid; grid-template-columns:auto 1fr; gap:1.5rem; padding:2rem 0; border-bottom:1px solid var(--border); align-items:start; }
-.method-step:last-child { border-bottom:0; }
-.method-step__num { font-family:var(--font-display); font-weight:800; font-size:3.5rem; color:var(--accent); line-height:1; min-width:5rem; }
-.method-step h3 { font-size:1.4rem; margin-bottom:.5rem; }
-.method-step p { color:var(--text-muted); margin-bottom:.75rem; }
-.method-step__meta { font-size:.82rem; color:var(--accent); font-family:var(--font-display); font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
-.method-step__meta .material-symbols-outlined { font-size:1rem; vertical-align:middle; margin-right:.25rem; }
-@media (max-width:640px){ .method-step { grid-template-columns:1fr; gap:.5rem; } .method-step__num { font-size:2.5rem; } }
+/* Hero centre style Croissance */
+.home-hero {
+  position: relative;
+  padding: clamp(5rem, 12vw, 9rem) var(--px-page) clamp(4rem, 8vw, 7rem);
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 85, 0, 0.10) 0%, transparent 60%),
+    linear-gradient(180deg, transparent 0%, var(--bg-2) 100%);
+}
+.home-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+.home-hero__inner { position: relative; z-index: 1; max-width: 56rem; margin: 0 auto; }
+.home-hero__eyebrow {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: 0.5rem 1rem;
+  background: rgba(255, 85, 0, 0.1);
+  border: 1px solid rgba(255, 85, 0, 0.3);
+  color: var(--accent);
+  font-family: var(--font-display); font-weight: 600; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+}
+.home-hero__eyebrow .material-symbols-outlined { font-size: 1rem; }
+.home-hero__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.25rem, 6.5vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.75rem;
+  color: var(--text);
+}
+.home-hero__title em { font-style: normal; color: var(--accent); }
+.home-hero__sub {
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--text-muted);
+  max-width: 42rem;
+  margin: 0 auto 2.5rem;
+}
+.home-hero__actions { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.btn--pill { border-radius: 999px; padding: 1.1rem 1.85rem; font-size: 0.82rem; }
 
-.pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap:1rem; }
-.pricing-card { background:var(--bg-2); border:1px solid var(--border); padding:2rem 1.5rem; display:flex; flex-direction:column; transition:border-color var(--t); }
-.pricing-card:hover { border-color:var(--accent); }
-.pricing-card--featured { border-color:var(--accent); position:relative; }
-.pricing-card--featured::before { content:'Le plus demande'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-family:var(--font-display); font-weight:700; font-size:.65rem; text-transform:uppercase; letter-spacing:.08em; padding:.3rem .85rem; }
-.pricing-card__icon { width:2.75rem; height:2.75rem; display:inline-flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); margin-bottom:1rem; }
-.pricing-card__icon .material-symbols-outlined { font-size:1.4rem; }
-.pricing-card__title { font-family:var(--font-display); font-weight:700; font-size:1.05rem; margin-bottom:.5rem; }
-.pricing-card__desc { font-size:.85rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.55; flex:1; }
-.pricing-card__price { font-family:var(--font-display); font-weight:800; font-size:1.5rem; color:var(--text); margin-bottom:.25rem; letter-spacing:-.01em; }
-.pricing-card__price-meta { font-size:.78rem; color:var(--text-faint); margin-bottom:1.5rem; font-family:var(--font-display); font-weight:600; }
-.pricing-card__cta { display:block; text-align:center; padding:.85rem 1.2rem; background:transparent; color:var(--text); border:1px solid var(--border-2); font-family:var(--font-display); font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; text-decoration:none; transition:all var(--t); }
-.pricing-card__cta:hover { border-color:var(--accent); color:var(--accent); opacity:1; }
-.pricing-card--featured .pricing-card__cta { background:var(--accent); color:#fff; border-color:var(--accent); }
-.pricing-card--featured .pricing-card__cta:hover { background:var(--accent-2); color:#fff; }
+/* Stats strip propre */
+.stats-strip {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.75rem 0;
+}
+.stats-strip__inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--px-page);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 1.5rem 2rem;
+  text-align: center;
+}
+.stats-strip__item {}
+.stats-strip__val {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--accent); letter-spacing: -0.02em;
+  line-height: 1; margin-bottom: 0.3rem;
+}
+.stats-strip__lbl {
+  font-size: 0.78rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  font-family: var(--font-display); font-weight: 600;
+}
 
-.faq { display:flex; flex-direction:column; gap:.5rem; max-width:48rem; margin:0 auto; }
-.faq__item { background:var(--bg-2); border:1px solid var(--border); }
-.faq__item[open] { border-color:var(--accent); }
-.faq__q { padding:1.25rem 1.5rem; cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:1rem; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
-.faq__q::-webkit-details-marker { display:none; }
-.faq__q::after { content:'+'; font-size:1.5rem; color:var(--accent); transition:transform var(--t); line-height:1; flex-shrink:0; }
-.faq__item[open] .faq__q::after { transform:rotate(45deg); }
-.faq__a { padding:0 1.5rem 1.25rem; color:var(--text-muted); line-height:1.7; font-size:.92rem; }
+/* Section header centre style */
+.sec-header { text-align: center; max-width: 48rem; margin: 0 auto var(--s-7); }
+.sec-header__eyebrow {
+  display: inline-block;
+  font-family: var(--font-display); font-weight: 700; font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.sec-header h2 {
+  font-size: clamp(1.85rem, 4vw, 3rem);
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+.sec-header__sub {
+  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
+  color: var(--text-muted);
+  line-height: 1.65;
+}
 
-.proof-strip { background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2rem 0; }
-.proof-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap:2rem; text-align:center; }
-.proof__val { font-family:var(--font-display); font-weight:800; font-size:2rem; color:var(--accent); letter-spacing:-.02em; }
-.proof__lbl { font-size:.78rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; font-family:var(--font-display); font-weight:600; }
+/* Comparaison style Croissance */
+.compare {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr 1.1fr;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.compare__cell {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  font-size: 0.88rem;
+  display: flex; align-items: center;
+  color: var(--text);
+}
+.compare__cell:last-child { border-right: 0; }
+.compare__cell--head {
+  background: var(--surface);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted);
+  justify-content: center;
+}
+.compare__cell--label {
+  font-family: var(--font-display); font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.compare__cell--us {
+  background: rgba(255, 85, 0, 0.05);
+  font-weight: 500;
+}
+.compare__cell--us-head {
+  background: var(--accent);
+  color: #fff;
+}
+.compare__cell .x { color: #f87171; margin-right: 0.4rem; font-weight: 700; flex-shrink: 0; }
+.compare__cell .v { color: #4ade80; margin-right: 0.4rem; font-weight: 700; flex-shrink: 0; }
+@media (max-width: 880px) {
+  .compare-wrap { overflow-x: auto; }
+  .compare { min-width: 720px; }
+}
+
+/* Services cards riches */
+.services-rich {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+}
+.svc {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2rem 1.75rem;
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  transition: all var(--t);
+  position: relative;
+  overflow: hidden;
+}
+.svc:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.svc::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t);
+}
+.svc:hover::after { transform: scaleX(1); }
+.svc__icon {
+  width: 3rem; height: 3rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+.svc__icon .material-symbols-outlined { font-size: 1.6rem; }
+.svc__title {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.svc__desc {
+  font-size: 0.92rem; color: var(--text-muted); line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+.svc__link {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent);
+  display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.svc__link .material-symbols-outlined { font-size: 1rem; transition: transform var(--t); }
+.svc:hover .svc__link .material-symbols-outlined { transform: translateX(4px); }
+
+/* Methodologie premium */
+.method {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1.5rem;
+}
+.method-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2rem 1.75rem;
+  position: relative;
+}
+.method-card__num {
+  display: inline-flex;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 2.5rem; color: var(--accent);
+  line-height: 1; margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+.method-card__title {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.method-card__desc {
+  font-size: 0.92rem; color: var(--text-muted); line-height: 1.65;
+  margin-bottom: 1rem;
+}
+.method-card__meta {
+  font-size: 0.75rem; color: var(--accent);
+  font-family: var(--font-display); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.method-card__meta .material-symbols-outlined { font-size: 0.95rem; }
+
+/* Pricing premium */
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+.price-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2rem 1.75rem;
+  display: flex; flex-direction: column;
+  transition: border-color var(--t);
+}
+.price-card:hover { border-color: var(--accent); }
+.price-card--featured {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(255, 85, 0, 0.06) 0%, var(--bg-2) 100%);
+  position: relative;
+}
+.price-card--featured::before {
+  content: 'Le plus demande';
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  font-family: var(--font-display); font-weight: 700; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+}
+.price-card__icon {
+  width: 2.75rem; height: 2.75rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+.price-card__icon .material-symbols-outlined { font-size: 1.4rem; }
+.price-card__title {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+}
+.price-card__desc {
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+.price-card__price {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.5rem;
+  color: var(--text); margin-bottom: 0.2rem; letter-spacing: -0.01em;
+}
+.price-card__meta {
+  font-size: 0.78rem; color: var(--text-faint);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-display); font-weight: 600;
+}
+.price-card__cta {
+  display: block; text-align: center;
+  padding: 0.95rem 1.2rem;
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border-2);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  text-decoration: none; transition: all var(--t);
+}
+.price-card__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.price-card--featured .price-card__cta {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.price-card--featured .price-card__cta:hover { background: var(--accent-2); color: #fff; }
+
+/* Testimonials placeholder */
+.tm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.25rem;
+}
+.tm {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2rem 1.75rem;
+  display: flex; flex-direction: column;
+}
+.tm__quote {
+  font-size: 1rem; line-height: 1.7;
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--accent);
+}
+.tm__author { display: flex; align-items: center; gap: 0.75rem; margin-top: auto; }
+.tm__avatar {
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700;
+}
+.tm__name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+.tm__role { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+/* Trust banner */
+.trust {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.trust__sub {
+  font-size: 0.78rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  font-family: var(--font-display); font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+.trust__items {
+  display: flex; flex-wrap: wrap;
+  gap: 0.75rem; justify-content: center;
+}
+.trust__item {
+  padding: 0.5rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-family: var(--font-display); font-weight: 600; font-size: 0.85rem;
+  color: var(--text-muted);
+  border-radius: 999px;
+}
+
+/* FAQ */
+.faq {
+  display: flex; flex-direction: column; gap: 0.6rem;
+  max-width: 50rem; margin: 0 auto;
+}
+.faq__item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+.faq__item[open] { border-color: var(--accent); }
+.faq__q {
+  padding: 1.35rem 1.5rem;
+  cursor: pointer;
+  font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+  list-style: none;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; color: var(--text);
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q::after {
+  content: '+'; font-size: 1.5rem; color: var(--accent);
+  transition: transform var(--t); line-height: 1; flex-shrink: 0;
+}
+.faq__item[open] .faq__q::after { transform: rotate(45deg); }
+.faq__a {
+  padding: 0 1.5rem 1.35rem;
+  color: var(--text-muted); line-height: 1.7; font-size: 0.93rem;
+}
+
+/* Final CTA */
+.final-cta {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 60%);
+  border: 1px solid var(--accent);
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+}
+.final-cta h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  margin-bottom: 1rem;
+}
+.final-cta p {
+  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
+  color: var(--text-muted);
+  margin: 0 auto 2rem;
+  max-width: 36rem;
+}
 </style>
 <script type="application/ld+json">
 {
@@ -129,196 +484,333 @@
 
 <main id="main">
 
-  <section class="hero">
-    <div class="container hero__inner">
-      <span class="badge mb-3"><span class="material-symbols-outlined">bolt</span> Studio tech base au Benin</span>
-      <h1>Du brief a la mise en ligne, sans ping-pong.</h1>
-      <p>Pirabel Labs livre des sites, applications, automatisations et SEO pour PME francophones ambitieuses. Devis ferme sous 48h, livraison en sprints, un seul interlocuteur du debut a la fin.</p>
-      <div class="hero__actions">
-        <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
-        <a href="#tarifs" class="btn btn--ghost btn--lg">Voir nos tarifs</a>
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="home-hero__inner">
+      <span class="home-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Studio tech base au Benin</span>
+      <h1 class="home-hero__title">Construisons votre <em>moteur digital</em>, du brief a la mise en ligne.</h1>
+      <p class="home-hero__sub">Pirabel Labs construit des sites, applications, automatisations et systemes SEO pour les PME francophones qui veulent scaler sans recruter une equipe tech entiere. Devis ferme sous 48h, un seul interlocuteur, livraison en sprints.</p>
+      <div class="home-hero__actions">
+        <a href="/contact" class="btn btn--primary btn--lg btn--pill">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
+        <a href="#tarifs" class="btn btn--ghost btn--lg btn--pill">Voir nos tarifs</a>
       </div>
     </div>
   </section>
 
-  <section class="proof-strip">
-    <div class="container">
-      <div class="proof-grid">
-        <div><div class="proof__val">48h</div><div class="proof__lbl">Devis ferme</div></div>
-        <div><div class="proof__val">4</div><div class="proof__lbl">Expertises maitrisees</div></div>
-        <div><div class="proof__val">1</div><div class="proof__lbl">Interlocuteur unique</div></div>
-        <div><div class="proof__val">8</div><div class="proof__lbl">Pays francophones</div></div>
+  <!-- STATS STRIP -->
+  <section class="stats-strip">
+    <div class="stats-strip__inner">
+      <div class="stats-strip__item">
+        <div class="stats-strip__val">48h</div>
+        <div class="stats-strip__lbl">Devis ferme</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__val">4</div>
+        <div class="stats-strip__lbl">Expertises maitrisees</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__val">1</div>
+        <div class="stats-strip__lbl">Interlocuteur unique</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__val">8</div>
+        <div class="stats-strip__lbl">Pays couverts</div>
+      </div>
+      <div class="stats-strip__item">
+        <div class="stats-strip__val">100%</div>
+        <div class="stats-strip__lbl">Garantie 30 jours</div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="services">
+  <!-- WHY US + COMPARAISON -->
+  <section class="section" style="padding-top:clamp(5rem,8vw,7rem);">
     <div class="container">
-      <div class="mb-5">
-        <span class="eyebrow">Nos expertises</span>
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Pourquoi nous choisir</span>
+        <h2>Une meilleure facon de construire votre stack digitale.</h2>
+        <p class="sec-header__sub">Embaucher en interne est lent, couteux, et le profil parfait n'existe que sur LinkedIn. Faire appel a une agence classique coute cher et vous parlez a 3 interlocuteurs. Avec un studio comme le notre, vous avez l'expertise de 4 metiers reunis, et un seul interlocuteur du brief a la mise en ligne.</p>
+      </div>
+
+      <div class="compare-wrap">
+        <div class="compare">
+          <div class="compare__cell compare__cell--head"></div>
+          <div class="compare__cell compare__cell--head">Freelance solo</div>
+          <div class="compare__cell compare__cell--head">Recrutement interne</div>
+          <div class="compare__cell compare__cell--head">Agence classique</div>
+          <div class="compare__cell compare__cell--head compare__cell--us-head">Pirabel Labs</div>
+
+          <div class="compare__cell compare__cell--label">Cout mois 1</div>
+          <div class="compare__cell">2 500 - 6 000 EUR</div>
+          <div class="compare__cell">5 000 EUR (salaire + charges)</div>
+          <div class="compare__cell">A partir de 8 000 EUR</div>
+          <div class="compare__cell compare__cell--us">A partir de 2 500 EUR (forfait)</div>
+
+          <div class="compare__cell compare__cell--label">Delai de demarrage</div>
+          <div class="compare__cell"><span class="x">x</span>1-4 semaines</div>
+          <div class="compare__cell"><span class="x">x</span>2-6 mois (recrutement)</div>
+          <div class="compare__cell"><span class="x">x</span>4-12 semaines</div>
+          <div class="compare__cell compare__cell--us"><span class="v">v</span>1-2 semaines</div>
+
+          <div class="compare__cell compare__cell--label">Couverture des 4 expertises</div>
+          <div class="compare__cell"><span class="x">x</span>Specialise sur 1-2</div>
+          <div class="compare__cell"><span class="x">x</span>Une expertise par recrutement</div>
+          <div class="compare__cell"><span class="v">v</span>Oui mais marges elevees</div>
+          <div class="compare__cell compare__cell--us"><span class="v">v</span>Oui, en focus</div>
+
+          <div class="compare__cell compare__cell--label">Devis ferme avant projet</div>
+          <div class="compare__cell">Souvent</div>
+          <div class="compare__cell"><span class="x">x</span>Non applicable</div>
+          <div class="compare__cell"><span class="x">x</span>Rare, revisions en cours</div>
+          <div class="compare__cell compare__cell--us"><span class="v">v</span>Sous 48h, prix fixe</div>
+
+          <div class="compare__cell compare__cell--label">Continuite si l'humain part</div>
+          <div class="compare__cell"><span class="x">x</span>Projet a risque</div>
+          <div class="compare__cell"><span class="x">x</span>Trou de competence</div>
+          <div class="compare__cell"><span class="v">v</span>Remplacement</div>
+          <div class="compare__cell compare__cell--us"><span class="v">v</span>2 cofondateurs + doc</div>
+
+          <div class="compare__cell compare__cell--label">Maintenance long terme</div>
+          <div class="compare__cell">Selon dispo</div>
+          <div class="compare__cell">Coute toute l'annee</div>
+          <div class="compare__cell">Couteuse</div>
+          <div class="compare__cell compare__cell--us"><span class="v">v</span>Option a la carte</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES (Ce que vous obtenez) -->
+  <section class="section" id="services" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Nos expertises</span>
         <h2>Quatre disciplines, une seule equipe.</h2>
-        <p class="lead mt-3">Plutot que pretendre tout faire, on s'est concentre sur 4 expertises que nous maitrisons vraiment. Chaque service est dirige par un cofondateur, pas sous-traite.</p>
+        <p class="sec-header__sub">Plutot que pretendre tout faire, on s'est concentre sur 4 expertises que nous maitrisons vraiment. Chaque service est dirige par un cofondateur, pas sous-traite.</p>
       </div>
-      <div class="services-grid">
-        <a href="/creation-site-web" class="service-card">
-          <div class="service-card__icon"><span class="material-symbols-outlined">web</span></div>
-          <h3 class="service-card__title">Creation de sites web</h3>
-          <p class="service-card__desc">Sites vitrine, e-commerce et landing pages performants. WordPress, Webflow ou code sur mesure. Lighthouse 95+ garanti, SEO inclus.</p>
-          <span class="service-card__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+
+      <div class="services-rich">
+        <a href="/creation-site-web" class="svc">
+          <div class="svc__icon"><span class="material-symbols-outlined">web</span></div>
+          <h3 class="svc__title">Creation de sites web</h3>
+          <p class="svc__desc">Sites vitrine premium, e-commerce performants, landing pages haute conversion. WordPress, Webflow ou code sur mesure selon votre besoin reel. Lighthouse 95+ garanti, SEO et hebergement inclus.</p>
+          <span class="svc__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
-        <a href="/creation-application" class="service-card">
-          <div class="service-card__icon"><span class="material-symbols-outlined">terminal</span></div>
-          <h3 class="service-card__title">Creation d'applications</h3>
-          <p class="service-card__desc">Web apps, SaaS, MVP en 6 semaines. Stack moderne Next.js + Node + Postgres ou Supabase. Code maintenable, scalable, documente.</p>
-          <span class="service-card__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+
+        <a href="/creation-application" class="svc">
+          <div class="svc__icon"><span class="material-symbols-outlined">terminal</span></div>
+          <h3 class="svc__title">Creation d'applications</h3>
+          <p class="svc__desc">Web apps, SaaS, MVP en 6 semaines. Stack moderne Next.js + Node + Postgres ou Supabase. Code testable, scalable, documente. Vous restez proprietaire du code.</p>
+          <span class="svc__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
-        <a href="/automatisation" class="service-card">
-          <div class="service-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-          <h3 class="service-card__title">Automatisation</h3>
-          <p class="service-card__desc">Make, n8n, Zapier, agents IA, chatbots. Vos equipes economisent 10 a 30h/semaine. ROI mesurable en 60 jours.</p>
-          <span class="service-card__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+
+        <a href="/automatisation" class="svc">
+          <div class="svc__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <h3 class="svc__title">Automatisation</h3>
+          <p class="svc__desc">Workflows Make, n8n, Zapier. Agents IA et chatbots. Integrations CRM, ERP, comptabilite. Vos equipes economisent 10 a 30h par semaine. ROI mesurable en 60 jours.</p>
+          <span class="svc__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
-        <a href="/seo" class="service-card">
-          <div class="service-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
-          <h3 class="service-card__title">SEO et referencement</h3>
-          <p class="service-card__desc">Audit, contenu, netlinking, SEO local. Du trafic qualifie qui convertit, mesurable mois apres mois.</p>
-          <span class="service-card__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+
+        <a href="/seo" class="svc">
+          <div class="svc__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <h3 class="svc__title">SEO et referencement</h3>
+          <p class="svc__desc">Audit technique, strategie de contenu, netlinking ethique, SEO local. Approche complete pour ramener du trafic qualifie qui convertit, mois apres mois.</p>
+          <span class="svc__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
       </div>
     </div>
   </section>
 
-  <section class="section" style="background:var(--bg-2);">
-    <div class="container">
-      <div class="mb-5">
-        <span class="eyebrow">Pourquoi nous choisir</span>
-        <h2>Studio, freelance, agence : ce que ca change.</h2>
-        <p class="lead mt-3">Vous avez plusieurs options pour faire votre projet. Voici une lecture honnete des differences.</p>
-      </div>
-      <div class="compare-table-wrap">
-        <table class="compare-table">
-          <thead><tr><th></th><th>Freelance</th><th>Agence classique</th><th class="us">Pirabel Labs</th></tr></thead>
-          <tbody>
-            <tr><th>Interlocuteurs</th><td>1 personne</td><td>3 a 5 (commercial, chef proj, dev...)</td><td class="us">1 cofondateur, dedie</td></tr>
-            <tr><th>Devis ferme</th><td><span class="material-symbols-outlined icon-yes">check</span>Souvent</td><td><span class="material-symbols-outlined icon-no">close</span>Rare, revisions</td><td class="us"><span class="material-symbols-outlined icon-yes">check</span>Sous 48h, ferme</td></tr>
-            <tr><th>Couverture des 4 expertises</th><td><span class="material-symbols-outlined icon-no">close</span>Specialise sur 1-2</td><td><span class="material-symbols-outlined icon-yes">check</span>Oui, mais cher</td><td class="us"><span class="material-symbols-outlined icon-yes">check</span>Oui, en focus</td></tr>
-            <tr><th>Delai de demarrage</th><td>1-4 semaines</td><td>4-12 semaines</td><td class="us">1-2 semaines</td></tr>
-            <tr><th>Cout total projet</th><td>Variable, depend du profil</td><td>Eleve, marge agence</td><td class="us">Moyen, transparent</td></tr>
-            <tr><th>Maintenance apres livraison</th><td>Selon dispo du freelance</td><td><span class="material-symbols-outlined icon-yes">check</span>Mais facture haut</td><td class="us"><span class="material-symbols-outlined icon-yes">check</span>Option a la carte</td></tr>
-            <tr><th>Continuite si l'humain part</th><td><span class="material-symbols-outlined icon-no">close</span>Projet en risque</td><td><span class="material-symbols-outlined icon-yes">check</span>Remplacement</td><td class="us"><span class="material-symbols-outlined icon-yes">check</span>Equipe + doc complete</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
+  <!-- METHODOLOGIE -->
   <section class="section" id="methodologie">
     <div class="container">
-      <div class="mb-5">
-        <span class="eyebrow">Notre methodologie</span>
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Comment ca marche ?</span>
         <h2>3 etapes simples, du brief a la mise en ligne.</h2>
-        <p class="lead mt-3">Pas de jargon, pas de surprise. Vous savez ou en est votre projet en permanence.</p>
+        <p class="sec-header__sub">Pas de jargon, pas de surprise. Vous savez ou en est votre projet en permanence.</p>
       </div>
-      <div style="max-width:48rem;">
-        <div class="method-step">
-          <div class="method-step__num">01</div>
-          <div>
-            <h3>Appel decouverte (30 min)</h3>
-            <p>On comprend votre besoin, votre contexte, votre delai. Sans engagement, sans script de vente. Si on n'est pas la bonne equipe, on vous le dit franchement.</p>
-            <div class="method-step__meta"><span class="material-symbols-outlined">schedule</span> Reserve en ligne, sous 48h</div>
-          </div>
+
+      <div class="method">
+        <div class="method-card">
+          <div class="method-card__num">01</div>
+          <div class="method-card__title">Appel decouverte</div>
+          <p class="method-card__desc">On comprend votre besoin, votre contexte, votre delai. Sans engagement, sans script de vente. Si on n'est pas la bonne equipe pour votre projet, on vous le dit franchement et on essaiera de vous orienter.</p>
+          <span class="method-card__meta"><span class="material-symbols-outlined">schedule</span> 30 minutes en visio</span>
         </div>
-        <div class="method-step">
-          <div class="method-step__num">02</div>
-          <div>
-            <h3>Devis ferme sous 48h</h3>
-            <p>Apres l'appel, vous recevez un devis avec prix fixe, perimetre defini, planning de livraison. Pas de "selon devis" en cours de route. Vous savez exactement ce que vous payez et ce que vous recevez.</p>
-            <div class="method-step__meta"><span class="material-symbols-outlined">description</span> Document PDF + version Notion partagee</div>
-          </div>
+        <div class="method-card">
+          <div class="method-card__num">02</div>
+          <div class="method-card__title">Devis ferme sous 48h</div>
+          <p class="method-card__desc">Apres l'appel, vous recevez un devis avec prix fixe, perimetre defini, planning de livraison. Pas de "selon devis" en cours de route. Vous savez exactement ce que vous payez et ce que vous recevez.</p>
+          <span class="method-card__meta"><span class="material-symbols-outlined">description</span> Document PDF + Notion partage</span>
         </div>
-        <div class="method-step">
-          <div class="method-step__num">03</div>
-          <div>
-            <h3>Livraison en sprints d'une semaine</h3>
-            <p>Demos hebdomadaires, environnement de preview en temps reel, ajustements valides au fil de l'eau. Mise en ligne, formation a l'admin, documentation. Suivi garantie 30 jours.</p>
-            <div class="method-step__meta"><span class="material-symbols-outlined">rocket_launch</span> 4 a 12 semaines selon scope</div>
-          </div>
+        <div class="method-card">
+          <div class="method-card__num">03</div>
+          <div class="method-card__title">Livraison en sprints</div>
+          <p class="method-card__desc">Sprints d'une semaine avec demos hebdomadaires. Environnement de preview en temps reel, ajustements valides au fil de l'eau. Mise en ligne, formation, documentation. Garantie 30 jours apres livraison.</p>
+          <span class="method-card__meta"><span class="material-symbols-outlined">rocket_launch</span> 4 a 12 semaines selon scope</span>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- TARIFS -->
   <section class="section" id="tarifs" style="background:var(--bg-2);">
     <div class="container">
-      <div class="mb-5">
-        <span class="eyebrow">Tarifs indicatifs</span>
-        <h2>Transparent. Sans devis surprise.</h2>
-        <p class="lead mt-3">Fourchettes de prix par typologie de projet. Le prix final depend du scope precis, qu'on fixe ensemble lors de l'appel decouverte.</p>
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Votre investissement</span>
+        <h2>Transparent. Pas de devis surprise.</h2>
+        <p class="sec-header__sub">Fourchettes de prix par typologie de projet. Le prix final depend du scope precis, qu'on fixe ensemble lors de l'appel decouverte. Paiement echelonne possible (30% / 30% / 40%).</p>
       </div>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-card__icon"><span class="material-symbols-outlined">web</span></div>
-          <h3 class="pricing-card__title">Site vitrine</h3>
-          <p class="pricing-card__desc">Site institutionnel premium, 5-10 pages, SEO optimise, Lighthouse 95+, hebergement 1ere annee inclus.</p>
-          <div class="pricing-card__price">2 500 - 6 000 EUR</div>
-          <div class="pricing-card__price-meta">A partir de 1 800 000 FCFA</div>
-          <a href="/contact" class="pricing-card__cta">Demander un devis</a>
+
+      <div class="pricing">
+        <div class="price-card">
+          <div class="price-card__icon"><span class="material-symbols-outlined">web</span></div>
+          <h3 class="price-card__title">Site vitrine</h3>
+          <p class="price-card__desc">Site institutionnel premium, 5 a 10 pages, SEO optimise, Lighthouse 95+, hebergement 1ere annee inclus.</p>
+          <div class="price-card__price">2 500 - 6 000 EUR</div>
+          <div class="price-card__meta">A partir de 1 800 000 FCFA</div>
+          <a href="/contact" class="price-card__cta">Demander un devis</a>
         </div>
-        <div class="pricing-card pricing-card--featured">
-          <div class="pricing-card__icon"><span class="material-symbols-outlined">terminal</span></div>
-          <h3 class="pricing-card__title">Application sur mesure</h3>
-          <p class="pricing-card__desc">Web app, MVP, SaaS interne. Specs + design + dev + mise en ligne. Stack moderne, code documente, maintenance optionnelle.</p>
-          <div class="pricing-card__price">8 000 - 25 000 EUR</div>
-          <div class="pricing-card__price-meta">A partir de 5 500 000 FCFA</div>
-          <a href="/contact" class="pricing-card__cta">Demander un devis</a>
+
+        <div class="price-card price-card--featured">
+          <div class="price-card__icon"><span class="material-symbols-outlined">terminal</span></div>
+          <h3 class="price-card__title">Application sur mesure</h3>
+          <p class="price-card__desc">Web app, MVP, SaaS interne. Specs + design + dev + mise en ligne. Stack moderne, code documente, maintenance optionnelle.</p>
+          <div class="price-card__price">8 000 - 25 000 EUR</div>
+          <div class="price-card__meta">A partir de 5 500 000 FCFA</div>
+          <a href="/contact" class="price-card__cta">Demander un devis</a>
         </div>
-        <div class="pricing-card">
-          <div class="pricing-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-          <h3 class="pricing-card__title">Automatisation</h3>
-          <p class="pricing-card__desc">Audit process + 2-3 workflows quick-wins en production. ROI mesurable en 60 jours.</p>
-          <div class="pricing-card__price">1 500 - 5 000 EUR</div>
-          <div class="pricing-card__price-meta">A partir de 1 000 000 FCFA</div>
-          <a href="/contact" class="pricing-card__cta">Demander un devis</a>
+
+        <div class="price-card">
+          <div class="price-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <h3 class="price-card__title">Automatisation</h3>
+          <p class="price-card__desc">Audit process + 2 a 3 workflows quick-wins en production. ROI mesurable en 60 jours. Formation incluse.</p>
+          <div class="price-card__price">1 500 - 5 000 EUR</div>
+          <div class="price-card__meta">A partir de 1 000 000 FCFA</div>
+          <a href="/contact" class="price-card__cta">Demander un devis</a>
         </div>
-        <div class="pricing-card">
-          <div class="pricing-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
-          <h3 class="pricing-card__title">SEO mensuel</h3>
-          <p class="pricing-card__desc">Audit + roadmap 6 mois + execution mensuelle. Reporting clair, KPI mesurables, sans engagement long terme.</p>
-          <div class="pricing-card__price">800 - 2 500 EUR/mois</div>
-          <div class="pricing-card__price-meta">A partir de 550 000 FCFA/mois</div>
-          <a href="/contact" class="pricing-card__cta">Demander un devis</a>
+
+        <div class="price-card">
+          <div class="price-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <h3 class="price-card__title">SEO mensuel</h3>
+          <p class="price-card__desc">Audit + roadmap 6 mois + execution mensuelle. Reporting clair, KPI mesurables, sans engagement long terme.</p>
+          <div class="price-card__price">800 - 2 500 EUR/mois</div>
+          <div class="price-card__meta">A partir de 550 000 FCFA/mois</div>
+          <a href="/contact" class="price-card__cta">Demander un devis</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="faq">
-    <div class="container">
-      <div class="mb-5 text-center">
-        <span class="eyebrow">Questions frequentes</span>
-        <h2>Ce qu'on nous demande le plus.</h2>
-      </div>
-      <div class="faq">
-        <details class="faq__item"><summary class="faq__q">Combien de temps prend un projet typique ?</summary><div class="faq__a">Un site vitrine : 3 a 6 semaines selon le contenu. Une application web : 6 a 16 semaines selon le scope. Une automatisation simple : 1 a 3 semaines. On vous donne un planning precis avec le devis ferme, et on tient les delais via des sprints hebdomadaires.</div></details>
-        <details class="faq__item"><summary class="faq__q">Vous travaillez avec des clients en France ?</summary><div class="faq__a">Oui. Nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Maroc, Canada et evidemment Benin. Travail entierement a distance avec Zoom/Google Meet, Notion partage, demos hebdomadaires.</div></details>
-        <details class="faq__item"><summary class="faq__q">Pourquoi un devis ferme et pas une regie ?</summary><div class="faq__a">Parce qu'on veut que vous sachiez exactement combien va couter le projet. La regie au jour-homme transfere tout le risque sur vous. Le devis ferme nous oblige a cadrer precisement le scope ensemble. Si on doit etendre, on fait un avenant clair. Pas de surprise sur la facture finale.</div></details>
-        <details class="faq__item"><summary class="faq__q">Vous proposez de la maintenance apres la livraison ?</summary><div class="faq__a">Oui, en option, jamais en obligation. Trois formats : pack heures (achetez 5/10/20h a consommer), forfait mensuel (entre 350 et 1 500 EUR/mois selon scope) ou intervention ponctuelle. Vous etes libre de partir vers un autre prestataire, le code et la doc sont a vous.</div></details>
-        <details class="faq__item"><summary class="faq__q">Le code source m'appartient ?</summary><div class="faq__a">Oui, integralement. Une fois la livraison effectuee et le paiement final recu, le code, les designs Figma, les assets et la documentation sont a vous. Aucune licence, aucun verrou technologique.</div></details>
-        <details class="faq__item"><summary class="faq__q">Vous acceptez les paiements en FCFA et Mobile Money ?</summary><div class="faq__a">Oui. Pour les clients en Afrique de l'Ouest : virement, MTN Mobile Money, Moov Money, Wave. Pour les clients en France et Europe : virement SEPA ou paiement par CB. Echelonnement possible (30% au demarrage, 30% en milieu, 40% a la livraison).</div></details>
-        <details class="faq__item"><summary class="faq__q">Vous travaillez avec quelles technos ?</summary><div class="faq__a">Sites : WordPress + Elementor, Webflow, ou Next.js. Apps : Next.js + Node.js + Postgres ou Supabase. Automatisation : Make, n8n, Zapier, integrations OpenAI/Claude pour agents IA. SEO : Ahrefs, Semrush, Search Console, Looker Studio.</div></details>
-        <details class="faq__item"><summary class="faq__q">Qu'est-ce qui se passe si je ne suis pas satisfait ?</summary><div class="faq__a">Avant signature : si l'appel decouverte ne donne rien, vous ne devez rien. En cours de projet : si on s'eloigne de la cible, on rectifie aux sprints hebdomadaires. Apres livraison : garantie 30 jours sur les bugs imputables a notre travail. Et au pire : on vous rembourse les phases non livrees.</div></details>
-      </div>
-    </div>
-  </section>
-
+  <!-- TESTIMONIALS PLACEHOLDER HONNETE -->
   <section class="section">
     <div class="container">
-      <div class="card" style="padding:3rem 2rem;text-align:center;border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),transparent);">
-        <h2 style="margin-bottom:1rem;">Discutons de votre projet.</h2>
-        <p class="lead" style="margin:0 auto 2rem;">Echange decouverte de 30 minutes, gratuit et sans engagement. On comprend votre besoin et on vous dit franchement si on est la bonne equipe.</p>
-        <div class="flex flex--center flex--wrap">
-          <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel <span class="material-symbols-outlined">arrow_forward</span></a>
-          <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg">contact@pirabellabs.com</a>
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Temoignages</span>
+        <h2>Ce que nos clients ressentent.</h2>
+        <p class="sec-header__sub">Une demarche transparente : nous sortons d'une refonte complete de notre studio, et nous selectionnons soigneusement les premiers temoignages clients a publier. Demandez-nous directement des references adaptees a votre secteur.</p>
+      </div>
+
+      <div class="tm-grid">
+        <div class="tm">
+          <p class="tm__quote">"On a un seul interlocuteur du brief a la mise en ligne. Pas de chef de projet entre nous et le travail. Le devis ferme au depart a tenu, pas de mauvaise surprise sur la facture finale."</p>
+          <div class="tm__author">
+            <div class="tm__avatar">LG</div>
+            <div>
+              <div class="tm__name">Type de retour qu'on cherche</div>
+              <div class="tm__role">Demandez-nous des references</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tm">
+          <p class="tm__quote">"Le site charge en moins de 2 secondes, les leads inbound ont triple en 6 mois grace au SEO local. Et on a meme economise 8h par semaine grace aux automatisations sur notre CRM."</p>
+          <div class="tm__author">
+            <div class="tm__avatar">FI</div>
+            <div>
+              <div class="tm__name">Type de retour qu'on cherche</div>
+              <div class="tm__role">Demandez-nous des references</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZONE DE COUVERTURE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="trust">
+        <div class="trust__sub">Nous accompagnons des PME dans 8 pays francophones</div>
+        <div class="trust__items">
+          <span class="trust__item">Benin</span>
+          <span class="trust__item">France</span>
+          <span class="trust__item">Cote d'Ivoire</span>
+          <span class="trust__item">Senegal</span>
+          <span class="trust__item">Cameroun</span>
+          <span class="trust__item">Togo</span>
+          <span class="trust__item">Burkina Faso</span>
+          <span class="trust__item">Mali</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-header">
+        <span class="sec-header__eyebrow">Questions frequentes</span>
+        <h2>Ce qu'on nous demande le plus.</h2>
+        <p class="sec-header__sub">Vous avez une question qui n'est pas dans la liste ? Ecrivez-nous a <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a>.</p>
+      </div>
+
+      <div class="faq">
+        <details class="faq__item">
+          <summary class="faq__q">Combien de temps prend un projet typique ?</summary>
+          <div class="faq__a">Un site vitrine : 3 a 6 semaines selon le contenu et les iterations. Une application web : 6 a 16 semaines selon le scope. Une automatisation simple : 1 a 3 semaines. On vous donne un planning precis avec le devis ferme, et on tient les delais via des sprints hebdomadaires.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Vous travaillez avec des clients en France ?</summary>
+          <div class="faq__a">Oui. Nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Maroc, Canada et evidemment Benin. Travail entierement a distance avec Zoom/Google Meet, Notion partage, demos hebdomadaires. La distance n'est pas un sujet en 2026.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Pourquoi un devis ferme et pas une regie au jour-homme ?</summary>
+          <div class="faq__a">Parce qu'on veut que vous sachiez exactement combien va couter le projet avant de signer. La regie au jour-homme transfere tout le risque sur vous : si on est lent, vous payez plus. Le devis ferme nous oblige a cadrer precisement le scope ensemble. Si on doit etendre, on fait un avenant clair. Pas de surprise sur la facture finale.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Vous proposez de la maintenance apres la livraison ?</summary>
+          <div class="faq__a">Oui, en option, jamais en obligation. Trois formats : pack heures (achetez 5/10/20h a consommer), forfait mensuel (entre 350 et 1 500 EUR/mois selon scope) ou intervention ponctuelle. Vous etes libre de partir vers un autre prestataire, le code et la doc sont a vous.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Le code source m'appartient ?</summary>
+          <div class="faq__a">Oui, integralement. Une fois la livraison effectuee et le paiement final recu, le code, les designs Figma, les assets et la documentation sont a vous. Aucune licence, aucun verrou technologique, aucune prison de prestataire.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Vous acceptez les paiements en FCFA et Mobile Money ?</summary>
+          <div class="faq__a">Oui, sans probleme. Pour les clients en Afrique de l'Ouest : virement, MTN Mobile Money, Moov Money, Wave. Pour les clients en France et Europe : virement SEPA ou paiement par CB. Echelonnement possible (30% au demarrage, 30% en milieu de projet, 40% a la livraison).</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Quelles technos utilisez-vous ?</summary>
+          <div class="faq__a">Sites : WordPress + Elementor pour la rapidite, Webflow pour le design pousse, Next.js pour les sites tech-heavy. Apps : Next.js + Node.js + Postgres ou Supabase. Automatisation : Make, n8n, Zapier, integrations OpenAI/Claude pour les agents IA. SEO : Ahrefs, Semrush, Search Console, Looker Studio.</div>
+        </details>
+        <details class="faq__item">
+          <summary class="faq__q">Qu'est-ce qui se passe si je ne suis pas satisfait ?</summary>
+          <div class="faq__a">Avant signature : si l'appel decouverte ne donne rien, vous ne devez rien. En cours de projet : si on s'eloigne de la cible, on rectifie immediatement aux sprints hebdomadaires. Apres livraison : garantie 30 jours sur les bugs imputables a notre travail. Et au pire : on vous rembourse les phases non livrees. On veut une relation pro et durable, pas un coup d'epee.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="final-cta">
+        <h2>Transformons votre business des maintenant.</h2>
+        <p>30 minutes d'echange decouverte, gratuit et sans engagement. On comprend votre besoin et on vous dit franchement si on est la bonne equipe.</p>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:.75rem;">
+          <a href="/contact" class="btn btn--primary btn--lg btn--pill">Reserver mon creneau <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg btn--pill">contact@pirabellabs.com</a>
         </div>
       </div>
     </div>
@@ -331,7 +823,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__brand">Pirabel Labs</div>
-        <p class="footer__tagline">Studio tech specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p>
+        <p class="footer__tagline">Studio tech qui construit des sites, applications, automatisations et systemes SEO pour PME francophones. Base a Abomey-Calavi, Benin.</p>
       </div>
       <div>
         <div class="footer__title">Services</div>
@@ -380,7 +872,7 @@
     burger.setAttribute('aria-expanded',open);
   });
   links.addEventListener('click', function(e){
-    if (e.target.tagName === 'A' && window.innerWidth < 880) {
+    if (e.target.tagName === 'A' && window.innerWidth < 980) {
       links.classList.remove('open');
       burger.classList.remove('open');
     }

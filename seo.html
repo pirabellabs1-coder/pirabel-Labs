@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agence SEO et referencement | Pirabel Labs - Audit gratuit</title>
-<meta name="description" content="Pirabel Labs ameliore votre referencement Google : audit technique, contenu, netlinking, SEO local. Trafic qualifie qui convertit, mesure en KPIs business.">
+<meta name="description" content="Pirabel Labs ameliore votre referencement Google : audit, contenu, netlinking, SEO local. Du trafic qualifie qui convertit, KPI business mesurables. Devis ferme 48h.">
 <link rel="canonical" href="https://www.pirabellabs.com/seo">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/seo">
 <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/seo">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Agence SEO et referencement | Pirabel Labs - Audit gratuit">
-<meta property="og:description" content="Pirabel Labs ameliore votre referencement Google : audit technique, contenu, netlinking, SEO local. Trafic qualifie qui convertit, mesure en KPIs business.">
+<meta property="og:description" content="Pirabel Labs ameliore votre referencement Google : audit, contenu, netlinking, SEO local. Du trafic qualifie qui convertit, KPI business mesurables. Devis ferme 48h.">
 <meta property="og:url" content="https://www.pirabellabs.com/seo">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:site_name" content="Pirabel Labs">
@@ -25,160 +25,55 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Conseil et accompagnement SEO", "description": "Audit SEO, strategie de contenu, netlinking, SEO local. Du trafic qualifie qui convertit, mesurable mois apres mois.", "url": "https://www.pirabellabs.com/seo", "provider": {"@context": "https://schema.org", "@type": ["Organization", "ProfessionalService"], "name": "Pirabel Labs", "url": "https://www.pirabellabs.com", "logo": "https://www.pirabellabs.com/img/logo.png", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "email": "contact@pirabellabs.com", "founder": [{"@type": "Person", "name": "Lissanon Gildas", "jobTitle": "Cofondateur"}, {"@type": "Person", "name": "Fidah Imorou", "jobTitle": "Cofondateur"}], "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"], "knowsLanguage": "fr"}, "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"]}</script>
-</head>
+<style>
+/* Service page styles */
+.svc-hero { padding-top:clamp(7rem,14vw,10rem); padding-bottom:clamp(4rem,10vw,7rem); position:relative; overflow:hidden; }
+.svc-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, var(--accent-soft) 0%, transparent 50%); pointer-events:none; z-index:0; }
+.svc-hero__inner { position:relative; z-index:1; max-width:48rem; }
+.svc-hero h1 { margin-bottom:1rem; }
+.svc-hero p { font-size:clamp(1.05rem,1.5vw,1.2rem); color:var(--text-muted); margin-bottom:2rem; max-width:42rem; }
+
+.sub-services-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap:1rem; }
+.sub-service-card { background:var(--bg-2); border:1px solid var(--border); padding:1.75rem 1.5rem; transition:border-color var(--t); }
+.sub-service-card:hover { border-color:var(--accent); }
+.sub-service-card__icon { width:2.5rem; height:2.5rem; display:inline-flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); margin-bottom:1rem; }
+.sub-service-card__icon .material-symbols-outlined { font-size:1.4rem; }
+.sub-service-card__title { font-family:var(--font-display); font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+.sub-service-card__desc { font-size:.85rem; color:var(--text-muted); line-height:1.6; }
+
+.process-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap:1.5rem; }
+.process-step { padding:1.5rem; background:var(--bg-2); border:1px solid var(--border); }
+.process-step__num { display:inline-block; padding:.3rem .65rem; background:var(--accent); color:#fff; font-family:var(--font-display); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.85rem; }
+.process-step__title { font-family:var(--font-display); font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+.process-step__desc { font-size:.85rem; color:var(--text-muted); line-height:1.55; }
+
+.benefit-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap:1rem; }
+.benefit { display:flex; gap:.85rem; padding:1.25rem; background:var(--bg-2); border:1px solid var(--border); }
+.benefit__icon { color:var(--accent); font-size:1.5rem; flex-shrink:0; line-height:1; }
+.benefit__title { font-family:var(--font-display); font-weight:700; font-size:.95rem; margin-bottom:.25rem; }
+.benefit__desc { font-size:.82rem; color:var(--text-muted); line-height:1.5; }
+
+.faq { display:flex; flex-direction:column; gap:.5rem; max-width:48rem; margin:0 auto; }
+.faq__item { background:var(--bg-2); border:1px solid var(--border); }
+.faq__item[open] { border-color:var(--accent); }
+.faq__q { padding:1.15rem 1.5rem; cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:.95rem; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.faq__q::-webkit-details-marker { display:none; }
+.faq__q::after { content:'+'; font-size:1.5rem; color:var(--accent); transition:transform var(--t); line-height:1; flex-shrink:0; }
+.faq__item[open] .faq__q::after { transform:rotate(45deg); }
+.faq__a { padding:0 1.5rem 1.15rem; color:var(--text-muted); line-height:1.7; font-size:.9rem; }
+
+.use-cases { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap:1rem; }
+.use-case { padding:1.5rem; background:var(--bg-2); border:1px solid var(--border); border-left:3px solid var(--accent); }
+.use-case__title { font-family:var(--font-display); font-weight:700; font-size:.95rem; margin-bottom:.5rem; }
+.use-case__desc { font-size:.85rem; color:var(--text-muted); line-height:1.55; }
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Conseil et accompagnement SEO", "description": "Audit SEO complet, strategie de contenu, netlinking ethique, SEO local. Trafic qualifie mesurable mois apres mois.", "url": "https://www.pirabellabs.com/seo", "provider": {"@context": "https://schema.org", "@type": ["Organization", "ProfessionalService"], "name": "Pirabel Labs", "url": "https://www.pirabellabs.com", "logo": "https://www.pirabellabs.com/img/logo.png", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "email": "contact@pirabellabs.com", "founder": [{"@type": "Person", "name": "Lissanon Gildas", "jobTitle": "Cofondateur"}, {"@type": "Person", "name": "Fidah Imorou", "jobTitle": "Cofondateur"}], "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"], "knowsLanguage": "fr"}, "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"]}</script></head>
 <body><nav class="nav" id="nav">
 <div class="nav__inner">
 <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
-<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36">
 <span>Pirabel Labs</span>
 </a>
-<div class="nav__links" id="navLinks">
-<a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link">Automatisation</a><a href="/seo" class="nav__link nav__link--active">SEO</a><a href="/realisations" class="nav__link">Realisations</a><a href="/a-propos" class="nav__link">A propos</a>
-<a href="/contact" class="nav__cta">Demander un devis</a>
+<div class="nav__links" id="navLinks"><a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link">Automatisation</a><a href="/seo" class="nav__link nav__link--active">SEO</a><a href="/a-propos" class="nav__link">Qui sommes-nous</a><a href="/contact" class="nav__cta">Reserver un appel</a></div>
+<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
-<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false">
-<span></span><span></span><span></span>
-</button>
-</div>
-</nav><main><section class="hero">
-<div class="container hero__inner">
-<span class="badge mb-3"><span class="material-symbols-outlined">bolt</span> Audit, contenu, technique, netlinking</span>
-<h1>Du trafic qualifie qui convertit, mois apres mois.</h1>
-<p>Le SEO mal fait coute cher pour rien. Bien fait, c'est l'investissement digital le plus rentable a 18-24 mois. On audite, on planifie, on execute - sur des KPI mesurables.</p>
-<div class="hero__actions">
-<a href="/contact" class="btn btn--primary btn--lg">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
-<a href="#process" class="btn btn--ghost btn--lg">Comment on travaille</a>
-</div>
-</div>
-</section><section class="section">
-<div class="container">
-<div class="mb-5">
-<span class="eyebrow">Quatre piliers, une seule strategie</span>
-<h2>Le SEO se joue sur tous les fronts a la fois.</h2>
-</div>
-<div class="grid grid--3 grid--3-tablet"><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">build</span></div>
-<h3 class="card__title">SEO technique</h3>
-<p class="card__desc">Crawl, indexation, Core Web Vitals, schema.org, structure URL, redirections, sitemap. La fondation invisible mais critique.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">article</span></div>
-<h3 class="card__title">Strategie de contenu</h3>
-<p class="card__desc">Recherche d'intentions, briefs, calendrier editorial, optimisation on-page. Articles qui rankent ET convertissent.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">link</span></div>
-<h3 class="card__title">Netlinking ethique</h3>
-<p class="card__desc">Identification d'opportunites, prise de contact, guest posting, citations locales. White hat exclusivement, pas de PBN.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">location_on</span></div>
-<h3 class="card__title">SEO local</h3>
-<p class="card__desc">Google Business Profile, citations NAP, avis Google, schema LocalBusiness. Visibilite dans le pack local Maps.</p>
-</div></div>
-</div>
-</section><section class="section">
-<div class="container">
-<div class="mb-5">
-<span class="eyebrow">Trois formats d'accompagnement</span>
-<h2>Selon votre besoin et votre budget.</h2>
-</div>
-<div class="grid grid--3 grid--3-tablet"><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">search_check</span></div>
-<h3 class="card__title">Audit ponctuel</h3>
-<p class="card__desc">Etat des lieux complet, roadmap priorisee, livrables actionnables. Vous executez avec ou sans nous derriere.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">handshake</span></div>
-<h3 class="card__title">Accompagnement mensuel</h3>
-<p class="card__desc">Suivi de positions, reporting mensuel, optimisations continues. Pour les marques qui veulent une progression durable.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">engineering</span></div>
-<h3 class="card__title">Mission specifique</h3>
-<p class="card__desc">Migration de site sans perdre du trafic, rattrapage d'une penalite, lancement d'un nouveau site. Sur livrable defini.</p>
-</div></div>
-</div>
-</section><section class="section" id="process" style="background:var(--bg-2);">
-<div class="container">
-<div class="mb-5"><span class="eyebrow">Comment on travaille</span><h2>Notre process en 4 etapes.</h2></div>
-<div class="grid grid--4"><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">01</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Audit & diagnostic</h3>
-<p style="font-size:.9rem;">Crawl complet, analyse de la concurrence, identification des opportunites. Document de 30-60 pages avec priorites.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">02</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Roadmap 6 mois</h3>
-<p style="font-size:.9rem;">Plan d'action priorise par impact / effort. Quick wins en 1-2 mois, fondamentaux en 3-6 mois.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">03</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Execution</h3>
-<p style="font-size:.9rem;">Implementation technique, redaction de contenus, prise de contact pour backlinks. Reporting mensuel transparent.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">04</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Mesure & iteration</h3>
-<p style="font-size:.9rem;">Suivi de positions, trafic, conversions. Ajustements continus sur ce qui marche, abandon de ce qui ne marche pas.</p>
-</div></div>
-</div>
-</section><section class="section">
-<div class="container">
-<div class="card" style="padding:3rem 2rem;text-align:center;border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),transparent);">
-<h2 style="margin-bottom:1rem;">Vous voulez savoir ou en est votre SEO ?</h2>
-<p class="lead" style="margin:0 auto 2rem;">Audit flash gratuit de votre site : top 5 problemes a regler en priorite, opportunites de mots-cles, etat de la concurrence.</p>
-<div class="flex flex--center flex--wrap">
-<a href="/contact" class="btn btn--primary btn--lg">Demarrer la conversation <span class="material-symbols-outlined">arrow_forward</span></a>
-<a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg">contact@pirabellabs.com</a>
-</div>
-</div>
-</div>
-</section></main><footer class="footer">
-<div class="container">
-<div class="footer__grid">
-<div>
-<div class="footer__brand">Pirabel Labs</div>
-<p class="footer__tagline">Studio tech premium specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p>
-</div>
-<div>
-<div class="footer__title">Services</div>
-<ul class="footer__list">
-<li><a href="/creation-site-web">Creation de sites</a></li>
-<li><a href="/creation-application">Applications</a></li>
-<li><a href="/automatisation">Automatisation</a></li>
-<li><a href="/seo">SEO</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Studio</div>
-<ul class="footer__list">
-<li><a href="/a-propos">A propos</a></li>
-<li><a href="/realisations">Realisations</a></li>
-<li><a href="/blog">Blog</a></li>
-<li><a href="/contact">Contact</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Contact</div>
-<ul class="footer__list">
-<li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li>
-<li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li>
-</ul>
-</div>
-</div>
-<div class="footer__bottom">
-<span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span>
-<div class="flex" style="gap:1.25rem;">
-<a href="/mentions-legales">Mentions legales</a>
-<a href="/politique-confidentialite">Confidentialite</a>
-</div>
-</div>
-</div>
-</footer><script>
-(function(){
-  var burger=document.getElementById('navBurger');
-  var links=document.getElementById('navLinks');
-  if(!burger||!links) return;
-  burger.addEventListener('click',function(){
-    var open=links.classList.toggle('open');
-    burger.classList.toggle('open',open);
-    burger.setAttribute('aria-expanded',open);
-  });
-})();
-</script>
-</body>
-</html>
+</nav><main><section class="svc-hero"><div class="container svc-hero__inner"><span class="badge mb-3"><span class="material-symbols-outlined">bolt</span> Audit, contenu, technique, netlinking</span><h1>Du trafic qualifie qui convertit, mois apres mois.</h1><p>Le SEO mal fait coute cher pour rien. Bien fait, c'est l'investissement digital le plus rentable a 18-24 mois. On audite, on planifie, on execute - sur des KPI mesurables.</p><div class="hero__actions"><a href="/contact" class="btn btn--primary btn--lg">Reserver un appel <span class="material-symbols-outlined">arrow_forward</span></a><a href="#process" class="btn btn--ghost btn--lg">Comment on travaille</a></div></div></section><section class="section"><div class="container"><div class="mb-5"><span class="eyebrow">Nos prestations SEO</span><h2>Du diagnostic ponctuel a l'accompagnement long terme.</h2><p class="lead mt-3">On adapte le format a votre besoin. Audit unique pour une roadmap autonome, accompagnement mensuel pour une progression continue, ou mission specifique pour un objectif precis.</p></div><div class="sub-services-grid"><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">search_check</span></div><h3 class="sub-service-card__title">Audit SEO complet</h3><p class="sub-service-card__desc">Diagnostic technique + on-page + concurrence + opportunites. Document 40-60 pages avec roadmap priorisee. Livrable autonome.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">build</span></div><h3 class="sub-service-card__title">SEO technique</h3><p class="sub-service-card__desc">Crawl, indexation, Core Web Vitals, schema.org, structure URL. La fondation invisible mais critique.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">article</span></div><h3 class="sub-service-card__title">Strategie de contenu</h3><p class="sub-service-card__desc">Recherche d'intentions, briefs, calendrier editorial, optimisation on-page. Articles qui rankent ET convertissent.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">link</span></div><h3 class="sub-service-card__title">Netlinking ethique</h3><p class="sub-service-card__desc">Identification d'opportunites, prise de contact, guest posting, citations locales. White hat exclusivement, pas de PBN.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">location_on</span></div><h3 class="sub-service-card__title">SEO local</h3><p class="sub-service-card__desc">Google Business Profile, citations NAP, avis Google, schema LocalBusiness. Pack local + Maps.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">handshake</span></div><h3 class="sub-service-card__title">Accompagnement mensuel</h3><p class="sub-service-card__desc">Suivi de positions, reporting mensuel, optimisations continues. Engagement court terme renouvelable.</p></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5"><span class="eyebrow">Notre approche</span><h2>Pas de promesses fantaisistes, des resultats mesures.</h2></div><div class="benefit-list"><div class="benefit"><span class="material-symbols-outlined benefit__icon">flag</span><div><div class="benefit__title">KPI business, pas vanity metrics</div><div class="benefit__desc">On suit le trafic qualifie et les conversions, pas juste les positions theoriques sur des mots-cles sans volume.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">verified</span><div><div class="benefit__title">White hat exclusif</div><div class="benefit__desc">Pas de PBN, pas de spam, pas d'achat de liens douteux. Strategies durables qui survivent aux Core Updates.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">description</span><div><div class="benefit__title">Reporting transparent</div><div class="benefit__desc">Dashboard Looker Studio partage, mise a jour automatique. Vous voyez les KPIs en temps reel, pas un PDF mensuel.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">schedule</span><div><div class="benefit__title">Resultats mesures sous 90 jours</div><div class="benefit__desc">Premiers gains visibles entre 60 et 120 jours selon votre marche. On ajuste si l'execution ne donne pas les resultats attendus.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">school</span><div><div class="benefit__title">Transfert de competence</div><div class="benefit__desc">Sessions de formation regulieres pour rendre votre equipe autonome. Pas de dependance perpetuelle au prestataire.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">insights</span><div><div class="benefit__title">Outils pro inclus</div><div class="benefit__desc">Ahrefs, Semrush, Search Console, GA4, Looker Studio configures et partages. Vous gardez l'acces apres notre depart.</div></div></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5"><span class="eyebrow">Pour qui on intervient</span><h2>Profils d'entreprises qu'on accompagne.</h2></div><div class="use-cases"><div class="use-case"><div class="use-case__title">PME francophones avec site existant</div><div class="use-case__desc">Site en place mais trafic SEO faible. Audit + roadmap + execution sur 6-12 mois. Croissance progressive du trafic qualifie.</div></div><div class="use-case"><div class="use-case__title">Lancement de site / refonte</div><div class="use-case__desc">Nouveau site ou refonte majeure. Architecture SEO des le depart pour eviter de tout reprendre dans 12 mois.</div></div><div class="use-case"><div class="use-case__title">E-commerce qui stagne</div><div class="use-case__desc">Site marchand avec produits mais peu de trafic produit ou categorie. Optimisation des fiches, contenu satellite, schema Product.</div></div><div class="use-case"><div class="use-case__title">Activite locale (1-5 villes)</div><div class="use-case__desc">Cabinet, restaurant, prestataire local. Focus Google Business Profile + pages locales + avis Google + citations NAP.</div></div><div class="use-case"><div class="use-case__title">SaaS B2B</div><div class="use-case__desc">Strategie de contenu pour generer des leads qualifies. Articles guides longs + landing pages produit + comparatifs.</div></div><div class="use-case"><div class="use-case__title">Site frappe par une penalite</div><div class="use-case__desc">Chute de trafic suite a un Core Update ou penalite manuelle. Diagnostic + plan de remediation + suivi de la recuperation.</div></div></div></div></section><section class="section" id="process"><div class="container"><div class="mb-5"><span class="eyebrow">Comment on travaille</span><h2>Notre methodologie en 4 etapes.</h2></div><div class="process-list"><div class="process-step"><span class="process-step__num">Etape 01</span><div class="process-step__title">Audit & diagnostic</div><p class="process-step__desc">Crawl complet, analyse concurrence, identification des opportunites. Document de 30-60 pages livre.</p></div><div class="process-step"><span class="process-step__num">Etape 02</span><div class="process-step__title">Roadmap 6 mois</div><p class="process-step__desc">Plan d'action priorise par impact / effort. Quick wins en 1-2 mois, fondamentaux en 3-6 mois.</p></div><div class="process-step"><span class="process-step__num">Etape 03</span><div class="process-step__title">Execution</div><p class="process-step__desc">Implementation technique, redaction contenus, prise de contact backlinks. Reporting mensuel transparent.</p></div><div class="process-step"><span class="process-step__num">Etape 04</span><div class="process-step__title">Mesure & iteration</div><p class="process-step__desc">Suivi positions, trafic, conversions. Ajustements continus.</p></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5 text-center"><span class="eyebrow">Questions frequentes</span><h2>Ce qu'on nous demande souvent.</h2></div><div class="faq"><details class="faq__item"><summary class="faq__q">Combien de temps avant de voir des resultats SEO ?</summary><div class="faq__a">Premiers signaux (impressions) : 30-60 jours. Premiers clics qualifies : 60-120 jours. Resultats significatifs (trafic mesurable, leads) : 4-9 mois selon votre marche et la concurrence. Le SEO est un investissement moyen-long terme, pas un canal d'urgence. Pour le court terme, on recommande Google Ads en parallele.</div></details><details class="faq__item"><summary class="faq__q">Combien coute un accompagnement SEO ?</summary><div class="faq__a">Audit ponctuel : 1 500-4 000 EUR selon taille du site. Accompagnement mensuel : 800-2 500 EUR/mois (PME), 3 000-8 000 EUR/mois (mid-market). Mission specifique (migration, recuperation penalite) : 2 500-10 000 EUR au forfait. On adapte au scope reel.</div></details><details class="faq__item"><summary class="faq__q">Pourquoi vous ne garantissez pas le top 3 Google ?</summary><div class="faq__a">Parce que personne ne peut le garantir honnetement. Le ranking depend de facteurs hors de notre controle : evolutions des algorithmes Google, actions des concurrents, autorite historique de votre domaine. On garantit l'execution white hat et la qualite du travail. On vous donne des positions cibles realistes basees sur l'analyse de votre marche.</div></details><details class="faq__item"><summary class="faq__q">Vous utilisez l'IA pour generer du contenu ?</summary><div class="faq__a">Pas pour le contenu de fond (Google penalise depuis 2024 les contenus IA non edites). On utilise l'IA pour : recherche de mots-cles, brief redactionnel, premieres versions a editer par un humain expert, traduction. Le contenu publie est toujours edite et valide par un humain.</div></details><details class="faq__item"><summary class="faq__q">Mes anciens backlinks sont importants ?</summary><div class="faq__a">Oui, ils representent une partie de votre autorite. On audite votre profil de liens existant avec Ahrefs : on identifie les liens toxiques (a desavouer via Search Console) et les bons liens (a renforcer). C'est inclus dans l'audit initial.</div></details><details class="faq__item"><summary class="faq__q">Vous travaillez avec quels outils ?</summary><div class="faq__a">Audit : Ahrefs, Semrush, Screaming Frog, Search Console. Tracking : Search Console, GA4, Looker Studio. Contenu : Surfer SEO, Frase, Grammarly. Backlinks : Ahrefs, BuzzStream pour l'outreach. Tout standard, ce qui veut dire compatible avec votre equipe future.</div></details></div></div></section><section class="section"><div class="container"><div class="card" style="padding:3rem 2rem;text-align:center;border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),transparent);"><h2 style="margin-bottom:1rem;">Vous voulez savoir ou en est votre SEO ?</h2><p class="lead" style="margin:0 auto 2rem;">Audit flash gratuit de votre site : top 5 problemes a regler en priorite, opportunites de mots-cles, etat de la concurrence.</p><div class="flex flex--center flex--wrap"><a href="/contact" class="btn btn--primary btn--lg">Reserver un appel <span class="material-symbols-outlined">arrow_forward</span></a><a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg">contact@pirabellabs.com</a></div></div></div></section></main><footer class="footer"><div class="container"><div class="footer__grid"><div><div class="footer__brand">Pirabel Labs</div><p class="footer__tagline">Studio tech specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p></div><div><div class="footer__title">Services</div><ul class="footer__list"><li><a href="/creation-site-web">Creation de sites</a></li><li><a href="/creation-application">Applications</a></li><li><a href="/automatisation">Automatisation</a></li><li><a href="/seo">SEO</a></li></ul></div><div><div class="footer__title">Studio</div><ul class="footer__list"><li><a href="/a-propos">A propos</a></li><li><a href="/#methodologie">Methodologie</a></li><li><a href="/#tarifs">Tarifs</a></li><li><a href="/contact">Contact</a></li></ul></div><div><div class="footer__title">Contact</div><ul class="footer__list"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li></ul></div></div><div class="footer__bottom"><span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span><div class="flex" style="gap:1.25rem;"><a href="/mentions-legales">Mentions legales</a><a href="/politique-confidentialite">Confidentialite</a></div></div></div></footer><script>(function(){var b=document.getElementById("navBurger"),l=document.getElementById("navLinks");if(!b||!l)return;b.addEventListener("click",function(){var o=l.classList.toggle("open");b.classList.toggle("open",o);b.setAttribute("aria-expanded",o);});l.addEventListener("click",function(e){if(e.target.tagName==="A"&&window.innerWidth<880){l.classList.remove("open");b.classList.remove("open");}});})();</script></body></html>

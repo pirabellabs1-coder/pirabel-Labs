@@ -25,92 +25,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
-
 </head>
 <body><nav class="nav" id="nav">
 <div class="nav__inner">
 <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
-<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36">
 <span>Pirabel Labs</span>
 </a>
-<div class="nav__links" id="navLinks">
-<a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link">Automatisation</a><a href="/seo" class="nav__link">SEO</a><a href="/realisations" class="nav__link">Realisations</a><a href="/a-propos" class="nav__link">A propos</a>
-<a href="/contact" class="nav__cta">Demander un devis</a>
+<div class="nav__links" id="navLinks"><a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link">Automatisation</a><a href="/seo" class="nav__link">SEO</a><a href="/a-propos" class="nav__link">Qui sommes-nous</a><a href="/contact" class="nav__cta">Reserver un appel</a></div>
+<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
-<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false">
-<span></span><span></span><span></span>
-</button>
-</div>
-</nav><main><section class="hero"><div class="container hero__inner text-center">
-<div style="font-size:5rem;font-family:var(--font-display);font-weight:800;color:var(--accent);line-height:1;margin-bottom:1.5rem;">404</div>
-<h1>Cette page n'existe pas.</h1>
-<p style="margin-left:auto;margin-right:auto;">Le lien que vous avez suivi est peut-etre obsolete, ou la page a ete deplacee. Voici quelques pistes pour vous y retrouver.</p>
-<div class="hero__actions flex--center" style="justify-content:center;">
-<a href="/" class="btn btn--primary btn--lg">Retour a l'accueil <span class="material-symbols-outlined">arrow_forward</span></a>
-<a href="/contact" class="btn btn--ghost btn--lg">Nous contacter</a>
-</div>
-</div></section>
-
-<section class="section"><div class="container">
-<div class="services-grid">
-<a href="/creation-site-web" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">web</span></div><h3 class="service-card__title">Sites web</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a>
-<a href="/creation-application" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">terminal</span></div><h3 class="service-card__title">Applications</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a>
-<a href="/automatisation" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">smart_toy</span></div><h3 class="service-card__title">Automatisation</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a>
-<a href="/seo" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">search_insights</span></div><h3 class="service-card__title">SEO</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a>
-</div>
-</div></section>
-</main><footer class="footer">
-<div class="container">
-<div class="footer__grid">
-<div>
-<div class="footer__brand">Pirabel Labs</div>
-<p class="footer__tagline">Studio tech premium specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p>
-</div>
-<div>
-<div class="footer__title">Services</div>
-<ul class="footer__list">
-<li><a href="/creation-site-web">Creation de sites</a></li>
-<li><a href="/creation-application">Applications</a></li>
-<li><a href="/automatisation">Automatisation</a></li>
-<li><a href="/seo">SEO</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Studio</div>
-<ul class="footer__list">
-<li><a href="/a-propos">A propos</a></li>
-<li><a href="/realisations">Realisations</a></li>
-<li><a href="/blog">Blog</a></li>
-<li><a href="/contact">Contact</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Contact</div>
-<ul class="footer__list">
-<li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li>
-<li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li>
-</ul>
-</div>
-</div>
-<div class="footer__bottom">
-<span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span>
-<div class="flex" style="gap:1.25rem;">
-<a href="/mentions-legales">Mentions legales</a>
-<a href="/politique-confidentialite">Confidentialite</a>
-</div>
-</div>
-</div>
-</footer><script>
-(function(){
-  var burger=document.getElementById('navBurger');
-  var links=document.getElementById('navLinks');
-  if(!burger||!links) return;
-  burger.addEventListener('click',function(){
-    var open=links.classList.toggle('open');
-    burger.classList.toggle('open',open);
-    burger.setAttribute('aria-expanded',open);
-  });
-})();
-</script>
-</body>
-</html>
+</nav><main><section class="hero"><div class="container hero__inner text-center"><div style="font-size:5rem;font-family:var(--font-display);font-weight:800;color:var(--accent);line-height:1;margin-bottom:1.5rem;">404</div><h1>Cette page n'existe pas.</h1><p style="margin-left:auto;margin-right:auto;">Le lien que vous avez suivi est peut-etre obsolete. Voici quelques pistes pour vous y retrouver.</p><div class="hero__actions" style="justify-content:center;"><a href="/" class="btn btn--primary btn--lg">Retour a l'accueil <span class="material-symbols-outlined">arrow_forward</span></a><a href="/contact" class="btn btn--ghost btn--lg">Nous contacter</a></div></div></section><section class="section"><div class="container"><div class="services-grid"><a href="/creation-site-web" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">web</span></div><h3 class="service-card__title">Sites web</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a><a href="/creation-application" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">terminal</span></div><h3 class="service-card__title">Applications</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a><a href="/automatisation" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">smart_toy</span></div><h3 class="service-card__title">Automatisation</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a><a href="/seo" class="service-card"><div class="service-card__icon"><span class="material-symbols-outlined">search_insights</span></div><h3 class="service-card__title">SEO</h3><span class="service-card__link">Voir <span class="material-symbols-outlined">arrow_forward</span></span></a></div></div></section></main><footer class="footer"><div class="container"><div class="footer__grid"><div><div class="footer__brand">Pirabel Labs</div><p class="footer__tagline">Studio tech specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p></div><div><div class="footer__title">Services</div><ul class="footer__list"><li><a href="/creation-site-web">Creation de sites</a></li><li><a href="/creation-application">Applications</a></li><li><a href="/automatisation">Automatisation</a></li><li><a href="/seo">SEO</a></li></ul></div><div><div class="footer__title">Studio</div><ul class="footer__list"><li><a href="/a-propos">A propos</a></li><li><a href="/#methodologie">Methodologie</a></li><li><a href="/#tarifs">Tarifs</a></li><li><a href="/contact">Contact</a></li></ul></div><div><div class="footer__title">Contact</div><ul class="footer__list"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li></ul></div></div><div class="footer__bottom"><span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span><div class="flex" style="gap:1.25rem;"><a href="/mentions-legales">Mentions legales</a><a href="/politique-confidentialite">Confidentialite</a></div></div></div></footer><script>(function(){var b=document.getElementById("navBurger"),l=document.getElementById("navLinks");if(!b||!l)return;b.addEventListener("click",function(){var o=l.classList.toggle("open");b.classList.toggle("open",o);b.setAttribute("aria-expanded",o);});l.addEventListener("click",function(e){if(e.target.tagName==="A"&&window.innerWidth<880){l.classList.remove("open");b.classList.remove("open");}});})();</script></body></html>

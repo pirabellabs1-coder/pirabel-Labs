@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Automatisation et agents IA | Pirabel Labs - Studio tech Benin</title>
-<meta name="description" content="Pirabel Labs automatise vos workflows avec Make, n8n, Zapier et agents IA. Vos equipes economisent 10 a 30h/semaine. Audit gratuit, premiers gains en 2-3 semaines.">
+<meta name="description" content="Pirabel Labs automatise vos workflows : Make, n8n, Zapier, agents IA, chatbots. Vos equipes economisent 10 a 30h/semaine. ROI mesurable, devis ferme 48h.">
 <link rel="canonical" href="https://www.pirabellabs.com/automatisation">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/automatisation">
 <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/automatisation">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Automatisation et agents IA | Pirabel Labs - Studio tech Benin">
-<meta property="og:description" content="Pirabel Labs automatise vos workflows avec Make, n8n, Zapier et agents IA. Vos equipes economisent 10 a 30h/semaine. Audit gratuit, premiers gains en 2-3 semaines.">
+<meta property="og:description" content="Pirabel Labs automatise vos workflows : Make, n8n, Zapier, agents IA, chatbots. Vos equipes economisent 10 a 30h/semaine. ROI mesurable, devis ferme 48h.">
 <meta property="og:url" content="https://www.pirabellabs.com/automatisation">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:site_name" content="Pirabel Labs">
@@ -25,148 +25,55 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Automatisation et agents IA", "description": "Automatisation de workflows (Make, n8n, Zapier), agents IA, chatbots, integrations CRM/ERP. Vos equipes economisent 10 a 30h par semaine.", "url": "https://www.pirabellabs.com/automatisation", "provider": {"@context": "https://schema.org", "@type": ["Organization", "ProfessionalService"], "name": "Pirabel Labs", "url": "https://www.pirabellabs.com", "logo": "https://www.pirabellabs.com/img/logo.png", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "email": "contact@pirabellabs.com", "founder": [{"@type": "Person", "name": "Lissanon Gildas", "jobTitle": "Cofondateur"}, {"@type": "Person", "name": "Fidah Imorou", "jobTitle": "Cofondateur"}], "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"], "knowsLanguage": "fr"}, "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"]}</script>
-</head>
+<style>
+/* Service page styles */
+.svc-hero { padding-top:clamp(7rem,14vw,10rem); padding-bottom:clamp(4rem,10vw,7rem); position:relative; overflow:hidden; }
+.svc-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, var(--accent-soft) 0%, transparent 50%); pointer-events:none; z-index:0; }
+.svc-hero__inner { position:relative; z-index:1; max-width:48rem; }
+.svc-hero h1 { margin-bottom:1rem; }
+.svc-hero p { font-size:clamp(1.05rem,1.5vw,1.2rem); color:var(--text-muted); margin-bottom:2rem; max-width:42rem; }
+
+.sub-services-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap:1rem; }
+.sub-service-card { background:var(--bg-2); border:1px solid var(--border); padding:1.75rem 1.5rem; transition:border-color var(--t); }
+.sub-service-card:hover { border-color:var(--accent); }
+.sub-service-card__icon { width:2.5rem; height:2.5rem; display:inline-flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); margin-bottom:1rem; }
+.sub-service-card__icon .material-symbols-outlined { font-size:1.4rem; }
+.sub-service-card__title { font-family:var(--font-display); font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+.sub-service-card__desc { font-size:.85rem; color:var(--text-muted); line-height:1.6; }
+
+.process-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap:1.5rem; }
+.process-step { padding:1.5rem; background:var(--bg-2); border:1px solid var(--border); }
+.process-step__num { display:inline-block; padding:.3rem .65rem; background:var(--accent); color:#fff; font-family:var(--font-display); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.85rem; }
+.process-step__title { font-family:var(--font-display); font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+.process-step__desc { font-size:.85rem; color:var(--text-muted); line-height:1.55; }
+
+.benefit-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap:1rem; }
+.benefit { display:flex; gap:.85rem; padding:1.25rem; background:var(--bg-2); border:1px solid var(--border); }
+.benefit__icon { color:var(--accent); font-size:1.5rem; flex-shrink:0; line-height:1; }
+.benefit__title { font-family:var(--font-display); font-weight:700; font-size:.95rem; margin-bottom:.25rem; }
+.benefit__desc { font-size:.82rem; color:var(--text-muted); line-height:1.5; }
+
+.faq { display:flex; flex-direction:column; gap:.5rem; max-width:48rem; margin:0 auto; }
+.faq__item { background:var(--bg-2); border:1px solid var(--border); }
+.faq__item[open] { border-color:var(--accent); }
+.faq__q { padding:1.15rem 1.5rem; cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:.95rem; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.faq__q::-webkit-details-marker { display:none; }
+.faq__q::after { content:'+'; font-size:1.5rem; color:var(--accent); transition:transform var(--t); line-height:1; flex-shrink:0; }
+.faq__item[open] .faq__q::after { transform:rotate(45deg); }
+.faq__a { padding:0 1.5rem 1.15rem; color:var(--text-muted); line-height:1.7; font-size:.9rem; }
+
+.use-cases { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap:1rem; }
+.use-case { padding:1.5rem; background:var(--bg-2); border:1px solid var(--border); border-left:3px solid var(--accent); }
+.use-case__title { font-family:var(--font-display); font-weight:700; font-size:.95rem; margin-bottom:.5rem; }
+.use-case__desc { font-size:.85rem; color:var(--text-muted); line-height:1.55; }
+</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Automatisation et agents IA", "description": "Automatisation de workflows (Make, n8n, Zapier), agents IA, chatbots. Vos equipes economisent 10 a 30h par semaine, ROI mesurable en 60 jours.", "url": "https://www.pirabellabs.com/automatisation", "provider": {"@context": "https://schema.org", "@type": ["Organization", "ProfessionalService"], "name": "Pirabel Labs", "url": "https://www.pirabellabs.com", "logo": "https://www.pirabellabs.com/img/logo.png", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "email": "contact@pirabellabs.com", "founder": [{"@type": "Person", "name": "Lissanon Gildas", "jobTitle": "Cofondateur"}, {"@type": "Person", "name": "Fidah Imorou", "jobTitle": "Cofondateur"}], "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"], "knowsLanguage": "fr"}, "areaServed": ["BJ", "FR", "CI", "SN", "CM", "TG", "BF", "ML"]}</script></head>
 <body><nav class="nav" id="nav">
 <div class="nav__inner">
 <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
-<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+<img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36">
 <span>Pirabel Labs</span>
 </a>
-<div class="nav__links" id="navLinks">
-<a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link nav__link--active">Automatisation</a><a href="/seo" class="nav__link">SEO</a><a href="/realisations" class="nav__link">Realisations</a><a href="/a-propos" class="nav__link">A propos</a>
-<a href="/contact" class="nav__cta">Demander un devis</a>
+<div class="nav__links" id="navLinks"><a href="/creation-site-web" class="nav__link">Sites web</a><a href="/creation-application" class="nav__link">Applications</a><a href="/automatisation" class="nav__link nav__link--active">Automatisation</a><a href="/seo" class="nav__link">SEO</a><a href="/a-propos" class="nav__link">Qui sommes-nous</a><a href="/contact" class="nav__cta">Reserver un appel</a></div>
+<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
-<button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false">
-<span></span><span></span><span></span>
-</button>
-</div>
-</nav><main><section class="hero">
-<div class="container hero__inner">
-<span class="badge mb-3"><span class="material-symbols-outlined">bolt</span> Make, n8n, Zapier, agents IA</span>
-<h1>Vos equipes economisent 10 a 30 heures par semaine.</h1>
-<p>Saisie manuelle, copier-coller entre outils, suivi Excel : autant de taches qui empechent vos equipes de creer de la valeur. On les automatise. Du simple workflow Make au chatbot IA pour le support client.</p>
-<div class="hero__actions">
-<a href="/contact" class="btn btn--primary btn--lg">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
-<a href="#process" class="btn btn--ghost btn--lg">Comment on travaille</a>
-</div>
-</div>
-</section><section class="section">
-<div class="container">
-<div class="mb-5">
-<span class="eyebrow">Quatre cas d'usage frequents</span>
-<h2>Choisis parce qu'ils paient toujours en quelques mois.</h2>
-</div>
-<div class="grid grid--3 grid--3-tablet"><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">autorenew</span></div>
-<h3 class="card__title">Synchronisation d'outils</h3>
-<p class="card__desc">CRM <-> compta, devis <-> facture, leads <-> campagne email. Plus de double saisie, plus d'oubli, traçabilite complete.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">chat</span></div>
-<h3 class="card__title">Chatbots IA support</h3>
-<p class="card__desc">Repondre 24/7 aux 50-70% de questions repetitives. Integration WhatsApp, site web, Messenger. Escalade automatique vers humain si besoin.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">mail</span></div>
-<h3 class="card__title">Sequences nurturing</h3>
-<p class="card__desc">Email + SMS + WhatsApp coordonnes selon le comportement. Lead score qui declenche un appel commercial au bon moment.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">description</span></div>
-<h3 class="card__title">Generation de documents</h3>
-<p class="card__desc">Devis, factures, contrats genere automatiquement depuis vos formulaires. PDF prerempli, signature electronique, archivage Drive ou OneDrive.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">insights</span></div>
-<h3 class="card__title">Reporting automatique</h3>
-<p class="card__desc">Dashboard hebdo envoye automatiquement aux dirigeants. Donnees consolidees depuis vos outils, alertes sur les KPIs critiques.</p>
-</div><div class="card">
-<div class="card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-<h3 class="card__title">Agents IA metier</h3>
-<p class="card__desc">IA qualifie les leads entrants, route les messages, redige les premiers brouillons d'email, analyse les avis clients. Sur mesure pour votre process.</p>
-</div></div>
-</div>
-</section><section class="section" id="process" style="background:var(--bg-2);">
-<div class="container">
-<div class="mb-5"><span class="eyebrow">Comment on travaille</span><h2>Notre process en 4 etapes.</h2></div>
-<div class="grid grid--4"><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">01</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Audit process</h3>
-<p style="font-size:.9rem;">Cartographie de vos workflows actuels : ou est le temps perdu, ou sont les erreurs, ou serait le gain immediat.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">02</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Quick wins</h3>
-<p style="font-size:.9rem;">On commence par 1-2 workflows a fort ROI. Mis en production en 2-3 semaines. Premiers benefices mesurables vite.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">03</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Industrialisation</h3>
-<p style="font-size:.9rem;">On etend progressivement aux autres process. Documentation, formation, transmission de la maintenance si souhaite.</p>
-</div><div>
-<div class="text-accent" style="font-family:var(--font-display);font-weight:800;font-size:2.5rem;line-height:1;margin-bottom:1rem;">04</div>
-<h3 style="font-size:1.05rem;margin-bottom:.5rem;">Monitoring continu</h3>
-<p style="font-size:.9rem;">Surveillance des workflows, alertes en cas d'erreur, optimisation continue. Maintenance mensuelle si souhaite.</p>
-</div></div>
-</div>
-</section><section class="section">
-<div class="container">
-<div class="card" style="padding:3rem 2rem;text-align:center;border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),transparent);">
-<h2 style="margin-bottom:1rem;">Quelles taches voulez-vous arreter de faire a la main ?</h2>
-<p class="lead" style="margin:0 auto 2rem;">Echange decouverte gratuit pour identifier les 2-3 automatisations a fort ROI dans votre business.</p>
-<div class="flex flex--center flex--wrap">
-<a href="/contact" class="btn btn--primary btn--lg">Demarrer la conversation <span class="material-symbols-outlined">arrow_forward</span></a>
-<a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg">contact@pirabellabs.com</a>
-</div>
-</div>
-</div>
-</section></main><footer class="footer">
-<div class="container">
-<div class="footer__grid">
-<div>
-<div class="footer__brand">Pirabel Labs</div>
-<p class="footer__tagline">Studio tech premium specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p>
-</div>
-<div>
-<div class="footer__title">Services</div>
-<ul class="footer__list">
-<li><a href="/creation-site-web">Creation de sites</a></li>
-<li><a href="/creation-application">Applications</a></li>
-<li><a href="/automatisation">Automatisation</a></li>
-<li><a href="/seo">SEO</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Studio</div>
-<ul class="footer__list">
-<li><a href="/a-propos">A propos</a></li>
-<li><a href="/realisations">Realisations</a></li>
-<li><a href="/blog">Blog</a></li>
-<li><a href="/contact">Contact</a></li>
-</ul>
-</div>
-<div>
-<div class="footer__title">Contact</div>
-<ul class="footer__list">
-<li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li>
-<li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li>
-</ul>
-</div>
-</div>
-<div class="footer__bottom">
-<span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span>
-<div class="flex" style="gap:1.25rem;">
-<a href="/mentions-legales">Mentions legales</a>
-<a href="/politique-confidentialite">Confidentialite</a>
-</div>
-</div>
-</div>
-</footer><script>
-(function(){
-  var burger=document.getElementById('navBurger');
-  var links=document.getElementById('navLinks');
-  if(!burger||!links) return;
-  burger.addEventListener('click',function(){
-    var open=links.classList.toggle('open');
-    burger.classList.toggle('open',open);
-    burger.setAttribute('aria-expanded',open);
-  });
-})();
-</script>
-</body>
-</html>
+</nav><main><section class="svc-hero"><div class="container svc-hero__inner"><span class="badge mb-3"><span class="material-symbols-outlined">bolt</span> Make, n8n, Zapier, agents IA</span><h1>Vos equipes economisent 10 a 30 heures par semaine.</h1><p>Saisie manuelle, copier-coller entre outils, suivi Excel : autant de taches qui empechent vos equipes de creer de la valeur. On les automatise. Du simple workflow Make au chatbot IA pour le support client.</p><div class="hero__actions"><a href="/contact" class="btn btn--primary btn--lg">Reserver un appel <span class="material-symbols-outlined">arrow_forward</span></a><a href="#process" class="btn btn--ghost btn--lg">Comment on travaille</a></div></div></section><section class="section"><div class="container"><div class="mb-5"><span class="eyebrow">Cas d'usage frequents</span><h2>Choisis parce qu'ils paient toujours en quelques mois.</h2><p class="lead mt-3">On commence par 1-2 workflows a fort ROI, mis en production en 2-3 semaines. Premiers benefices mesurables vite, puis on etend a d'autres process.</p></div><div class="sub-services-grid"><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">autorenew</span></div><h3 class="sub-service-card__title">Synchronisation d'outils</h3><p class="sub-service-card__desc">CRM <-> compta, devis <-> facture, leads <-> campagne email. Plus de double saisie, plus d'oubli, tracabilite complete.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">chat</span></div><h3 class="sub-service-card__title">Chatbots IA support</h3><p class="sub-service-card__desc">Repondre 24/7 aux 50-70% de questions repetitives. Integration WhatsApp, site web, Messenger. Escalade automatique vers humain si besoin.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">mail</span></div><h3 class="sub-service-card__title">Sequences nurturing</h3><p class="sub-service-card__desc">Email + SMS + WhatsApp coordonnes selon le comportement. Lead score qui declenche un appel commercial au bon moment.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">description</span></div><h3 class="sub-service-card__title">Generation de documents</h3><p class="sub-service-card__desc">Devis, factures, contrats automatiquement crees depuis vos formulaires. PDF prerempli, signature electronique, archivage Drive/OneDrive.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">insights</span></div><h3 class="sub-service-card__title">Reporting automatique</h3><p class="sub-service-card__desc">Dashboard hebdo envoye aux dirigeants. Donnees consolidees depuis vos outils, alertes sur les KPIs critiques.</p></div><div class="sub-service-card"><div class="sub-service-card__icon"><span class="material-symbols-outlined">smart_toy</span></div><h3 class="sub-service-card__title">Agents IA metier</h3><p class="sub-service-card__desc">IA qualifie les leads entrants, route les messages, redige les premiers brouillons d'email, analyse les avis clients. Sur mesure pour votre process.</p></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5"><span class="eyebrow">Approche pragmatique</span><h2>On ne fait pas de la tech pour la tech.</h2></div><div class="benefit-list"><div class="benefit"><span class="material-symbols-outlined benefit__icon">savings</span><div><div class="benefit__title">ROI mesure en heures</div><div class="benefit__desc">Avant : combien d'heures par semaine sur cette tache. Apres : combien d'heures liberees. On chiffre l'economie reelle.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">schedule</span><div><div class="benefit__title">Quick wins d'abord</div><div class="benefit__desc">On demarre par 1-2 automatisations a fort ROI, livrees en 2-3 semaines. Pas 6 mois d'audit theorique.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">handyman</span><div><div class="benefit__title">Outils standards</div><div class="benefit__desc">Make, n8n, Zapier : pas de dependance a un dev custom. Votre equipe peut comprendre et ajuster apres notre depart.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">error</span><div><div class="benefit__title">Monitoring inclus</div><div class="benefit__desc">Surveillance des workflows, alertes en cas d'erreur, logs accessibles. Pas de surprise silencieuse.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">school</span><div><div class="benefit__title">Formation incluse</div><div class="benefit__desc">Session 2h pour rendre votre equipe autonome sur les ajustements simples. Documentation Notion partagee.</div></div></div><div class="benefit"><span class="material-symbols-outlined benefit__icon">integration_instructions</span><div><div class="benefit__title">Connecteurs prets</div><div class="benefit__desc">Salesforce, HubSpot, Pipedrive, Brevo, Mailchimp, Notion, Airtable, Sheets, Slack, Stripe... Quasi tout outil moderne se branche.</div></div></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5"><span class="eyebrow">Exemples concrets</span><h2>Ce qu'on a deja automatise.</h2></div><div class="use-cases"><div class="use-case"><div class="use-case__title">Lead inbound qualifie</div><div class="use-case__desc">Formulaire site -> qualification IA -> creation CRM -> assignation commercial -> notification Slack -> premier email auto. 5 minutes au lieu de 30.</div></div><div class="use-case"><div class="use-case__title">Devis -> contrat</div><div class="use-case__desc">Devis signe -> creation client compta -> generation contrat PDF -> envoi DocuSign -> archive cloud + notification interne.</div></div><div class="use-case"><div class="use-case__title">Support client 24/7</div><div class="use-case__desc">Chatbot WhatsApp + site avec base de connaissance interne. 50-70% des questions resolues sans humain. Escalade au support pour le reste.</div></div><div class="use-case"><div class="use-case__title">Onboarding utilisateur SaaS</div><div class="use-case__desc">Inscription -> creation tenant -> seed donnees demo -> email bienvenue -> sequence nurturing 7 jours -> NPS J+30.</div></div><div class="use-case"><div class="use-case__title">Reporting hebdo automatique</div><div class="use-case__desc">Donnees Stripe + GA4 + CRM -> consolidation Sheets -> generation PDF -> envoi Slack/email dirigeants chaque lundi 8h.</div></div><div class="use-case"><div class="use-case__title">Recrutement assiste IA</div><div class="use-case__desc">CV recu -> parsing IA -> scoring vs criteres -> notification RH si match -> reponse automatique candidat selon score.</div></div></div></div></section><section class="section" id="process"><div class="container"><div class="mb-5"><span class="eyebrow">Comment on travaille</span><h2>Notre methodologie en 4 etapes.</h2></div><div class="process-list"><div class="process-step"><span class="process-step__num">Etape 01</span><div class="process-step__title">Audit process</div><p class="process-step__desc">Cartographie de vos workflows actuels. Identification des taches a fort potentiel d'automatisation.</p></div><div class="process-step"><span class="process-step__num">Etape 02</span><div class="process-step__title">Roadmap priorisee</div><p class="process-step__desc">Liste des automatisations classees par impact / effort. On valide ensemble les 2-3 premieres.</p></div><div class="process-step"><span class="process-step__num">Etape 03</span><div class="process-step__title">Implementation</div><p class="process-step__desc">Quick wins mis en prod en 2-3 semaines. Tests en parallele de l'existant avant bascule.</p></div><div class="process-step"><span class="process-step__num">Etape 04</span><div class="process-step__title">Industrialisation</div><p class="process-step__desc">Extension aux autres process, formation equipe, monitoring continu.</p></div></div></div></section><section class="section" style="background:var(--bg-2);"><div class="container"><div class="mb-5 text-center"><span class="eyebrow">Questions frequentes</span><h2>Ce qu'on nous demande souvent.</h2></div><div class="faq"><details class="faq__item"><summary class="faq__q">Quelle est la difference entre Make, n8n et Zapier ?</summary><div class="faq__a">Zapier : ecosysteme le plus complet (5000+ integrations), interface ultra-simple, plus cher en volume. Make : visuellement plus puissant, meilleur rapport qualite-prix, courbe d'apprentissage moyenne. n8n : self-hosted possible (donnees chez vous), open-source, plus technique mais sans limite. On choisit selon votre volume, criticite et besoins de confidentialite.</div></details><details class="faq__item"><summary class="faq__q">Combien coute un projet automatisation ?</summary><div class="faq__a">Quick wins (1-3 workflows simples) : 1 500-3 500 EUR. Projet moyen (5-10 workflows + chatbot IA basique) : 4 000-9 000 EUR. Industrialisation (10+ workflows, agents IA complexes, dashboards) : 12 000-30 000 EUR. Plus abonnement outils (Make/n8n : 30-150 EUR/mois selon volume).</div></details><details class="faq__item"><summary class="faq__q">Vos automatisations utilisent l'IA ?</summary><div class="faq__a">Oui, quand pertinent. OpenAI (GPT-4o), Claude, Mistral selon le cas. Use cases courants : qualification de leads, redaction d'emails, classification de tickets support, synthese de documents. On vous accompagne sur le prompt engineering et les garde-fous.</div></details><details class="faq__item"><summary class="faq__q">Mes donnees passent ou ?</summary><div class="faq__a">Cela depend de l'outil. Zapier/Make : leurs serveurs (US/EU). n8n self-hosted : vos serveurs (controle total). On vous explique exactement le flux et les implications RGPD pour chaque integration. Pour les donnees sensibles, on privilegie n8n.</div></details><details class="faq__item"><summary class="faq__q">Vous formez mes equipes ?</summary><div class="faq__a">Oui, c'est inclus. Session 2h avec votre equipe pour rendre autonome sur les ajustements simples : modifier un texte, ajouter un destinataire, monitorer les erreurs. Documentation Notion partagee avec captures et videos.</div></details><details class="faq__item"><summary class="faq__q">Que se passe-t-il si un workflow plante ?</summary><div class="faq__a">Make/n8n/Zapier proposent du monitoring natif (alertes par email/Slack). On configure les alertes au sprint 1. Pour les workflows critiques, on ajoute un canal d'escalade. Et on documente les playbooks de resolution.</div></details></div></div></section><section class="section"><div class="container"><div class="card" style="padding:3rem 2rem;text-align:center;border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),transparent);"><h2 style="margin-bottom:1rem;">Quelles taches voulez-vous arreter de faire a la main ?</h2><p class="lead" style="margin:0 auto 2rem;">Echange decouverte gratuit pour identifier les 2-3 automatisations a fort ROI dans votre business.</p><div class="flex flex--center flex--wrap"><a href="/contact" class="btn btn--primary btn--lg">Reserver un appel <span class="material-symbols-outlined">arrow_forward</span></a><a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg">contact@pirabellabs.com</a></div></div></div></section></main><footer class="footer"><div class="container"><div class="footer__grid"><div><div class="footer__brand">Pirabel Labs</div><p class="footer__tagline">Studio tech specialise creation de sites, applications, automatisation et SEO. Base a Abomey-Calavi, Benin.</p></div><div><div class="footer__title">Services</div><ul class="footer__list"><li><a href="/creation-site-web">Creation de sites</a></li><li><a href="/creation-application">Applications</a></li><li><a href="/automatisation">Automatisation</a></li><li><a href="/seo">SEO</a></li></ul></div><div><div class="footer__title">Studio</div><ul class="footer__list"><li><a href="/a-propos">A propos</a></li><li><a href="/#methodologie">Methodologie</a></li><li><a href="/#tarifs">Tarifs</a></li><li><a href="/contact">Contact</a></li></ul></div><div><div class="footer__title">Contact</div><ul class="footer__list"><li><a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a></li><li><span style="color:var(--text-faint);">Abomey-Calavi, Benin</span></li></ul></div></div><div class="footer__bottom"><span>&copy; 2026 Pirabel Labs. Tous droits reserves.</span><div class="flex" style="gap:1.25rem;"><a href="/mentions-legales">Mentions legales</a><a href="/politique-confidentialite">Confidentialite</a></div></div></div></footer><script>(function(){var b=document.getElementById("navBurger"),l=document.getElementById("navLinks");if(!b||!l)return;b.addEventListener("click",function(){var o=l.classList.toggle("open");b.classList.toggle("open",o);b.setAttribute("aria-expanded",o);});l.addEventListener("click",function(e){if(e.target.tagName==="A"&&window.innerWidth<880){l.classList.remove("open");b.classList.remove("open");}});})();</script></body></html>

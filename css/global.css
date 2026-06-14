@@ -236,7 +236,7 @@ p { color: var(--text-muted); line-height: 1.7; }
 .nav-mega__inner { display: flex; align-items: center; gap: 1.5rem; padding: 0.85rem var(--px-page); max-width: 90rem; margin: 0 auto; }
 .nav-mega__logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; }
 .nav-mega__logo img { width: 36px; height: 36px; }
-.nav-mega__menu { display: flex; align-items: center; gap: 0.2rem; flex: 1; }
+.nav-mega__menu { display: flex; align-items: center; justify-content: center; gap: 0.2rem; flex: 1; }
 .nav-mega__item { position: relative; }
 .nav-mega__trigger, .nav-mega__main-link { display: inline-flex; align-items: center; gap: 0.3rem; background: transparent; border: 0; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; padding: 0.55rem 0.85rem; border-radius: 8px; cursor: pointer; text-decoration: none; transition: color 0.2s, background 0.2s; }
 .nav-mega__trigger:hover, .nav-mega__main-link:hover { color: var(--text); background: var(--bg-2); }

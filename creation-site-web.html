@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creation de site web sur mesure - Pirabel Labs</title>
+<meta name="description" content="Creation de sites web sur mesure en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise. Devis ferme sous 48h. Pour PME en Benin, France et Afrique francophone.">
+<link rel="canonical" href="https://www.pirabellabs.com/creation-site-web">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Creation de site web sur mesure - Pirabel Labs">
+<meta property="og:description" content="Sites web sur mesure developpes en code. Performance Lighthouse 95+, design unique, evolutif. Devis sous 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/creation-site-web">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+/* ===== Service page commun ===== */
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+
+/* === BREADCRUMB === */
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* === HERO === */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__lead { font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: var(--text-muted); max-width: 36rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; }
+.s-hero__trust-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+.s-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1rem; }
+.s-hero__visual { position: relative; aspect-ratio: 4/3; }
+.s-mock { width: 100%; height: 100%; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); transform: perspective(1400px) rotateY(-6deg) rotateX(2deg); }
+.s-mock__bar { background: var(--surface); padding: 0.65rem 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+.s-mock__dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; flex-shrink: 0; }
+.s-mock__dot.r { background: #f87171; } .s-mock__dot.y { background: #fbbf24; } .s-mock__dot.g { background: #4ade80; }
+.s-mock__url { flex: 1; text-align: center; font-size: 0.65rem; color: var(--text-faint); background: var(--bg); padding: 0.3rem 0.7rem; border-radius: 999px; font-family: var(--font-display); margin-left: 0.5rem; }
+.s-mock__body { padding: 1.25rem; background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.04) 100%); flex: 1; display: flex; flex-direction: column; gap: 0.85rem; }
+.smk-row { display: flex; gap: 0.45rem; align-items: center; }
+.smk-block { background: var(--text); opacity: 0.85; border-radius: 3px; height: 0.6rem; }
+.smk-block.w90 { width: 90%; } .smk-block.w70 { width: 70%; } .smk-block.w50 { width: 50%; } .smk-block.w30 { width: 30%; }
+.smk-block.acc { background: var(--accent); opacity: 1; }
+.smk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: auto; }
+.smk-card { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+.smk-card .material-symbols-outlined { font-size: 1.1rem; opacity: 0.7; }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta, .s-hero__trust { justify-content: center; }
+  .s-hero__visual { max-width: 28rem; margin: 0 auto; }
+  .s-mock { transform: none; }
+}
+
+/* === SECTIONS === */
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+/* === POUR QUI === */
+.aud-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .aud-grid { grid-template-columns: 1fr; } }
+.aud { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: border-color var(--t); }
+.aud:hover { border-color: var(--accent); }
+.aud__icon { width: 3rem; height: 3rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.aud__icon .material-symbols-outlined { font-size: 1.5rem; }
+.aud__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.45rem; }
+.aud__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
+
+/* === CE QU'ON FAIT === */
+.deliv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 880px) { .deliv-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .deliv-grid { grid-template-columns: 1fr; } }
+.deliv { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; }
+.deliv__num { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
+.deliv__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.55rem; }
+.deliv__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* === METHODOLOGIE (zigzag identique a la home) === */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* === STACK === */
+.stack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 60rem; margin: 0 auto; }
+@media (max-width: 720px) { .stack-grid { grid-template-columns: 1fr; } }
+.stack-cat { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.4rem; }
+.stack-cat__h { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.1rem; }
+.stack-cat__icon { width: 2.25rem; height: 2.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.stack-cat__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+.stack-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.stack-list span { background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; font-family: var(--font-display); font-weight: 600; }
+
+/* === RESULTATS === */
+.res-grid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; max-width: 64rem; margin: 0 auto; background: var(--bg-2); }
+@media (max-width: 880px) { .res-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .res-grid { grid-template-columns: 1fr; } }
+.res { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.res:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .res:nth-child(2n) { border-right: 0; }
+  .res:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .res { border-right: 0; border-bottom: 1px solid var(--border); }
+  .res:last-child { border-bottom: 0; }
+}
+.res__icon { color: var(--accent); margin-bottom: 0.85rem; }
+.res__icon .material-symbols-outlined { font-size: 1.65rem; }
+.res__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.35rem); color: var(--text); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.45rem; }
+.res__v em { color: var(--accent); font-style: normal; }
+.res__l { font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.45; }
+
+/* === TARIFS === */
+.tarif-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 68rem; margin: 0 auto; align-items: stretch; }
+@media (max-width: 880px) { .tarif-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.tarif { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.25rem 1.75rem; display: flex; flex-direction: column; position: relative; }
+.tarif--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.tarif__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+.tarif__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.45rem; }
+.tarif__price { font-family: var(--font-display); font-weight: 800; font-size: 1.55rem; color: var(--accent); margin-bottom: 0.3rem; line-height: 1.1; }
+.tarif__price-from { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; }
+.tarif__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.tarif ul { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; }
+.tarif li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.tarif li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.tarif__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.tarif__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.tarif--featured .tarif__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tarif--featured .tarif__cta:hover { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
+
+/* === FAQ === */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 32rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* === CTA FINAL === */
+.cta-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden; max-width: 64rem; margin: 0 auto; }
+.cta-card__txt { padding: 3rem 2.5rem; align-self: center; }
+.cta-card__txt h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2; margin-bottom: 1rem; }
+.cta-card__txt h2 em { color: var(--accent); font-style: normal; }
+.cta-card__txt p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.6; }
+.cta-card__visual { background: linear-gradient(135deg, rgba(255,85,0,0.1), transparent 70%); display: flex; align-items: center; justify-content: center; min-height: 16rem; }
+.cta-card__visual-box { width: 5rem; height: 5rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 0 30px rgba(255,85,0,0.2); }
+.cta-card__visual-box .material-symbols-outlined { font-size: 2.5rem; }
+@media (max-width: 880px) { .cta-card { grid-template-columns: 1fr; } .cta-card__visual { min-height: 12rem; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Creation de site web sur mesure",
+  "provider": {
+    "@type": "Organization",
+    "name": "Pirabel Labs",
+    "url": "https://www.pirabellabs.com"
+  },
+  "areaServed": ["BJ","FR","CI","SN","CM","TG","BF","ML"],
+  "description": "Creation de sites web sur mesure developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise.",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "EUR",
+    "lowPrice": "2500",
+    "highPrice": "25000"
+  }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/#services">Services</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Creation de site web sur mesure</span>
+</div>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Sites web sur mesure</span>
+        <h1>Un site web <em>sur mesure</em> qui convertit, pas une vitrine generique de plus.</h1>
+        <p class="s-hero__lead">Sites institutionnels, e-commerce et plateformes developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise des le 1er jour. Mise en ligne en 3 a 8 semaines selon scope.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander un devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="#methodologie" class="btn btn--ghost btn--lg">Voir notre methode</a>
+        </div>
+        <div class="s-hero__trust">
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">verified</span> Devis sous 48h</span>
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">speed</span> Lighthouse 95+ garanti</span>
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">shield</span> Garantie 30 jours</span>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="s-mock">
+          <div class="s-mock__bar">
+            <div class="s-mock__dot r"></div><div class="s-mock__dot y"></div><div class="s-mock__dot g"></div>
+            <div class="s-mock__url">www.votre-entreprise.com</div>
+          </div>
+          <div class="s-mock__body">
+            <div class="smk-row">
+              <div class="smk-block w30"></div>
+              <div class="smk-block acc w30" style="margin-left:auto;"></div>
+            </div>
+            <div class="smk-block w90"></div>
+            <div class="smk-block w70"></div>
+            <div class="smk-block acc w30"></div>
+            <div class="smk-grid">
+              <div class="smk-card"><span class="material-symbols-outlined">grid_view</span></div>
+              <div class="smk-card"><span class="material-symbols-outlined">show_chart</span></div>
+              <div class="smk-card"><span class="material-symbols-outlined">bolt</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POUR QUI -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>A <em>qui</em> s'adresse ce service ?</h2>
+        <p class="sec-h__sub">Notre approche sur mesure convient quand le besoin de votre projet depasse ce qu'un template WordPress ou Wix peut faire.</p>
+      </div>
+      <div class="aud-grid">
+        <div class="aud">
+          <div class="aud__icon"><span class="material-symbols-outlined">corporate_fare</span></div>
+          <div>
+            <div class="aud__title">PME et ETI ambitieuses</div>
+            <p class="aud__desc">Vous voulez un site qui reflete votre niveau d'expertise. Pas un theme generique sur lequel votre concurrent est aussi. Un site qui devient un actif strategique, pas une depense.</p>
+          </div>
+        </div>
+        <div class="aud">
+          <div class="aud__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+          <div>
+            <div class="aud__title">E-commerce en croissance</div>
+            <p class="aud__desc">Vous etes a l'etroit sur Shopify, votre WooCommerce rame, ou vous avez besoin de logiques specifiques (Mobile Money, multi-devises, abonnements). Un site sur mesure scale sans bricolage.</p>
+          </div>
+        </div>
+        <div class="aud">
+          <div class="aud__icon"><span class="material-symbols-outlined">refresh</span></div>
+          <div>
+            <div class="aud__title">Refonte de site existant</div>
+            <p class="aud__desc">Votre site actuel est lent (Lighthouse < 60), ne convertit pas, ou date d'il y a 5 ans. Refonte complete pour repartir sur des bases techniques et UX modernes.</p>
+          </div>
+        </div>
+        <div class="aud">
+          <div class="aud__icon"><span class="material-symbols-outlined">design_services</span></div>
+          <div>
+            <div class="aud__title">Marques exigeantes sur le design</div>
+            <p class="aud__desc">Vous voulez un site qui se distingue visuellement, avec animations, micro-interactions, identite visuelle forte. Impossible avec un template, requis sur mesure.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CE QU'ON FAIT -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Ce que vous <em>obtenez</em> concretement</h2>
+        <p class="sec-h__sub">6 livrables tangibles, documentes et transferes a la fin du projet.</p>
+      </div>
+      <div class="deliv-grid">
+        <div class="deliv">
+          <div class="deliv__num">01</div>
+          <div class="deliv__title">Audit + cadrage strategique</div>
+          <p class="deliv__desc">Analyse de vos objectifs business, de votre cible, de la concurrence et de l'arborescence ideale. Document de cadrage 15-20 pages remis avant developpement.</p>
+        </div>
+        <div class="deliv">
+          <div class="deliv__num">02</div>
+          <div class="deliv__title">Designs Figma haute fidelite</div>
+          <p class="deliv__desc">Maquettes Figma desktop + tablette + mobile sur l'ensemble des pages. 2 rounds de retouches inclus. Design system reutilisable livre avec les fichiers sources.</p>
+        </div>
+        <div class="deliv">
+          <div class="deliv__num">03</div>
+          <div class="deliv__title">Site code et hebergement</div>
+          <p class="deliv__desc">Site code en Next.js, React ou Webflow selon votre besoin. Hebergement Vercel/Netlify sur votre compte. SSL, CDN global, sauvegardes automatiques.</p>
+        </div>
+        <div class="deliv">
+          <div class="deliv__num">04</div>
+          <div class="deliv__title">SEO technique optimise</div>
+          <p class="deliv__desc">Meta tags, schema.org JSON-LD, sitemap.xml, robots.txt, Open Graph, canonical, hreflang si multi-langue. Indexable Google sans configuration.</p>
+        </div>
+        <div class="deliv">
+          <div class="deliv__num">05</div>
+          <div class="deliv__title">Performance Lighthouse 95+</div>
+          <p class="deliv__desc">Score Lighthouse Performance, Accessibility, Best Practices et SEO superieurs a 95 sur mobile et desktop. Sinon, nous corrigeons gratuitement.</p>
+        </div>
+        <div class="deliv">
+          <div class="deliv__num">06</div>
+          <div class="deliv__title">Formation + documentation</div>
+          <p class="deliv__desc">Session de formation 1h pour votre equipe a la prise en main du back-office (si CMS). Documentation ecrite remise, video tutorielle si demandee.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="section" id="methodologie">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> en 5 etapes</h2>
+        <p class="sec-h__sub">Du premier echange a la mise en ligne. Pas de boite noire, pas de surprise.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">01</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Decouverte</span>
+            <div class="zz-step__title">Appel decouverte 30 min</div>
+            <p class="zz-step__desc">Echange avec un cofondateur. On comprend votre business, vos objectifs, votre contexte. Si le fit n'est pas la, on vous le dit honnetement.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Gratuit, sans engagement</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">02</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Cadrage</span>
+            <div class="zz-step__title">Devis ferme + planning</div>
+            <p class="zz-step__desc">Sous 48h vous recevez un devis ecrit avec scope precis, planning de livraison sprint par sprint, et conditions d'evolution. Aucun "selon devis" cache.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">verified</span> Devis sous 48h</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">03</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Design</span>
+            <div class="zz-step__title">Maquettes Figma + validation</div>
+            <p class="zz-step__desc">Maquettes desktop + tablette + mobile validees page par page. 2 rounds de retouches inclus. Vous voyez et validez tout avant qu'on touche au code.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">design_services</span> 1 a 3 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">04</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Developpement</span>
+            <div class="zz-step__title">Sprints hebdo + demos visio</div>
+            <p class="zz-step__desc">Developpement en sprints d'une semaine. Demo chaque vendredi sur environnement de preview. Ajustements integres en continu. Vous voyez l'avancement reel.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">rocket_launch</span> 2 a 6 semaines selon scope</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">05</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Mise en ligne</span>
+            <div class="zz-step__title">Deploiement + formation</div>
+            <p class="zz-step__desc">Mise en production accompagnee. Configuration DNS, SSL, redirections, indexation Google. Formation a votre equipe (1h). Documentation ecrite remise.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>stack technique</em></h2>
+        <p class="sec-h__sub">Technologies modernes choisies pour la performance, la maintenabilite et la longevite.</p>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-cat">
+          <div class="stack-cat__h">
+            <div class="stack-cat__icon"><span class="material-symbols-outlined">code</span></div>
+            <div class="stack-cat__name">Framework & langages</div>
+          </div>
+          <div class="stack-list">
+            <span>Next.js 15</span>
+            <span>React 19</span>
+            <span>TypeScript</span>
+            <span>Webflow</span>
+            <span>Astro</span>
+          </div>
+        </div>
+        <div class="stack-cat">
+          <div class="stack-cat__h">
+            <div class="stack-cat__icon"><span class="material-symbols-outlined">database</span></div>
+            <div class="stack-cat__name">Backend & data</div>
+          </div>
+          <div class="stack-list">
+            <span>Node.js</span>
+            <span>Postgres</span>
+            <span>Supabase</span>
+            <span>MongoDB</span>
+            <span>Sanity CMS</span>
+          </div>
+        </div>
+        <div class="stack-cat">
+          <div class="stack-cat__h">
+            <div class="stack-cat__icon"><span class="material-symbols-outlined">cloud</span></div>
+            <div class="stack-cat__name">Hebergement & infra</div>
+          </div>
+          <div class="stack-list">
+            <span>Vercel</span>
+            <span>Netlify</span>
+            <span>Cloudflare</span>
+            <span>AWS S3</span>
+          </div>
+        </div>
+        <div class="stack-cat">
+          <div class="stack-cat__h">
+            <div class="stack-cat__icon"><span class="material-symbols-outlined">payments</span></div>
+            <div class="stack-cat__name">E-commerce & paiement</div>
+          </div>
+          <div class="stack-list">
+            <span>Stripe</span>
+            <span>WooCommerce</span>
+            <span>Mobile Money</span>
+            <span>Snipcart</span>
+            <span>Shopify Headless</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTATS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Ce que vous pouvez <em>esperer</em></h2>
+        <p class="sec-h__sub">Chiffres aggreges sur nos sites web sur mesure livres. Cas particulier sur demande lors de l'appel decouverte.</p>
+      </div>
+      <div class="res-grid">
+        <div class="res">
+          <div class="res__icon"><span class="material-symbols-outlined">speed</span></div>
+          <div class="res__v"><em>95</em>+</div>
+          <div class="res__l">Lighthouse mobile<br>garanti contractuellement</div>
+        </div>
+        <div class="res">
+          <div class="res__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <div class="res__v"><em>+147</em>%</div>
+          <div class="res__l">leads inbound<br>en moyenne sur 6 mois</div>
+        </div>
+        <div class="res">
+          <div class="res__icon"><span class="material-symbols-outlined">schedule</span></div>
+          <div class="res__v"><em>1,2</em>s</div>
+          <div class="res__l">temps de chargement<br>moyen sur 4G</div>
+        </div>
+        <div class="res">
+          <div class="res__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <div class="res__v"><em>x2,3</em></div>
+          <div class="res__l">trafic organique<br>moyen a 12 mois</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARIFS -->
+  <section class="section" style="background:var(--bg-2);" id="tarifs">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Combien <em>ca coute</em> ?</h2>
+        <p class="sec-h__sub">Trois fourchettes selon votre projet. Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible.</p>
+      </div>
+      <div class="tarif-grid">
+        <div class="tarif">
+          <div class="tarif__title">Site vitrine</div>
+          <div class="tarif__price">2 500 - 6 000 EUR</div>
+          <div class="tarif__price-from">a partir de 2 500 EUR HT</div>
+          <p class="tarif__desc">5 a 15 pages, 1 langue. Pour PME, cabinets, professions liberales, restaurants, hotels.</p>
+          <ul>
+            <li>Design Figma sur mesure</li>
+            <li>5 a 15 pages developpees</li>
+            <li>SEO technique optimise</li>
+            <li>Formulaire contact + RGPD</li>
+            <li>Hebergement Vercel 1 an offert</li>
+            <li>Livre en 3 a 5 semaines</li>
+          </ul>
+          <a href="/contact?service=site-vitrine" class="tarif__cta">Demander un devis</a>
+        </div>
+        <div class="tarif tarif--featured">
+          <span class="tarif__badge">Le plus demande</span>
+          <div class="tarif__title">E-commerce ou plateforme</div>
+          <div class="tarif__price">6 000 - 15 000 EUR</div>
+          <div class="tarif__price-from">a partir de 6 000 EUR HT</div>
+          <p class="tarif__desc">E-commerce, marketplaces, sites avec espace membres, comparateurs, plateformes B2B.</p>
+          <ul>
+            <li>Tout du pack Vitrine inclus</li>
+            <li>E-commerce Stripe + Mobile Money</li>
+            <li>Espace membres / authentification</li>
+            <li>Multi-langue ou multi-devise</li>
+            <li>Tableau de bord admin sur mesure</li>
+            <li>Integrations CRM, ERP, ESP</li>
+            <li>Livre en 5 a 8 semaines</li>
+          </ul>
+          <a href="/contact?service=ecommerce" class="tarif__cta">Demander un devis</a>
+        </div>
+        <div class="tarif">
+          <div class="tarif__title">Plateforme sur mesure</div>
+          <div class="tarif__price">15 000 - 50 000 EUR</div>
+          <div class="tarif__price-from">a partir de 15 000 EUR HT</div>
+          <p class="tarif__desc">SaaS, MVP, applications metier, plateformes complexes avec logiques business specifiques.</p>
+          <ul>
+            <li>Tout du pack E-commerce inclus</li>
+            <li>Architecture backend dediee</li>
+            <li>Base de donnees sur mesure</li>
+            <li>API REST ou GraphQL</li>
+            <li>Tests automatises</li>
+            <li>Documentation technique complete</li>
+            <li>Livre en 8 a 16 semaines</li>
+          </ul>
+          <a href="/contact?service=saas" class="tarif__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ <em>Sites web sur mesure</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la difference entre un site sur mesure et un site WordPress ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Un site WordPress repose sur un theme et des plugins existants : rapide a monter, moins cher, mais avec des limites de design et de performance (souvent Lighthouse 50-70). Un site sur mesure est code de zero en Next.js/React : design unique, performance Lighthouse 95+, scalable, mais demande plus d'investissement initial (2 500 EUR+ vs 800 EUR+ pour WordPress). Le sur mesure se rentabilise des que vous voulez une marque differenciante ou que votre site doit etre une source serieuse de leads.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend la livraison ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Pour un site vitrine 5-10 pages : 3 a 5 semaines. Pour un e-commerce ou une plateforme : 5 a 8 semaines. Pour un SaaS complexe : 8 a 16 semaines. Le planning detaille sprint par sprint est dans le devis ferme. Nous travaillons par sprints d'une semaine avec demos chaque vendredi.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Qui possede le code source apres la livraison ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Vous, integralement. Une fois la facture finale reglee, le code source est pousse sur votre compte GitHub/GitLab. Les designs Figma vous sont transferes. L'hebergement Vercel/Netlify est sous votre compte. Vous etes 100% autonome et pouvez changer de prestataire a tout moment sans rien re-acheter.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer Mobile Money pour le Benin / Afrique de l'Ouest ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Nous integrons MTN Mobile Money, Moov Money, Wave, Orange Money via leurs API officielles ou via des agregateurs comme Kkiapay, FedaPay, CinetPay. Pour l'Europe : Stripe, PayPal, virement SEPA. Pour le multi-marche : on peut combiner les deux dans le meme checkout.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance apres la mise en ligne ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Garantie 30 jours incluse : tout bug imputable a notre travail est corrige gratuitement. Apres cette periode : option de forfait maintenance mensuel (300-800 EUR/mois selon scope) qui inclut corrections, mises a jour de securite, modifications de contenu et optimisations. Sinon ponctuel a la demande au TJM 600 EUR HT.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel CMS pour gerer le contenu si je veux mettre a jour le site moi-meme ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon vos besoins, on integre : Sanity (headless CMS moderne, gratuit jusqu'a 10k requetes/mois), Strapi (auto-hebergeable), Contentful (premium), ou pour de l'edition tres simple un fichier markdown versionne via GitHub. Pour les sites Webflow, le CMS est integre. Pour WordPress, on garde WordPress comme back-office mais on connecte un front Next.js (headless).</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en France et en Europe ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Plusieurs clients en France, Belgique, Suisse, Canada. Travail entierement a distance via Zoom/Google Meet, Notion partage, demos hebdomadaires. Facturation en EUR via virement SEPA ou CB Stripe. Conformite RGPD assuree.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux refaire mon site WordPress existant en sur mesure ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Refonte avec migration des contenus existants, gestion des redirections SEO (301) pour preserver le ranking Google, et optimisation Lighthouse de 38 a 95+. C'est notre projet le plus frequent. Comptez 4 a 8 semaines selon le volume de pages. Le SEO ne se perd pas si la migration est bien faite.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-card__txt">
+          <h2>Prets a transformer votre site en <em>actif de croissance</em> ?</h2>
+          <p>30 minutes d'echange gratuit pour cadrer votre projet, comprendre vos contraintes et evaluer si on est la bonne equipe. Devis ferme sous 48h apres l'appel.</p>
+          <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Reserver mon appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="cta-card__visual">
+          <div class="cta-card__visual-box"><span class="material-symbols-outlined">rocket_launch</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/contact">Sites web sur mesure</a></li>
+          <li><a href="/contact">Sites WordPress</a></li>
+          <li><a href="/contact">Applications web</a></li>
+          <li><a href="/contact">SEO & referencement</a></li>
+          <li><a href="/contact">Automatisation</a></li>
+          <li><a href="/contact">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  var faqs = document.querySelectorAll('.faq-i');
+  faqs.forEach(function(item){
+    var btn = item.querySelector('.faq-i__q');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+      var isOpen = item.getAttribute('data-open') === 'true';
+      item.setAttribute('data-open', isOpen ? 'false' : 'true');
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+})();
+</script>
+</body>
+</html>

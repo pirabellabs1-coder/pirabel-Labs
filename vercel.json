@@ -39,7 +39,6 @@
     { "source": "/blog/:slug*", "destination": "/contact", "permanent": false },
     { "source": "/realisations", "destination": "/contact", "permanent": false },
     { "source": "/realisations/:slug*", "destination": "/contact", "permanent": false },
-    { "source": "/creation-site-web", "destination": "/contact", "permanent": false },
     { "source": "/creation-application", "destination": "/contact", "permanent": false },
     { "source": "/automatisation", "destination": "/contact", "permanent": false },
     { "source": "/seo", "destination": "/contact", "permanent": false },

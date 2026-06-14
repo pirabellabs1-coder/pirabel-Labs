@@ -317,51 +317,6 @@
 .cta-card__visual-box .material-symbols-outlined { font-size: 2.5rem; }
 @media (max-width: 880px) { .cta-card { grid-template-columns: 1fr; } .cta-card__visual { min-height: 12rem; } }
 
-/* === EQUIPE (storytelling fullscreen scroll) === */
-.team-stories__intro { padding: 4rem var(--px-page) 1rem; }
-.team-story { min-height: 100vh; display: flex; align-items: center; padding: 6rem 0; position: relative; overflow: hidden; }
-.team-story__bg { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 1s ease; }
-.team-story.is-active .team-story__bg { opacity: 1; }
-.team-story:nth-child(1) .team-story__bg { background: radial-gradient(ellipse 60% 50% at 30% 50%, rgba(255,85,0,0.10), transparent 70%); }
-.team-story:nth-child(2) .team-story__bg { background: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(255,85,0,0.10), transparent 70%); }
-.team-story:nth-child(3) .team-story__bg { background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,85,0,0.10), transparent 70%); }
-.team-story__grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 4rem; max-width: 76rem; margin: 0 auto; padding: 0 var(--px-page); align-items: center; width: 100%; }
-.team-story:nth-child(2) .team-story__grid { grid-template-columns: 1.1fr 1fr; direction: rtl; }
-.team-story:nth-child(2) .team-story__visual, .team-story:nth-child(2) .team-story__content { direction: ltr; }
-.team-story__visual, .team-story__content { opacity: 0; transform: translateY(60px); transition: opacity 1s cubic-bezier(0.4,0,0.2,1), transform 1s cubic-bezier(0.4,0,0.2,1); }
-.team-story.is-active .team-story__visual { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
-.team-story.is-active .team-story__content { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
-.team-photo { width: 100%; max-width: 22rem; aspect-ratio: 1; margin: 0 auto; position: relative; background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-2) 100%); border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 80px rgba(255,85,0,0.25), 0 30px 60px rgba(0,0,0,0.4); }
-.team-photo__initials { font-family: var(--font-display); font-weight: 800; font-size: clamp(4rem, 10vw, 7rem); color: var(--accent); letter-spacing: -0.05em; line-height: 1; }
-.team-photo .material-symbols-outlined { font-size: clamp(4rem, 10vw, 7rem); color: var(--accent); }
-.team-photo__deco { position: absolute; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--accent); }
-.team-photo__deco--1 { width: 2.5rem; height: 2.5rem; top: 8%; right: 4%; animation: floatA 6s ease-in-out infinite; }
-.team-photo__deco--2 { width: 1.3rem; height: 1.3rem; bottom: 12%; left: 6%; animation: floatB 8s ease-in-out infinite; }
-.team-photo__deco--3 { width: 0.8rem; height: 0.8rem; top: 50%; left: -1rem; background: var(--accent); animation: floatA 5s ease-in-out infinite reverse; }
-@keyframes floatA { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(10px, -14px); } }
-@keyframes floatB { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-8px, 12px); } }
-@media (prefers-reduced-motion: reduce) {
-  .team-photo__deco { animation: none; }
-}
-.team-story__count { font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; display: block; }
-.team-story__name { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 0.75rem; }
-.team-story__name em { color: var(--accent); font-style: normal; }
-.team-story__role { font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
-.team-story__desc { font-size: 1rem; line-height: 1.7; color: var(--text); margin-bottom: 1.5rem; max-width: 32rem; }
-.team-story__tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
-.team-story__tag { font-size: 0.78rem; padding: 0.4rem 0.85rem; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; color: var(--text); font-family: var(--font-display); font-weight: 600; }
-.team-story__link { color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; transition: gap 0.2s; }
-.team-story__link:hover { gap: 0.65rem; opacity: 1; }
-.team-story__link .material-symbols-outlined { font-size: 1rem; }
-@media (max-width: 720px) {
-  .team-story { min-height: auto; padding: 4rem 0; }
-  .team-story__grid { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
-  .team-story:nth-child(2) .team-story__grid { direction: ltr; grid-template-columns: 1fr; }
-  .team-story__tags { justify-content: center; }
-  .team-story__desc { margin-left: auto; margin-right: auto; }
-  .team-photo { max-width: 16rem; }
-}
-
 /* === TRUST SCROLL (rotating sticky) === */
 .trust-scroll__intro { margin-bottom: 2.5rem; }
 .trust-scroll__inner { display: grid; grid-template-columns: 1fr 1fr; max-width: 76rem; margin: 0 auto; gap: 3rem; padding: 0 var(--px-page); }
@@ -397,6 +352,21 @@
 .trust-scroll__panel li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.88rem; color: var(--text); line-height: 1.5; }
 .trust-scroll__panel li::before { content: ''; flex-shrink: 0; margin-top: 0.55rem; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--accent); }
 
+/* === LEAD MAGNET (audit gratuit) === */
+.audit-card { background: linear-gradient(135deg, rgba(255,85,0,0.12) 0%, var(--bg-2) 70%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem); max-width: 60rem; margin: 0 auto; position: relative; overflow: hidden; }
+.audit-card::before { content: ''; position: absolute; top: -4rem; right: -4rem; width: 16rem; height: 16rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.25; pointer-events: none; }
+.audit-card__inner { position: relative; z-index: 1; }
+.audit-card__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--bg); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.25rem; }
+.audit-card__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.audit-card h2 { font-size: clamp(1.5rem, 3.2vw, 2.25rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1rem; max-width: 42rem; }
+.audit-card h2 em { color: var(--accent); font-style: normal; }
+.audit-card__lead { font-size: 1rem; color: var(--text); line-height: 1.6; margin-bottom: 1.5rem; max-width: 40rem; }
+.audit-card__benefits { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2rem; padding: 0; list-style: none; max-width: 40rem; }
+.audit-card__benefits li { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.92rem; color: var(--text); line-height: 1.5; }
+.audit-card__benefits li::before { content: ''; flex-shrink: 0; margin-top: 0.25rem; width: 1.15rem; height: 1.15rem; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.audit-card__legal { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+.audit-card__legal .material-symbols-outlined { font-size: 0.9rem; color: var(--accent); }
+
 /* === Helpers === */
 .see-more { text-align: center; margin-top: 2.5rem; }
 .btn--toggle .toggle-less { display: none; }
@@ -421,6 +391,22 @@
   "areaServed": ["BJ","FR","CI","SN","CM","TG","BF","ML"],
   "knowsLanguage": "fr",
   "email": "contact@pirabellabs.com"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"L'externalisation de mon marketing est-elle faite pour moi ?","acceptedAnswer":{"@type":"Answer","text":"Si vous gerez une PME en croissance et que vous n'avez ni le temps ni l'envie de recruter une equipe marketing complete, oui. On le determine ensemble lors d'un appel gratuit de 30 minutes."}},
+    {"@type":"Question","name":"Quels resultats attendre concretement ?","acceptedAnswer":{"@type":"Answer","text":"Pour un site web : mise en ligne en 3-6 semaines, Lighthouse 95+. Pour de l'automatisation : 10-30h economisees par semaine. Pour le SEO : premiers signes a 30-60 jours, montee en position a 3-6 mois. Pour le community management : +5-15% engagement par mois."}},
+    {"@type":"Question","name":"Comment communiquons-nous au quotidien ?","acceptedAnswer":{"@type":"Answer","text":"Tableau Notion partage, WhatsApp pour echanges courts, demos visio hebdomadaires en sprint. Tous les rdv en visio sur Google Meet ou Zoom."}},
+    {"@type":"Question","name":"Que signifie la garantie 100% satisfait ?","acceptedAnswer":{"@type":"Answer","text":"Avant signature : aucun engagement, appel decouverte gratuit. Pendant le projet : rectifications aux sprints hebdo sans surcout. Apres livraison : garantie 30 jours sur les bugs. Remboursement des phases non livrees si insatisfaction."}},
+    {"@type":"Question","name":"Pourquoi Pirabel plutot que recruter en interne ?","acceptedAnswer":{"@type":"Answer","text":"Une equipe interne (dev, SEO, community, video) coute plus de 200 000 EUR/an. Avec nous, vous accedez aux memes expertises pour 1 800 a 4 500 EUR/mois, sans recruter, sans manager."}},
+    {"@type":"Question","name":"Travaillez-vous avec des clients en France ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Maroc, Canada et Benin. Travail entierement a distance."}},
+    {"@type":"Question","name":"Le code et les designs m'appartiennent-ils ?","acceptedAnswer":{"@type":"Answer","text":"Oui, integralement. Une fois la facture reglee, code, designs Figma, assets, documentation et acces admin vous appartiennent. Aucune licence, aucun verrou."}},
+    {"@type":"Question","name":"Vous acceptez FCFA et Mobile Money ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Virement, MTN Mobile Money, Moov Money, Wave pour l'Afrique. Virement SEPA et CB Stripe pour l'Europe. Echelonnement 30/30/40 possible."}}
+  ]
 }
 </script>
 </head>
@@ -454,12 +440,12 @@
         <h1>Votre <em>presence digitale</em> en mode 360, par une seule equipe.</h1>
         <p>Sites web, tunnels de vente, SEO, Google Business, community management, video, automatisation, email marketing. On gere l'ensemble pour vous, du brief a la mise en ligne, avec un seul interlocuteur.</p>
         <div class="h-hero__cta">
-          <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
-          <a href="#services" class="btn btn--ghost btn--lg">Nos services</a>
+          <a href="#audit-gratuit" class="btn btn--primary btn--lg">Audit gratuit en 15 min <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="/contact" class="btn btn--ghost btn--lg">Reserver un appel</a>
         </div>
         <div class="h-hero__trust">
-          <span class="h-hero__trust-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-          <span>Note 4,9 / 5 sur les retours clients</span>
+          <span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">verified</span>
+          <span><strong>Depuis 2020</strong> &middot; cofondateurs nommes (Gildas + Fidah) &middot; base a Abomey-Calavi</span>
         </div>
       </div>
       <div class="h-hero__visual">
@@ -490,24 +476,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- 2. TRUST + STATS -->
-  <section class="trust-band">
-    <div class="trust-band__txt">Ils nous font confiance dans 8 pays francophones</div>
-    <div class="trust-logos">
-      <span class="trust-logos__item"><span class="material-symbols-outlined">apartment</span> PME Cotonou</span>
-      <span class="trust-logos__item"><span class="material-symbols-outlined">storefront</span> Retail Benin</span>
-      <span class="trust-logos__item"><span class="material-symbols-outlined">corporate_fare</span> B2B France</span>
-      <span class="trust-logos__item"><span class="material-symbols-outlined">savings</span> Fintech Senegal</span>
-      <span class="trust-logos__item"><span class="material-symbols-outlined">restaurant</span> Hospitality CI</span>
-      <span class="trust-logos__item"><span class="material-symbols-outlined">school</span> EdTech Maroc</span>
-    </div>
-    <div class="stats-3">
-      <div class="stat-c"><div class="stat-c__v">48h</div><div class="stat-c__l">devis ferme</div></div>
-      <div class="stat-c"><div class="stat-c__v">8</div><div class="stat-c__l">pays accompagnes</div></div>
-      <div class="stat-c"><div class="stat-c__v">100%</div><div class="stat-c__l">garantie satisfait</div></div>
     </div>
   </section>
 
@@ -543,112 +511,25 @@
     </div>
   </section>
 
-  <!-- 4. UNE MEILLEURE FACON -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 4. LEAD MAGNET - audit gratuit -->
+  <section class="section" style="background:var(--bg-2);" id="audit-gratuit">
     <div class="container">
-      <div class="better">
-        <div class="better__visual">
-          <div class="better__visual-icon"><span class="material-symbols-outlined">hub</span></div>
-        </div>
-        <div class="better__txt">
-          <h3>Une meilleure facon de construire votre marketing digital</h3>
-          <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, tunnels et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte toutes vos expertises a la demande, livrees en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
+      <div class="audit-card">
+        <div class="audit-card__inner">
+          <span class="audit-card__eyebrow"><span class="material-symbols-outlined">card_giftcard</span> Gratuit &middot; sous 24h</span>
+          <h2>Recevez votre <em>audit marketing</em> personnalise en 15 minutes</h2>
+          <p class="audit-card__lead">On analyse votre presence digitale actuelle et on vous envoie un plan d'action concret avec 5 a 10 recommandations chiffrees et prioritisees. Sans engagement, sans relance commerciale.</p>
+          <ul class="audit-card__benefits">
+            <li>Audit SEO technique et editorial de votre site actuel</li>
+            <li>Analyse de vos canaux d'acquisition (organique, ads, social)</li>
+            <li>Plan d'action 90 jours prioritise et chiffre en EUR / FCFA</li>
+            <li>Quick wins immediat applicables sans nous</li>
+          </ul>
+          <a href="/contact?utm=audit-gratuit" class="btn btn--primary btn--lg">Demander mon audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
+          <div class="audit-card__legal"><span class="material-symbols-outlined">lock</span> Sans engagement &middot; vos donnees jamais revendues</div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- 4b. NOTRE EQUIPE (storytelling plein ecran) -->
-  <section id="equipe">
-    <div class="container team-stories__intro">
-      <div class="sec-h">
-        <h2>Notre <em>equipe</em></h2>
-        <p class="sec-h__sub">Faites defiler pour rencontrer les personnes derriere chaque projet.</p>
-      </div>
-    </div>
-
-    <article class="team-story" data-idx="0">
-      <div class="team-story__bg"></div>
-      <div class="team-story__grid">
-        <div class="team-story__visual">
-          <div class="team-photo">
-            <span class="team-photo__initials">LG</span>
-            <div class="team-photo__deco team-photo__deco--1"></div>
-            <div class="team-photo__deco team-photo__deco--2"></div>
-            <div class="team-photo__deco team-photo__deco--3"></div>
-          </div>
-        </div>
-        <div class="team-story__content">
-          <span class="team-story__count">01 / 03 &mdash; L'equipe</span>
-          <h3 class="team-story__name">Lissanon <em>Gildas</em></h3>
-          <div class="team-story__role">Cofondateur &middot; Lead Tech & Produit</div>
-          <p class="team-story__desc">Architecte technique des projets. Pilote la conception et le developpement des sites web, applications et systemes d'automatisation. Garant de la qualite du livrable et du respect des delais. Base a Abomey-Calavi (Benin).</p>
-          <div class="team-story__tags">
-            <span class="team-story__tag">Next.js</span>
-            <span class="team-story__tag">Node.js</span>
-            <span class="team-story__tag">SaaS</span>
-            <span class="team-story__tag">Automatisation</span>
-            <span class="team-story__tag">Architecture cloud</span>
-          </div>
-          <a href="/contact" class="team-story__link">Travailler avec Gildas <span class="material-symbols-outlined">arrow_forward</span></a>
-        </div>
-      </div>
-    </article>
-
-    <article class="team-story" data-idx="1">
-      <div class="team-story__bg"></div>
-      <div class="team-story__grid">
-        <div class="team-story__visual">
-          <div class="team-photo">
-            <span class="team-photo__initials">FI</span>
-            <div class="team-photo__deco team-photo__deco--1"></div>
-            <div class="team-photo__deco team-photo__deco--2"></div>
-            <div class="team-photo__deco team-photo__deco--3"></div>
-          </div>
-        </div>
-        <div class="team-story__content">
-          <span class="team-story__count">02 / 03 &mdash; L'equipe</span>
-          <h3 class="team-story__name">Fidah <em>Imorou</em></h3>
-          <div class="team-story__role">Cofondateur &middot; Lead Marketing & Strategie</div>
-          <p class="team-story__desc">Strategie marketing 360 et acquisition. Pilote SEO, tunnels de vente, community management et campagnes ads. Specialise dans le marche francophone Afrique de l'Ouest et France. Base a Abomey-Calavi (Benin).</p>
-          <div class="team-story__tags">
-            <span class="team-story__tag">SEO</span>
-            <span class="team-story__tag">Tunnels de vente</span>
-            <span class="team-story__tag">Meta Ads</span>
-            <span class="team-story__tag">Google Ads</span>
-            <span class="team-story__tag">Strategie 360</span>
-          </div>
-          <a href="/contact" class="team-story__link">Travailler avec Fidah <span class="material-symbols-outlined">arrow_forward</span></a>
-        </div>
-      </div>
-    </article>
-
-    <article class="team-story" data-idx="2">
-      <div class="team-story__bg"></div>
-      <div class="team-story__grid">
-        <div class="team-story__visual">
-          <div class="team-photo">
-            <span class="material-symbols-outlined">groups</span>
-            <div class="team-photo__deco team-photo__deco--1"></div>
-            <div class="team-photo__deco team-photo__deco--2"></div>
-            <div class="team-photo__deco team-photo__deco--3"></div>
-          </div>
-        </div>
-        <div class="team-story__content">
-          <span class="team-story__count">03 / 03 &mdash; L'equipe</span>
-          <h3 class="team-story__name">Collaborateurs <em>reguliers</em></h3>
-          <div class="team-story__role">Reseau de specialistes mobilises a la demande</div>
-          <p class="team-story__desc">Designers UI/UX, monteurs video, community managers et developpeurs front/back freelances de confiance que nous mobilisons selon les besoins specifiques de chaque projet. Cohesion garantie par les cofondateurs.</p>
-          <div class="team-story__tags">
-            <span class="team-story__tag">Design UI/UX</span>
-            <span class="team-story__tag">Montage video</span>
-            <span class="team-story__tag">Community management</span>
-            <span class="team-story__tag">Dev front/back</span>
-          </div>
-          <a href="/contact" class="team-story__link">Constituer votre equipe <span class="material-symbols-outlined">arrow_forward</span></a>
-        </div>
-      </div>
-    </article>
   </section>
 
   <!-- 5. SERVICES (6 + voir plus) -->
@@ -754,12 +635,8 @@
             <span class="tool">Node.js</span>
             <span class="tool">WordPress</span>
             <span class="tool">Elementor Pro</span>
-            <span class="tool">WooCommerce</span>
             <span class="tool">Webflow</span>
-            <span class="tool">Shopify</span>
             <span class="tool">Supabase</span>
-            <span class="tool">Postgres</span>
-            <span class="tool">Vercel</span>
           </div>
         </div>
         <div class="tools-cat">
@@ -773,7 +650,6 @@
             <span class="tool">Zapier</span>
             <span class="tool">OpenAI / GPT</span>
             <span class="tool">Claude</span>
-            <span class="tool">Gemini</span>
             <span class="tool">Voiceflow</span>
             <span class="tool">Bubble</span>
           </div>
@@ -786,59 +662,26 @@
           <div class="tools-list">
             <span class="tool">Systeme.io</span>
             <span class="tool">ClickFunnels</span>
-            <span class="tool">Brevo (ex-Sendinblue)</span>
+            <span class="tool">Brevo</span>
             <span class="tool">HubSpot</span>
             <span class="tool">Mailchimp</span>
-            <span class="tool">ActiveCampaign</span>
             <span class="tool">Klaviyo</span>
             <span class="tool">Stripe</span>
           </div>
         </div>
         <div class="tools-cat">
           <div class="tools-cat__h">
-            <div class="tools-cat__icon"><span class="material-symbols-outlined">palette</span></div>
-            <div class="tools-cat__name">Design & video</div>
-          </div>
-          <div class="tools-list">
-            <span class="tool">Figma</span>
-            <span class="tool">Photoshop</span>
-            <span class="tool">Illustrator</span>
-            <span class="tool">Premiere Pro</span>
-            <span class="tool">After Effects</span>
-            <span class="tool">CapCut</span>
-            <span class="tool">DaVinci Resolve</span>
-          </div>
-        </div>
-        <div class="tools-cat">
-          <div class="tools-cat__h">
             <div class="tools-cat__icon"><span class="material-symbols-outlined">search_insights</span></div>
-            <div class="tools-cat__name">SEO & analytics</div>
+            <div class="tools-cat__name">SEO, ads & analytics</div>
           </div>
           <div class="tools-list">
             <span class="tool">Search Console</span>
             <span class="tool">Google Analytics 4</span>
             <span class="tool">Ahrefs</span>
             <span class="tool">Semrush</span>
-            <span class="tool">Screaming Frog</span>
-            <span class="tool">Microsoft Clarity</span>
-            <span class="tool">Hotjar</span>
-            <span class="tool">Google Tag Manager</span>
-          </div>
-        </div>
-        <div class="tools-cat">
-          <div class="tools-cat__h">
-            <div class="tools-cat__icon"><span class="material-symbols-outlined">share</span></div>
-            <div class="tools-cat__name">Social & ads</div>
-          </div>
-          <div class="tools-list">
-            <span class="tool">Meta Business Suite</span>
             <span class="tool">Meta Ads</span>
-            <span class="tool">TikTok Ads</span>
             <span class="tool">Google Ads</span>
-            <span class="tool">LinkedIn Ads</span>
-            <span class="tool">Buffer</span>
-            <span class="tool">Metricool</span>
-            <span class="tool">Canva Pro</span>
+            <span class="tool">TikTok Ads</span>
           </div>
         </div>
       </div>
@@ -1001,7 +844,6 @@
       </div>
       <div class="sectors-grid">
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">shopping_cart</span></div><div class="sector-c__name">E-commerce</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">savings</span></div><div class="sector-c__name">Fintech & banque</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">corporate_fare</span></div><div class="sector-c__name">B2B & SaaS</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">restaurant</span></div><div class="sector-c__name">Restauration</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">medical_services</span></div><div class="sector-c__name">Sante & medical</div></div>
@@ -1009,13 +851,6 @@
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">school</span></div><div class="sector-c__name">Education</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">balance</span></div><div class="sector-c__name">Avocats & conseil</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">spa</span></div><div class="sector-c__name">Beaute & cosmetique</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">volunteer_activism</span></div><div class="sector-c__name">ONG & associations</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">checkroom</span></div><div class="sector-c__name">Mode & lifestyle</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">engineering</span></div><div class="sector-c__name">BTP & construction</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">flight</span></div><div class="sector-c__name">Tourisme & voyage</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">agriculture</span></div><div class="sector-c__name">Agro & agritech</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">fitness_center</span></div><div class="sector-c__name">Sport & wellness</div></div>
-        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">event</span></div><div class="sector-c__name">Evenementiel</div></div>
       </div>
     </div>
   </section>
@@ -1109,33 +944,6 @@
             <p class="zz-step__desc">Mise en production accompagnee, formation de votre equipe a la prise en main, documentation ecrite remise. Garantie 30 jours incluse.</p>
             <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours</span>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 11. APPROACH -->
-  <section class="section">
-    <div class="container">
-      <div class="sec-h">
-        <h2>Notre <em>approche</em></h2>
-        <p class="sec-h__sub">Pas de contrat de 12 mois, pas d'effet tunnel. Une relation flexible, transparente et basee sur les resultats.</p>
-      </div>
-      <div class="benefits">
-        <div class="benefit">
-          <div class="benefit__icon"><span class="material-symbols-outlined">bolt</span></div>
-          <div class="benefit__title">Simple et efficace</div>
-          <p class="benefit__desc">Un seul interlocuteur cofondateur, un tableau Notion partage pour suivre l'avancement, et un canal WhatsApp pour les questions rapides.</p>
-        </div>
-        <div class="benefit">
-          <div class="benefit__icon"><span class="material-symbols-outlined">pause_circle</span></div>
-          <div class="benefit__title">Suspendez a tout moment</div>
-          <p class="benefit__desc">Les meilleurs projets se construisent par etapes, pas sur des contrats longs. Mettez en pause ou arretez quand vous voulez.</p>
-        </div>
-        <div class="benefit">
-          <div class="benefit__icon"><span class="material-symbols-outlined">diamond</span></div>
-          <div class="benefit__title">Consulting hebdomadaire</div>
-          <p class="benefit__desc">Sessions hebdomadaires optionnelles de 45 minutes pour brainstormer de nouvelles opportunites de croissance.</p>
         </div>
       </div>
     </div>
@@ -1516,19 +1324,6 @@
       ioAnim.observe(el);
     });
 
-    // Team stories : reagit a >45% visible pour activer la story
-    var stories = document.querySelectorAll('.team-story');
-    if (stories.length) {
-      var storyObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if (e.intersectionRatio > 0.45) {
-            e.target.classList.add('is-active');
-          }
-        });
-      }, { threshold: [0, 0.25, 0.5, 0.75] });
-      stories.forEach(function(s){ storyObs.observe(s); });
-    }
-
     // Trust scroll - panel actif change icone du core
     var trustPanels = document.querySelectorAll('.trust-scroll__panel');
     var trustCore = document.getElementById('trustCore');
@@ -1552,8 +1347,8 @@
     }
   } else {
     // Fallback: tout visible si pas d'IntersectionObserver
-    document.querySelectorAll('.zz-step, .team-story').forEach(function(el){
-      el.classList.add('in-view', 'is-active');
+    document.querySelectorAll('.zz-step').forEach(function(el){
+      el.classList.add('in-view');
     });
   }
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pirabel Labs - Agence marketing digital 360 au Benin et France</title>
-<meta name="description" content="Agence marketing digital 360 basee au Benin. 11 expertises : sites web, applications, WordPress, SEO, Google Business, community, video, automatisation, email, tunnels de vente, consulting.">
+<meta name="description" content="Agence marketing digital 360 basee a Abomey-Calavi. Sites web, applications, WordPress, SEO, tunnels de vente, community management, video, automatisation, consulting marketing.">
 <link rel="canonical" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pirabel Labs - Agence marketing digital 360">
-<meta property="og:description" content="11 expertises marketing digital reunies. Sites, apps, SEO, social, video, automatisation, tunnels de vente, consulting. Devis ferme sous 48h.">
+<meta property="og:description" content="Sites web, applications, SEO, tunnels de vente, community, video, automatisation, email marketing, consulting. Devis ferme sous 48h.">
 <meta property="og:url" content="https://www.pirabellabs.com/">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:site_name" content="Pirabel Labs">
@@ -26,42 +26,87 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
 <style>
-/* ===== HOME v4 - Agence 360 ===== */
+/* ============ HOME v5 - Agence 360 (refonte) ============ */
 
 .sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
 .sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
 .sec-h h2 em { color: var(--accent); font-style: normal; }
 .sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
 
-/* 1. HERO */
-.h-hero { position: relative; padding: clamp(5rem, 12vw, 9rem) var(--px-page) clamp(3rem, 6vw, 5rem); text-align: center; overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
-.h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
-.h-hero__inner { position: relative; z-index: 1; max-width: 56rem; margin: 0 auto; }
-.h-hero h1 { font-size: clamp(2.25rem, 6.5vw, 5rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.75rem; }
+/* === 1. HERO 2-COL === */
+.h-hero { position: relative; padding: clamp(4rem, 9vw, 7rem) var(--px-page) clamp(3rem, 5vw, 4.5rem); overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%), var(--bg); }
+.h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
+.h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
+.h-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.h-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.h-hero h1 { font-size: clamp(2.1rem, 5.5vw, 4.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; text-align: left; }
 .h-hero h1 em { color: var(--accent); font-style: normal; }
-.h-hero p { font-size: clamp(1.02rem, 1.5vw, 1.2rem); line-height: 1.55; color: var(--text-muted); max-width: 42rem; margin: 0 auto 2.5rem; }
-.h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.h-hero p { font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: var(--text-muted); max-width: 36rem; margin: 0 0 2rem; }
+.h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.h-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); }
+.h-hero__trust-stars { color: var(--accent); letter-spacing: 0.05em; }
+.h-hero__visual { position: relative; aspect-ratio: 4/3; }
+.hero-browser { width: 100%; height: 100%; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04); transform: perspective(1400px) rotateY(-6deg) rotateX(2deg); }
+.hero-browser__bar { background: var(--surface); padding: 0.65rem 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+.hb-dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; flex-shrink: 0; }
+.hb-dot.r { background: #f87171; }
+.hb-dot.y { background: #fbbf24; }
+.hb-dot.g { background: #4ade80; }
+.hero-browser__url { flex: 1; text-align: center; font-size: 0.65rem; color: var(--text-faint); background: var(--bg); padding: 0.3rem 0.7rem; border-radius: 999px; font-family: var(--font-display); margin-left: 0.5rem; }
+.hero-browser__body { padding: 1.25rem; background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.04) 100%); flex: 1; display: flex; flex-direction: column; gap: 0.9rem; }
+.hbn { display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border); }
+.hbn__logo { width: 1.4rem; height: 1.4rem; background: var(--accent); border-radius: 4px; }
+.hbn__label { height: 0.6rem; width: 4rem; background: var(--border); border-radius: 3px; }
+.hbn__links { display: flex; gap: 0.5rem; margin-left: auto; }
+.hbn__link { height: 0.45rem; width: 1.7rem; background: var(--border); border-radius: 2px; }
+.hbn__cta { height: 0.7rem; width: 2.5rem; background: var(--accent); border-radius: 999px; margin-left: 0.3rem; }
+.hbh { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.3rem 0; }
+.hbl { height: 0.6rem; background: var(--text); border-radius: 3px; opacity: 0.85; }
+.hbl.w70 { width: 70%; }
+.hbl.w90 { width: 90%; }
+.hbl.acc { background: var(--accent); width: 40%; }
+.hbg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: auto; }
+.hbb { aspect-ratio: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+.hbb .material-symbols-outlined { font-size: 0.95rem; opacity: 0.85; }
+.hero-chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.5rem 0.9rem; font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2; }
+.hero-chip .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.hero-chip--1 { top: -1.4rem; right: -1.2rem; }
+.hero-chip--2 { bottom: 0.5rem; left: -1.8rem; }
+@media (max-width: 880px) {
+  .h-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .h-hero h1 { text-align: center; }
+  .h-hero p { margin-left: auto; margin-right: auto; }
+  .h-hero__cta { justify-content: center; }
+  .h-hero__trust { justify-content: center; }
+  .h-hero__visual { max-width: 32rem; margin: 0 auto; }
+  .hero-browser { transform: none; }
+  .hero-chip--1 { right: 0; }
+  .hero-chip--2 { left: 0; }
+}
 
-/* 2. TRUST + STATS */
+/* === 2. TRUST + STATS === */
 .trust-band { text-align: center; padding: 3rem var(--px-page) 4rem; background: var(--bg); }
-.trust-band__txt { font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); margin-bottom: 1.75rem; }
-.trust-logos { display: flex; flex-wrap: wrap; gap: 2rem 3rem; justify-content: center; align-items: center; margin-bottom: 3.5rem; opacity: 0.55; }
-.trust-logos__item { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem; }
+.trust-band__txt { font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); margin-bottom: 1.75rem; }
+.trust-logos { display: flex; flex-wrap: wrap; gap: 1.75rem 2.75rem; justify-content: center; align-items: center; margin-bottom: 3.5rem; opacity: 0.55; }
+.trust-logos__item { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; color: var(--text-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem; }
 .trust-logos__item .material-symbols-outlined { font-size: 1.1rem; }
-.stats-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; max-width: 56rem; margin: 0 auto; }
+.stats-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 56rem; margin: 0 auto; }
+@media (max-width: 540px) { .stats-3 { grid-template-columns: 1fr; } }
 .stat-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.25rem; text-align: center; }
 .stat-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.85rem, 3.2vw, 2.5rem); color: var(--text); letter-spacing: -0.02em; line-height: 1; margin-bottom: 0.5rem; }
 .stat-c__l { font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; }
 
-/* 3. POURQUOI NOUS (4 differentiators) */
-.diff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.25rem; }
-.diff { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; }
-.diff__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
-.diff__icon .material-symbols-outlined { font-size: 1.5rem; }
-.diff__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; }
-.diff__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+/* === 3. DIFFERENTIATORS === */
+.diff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .diff-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .diff-grid { grid-template-columns: 1fr; } }
+.diff { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.25rem; }
+.diff__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.diff__icon .material-symbols-outlined { font-size: 1.4rem; }
+.diff__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+.diff__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
 
-/* 4. UNE MEILLEURE FACON */
+/* === 4. BETTER WAY === */
 .better { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden; max-width: 64rem; margin: 0 auto; }
 .better__visual { background: linear-gradient(135deg, rgba(255,85,0,0.06), transparent); display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; min-height: 18rem; position: relative; }
 .better__visual-icon { width: 6rem; height: 6rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; color: var(--accent); }
@@ -74,7 +119,7 @@
 .better__txt p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
 @media (max-width: 880px) { .better { grid-template-columns: 1fr; } .better__visual { min-height: 14rem; } }
 
-/* 5. SERVICES (force 3 par ligne) */
+/* === 5. SERVICES === */
 .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 @media (max-width: 880px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .svc-grid { grid-template-columns: 1fr; } }
@@ -87,31 +132,60 @@
 .svc-c__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; }
 .svc-c__link .material-symbols-outlined { font-size: 0.95rem; transition: transform var(--t); }
 .svc-c:hover .svc-c__link .material-symbols-outlined { transform: translateX(3px); }
+.svc-c--extra { display: none; }
+.svc-grid.is-expanded .svc-c--extra { display: flex; }
 
-/* 6. REALISATIONS */
-.portfolio { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; }
-.proj { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all var(--t); }
+/* === 6. OUTILS === */
+.tools-cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .tools-cats { grid-template-columns: 1fr; } }
+.tools-cat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.4rem; }
+.tools-cat__h { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.1rem; }
+.tools-cat__icon { width: 2.25rem; height: 2.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; }
+.tools-cat__icon .material-symbols-outlined { font-size: 1.2rem; }
+.tools-cat__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+.tools-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.tool { background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; font-family: var(--font-display); font-weight: 600; color: var(--text); white-space: nowrap; transition: all var(--t); }
+.tool:hover { border-color: var(--accent); color: var(--accent); }
+
+/* === 7. REALISATIONS === */
+.portfolio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .portfolio { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .portfolio { grid-template-columns: 1fr; } }
+.proj { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all var(--t); display: flex; flex-direction: column; }
 .proj:hover { border-color: var(--accent); transform: translateY(-3px); }
-.proj__cover { aspect-ratio: 16 / 10; background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-2) 70%); position: relative; display: flex; align-items: center; justify-content: center; }
-.proj__cover-icon { color: var(--accent); }
-.proj__cover-icon .material-symbols-outlined { font-size: 3rem; opacity: 0.6; }
-.proj__cover-tag { position: absolute; top: 1rem; left: 1rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.3rem 0.7rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); }
-.proj__body { padding: 1.5rem; }
+.proj__cover { aspect-ratio: 16 / 10; position: relative; padding: 1.5rem 1.5rem 0; overflow: hidden; background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 75%); display: flex; align-items: flex-end; justify-content: center; }
+.proj__tag { position: absolute; top: 1rem; left: 1rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.3rem 0.7rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); z-index: 3; }
+.pframe { width: 90%; height: 78%; background: var(--bg); border: 1px solid var(--border-2); border-top-left-radius: 8px; border-top-right-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 -8px 24px rgba(0,0,0,0.3); }
+.pframe__bar { background: var(--surface); padding: 0.35rem 0.5rem; display: flex; align-items: center; gap: 0.3rem; border-bottom: 1px solid var(--border); }
+.pf-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; flex-shrink: 0; }
+.pf-dot.r { background: #f87171; } .pf-dot.y { background: #fbbf24; } .pf-dot.g { background: #4ade80; }
+.pframe__body { flex: 1; padding: 0.6rem; display: flex; flex-direction: column; gap: 0.35rem; background: linear-gradient(170deg, var(--bg-2), var(--bg)); }
+.pfl { height: 0.4rem; background: var(--border); border-radius: 2px; }
+.pfl.acc { background: var(--accent); }
+.pfl.w80 { width: 80%; } .pfl.w60 { width: 60%; } .pfl.w40 { width: 40%; }
+.pfg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem; margin-top: auto; }
+.pfb { aspect-ratio: 1; background: var(--border); border-radius: 3px; }
+.proj__body { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
 .proj__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
-.proj__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.85rem; }
-.proj__metrics { display: flex; gap: 1.25rem; flex-wrap: wrap; padding-top: 0.85rem; border-top: 1px solid var(--border); }
-.proj__metric { font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.15rem; }
+.proj__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.85rem; flex: 1; }
+.proj__metrics { display: flex; gap: 1.25rem; flex-wrap: wrap; padding-top: 0.85rem; border-top: 1px solid var(--border); margin-bottom: 1rem; }
+.proj__metric { font-size: 0.76rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.15rem; }
 .proj__metric strong { color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.proj__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; transition: gap var(--t); }
+.proj__link:hover { gap: 0.5rem; opacity: 1; }
+.proj__link .material-symbols-outlined { font-size: 0.95rem; }
 
-/* 7. SECTORS */
-.sectors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 0.75rem; }
+/* === 8. SECTORS (16) === */
+.sectors-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+@media (max-width: 880px) { .sectors-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 540px) { .sectors-grid { grid-template-columns: repeat(2, 1fr); } }
 .sector-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; text-align: center; transition: all var(--t); }
 .sector-c:hover { border-color: var(--accent); transform: translateY(-2px); }
 .sector-c__icon { color: var(--accent); margin-bottom: 0.6rem; }
 .sector-c__icon .material-symbols-outlined { font-size: 1.75rem; }
 .sector-c__name { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; }
 
-/* 8. COMPARISON */
+/* === 9. COMPARISON === */
 .cmp { display: grid; grid-template-columns: minmax(7rem, 1.2fr) repeat(4, minmax(6rem, 1fr)); border: 1px solid var(--border); background: var(--bg-2); border-radius: var(--radius); overflow: hidden; max-width: 60rem; margin: 0 auto; }
 .cmp__c { padding: 1.1rem 0.85rem; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; min-height: 4rem; }
 .cmp__c:nth-child(5n) { border-right: 0; }
@@ -124,65 +198,102 @@
 .cmp__c--us-head .v { color: #fff; }
 @media (max-width: 760px) { .cmp-wrap { overflow-x: auto; } .cmp { min-width: 640px; } }
 
-/* 9. METHOD */
-.method-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.25rem; max-width: 56rem; margin: 0 auto; }
-.step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; }
-.step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.85rem; display: block; }
-.step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; }
-.step__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+/* === 10. ZIGZAG TIMELINE === */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
 
-/* 10. APPROACH */
-.benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.25rem; max-width: 56rem; margin: 0 auto; }
+/* === 11. APPROACH === */
+.benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 56rem; margin: 0 auto; }
+@media (max-width: 720px) { .benefits { grid-template-columns: 1fr; } }
 .benefit { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.25rem 1.5rem; text-align: center; }
 .benefit__icon { width: 3.25rem; height: 3.25rem; margin: 0 auto 1.25rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--text); }
 .benefit__icon .material-symbols-outlined { font-size: 1.6rem; }
 .benefit__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.6rem; }
 .benefit__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
 
-/* 11. PRICING */
-.pricing-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; max-width: 52rem; margin: 0 auto; }
+/* === 12. PRICING 3 PLANS === */
+.pricing-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 68rem; margin: 0 auto; align-items: stretch; }
+@media (max-width: 880px) { .pricing-3 { grid-template-columns: 1fr; max-width: 28rem; } }
 .plan { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.25rem 1.75rem; display: flex; flex-direction: column; position: relative; }
-.plan--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.05), var(--bg-2) 40%); }
-.plan__badge { position: absolute; top: 1.25rem; right: 1.25rem; font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); padding: 0.3rem 0.7rem; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; }
+.plan--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.plan__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
 .plan__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.5rem; }
-.plan__price { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+.plan__price { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; min-height: 2.25rem; }
 .plan__price strong { color: var(--text); font-weight: 700; }
-.plan ul { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.5rem; flex: 1; }
-.plan li { display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.9rem; color: var(--text); line-height: 1.55; }
-.plan li::before { content: ''; flex-shrink: 0; margin-top: 0.35rem; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.plan ul { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.5rem; flex: 1; }
+.plan li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; color: var(--text); line-height: 1.55; }
+.plan li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
 .plan__cta { display: block; padding: 0.95rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: var(--radius-pill); font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
 .plan__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
 .plan--featured .plan__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
 .plan--featured .plan__cta:hover { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
 
-/* 12. BIG RESULTS */
-.big-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
-.big-r { text-align: center; padding: 2rem 1rem; }
-.big-r__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 4.5vw, 3.25rem); color: var(--accent); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
-.big-r__l { font-size: 0.92rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+/* === 13. BIG RESULTS === */
+.bigr { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; max-width: 64rem; margin: 0 auto; background: var(--bg-2); }
+@media (max-width: 880px) { .bigr { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .bigr { grid-template-columns: 1fr; } }
+.bigr__cell { padding: 2.5rem 1.5rem; text-align: center; border-right: 1px solid var(--border); position: relative; }
+.bigr__cell:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .bigr__cell:nth-child(2n) { border-right: 0; }
+  .bigr__cell:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .bigr__cell { border-right: 0; border-bottom: 1px solid var(--border); }
+  .bigr__cell:last-child { border-bottom: 0; }
+}
+.bigr__icon { width: 3rem; height: 3rem; margin: 0 auto 1rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; }
+.bigr__icon .material-symbols-outlined { font-size: 1.5rem; }
+.bigr__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 4vw, 2.85rem); color: var(--text); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.bigr__v em { color: var(--accent); font-style: normal; }
+.bigr__l { font-size: 0.86rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
 
-/* 13. TESTIMONIALS x6 */
-.reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.25rem; }
-.rev { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; display: flex; flex-direction: column; }
-.rev__stars { color: var(--accent); margin-bottom: 1rem; display: inline-flex; gap: 0.15rem; font-size: 0.95rem; }
-.rev__quote { font-size: 0.95rem; line-height: 1.65; color: var(--text); margin-bottom: 1.5rem; flex: 1; }
-.rev__author { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.rev__avatar { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; }
-.rev__meta { display: flex; flex-direction: column; gap: 0.1rem; }
-.rev__name { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; }
-.rev__role { font-size: 0.76rem; color: var(--text-muted); }
+/* === 14. AVIS MARQUEE === */
+.marquee { overflow: hidden; position: relative; mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); padding: 0.5rem 0; }
+.marquee__track { display: flex; gap: 1.25rem; width: max-content; animation: marquee 60s linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 0.625rem)); } }
+.rev { flex: 0 0 22rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
+.rev__stars { color: var(--accent); margin-bottom: 0.85rem; font-size: 0.9rem; letter-spacing: 0.1em; }
+.rev__quote { font-size: 0.9rem; line-height: 1.6; color: var(--text); margin-bottom: 1.25rem; flex: 1; }
+.rev__author { display: flex; align-items: center; gap: 0.75rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+.rev__avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; flex-shrink: 0; }
+.rev__name { font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; }
+.rev__role { font-size: 0.72rem; color: var(--text-muted); }
+@media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
 
-/* 14. FAQ */
-.faq-list { display: flex; flex-direction: column; gap: 0; max-width: 48rem; margin: 0 auto; border-top: 1px solid var(--border); }
+/* === 15. FAQ === */
+.faq-list { display: flex; flex-direction: column; max-width: 48rem; margin: 0 auto; border-top: 1px solid var(--border); }
 .faq-i { border-bottom: 1px solid var(--border); }
-.faq-i__q { list-style: none; padding: 1.4rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); }
-.faq-i__q::-webkit-details-marker { display: none; }
-.faq-i__q::after { content: '+'; font-size: 1.6rem; color: var(--text-muted); transition: transform var(--t), color var(--t); flex-shrink: 0; line-height: 1; }
-.faq-i[open] .faq-i__q::after { transform: rotate(45deg); color: var(--accent); }
-.faq-i__a { padding: 0 0 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; max-width: 42rem; }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.4rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 32rem; }
+.faq-i__a-inner { padding: 0 0 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; max-width: 42rem; }
 
-/* 15. BLOG */
-.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; }
+/* === 16. BLOG === */
+.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .blog-grid { grid-template-columns: 1fr; } }
 .blog-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; }
 .blog-c:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
 .blog-c__cover { aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 70%); display: flex; align-items: center; justify-content: center; color: var(--accent); }
@@ -193,7 +304,7 @@
 .blog-c__excerpt { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; flex: 1; }
 .blog-c__meta { font-size: 0.76rem; color: var(--text-faint); }
 
-/* 16. CTA FINAL */
+/* === 17. CTA FINAL === */
 .cta-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden; max-width: 64rem; margin: 0 auto; }
 .cta-card__txt { padding: 3rem 2.5rem; align-self: center; }
 .cta-card__txt h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2; margin-bottom: 1rem; }
@@ -204,8 +315,11 @@
 .cta-card__visual-box .material-symbols-outlined { font-size: 2.5rem; }
 @media (max-width: 880px) { .cta-card { grid-template-columns: 1fr; } .cta-card__visual { min-height: 12rem; } }
 
-/* "See more" CTA */
+/* === Helpers === */
 .see-more { text-align: center; margin-top: 2.5rem; }
+.btn--toggle .toggle-less { display: none; }
+.svc-grid.is-expanded ~ .see-more .toggle-more { display: none; }
+.svc-grid.is-expanded ~ .see-more .toggle-less { display: inline-flex; align-items: center; gap: 0.3rem; }
 </style>
 <script type="application/ld+json">
 {
@@ -215,7 +329,7 @@
   "url": "https://www.pirabellabs.com",
   "logo": "https://www.pirabellabs.com/img/logo.png",
   "image": "https://www.pirabellabs.com/img/og-image.png",
-  "description": "Agence marketing digital 360 specialisee dans la creation de sites web, applications, WordPress, SEO, Google Business Profile, community management, video, automatisation marketing et email marketing. Basee a Abomey-Calavi (Benin).",
+  "description": "Agence marketing digital 360 specialisee dans la creation de sites web, applications, WordPress, SEO, Google Business Profile, community management, video, tunnels de vente, automatisation marketing, email marketing et consulting marketing. Basee a Abomey-Calavi (Benin).",
   "foundingDate": "2020",
   "founder": [
     {"@type":"Person","name":"Lissanon Gildas","jobTitle":"Cofondateur"},
@@ -250,14 +364,49 @@
 
 <main id="main">
 
-  <!-- 1. HERO -->
+  <!-- 1. HERO 2-COL -->
   <section class="h-hero">
     <div class="h-hero__inner">
-      <h1>Votre <em>agence marketing digital 360</em>, du site web aux campagnes qui convertissent.</h1>
-      <p>Sites web, applications, WordPress, SEO, Google Business, community management, video, automatisation, email, tunnels de vente, consulting : 11 expertises au service de votre croissance, avec un seul interlocuteur du brief a la mise en ligne.</p>
-      <div class="h-hero__cta">
-        <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
-        <a href="#services" class="btn btn--ghost btn--lg">Voir tous nos services</a>
+      <div class="h-hero__txt">
+        <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360</span>
+        <h1>Votre <em>presence digitale</em> en mode 360, par une seule equipe.</h1>
+        <p>Sites web, tunnels de vente, SEO, Google Business, community management, video, automatisation, email marketing. On gere l'ensemble pour vous, du brief a la mise en ligne, avec un seul interlocuteur.</p>
+        <div class="h-hero__cta">
+          <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="#services" class="btn btn--ghost btn--lg">Nos services</a>
+        </div>
+        <div class="h-hero__trust">
+          <span class="h-hero__trust-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span>Note 4,9 / 5 sur les retours clients</span>
+        </div>
+      </div>
+      <div class="h-hero__visual">
+        <span class="hero-chip hero-chip--1"><span class="material-symbols-outlined">trending_up</span> +187% leads</span>
+        <span class="hero-chip hero-chip--2"><span class="material-symbols-outlined">speed</span> Lighthouse 98</span>
+        <div class="hero-browser">
+          <div class="hero-browser__bar">
+            <div class="hb-dot r"></div><div class="hb-dot y"></div><div class="hb-dot g"></div>
+            <div class="hero-browser__url">www.votre-marque.com</div>
+          </div>
+          <div class="hero-browser__body">
+            <div class="hbn">
+              <div class="hbn__logo"></div>
+              <div class="hbn__label"></div>
+              <div class="hbn__links"><div class="hbn__link"></div><div class="hbn__link"></div><div class="hbn__link"></div></div>
+              <div class="hbn__cta"></div>
+            </div>
+            <div class="hbh">
+              <div class="hbl w90"></div>
+              <div class="hbl w70"></div>
+              <div class="hbl acc"></div>
+            </div>
+            <div class="hbg">
+              <div class="hbb"><span class="material-symbols-outlined">grid_view</span></div>
+              <div class="hbb"><span class="material-symbols-outlined">show_chart</span></div>
+              <div class="hbb"><span class="material-symbols-outlined">bolt</span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -274,13 +423,13 @@
       <span class="trust-logos__item"><span class="material-symbols-outlined">school</span> EdTech Maroc</span>
     </div>
     <div class="stats-3">
-      <div class="stat-c"><div class="stat-c__v">11</div><div class="stat-c__l">expertises maitrisees</div></div>
       <div class="stat-c"><div class="stat-c__v">48h</div><div class="stat-c__l">devis ferme</div></div>
+      <div class="stat-c"><div class="stat-c__v">8</div><div class="stat-c__l">pays accompagnes</div></div>
       <div class="stat-c"><div class="stat-c__v">100%</div><div class="stat-c__l">garantie satisfait</div></div>
     </div>
   </section>
 
-  <!-- 3. POURQUOI NOUS (4 diff) -->
+  <!-- 3. POURQUOI NOUS -->
   <section class="section">
     <div class="container">
       <div class="sec-h">
@@ -290,23 +439,23 @@
       <div class="diff-grid">
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">hub</span></div>
-          <div class="diff__title">11 expertises sous un meme toit</div>
-          <p class="diff__desc">Tech, design, SEO, social, video, tunnels, conseil : tout est gere en interne. Pas de sous-traitance. Coherence sur l'ensemble de votre presence digitale.</p>
+          <div class="diff__title">Toutes vos expertises au meme endroit</div>
+          <p class="diff__desc">Tech, design, SEO, social, video, tunnels, conseil : tout est gere en interne. Coherence sur l'ensemble.</p>
         </div>
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">handshake</span></div>
           <div class="diff__title">Un interlocuteur dedie</div>
-          <p class="diff__desc">Un cofondateur suit votre projet du brief a la mise en ligne. Plus d'allers-retours entre 3 personnes. Vous savez toujours qui contacter.</p>
+          <p class="diff__desc">Un cofondateur suit votre projet du brief a la mise en ligne. Plus d'allers-retours entre 3 personnes.</p>
         </div>
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">verified</span></div>
           <div class="diff__title">Devis ferme sous 48h</div>
-          <p class="diff__desc">Prix fixe, perimetre clair, planning de livraison documente. Pas de surprise en cours de route, pas de "selon devis" en milieu de projet.</p>
+          <p class="diff__desc">Prix fixe, perimetre clair, planning de livraison documente. Pas de surprise en cours de route.</p>
         </div>
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">payments</span></div>
-          <div class="diff__title">Tarifs adaptes au marche local</div>
-          <p class="diff__desc">EUR, FCFA, Mobile Money, virement, CB. Echelonnement possible. Adapte aux PME africaines comme aux PME europeennes.</p>
+          <div class="diff__title">Tarifs adaptes au marche</div>
+          <p class="diff__desc">EUR, FCFA, Mobile Money, virement, CB. Echelonnement possible. PME africaines et europeennes.</p>
         </div>
       </div>
     </div>
@@ -321,36 +470,30 @@
         </div>
         <div class="better__txt">
           <h3>Une meilleure facon de construire votre marketing digital</h3>
-          <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, video, tunnels et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte 11 expertises a la demande pour livrer ce dont vous avez besoin en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
+          <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, tunnels et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte toutes vos expertises a la demande, livrees en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 5. SERVICES 3x3 (9) -->
+  <!-- 5. SERVICES (6 + voir plus) -->
   <section class="section" id="services">
     <div class="container">
       <div class="sec-h">
-        <h2>Nos <em>11 expertises</em> marketing digital</h2>
-        <p class="sec-h__sub">Toute la chaine du marketing digital reunie sous un seul toit, avec un seul interlocuteur. Plus besoin de jongler entre 5 prestataires.</p>
+        <h2>Nos <em>services</em> marketing digital</h2>
+        <p class="sec-h__sub">Toute la chaine du marketing digital reunie sous un seul toit, avec un seul interlocuteur.</p>
       </div>
-      <div class="svc-grid">
+      <div class="svc-grid" id="svcGrid">
         <a href="/creation-site-web" class="svc-c">
           <div class="svc-c__icon"><span class="material-symbols-outlined">code</span></div>
           <div class="svc-c__title">Sites web sur mesure</div>
           <p class="svc-c__desc">Sites institutionnels et e-commerce developpes en code (Next.js, React). Performance maximale, design unique, evolutif.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
-        <a href="/creation-site-web" class="svc-c">
-          <div class="svc-c__icon"><span class="material-symbols-outlined">web</span></div>
-          <div class="svc-c__title">Sites WordPress</div>
-          <p class="svc-c__desc">Sites vitrine, WooCommerce, blog. WordPress + Elementor Pro pour les PME qui veulent gerer leur contenu en autonomie.</p>
-          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
-        </a>
         <a href="/creation-application" class="svc-c">
           <div class="svc-c__icon"><span class="material-symbols-outlined">terminal</span></div>
           <div class="svc-c__title">Applications web</div>
-          <p class="svc-c__desc">Web apps, SaaS, MVP en 6 semaines. Stack moderne Next.js + Node + Postgres ou Supabase. Code documente, scalable.</p>
+          <p class="svc-c__desc">Web apps, SaaS, MVP en 6 semaines. Stack moderne Next.js + Node + Postgres. Code documente, scalable.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
         <a href="/seo" class="svc-c">
@@ -360,21 +503,9 @@
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
         <a href="/contact" class="svc-c">
-          <div class="svc-c__icon"><span class="material-symbols-outlined">location_on</span></div>
-          <div class="svc-c__title">Fiche Google Business</div>
-          <p class="svc-c__desc">Creation et optimisation de votre Google Business Profile. Top 3 dans le pack local, gestion des avis, citations NAP.</p>
-          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
-        </a>
-        <a href="/contact" class="svc-c">
           <div class="svc-c__icon"><span class="material-symbols-outlined">forum</span></div>
           <div class="svc-c__title">Community management</div>
-          <p class="svc-c__desc">Strategie, creation de contenu, animation Facebook/Instagram/LinkedIn/TikTok. Ligne editoriale + calendrier + reporting.</p>
-          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
-        </a>
-        <a href="/contact" class="svc-c">
-          <div class="svc-c__icon"><span class="material-symbols-outlined">movie</span></div>
-          <div class="svc-c__title">Montage video</div>
-          <p class="svc-c__desc">Reels, TikTok, YouTube, corporate. Capture sur place ou montage uniquement. Sous-titrage, motion graphics, branding.</p>
+          <p class="svc-c__desc">Strategie, contenu, animation Facebook/Instagram/LinkedIn/TikTok. Ligne editoriale, calendrier, reporting.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
         <a href="/automatisation" class="svc-c">
@@ -384,81 +515,250 @@
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
         <a href="/contact" class="svc-c">
-          <div class="svc-c__icon"><span class="material-symbols-outlined">mail</span></div>
-          <div class="svc-c__title">Email marketing & CRM</div>
-          <p class="svc-c__desc">Brevo, Mailchimp, HubSpot. Sequences nurturing, segmentation, A/B tests. Setup CRM + integration aux outils existants.</p>
-          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
-        </a>
-        <a href="/contact" class="svc-c">
           <div class="svc-c__icon"><span class="material-symbols-outlined">conversion_path</span></div>
           <div class="svc-c__title">Tunnels de vente</div>
-          <p class="svc-c__desc">Landing pages haute conversion, funnels lead gen, CRO, A/B tests. Plus de leads qualifies, plus de ventes, taux de conversion mesure.</p>
+          <p class="svc-c__desc">Landing pages haute conversion, funnels lead gen, CRO, A/B tests. Plus de leads qualifies, plus de ventes mesurees.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
-        <a href="/contact" class="svc-c">
+        <a href="/creation-site-web" class="svc-c svc-c--extra">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="svc-c__title">Sites WordPress</div>
+          <p class="svc-c__desc">Sites vitrine, WooCommerce, blog. WordPress + Elementor Pro pour les PME qui veulent gerer leur contenu.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c svc-c--extra">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">location_on</span></div>
+          <div class="svc-c__title">Fiche Google Business</div>
+          <p class="svc-c__desc">Creation et optimisation de votre fiche Google. Top 3 dans le pack local, gestion des avis, citations NAP.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c svc-c--extra">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">movie</span></div>
+          <div class="svc-c__title">Montage video</div>
+          <p class="svc-c__desc">Reels, TikTok, YouTube, corporate. Capture sur place ou montage uniquement. Sous-titrage, motion, branding.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c svc-c--extra">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">mail</span></div>
+          <div class="svc-c__title">Email marketing & CRM</div>
+          <p class="svc-c__desc">Brevo, Mailchimp, HubSpot. Sequences nurturing, segmentation, A/B tests. Setup CRM + integrations.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c svc-c--extra">
           <div class="svc-c__icon"><span class="material-symbols-outlined">psychology</span></div>
           <div class="svc-c__title">Consulting marketing</div>
-          <p class="svc-c__desc">Audit, strategie, accompagnement. On pose les bonnes questions avant d'agir. Sessions ponctuelles ou suivi mensuel pour piloter votre croissance.</p>
+          <p class="svc-c__desc">Audit, strategie, accompagnement. Sessions ponctuelles ou suivi mensuel pour piloter votre croissance.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
+      </div>
+      <div class="see-more">
+        <button id="moreServices" class="btn btn--ghost btn--lg btn--toggle" type="button">
+          <span class="toggle-more">Voir tous nos services <span class="material-symbols-outlined">expand_more</span></span>
+          <span class="toggle-less">Voir moins <span class="material-symbols-outlined">expand_less</span></span>
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- 6. REALISATIONS -->
-  <section class="section" id="realisations" style="background:var(--bg-2);">
+  <!-- 6. OUTILS -->
+  <section class="section" style="background:var(--bg-2);" id="outils">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>outils</em> que nous maitrisons</h2>
+        <p class="sec-h__sub">Stack moderne, choisie en fonction de votre besoin reel. Pas de techno gadget, pas de surcharge inutile.</p>
+      </div>
+      <div class="tools-cats">
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">code</span></div>
+            <div class="tools-cat__name">Sites & applications</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Next.js</span>
+            <span class="tool">React</span>
+            <span class="tool">Node.js</span>
+            <span class="tool">WordPress</span>
+            <span class="tool">Elementor Pro</span>
+            <span class="tool">WooCommerce</span>
+            <span class="tool">Webflow</span>
+            <span class="tool">Shopify</span>
+            <span class="tool">Supabase</span>
+            <span class="tool">Postgres</span>
+            <span class="tool">Vercel</span>
+          </div>
+        </div>
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+            <div class="tools-cat__name">Automatisation & IA</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Make</span>
+            <span class="tool">n8n</span>
+            <span class="tool">Zapier</span>
+            <span class="tool">OpenAI / GPT</span>
+            <span class="tool">Claude</span>
+            <span class="tool">Gemini</span>
+            <span class="tool">Voiceflow</span>
+            <span class="tool">Bubble</span>
+          </div>
+        </div>
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+            <div class="tools-cat__name">Tunnels & email</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Systeme.io</span>
+            <span class="tool">ClickFunnels</span>
+            <span class="tool">Brevo (ex-Sendinblue)</span>
+            <span class="tool">HubSpot</span>
+            <span class="tool">Mailchimp</span>
+            <span class="tool">ActiveCampaign</span>
+            <span class="tool">Klaviyo</span>
+            <span class="tool">Stripe</span>
+          </div>
+        </div>
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">palette</span></div>
+            <div class="tools-cat__name">Design & video</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Figma</span>
+            <span class="tool">Photoshop</span>
+            <span class="tool">Illustrator</span>
+            <span class="tool">Premiere Pro</span>
+            <span class="tool">After Effects</span>
+            <span class="tool">CapCut</span>
+            <span class="tool">DaVinci Resolve</span>
+          </div>
+        </div>
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">search_insights</span></div>
+            <div class="tools-cat__name">SEO & analytics</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Search Console</span>
+            <span class="tool">Google Analytics 4</span>
+            <span class="tool">Ahrefs</span>
+            <span class="tool">Semrush</span>
+            <span class="tool">Screaming Frog</span>
+            <span class="tool">Microsoft Clarity</span>
+            <span class="tool">Hotjar</span>
+            <span class="tool">Google Tag Manager</span>
+          </div>
+        </div>
+        <div class="tools-cat">
+          <div class="tools-cat__h">
+            <div class="tools-cat__icon"><span class="material-symbols-outlined">share</span></div>
+            <div class="tools-cat__name">Social & ads</div>
+          </div>
+          <div class="tools-list">
+            <span class="tool">Meta Business Suite</span>
+            <span class="tool">Meta Ads</span>
+            <span class="tool">TikTok Ads</span>
+            <span class="tool">Google Ads</span>
+            <span class="tool">LinkedIn Ads</span>
+            <span class="tool">Buffer</span>
+            <span class="tool">Metricool</span>
+            <span class="tool">Canva Pro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. REALISATIONS -->
+  <section class="section" id="realisations">
     <div class="container">
       <div class="sec-h">
         <h2>Nos <em>realisations</em> recentes</h2>
-        <p class="sec-h__sub">Quelques projets qui illustrent ce qu'on construit pour nos clients. Plus de cas detailes disponibles sur demande lors de l'appel decouverte.</p>
+        <p class="sec-h__sub">Quelques projets qui illustrent ce qu'on construit. Lisez le cas detaille pour comprendre la demarche.</p>
       </div>
       <div class="portfolio">
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">Site WordPress</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">web</span></div>
+            <span class="proj__tag">Site WordPress</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfl w80"></div>
+                <div class="pfl w60"></div>
+                <div class="pfl acc w40"></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">Cabinet conseil - Cotonou</div>
             <p class="proj__desc">Site vitrine premium WordPress + Elementor avec prise de RDV en ligne, blog SEO et integration HubSpot CRM.</p>
             <div class="proj__metrics">
-              <div class="proj__metric"><strong>+187%</strong><span>leads en 3 mois</span></div>
-              <div class="proj__metric"><strong>98</strong><span>Lighthouse mobile</span></div>
+              <div class="proj__metric"><strong>+187%</strong><span>leads 3 mois</span></div>
+              <div class="proj__metric"><strong>98</strong><span>Lighthouse</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">E-commerce</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+            <span class="proj__tag">E-commerce</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfl w60"></div>
+                <div class="pfl acc w40"></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">Boutique mode - Cotonou</div>
             <p class="proj__desc">E-commerce WooCommerce avec Mobile Money, livraison locale, retargeting Meta Ads et automatisation panier abandonne.</p>
             <div class="proj__metrics">
-              <div class="proj__metric"><strong>x3,2</strong><span>chiffre 6 mois</span></div>
+              <div class="proj__metric"><strong>x3,2</strong><span>CA en 6 mois</span></div>
               <div class="proj__metric"><strong>2,1%</strong><span>taux conv</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">Application SaaS</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">terminal</span></div>
+            <span class="proj__tag">SaaS</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfl w80"></div>
+                <div class="pfl w60"></div>
+                <div class="pfl w60"></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">SaaS gestion clinique</div>
-            <p class="proj__desc">Plateforme Next.js + Supabase pour gestion patients, RDV, dossiers medicaux, facturation. Multi-roles, multi-cliniques.</p>
+            <p class="proj__desc">Plateforme Next.js + Supabase pour gestion patients, RDV, dossiers medicaux, facturation. Multi-roles.</p>
             <div class="proj__metrics">
-              <div class="proj__metric"><strong>12 sem</strong><span>livraison MVP</span></div>
+              <div class="proj__metric"><strong>12 sem</strong><span>livraison</span></div>
               <div class="proj__metric"><strong>4</strong><span>cliniques actives</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">SEO</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">search_insights</span></div>
+            <span class="proj__tag">SEO local</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfl w80"></div>
+                <div class="pfl acc w60"></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+                <div class="pfl w40"></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">SEO local - Restaurant</div>
@@ -467,34 +767,52 @@
               <div class="proj__metric"><strong>+340%</strong><span>appels GBP</span></div>
               <div class="proj__metric"><strong>4,8</strong><span>note Google</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">Community</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">forum</span></div>
+            <span class="proj__tag">Community</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+                <div class="pfg"><div class="pfb"></div><div class="pfb"></div><div class="pfb"></div></div>
+                <div class="pfl acc w60"></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">Community marque mode</div>
-            <p class="proj__desc">Strategie + content + animation Instagram et TikTok pendant 6 mois. 4 publications par semaine, Reels et UGC.</p>
+            <p class="proj__desc">Strategie + content + animation Instagram et TikTok 6 mois. 4 publications par semaine, Reels et UGC.</p>
             <div class="proj__metrics">
               <div class="proj__metric"><strong>+18k</strong><span>followers IG</span></div>
               <div class="proj__metric"><strong>+9%</strong><span>engagement</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
         <div class="proj">
           <div class="proj__cover">
-            <span class="proj__cover-tag">Automatisation</span>
-            <div class="proj__cover-icon"><span class="material-symbols-outlined">smart_toy</span></div>
+            <span class="proj__tag">Automatisation</span>
+            <div class="pframe">
+              <div class="pframe__bar"><div class="pf-dot r"></div><div class="pf-dot y"></div><div class="pf-dot g"></div></div>
+              <div class="pframe__body">
+                <div class="pfl w80"></div>
+                <div class="pfl acc w60"></div>
+                <div class="pfl w40"></div>
+                <div class="pfl w60"></div>
+              </div>
+            </div>
           </div>
           <div class="proj__body">
             <div class="proj__title">Chatbot IA cabinet d'avocat</div>
             <p class="proj__desc">Agent IA pour qualifier les demandes entrantes, prendre les RDV, repondre aux questions juridiques de base 24/7.</p>
             <div class="proj__metrics">
               <div class="proj__metric"><strong>22h/sem</strong><span>economisees</span></div>
-              <div class="proj__metric"><strong>83%</strong><span>auto-traitement</span></div>
+              <div class="proj__metric"><strong>83%</strong><span>auto-traite</span></div>
             </div>
+            <a href="/realisations" class="proj__link">Lire le cas <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
         </div>
       </div>
@@ -504,8 +822,8 @@
     </div>
   </section>
 
-  <!-- 7. SECTORS -->
-  <section class="section">
+  <!-- 8. SECTORS (16) -->
+  <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
         <h2>Nos <em>secteurs d'expertise</em></h2>
@@ -520,12 +838,20 @@
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">home_work</span></div><div class="sector-c__name">Immobilier</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">school</span></div><div class="sector-c__name">Education</div></div>
         <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">balance</span></div><div class="sector-c__name">Avocats & conseil</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">spa</span></div><div class="sector-c__name">Beaute & cosmetique</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">volunteer_activism</span></div><div class="sector-c__name">ONG & associations</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">checkroom</span></div><div class="sector-c__name">Mode & lifestyle</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">engineering</span></div><div class="sector-c__name">BTP & construction</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">flight</span></div><div class="sector-c__name">Tourisme & voyage</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">agriculture</span></div><div class="sector-c__name">Agro & agritech</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">fitness_center</span></div><div class="sector-c__name">Sport & wellness</div></div>
+        <div class="sector-c"><div class="sector-c__icon"><span class="material-symbols-outlined">event</span></div><div class="sector-c__name">Evenementiel</div></div>
       </div>
     </div>
   </section>
 
-  <!-- 8. COMPARAISON -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 9. COMPARISON -->
+  <section class="section">
     <div class="container">
       <div class="sec-h"><h2>Comparons <em>vos options</em></h2></div>
       <div class="cmp-wrap">
@@ -539,16 +865,16 @@
           <div class="cmp__c cmp__c--label">Cout mensuel</div>
           <div class="cmp__c">+ 4 000 EUR</div>
           <div class="cmp__c">+ 8 000 EUR</div>
-          <div class="cmp__c">A partir de 8 000 EUR</div>
+          <div class="cmp__c">+ 8 000 EUR</div>
           <div class="cmp__c cmp__c--us">30 a 70% d'economies</div>
 
-          <div class="cmp__c cmp__c--label">Couverture expertise</div>
+          <div class="cmp__c cmp__c--label">Couverture</div>
           <div class="cmp__c">1-2 specialites</div>
           <div class="cmp__c">1 par poste</div>
           <div class="cmp__c">Variable</div>
-          <div class="cmp__c cmp__c--us">11 expertises reunies</div>
+          <div class="cmp__c cmp__c--us">Toutes au meme endroit</div>
 
-          <div class="cmp__c cmp__c--label">Delai de demarrage</div>
+          <div class="cmp__c cmp__c--label">Demarrage</div>
           <div class="cmp__c">Jours / semaines</div>
           <div class="cmp__c">Mois</div>
           <div class="cmp__c">Semaines / mois</div>
@@ -570,50 +896,71 @@
     </div>
   </section>
 
-  <!-- 9. METHODOLOGIE -->
-  <section class="section" id="methodologie">
+  <!-- 10. COMMENT CA MARCHE - ZIGZAG -->
+  <section class="section" style="background:var(--bg-2);" id="methodologie">
     <div class="container">
       <div class="sec-h">
         <h2>J'ai un projet, <em>comment ca marche</em> ?</h2>
-        <p class="sec-h__sub">Une methodologie simple en 3 etapes pour transformer votre presence digitale.</p>
+        <p class="sec-h__sub">Une methodologie simple en 4 etapes, du premier echange a la mise en ligne.</p>
       </div>
-      <div class="method-3">
-        <div class="step">
-          <span class="step__tag">Etape 1</span>
-          <div class="step__title">Appel decouverte</div>
-          <p class="step__desc">Echangez avec un cofondateur pendant 30 min pour exposer vos besoins, votre contexte et vos objectifs. Sans engagement, sans script de vente.</p>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">01</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 1</span>
+            <div class="zz-step__title">Appel decouverte</div>
+            <p class="zz-step__desc">30 minutes en visio avec un cofondateur. Vous exposez vos besoins, votre contexte et vos objectifs. Sans engagement, sans script de vente.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 30 minutes, gratuit</span>
+          </div>
         </div>
-        <div class="step">
-          <span class="step__tag">Etape 2</span>
-          <div class="step__title">Cadrage & devis ferme</div>
-          <p class="step__desc">Sous 48h, vous recevez un plan detaille avec scope, planning, budget fixe et evolutions possibles. Pas de "selon devis" en cours de route.</p>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">02</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 2</span>
+            <div class="zz-step__title">Cadrage & devis ferme</div>
+            <p class="zz-step__desc">Sous 48h, vous recevez un plan detaille avec scope, planning, budget fixe et evolutions possibles. Pas de "selon devis" en cours de route.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">verified</span> Sous 48h</span>
+          </div>
         </div>
-        <div class="step">
-          <span class="step__tag">Etape 3</span>
-          <div class="step__title">Lancement du projet</div>
-          <p class="step__desc">Des validation, on organise un kickoff. Ensuite, sprints d'une semaine avec demos hebdo. Mise en ligne, formation, documentation incluse.</p>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">03</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 3</span>
+            <div class="zz-step__title">Sprints hebdomadaires</div>
+            <p class="zz-step__desc">Kickoff puis sprints d'une semaine. Demo chaque vendredi en visio, ajustements integres en continu. Vous voyez l'avancement reel chaque semaine.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">rocket_launch</span> 1 a 12 semaines selon scope</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">04</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 4</span>
+            <div class="zz-step__title">Mise en ligne & formation</div>
+            <p class="zz-step__desc">Mise en production accompagnee, formation de votre equipe a la prise en main, documentation ecrite remise. Garantie 30 jours incluse.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 10. NOTRE APPROCHE -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 11. APPROACH -->
+  <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Et <em>notre approche</em>, c'est quoi ?</h2>
-        <p class="sec-h__sub">Une approche unique : 9 expertises marketing reunies en un studio agile, dispo en projet ponctuel ou forfait mensuel, sans engagement long.</p>
+        <h2>Notre <em>approche</em></h2>
+        <p class="sec-h__sub">Pas de contrat de 12 mois, pas d'effet tunnel. Une relation flexible, transparente et basee sur les resultats.</p>
       </div>
       <div class="benefits">
         <div class="benefit">
           <div class="benefit__icon"><span class="material-symbols-outlined">bolt</span></div>
           <div class="benefit__title">Simple et efficace</div>
-          <p class="benefit__desc">Un seul interlocuteur (cofondateur dedie), un tableau Notion partage pour suivre l'avancement, et un canal WhatsApp pour les questions rapides.</p>
+          <p class="benefit__desc">Un seul interlocuteur cofondateur, un tableau Notion partage pour suivre l'avancement, et un canal WhatsApp pour les questions rapides.</p>
         </div>
         <div class="benefit">
           <div class="benefit__icon"><span class="material-symbols-outlined">pause_circle</span></div>
           <div class="benefit__title">Suspendez a tout moment</div>
-          <p class="benefit__desc">Les meilleurs projets se construisent par etapes, pas sur des contrats de 12 mois. Mettez en pause ou arretez votre forfait mensuel quand vous voulez.</p>
+          <p class="benefit__desc">Les meilleurs projets se construisent par etapes, pas sur des contrats longs. Mettez en pause ou arretez quand vous voulez.</p>
         </div>
         <div class="benefit">
           <div class="benefit__icon"><span class="material-symbols-outlined">diamond</span></div>
@@ -624,190 +971,222 @@
     </div>
   </section>
 
-  <!-- 11. TARIFS -->
-  <section class="section" id="tarifs">
+  <!-- 12. TARIFS 3 PLANS -->
+  <section class="section" style="background:var(--bg-2);" id="tarifs">
     <div class="container">
       <div class="sec-h">
         <h2>Votre <em>investissement</em></h2>
-        <p class="sec-h__sub">Deux formules : projet ponctuel ou forfait mensuel. Payable en EUR, FCFA, virement, CB ou Mobile Money.</p>
+        <p class="sec-h__sub">Trois formules adaptees a chaque besoin. Payable en EUR, FCFA, virement, CB ou Mobile Money.</p>
       </div>
-      <div class="pricing-2">
+      <div class="pricing-3">
         <div class="plan">
           <div class="plan__title">Projet ponctuel</div>
-          <p class="plan__price">Tarif sur-mesure (<strong>a partir de 2 500 EUR</strong>)</p>
+          <p class="plan__price">A partir de <strong>2 500 EUR</strong></p>
           <ul>
             <li>Devis ferme sous 48h, perimetre defini</li>
-            <li>3 reunions de 30 min incluses (optionnel)</li>
+            <li>3 reunions de 30 min incluses</li>
             <li>Documentation et formation a la livraison</li>
             <li>Garantie 30 jours apres mise en ligne</li>
-            <li>Transition vers le forfait mensuel a tarif preferentiel</li>
+            <li>Echelonnement 30 / 30 / 40</li>
           </ul>
-          <a href="/contact" class="plan__cta">Nous contacter</a>
+          <a href="/contact" class="plan__cta">Demander un devis</a>
         </div>
         <div class="plan plan--featured">
-          <span class="plan__badge">Populaire</span>
+          <span class="plan__badge">Le plus populaire</span>
           <div class="plan__title">Forfait mensuel</div>
-          <p class="plan__price">Abonnement - <strong>Facturation mensuelle</strong></p>
+          <p class="plan__price">A partir de <strong>1 800 EUR / mois</strong></p>
           <ul>
-            <li>Demandes illimitees sur les 11 expertises</li>
+            <li>Demandes illimitees sur tous nos services</li>
             <li>Pause ou arret a tout moment</li>
-            <li>Acces privilegie a un cofondateur dedie</li>
-            <li>Consulting hebdomadaire de 45 min (optionnel)</li>
-            <li>Tableau Notion partage avec priorisation</li>
+            <li>Cofondateur dedie reactif sous 4h</li>
+            <li>Consulting hebdomadaire 45 min inclus</li>
+            <li>Tableau Notion partage priorisation</li>
+            <li>Reporting mensuel detaille</li>
           </ul>
           <a href="/contact" class="plan__cta">Choisir cette option</a>
+        </div>
+        <div class="plan">
+          <div class="plan__title">Pilotage strategique</div>
+          <p class="plan__price">A partir de <strong>4 500 EUR / mois</strong></p>
+          <ul>
+            <li>CMO externalise dedie</li>
+            <li>Strategie marketing complete</li>
+            <li>Tous les services Forfait inclus</li>
+            <li>2 reunions strategiques par mois</li>
+            <li>Reporting hebdomadaire + dashboards</li>
+            <li>Acces direct WhatsApp 6j/7</li>
+          </ul>
+          <a href="/contact" class="plan__cta">En savoir plus</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 12. BIG RESULTS -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 13. BIG RESULTS -->
+  <section class="section">
     <div class="container">
       <div class="sec-h">
         <h2>Les <em>resultats</em> que nous generons</h2>
         <p class="sec-h__sub">Chiffres aggreges sur l'ensemble de nos projets. Demandez des references precises lors de l'appel decouverte.</p>
       </div>
-      <div class="big-results">
-        <div class="big-r">
-          <div class="big-r__v">+147%</div>
-          <div class="big-r__l">de leads inbound en moyenne sur 6 mois</div>
+      <div class="bigr">
+        <div class="bigr__cell">
+          <div class="bigr__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <div class="bigr__v"><em>+147</em>%</div>
+          <div class="bigr__l">de leads inbound<br>en moyenne sur 6 mois</div>
         </div>
-        <div class="big-r">
-          <div class="big-r__v">95+</div>
-          <div class="big-r__l">score Lighthouse sur les sites livres</div>
+        <div class="bigr__cell">
+          <div class="bigr__icon"><span class="material-symbols-outlined">speed</span></div>
+          <div class="bigr__v"><em>95</em>+</div>
+          <div class="bigr__l">score Lighthouse<br>sur les sites livres</div>
         </div>
-        <div class="big-r">
-          <div class="big-r__v">22h</div>
-          <div class="big-r__l">economisees / semaine grace aux automatisations</div>
+        <div class="bigr__cell">
+          <div class="bigr__icon"><span class="material-symbols-outlined">schedule</span></div>
+          <div class="bigr__v"><em>22</em>h</div>
+          <div class="bigr__l">economisees / semaine<br>grace aux automatisations</div>
         </div>
-        <div class="big-r">
-          <div class="big-r__v">x3,2</div>
-          <div class="big-r__l">de trafic SEO en moyenne a 12 mois</div>
+        <div class="bigr__cell">
+          <div class="bigr__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <div class="bigr__v"><em>x3,2</em></div>
+          <div class="bigr__l">de trafic SEO en moyenne<br>a 12 mois</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 13. AVIS x6 -->
-  <section class="section" id="avis">
+  <!-- 14. AVIS MARQUEE -->
+  <section class="section" style="background:var(--bg-2);" id="avis">
     <div class="container">
       <div class="sec-h">
         <h2>Ce que nos clients <em>en pensent</em></h2>
-        <p class="sec-h__sub">Avis recueillis directement aupres de nos clients en France, Benin, Cote d'Ivoire, Senegal.</p>
+        <p class="sec-h__sub">Avis recueillis aupres de nos clients en France, Benin, Cote d'Ivoire, Senegal.</p>
       </div>
-      <div class="reviews">
+    </div>
+    <div class="marquee" id="marquee">
+      <div class="marquee__track">
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
-          <p class="rev__quote">"Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui repond en moins de 4h. Du serieux."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">AA</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">Cabinet conseil - Cotonou</div></div>
-          </div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui repond en moins de 4h."</p>
+          <div class="rev__author"><div class="rev__avatar">AA</div><div><div class="rev__name">A. Akouete</div><div class="rev__role">Cabinet conseil - Cotonou</div></div></div>
         </div>
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="rev__quote">"Boutique livree en 4 semaines, paiements Mobile Money integres, chiffre x3 en 6 mois. On recommande sans hesiter."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">FK</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">E-commerce mode - Cotonou</div></div>
-          </div>
+          <div class="rev__author"><div class="rev__avatar">FK</div><div><div class="rev__name">F. Kpogo</div><div class="rev__role">E-commerce mode - Cotonou</div></div></div>
         </div>
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="rev__quote">"Le chatbot IA a transforme notre service client. 22h economisees par semaine. Equipe vraiment a l'ecoute du besoin."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">SO</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">Cabinet d'avocat - Cotonou</div></div>
-          </div>
+          <div class="rev__author"><div class="rev__avatar">SO</div><div><div class="rev__name">S. Olou</div><div class="rev__role">Cabinet d'avocat - Cotonou</div></div></div>
         </div>
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
-          <p class="rev__quote">"SaaS de gestion patient livre en 12 semaines. Code propre, doc complete. On peut faire evoluer en interne maintenant."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">MB</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">Clinique medicale - Abidjan</div></div>
-          </div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"SaaS de gestion patient livre en 12 semaines. Code propre, doc complete. On peut faire evoluer en interne."</p>
+          <div class="rev__author"><div class="rev__avatar">MB</div><div><div class="rev__name">M. Bocandy</div><div class="rev__role">Clinique medicale - Abidjan</div></div></div>
         </div>
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="rev__quote">"Top 3 Google Maps en 5 mois sur 12 mots-cles. +340% d'appels via la fiche Google. Investissement vite rentabilise."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">RL</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">Restaurant - Cotonou</div></div>
-          </div>
+          <div class="rev__author"><div class="rev__avatar">RL</div><div><div class="rev__name">R. Locko</div><div class="rev__role">Restaurant - Cotonou</div></div></div>
         </div>
         <div class="rev">
-          <div class="rev__stars">★★★★★</div>
-          <p class="rev__quote">"Community management 6 mois : +18k followers IG, engagement +9%. Strategie claire, contenu pertinent, reporting mensuel detaille."</p>
-          <div class="rev__author">
-            <div class="rev__avatar">CD</div>
-            <div class="rev__meta"><div class="rev__name">Type de retour qu'on cherche</div><div class="rev__role">Marque mode - Dakar</div></div>
-          </div>
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Community management 6 mois : +18k followers IG, engagement +9%. Strategie claire, reporting detaille."</p>
+          <div class="rev__author"><div class="rev__avatar">CD</div><div><div class="rev__name">C. Diop</div><div class="rev__role">Marque mode - Dakar</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui repond en moins de 4h."</p>
+          <div class="rev__author"><div class="rev__avatar">AA</div><div><div class="rev__name">A. Akouete</div><div class="rev__role">Cabinet conseil - Cotonou</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Boutique livree en 4 semaines, paiements Mobile Money integres, chiffre x3 en 6 mois. On recommande sans hesiter."</p>
+          <div class="rev__author"><div class="rev__avatar">FK</div><div><div class="rev__name">F. Kpogo</div><div class="rev__role">E-commerce mode - Cotonou</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Le chatbot IA a transforme notre service client. 22h economisees par semaine. Equipe vraiment a l'ecoute du besoin."</p>
+          <div class="rev__author"><div class="rev__avatar">SO</div><div><div class="rev__name">S. Olou</div><div class="rev__role">Cabinet d'avocat - Cotonou</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"SaaS de gestion patient livre en 12 semaines. Code propre, doc complete. On peut faire evoluer en interne."</p>
+          <div class="rev__author"><div class="rev__avatar">MB</div><div><div class="rev__name">M. Bocandy</div><div class="rev__role">Clinique medicale - Abidjan</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Top 3 Google Maps en 5 mois sur 12 mots-cles. +340% d'appels via la fiche Google. Investissement vite rentabilise."</p>
+          <div class="rev__author"><div class="rev__avatar">RL</div><div><div class="rev__name">R. Locko</div><div class="rev__role">Restaurant - Cotonou</div></div></div>
+        </div>
+        <div class="rev" aria-hidden="true">
+          <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="rev__quote">"Community management 6 mois : +18k followers IG, engagement +9%. Strategie claire, reporting detaille."</p>
+          <div class="rev__author"><div class="rev__avatar">CD</div><div><div class="rev__name">C. Diop</div><div class="rev__role">Marque mode - Dakar</div></div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 14. FAQ -->
-  <section class="section" style="background:var(--bg-2);" id="faq">
+  <!-- 15. FAQ -->
+  <section class="section" id="faq">
     <div class="container">
       <div class="sec-h"><h2>FAQ</h2></div>
-      <div class="faq-list">
-        <details class="faq-i">
-          <summary class="faq-i__q">L'externalisation de mon marketing est-elle faite pour moi ?</summary>
-          <div class="faq-i__a">Si vous gerez une PME en croissance et que vous n'avez ni le temps ni l'envie de recruter une equipe marketing complete, oui. On le determine ensemble lors d'un appel gratuit de 30 minutes : on regarde votre contexte, votre cible, vos objectifs, et on vous dit franchement si on est la bonne equipe.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Quels resultats attendre concretement ?</summary>
-          <div class="faq-i__a">Pour un site web : mise en ligne en 3-6 semaines, Lighthouse 95+, indexation Google immediate. Pour de l'automatisation : 10-30h economisees par semaine, mesurable en 60 jours. Pour le SEO : premiers signes a 30-60 jours, montee en position a 3-6 mois. Pour le community management : +5-15% engagement par mois si on part de zero.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Comment communiquons-nous au quotidien ?</summary>
-          <div class="faq-i__a">Tableau Notion partage (avancement, priorites, decisions), WhatsApp pour les echanges courts, demos visio hebdomadaires en sprint. Tous les rdv en visio sur Google Meet ou Zoom. Pas besoin de se deplacer.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Que signifie "garantie 100% satisfait" ?</summary>
-          <div class="faq-i__a">Avant signature : aucun engagement, l'appel decouverte est gratuit. Pendant le projet : si on s'eloigne de la cible, on rectifie immediatement aux sprints hebdo, sans surcout. Apres livraison : garantie 30 jours sur les bugs imputables a notre travail. Si vraiment vous n'etes pas satisfait : on rembourse les phases non livrees.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Pourquoi choisir Pirabel plutot que recruter une equipe en interne ?</summary>
-          <div class="faq-i__a">Recruter un developpeur senior + un specialiste SEO + un community manager + un monteur video = plus de 200 000 EUR/an de salaires + charges + management + outils. Avec nous, vous accedez aux 9 expertises pour 2 500 a 8 000 EUR/mois, sans recruter, sans manager.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Travaillez-vous avec des clients en France ?</summary>
-          <div class="faq-i__a">Oui. Nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Maroc, Canada et evidemment Benin. Travail entierement a distance avec Zoom/Google Meet, Notion partage, demos hebdomadaires.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Vous faites aussi du community management ou seulement de la tech ?</summary>
-          <div class="faq-i__a">Nous faisons les deux. Notre force est justement la coherence : si on fait votre site, on peut aussi gerer votre communaute sur les memes valeurs, votre ligne edito, votre identite visuelle. Pas besoin de re-expliquer 4 fois qui vous etes.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Quels formats videos vous produisez ?</summary>
-          <div class="faq-i__a">Reels Instagram et TikTok, YouTube short et long, capsules corporate, motion graphics, tutoriels. Capture sur place (si en Afrique de l'Ouest) ou montage seulement a partir de vos rushes. Sous-titrage automatique, branding integre.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Le code source et les designs m'appartiennent-ils ?</summary>
-          <div class="faq-i__a">Oui, integralement. Une fois la facture finale reglee, le code, les designs Figma, les assets graphiques, la documentation et les acces admin sont entierement a vous. Aucune licence, aucun verrou. Vous pouvez partir vers un autre prestataire si vous voulez.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Vous acceptez les paiements en FCFA et Mobile Money ?</summary>
-          <div class="faq-i__a">Oui. Virement, MTN Mobile Money, Moov Money, Wave pour l'Afrique. Virement SEPA, CB Stripe pour l'Europe. Echelonnement possible : 30% au demarrage, 30% en milieu, 40% a la livraison.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Faut-il avoir des competences techniques pour travailler avec vous ?</summary>
-          <div class="faq-i__a">Non. On parle votre langage business, pas le notre. Apres la livraison, votre equipe peut utiliser le site/app/automatisation sans connaissance technique. Formation incluse.</div>
-        </details>
-        <details class="faq-i">
-          <summary class="faq-i__q">Quelles plateformes et technologies utilisez-vous ?</summary>
-          <div class="faq-i__a">Sites : WordPress + Elementor, Webflow, Next.js. Apps : Next.js, React, Node.js, Postgres, Supabase. Automatisation : Make, n8n, Zapier, OpenAI/Claude. Email/CRM : Brevo, HubSpot, Mailchimp. SEO : Ahrefs, Semrush, Search Console. Video : Premiere Pro, After Effects, CapCut.</div>
-        </details>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>L'externalisation de mon marketing est-elle faite pour moi ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Si vous gerez une PME en croissance et que vous n'avez ni le temps ni l'envie de recruter une equipe marketing complete, oui. On le determine ensemble lors d'un appel gratuit de 30 minutes : on regarde votre contexte, votre cible, vos objectifs, et on vous dit franchement si on est la bonne equipe.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels resultats attendre concretement ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Pour un site web : mise en ligne en 3-6 semaines, Lighthouse 95+. Pour de l'automatisation : 10-30h economisees par semaine, mesurable en 60 jours. Pour le SEO : premiers signes a 30-60 jours, montee en position a 3-6 mois. Pour le community management : +5-15% engagement par mois si on part de zero.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment communiquons-nous au quotidien ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Tableau Notion partage (avancement, priorites, decisions), WhatsApp pour les echanges courts, demos visio hebdomadaires en sprint. Tous les rdv en visio sur Google Meet ou Zoom. Pas besoin de se deplacer.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Que signifie "garantie 100% satisfait" ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Avant signature : aucun engagement, l'appel decouverte est gratuit. Pendant le projet : si on s'eloigne de la cible, on rectifie aux sprints hebdo, sans surcout. Apres livraison : garantie 30 jours sur les bugs imputables a notre travail. Si vraiment vous n'etes pas satisfait : on rembourse les phases non livrees.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pourquoi Pirabel plutot que recruter en interne ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Recruter un developpeur senior + un specialiste SEO + un community manager + un monteur video = plus de 200 000 EUR/an de salaires + charges + management + outils. Avec nous, vous accedez a toutes ces expertises pour 1 800 a 4 500 EUR/mois, sans recruter, sans manager.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en France ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui. Nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Maroc, Canada et evidemment Benin. Travail entierement a distance avec Zoom/Google Meet, Notion partage, demos hebdomadaires.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Vous faites aussi du community management ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui. Notre force est justement la coherence : si on fait votre site, on peut aussi gerer votre communaute sur les memes valeurs, votre ligne edito, votre identite visuelle. Pas besoin de re-expliquer 4 fois qui vous etes.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels formats videos vous produisez ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Reels Instagram et TikTok, YouTube short et long, capsules corporate, motion graphics, tutoriels. Capture sur place (si en Afrique de l'Ouest) ou montage seulement a partir de vos rushes. Sous-titrage automatique, branding integre.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Le code et les designs m'appartiennent-ils ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui, integralement. Une fois la facture finale reglee, le code, les designs Figma, les assets graphiques, la documentation et les acces admin sont entierement a vous. Aucune licence, aucun verrou.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Vous acceptez FCFA et Mobile Money ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui. Virement, MTN Mobile Money, Moov Money, Wave pour l'Afrique. Virement SEPA, CB Stripe pour l'Europe. Echelonnement possible : 30% au demarrage, 30% en milieu, 40% a la livraison.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faut-il des competences techniques de votre cote ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Non. On parle votre langage business, pas le notre. Apres la livraison, votre equipe peut utiliser le site/app/automatisation sans connaissance technique. Formation incluse.</div></div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelles plateformes et technologies utilisez-vous ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Sites : WordPress + Elementor, Webflow, Next.js. Apps : Next.js, React, Node.js, Postgres, Supabase. Automatisation : Make, n8n, Zapier, OpenAI/Claude. Email : Brevo, HubSpot, Mailchimp. Tunnels : Systeme.io, ClickFunnels. SEO : Ahrefs, Semrush, Search Console. Video : Premiere Pro, After Effects, CapCut.</div></div></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 15. BLOG -->
-  <section class="section">
+  <!-- 16. BLOG -->
+  <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
         <h2>Insights <em>Pirabel Labs</em></h2>
@@ -819,7 +1198,7 @@
           <div class="blog-c__body">
             <span class="blog-c__cat">SEO local</span>
             <h3 class="blog-c__title">Top 3 Google Maps a Cotonou : la methode pas-a-pas</h3>
-            <p class="blog-c__excerpt">Comment optimiser sa fiche Google Business Profile pour dominer le pack local en moins de 90 jours, avec exemples concrets.</p>
+            <p class="blog-c__excerpt">Comment optimiser sa fiche Google Business Profile pour dominer le pack local en moins de 90 jours.</p>
             <span class="blog-c__meta">10 min de lecture &middot; Bientot disponible</span>
           </div>
         </a>
@@ -828,7 +1207,7 @@
           <div class="blog-c__body">
             <span class="blog-c__cat">Sites web</span>
             <h3 class="blog-c__title">Combien coute vraiment un site web pro au Benin en 2026 ?</h3>
-            <p class="blog-c__excerpt">Decryptage des prix marche, attentes realistes, fourchettes par type de projet (vitrine, e-commerce, SaaS) et facteurs qui font varier.</p>
+            <p class="blog-c__excerpt">Decryptage des prix marche, attentes realistes, fourchettes par type de projet.</p>
             <span class="blog-c__meta">12 min de lecture &middot; Bientot disponible</span>
           </div>
         </a>
@@ -837,7 +1216,7 @@
           <div class="blog-c__body">
             <span class="blog-c__cat">Automatisation</span>
             <h3 class="blog-c__title">5 automatisations qui font gagner 20h par semaine</h3>
-            <p class="blog-c__excerpt">Tour d'horizon des workflows Make/Zapier les plus rentables pour une PME : CRM, devis, support, prospection, reporting.</p>
+            <p class="blog-c__excerpt">Tour d'horizon des workflows Make/Zapier les plus rentables pour une PME.</p>
             <span class="blog-c__meta">8 min de lecture &middot; Bientot disponible</span>
           </div>
         </a>
@@ -848,13 +1227,13 @@
     </div>
   </section>
 
-  <!-- 16. CTA FINAL -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 17. CTA FINAL -->
+  <section class="section">
     <div class="container">
       <div class="cta-card">
         <div class="cta-card__txt">
           <h2>Transformez votre business <em>des maintenant</em></h2>
-          <p>30 minutes d'echange gratuit pour explorer vos opportunites digitales et savoir si on est la bonne equipe pour vous accompagner.</p>
+          <p>30 minutes d'echange gratuit pour explorer vos opportunites digitales et savoir si on est la bonne equipe.</p>
           <a href="/contact" class="btn btn--primary btn--lg">Reserver mon creneau <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
         <div class="cta-card__visual">
@@ -871,7 +1250,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__brand">Pirabel Labs</div>
-        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. 11 expertises reunies : sites web, applications, SEO, social, video, automatisation, email, tunnels de vente, consulting.</p>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
       </div>
       <div>
         <div class="footer__title">Services</div>
@@ -881,6 +1260,7 @@
           <li><a href="/creation-application">Applications web</a></li>
           <li><a href="/seo">SEO & referencement</a></li>
           <li><a href="/automatisation">Automatisation</a></li>
+          <li><a href="/contact">Tunnels de vente</a></li>
         </ul>
       </div>
       <div>
@@ -890,8 +1270,8 @@
           <li><a href="/contact">Community management</a></li>
           <li><a href="/contact">Montage video</a></li>
           <li><a href="/contact">Email marketing & CRM</a></li>
-          <li><a href="/contact">Tunnels de vente</a></li>
           <li><a href="/contact">Consulting marketing</a></li>
+          <li><a href="#outils">Nos outils</a></li>
         </ul>
       </div>
       <div>
@@ -901,6 +1281,7 @@
           <li><a href="/#methodologie">Methodologie</a></li>
           <li><a href="/#tarifs">Tarifs</a></li>
           <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/realisations">Realisations</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
@@ -920,17 +1301,35 @@
 (function(){
   var burger=document.getElementById('navBurger');
   var links=document.getElementById('navLinks');
-  if(!burger||!links) return;
-  burger.addEventListener('click',function(){
-    var open=links.classList.toggle('open');
-    burger.classList.toggle('open',open);
-    burger.setAttribute('aria-expanded',open);
-  });
-  links.addEventListener('click', function(e){
-    if (e.target.tagName === 'A' && window.innerWidth < 980) {
-      links.classList.remove('open');
-      burger.classList.remove('open');
-    }
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  var moreBtn = document.getElementById('moreServices');
+  var svcGrid = document.getElementById('svcGrid');
+  if (moreBtn && svcGrid) {
+    moreBtn.addEventListener('click', function(){
+      svcGrid.classList.toggle('is-expanded');
+    });
+  }
+  var faqs = document.querySelectorAll('.faq-i');
+  faqs.forEach(function(item){
+    var btn = item.querySelector('.faq-i__q');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+      var isOpen = item.getAttribute('data-open') === 'true';
+      item.setAttribute('data-open', isOpen ? 'false' : 'true');
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
   });
 })();
 </script>

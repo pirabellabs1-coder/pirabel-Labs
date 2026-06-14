@@ -37,7 +37,7 @@
 
 /* Hero */
 .s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
-.s-hero__inner { position: relative; display: grid; grid-template-columns: 7fr 3fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
 .s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
 .s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
 .s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
@@ -48,18 +48,23 @@
 .s-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; }
 .s-hero__trust-item { display: inline-flex; align-items: center; gap: 0.35rem; }
 .s-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1rem; }
-.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 20rem; margin: 0 auto; }
-.team-circle { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-2) 70%); border: 2px solid var(--accent); position: relative; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 80px rgba(255,85,0,0.2); display: flex; align-items: center; justify-content: center; }
-.team-circle::before { content: ''; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.15), transparent 70%); }
-.team-circle__inner { position: relative; z-index: 1; display: flex; align-items: center; }
-.team-av { width: clamp(5rem, 12vw, 9rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--bg); display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-.team-av .material-symbols-outlined { font-size: clamp(2rem, 4.5vw, 3.25rem); }
-.team-av:not(:first-child) { margin-left: -1.5rem; }
-.team-av--mid { background: var(--accent); color: #fff; z-index: 1; transform: translateY(-0.8rem); }
-.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2; white-space: nowrap; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
 .s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
-.s-hero__chip--1 { top: 4%; right: -2%; }
-.s-hero__chip--2 { bottom: 8%; left: -4%; }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
 @media (max-width: 880px) {
   .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
   .s-hero__lead { margin-left: auto; margin-right: auto; }
@@ -379,10 +384,10 @@
   <section class="s-hero">
     <div class="s-hero__inner">
       <div class="s-hero__txt">
-        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Agence web de creation de site</span>
-        <h1>Developpez et sublimez votre <em>presence en ligne</em> grace a notre agence de creation de site.</h1>
-        <p class="s-hero__tagline">Construisons votre meilleur levier d'acquisition de business.</p>
-        <p class="s-hero__lead">Votre site web constitue le socle de votre strategie marketing digital. C'est souvent votre premier generateur d'opportunites commerciales et votre premier vecteur d'image de marque. Depuis 2020, notre agence Pirabel Labs concoit et developpe des sites institutionnels, e-commerce et plateformes 100% sur mesure en Next.js, React, Webflow ou WordPress. Performance Lighthouse 95+ garantie, design unique, SEO inclus, devis ferme sous 48h.</p>
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Creation de site web sur mesure</span>
+        <h1>Concevons ensemble un site web <em>au service de vos objectifs business</em>.</h1>
+        <p class="s-hero__tagline">Une demarche structuree, du brief a la mise en ligne, etape par etape.</p>
+        <p class="s-hero__lead">Un site web professionnel sert plusieurs objectifs : visibilite, credibilite, generation de leads, ventes en ligne, fidelisation. Pour qu'il les atteigne reellement, chaque element compte : la performance technique, l'experience utilisateur, le SEO, l'esthetique, les integrations metier. Chez Pirabel Labs, nous concevons des sites sur mesure en Next.js, React, Webflow ou WordPress, adaptes precisement a vos enjeux. Lighthouse 95+ garanti, devis ferme sous 48h, code source remis a votre equipe.</p>
         <div class="s-hero__cta">
           <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander mon devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
@@ -393,15 +398,19 @@
         </div>
       </div>
       <div class="s-hero__visual">
-        <div class="team-circle">
-          <div class="team-circle__inner">
-            <div class="team-av"><span class="material-symbols-outlined">code</span></div>
-            <div class="team-av team-av--mid"><span class="material-symbols-outlined">design_services</span></div>
-            <div class="team-av"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">code</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">design_services</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">rocket_launch</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">groups</span> Notre equipe d'experts</div>
           </div>
         </div>
         <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">workspace_premium</span> Agence certifiee</span>
         <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">verified</span> Depuis 2020</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">star</span> 4,9 / 5</span>
       </div>
     </div>
   </section>
@@ -464,8 +473,8 @@
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
-        <h2>Les <em>prestations</em> de notre agence de creation de site web</h2>
-        <p class="sec-h__sub">Notre agence Pirabel Labs offre une large gamme de services et de prestations pour repondre a tous vos besoins web, du vitrine au SaaS complexe.</p>
+        <h2>Quel <em>type de projet web</em> envisagez-vous ?</h2>
+        <p class="sec-h__sub">Site vitrine, e-commerce, plateforme membres, refonte, hebergement, multilingue... Voici les differentes prestations que notre agence peut realiser pour vous, avec un accompagnement adapte a chaque type de projet.</p>
       </div>
       <div class="reasons-wrap">
         <div class="expertises-row" id="expertisesRow">
@@ -656,39 +665,39 @@
   <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Creer un site web pour <em>atteindre tous vos objectifs</em></h2>
-        <p class="sec-h__sub">6 raisons chiffrees pour lesquelles un site web professionnel est devenu indispensable en 2026.</p>
+        <h2>Comprendre les 6 facteurs cles d'un <em>site web performant</em></h2>
+        <p class="sec-h__sub">Avant de commencer un projet web, il est utile de connaitre les criteres techniques et strategiques qui determinent le succes d'un site. Voici 6 facteurs avec leurs chiffres de reference.</p>
       </div>
       <div class="objectives-grid">
         <div class="objective">
-          <div class="objective__num">50%</div>
-          <div class="objective__title">Vous generez plus de trafic qualifie</div>
-          <p class="objective__desc">Environ 50% du trafic d'un site provient des moteurs de recherche. Sans presence en ligne, vous etes invisible pour la moitie de votre marche potentiel.</p>
+          <div class="objective__num">1,2s</div>
+          <div class="objective__title">Charger en moins de 1,2 seconde</div>
+          <p class="objective__desc">Au-dela de 3 secondes de chargement, la moitie des visiteurs mobiles quittent le site avant meme qu'il ne s'affiche. Notre objectif technique : 1,2 seconde maximum sur connexion 4G moyenne.</p>
         </div>
         <div class="objective">
-          <div class="objective__num">81%</div>
-          <div class="objective__title">Vous attirez de nouveaux clients</div>
-          <p class="objective__desc">81% des consommateurs recherchent une entreprise ou un service en ligne avant de realiser un achat. Sans site web, vous etes purement et simplement exclu de leur reflexion.</p>
+          <div class="objective__num">57%</div>
+          <div class="objective__title">Etre pense pour le mobile-first</div>
+          <p class="objective__desc">57% des visites sur les sites benineois et ivoiriens se font depuis un smartphone. Un site qui n'a pas ete concu mobile-first dans le marche francophone africain se penalise des le brief.</p>
         </div>
         <div class="objective">
-          <div class="objective__num">56%</div>
-          <div class="objective__title">Vous credibilisez votre marque</div>
-          <p class="objective__desc">56% des consommateurs declarent ne pas faire confiance a une entreprise sans site web. Votre absence en ligne est interpretee comme un signal de manque de serieux.</p>
+          <div class="objective__num">92%</div>
+          <div class="objective__title">Resister aux failles de securite</div>
+          <p class="objective__desc">Selon les rapports cybersecurite, 92% des sites WordPress non maintenus presentent une vulnerabilite critique apres 12 mois. Pour s'en proteger : maintenance reguliere des plugins, ou architecture moderne (Next.js, Webflow) qui reduit la surface d'attaque.</p>
         </div>
         <div class="objective">
-          <div class="objective__num">47%</div>
-          <div class="objective__title">Vous renforcez votre autorite sectorielle</div>
-          <p class="objective__desc">47% des entreprises creent du contenu pour se demarquer de leur concurrence. Votre site est le terrain de jeu indispensable pour publier et capitaliser sur ce contenu.</p>
+          <div class="objective__num">x2,3</div>
+          <div class="objective__title">Multiplier votre trafic organique</div>
+          <p class="objective__desc">Avec un SEO technique propre des le premier jour (Schema.org, Core Web Vitals, contenu structure), nos clients voient en moyenne leur trafic organique multiplie par 2,3 sur 12 mois.</p>
         </div>
         <div class="objective">
-          <div class="objective__num">68%</div>
-          <div class="objective__title">Vous controlez votre e-reputation</div>
-          <p class="objective__desc">68% des decisions d'achat sont influees par la reputation en ligne et les avis publies. Sans site, vous ne maitrisez pas la premiere impression que vous laissez au visiteur.</p>
+          <div class="objective__num">30s</div>
+          <div class="objective__title">Convaincre en moins de 30 secondes</div>
+          <p class="objective__desc">Un visiteur prend en moyenne 30 secondes pour juger la credibilite de votre marque sur la home. Le design, la performance et la clarte du message sont decisifs sur cette fenetre.</p>
         </div>
         <div class="objective">
-          <div class="objective__num">80%</div>
-          <div class="objective__title">Vous rendez votre marque accessible</div>
-          <p class="objective__desc">80% des consommateurs arretent leur navigation si le site ne s'affiche pas correctement sur leur ecran. Le responsive design n'est plus une option, c'est une condition de survie.</p>
+          <div class="objective__num">100%</div>
+          <div class="objective__title">Vous posseder votre site, sans licence</div>
+          <p class="objective__desc">Code, designs Figma, hebergement : 100% remis sous votre controle apres la facture finale. Pas de licence WordPress premium a renouveler, pas de Webflow qui plafonne, pas de verrou.</p>
         </div>
       </div>
     </div>
@@ -779,28 +788,28 @@
         <div class="pd pd--prom">
           <div class="pd__h">
             <div class="pd__h-icon"><span class="material-symbols-outlined">verified</span></div>
-            <div class="pd__h-title">Vous avez besoin de</div>
+            <div class="pd__h-title">Ce que vous gagnez avec nous</div>
           </div>
           <ul class="pd__list">
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Disposer d'un site facilement administrable par votre equipe</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> D'un site conforme aux regles SEO et indexable Google</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Generer des leads qualifies avec un site oriente conversion</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Offrir une navigation coherente et fluide a vos visiteurs</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Profiter d'une solution accessible et evolutive sur 5 ans</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Etre proprietaire du code source et des designs livres</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Un site code de zero, design unique, sans template recycle</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Lighthouse 95+ garanti contractuellement (sinon corrections gratuites)</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> SEO technique cle en main : Schema.org, sitemap, Open Graph, redirections</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Paiements multi-pays integres : Stripe + Mobile Money + Wave</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Code source remis sur votre Git, designs Figma transferes</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne, sans condition</li>
           </ul>
         </div>
         <div class="pd pd--def">
           <div class="pd__h">
             <div class="pd__h-icon"><span class="material-symbols-outlined">warning</span></div>
-            <div class="pd__h-title">Etes-vous pret a</div>
+            <div class="pd__h-title">Ce que vous devez apporter</div>
           </div>
           <ul class="pd__list">
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Etre reactif et engage tout au long du processus de creation</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Participer aux choix strategiques (parcours, contenu, design)</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Vous former a l'utilisation et a l'administration du site</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Allouer des ressources internes pour piloter le site dans la duree</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Alimenter et mettre a jour votre site regulierement</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une vraie comprehension de votre marche et de vos clients cibles</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Un creneau hebdomadaire de 30 minutes pour les demos sprint</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Vos contenus (textes, photos, videos) remis dans les delais cibles</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une vision business claire (objectifs chiffres, pas juste un beau site)</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une volonte de piloter le site dans la duree, pas de l'abandonner</li>
           </ul>
         </div>
       </div>

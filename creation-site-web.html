@@ -110,15 +110,34 @@
 .expertise__cta:hover { background: var(--accent-2); opacity: 1; }
 .expertise__cta .material-symbols-outlined { font-size: 0.9rem; }
 
-/* Objectifs section (stats-driven benefits) */
-.objectives-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
-@media (max-width: 880px) { .objectives-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 540px) { .objectives-grid { grid-template-columns: 1fr; max-width: 28rem; } }
-.objective { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t), transform var(--t); }
-.objective:hover { border-color: var(--accent); transform: translateY(-3px); }
-.objective__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 4.2vw, 3.25rem); color: var(--accent); line-height: 1; letter-spacing: -0.03em; margin-bottom: 1rem; }
-.objective__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.65rem; line-height: 1.3; }
-.objective__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+/* MATRIX (Type / Techno / Services) - replaces horizontal scroll */
+.matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .matrix { grid-template-columns: 1fr; max-width: 32rem; } }
+.matrix-col { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; }
+.matrix-col__h { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--border); }
+.matrix-col__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.matrix-col__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+.matrix-col__sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+.matrix-item { padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; gap: 0.7rem; align-items: flex-start; text-decoration: none; color: var(--text); transition: color var(--t); }
+.matrix-item:last-child { border-bottom: 0; }
+.matrix-item:hover { color: var(--accent); opacity: 1; }
+.matrix-item__dot { width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 0.15rem; transition: all var(--t); }
+.matrix-item:hover .matrix-item__dot { background: var(--accent); color: #fff; }
+.matrix-item__dot .material-symbols-outlined { font-size: 0.85rem; }
+.matrix-item__body { flex: 1; min-width: 0; }
+.matrix-item__name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; line-height: 1.3; margin-bottom: 0.2rem; }
+.matrix-item__desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Narrative storytelling section (replaces 6-cards stats) */
+.story { max-width: 60rem; margin: 0 auto; }
+.story p { font-size: 1.05rem; line-height: 1.85; color: var(--text-muted); margin-bottom: 1.5rem; }
+.story p strong { color: var(--text); font-weight: 700; }
+.story-stat { display: inline-flex; align-items: baseline; gap: 0.35rem; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 6px; padding: 0.15rem 0.55rem; color: var(--accent); font-family: var(--font-display); font-weight: 800; font-size: 1.1em; line-height: 1.2; }
+.story-stat__label { font-size: 0.65em; color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.story-callout { background: var(--bg-2); border-left: 4px solid var(--accent); padding: 1.5rem 1.75rem; margin: 2rem 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.story-callout__h { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.45rem; }
+.story-callout__h .material-symbols-outlined { font-size: 1.1rem; }
+.story-callout p { font-size: 0.98rem; line-height: 1.7; margin-bottom: 0; }
 
 /* Prestations */
 .prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
@@ -476,72 +495,117 @@
         <h2>Quel <em>type de projet web</em> envisagez-vous ?</h2>
         <p class="sec-h__sub">Site vitrine, e-commerce, plateforme membres, refonte, hebergement, multilingue... Voici les differentes prestations que notre agence peut realiser pour vous, avec un accompagnement adapte a chaque type de projet.</p>
       </div>
-      <div class="reasons-wrap">
-        <div class="expertises-row" id="expertisesRow">
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">web</span></div>
-            <div class="expertise__title">Creation de site vitrine</div>
-            <p class="expertise__desc">Nous valorisons votre notoriete et vos opportunites commerciales en creant un site vitrine performant, accessible et optimise pour la conversion.</p>
-            <a href="/contact?service=site-vitrine" class="expertise__cta">Agence creation vitrine <span class="material-symbols-outlined">arrow_forward</span></a>
+      <div class="matrix">
+        <div class="matrix-col">
+          <div class="matrix-col__h">
+            <div class="matrix-col__icon"><span class="material-symbols-outlined">category</span></div>
+            <div>
+              <div class="matrix-col__title">Par type de site</div>
+              <div class="matrix-col__sub">3 grandes familles de projets</div>
+            </div>
           </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
-            <div class="expertise__title">Creation de site e-commerce</div>
-            <p class="expertise__desc">Nous vous aidons a creer ou refondre votre boutique en ligne pour maximiser les performances et le chiffre d'affaires grace a notre sensibilite business.</p>
-            <a href="/contact?service=ecommerce" class="expertise__cta">Agence e-commerce <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">web_asset</span></div>
-            <div class="expertise__title">Creation de site WordPress</div>
-            <p class="expertise__desc">Nous exploitons tout le potentiel de WordPress et Elementor Pro pour concevoir des sites flexibles, evolutifs et administrables par votre equipe.</p>
-            <a href="/contact?service=wordpress" class="expertise__cta">Agence WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">design_services</span></div>
-            <div class="expertise__title">Creation de site Webflow</div>
-            <p class="expertise__desc">Webflow combine la liberte du sur mesure avec la facilite d'edition d'un CMS. Ideal pour les sites vitrine premium et les marques exigeantes sur le design.</p>
-            <a href="/contact?service=webflow" class="expertise__cta">Agence Webflow <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">storefront</span></div>
-            <div class="expertise__title">Creation de site Prestashop</div>
-            <p class="expertise__desc">Vous utilisez Prestashop ? Nous exploitons les fonctionnalites et possibilites offertes par ce CMS e-commerce pour creer votre boutique en ligne performante.</p>
-            <a href="/contact?service=prestashop" class="expertise__cta">Agence Prestashop <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">refresh</span></div>
-            <div class="expertise__title">Refonte de site</div>
-            <p class="expertise__desc">Nous auditons et ameliorons votre site web actuel pour qu'il corresponde mieux a vos objectifs, en capitalisant sur le SEO et le contenu existants.</p>
-            <a href="/contact?service=refonte" class="expertise__cta">Agence refonte site <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">language</span></div>
-            <div class="expertise__title">Conception de site multilingue</div>
-            <p class="expertise__desc">Nous assurons la visibilite et le developpement de votre site web sur tous les marches francophones et anglophones avec multi-langue et multi-devise.</p>
-            <a href="/contact?service=multilingue" class="expertise__cta">Agence multilingue <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">cloud</span></div>
-            <div class="expertise__title">Hebergement web</div>
-            <p class="expertise__desc">Nous hebergeons votre site avec des solutions performantes (Vercel, Netlify, Cloudflare) pour maintenir un site rapide, fiable et optimise pour le SEO.</p>
-            <a href="/contact?service=hebergement" class="expertise__cta">Agence hebergement <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">terminal</span></div>
-            <div class="expertise__title">Developpement web</div>
-            <p class="expertise__desc">Nous developpons des solutions digitales sur mesure basees sur vos enjeux, vos besoins mais aussi sur ceux de vos clients utilisateurs finaux.</p>
-            <a href="/contact?service=developpement" class="expertise__cta">Agence developpement <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
-          <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">build</span></div>
-            <div class="expertise__title">Maintenance WordPress</div>
-            <p class="expertise__desc">Nous vous aidons a garder votre site WordPress en bonne sante en l'optimisant en permanence sur le plan technique, graphique et editorial.</p>
-            <a href="/contact?service=maintenance" class="expertise__cta">Agence maintenance <span class="material-symbols-outlined">arrow_forward</span></a>
-          </div>
+          <a href="/contact?service=site-vitrine" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Site vitrine</div>
+              <div class="matrix-item__desc">5 a 15 pages, presence professionnelle, formulaire contact, SEO inclus.</div>
+            </div>
+          </a>
+          <a href="/contact?service=ecommerce" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Site e-commerce</div>
+              <div class="matrix-item__desc">Boutique en ligne, paiements Stripe + Mobile Money, gestion stock.</div>
+            </div>
+          </a>
+          <a href="/contact?service=saas" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Plateforme SaaS</div>
+              <div class="matrix-item__desc">Espace membres, logique metier, multi-utilisateurs, API REST/GraphQL.</div>
+            </div>
+          </a>
+          <a href="/contact?service=multilingue" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Site multilingue</div>
+              <div class="matrix-item__desc">Multi-langue, multi-devise, gestion des marches internationaux.</div>
+            </div>
+          </a>
         </div>
-        <div class="reasons-nav">
-          <button type="button" data-target="expertisesRow" data-dir="-1" aria-label="Precedent"><span class="material-symbols-outlined">arrow_back</span></button>
-          <button type="button" data-target="expertisesRow" data-dir="1" aria-label="Suivant"><span class="material-symbols-outlined">arrow_forward</span></button>
+        <div class="matrix-col">
+          <div class="matrix-col__h">
+            <div class="matrix-col__icon"><span class="material-symbols-outlined">construction</span></div>
+            <div>
+              <div class="matrix-col__title">Par technologie</div>
+              <div class="matrix-col__sub">L'outil adapte a vos besoins</div>
+            </div>
+          </div>
+          <a href="/contact?service=wordpress" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">WordPress + Elementor Pro</div>
+              <div class="matrix-item__desc">Edition autonome par votre equipe, large ecosysteme de plugins.</div>
+            </div>
+          </a>
+          <a href="/contact?service=webflow" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Webflow</div>
+              <div class="matrix-item__desc">Sur mesure no-code, ideal pour les vitrines premium et marques exigeantes.</div>
+            </div>
+          </a>
+          <a href="/contact?service=nextjs" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Next.js + React</div>
+              <div class="matrix-item__desc">Performance maximale, Lighthouse 95+, scalable pour projets ambitieux.</div>
+            </div>
+          </a>
+          <a href="/contact?service=prestashop" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Prestashop</div>
+              <div class="matrix-item__desc">CMS e-commerce francais, modules natifs pour la gestion catalogue.</div>
+            </div>
+          </a>
+        </div>
+        <div class="matrix-col">
+          <div class="matrix-col__h">
+            <div class="matrix-col__icon"><span class="material-symbols-outlined">handyman</span></div>
+            <div>
+              <div class="matrix-col__title">Par prestation</div>
+              <div class="matrix-col__sub">Services complementaires</div>
+            </div>
+          </div>
+          <a href="/contact?service=refonte" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Refonte de site existant</div>
+              <div class="matrix-item__desc">Audit + redesign + migration SEO. Capitalise sur l'existant.</div>
+            </div>
+          </a>
+          <a href="/contact?service=hebergement" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Hebergement web</div>
+              <div class="matrix-item__desc">Vercel, Netlify, Cloudflare. Setup + CDN + SSL automatique.</div>
+            </div>
+          </a>
+          <a href="/contact?service=maintenance" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Maintenance + monitoring</div>
+              <div class="matrix-item__desc">Corrections, mises a jour securite, suivi Lighthouse mensuel.</div>
+            </div>
+          </a>
+          <a href="/contact?service=developpement" class="matrix-item">
+            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
+            <div class="matrix-item__body">
+              <div class="matrix-item__name">Developpement specifique</div>
+              <div class="matrix-item__desc">Modules sur mesure, integrations API, automatisations metier.</div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
@@ -666,39 +730,23 @@
     <div class="container">
       <div class="sec-h">
         <h2>Comprendre les 6 facteurs cles d'un <em>site web performant</em></h2>
-        <p class="sec-h__sub">Avant de commencer un projet web, il est utile de connaitre les criteres techniques et strategiques qui determinent le succes d'un site. Voici 6 facteurs avec leurs chiffres de reference.</p>
+        <p class="sec-h__sub">Avant de commencer un projet web, il est utile de connaitre les criteres techniques et strategiques qui determinent le succes d'un site. Voici les principaux points a integrer dans votre cahier des charges.</p>
       </div>
-      <div class="objectives-grid">
-        <div class="objective">
-          <div class="objective__num">1,2s</div>
-          <div class="objective__title">Charger en moins de 1,2 seconde</div>
-          <p class="objective__desc">Au-dela de 3 secondes de chargement, la moitie des visiteurs mobiles quittent le site avant meme qu'il ne s'affiche. Notre objectif technique : 1,2 seconde maximum sur connexion 4G moyenne.</p>
+      <div class="story">
+        <p>Le premier facteur a comprendre, c'est <strong>la vitesse de chargement</strong>. Au-dela de 3 secondes pour afficher la premiere page, la moitie des visiteurs mobiles quittent le site avant meme d'avoir vu le contenu. C'est pourquoi nous visons systematiquement un temps de chargement inferieur a <span class="story-stat">1,2<span class="story-stat__label">sec</span></span> sur connexion 4G moyenne. Cela passe par le choix de la techno (Next.js, Webflow), le poids des images optimisees automatiquement, le code minifie, et l'hebergement sur CDN global.</p>
+
+        <p>Le deuxieme facteur, c'est <strong>la priorisation mobile</strong>. Au Benin, en Cote d'Ivoire et au Senegal, plus de <span class="story-stat">57<span class="story-stat__label">%</span></span> des visites se font depuis un smartphone (souvent en 4G, parfois en 3G). Concevoir le site mobile-first n'est plus une option : c'est la base sur laquelle reposent toutes les decisions de design, de navigation et de contenu. Le desktop devient l'adaptation, pas l'inverse.</p>
+
+        <div class="story-callout">
+          <div class="story-callout__h"><span class="material-symbols-outlined">shield_lock</span> Securite : un point souvent sous-estime</div>
+          <p>Les rapports cybersecurite montrent qu'environ <strong>92% des sites WordPress non maintenus</strong> presentent une vulnerabilite critique apres 12 mois d'usage (plugins obsoletes, themes non patches, base de donnees exposee). Deux approches pour s'en proteger : une maintenance proactive mensuelle, ou une architecture moderne (Next.js, Webflow) qui reduit drastiquement la surface d'attaque des le depart.</p>
         </div>
-        <div class="objective">
-          <div class="objective__num">57%</div>
-          <div class="objective__title">Etre pense pour le mobile-first</div>
-          <p class="objective__desc">57% des visites sur les sites benineois et ivoiriens se font depuis un smartphone. Un site qui n'a pas ete concu mobile-first dans le marche francophone africain se penalise des le brief.</p>
-        </div>
-        <div class="objective">
-          <div class="objective__num">92%</div>
-          <div class="objective__title">Resister aux failles de securite</div>
-          <p class="objective__desc">Selon les rapports cybersecurite, 92% des sites WordPress non maintenus presentent une vulnerabilite critique apres 12 mois. Pour s'en proteger : maintenance reguliere des plugins, ou architecture moderne (Next.js, Webflow) qui reduit la surface d'attaque.</p>
-        </div>
-        <div class="objective">
-          <div class="objective__num">x2,3</div>
-          <div class="objective__title">Multiplier votre trafic organique</div>
-          <p class="objective__desc">Avec un SEO technique propre des le premier jour (Schema.org, Core Web Vitals, contenu structure), nos clients voient en moyenne leur trafic organique multiplie par 2,3 sur 12 mois.</p>
-        </div>
-        <div class="objective">
-          <div class="objective__num">30s</div>
-          <div class="objective__title">Convaincre en moins de 30 secondes</div>
-          <p class="objective__desc">Un visiteur prend en moyenne 30 secondes pour juger la credibilite de votre marque sur la home. Le design, la performance et la clarte du message sont decisifs sur cette fenetre.</p>
-        </div>
-        <div class="objective">
-          <div class="objective__num">100%</div>
-          <div class="objective__title">Vous posseder votre site, sans licence</div>
-          <p class="objective__desc">Code, designs Figma, hebergement : 100% remis sous votre controle apres la facture finale. Pas de licence WordPress premium a renouveler, pas de Webflow qui plafonne, pas de verrou.</p>
-        </div>
+
+        <p>Cote SEO, un site bien concu peut multiplier son trafic organique par <span class="story-stat">x2,3<span class="story-stat__label">/an</span></span> sur 12 mois. La condition : poser des bases techniques propres des le premier jour (Schema.org structure, Core Web Vitals, sitemap, robots.txt, Open Graph), puis produire du contenu de qualite regulierement. C'est un investissement long terme qui prend 3 a 6 mois avant de produire des effets, mais dont les rendements composent dans le temps.</p>
+
+        <p>Cote UX, un visiteur prend en moyenne <span class="story-stat">30<span class="story-stat__label">sec</span></span> pour juger la credibilite de votre marque sur la home. Trois elements pesent lourd dans cette fenetre courte : la <strong>clarte du message principal</strong> (qui etes-vous, pour qui, quel resultat), la <strong>preuve sociale immediate</strong> (logos clients, chiffres cles, temoignages), et la <strong>qualite visuelle</strong> (design coherent, photos pro, typographie lisible).</p>
+
+        <p>Enfin, un point souvent oublie : <strong>la propriete intellectuelle</strong>. Apres la livraison, vous devez etre <span class="story-stat">100<span class="story-stat__label">%</span></span> proprietaire du code source, des designs Figma, des assets et de l'hebergement. Cela vous donne la liberte de changer de prestataire, d'evoluer le site en interne, ou de revendre votre entreprise sans bloquer sur une licence. Une exigence ferme a inscrire dans le contrat des le brief.</p>
       </div>
     </div>
   </section>

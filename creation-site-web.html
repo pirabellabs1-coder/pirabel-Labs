@@ -88,6 +88,23 @@
 .reasons-nav button:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.05); }
 .reasons-nav button .material-symbols-outlined { font-size: 1.35rem; }
 
+/* Expertises agence (Noiise-style sub-services row) */
+.expertises-row { display: grid; grid-auto-flow: column; grid-auto-columns: 17rem; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0.5rem var(--px-page) 1.75rem; margin: 0 calc(var(--px-page) * -1); scroll-padding-left: var(--px-page); -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.expertises-row::-webkit-scrollbar { height: 6px; }
+.expertises-row::-webkit-scrollbar-track { background: transparent; }
+.expertises-row::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+.expertises-row::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+@media (max-width: 880px) { .expertises-row { grid-auto-columns: 78%; } }
+.expertise { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; display: flex; flex-direction: column; transition: border-color var(--t), transform var(--t); scroll-snap-align: start; }
+.expertise:hover { border-color: var(--accent); transform: translateY(-3px); }
+.expertise__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.expertise__icon .material-symbols-outlined { font-size: 1.35rem; }
+.expertise__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.expertise__desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; flex: 1; }
+.expertise__cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.7rem 1rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: background var(--t); margin-top: auto; }
+.expertise__cta:hover { background: var(--accent-2); opacity: 1; }
+.expertise__cta .material-symbols-outlined { font-size: 0.9rem; }
+
 /* Prestations */
 .prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 @media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
@@ -433,11 +450,89 @@
     </div>
   </section>
 
-  <!-- 3. PRESTATIONS -->
+  <!-- 3a. PRESTATIONS AGENCE (Noiise style - sub-services scroll) -->
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
-        <h2>Nos <em>prestations</em> de creation de site web</h2>
+        <h2>Les <em>prestations</em> de notre agence de creation de site web</h2>
+        <p class="sec-h__sub">Notre agence Pirabel Labs offre une large gamme de services et de prestations pour repondre a tous vos besoins web, du vitrine au SaaS complexe.</p>
+      </div>
+      <div class="reasons-wrap">
+        <div class="expertises-row" id="expertisesRow">
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">web</span></div>
+            <div class="expertise__title">Creation de site vitrine</div>
+            <p class="expertise__desc">Nous valorisons votre notoriete et vos opportunites commerciales en creant un site vitrine performant, accessible et optimise pour la conversion.</p>
+            <a href="/contact?service=site-vitrine" class="expertise__cta">Agence creation vitrine <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+            <div class="expertise__title">Creation de site e-commerce</div>
+            <p class="expertise__desc">Nous vous aidons a creer ou refondre votre boutique en ligne pour maximiser les performances et le chiffre d'affaires grace a notre sensibilite business.</p>
+            <a href="/contact?service=ecommerce" class="expertise__cta">Agence e-commerce <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">web_asset</span></div>
+            <div class="expertise__title">Creation de site WordPress</div>
+            <p class="expertise__desc">Nous exploitons tout le potentiel de WordPress et Elementor Pro pour concevoir des sites flexibles, evolutifs et administrables par votre equipe.</p>
+            <a href="/contact?service=wordpress" class="expertise__cta">Agence WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div class="expertise__title">Creation de site Webflow</div>
+            <p class="expertise__desc">Webflow combine la liberte du sur mesure avec la facilite d'edition d'un CMS. Ideal pour les sites vitrine premium et les marques exigeantes sur le design.</p>
+            <a href="/contact?service=webflow" class="expertise__cta">Agence Webflow <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">code</span></div>
+            <div class="expertise__title">Creation de site Next.js</div>
+            <p class="expertise__desc">Sites code en Next.js et React pour des performances Lighthouse 95+, un SEO technique impeccable et une scalabilite quasi illimitee.</p>
+            <a href="/contact?service=nextjs" class="expertise__cta">Agence Next.js <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">refresh</span></div>
+            <div class="expertise__title">Refonte de site</div>
+            <p class="expertise__desc">Nous auditons et ameliorons votre site web actuel pour qu'il corresponde mieux a vos objectifs, en capitalisant sur le SEO et le contenu existants.</p>
+            <a href="/contact?service=refonte" class="expertise__cta">Agence refonte site <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">language</span></div>
+            <div class="expertise__title">Conception de site multilingue</div>
+            <p class="expertise__desc">Nous assurons la visibilite et le developpement de votre site web sur tous les marches francophones et anglophones avec multi-langue et multi-devise.</p>
+            <a href="/contact?service=multilingue" class="expertise__cta">Agence multilingue <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">cloud</span></div>
+            <div class="expertise__title">Hebergement web</div>
+            <p class="expertise__desc">Nous hebergeons votre site avec des solutions performantes (Vercel, Netlify, Cloudflare) pour maintenir un site rapide, fiable et optimise pour le SEO.</p>
+            <a href="/contact?service=hebergement" class="expertise__cta">Agence hebergement <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">terminal</span></div>
+            <div class="expertise__title">Developpement web</div>
+            <p class="expertise__desc">Nous developpons des solutions digitales sur mesure basees sur vos enjeux, vos besoins mais aussi sur ceux de vos clients utilisateurs finaux.</p>
+            <a href="/contact?service=developpement" class="expertise__cta">Agence developpement <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">build</span></div>
+            <div class="expertise__title">Maintenance WordPress</div>
+            <p class="expertise__desc">Nous vous aidons a garder votre site WordPress en bonne sante en l'optimisant en permanence sur le plan technique, graphique et editorial.</p>
+            <a href="/contact?service=maintenance" class="expertise__cta">Agence maintenance <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+        </div>
+        <div class="reasons-nav">
+          <button type="button" data-target="expertisesRow" data-dir="-1" aria-label="Precedent"><span class="material-symbols-outlined">arrow_back</span></button>
+          <button type="button" data-target="expertisesRow" data-dir="1" aria-label="Suivant"><span class="material-symbols-outlined">arrow_forward</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3b. NOS FORMULES (pricing tiers) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>formules</em> de creation de site web</h2>
         <p class="sec-h__sub">Trois formules pour repondre a chaque etape de votre projet, du site vitrine professionnel a la plateforme SaaS complexe.</p>
       </div>
       <div class="prest-grid">

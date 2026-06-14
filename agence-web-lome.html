@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence web Lome - Pirabel Labs</title>
+<meta name="description" content="Agence web a Lome (Togo) : creation site internet, SEO, community management, automatisation. Specialistes du marche togolais et de l'Afrique de l'Ouest francophone.">
+<link rel="canonical" href="https://www.pirabellabs.com/agence-web-lome">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Agence web Lome - Pirabel Labs">
+<meta property="og:description" content="Agence web a Lome (Togo) : creation site internet, SEO, community management, automatisation. Specialistes du marche togolais et de l'Afrique de l'Ouest francophone.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/agence-web-lome">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.city-wrap { padding: clamp(3rem,6vw,5rem) var(--px-page); }
+.city-hero { max-width: 72rem; margin: 0 auto 4rem; text-align: center; }
+.city-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.city-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 1.25rem; }
+.city-hero h1 em { color: var(--accent); font-style: normal; }
+.city-hero__sub { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin: 0 auto 2rem; }
+.city-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.city-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem; max-width: 64rem; margin: 3rem auto 0; }
+.city-stat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; text-align: center; }
+.city-stat__num { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); margin-bottom: 0.3rem; }
+.city-stat__label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.city-section { max-width: 72rem; margin: 0 auto 4rem; }
+.city-section h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1.2rem; text-align: center; }
+.city-section h2 em { color: var(--accent); font-style: normal; }
+.city-section__intro { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 50rem; margin: 0 auto 3rem; text-align: center; }
+.city-pains { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; }
+.city-pain { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
+.city-pain__icon { width: 2.4rem; height: 2.4rem; flex-shrink: 0; background: rgba(255,85,0,0.12); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.city-pain__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.city-pain__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+.city-whys { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.25rem; }
+.city-why { background: linear-gradient(180deg, rgba(255,85,0,0.04), transparent); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
+.city-why__icon { width: 2.4rem; height: 2.4rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.city-why__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.city-why__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+.city-sectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; }
+.city-sector { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 0.75rem; text-align: center; transition: all var(--t); }
+.city-sector:hover { border-color: var(--accent); transform: translateY(-2px); }
+.city-sector__icon { display: block; color: var(--accent); font-size: 1.6rem; margin-bottom: 0.4rem; }
+.city-sector__label { font-size: 0.78rem; font-weight: 600; line-height: 1.3; }
+.city-services { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.city-service { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; gap: 0.5rem; }
+.city-service:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.city-service__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.city-service__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.city-service__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+.city-service__cta { margin-top: 0.5rem; font-size: 0.82rem; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.3rem; }
+.city-kws { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.city-kw { display: inline-block; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; color: var(--text-muted); }
+.city-faqs { max-width: 56rem; margin: 0 auto; }
+.city-faq { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.75rem; }
+.city-faq[open] { border-color: var(--accent); }
+.city-faq__q { list-style: none; cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.city-faq__q::-webkit-details-marker { display: none; }
+.city-faq__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; }
+.city-faq[open] .city-faq__q .material-symbols-outlined { transform: rotate(180deg); }
+.city-faq__a { padding: 0 1.5rem 1.5rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+.city-cta-band { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.08) 100%); border: 1px solid var(--border); border-radius: var(--radius); padding: clamp(2rem, 4vw, 3rem); text-align: center; max-width: 56rem; margin: 4rem auto 0; }
+.city-cta-band h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1rem; line-height: 1.2; }
+.city-cta-band h2 em { color: var(--accent); font-style: normal; }
+.city-cta-band p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 36rem; margin-left: auto; margin-right: auto; }
+.city-cta-band__row { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+16139273067","email":"contact@pirabellabs.com","url":"https://www.pirabellabs.com"},"areaServed":{"@type":"City","name":"Lome"},"name":"Agence web Lome","description":"Agence web a Lome (Togo) : creation site internet, SEO, community management, automatisation. Specialistes du marche togolais et de l'Afrique de l'Ouest francophone."}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Implantations locales","item":"https://www.pirabellabs.com/#villes"},{"@type":"ListItem","position":3,"name":"Agence web Lome","item":"https://www.pirabellabs.com/agence-web-lome"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pouvez-vous intervenir physiquement a Lome ?","acceptedAnswer":{"@type":"Answer","text":"Oui, nous nous deplacons regulierement a Lome pour les projets qui le justifient (lancements, formations, shooting photo, ateliers strategiques)."}},{"@type":"Question","name":"Quel budget pour un site web a Lome ?","acceptedAnswer":{"@type":"Answer","text":"Site vitrine : 800 - 2 500 EUR. E-commerce : 2 500 - 7 000 EUR. Nos tarifs sont adaptes au marche togolais."}},{"@type":"Question","name":"Integrez-vous Tmoney, Flooz et autres Mobile Money togolais ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Les passerelles regionales (PayDunya, CinetPay, FedaPay) integrent Tmoney, Flooz, MTN MoMo, Wave, cartes bancaires."}},{"@type":"Question","name":"Faites-vous du SEO local pour Lome ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Optimisation Google Business, collecte d'avis, photos professionnelles, gestion des questions. C'est souvent le levier le plus rentable a Lome."}},{"@type":"Question","name":"Combien de temps pour referencer un site sur Google au Togo ?","acceptedAnswer":{"@type":"Answer","text":"Premiers resultats SEO entre 3 et 6 mois. Pack local Google plus rapide, parfois 4-8 semaines pour des recherches peu concurrentielles."}},{"@type":"Question","name":"Acceptez-vous le F CFA ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Virement bancaire UEMOA, Mobile Money, depot espece sur demande. Facturation XOF ou EUR."}}]}
+</script>
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Services <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Creation web</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Sites sur mesure</div><div class="nav-mega__link-desc">Next.js, React, Webflow</div></div></a>
+              <a href="/creation-site-wordpress" class="nav-mega__link"><span class="material-symbols-outlined">web_asset</span><div><div class="nav-mega__link-title">Sites WordPress</div><div class="nav-mega__link-desc">Elementor + WooCommerce</div></div></a>
+              <a href="/creation-application-web" class="nav-mega__link"><span class="material-symbols-outlined">terminal</span><div><div class="nav-mega__link-title">Applications web</div><div class="nav-mega__link-desc">SaaS, MVP, plateformes</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">SEO &amp; visibilite</div>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; referencement</div><div class="nav-mega__link-desc">Trafic organique qualifie</div></div></a>
+              <a href="/fiche-google-business" class="nav-mega__link"><span class="material-symbols-outlined">location_on</span><div><div class="nav-mega__link-title">Google Business</div><div class="nav-mega__link-desc">Pack local top 3</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
+              <a href="/montage-video" class="nav-mega__link"><span class="material-symbols-outlined">movie</span><div><div class="nav-mega__link-title">Montage video</div><div class="nav-mega__link-desc">Reels, TikTok, YouTube</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Conversion</div>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
+              <a href="/email-marketing-crm" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Email &amp; CRM</div><div class="nav-mega__link-desc">HubSpot, Brevo, sequences</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Conseil &amp; bonus</div>
+              <a href="/consulting-marketing" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Consulting marketing</div><div class="nav-mega__link-desc">Audit, strategie, CMO</div></div></a>
+              <a href="/contact" class="nav-mega__link nav-mega__link--cta"><span class="material-symbols-outlined">card_giftcard</span><div><div class="nav-mega__link-title">Audit gratuit 15 min</div><div class="nav-mega__link-desc">Recommandations chiffrees</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="/#realisations" class="nav-mega__main-link">Realisations</a>
+      <a href="/#tarifs" class="nav-mega__main-link">Tarifs</a>
+      <a href="/#avis" class="nav-mega__main-link">Avis</a>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="city-wrap">
+
+  <!-- HERO -->
+  <section class="city-hero">
+    <span class="city-hero__eyebrow"><span class="material-symbols-outlined">location_on</span> Lome, Togo</span>
+    <h1>Agence web <em>Lome</em></h1>
+    <p class="city-hero__sub">Lome est un marche en croissance, avec un fort potentiel digital encore peu exploite. Nous y accompagnons des entreprises ambitieuses pour creer leur presence en ligne et gagner des parts de marche.</p>
+    <div class="city-hero__cta">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un audit gratuit</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+    </div>
+    <div class="city-stats">
+      <div class="city-stat"><div class="city-stat__num">1 800 000</div><div class="city-stat__label">Habitants</div></div>
+      <div class="city-stat"><div class="city-stat__num">Maritime</div><div class="city-stat__label">Region</div></div>
+      <div class="city-stat"><div class="city-stat__num">180 km de notre siege</div><div class="city-stat__label">Distance</div></div>
+      <div class="city-stat"><div class="city-stat__num">100%</div><div class="city-stat__label">Equipe francophone</div></div>
+    </div>
+  </section>
+
+  <!-- CONTEXTE -->
+  <section class="city-section">
+    <h2>Pourquoi Lome <em>est un marche cle</em></h2>
+    <p class="city-section__intro">Lome est la capitale et premiere ville du Togo, port commercial majeur d'Afrique de l'Ouest. Le marche digital y est moins sature qu'a Abidjan ou Dakar, ce qui rend le SEO et la publicite digitale particulierement rentables. Les entreprises qui investissent maintenant dans leur visibilite numerique prennent une avance qui sera tres difficile a rattraper dans 2 ans.</p>
+  </section>
+
+  <!-- PAIN POINTS -->
+  <section class="city-section">
+    <h2>Les <em>defis digitaux</em> a Lome</h2>
+    <p class="city-section__intro">Voici ce que nous observons chaque semaine en travaillant avec des entreprises de Lome et de sa region.</p>
+    <div class="city-pains">
+        <div class="city-pain">
+          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
+          <div>
+            <div class="city-pain__title">Marche digital sous-exploite</div>
+            <p class="city-pain__desc">Peu d'agences serieuses, peu d'entreprises avec une presence en ligne professionnelle. Opportunite enorme.</p>
+          </div>
+        </div>
+        <div class="city-pain">
+          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
+          <div>
+            <div class="city-pain__title">Concurrence ghaneenne et beninoise</div>
+            <p class="city-pain__desc">Les entreprises d'Accra et de Cotonou ciblent les clients togolais. Sans presence locale travaillee, vous cedez du terrain.</p>
+          </div>
+        </div>
+        <div class="city-pain">
+          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
+          <div>
+            <div class="city-pain__title">Trafic mobile dominant</div>
+            <p class="city-pain__desc">L'audience togolaise est tres mobile. Vitesse, design responsive et integration Mobile Money sont indispensables.</p>
+          </div>
+        </div>
+        <div class="city-pain">
+          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
+          <div>
+            <div class="city-pain__title">Manque d'avis et de signaux de confiance</div>
+            <p class="city-pain__desc">Avis Google, mentions legales, photos professionnelles : ces signaux manquent souvent. Nous batissons ce capital confiance pour vous.</p>
+          </div>
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="/contact" class="btn btn--ghost"><span class="material-symbols-outlined">support_agent</span> Discuter de votre situation</a>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="city-section">
+    <h2>Pourquoi nous choisir <em>a Lome</em></h2>
+    <p class="city-section__intro">Pirabel Labs combine connaissance fine du marche francophone et methodologie eprouvee.</p>
+    <div class="city-whys">
+        <div class="city-why">
+          <span class="city-why__icon material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="city-why__title">Proximite geographique</div>
+            <p class="city-why__desc">Lome est a 180 km de notre siege. Nous nous deplacons facilement pour les reunions strategiques, photos, formations.</p>
+          </div>
+        </div>
+        <div class="city-why">
+          <span class="city-why__icon material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="city-why__title">Connaissance du marche regional</div>
+            <p class="city-why__desc">Nous travaillons quotidiennement avec des clients de la zone UEMOA. Nous savons ce qui se passe au Benin, au Togo, au Burkina, au Niger.</p>
+          </div>
+        </div>
+        <div class="city-why">
+          <span class="city-why__icon material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="city-why__title">Equipe pluridisciplinaire interne</div>
+            <p class="city-why__desc">Sites, SEO, ads, automatisation : tout sous le meme toit, sans sous-traitance. Vos delais sont tenus.</p>
+          </div>
+        </div>
+        <div class="city-why">
+          <span class="city-why__icon material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="city-why__title">Tarifs adaptes au marche togolais</div>
+            <p class="city-why__desc">Nos forfaits sont rentables pour les PME togolaises, sans sacrifice de qualite.</p>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- SECTORS -->
+  <section class="city-section">
+    <h2>Secteurs <em>accompagnes</em></h2>
+    <p class="city-section__intro">Nos chantiers a Lome couvrent une grande diversite d'industries.</p>
+    <div class="city-sectors">
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">commerce</span>
+          <span class="city-sector__label">Commerce et import-export</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">local_shipping</span>
+          <span class="city-sector__label">Logistique et transport portuaire</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">account_balance</span>
+          <span class="city-sector__label">Banque et microfinance</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">hotel</span>
+          <span class="city-sector__label">Hotellerie</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">medical_services</span>
+          <span class="city-sector__label">Sante privee</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">school</span>
+          <span class="city-sector__label">Education et formation</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">home_work</span>
+          <span class="city-sector__label">Immobilier</span>
+        </div>
+        <div class="city-sector">
+          <span class="city-sector__icon material-symbols-outlined">business_center</span>
+          <span class="city-sector__label">Services aux entreprises</span>
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="/contact" class="btn btn--primary"><span class="material-symbols-outlined">work</span> Parlons de votre secteur</a>
+    </div>
+  </section>
+
+  <!-- SERVICES OFFERTS -->
+  <section class="city-section">
+    <h2>Nos services <em>a Lome</em></h2>
+    <p class="city-section__intro">Choisissez le levier le plus adapte a votre situation. Si vous hesitez, demandez un audit gratuit, nous vous orientons.</p>
+    <div class="city-services">
+      <a href="/creation-site-web" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="city-service__title">Creation de site web</div>
+        <div class="city-service__desc">Sites vitrines, e-commerce, applications sur-mesure, WordPress, Webflow, Next.js. Adaptes au marche de Lome.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/seo" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">search_insights</span></div>
+        <div class="city-service__title">SEO et referencement</div>
+        <div class="city-service__desc">Trafic organique qualifie : audit, mots-cles, contenu, technique, backlinks. Premieres pages Google pour Lome.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/fiche-google-business" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">location_on</span></div>
+        <div class="city-service__title">Google Business Profile</div>
+        <div class="city-service__desc">Optimisation de votre fiche, collecte d'avis, photos professionnelles. Apparaitre dans le pack local Maps a Lome.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/community-management" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="city-service__title">Community management</div>
+        <div class="city-service__desc">Instagram, TikTok, LinkedIn, Facebook. Contenu adapte a la culture locale de Lome, calendrier editorial, ads.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/tunnels-de-vente" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+        <div class="city-service__title">Tunnels de vente</div>
+        <div class="city-service__desc">Landing pages CRO, funnels e-commerce, optimisation paiement Mobile Money. Pour transformer votre trafic en CA.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="city-service__title">Automatisation marketing</div>
+        <div class="city-service__desc">Make, n8n, HubSpot, Brevo. Sequences emails, scoring, integrations CRM, chatbots WhatsApp.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/montage-video" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">movie</span></div>
+        <div class="city-service__title">Montage video</div>
+        <div class="city-service__desc">Reels Instagram, TikTok, YouTube, motion design, sous-titrage, format vertical. Production rapide et soignee.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/consulting-marketing" class="city-service">
+        <div class="city-service__icon"><span class="material-symbols-outlined">psychology</span></div>
+        <div class="city-service__title">Consulting marketing</div>
+        <div class="city-service__desc">Audit, strategie, roadmap. Quand vous voulez avancer mais ne savez pas par ou commencer.</div>
+        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- KEYWORDS / SEO LOCAL -->
+  <section class="city-section">
+    <h2>Mots-cles <em>strategiques a Lome</em></h2>
+    <p class="city-section__intro">Ces requetes Google ramenent des prospects qualifies. Nous travaillons pour positionner votre site dessus.</p>
+    <div class="city-kws"><span class="city-kw">agence web Lome</span><span class="city-kw">creation site internet Lome</span><span class="city-kw">SEO Togo</span><span class="city-kw">referencement Google Togo</span><span class="city-kw">community management Lome</span><span class="city-kw">agence digitale Lome</span><span class="city-kw">site WordPress Togo</span><span class="city-kw">site e-commerce Togo</span>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="city-section" id="faq">
+    <h2>Questions <em>frequentes</em></h2>
+    <p class="city-section__intro">Ce que les entreprises de Lome nous demandent le plus souvent.</p>
+    <div class="city-faqs">
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Pouvez-vous intervenir physiquement a Lome ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Oui, nous nous deplacons regulierement a Lome pour les projets qui le justifient (lancements, formations, shooting photo, ateliers strategiques).</div>
+        </details>
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Quel budget pour un site web a Lome ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Site vitrine : 800 - 2 500 EUR. E-commerce : 2 500 - 7 000 EUR. Nos tarifs sont adaptes au marche togolais.</div>
+        </details>
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Integrez-vous Tmoney, Flooz et autres Mobile Money togolais ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Oui. Les passerelles regionales (PayDunya, CinetPay, FedaPay) integrent Tmoney, Flooz, MTN MoMo, Wave, cartes bancaires.</div>
+        </details>
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Faites-vous du SEO local pour Lome ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Oui. Optimisation Google Business, collecte d'avis, photos professionnelles, gestion des questions. C'est souvent le levier le plus rentable a Lome.</div>
+        </details>
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Combien de temps pour referencer un site sur Google au Togo ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Premiers resultats SEO entre 3 et 6 mois. Pack local Google plus rapide, parfois 4-8 semaines pour des recherches peu concurrentielles.</div>
+        </details>
+        <details class="city-faq">
+          <summary class="city-faq__q"><span>Acceptez-vous le F CFA ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="city-faq__a">Oui. Virement bancaire UEMOA, Mobile Money, depot espece sur demande. Facturation XOF ou EUR.</div>
+        </details>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="city-cta-band">
+    <h2>Pret a developper votre entreprise <em>a Lome</em> ?</h2>
+    <p>Demandez un audit gratuit de 15 minutes. Nous regardons ensemble votre site, votre SEO, votre presence sociale, vos publicites. Vous repartez avec 3 recommandations chiffrees, qu'on travaille ensemble ou pas.</p>
+    <div class="city-cta-band__row">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Reserver l'audit gratuit</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> Ecrire sur WhatsApp</a>
+      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Envoyer un email</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <a href="/" style="display:inline-flex;align-items:center;gap:0.6rem;text-decoration:none;color:var(--text);margin-bottom:1rem;">
+          <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36">
+          <strong style="font-family:var(--font-display);font-size:1.05rem;">Pirabel Labs</strong>
+        </a>
+        <p style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;margin-top:0.5rem;">Agence marketing digital basee a Abomey-Calavi (Benin). Sites web, SEO, ads, community management, automatisation pour le marche francophone d'Afrique et d'Europe.</p>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:0.85rem;margin-bottom:0.8rem;">Creation web</h4>
+        <a href="/creation-site-web" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Sites sur mesure</a>
+        <a href="/creation-site-wordpress" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Sites WordPress</a>
+        <a href="/creation-application-web" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Applications web</a>
+        <a href="/refonte-site-web" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Refonte de site</a>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:0.85rem;margin-bottom:0.8rem;">Visibilite</h4>
+        <a href="/seo" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">SEO et referencement</a>
+        <a href="/seo-local" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">SEO local</a>
+        <a href="/fiche-google-business" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Google Business</a>
+        <a href="/community-management" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Community management</a>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:0.85rem;margin-bottom:0.8rem;">Pirabel Labs</h4>
+        <a href="/contact" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Contact</a>
+        <a href="/mentions-legales" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Mentions legales</a>
+        <a href="/politique-confidentialite" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">Confidentialite</a>
+        <a href="https://wa.me/16139273067" target="_blank" rel="noopener" style="display:block;color:var(--text-muted);font-size:0.82rem;text-decoration:none;margin-bottom:0.4rem;">WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var menu=document.getElementById('navMenu');
+  if(burger && menu) {
+    burger.addEventListener('click',function(){
+      var open=menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open',open);
+      burger.setAttribute('aria-expanded',open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click',function(e){
+        if(window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if(item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

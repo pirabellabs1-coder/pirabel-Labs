@@ -270,11 +270,9 @@
 .bigr__v em { color: var(--accent); font-style: normal; }
 .bigr__l { font-size: 0.86rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
 
-/* === 14. AVIS MARQUEE === */
+/* === 14. AVIS MARQUEE (JS-driven, toujours actif) === */
 .marquee { overflow: hidden; position: relative; mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); padding: 0.5rem 0; }
-.marquee__track { display: flex; gap: 1.25rem; width: max-content; animation: marquee 35s linear infinite; }
-.marquee:hover .marquee__track { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(calc(-50% - 0.625rem)); } }
+.marquee__track { display: flex; gap: 1.25rem; width: max-content; will-change: transform; }
 .rev { flex: 0 0 22rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
 .rev__stars { color: var(--accent); margin-bottom: 0.85rem; font-size: 0.9rem; letter-spacing: 0.1em; }
 .rev__quote { font-size: 0.9rem; line-height: 1.6; color: var(--text); margin-bottom: 1.25rem; flex: 1; }
@@ -282,7 +280,6 @@
 .rev__avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; flex-shrink: 0; }
 .rev__name { font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; }
 .rev__role { font-size: 0.72rem; color: var(--text-muted); }
-@media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
 
 /* === 15. FAQ (bordered cards) === */
 .faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
@@ -1559,6 +1556,45 @@
       el.classList.add('in-view', 'is-active');
     });
   }
+
+  // Marquee JS-driven (ignore prefers-reduced-motion, ignore CSS animation issues)
+  document.querySelectorAll('.marquee__track').forEach(function(track){
+    var pos = 0;
+    var speed = 0.55; // px par frame ~= 33px/s a 60fps
+    var halfW = 0;
+    var paused = false;
+
+    function measure(){ halfW = track.scrollWidth / 2; }
+
+    function tick(){
+      if (!paused && halfW > 0) {
+        pos -= speed;
+        if (-pos >= halfW) pos += halfW;
+        track.style.transform = 'translate3d(' + pos.toFixed(2) + 'px, 0, 0)';
+      }
+      requestAnimationFrame(tick);
+    }
+
+    var parent = track.parentElement;
+    if (parent) {
+      parent.addEventListener('mouseenter', function(){ paused = true; });
+      parent.addEventListener('mouseleave', function(){ paused = false; });
+    }
+
+    // Attend que les fonts soient chargees pour mesurer correctement
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function(){ measure(); requestAnimationFrame(tick); });
+    } else {
+      setTimeout(function(){ measure(); requestAnimationFrame(tick); }, 300);
+    }
+
+    // Remesure au resize (cards font potentiellement la largeur du viewport sur mobile)
+    var resizeTimer;
+    window.addEventListener('resize', function(){
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measure, 200);
+    });
+  });
 })();
 </script>
 </body>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion - Pirabel Labs Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+:root {
+  --bg: #0E0E0E; --bg-2: #161616; --surface: #1a1a1a;
+  --border: rgba(229, 226, 225, 0.08); --border-2: rgba(229, 226, 225, 0.15);
+  --text: #E5E2E1; --text-muted: rgba(229, 226, 225, 0.62);
+  --accent: #FF5500; --accent-2: #FF7A33; --accent-soft: rgba(255, 85, 0, 0.12);
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; position: relative; overflow: hidden; }
+body::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 30% 30%, rgba(255,85,0,0.10), transparent 60%); pointer-events: none; }
+.login { width: 100%; max-width: 26rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; position: relative; z-index: 1; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+.login__brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2rem; }
+.login__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.login__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.login h1 { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+.login__sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.75rem; }
+.login__field { margin-bottom: 1rem; }
+.login__label { display: block; font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.45rem; }
+.login__input { width: 100%; background: var(--bg); border: 1px solid var(--border-2); border-radius: 10px; padding: 0.85rem 1rem; color: var(--text); font-family: inherit; font-size: 0.95rem; transition: border-color 0.2s; }
+.login__input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,85,0,0.15); }
+.login__btn { width: 100%; background: var(--accent); color: #fff; border: 0; border-radius: 999px; padding: 0.95rem 1.2rem; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+.login__btn:hover { background: var(--accent-2); }
+.login__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.login__error { color: #f87171; font-size: 0.85rem; margin-top: 0.85rem; padding: 0.6rem 0.85rem; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; display: none; }
+.login__error.is-visible { display: block; }
+.login__footer { text-align: center; margin-top: 1.75rem; font-size: 0.75rem; color: var(--text-muted); }
+.login__footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="login">
+  <div class="login__brand">
+    <div class="login__logo">P</div>
+    <div class="login__name">Pirabel Labs</div>
+  </div>
+  <h1>Admin</h1>
+  <p class="login__sub">Connectez-vous pour acceder au tableau de bord.</p>
+  <form id="loginForm">
+    <div class="login__field">
+      <label class="login__label" for="email">Email</label>
+      <input class="login__input" type="email" id="email" name="email" required autocomplete="email" placeholder="contact@pirabellabs.com">
+    </div>
+    <div class="login__field">
+      <label class="login__label" for="password">Mot de passe</label>
+      <input class="login__input" type="password" id="password" name="password" required autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+    </div>
+    <button class="login__btn" type="submit" id="submitBtn">Se connecter <span class="material-symbols-outlined">arrow_forward</span></button>
+    <div class="login__error" id="errorBox"></div>
+  </form>
+  <div class="login__footer">Pirabel Labs &middot; Tableau de bord</div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  var errorBox = document.getElementById('errorBox');
+  errorBox.classList.remove('is-visible');
+  btn.disabled = true;
+  btn.innerHTML = 'Connexion...';
+  try {
+    var res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erreur de connexion');
+    window.location.href = '/admin/dashboard';
+  } catch(err) {
+    errorBox.textContent = err.message;
+    errorBox.classList.add('is-visible');
+    btn.disabled = false;
+    btn.innerHTML = 'Se connecter <span class="material-symbols-outlined">arrow_forward</span>';
+  }
+});
+</script>
+</body>
+</html>

@@ -94,8 +94,23 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
 
     if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
-    if (!['site-web', 'application', 'automatisation', 'seo', 'autre'].includes(service)) {
-      return res.status(400).json({ error: 'Service requis.' });
+    const VALID_SERVICES = new Set([
+      'site-web','site-sur-mesure','site-vitrine','ecommerce','saas','multilingue',
+      'wordpress','webflow','nextjs','prestashop','refonte','hebergement','maintenance','developpement',
+      'application','application-web',
+      'seo','audit-seo','seo-local','netlinking',
+      'fiche-google-business','gestion-avis-google',
+      'community-management','community','community-instagram','community-tiktok','community-linkedin',
+      'montage-video','video',
+      'automatisation','automatisation-marketing','make','n8n','agents-ia',
+      'email-marketing-crm','email','hubspot','brevo','mailchimp',
+      'tunnels-de-vente','tunnels','landing-page-conversion','systeme-io','clickfunnels',
+      'consulting-marketing','consulting',
+      'audit-lighthouse','audit-gratuit','livre-blanc-sites','livre-blanc-geo',
+      'partenariat','recrutement','autre',
+    ]);
+    if (!VALID_SERVICES.has(service)) {
+      return res.status(400).json({ error: 'Service invalide.' });
     }
     if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
 
@@ -240,6 +255,44 @@ app.delete('/api/admin/leads/:id', auth, adminOnly, async (req, res) => {
   }
 });
 
+// === STATS (dashboard analytics) ===
+app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
+  try {
+    const now = new Date();
+    const d30 = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+    const d7 = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+
+    const [total, last30, last7, byService, byStatus, bySource, last12Months] = await Promise.all([
+      Lead.countDocuments({}),
+      Lead.countDocuments({ createdAt: { $gte: d30 } }),
+      Lead.countDocuments({ createdAt: { $gte: d7 } }),
+      Lead.aggregate([{ $group: { _id: '$service', count: { $sum: 1 } } }, { $sort: { count: -1 } }]),
+      Lead.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+      Lead.aggregate([{ $group: { _id: '$source', count: { $sum: 1 } } }]),
+      Lead.aggregate([
+        { $match: { createdAt: { $gte: yearStart } } },
+        { $group: { _id: { y: { $year: '$createdAt' }, m: { $month: '$createdAt' } }, count: { $sum: 1 } } },
+        { $sort: { '_id.y': 1, '_id.m': 1 } },
+      ]),
+    ]);
+
+    const converted = await Lead.countDocuments({ status: 'won' });
+    const conversionRate = total ? Math.round((converted / total) * 100 * 10) / 10 : 0;
+
+    res.json({
+      kpis: { total, last30, last7, converted, conversionRate },
+      byService,
+      byStatus,
+      bySource,
+      last12Months,
+    });
+  } catch (err) {
+    console.error('[stats]', err.message);
+    res.status(500).json({ error: 'Erreur stats.' });
+  }
+});
+
 // === HEALTH ===
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
@@ -250,8 +303,11 @@ const ADMIN_LOGIN_PATH = '/' + (process.env.ADMIN_SECRET_PATH || 'pirabel-admin-
 app.get(ADMIN_LOGIN_PATH, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-login.html'));
 });
+app.get('/admin/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-dashboard.html'));
+});
 app.get('/admin/leads', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-leads.html'));
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-dashboard.html'));
 });
 
 // Bloque URLs admin obvious

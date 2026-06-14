@@ -105,6 +105,16 @@
 .expertise__cta:hover { background: var(--accent-2); opacity: 1; }
 .expertise__cta .material-symbols-outlined { font-size: 0.9rem; }
 
+/* Objectifs section (stats-driven benefits) */
+.objectives-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .objectives-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .objectives-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.objective { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t), transform var(--t); }
+.objective:hover { border-color: var(--accent); transform: translateY(-3px); }
+.objective__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 4.2vw, 3.25rem); color: var(--accent); line-height: 1; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.objective__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.65rem; line-height: 1.3; }
+.objective__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
 /* Prestations */
 .prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 @media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
@@ -369,10 +379,10 @@
   <section class="s-hero">
     <div class="s-hero__inner">
       <div class="s-hero__txt">
-        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Agence creation site web</span>
-        <h1>Une <em>creation de site web sur mesure</em> qui transforme vos visiteurs en clients.</h1>
-        <p class="s-hero__tagline">Agence web pour PME au Benin, en France et en Afrique francophone.</p>
-        <p class="s-hero__lead">Depuis 2020, Pirabel Labs concoit et developpe des sites institutionnels, e-commerce et plateformes 100% sur mesure en Next.js, React, Webflow ou WordPress. Performance Lighthouse 95+ garantie, design unique, SEO technique optimise des le premier jour, devis ferme sous 48h. Nos sites web deviennent de veritables actifs strategiques pour votre croissance, pas de simples vitrines en ligne de plus.</p>
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Agence web de creation de site</span>
+        <h1>Developpez et sublimez votre <em>presence en ligne</em> grace a notre agence de creation de site.</h1>
+        <p class="s-hero__tagline">Construisons votre meilleur levier d'acquisition de business.</p>
+        <p class="s-hero__lead">Votre site web constitue le socle de votre strategie marketing digital. C'est souvent votre premier generateur d'opportunites commerciales et votre premier vecteur d'image de marque. Depuis 2020, notre agence Pirabel Labs concoit et developpe des sites institutionnels, e-commerce et plateformes 100% sur mesure en Next.js, React, Webflow ou WordPress. Performance Lighthouse 95+ garantie, design unique, SEO inclus, devis ferme sous 48h.</p>
         <div class="s-hero__cta">
           <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander mon devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
@@ -484,10 +494,10 @@
             <a href="/contact?service=webflow" class="expertise__cta">Agence Webflow <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
           <div class="expertise">
-            <div class="expertise__icon"><span class="material-symbols-outlined">code</span></div>
-            <div class="expertise__title">Creation de site Next.js</div>
-            <p class="expertise__desc">Sites code en Next.js et React pour des performances Lighthouse 95+, un SEO technique impeccable et une scalabilite quasi illimitee.</p>
-            <a href="/contact?service=nextjs" class="expertise__cta">Agence Next.js <span class="material-symbols-outlined">arrow_forward</span></a>
+            <div class="expertise__icon"><span class="material-symbols-outlined">storefront</span></div>
+            <div class="expertise__title">Creation de site Prestashop</div>
+            <p class="expertise__desc">Vous utilisez Prestashop ? Nous exploitons les fonctionnalites et possibilites offertes par ce CMS e-commerce pour creer votre boutique en ligne performante.</p>
+            <a href="/contact?service=prestashop" class="expertise__cta">Agence Prestashop <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
           <div class="expertise">
             <div class="expertise__icon"><span class="material-symbols-outlined">refresh</span></div>
@@ -642,6 +652,48 @@
     </div>
   </section>
 
+  <!-- 4b. OBJECTIFS (stats-driven benefits) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Creer un site web pour <em>atteindre tous vos objectifs</em></h2>
+        <p class="sec-h__sub">6 raisons chiffrees pour lesquelles un site web professionnel est devenu indispensable en 2026.</p>
+      </div>
+      <div class="objectives-grid">
+        <div class="objective">
+          <div class="objective__num">50%</div>
+          <div class="objective__title">Vous generez plus de trafic qualifie</div>
+          <p class="objective__desc">Environ 50% du trafic d'un site provient des moteurs de recherche. Sans presence en ligne, vous etes invisible pour la moitie de votre marche potentiel.</p>
+        </div>
+        <div class="objective">
+          <div class="objective__num">81%</div>
+          <div class="objective__title">Vous attirez de nouveaux clients</div>
+          <p class="objective__desc">81% des consommateurs recherchent une entreprise ou un service en ligne avant de realiser un achat. Sans site web, vous etes purement et simplement exclu de leur reflexion.</p>
+        </div>
+        <div class="objective">
+          <div class="objective__num">56%</div>
+          <div class="objective__title">Vous credibilisez votre marque</div>
+          <p class="objective__desc">56% des consommateurs declarent ne pas faire confiance a une entreprise sans site web. Votre absence en ligne est interpretee comme un signal de manque de serieux.</p>
+        </div>
+        <div class="objective">
+          <div class="objective__num">47%</div>
+          <div class="objective__title">Vous renforcez votre autorite sectorielle</div>
+          <p class="objective__desc">47% des entreprises creent du contenu pour se demarquer de leur concurrence. Votre site est le terrain de jeu indispensable pour publier et capitaliser sur ce contenu.</p>
+        </div>
+        <div class="objective">
+          <div class="objective__num">68%</div>
+          <div class="objective__title">Vous controlez votre e-reputation</div>
+          <p class="objective__desc">68% des decisions d'achat sont influees par la reputation en ligne et les avis publies. Sans site, vous ne maitrisez pas la premiere impression que vous laissez au visiteur.</p>
+        </div>
+        <div class="objective">
+          <div class="objective__num">80%</div>
+          <div class="objective__title">Vous rendez votre marque accessible</div>
+          <p class="objective__desc">80% des consommateurs arretent leur navigation si le site ne s'affiche pas correctement sur leur ecran. Le responsive design n'est plus une option, c'est une condition de survie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 5. TEMOIGNAGES -->
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
@@ -727,28 +779,28 @@
         <div class="pd pd--prom">
           <div class="pd__h">
             <div class="pd__h-icon"><span class="material-symbols-outlined">verified</span></div>
-            <div class="pd__h-title">Notre promesse</div>
+            <div class="pd__h-title">Vous avez besoin de</div>
           </div>
           <ul class="pd__list">
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Site code en Next.js / React, performance Lighthouse 95+ garantie</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Design Figma sur mesure, valide page par page avec vous</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Devis ferme sous 48h, prix fixe, perimetre clair</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Cofondateur dedie reactif sous 4h en jours ouvres</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Code, designs et hebergement vous appartiennent integralement</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne, sans condition</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Disposer d'un site facilement administrable par votre equipe</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> D'un site conforme aux regles SEO et indexable Google</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Generer des leads qualifies avec un site oriente conversion</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Offrir une navigation coherente et fluide a vos visiteurs</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Profiter d'une solution accessible et evolutive sur 5 ans</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Etre proprietaire du code source et des designs livres</li>
           </ul>
         </div>
         <div class="pd pd--def">
           <div class="pd__h">
             <div class="pd__h-icon"><span class="material-symbols-outlined">warning</span></div>
-            <div class="pd__h-title">Ce qu'on attend de vous</div>
+            <div class="pd__h-title">Etes-vous pret a</div>
           </div>
           <ul class="pd__list">
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Disponibilite pour 1 demo visio de 30 min chaque semaine</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Retours sous 48h sur les designs et maquettes</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Contenus (textes, photos, videos) remis dans les delais</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Acompte de 30% pour bloquer notre planning</li>
-            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une vraie vision business (pas juste "un beau site")</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Etre reactif et engage tout au long du processus de creation</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Participer aux choix strategiques (parcours, contenu, design)</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Vous former a l'utilisation et a l'administration du site</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Allouer des ressources internes pour piloter le site dans la duree</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Alimenter et mettre a jour votre site regulierement</li>
           </ul>
         </div>
       </div>

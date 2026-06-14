@@ -125,26 +125,27 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       ipHash,
     });
 
-    sendEmail({
-      to: process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      subject: '[Pirabel Labs] Nouvelle demande - ' + service,
-      html: '<h2>Nouvelle demande contact</h2>' +
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      '[Pirabel Labs] Nouvelle demande - ' + service,
+      '<h2>Nouvelle demande contact</h2>' +
         '<p><strong>De :</strong> ' + escapeHtml(name) + ' &lt;' + escapeHtml(email) + '&gt;</p>' +
         (phone ? '<p><strong>Telephone :</strong> ' + escapeHtml(phone) + '</p>' : '') +
         (company ? '<p><strong>Entreprise :</strong> ' + escapeHtml(company) + '</p>' : '') +
         '<p><strong>Service :</strong> ' + escapeHtml(service) + '</p>' +
         '<hr><p style="white-space:pre-wrap;">' + escapeHtml(message) + '</p>' +
         '<hr><p style="font-size:.85em;color:#888;">ID: ' + lead._id + '</p>',
-    }).catch(e => console.error('[contact] admin email error:', e.message));
+      { replyTo: email }
+    ).catch(e => console.error('[contact] admin email error:', e.message));
 
-    sendEmail({
-      to: email,
-      subject: 'Pirabel Labs - Demande recue, reponse sous 24h',
-      html: '<h2>Bonjour ' + escapeHtml(name) + ',</h2>' +
+    sendEmail(
+      email,
+      'Pirabel Labs - Demande recue, reponse sous 24h',
+      '<h2>Bonjour ' + escapeHtml(name) + ',</h2>' +
         '<p>Nous avons bien recu votre demande concernant <strong>' + escapeHtml(service) + '</strong>.</p>' +
         '<p>Un membre de notre equipe vous repond sous 24h ouvres avec une premiere estimation et la prochaine etape proposee.</p>' +
-        '<p>A tres vite,<br>L\'equipe Pirabel Labs</p>',
-    }).catch(e => console.error('[contact] confirm email error:', e.message));
+        '<p>A tres vite,<br>L\'equipe Pirabel Labs</p>'
+    ).catch(e => console.error('[contact] confirm email error:', e.message));
 
     res.json({ success: true, message: 'Demande envoyee. Reponse sous 24h ouvres.' });
   } catch (err) {

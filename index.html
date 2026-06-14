@@ -201,7 +201,10 @@
 /* === 10. ZIGZAG TIMELINE === */
 .zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
 .zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
-.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
 .zz-step:last-child { margin-bottom: 0; }
 .zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg), 0 0 24px rgba(255,85,0,0.4); }
 .zz-step__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
@@ -269,7 +272,7 @@
 
 /* === 14. AVIS MARQUEE === */
 .marquee { overflow: hidden; position: relative; mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); padding: 0.5rem 0; }
-.marquee__track { display: flex; gap: 1.25rem; width: max-content; animation: marquee 60s linear infinite; }
+.marquee__track { display: flex; gap: 1.25rem; width: max-content; animation: marquee 35s linear infinite; }
 .marquee:hover .marquee__track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(calc(-50% - 0.625rem)); } }
 .rev { flex: 0 0 22rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
@@ -281,15 +284,17 @@
 .rev__role { font-size: 0.72rem; color: var(--text-muted); }
 @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
 
-/* === 15. FAQ === */
-.faq-list { display: flex; flex-direction: column; max-width: 48rem; margin: 0 auto; border-top: 1px solid var(--border); }
-.faq-i { border-bottom: 1px solid var(--border); }
-.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.4rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+/* === 15. FAQ (bordered cards) === */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
 .faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
 .faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
 .faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
 .faq-i[data-open="true"] .faq-i__inner { max-height: 32rem; }
-.faq-i__a-inner { padding: 0 0 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; max-width: 42rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
 
 /* === 16. BLOG === */
 .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
@@ -314,6 +319,61 @@
 .cta-card__visual-box { width: 5rem; height: 5rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 0 30px rgba(255,85,0,0.2); }
 .cta-card__visual-box .material-symbols-outlined { font-size: 2.5rem; }
 @media (max-width: 880px) { .cta-card { grid-template-columns: 1fr; } .cta-card__visual { min-height: 12rem; } }
+
+/* === EQUIPE (scroll reveal) === */
+.team-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 56rem; margin: 0 auto; }
+.team-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; display: grid; grid-template-columns: auto 1fr; gap: 1.75rem; align-items: center; opacity: 0; transform: translateX(-60px); transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1), border-color 0.2s; }
+.team-c:nth-child(2n) { transform: translateX(60px); }
+.team-c.in-view { opacity: 1; transform: translateX(0); }
+.team-c:hover { border-color: var(--accent); }
+.team-c__photo { width: 5.5rem; height: 5.5rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; flex-shrink: 0; border: 2px solid var(--accent); }
+.team-c__photo .material-symbols-outlined { font-size: 2.25rem; }
+.team-c__body { min-width: 0; }
+.team-c__name { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.2rem; }
+.team-c__role { font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--accent); margin-bottom: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.team-c__desc { font-size: 0.92rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 0.9rem; }
+.team-c__tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.team-c__tag { font-size: 0.7rem; padding: 0.3rem 0.65rem; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; color: var(--text); font-family: var(--font-display); font-weight: 600; }
+@media (max-width: 560px) {
+  .team-c { grid-template-columns: 1fr; text-align: center; padding: 1.75rem 1.25rem; }
+  .team-c__photo { margin: 0 auto; }
+  .team-c__tags { justify-content: center; }
+}
+
+/* === TRUST SCROLL (rotating sticky) === */
+.trust-scroll__intro { margin-bottom: 2.5rem; }
+.trust-scroll__inner { display: grid; grid-template-columns: 1fr 1fr; max-width: 76rem; margin: 0 auto; gap: 3rem; padding: 0 var(--px-page); }
+@media (max-width: 880px) { .trust-scroll__inner { grid-template-columns: 1fr; gap: 1rem; } }
+.trust-scroll__sticky { position: sticky; top: 7rem; height: 60vh; display: flex; align-items: center; justify-content: center; align-self: start; }
+@media (max-width: 880px) { .trust-scroll__sticky { position: relative; top: 0; height: auto; padding: 2rem 0 1rem; } }
+.trust-visual { position: relative; width: clamp(14rem, 25vw, 20rem); aspect-ratio: 1; }
+.trust-visual__ring { position: absolute; inset: 0; border-radius: 50%; }
+.trust-visual__ring--outer { border: 2px dashed var(--border-2); animation: spinSlow 35s linear infinite; }
+.trust-visual__ring--outer::before { content: ''; position: absolute; top: -0.4rem; left: 50%; transform: translateX(-50%); width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 14px var(--accent); }
+.trust-visual__ring--outer::after { content: ''; position: absolute; bottom: -0.3rem; right: 28%; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); }
+.trust-visual__ring--inner { inset: 14%; border: 1px solid var(--border); animation: spinFast 22s linear infinite reverse; }
+.trust-visual__ring--inner::before { content: ''; position: absolute; top: 50%; right: -0.3rem; transform: translateY(-50%); width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--accent-soft); border: 1px solid var(--accent); }
+.trust-visual__core { position: absolute; inset: 28%; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 0 50px rgba(255,85,0,0.3); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.trust-visual__core .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); transition: opacity 0.3s; }
+.trust-visual__core.flash { transform: scale(1.15) rotate(15deg); }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+@keyframes spinFast { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .trust-visual__ring--outer, .trust-visual__ring--inner { animation: none; }
+}
+.trust-scroll__panels { display: flex; flex-direction: column; padding-bottom: 4rem; }
+.trust-scroll__panel { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0; opacity: 0.35; transition: opacity 0.5s; }
+.trust-scroll__panel.is-active { opacity: 1; }
+@media (max-width: 880px) {
+  .trust-scroll__panel { min-height: auto; opacity: 1; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+  .trust-scroll__panel:last-child { border-bottom: 0; }
+}
+.trust-scroll__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+.trust-scroll__panel h3 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 1rem; }
+.trust-scroll__panel p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.65; max-width: 28rem; }
+.trust-scroll__panel ul { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; padding: 0; list-style: none; }
+.trust-scroll__panel li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+.trust-scroll__panel li::before { content: ''; flex-shrink: 0; margin-top: 0.55rem; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--accent); }
 
 /* === Helpers === */
 .see-more { text-align: center; margin-top: 2.5rem; }
@@ -471,6 +531,62 @@
         <div class="better__txt">
           <h3>Une meilleure facon de construire votre marketing digital</h3>
           <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, tunnels et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte toutes vos expertises a la demande, livrees en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4b. NOTRE EQUIPE (scroll reveal) -->
+  <section class="section" id="equipe">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>equipe</em></h2>
+        <p class="sec-h__sub">Les personnes derriere chaque projet. Cofondateurs basees a Abomey-Calavi + reseau de specialistes selon vos besoins.</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-c">
+          <div class="team-c__photo">LG</div>
+          <div class="team-c__body">
+            <div class="team-c__name">Lissanon Gildas</div>
+            <div class="team-c__role">Cofondateur &middot; Lead Tech & Produit</div>
+            <p class="team-c__desc">Architecte technique des projets. Pilote la conception et le developpement des sites web, applications et systemes d'automatisation. Garant de la qualite du livrable et du respect des delais.</p>
+            <div class="team-c__tags">
+              <span class="team-c__tag">Next.js</span>
+              <span class="team-c__tag">Node.js</span>
+              <span class="team-c__tag">SaaS</span>
+              <span class="team-c__tag">Automatisation</span>
+              <span class="team-c__tag">Architecture</span>
+            </div>
+          </div>
+        </div>
+        <div class="team-c">
+          <div class="team-c__photo">FI</div>
+          <div class="team-c__body">
+            <div class="team-c__name">Fidah Imorou</div>
+            <div class="team-c__role">Cofondateur &middot; Lead Marketing & Strategie</div>
+            <p class="team-c__desc">Strategie marketing 360 et acquisition. Pilote SEO, tunnels de vente, community management et campagnes ads. Specialise dans le marche francophone Afrique de l'Ouest et France.</p>
+            <div class="team-c__tags">
+              <span class="team-c__tag">SEO</span>
+              <span class="team-c__tag">Tunnels</span>
+              <span class="team-c__tag">Meta Ads</span>
+              <span class="team-c__tag">Google Ads</span>
+              <span class="team-c__tag">Strategie</span>
+            </div>
+          </div>
+        </div>
+        <div class="team-c">
+          <div class="team-c__photo"><span class="material-symbols-outlined">groups</span></div>
+          <div class="team-c__body">
+            <div class="team-c__name">Collaborateurs reguliers</div>
+            <div class="team-c__role">Reseau de specialistes</div>
+            <p class="team-c__desc">Designers UI/UX, monteurs video, community managers et developpeurs front/back freelances de confiance que nous mobilisons selon les besoins specifiques de chaque projet.</p>
+            <div class="team-c__tags">
+              <span class="team-c__tag">Design UI/UX</span>
+              <span class="team-c__tag">Montage video</span>
+              <span class="team-c__tag">Community</span>
+              <span class="team-c__tag">Dev front/back</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -818,6 +934,69 @@
       </div>
       <div class="see-more">
         <a href="/realisations" class="btn btn--ghost btn--lg">Voir toutes nos realisations <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7b. POURQUOI NOUS FAIRE CONFIANCE (scrolly + rotating) -->
+  <section class="trust-scroll section" style="background:var(--bg-2);" id="confiance">
+    <div class="trust-scroll__intro container">
+      <div class="sec-h">
+        <h2>Pourquoi <em>nous faire confiance</em></h2>
+        <p class="sec-h__sub">4 engagements concrets ecrits dans chaque devis. Faites defiler pour decouvrir.</p>
+      </div>
+    </div>
+    <div class="trust-scroll__inner">
+      <div class="trust-scroll__sticky">
+        <div class="trust-visual">
+          <div class="trust-visual__ring trust-visual__ring--outer"></div>
+          <div class="trust-visual__ring trust-visual__ring--inner"></div>
+          <div class="trust-visual__core" id="trustCore">
+            <span class="material-symbols-outlined">description</span>
+          </div>
+        </div>
+      </div>
+      <div class="trust-scroll__panels">
+        <div class="trust-scroll__panel" data-icon="description">
+          <div class="trust-scroll__tag">01 &middot; Contrat</div>
+          <h3>Devis ferme sous 48h, contrat ecrit clair</h3>
+          <p>Pas de "selon devis" en cours de route. Prix fixe, perimetre defini, planning de livraison documente. Tout est sur papier des le depart.</p>
+          <ul>
+            <li>Scope detaille avec ce qui est inclus / exclu</li>
+            <li>Planning par sprint hebdomadaire</li>
+            <li>Conditions d'evolution ecrites a l'avance</li>
+          </ul>
+        </div>
+        <div class="trust-scroll__panel" data-icon="schedule">
+          <div class="trust-scroll__tag">02 &middot; Reactivite</div>
+          <h3>Reponse sous 4h en jours ouvres</h3>
+          <p>Vous n'attendez pas 3 jours pour un retour. Cofondateur dedie, ligne WhatsApp directe pour les questions courtes, demos visio chaque vendredi en sprint.</p>
+          <ul>
+            <li>Cofondateur joignable, pas un sales</li>
+            <li>WhatsApp + email + Notion partage</li>
+            <li>Demo visio hebdomadaire</li>
+          </ul>
+        </div>
+        <div class="trust-scroll__panel" data-icon="lock_open">
+          <div class="trust-scroll__tag">03 &middot; Propriete</div>
+          <h3>Le code et les designs vous appartiennent</h3>
+          <p>Une fois la facture reglee, tout vous appartient : code source, designs Figma, assets graphiques, documentation, acces admin et hebergement. Aucun verrou.</p>
+          <ul>
+            <li>Code source remis sur votre Git</li>
+            <li>Designs Figma integralement transferes</li>
+            <li>Acces admin sous votre seul controle</li>
+          </ul>
+        </div>
+        <div class="trust-scroll__panel" data-icon="check_circle">
+          <div class="trust-scroll__tag">04 &middot; Garantie</div>
+          <h3>Garantie 30 jours apres livraison</h3>
+          <p>Tout bug imputable a notre travail est corrige gratuitement pendant 30 jours apres la mise en production. Sans condition, sans facture supplementaire.</p>
+          <ul>
+            <li>Bugs corriges sous 48h ouvres</li>
+            <li>Aucune condition, aucun cout cache</li>
+            <li>Documentation de prise en main remise</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -1331,6 +1510,48 @@
       btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
     });
   });
+
+  // Scroll-reveal IntersectionObserver pour zigzag + team
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          ioAnim.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step, .team-c').forEach(function(el){
+      ioAnim.observe(el);
+    });
+
+    // Trust scroll - panel actif change icone du core
+    var trustPanels = document.querySelectorAll('.trust-scroll__panel');
+    var trustCore = document.getElementById('trustCore');
+    if (trustPanels.length && trustCore) {
+      var trustObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) {
+            trustPanels.forEach(function(p){ p.classList.remove('is-active'); });
+            e.target.classList.add('is-active');
+            var icon = e.target.dataset.icon;
+            if (icon) {
+              var span = trustCore.querySelector('.material-symbols-outlined');
+              if (span) span.textContent = icon;
+              trustCore.classList.add('flash');
+              setTimeout(function(){ trustCore.classList.remove('flash'); }, 600);
+            }
+          }
+        });
+      }, { threshold: 0.5, rootMargin: '-15% 0px -35% 0px' });
+      trustPanels.forEach(function(p){ trustObs.observe(p); });
+    }
+  } else {
+    // Fallback: tout visible si pas d'IntersectionObserver
+    document.querySelectorAll('.zz-step, .team-c').forEach(function(el){
+      el.classList.add('in-view');
+    });
+  }
 })();
 </script>
 </body>

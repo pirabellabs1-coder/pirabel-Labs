@@ -33,7 +33,21 @@
     { "source": "/api/(.*)", "destination": "/api/index.js" }
   ],
   "redirects": [
-    { "source": "/(.+)\\.html", "destination": "/$1", "permanent": true }
+    { "source": "/(.+)\\.html", "destination": "/$1", "permanent": true },
+    { "source": "/a-propos", "destination": "/contact", "permanent": false },
+    { "source": "/blog", "destination": "/contact", "permanent": false },
+    { "source": "/blog/:slug*", "destination": "/contact", "permanent": false },
+    { "source": "/realisations", "destination": "/contact", "permanent": false },
+    { "source": "/realisations/:slug*", "destination": "/contact", "permanent": false },
+    { "source": "/creation-site-web", "destination": "/contact", "permanent": false },
+    { "source": "/creation-application", "destination": "/contact", "permanent": false },
+    { "source": "/automatisation", "destination": "/contact", "permanent": false },
+    { "source": "/seo", "destination": "/contact", "permanent": false },
+    { "source": "/mentions-legales", "destination": "/contact", "permanent": false },
+    { "source": "/politique-confidentialite", "destination": "/contact", "permanent": false },
+    { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },
+    { "source": "/lesson/:slug*", "destination": "/contact", "permanent": false },
+    { "source": "/en/:slug*", "destination": "/", "permanent": false }
   ],
   "cleanUrls": true,
   "trailingSlash": false

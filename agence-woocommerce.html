@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence WooCommerce - Pirabel Labs | Boutique en ligne WordPress</title>
+<meta name="description" content="Agence WooCommerce au Benin et France. Boutique en ligne WordPress + Stripe + Mobile Money. Modules e-commerce performants. Devis 48h.">
+<meta name="keywords" content="agence woocommerce, woocommerce benin, wordpress e-commerce, stripe mobile money woocommerce, boutique en ligne wordpress, plugin woocommerce, integrateur woocommerce, woocommerce abomey-calavi, woocommerce cotonou, woocommerce france, woocommerce afrique, kkiapay woocommerce, fedapay woocommerce, woocommerce sur mesure, theme woocommerce, maintenance woocommerce, securite woocommerce, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/agence-woocommerce">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence WooCommerce - Pirabel Labs">
+<meta property="og:description" content="Boutiques WordPress + WooCommerce, Stripe et Mobile Money. Setup pro, maintenance, securite. Devis 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/agence-woocommerce">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Pourquoi WooCommerce - 4 cards */
+.why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 1024px) { .why-grid { grid-template-columns: repeat(2, 1fr); max-width: 40rem; } }
+@media (max-width: 540px) { .why-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.why { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.5rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.why:hover { border-color: var(--accent); transform: translateY(-3px); }
+.why__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.why__icon .material-symbols-outlined { font-size: 1.5rem; }
+.why__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.55rem; }
+.why__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.why__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Extensions WooCommerce grid (logos style) */
+.ext-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .ext-grid { grid-template-columns: repeat(2, 1fr); max-width: 40rem; } }
+@media (max-width: 480px) { .ext-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.ext { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem 1.4rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.ext:hover { border-color: var(--accent); transform: translateY(-2px); }
+.ext__logo { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-family: var(--font-display); font-weight: 800; font-size: 1rem; }
+.ext__logo .material-symbols-outlined { font-size: 1.45rem; }
+.ext__tag { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-display); font-weight: 700; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.45rem; }
+.ext__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.ext__desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Zigzag methodologie - 5 etapes */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* Maintenance & securite - 6 items */
+.maint-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .maint-grid { grid-template-columns: repeat(2, 1fr); max-width: 40rem; } }
+@media (max-width: 540px) { .maint-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.maint { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; display: flex; flex-direction: column; transition: all var(--t); }
+.maint:hover { border-color: var(--accent); transform: translateY(-2px); }
+.maint__icon { width: 2.85rem; height: 2.85rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.maint__icon .material-symbols-outlined { font-size: 1.45rem; }
+.maint__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.maint__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.85rem; flex: 1; }
+.maint__meta { font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.35rem; }
+.maint__meta .material-symbols-outlined { font-size: 0.85rem; }
+
+/* Methodologie compact (4 etapes) */
+.meth-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .meth-grid { grid-template-columns: repeat(2, 1fr); max-width: 40rem; } }
+@media (max-width: 540px) { .meth-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.meth { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; display: flex; flex-direction: column; position: relative; transition: all var(--t); }
+.meth:hover { border-color: var(--accent); }
+.meth__step { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.5rem; }
+.meth__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.meth__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Parent link card (decouvrir WordPress) */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; text-decoration: none; color: var(--text); transition: all var(--t); }
+.parent-card::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 12rem; height: 12rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.15; pointer-events: none; }
+.parent-card:hover { transform: translateY(-3px); border-color: var(--accent-2); opacity: 1; box-shadow: 0 12px 40px rgba(255,85,0,0.18); }
+@media (max-width: 720px) { .parent-card { grid-template-columns: 1fr; text-align: center; } }
+.parent-card__icon { width: 4.5rem; height: 4.5rem; background: var(--accent); color: #fff; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 12px 32px rgba(255,85,0,0.3); }
+.parent-card__icon .material-symbols-outlined { font-size: 2.2rem; }
+@media (max-width: 720px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__txt { min-width: 0; }
+.parent-card__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 0.55rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 2.4vw, 1.65rem); line-height: 1.25; margin-bottom: 0.6rem; }
+.parent-card__title em { color: var(--accent); font-style: normal; }
+.parent-card__desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; white-space: nowrap; transition: all var(--t); }
+.parent-card:hover .parent-card__cta { background: var(--accent-2); transform: translateX(4px); }
+@media (max-width: 720px) { .parent-card__cta { justify-self: center; } }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+.fcta p a { color: #fff; text-decoration: underline; font-weight: 700; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+
+/* Intro / pedagogie */
+.intro-block { max-width: 56rem; margin: 0 auto; }
+.intro-block p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.25rem; }
+.intro-block p strong { color: var(--text); font-weight: 700; }
+.intro-block p em { color: var(--accent); font-style: normal; font-weight: 600; }
+.intro-block p a { color: var(--accent); text-decoration: underline; font-weight: 600; }
+.intro-callout { background: var(--bg-2); border-left: 4px solid var(--accent); padding: 1.4rem 1.65rem; margin: 1.85rem 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.intro-callout__h { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.4rem; }
+.intro-callout__h .material-symbols-outlined { font-size: 1.05rem; }
+.intro-callout p { font-size: 0.95rem; line-height: 1.7; margin-bottom: 0; color: var(--text); }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Agence WooCommerce","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"}},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Agence WooCommerce specialisee dans la creation de boutiques en ligne WordPress. Integration Stripe, Mobile Money (Kkiapay, FedaPay), maintenance et securite.","serviceType":"E-commerce WordPress","isPartOf":{"@type":"Service","name":"Creation de site WordPress","url":"https://www.pirabellabs.com/creation-site-wordpress"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Sites WordPress","item":"https://www.pirabellabs.com/creation-site-wordpress"},{"@type":"ListItem","position":3,"name":"Agence WooCommerce","item":"https://www.pirabellabs.com/agence-woocommerce"}]}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-wordpress">Sites WordPress</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Agence WooCommerce</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">storefront</span> Sous-service WordPress</span>
+        <h1><em>Agence WooCommerce</em>&nbsp;: boutique en ligne performante.</h1>
+        <p class="s-hero__tagline">E-commerce WordPress + Stripe + Mobile Money &middot; Pour PME francophones</p>
+        <p class="s-hero__lead">WooCommerce est l'extension e-commerce la plus utilisee au monde. C'est aussi l'option la plus economique pour lancer une boutique en ligne professionnelle quand on demarre. Nous vous aidons a poser des fondations propres&nbsp;: theme bien choisi, catalogue structure, paiements multi-pays (Stripe pour la France et l'Europe, Kkiapay et FedaPay pour le Benin et l'Afrique de l'Ouest), tunnel de commande qui convertit, et maintenance reguliere pour que tout reste sain dans le temps.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=woocommerce" class="btn btn--primary btn--lg">Demander mon devis WooCommerce <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20creer%20une%20boutique%20WooCommerce" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shopping_cart</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">storefront</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">credit_card</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Boutique en ligne pro</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">payments</span> Stripe + Mobile Money</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">workspace_premium</span> WooCommerce expert</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">bolt</span> Setup 4 semaines</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. INTRO PEDAGOGIQUE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>WooCommerce, c'est <em>WordPress qui sait vendre</em>.</h2>
+        <p class="sec-h__sub">Reprenons depuis le debut, sans jargon, pour comprendre pourquoi des millions de boutiques tournent sur cette technologie et pourquoi elle reste un choix pertinent en 2026.</p>
+      </div>
+      <div class="intro-block">
+        <p>Quand vous installez <strong>WordPress</strong> seul, vous obtenez un systeme de gestion de contenu&nbsp;: vous pouvez publier des pages, des articles, gerer un blog. Mais vous ne pouvez pas vendre. <em>WooCommerce</em> est l'extension officielle qui transforme WordPress en boutique en ligne. Elle ajoute tout ce dont vous avez besoin pour vendre&nbsp;: une fiche produit, un panier, un tunnel de commande, une gestion des stocks, des emails automatiques, des taxes et des frais de livraison.</p>
+        <p>WooCommerce est <strong>gratuit, open-source</strong> et appartient a la societe Automattic, la meme qui developpe WordPress. Le code est ouvert, vous le possedez, vous pouvez le modifier. Aujourd'hui, WooCommerce represente environ <em>30% de toutes les boutiques en ligne dans le monde</em>&nbsp;: il est plus utilise que Shopify, Wix ou tout autre concurrent. Ce n'est pas un hasard&nbsp;: c'est economique, extensible, et compatible avec tout l'ecosysteme WordPress.</p>
+        <div class="intro-callout">
+          <div class="intro-callout__h"><span class="material-symbols-outlined">lightbulb</span> A retenir</div>
+          <p>WooCommerce est un excellent choix si vous lancez votre premiere boutique, si vous avez deja un site WordPress que vous voulez transformer en e-commerce, ou si vous voulez garder la maitrise complete de votre boutique sans payer un abonnement mensuel a vie. Pour un comparatif plus large entre WooCommerce, Shopify et le sur-mesure, consultez notre page parent <a href="/creation-site-wordpress">creation de site WordPress</a>.</p>
+        </div>
+        <p>Notre travail d'<strong>agence WooCommerce</strong> consiste a vous accompagner sur tout le cycle&nbsp;: bien comprendre votre catalogue et vos clients, choisir un theme qui correspond a votre image, parametrer WooCommerce avec les bonnes extensions, integrer les paiements adaptes a votre marche (Stripe pour les Europeens, <em>Mobile Money</em> pour les Africains, parfois les deux), tester, mettre en ligne, puis assurer la maintenance et la securite pour que votre boutique reste performante dans la duree.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. POURQUOI WOOCOMMERCE - 4 CARDS -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi choisir <em>WooCommerce</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Quatre raisons concretes qui expliquent pourquoi cette extension domine le marche du e-commerce open-source.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why">
+          <div class="why__icon"><span class="material-symbols-outlined">savings</span></div>
+          <div class="why__num">01 &middot; Economie</div>
+          <h3 class="why__title">Gratuit et open-source</h3>
+          <p class="why__desc">Aucun abonnement mensuel obligatoire, contrairement a Shopify ou BigCommerce. Vous payez votre hebergement (souvent 5 a 30 EUR par mois), votre nom de domaine, et c'est tout pour la base. Vous gardez 100% de vos marges, sans commission sur chaque vente. Pour une PME qui demarre avec un budget serre, c'est decisif.</p>
+        </div>
+        <div class="why">
+          <div class="why__icon"><span class="material-symbols-outlined">extension</span></div>
+          <div class="why__num">02 &middot; Modularite</div>
+          <h3 class="why__title">Extensible via plugins</h3>
+          <p class="why__desc">Plus de 6 000 extensions disponibles pour WooCommerce&nbsp;: abonnements, programmes de fidelite, devis, points de livraison, multivendeurs, etc. Tout ce que fait Shopify avec ses apps, WooCommerce le fait aussi&nbsp;: souvent moins cher, souvent avec plus de souplesse. Votre boutique evolue avec votre activite, pas l'inverse.</p>
+        </div>
+        <div class="why">
+          <div class="why__icon"><span class="material-symbols-outlined">hub</span></div>
+          <div class="why__num">03 &middot; Integration</div>
+          <h3 class="why__title">Au coeur de WordPress</h3>
+          <p class="why__desc">Si vous avez deja un site WordPress (blog, vitrine), WooCommerce s'y greffe naturellement&nbsp;: meme interface d'administration, memes utilisateurs, meme SEO, memes formulaires de contact. Pas besoin de jongler entre deux outils. Vous pilotez votre contenu et votre boutique au meme endroit, sans synchronisation a maintenir.</p>
+        </div>
+        <div class="why">
+          <div class="why__icon"><span class="material-symbols-outlined">search</span></div>
+          <div class="why__num">04 &middot; Visibilite</div>
+          <h3 class="why__title">SEO-friendly natif</h3>
+          <p class="why__desc">Chaque produit, chaque categorie, chaque page WooCommerce est indexable par Google avec une URL propre, un titre, une meta description, du contenu structure. Les balises <em>schema.org</em> Product sont generees automatiquement. Combine avec Yoast ou Rank Math, WooCommerce reste l'un des meilleurs choix pour ranker sur les requetes commerciales en francais.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. EXTENSIONS WOOCOMMERCE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Extensions <em>WooCommerce</em> que nous integrons.</h2>
+        <p class="sec-h__sub">Un ecosysteme riche, mais qu'il faut choisir avec discernement. Voici les modules que nous utilisons regulierement sur les boutiques de nos clients PME francophones.</p>
+      </div>
+      <div class="ext-grid">
+        <div class="ext">
+          <div class="ext__logo">WPC</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">inventory_2</span> Catalogue avance</div>
+          <h3 class="ext__name">WPC Product Bundles</h3>
+          <p class="ext__desc">Vendre des packs produits, des lots, des configurations sur mesure. Tres utile pour les boutiques qui proposent des kits ou des bundles a prix unique a partir de plusieurs SKU distincts.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">Y!</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">favorite</span> Suite premium</div>
+          <h3 class="ext__name">YITH WooCommerce</h3>
+          <p class="ext__desc">Editeur historique de 100+ extensions WooCommerce premium&nbsp;: wishlist, badges, demandes de devis, comparateur produits, points fidelite. Qualite de code reconnue, mises a jour regulieres.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">WF</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">conversion_path</span> Tunnel pro</div>
+          <h3 class="ext__name">WooFunnels</h3>
+          <p class="ext__desc">Constructeur de tunnels de vente complet pour WooCommerce&nbsp;: checkout one-page, upsells post-achat, order bumps, panier abandonne. La reference quand on veut maximiser la conversion sans coder.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">MP</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">mail</span> Emailing natif</div>
+          <h3 class="ext__name">MailPoet</h3>
+          <p class="ext__desc">Newsletter et automatisations email integrees directement a WordPress et WooCommerce, sans Mailchimp ou outil externe. Welcome series, panier abandonne, post-achat, le tout en RGPD compatible.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">Sub</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">replay</span> Recurrent</div>
+          <h3 class="ext__name">WooCommerce Subscriptions</h3>
+          <p class="ext__desc">L'extension officielle pour vendre des abonnements&nbsp;: box mensuelle, acces a un contenu, services recurrents. Compatible Stripe, gestion des relances de paiement et des resiliations en autonomie.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">$</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">credit_card</span> Paiement Europe</div>
+          <h3 class="ext__name">Stripe</h3>
+          <p class="ext__desc">Standard mondial pour les paiements en ligne. Carte bancaire (Visa, Mastercard, Amex), Apple Pay, Google Pay, SEPA, klarna. Setup rapide, 3D Secure natif, paiement en 3x pour augmenter le panier moyen.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">Kk</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">phone_iphone</span> Mobile Money</div>
+          <h3 class="ext__name">Kkiapay</h3>
+          <p class="ext__desc">Agregateur Mobile Money pour le Benin et l'Afrique de l'Ouest. MTN Money, Moov Money, cartes bancaires africaines. Plugin WooCommerce officiel, integration simple, parfait pour vendre localement.</p>
+        </div>
+        <div class="ext">
+          <div class="ext__logo">Fd</div>
+          <div class="ext__tag"><span class="material-symbols-outlined">payments</span> Multi-pays</div>
+          <h3 class="ext__name">FedaPay</h3>
+          <p class="ext__desc">Concurrent direct de Kkiapay, couvre une dizaine de pays d'Afrique francophone (Benin, Cote d'Ivoire, Togo, Senegal). Plugin WooCommerce maintenu, dashboard clair, parfait pour les boutiques multi-marche.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. METHODE SETUP WOOCOMMERCE EN 5 ETAPES -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre methode <em>setup WooCommerce</em> en 5 etapes.</h2>
+        <p class="sec-h__sub">Une boutique en ligne ne s'improvise pas. Voici l'enchainement methodique que nous appliquons pour livrer une boutique qui tient la route des le premier jour.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Audit besoins</span>
+            <h3 class="zz-step__title">Comprendre votre catalogue et vos clients</h3>
+            <p class="zz-step__desc">Combien de produits&nbsp;? Variations (taille, couleur)&nbsp;? Stocks physiques ou dropshipping&nbsp;? Vous vendez au Benin, en France, ou les deux&nbsp;? Quels modes de paiement vos clients utilisent reellement&nbsp;? Quels transporteurs&nbsp;? Sans ces reponses, on ne peut pas faire de bons choix d'extensions. Cet atelier dure environ 2 heures et conditionne toute la suite.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Semaine 1 &middot; 2h d'atelier</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Theme + design</span>
+            <h3 class="zz-step__title">Choisir et personnaliser le theme</h3>
+            <p class="zz-step__desc">Nous selectionnons un theme WordPress optimise WooCommerce (Astra, Kadence, Blocksy, ou un theme premium selon votre budget) puis le personnalisons a votre charte&nbsp;: couleurs, typographies, header, footer, page produit, fiche categorie. Objectif&nbsp;: une boutique qui ne ressemble pas a un template generique et qui charge en moins de 2 secondes.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Semaine 1-2 &middot; 5 a 8 jours</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Setup catalogue</span>
+            <h3 class="zz-step__title">Structurer le catalogue produits</h3>
+            <p class="zz-step__desc">Import ou saisie des produits, des categories, des attributs (taille, couleur, materiau), des images, des descriptions optimisees SEO. Configuration des stocks, des taxes (TVA si applicable, exoneration si Benin), des frais de livraison par zone (livraison Cotonou, livraison France metropolitaine, etc.). Pour les gros catalogues, import CSV ou via API.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Semaine 2-3 &middot; selon volume</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Paiements</span>
+            <h3 class="zz-step__title">Integrer Stripe et Mobile Money</h3>
+            <p class="zz-step__desc">Connexion Stripe pour les paiements carte bancaire Europe (compte Stripe a votre nom, KYC valide, 3D Secure actif). En parallele, integration Kkiapay et/ou FedaPay pour le Mobile Money Afrique. Configuration du checkout pour proposer le bon moyen de paiement selon le pays detecte. Tests avec cartes de test puis transactions reelles.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Semaine 3 &middot; 3 a 5 jours</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">5</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Tests + mise en ligne</span>
+            <h3 class="zz-step__title">Recetter et mettre en production</h3>
+            <p class="zz-step__desc">Tests complets&nbsp;: parcours client de A a Z, emails de confirmation, gestion des stocks apres commande, factures, mobile, performance Lighthouse, SEO technique. Configuration SSL, sauvegarde initiale, monitoring uptime. Mise en ligne en presence de votre equipe, formation 1h a l'admin, documentation remise. La boutique est a vous.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Semaine 4 &middot; 3 jours</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. MAINTENANCE & SECURITE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Maintenance et securite <em>WooCommerce</em>.</h2>
+        <p class="sec-h__sub">Une boutique en ligne, c'est un site web qui collecte de l'argent et des donnees personnelles. Sa securite n'est pas optionnelle, c'est la base de la confiance de vos clients.</p>
+      </div>
+      <div class="maint-grid">
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">system_update</span></div>
+          <h3 class="maint__title">Mises a jour des plugins</h3>
+          <p class="maint__desc">Chaque mois, nous mettons a jour WordPress core, WooCommerce, le theme et toutes les extensions installees. Avant chaque mise a jour majeure, nous testons sur un environnement de staging pour eviter les regressions sur votre boutique en production.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">calendar_month</span> Mensuel</span>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">cloud_sync</span></div>
+          <h3 class="maint__title">Backup quotidien</h3>
+          <p class="maint__desc">Sauvegarde automatique chaque nuit&nbsp;: fichiers WordPress complets et base de donnees WooCommerce (commandes, clients, produits). Stockage externalise hors de votre hebergement, retention 30 jours minimum, restauration testee chaque trimestre.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">schedule</span> Chaque nuit</span>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">security</span></div>
+          <h3 class="maint__title">Firewall applicatif</h3>
+          <p class="maint__desc">Mise en place d'un WAF (Web Application Firewall) via Wordfence, Cloudflare ou Sucuri selon vos besoins. Blocage des tentatives d'injection SQL, des attaques par force brute sur la page de connexion, des bots malveillants qui scrapent votre catalogue.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">verified</span> 24/7</span>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">monitoring</span></div>
+          <h3 class="maint__title">Monitoring uptime</h3>
+          <p class="maint__desc">Surveillance permanente de votre boutique via UptimeRobot, BetterStack ou equivalent. Verification toutes les 5 minutes, alerte SMS et email en moins de 2 minutes si la boutique tombe. Rapport mensuel de disponibilite envoye par email avec analyse des incidents.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">check_circle</span> Check 5 min</span>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">shield_lock</span></div>
+          <h3 class="maint__title">Patches de securite</h3>
+          <p class="maint__desc">Veille active sur les CVE WordPress et WooCommerce. Application des patches critiques sous 24 a 72h, hors fenetre de maintenance planifiee. Communication transparente avec vous a chaque intervention sensible sur votre boutique, sans interruption de service.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">priority_high</span> Sous 72h</span>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">support_agent</span></div>
+          <h3 class="maint__title">Support en 4h</h3>
+          <p class="maint__desc">Une question sur votre boutique, une modification a faire, un bug client&nbsp;? Reponse garantie en moins de 4 heures en jours ouvres, par WhatsApp, email ou ticket. Pour les incidents critiques (boutique inaccessible, paiement HS), intervention prioritaire immediate.</p>
+          <span class="maint__meta"><span class="material-symbols-outlined">timer</span> 4h ouvres</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACT 4 ETAPES -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em>, en bref.</h2>
+        <p class="sec-h__sub">Du premier contact a la mise en ligne, quatre etapes claires pour eviter les mauvaises surprises et tenir les delais annonces.</p>
+      </div>
+      <div class="meth-grid">
+        <div class="meth">
+          <div class="meth__step">Etape 01</div>
+          <h3 class="meth__title">Brief et devis</h3>
+          <p class="meth__desc">Echange de 45 minutes pour comprendre votre activite, votre catalogue, vos paiements cibles. Devis ferme detaille sous 48h&nbsp;: scope, prix, planning, livrables, conditions.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Etape 02</div>
+          <h3 class="meth__title">Setup et design</h3>
+          <p class="meth__desc">Theme choisi, charte appliquee, structure de catalogue mise en place. Vous voyez une preview cliquable en fin de semaine 2 et validez la direction visuelle avant qu'on passe a l'integration.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Etape 03</div>
+          <h3 class="meth__title">Integration et tests</h3>
+          <p class="meth__desc">Produits, paiements, livraison, emails transactionnels, RGPD. Tests fonctionnels, performance, mobile. Recette finale conjointe avec vous sur un environnement de staging avant mise en production.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Etape 04</div>
+          <h3 class="meth__title">Mise en ligne et suivi</h3>
+          <p class="meth__desc">Bascule en production, surveillance des 72 premieres heures, formation a l'admin WooCommerce. Garantie 30 jours sur tout bug imputable a notre travail puis maintenance optionnelle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Questions <em>frequentes</em>.</h2>
+        <p class="sec-h__sub">Les questions reelles que nous recevons chaque semaine de la part de PME qui envisagent WooCommerce. Reponses claires, sans langue de bois.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget prevoir pour une boutique WooCommerce&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Pour une boutique WooCommerce professionnelle clef en main par notre agence, comptez <strong>entre 1 800 et 6 500 EUR HT</strong> selon le scope&nbsp;: <strong>1 800 a 3 000 EUR</strong> pour une boutique simple (moins de 50 produits, 1 mode de paiement, theme premium standard). <strong>3 500 a 5 000 EUR</strong> pour une boutique moyenne (catalogue structure avec variations, Stripe + Mobile Money, tunnel WooFunnels, MailPoet). <strong>5 500 a 6 500 EUR</strong> pour une boutique avancee (abonnements, multi-vendeurs, integrations CRM/ERP, multilingue). Hebergement et licences plugins en sus (environ 150 a 400 EUR la premiere annee). Pour comparer avec d'autres options WordPress non e-commerce, consultez notre page parent <a href="/creation-site-wordpress">creation de site WordPress</a>.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps pour livrer une boutique WooCommerce&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Une boutique standard est livree en <strong>3 a 5 semaines</strong> calendaires a partir de la signature du devis et de la reception des elements (charte, contenus, photos produits, acces hebergement). Pour une boutique avancee avec abonnements, integrations CRM ou multilingue, comptez plutot <strong>6 a 8 semaines</strong>. Le planning sprint par sprint est detaille dans le devis ferme. Nous fonctionnons par revues hebdomadaires en visio chaque vendredi pour que vous voyiez l'avancement reel et puissiez ajuster en continu, sans surprise a la mise en ligne.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer le Mobile Money pour mes clients en Afrique&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est une de nos specialites. Nous integrons <strong>Kkiapay</strong> (MTN Money, Moov Money, cartes africaines, principalement Benin et zone UEMOA) et <strong>FedaPay</strong> (couverture multi-pays Afrique francophone) directement dans WooCommerce via leurs plugins officiels. Vous ouvrez le compte marchand a votre nom, nous integrons techniquement et testons avec des vraies transactions. Pour les clients europeens en parallele, nous configurons Stripe sur le meme checkout, avec detection automatique du pays et affichage du bon moyen de paiement. Resultat&nbsp;: un Beninois paie en Mobile Money, un Francais paie en CB Stripe, sans friction.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Ma boutique WooCommerce peut-elle etre multilingue&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, sans probleme. WooCommerce est compatible avec les principaux plugins multilingues&nbsp;: <strong>WPML</strong> (la reference payante, 99 EUR/an, parfait pour FR + EN + autres langues), <strong>Polylang</strong> (version gratuite limitee, version Pro pour WooCommerce 99 EUR/an), ou <strong>TranslatePress</strong> (interface tres simple, edition visuelle). Chaque produit, chaque categorie, chaque page peut etre traduite individuellement. Le SEO multilingue est gere proprement avec balises hreflang. Comptez environ 800 a 1 500 EUR de travail supplementaire pour la mise en place et la configuration d'une seconde langue sur une boutique existante.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Que se passe-t-il si ma boutique grossit&nbsp;? Est-ce que WooCommerce tient la charge&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">WooCommerce gere parfaitement bien jusqu'a <strong>plusieurs milliers de produits</strong> et plusieurs centaines de commandes par jour, a condition que l'hebergement et les optimisations soient bien faites. La plupart des problemes de scalabilite viennent d'un hebergement mutualise sous-dimensionne ou de plugins mal codes, pas de WooCommerce lui-meme. Pour les boutiques a fort trafic, nous recommandons un VPS dedie (Kinsta, WP Engine, ou OVH cloud), un cache serveur (Redis ou Memcached), un CDN (Cloudflare), et un audit annuel de performance. Au-dela de 10 000 SKU ou de 1 000 commandes/jour, il peut etre pertinent de basculer vers une architecture headless WordPress + Next.js&nbsp;: nous savons faire aussi.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Proposez-vous un contrat de maintenance apres la mise en ligne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Apres la garantie 30 jours incluse (bugs imputables a notre travail corriges gratuitement), nous proposons un forfait <strong>maintenance WooCommerce mensuel</strong>. Le tarif depend du scope&nbsp;: <strong>120 EUR/mois</strong> pour une boutique simple (updates, backups, monitoring, 1h d'intervention), <strong>250 EUR/mois</strong> pour le standard (le precedent + 3h d'intervention + report mensuel), <strong>450 EUR/mois</strong> et plus pour les boutiques critiques (intervention prioritaire 4h, audit trimestriel, 6h+ d'intervention). Sans forfait, vous restez autonome avec nos interventions ponctuelles facturees au TJM de 500 EUR HT. Nous recommandons fortement un forfait des que votre boutique fait du chiffre regulier.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux migrer ma boutique Shopify ou Prestashop vers WooCommerce&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">C'est tout a fait realisable et nous le faisons regulierement. La migration se passe en 4 etapes&nbsp;: <strong>export propre</strong> du catalogue source (produits, categories, clients, commandes historiques si necessaire) au format CSV ou via API. <strong>Setup WooCommerce</strong> sur un environnement de staging avec import des donnees. <strong>Mapping des URLs</strong> anciennes vers les nouvelles avec redirections 301 systematiques pour preserver le SEO. <strong>Bascule en production</strong> avec surveillance du ranking Google sur 30 jours. Pour une boutique Shopify de 200 produits avec historique, comptez environ 2 500 a 4 000 EUR HT et 4 a 6 semaines. Le gain de marge mensuel (suppression des frais Shopify) amortit generalement la migration en moins d'un an.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7.3. NOS ENGAGEMENTS WOOCOMMERCE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>engagements</em> sur chaque boutique WooCommerce.</h2>
+        <p class="sec-h__sub">Cinq engagements clairs que nous tenons sur chaque mission, sans clause cachee ni petits caracteres. Si nous ne les tenons pas, vous etes rembourse.</p>
+      </div>
+      <div class="meth-grid">
+        <div class="meth">
+          <div class="meth__step">Engagement 01</div>
+          <h3 class="meth__title">Devis ferme sous 48h</h3>
+          <p class="meth__desc">Apres notre echange initial, vous recevez un devis ferme et detaille en moins de 48 heures ouvrees. Pas de fourchette vague, pas de surprise en cours de route. Le prix annonce est le prix final.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Engagement 02</div>
+          <h3 class="meth__title">Code et compte a vous</h3>
+          <p class="meth__desc">Tous les comptes (hebergement, Stripe, Kkiapay, plugins premium) sont ouverts a votre nom. Vous possedez tout. Vous pouvez changer de prestataire a tout moment sans rien re-acheter.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Engagement 03</div>
+          <h3 class="meth__title">Lighthouse 90+ garanti</h3>
+          <p class="meth__desc">Performance, accessibilite, best practices et SEO&nbsp;: chaque score Lighthouse depasse 90 a la livraison. Sinon, nous corrigeons gratuitement jusqu'a atteindre l'objectif. Test contradictoire bienvenu.</p>
+        </div>
+        <div class="meth">
+          <div class="meth__step">Engagement 04</div>
+          <h3 class="meth__title">Garantie 30 jours incluse</h3>
+          <p class="meth__desc">Tout bug imputable a notre travail apres la mise en ligne est corrige gratuitement pendant 30 jours. Au-dela, support ponctuel ou maintenance mensuelle au choix, sans engagement annuel impose.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7.5. PAIEMENTS DETAIL FRANCE / AFRIQUE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Paiements <em>France et Afrique</em>&nbsp;: la combinaison qui change tout.</h2>
+        <p class="sec-h__sub">Vendre a des clients europeens et africains depuis la meme boutique WooCommerce, sans friction. Voici comment nous configurons concretement le checkout.</p>
+      </div>
+      <div class="intro-block">
+        <p>La plupart des plateformes e-commerce sont concues pour <strong>un seul marche dominant</strong>&nbsp;: Shopify pour les US et l'Europe, Jumia pour l'Afrique. Or, beaucoup de PME africaines vendent <em>aux deux</em>&nbsp;: a leur diaspora installee en France, en Belgique, au Canada, et a leur clientele locale au Benin, en Cote d'Ivoire ou au Senegal. WooCommerce est l'une des rares solutions qui permettent de faire les deux dans le meme checkout, sans creer deux boutiques distinctes a maintenir.</p>
+        <p>Notre configuration type pour une boutique <em>multi-marche francophone</em>&nbsp;: <strong>Stripe</strong> active pour les paiements cartes bancaires depuis l'Europe (Visa, Mastercard, CB francaise, paiement en 3x sans frais via Klarna ou Alma). <strong>Kkiapay ou FedaPay</strong> active pour les paiements depuis l'Afrique (MTN Money, Moov Money, Orange Money, Wave selon le pays). <strong>Detection automatique de la geolocalisation</strong> du visiteur via IP&nbsp;: un visiteur depuis le Benin voit le checkout Mobile Money en premier, un visiteur depuis Paris voit le checkout Stripe. Les deux restent disponibles dans tous les cas, l'utilisateur peut changer manuellement.</p>
+        <div class="intro-callout">
+          <div class="intro-callout__h"><span class="material-symbols-outlined">currency_exchange</span> Gestion multi-devise</div>
+          <p>Si votre catalogue est en XOF (franc CFA) pour l'Afrique et en EUR pour l'Europe, nous configurons un convertisseur de devise dynamique (CURCY ou WooCommerce Multi-Currency). Affichage des prix selon la devise du visiteur, paiement effectif dans la devise du moyen de paiement choisi. Comptable&nbsp;: vous recevez vos paiements en XOF sur votre compte Mobile Money et en EUR sur votre compte Stripe, sans frais de change inutiles entre les deux.</p>
+        </div>
+        <p>Cote <strong>conformite</strong>&nbsp;: les paiements Stripe sont conformes PCI-DSS niveau 1 (aucune donnee de carte ne touche votre serveur), 3D Secure 2 actif pour reduire la fraude, RGPD compatible pour la clientele europeenne. Cote Mobile Money, les transactions passent par Kkiapay ou FedaPay qui sont agrees par les banques centrales de leurs zones d'operation. Vous ne stockez pas non plus de donnees sensibles de paiement, ce qui limite votre exposition juridique.</p>
+        <p>Pour aller plus loin sur la strategie globale (acquisition, conversion, fidelisation), revoyez aussi notre page <a href="/creation-site-wordpress">creation de site WordPress</a> qui couvre tous les angles, ou notre service <a href="/tunnels-de-vente">tunnels de vente</a> pour transformer votre boutique WooCommerce en machine a convertir.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8.5. CAS D'USAGE TYPIQUES -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pour <em>qui</em> WooCommerce est-il pertinent&nbsp;?</h2>
+        <p class="sec-h__sub">WooCommerce n'est pas la solution parfaite pour tous les cas, mais quand ces criteres se reunissent, c'est souvent le meilleur rapport qualite-prix du marche francophone.</p>
+      </div>
+      <div class="intro-block">
+        <p>WooCommerce est pertinent quand <strong>votre activite repose sur la vente directe en ligne</strong> mais que vous voulez garder la maitrise complete de votre boutique sans dependre d'une plateforme americaine qui peut couper votre acces du jour au lendemain ou augmenter ses prix sans preavis. C'est aussi le bon choix si vous voulez integrer votre boutique a un contenu editorial riche&nbsp;: blog, magazine, guides d'achat, glossaire, FAQ. WooCommerce hereditant de WordPress, vous pouvez creer toute cette galaxie de contenu pour ranker sur Google sans payer une app supplementaire.</p>
+        <p>Cas concrets pour lesquels nous recommandons WooCommerce&nbsp;: <em>une PME beninoise</em> qui vend des produits artisanaux a une clientele locale (Mobile Money) et a la diaspora (Stripe), <em>une boutique francaise</em> de cosmetique naturelle qui veut combiner blog SEO et e-commerce sur le meme domaine, <em>un createur de formations</em> qui vend des produits digitaux et des accompagnements en abonnement, <em>une marque de mode</em> avec catalogue evolutif (variations taille/couleur), <em>une entreprise BtoB</em> qui veut une boutique avec devis personnalises et tarifs negocies par compte client. Dans tous ces cas, le ROI de WooCommerce est superieur a celui d'une plateforme SaaS au-dela de 12 a 18 mois d'activite.</p>
+        <div class="intro-callout">
+          <div class="intro-callout__h"><span class="material-symbols-outlined">info</span> Quand WooCommerce n'est pas le bon choix</div>
+          <p>Si vous gerez deja des milliers de SKU avec des integrations ERP complexes, si vous avez une logistique multi-entrepots internationale, ou si vous voulez une experience d'achat extremement personnalisee (configurateur 3D, AR), il est probablement plus pertinent d'aller vers du sur mesure ou vers Shopify Plus. Nous serons honnetes avec vous des le premier rendez-vous&nbsp;: nous declinons les projets ou WooCommerce serait un mauvais choix. Voir notre page <a href="/creation-site-wordpress">creation de site WordPress</a> et <a href="/creation-site-web">creation de site web sur mesure</a> pour les alternatives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Pret a lancer votre boutique WooCommerce&nbsp;?</h2>
+          <p>Pirabel Labs accompagne les PME francophones dans la creation de boutiques WooCommerce performantes, sereines et evolutives. Pour explorer l'ensemble de notre offre WordPress (vitrine, e-commerce, blog, sites multilingues), consultez notre page <a href="/creation-site-wordpress">creation de site WordPress</a>. Sinon, parlons directement de votre projet de boutique&nbsp;: devis ferme sous 48h.</p>
+        </div>
+        <a href="/contact?service=woocommerce" class="fcta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DECOUVRIR WORDPRESS EN COMPLET -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir <em>WordPress</em> en complet.</h2>
+        <p class="sec-h__sub">WooCommerce n'est qu'une facette de notre expertise WordPress. Sites vitrine, blogs, multilingue, refonte, headless&nbsp;: tout est sur la page parent.</p>
+      </div>
+      <a href="/creation-site-wordpress" class="parent-card">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+        <div class="parent-card__txt">
+          <div class="parent-card__tag">Page parent</div>
+          <h3 class="parent-card__title">Notre expertise <em>creation de site WordPress</em></h3>
+          <p class="parent-card__desc">Methodologie complete, themes premium, plugins recommandes, performance Lighthouse 95+, refonte, hebergement managed, multilingue, headless WordPress + Next.js. La vision globale de notre savoir-faire WordPress sur une seule page.</p>
+        </div>
+        <span class="parent-card__cta">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Boutique WooCommerce livree en <strong>4 semaines</strong> &middot; devis 48h</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=woocommerce" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20creer%20une%20boutique%20WooCommerce" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-woocommerce">WooCommerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

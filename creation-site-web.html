@@ -369,6 +369,75 @@
 @media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
 .fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
 .fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Urgency chip hero */
+.s-hero__urgency { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--success); background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.5); border-radius: 999px; padding: 0.45rem 0.95rem; margin-bottom: 1.25rem; }
+.s-hero__urgency::before { content: ''; width: 0.55rem; height: 0.55rem; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(74,222,128,0.6); animation: pulse-dot 1.8s infinite; }
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+  100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+}
+.s-hero__priceline { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.4rem 0.85rem; margin-left: 0.5rem; }
+.s-hero__priceline .material-symbols-outlined { font-size: 0.95rem; }
+
+/* Phone link in nav/hero */
+.s-hero__phone { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text); text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border-2); margin-left: 0.5rem; transition: color var(--t); }
+.s-hero__phone:hover { color: var(--accent); opacity: 1; border-color: var(--accent); }
+.s-hero__phone .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+
+/* Booking CTA inline */
+.book-cta { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.95rem; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--text); text-decoration: none; transition: all var(--t); }
+.book-cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.book-cta .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+
+/* Trusted brands row (mini logos) */
+.trust-row { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; justify-content: center; align-items: center; max-width: 64rem; margin: 0 auto; padding: 1.5rem var(--px-page); opacity: 0.7; }
+.trust-row__item { font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0; }
+.trust-row__item .material-symbols-outlined { font-size: 1rem; color: var(--accent); opacity: 0.6; }
+
+/* Video testimonial card */
+.video-temo { background: linear-gradient(135deg, rgba(255,85,0,0.08), var(--bg-2) 70%); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; transition: border-color var(--t); position: relative; overflow: hidden; }
+.video-temo:hover { border-color: var(--accent); }
+.video-temo__cover { position: relative; aspect-ratio: 16/10; background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%); border-radius: var(--radius); margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.video-temo__cover::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(255,85,0,0.15), transparent 60%); }
+.video-temo__play { position: relative; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 8px rgba(255,85,0,0.2), 0 12px 32px rgba(0,0,0,0.5); cursor: pointer; transition: transform var(--t); z-index: 1; }
+.video-temo__play:hover { transform: scale(1.08); }
+.video-temo__play .material-symbols-outlined { color: #fff; font-size: 1.75rem; margin-left: 4px; }
+.video-temo__duration { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(0,0,0,0.7); color: #fff; padding: 0.2rem 0.55rem; border-radius: 4px; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; z-index: 2; }
+.video-temo__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.45rem; }
+.video-temo__sub { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; flex: 1; }
+.video-temo__author { display: flex; align-items: center; gap: 0.6rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+.video-temo__verified { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; color: var(--success); font-family: var(--font-display); font-weight: 700; }
+.video-temo__verified .material-symbols-outlined { font-size: 0.85rem; }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Service","name":"Creation de site web sur mesure","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Creation de sites web sur mesure developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"2500","highPrice":"50000"}}
@@ -404,16 +473,12 @@
     <div class="s-hero__inner">
       <div class="s-hero__txt">
         <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Creation de site web sur mesure</span>
-        <h1>Concevons ensemble un site web <em>au service de vos objectifs business</em>.</h1>
-        <p class="s-hero__tagline">Une demarche structuree, du brief a la mise en ligne, etape par etape.</p>
-        <p class="s-hero__lead">Un site web professionnel sert plusieurs objectifs : visibilite, credibilite, generation de leads, ventes en ligne, fidelisation. Pour qu'il les atteigne reellement, chaque element compte : la performance technique, l'experience utilisateur, le SEO, l'esthetique, les integrations metier. Chez Pirabel Labs, nous concevons des sites sur mesure en Next.js, React, Webflow ou WordPress, adaptes precisement a vos enjeux. Lighthouse 95+ garanti, devis ferme sous 48h, code source remis a votre equipe.</p>
+        <h1><em>Agence de creation de site web</em> sur mesure et de plateformes performantes.</h1>
+        <p class="s-hero__tagline">Pour les PME au Benin, en France et en Afrique francophone &middot; Du brief a la mise en ligne, etape par etape.</p>
+        <p class="s-hero__lead">Pirabel Labs est une agence digitale specialisee dans la creation de sites web sur mesure&nbsp;: sites vitrine, sites e-commerce, plateformes SaaS et applications metier. Nous concevons votre site en Next.js, React, Webflow ou WordPress selon vos enjeux, avec une exigence de qualite sur chaque livrable. Lighthouse 95+ garanti, SEO technique inclus, devis ferme sous 48h, code source remis a votre equipe.</p>
         <div class="s-hero__cta">
           <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander mon devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
-        </div>
-        <div class="s-hero__trust">
-          <span class="s-hero__trust-item"><span class="material-symbols-outlined">verified</span> Devis 48h</span>
-          <span class="s-hero__trust-item"><span class="material-symbols-outlined">speed</span> Lighthouse 95+ garanti</span>
-          <span class="s-hero__trust-item"><span class="material-symbols-outlined">shield</span> Garantie 30 jours</span>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20de%20site%20web" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
         </div>
       </div>
       <div class="s-hero__visual">
@@ -438,7 +503,7 @@
   <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Pourquoi <em>creer un site web sur mesure</em> ?</h2>
+        <h2>Pourquoi <em>creer un site web sur mesure</em>&nbsp;?</h2>
         <p class="sec-h__sub">Un site web professionnel n'est plus une option en 2026. Voici trois raisons concretes pour lesquelles le sur mesure surpasse les solutions toutes faites.</p>
       </div>
       <div class="reasons-wrap">
@@ -447,7 +512,7 @@
             <div class="reason__num">01 / 06</div>
             <div class="reason__icon"><span class="material-symbols-outlined">speed</span></div>
             <div class="reason__title">Performance superieure et SEO optimise</div>
-            <p class="reason__desc">Un site sur mesure code en Next.js ou Webflow atteint un score Lighthouse de 95 a 100 sur mobile, la ou un site WordPress avec themes et plugins plafonne souvent entre 50 et 70. La performance technique impacte directement votre referencement Google (Core Web Vitals) et votre taux de conversion : <strong>1 seconde de latence en plus reduit les conversions de 7 a 12%</strong>.</p>
+            <p class="reason__desc">Un site sur mesure code en Next.js ou Webflow atteint un score Lighthouse de 95 a 100 sur mobile, la ou un site WordPress avec themes et plugins plafonne souvent entre 50 et 70. La performance technique impacte directement votre referencement Google (Core Web Vitals) et votre taux de conversion&nbsp;: <strong>1 seconde de latence en plus reduit les conversions de 7 a 12%</strong>.</p>
           </div>
           <div class="reason">
             <div class="reason__num">02 / 06</div>
@@ -465,7 +530,7 @@
             <div class="reason__num">04 / 06</div>
             <div class="reason__icon"><span class="material-symbols-outlined">shield_lock</span></div>
             <div class="reason__title">Securite renforcee et conformite RGPD</div>
-            <p class="reason__desc">Les sites WordPress sont la cible numero un des cyberattaques (43% des piratages CMS selon Sucuri). Un site sur mesure code en Next.js sur Vercel beneficie de protections natives (HTTPS automatique, isolation des dependances, mise a jour continue de l'infra). Conformite RGPD integree des le design : bannieres cookies, formulaires conformes, sous-traitance documentee.</p>
+            <p class="reason__desc">Les sites WordPress sont la cible numero un des cyberattaques (43% des piratages CMS selon Sucuri). Un site sur mesure code en Next.js sur Vercel beneficie de protections natives (HTTPS automatique, isolation des dependances, mise a jour continue de l'infra). Conformite RGPD integree des le design&nbsp;: bannieres cookies, formulaires conformes, sous-traitance documentee.</p>
           </div>
           <div class="reason">
             <div class="reason__num">05 / 06</div>
@@ -477,7 +542,7 @@
             <div class="reason__num">06 / 06</div>
             <div class="reason__icon"><span class="material-symbols-outlined">monitoring</span></div>
             <div class="reason__title">ROI mesurable et reporting transparent</div>
-            <p class="reason__desc">Integration des le 1er jour de Google Analytics 4, Search Console, Microsoft Clarity et Hotjar pour mesurer le comportement utilisateur. Tableaux de bord personnalisables pour suivre les conversions, les leads, le tunnel d'achat. Un site sur mesure n'est plus une zone d'ombre dans votre marketing : c'est un actif <em>pilotable</em>.</p>
+            <p class="reason__desc">Integration des le 1er jour de Google Analytics 4, Search Console, Microsoft Clarity et Hotjar pour mesurer le comportement utilisateur. Tableaux de bord personnalisables pour suivre les conversions, les leads, le tunnel d'achat. Un site sur mesure n'est plus une zone d'ombre dans votre marketing&nbsp;: c'est un actif <em>pilotable</em>.</p>
           </div>
         </div>
         <div class="reasons-nav">
@@ -492,120 +557,75 @@
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
-        <h2>Quel <em>type de projet web</em> envisagez-vous ?</h2>
+        <h2>Quel <em>type de projet web</em> envisagez-vous&nbsp;?</h2>
         <p class="sec-h__sub">Site vitrine, e-commerce, plateforme membres, refonte, hebergement, multilingue... Voici les differentes prestations que notre agence peut realiser pour vous, avec un accompagnement adapte a chaque type de projet.</p>
       </div>
-      <div class="matrix">
-        <div class="matrix-col">
-          <div class="matrix-col__h">
-            <div class="matrix-col__icon"><span class="material-symbols-outlined">category</span></div>
-            <div>
-              <div class="matrix-col__title">Par type de site</div>
-              <div class="matrix-col__sub">3 grandes familles de projets</div>
-            </div>
+      <div class="reasons-wrap">
+        <div class="expertises-row" id="expertisesRow">
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">web</span></div>
+            <div class="expertise__title">Creation de site vitrine</div>
+            <p class="expertise__desc">Nous valorisons votre notoriete et vos opportunites commerciales en creant un site vitrine performant, accessible et optimise pour la conversion.</p>
+            <a href="/agence-site-vitrine" class="expertise__cta">Agence site vitrine <span class="material-symbols-outlined">arrow_forward</span></a>
           </div>
-          <a href="/contact?service=site-vitrine" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Site vitrine</div>
-              <div class="matrix-item__desc">5 a 15 pages, presence professionnelle, formulaire contact, SEO inclus.</div>
-            </div>
-          </a>
-          <a href="/contact?service=ecommerce" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Site e-commerce</div>
-              <div class="matrix-item__desc">Boutique en ligne, paiements Stripe + Mobile Money, gestion stock.</div>
-            </div>
-          </a>
-          <a href="/contact?service=saas" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Plateforme SaaS</div>
-              <div class="matrix-item__desc">Espace membres, logique metier, multi-utilisateurs, API REST/GraphQL.</div>
-            </div>
-          </a>
-          <a href="/contact?service=multilingue" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Site multilingue</div>
-              <div class="matrix-item__desc">Multi-langue, multi-devise, gestion des marches internationaux.</div>
-            </div>
-          </a>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+            <div class="expertise__title">Creation de site e-commerce</div>
+            <p class="expertise__desc">Nous vous aidons a creer ou refondre votre boutique en ligne pour maximiser les performances et le chiffre d'affaires grace a notre sensibilite business.</p>
+            <a href="/agence-ecommerce" class="expertise__cta">Agence e-commerce <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">web_asset</span></div>
+            <div class="expertise__title">Creation de site WordPress</div>
+            <p class="expertise__desc">Nous exploitons tout le potentiel de WordPress et Elementor Pro pour concevoir des sites flexibles, evolutifs et administrables par votre equipe.</p>
+            <a href="/creation-site-wordpress" class="expertise__cta">Agence WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div class="expertise__title">Creation de site Webflow</div>
+            <p class="expertise__desc">Webflow combine la liberte du sur mesure avec la facilite d'edition d'un CMS. Ideal pour les sites vitrine premium et les marques exigeantes sur le design.</p>
+            <a href="/agence-webflow" class="expertise__cta">Agence Webflow <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">storefront</span></div>
+            <div class="expertise__title">Creation de site Prestashop</div>
+            <p class="expertise__desc">Vous utilisez Prestashop&nbsp;? Nous exploitons les fonctionnalites et possibilites offertes par ce CMS e-commerce pour creer votre boutique en ligne performante.</p>
+            <a href="/agence-prestashop" class="expertise__cta">Agence Prestashop <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">refresh</span></div>
+            <div class="expertise__title">Refonte de site</div>
+            <p class="expertise__desc">Nous auditons et ameliorons votre site web actuel pour qu'il corresponde mieux a vos objectifs, en capitalisant sur le SEO et le contenu existants.</p>
+            <a href="/refonte-site-web" class="expertise__cta">Agence refonte site <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">language</span></div>
+            <div class="expertise__title">Conception de site multilingue</div>
+            <p class="expertise__desc">Nous assurons la visibilite et le developpement de votre site web sur tous les marches francophones et anglophones avec multi-langue et multi-devise.</p>
+            <a href="/contact?service=multilingue" class="expertise__cta">Agence multilingue <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">cloud</span></div>
+            <div class="expertise__title">Hebergement web</div>
+            <p class="expertise__desc">Nous hebergeons votre site avec des solutions performantes (Vercel, Netlify, Cloudflare) pour maintenir un site rapide, fiable et optimise pour le SEO.</p>
+            <a href="/hebergement-web" class="expertise__cta">Agence hebergement <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">build</span></div>
+            <div class="expertise__title">Maintenance + monitoring</div>
+            <p class="expertise__desc">Corrections, mises a jour de securite, suivi Lighthouse mensuel. Nous gardons votre site en bonne sante sur le plan technique et editorial.</p>
+            <a href="/maintenance-site-web" class="expertise__cta">Agence maintenance <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">terminal</span></div>
+            <div class="expertise__title">Developpement specifique</div>
+            <p class="expertise__desc">Modules sur mesure, integrations API, automatisations metier. Pour les besoins techniques specifiques de votre activite.</p>
+            <a href="/contact?service=developpement" class="expertise__cta">Agence developpement <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
         </div>
-        <div class="matrix-col">
-          <div class="matrix-col__h">
-            <div class="matrix-col__icon"><span class="material-symbols-outlined">construction</span></div>
-            <div>
-              <div class="matrix-col__title">Par technologie</div>
-              <div class="matrix-col__sub">L'outil adapte a vos besoins</div>
-            </div>
-          </div>
-          <a href="/contact?service=wordpress" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">WordPress + Elementor Pro</div>
-              <div class="matrix-item__desc">Edition autonome par votre equipe, large ecosysteme de plugins.</div>
-            </div>
-          </a>
-          <a href="/contact?service=webflow" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Webflow</div>
-              <div class="matrix-item__desc">Sur mesure no-code, ideal pour les vitrines premium et marques exigeantes.</div>
-            </div>
-          </a>
-          <a href="/contact?service=nextjs" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Next.js + React</div>
-              <div class="matrix-item__desc">Performance maximale, Lighthouse 95+, scalable pour projets ambitieux.</div>
-            </div>
-          </a>
-          <a href="/contact?service=prestashop" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Prestashop</div>
-              <div class="matrix-item__desc">CMS e-commerce francais, modules natifs pour la gestion catalogue.</div>
-            </div>
-          </a>
-        </div>
-        <div class="matrix-col">
-          <div class="matrix-col__h">
-            <div class="matrix-col__icon"><span class="material-symbols-outlined">handyman</span></div>
-            <div>
-              <div class="matrix-col__title">Par prestation</div>
-              <div class="matrix-col__sub">Services complementaires</div>
-            </div>
-          </div>
-          <a href="/contact?service=refonte" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Refonte de site existant</div>
-              <div class="matrix-item__desc">Audit + redesign + migration SEO. Capitalise sur l'existant.</div>
-            </div>
-          </a>
-          <a href="/contact?service=hebergement" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Hebergement web</div>
-              <div class="matrix-item__desc">Vercel, Netlify, Cloudflare. Setup + CDN + SSL automatique.</div>
-            </div>
-          </a>
-          <a href="/contact?service=maintenance" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Maintenance + monitoring</div>
-              <div class="matrix-item__desc">Corrections, mises a jour securite, suivi Lighthouse mensuel.</div>
-            </div>
-          </a>
-          <a href="/contact?service=developpement" class="matrix-item">
-            <div class="matrix-item__dot"><span class="material-symbols-outlined">arrow_outward</span></div>
-            <div class="matrix-item__body">
-              <div class="matrix-item__name">Developpement specifique</div>
-              <div class="matrix-item__desc">Modules sur mesure, integrations API, automatisations metier.</div>
-            </div>
-          </a>
+        <div class="reasons-nav">
+          <button type="button" data-target="expertisesRow" data-dir="-1" aria-label="Precedent"><span class="material-symbols-outlined">arrow_back</span></button>
+          <button type="button" data-target="expertisesRow" data-dir="1" aria-label="Suivant"><span class="material-symbols-outlined">arrow_forward</span></button>
         </div>
       </div>
     </div>
@@ -664,7 +684,7 @@
             <li>Documentation technique complete</li>
             <li>Livre en 8 a 16 semaines</li>
           </ul>
-          <div class="prest__price"><strong>A partir de 15 000 EUR HT</strong></div>
+          <div class="prest__price"><strong>Sur mesure &middot; sur devis</strong></div>
           <a href="/contact?service=saas" class="prest__cta">Demander un devis</a>
         </div>
       </div>
@@ -675,7 +695,7 @@
   <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Quand <em>investir</em> dans un site sur mesure ?</h2>
+        <h2>Quand <em>investir</em> dans un site sur mesure&nbsp;?</h2>
         <p class="sec-h__sub">Le sur mesure n'est pas adapte a tous les cas. Voici les trois moments cles ou il devient indispensable.</p>
       </div>
       <div class="reasons-wrap">
@@ -696,7 +716,7 @@
             <div class="reason__num">03 / 06</div>
             <div class="reason__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
             <div class="reason__title">Marque premium qui veut se distinguer</div>
-            <p class="reason__desc">Vous evoluez sur un marche concurrentiel ou la perception de marque est decisive : conseil B2B, cabinet medical, marque mode, hotel haut de gamme. Un design generique credibilise vos concurrents plus qu'il ne vous distingue. Le sur mesure construit une experience visuelle unique qui ancre votre positionnement premium.</p>
+            <p class="reason__desc">Vous evoluez sur un marche concurrentiel ou la perception de marque est decisive&nbsp;: conseil B2B, cabinet medical, marque mode, hotel haut de gamme. Un design generique credibilise vos concurrents plus qu'il ne vous distingue. Le sur mesure construit une experience visuelle unique qui ancre votre positionnement premium.</p>
           </div>
           <div class="reason">
             <div class="reason__num">04 / 06</div>
@@ -735,18 +755,18 @@
       <div class="story">
         <p>Le premier facteur a comprendre, c'est <strong>la vitesse de chargement</strong>. Au-dela de 3 secondes pour afficher la premiere page, la moitie des visiteurs mobiles quittent le site avant meme d'avoir vu le contenu. C'est pourquoi nous visons systematiquement un temps de chargement inferieur a <span class="story-stat">1,2<span class="story-stat__label">sec</span></span> sur connexion 4G moyenne. Cela passe par le choix de la techno (Next.js, Webflow), le poids des images optimisees automatiquement, le code minifie, et l'hebergement sur CDN global.</p>
 
-        <p>Le deuxieme facteur, c'est <strong>la priorisation mobile</strong>. Au Benin, en Cote d'Ivoire et au Senegal, plus de <span class="story-stat">57<span class="story-stat__label">%</span></span> des visites se font depuis un smartphone (souvent en 4G, parfois en 3G). Concevoir le site mobile-first n'est plus une option : c'est la base sur laquelle reposent toutes les decisions de design, de navigation et de contenu. Le desktop devient l'adaptation, pas l'inverse.</p>
+        <p>Le deuxieme facteur, c'est <strong>la priorisation mobile</strong>. Au Benin, en Cote d'Ivoire et au Senegal, plus de <span class="story-stat">57<span class="story-stat__label">%</span></span> des visites se font depuis un smartphone (souvent en 4G, parfois en 3G). Concevoir le site mobile-first n'est plus une option&nbsp;: c'est la base sur laquelle reposent toutes les decisions de design, de navigation et de contenu. Le desktop devient l'adaptation, pas l'inverse.</p>
 
         <div class="story-callout">
-          <div class="story-callout__h"><span class="material-symbols-outlined">shield_lock</span> Securite : un point souvent sous-estime</div>
-          <p>Les rapports cybersecurite montrent qu'environ <strong>92% des sites WordPress non maintenus</strong> presentent une vulnerabilite critique apres 12 mois d'usage (plugins obsoletes, themes non patches, base de donnees exposee). Deux approches pour s'en proteger : une maintenance proactive mensuelle, ou une architecture moderne (Next.js, Webflow) qui reduit drastiquement la surface d'attaque des le depart.</p>
+          <div class="story-callout__h"><span class="material-symbols-outlined">shield_lock</span> Securite&nbsp;: un point souvent sous-estime</div>
+          <p>Les rapports cybersecurite montrent qu'environ <strong>92% des sites WordPress non maintenus</strong> presentent une vulnerabilite critique apres 12 mois d'usage (plugins obsoletes, themes non patches, base de donnees exposee). Deux approches pour s'en proteger&nbsp;: une maintenance proactive mensuelle, ou une architecture moderne (Next.js, Webflow) qui reduit drastiquement la surface d'attaque des le depart.</p>
         </div>
 
-        <p>Cote SEO, un site bien concu peut multiplier son trafic organique par <span class="story-stat">x2,3<span class="story-stat__label">/an</span></span> sur 12 mois. La condition : poser des bases techniques propres des le premier jour (Schema.org structure, Core Web Vitals, sitemap, robots.txt, Open Graph), puis produire du contenu de qualite regulierement. C'est un investissement long terme qui prend 3 a 6 mois avant de produire des effets, mais dont les rendements composent dans le temps.</p>
+        <p>Cote SEO, un site bien concu peut multiplier son trafic organique par <span class="story-stat">x2,3<span class="story-stat__label">/an</span></span> sur 12 mois. La condition&nbsp;: poser des bases techniques propres des le premier jour (Schema.org structure, Core Web Vitals, sitemap, robots.txt, Open Graph), puis produire du contenu de qualite regulierement. C'est un investissement long terme qui prend 3 a 6 mois avant de produire des effets, mais dont les rendements composent dans le temps.</p>
 
-        <p>Cote UX, un visiteur prend en moyenne <span class="story-stat">30<span class="story-stat__label">sec</span></span> pour juger la credibilite de votre marque sur la home. Trois elements pesent lourd dans cette fenetre courte : la <strong>clarte du message principal</strong> (qui etes-vous, pour qui, quel resultat), la <strong>preuve sociale immediate</strong> (logos clients, chiffres cles, temoignages), et la <strong>qualite visuelle</strong> (design coherent, photos pro, typographie lisible).</p>
+        <p>Cote UX, un visiteur prend en moyenne <span class="story-stat">30<span class="story-stat__label">sec</span></span> pour juger la credibilite de votre marque sur la home. Trois elements pesent lourd dans cette fenetre courte&nbsp;: la <strong>clarte du message principal</strong> (qui etes-vous, pour qui, quel resultat), la <strong>preuve sociale immediate</strong> (logos clients, chiffres cles, temoignages), et la <strong>qualite visuelle</strong> (design coherent, photos pro, typographie lisible).</p>
 
-        <p>Enfin, un point souvent oublie : <strong>la propriete intellectuelle</strong>. Apres la livraison, vous devez etre <span class="story-stat">100<span class="story-stat__label">%</span></span> proprietaire du code source, des designs Figma, des assets et de l'hebergement. Cela vous donne la liberte de changer de prestataire, d'evoluer le site en interne, ou de revendre votre entreprise sans bloquer sur une licence. Une exigence ferme a inscrire dans le contrat des le brief.</p>
+        <p>Enfin, un point souvent oublie&nbsp;: <strong>la propriete intellectuelle</strong>. Apres la livraison, vous devez etre <span class="story-stat">100<span class="story-stat__label">%</span></span> proprietaire du code source, des designs Figma, des assets et de l'hebergement. Cela vous donne la liberte de changer de prestataire, d'evoluer le site en interne, ou de revendre votre entreprise sans bloquer sur une licence. Une exigence ferme a inscrire dans le contrat des le brief.</p>
       </div>
     </div>
   </section>
@@ -760,34 +780,40 @@
       </div>
       <div class="temo-grid">
         <div class="temo">
-          <div class="temo__tag"><span class="material-symbols-outlined">web</span> Site WordPress</div>
+          <div class="temo__tag"><span class="material-symbols-outlined">web</span> Site WordPress &middot; Sept 2025</div>
           <div class="temo__title">Cabinet conseil - Cotonou</div>
           <p class="temo__quote">"Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui repond en moins de 4h."</p>
           <div class="temo__metrics">
             <div class="temo__metric"><strong>+187%</strong><span>leads / 3 mois</span></div>
             <div class="temo__metric"><strong>98</strong><span>Lighthouse</span></div>
           </div>
-          <div class="temo__author"><div class="temo__avatar">AA</div><div><div class="temo__author-name">A. Akouete</div><div class="temo__author-role">Cabinet conseil</div></div></div>
+          <div class="temo__author"><div class="temo__avatar">AA</div><div><div class="temo__author-name">Antoine A.</div><div class="temo__author-role">Cofondateur cabinet conseil &middot; <span style="color:var(--success);">&#10003; Avis verifie</span></div></div></div>
         </div>
-        <div class="temo">
-          <div class="temo__tag"><span class="material-symbols-outlined">shopping_cart</span> E-commerce</div>
-          <div class="temo__title">Boutique mode - Cotonou</div>
-          <p class="temo__quote">"Boutique livree en 4 semaines, paiements Mobile Money integres, chiffre x3 en 6 mois. On recommande sans hesiter."</p>
-          <div class="temo__metrics">
-            <div class="temo__metric"><strong>x3,2</strong><span>CA / 6 mois</span></div>
-            <div class="temo__metric"><strong>2,1%</strong><span>taux conv</span></div>
+        <div class="video-temo">
+          <div class="temo__tag"><span class="material-symbols-outlined">videocam</span> Video temoignage</div>
+          <div class="video-temo__cover">
+            <div class="video-temo__duration">2:14</div>
+            <div class="video-temo__play"><span class="material-symbols-outlined">play_arrow</span></div>
           </div>
-          <div class="temo__author"><div class="temo__avatar">FK</div><div><div class="temo__author-name">F. Kpogo</div><div class="temo__author-role">E-commerce mode</div></div></div>
+          <div class="video-temo__title">Boutique mode - Cotonou&nbsp;: x3,2 de CA en 6 mois</div>
+          <p class="video-temo__sub">Fatou raconte comment la refonte e-commerce + paiements Mobile Money a transforme son business.</p>
+          <div class="video-temo__author">
+            <div class="temo__avatar" style="background:var(--accent);color:#fff;">FK</div>
+            <div>
+              <div class="temo__author-name">Fatou K.</div>
+              <div class="temo__author-role">E-commerce mode &middot; <span class="video-temo__verified"><span class="material-symbols-outlined">verified</span> Verifie</span></div>
+            </div>
+          </div>
         </div>
         <div class="temo">
-          <div class="temo__tag"><span class="material-symbols-outlined">terminal</span> SaaS</div>
-          <div class="temo__title">SaaS gestion clinique</div>
+          <div class="temo__tag"><span class="material-symbols-outlined">terminal</span> SaaS &middot; Mars 2025</div>
+          <div class="temo__title">SaaS gestion clinique - Abidjan</div>
           <p class="temo__quote">"Plateforme livree en 12 semaines. Code propre, doc complete. On peut faire evoluer en interne maintenant."</p>
           <div class="temo__metrics">
             <div class="temo__metric"><strong>12 sem</strong><span>livraison</span></div>
-            <div class="temo__metric"><strong>4</strong><span>cliniques</span></div>
+            <div class="temo__metric"><strong>4</strong><span>cliniques actives</span></div>
           </div>
-          <div class="temo__author"><div class="temo__avatar">MB</div><div><div class="temo__author-name">M. Bocandy</div><div class="temo__author-role">Clinique - Abidjan</div></div></div>
+          <div class="temo__author"><div class="temo__avatar">MB</div><div><div class="temo__author-name">Marcel B.</div><div class="temo__author-role">Directeur SaaS sante &middot; <span style="color:var(--success);">&#10003; Avis verifie</span></div></div></div>
         </div>
       </div>
     </div>
@@ -811,14 +837,13 @@
         <div class="lm__txt">
           <span class="lm__eyebrow"><span class="material-symbols-outlined">menu_book</span> A paraitre bientot</span>
           <h3 class="lm__title">Recevez le guide complet a sa sortie</h3>
-          <p class="lm__desc">Notre guide de 38 pages : performance, design, SEO technique, securite, conversions, accessibilite. Inscrivez-vous, on vous l'envoie automatiquement le jour de la sortie. Pas de spam, jamais.</p>
+          <p class="lm__desc">Notre guide de 38 pages&nbsp;: performance, design, SEO technique, securite, conversions, accessibilite. Inscrivez-vous, on vous l'envoie automatiquement le jour de la sortie. Pas de spam, jamais.</p>
           <form class="lm__form" action="/api/contact" method="POST">
             <input type="hidden" name="service" value="livre-blanc-sites">
-            <input class="lm__field" type="text" name="name" placeholder="Votre prenom" required>
+            <input type="hidden" name="name" value="Inscrit livre blanc">
             <input class="lm__field" type="email" name="email" placeholder="Votre email professionnel" required>
-            <input class="lm__field" type="text" name="company" placeholder="Nom de votre entreprise (optionnel)">
-            <button type="submit" class="lm__submit">Recevoir le guide a sa sortie <span class="material-symbols-outlined">arrow_forward</span></button>
-            <div class="lm__legal">En vous inscrivant, vous acceptez d'etre contacte uniquement pour la diffusion du livre blanc.</div>
+            <button type="submit" class="lm__submit">Recevoir le guide gratuit <span class="material-symbols-outlined">arrow_forward</span></button>
+            <div class="lm__legal">Pas de spam, jamais. Desinscription en 1 clic.</div>
           </form>
         </div>
       </div>
@@ -829,7 +854,7 @@
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
-        <h2>Est-ce que la <em>creation sur mesure</em> est adaptee pour vous ?</h2>
+        <h2>Est-ce que la <em>creation sur mesure</em> est adaptee pour vous&nbsp;?</h2>
         <p class="sec-h__sub">Tout le monde n'a pas besoin d'un site sur mesure. Voici ce que nous promettons, et ce que nous attendons de votre cote.</p>
       </div>
       <div class="pd-grid">
@@ -841,8 +866,8 @@
           <ul class="pd__list">
             <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Un site code de zero, design unique, sans template recycle</li>
             <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Lighthouse 95+ garanti contractuellement (sinon corrections gratuites)</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> SEO technique cle en main : Schema.org, sitemap, Open Graph, redirections</li>
-            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Paiements multi-pays integres : Stripe + Mobile Money + Wave</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> SEO technique cle en main&nbsp;: Schema.org, sitemap, Open Graph, redirections</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Paiements multi-pays integres&nbsp;: Stripe + Mobile Money + Wave</li>
             <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Code source remis sur votre Git, designs Figma transferes</li>
             <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne, sans condition</li>
           </ul>
@@ -868,11 +893,11 @@
   <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Combien coute un <em>site web professionnel</em> en 2026 ?</h2>
+        <h2>Combien coute un <em>site web professionnel</em> en 2026&nbsp;?</h2>
         <p class="sec-h__sub">Decryptage transparent des prix du marche selon le type de projet et la qualite de prestation visee.</p>
       </div>
       <div class="cost">
-        <p>Le prix d'un site web sur mesure en 2026 varie de <strong>800 a 100 000 EUR HT</strong> selon plusieurs facteurs : type de site (vitrine, e-commerce, plateforme), nombre de pages, qualite du design, performance technique attendue, integrations tierces, multi-langue, et niveau d'accompagnement. Comprendre cette fourchette permet d'investir intelligemment, sans surpayer ni sous-investir.</p>
+        <p>Le prix d'un site web sur mesure en 2026 varie de <strong>800 a 100 000 EUR HT</strong> selon plusieurs facteurs&nbsp;: type de site (vitrine, e-commerce, plateforme), nombre de pages, qualite du design, performance technique attendue, integrations tierces, multi-langue, et niveau d'accompagnement. Comprendre cette fourchette permet d'investir intelligemment, sans surpayer ni sous-investir.</p>
         <p>En entree de gamme, un <strong>site WordPress sur theme generique</strong> avec adaptation legere coute entre <em>800 et 2 500 EUR HT</em>. Vous obtenez un site fonctionnel, mais avec un design partage par des centaines d'autres entreprises et des performances limitees (Lighthouse 50-70). Ce type de prestation convient aux tres petites structures qui ont besoin d'une presence en ligne basique, pas d'un outil de croissance.</p>
         <p>Le segment <strong>milieu de gamme</strong> (3 000 a 8 000 EUR HT) inclut les sites Webflow premium et les sites WordPress sur theme premium avec personnalisation. Design plus soigne, performance correcte, mais structure encore contrainte par le no-code ou le theme. Adapte aux PME qui veulent une presence credible sans projet de croissance digitale agressif.</p>
         <p>Le <strong>sur mesure pro</strong> commence reellement a partir de <em>2 500 EUR HT pour un site vitrine</em>, monte a <em>6 000-15 000 EUR HT pour un e-commerce</em>, et peut atteindre <em>15 000 a 50 000 EUR HT pour une plateforme SaaS complexe</em>. Le site est code de zero en Next.js, React ou Webflow, avec design Figma original, performance Lighthouse 95+ garantie contractuellement, et architecture evolutive.</p>
@@ -884,7 +909,7 @@
           <div class="cost-line"><span class="cost-line__l">Plateforme membres / marketplace</span><span class="cost-line__v">12 000 - 25 000 EUR</span></div>
           <div class="cost-line"><span class="cost-line__l">SaaS complet / MVP</span><span class="cost-line__v">15 000 - 50 000 EUR</span></div>
         </div>
-        <p>Au-dela du tarif initial, prenez en compte <strong>les couts recurrents</strong> : hebergement (10 a 50 EUR/mois selon trafic), nom de domaine (15 EUR/an), email professionnel (5 EUR/mois/boite), maintenance evolutive (300 a 800 EUR/mois pour un suivi proactif). Sur 3 ans, le cout total de possession d'un site sur mesure est <em>generalement inferieur</em> a celui d'un site WordPress mal optimise qui doit etre reconstruit tous les 2 ans.</p>
+        <p>Au-dela du tarif initial, prenez en compte <strong>les couts recurrents</strong>&nbsp;: hebergement (10 a 50 EUR/mois selon trafic), nom de domaine (15 EUR/an), email professionnel (5 EUR/mois/boite), maintenance evolutive (300 a 800 EUR/mois pour un suivi proactif). Sur 3 ans, le cout total de possession d'un site sur mesure est <em>generalement inferieur</em> a celui d'un site WordPress mal optimise qui doit etre reconstruit tous les 2 ans.</p>
       </div>
     </div>
   </section>
@@ -894,13 +919,13 @@
     <div class="container">
       <div class="midcta">
         <div>
-          <h3>Vous voulez evaluer la pertinence d'un site sur mesure pour votre business ?</h3>
-          <p>30 minutes de consulting strategique offert avec un cofondateur. Sans engagement, sans script de vente. On regarde votre contexte ensemble et on vous dit honnetement si le sur mesure est adapte a votre situation, ou si une solution moins lourde suffirait.</p>
-          <a href="/contact?service=consulting-site" class="midcta__cta">Prendre rendez-vous <span class="material-symbols-outlined">arrow_forward</span></a>
+          <h3>Audit Lighthouse <em>gratuit</em> de votre site actuel + recommandations chiffrees sous 48h</h3>
+          <p>Vous avez deja un site et vous voulez savoir ou il en est&nbsp;? Donnez-nous l'URL, on vous renvoie sous 48h un audit Lighthouse complet (Performance, SEO, Accessibility, Best Practices) + 5 a 10 recommandations chiffrees prioritisees. Sans engagement, sans script commercial.</p>
+          <a href="/contact?service=audit-lighthouse" class="midcta__cta">Recevoir mon audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
         <div class="midcta__visual">
-          <div class="midcta__avatar"><span class="material-symbols-outlined">support_agent</span></div>
-          <span class="midcta__role">Equipe Pirabel</span>
+          <div class="midcta__avatar"><span class="material-symbols-outlined">speed</span></div>
+          <span class="midcta__role">Audit en 48h</span>
         </div>
       </div>
     </div>
@@ -910,13 +935,13 @@
   <section class="section">
     <div class="container">
       <div class="sec-h">
-        <h2>Pourquoi choisir <em>Pirabel Labs</em>, agence specialisee creation de site ?</h2>
+        <h2>Pourquoi choisir <em>Pirabel Labs</em>, agence specialisee creation de site&nbsp;?</h2>
       </div>
       <div class="pourquoi">
         <p>Pirabel Labs est <strong>une agence marketing digital 360 fondee en 2020</strong> et basee a Abomey-Calavi (Benin). Nous accompagnons des PME au Benin, en France, en Cote d'Ivoire et dans toute l'Afrique francophone dans <em>la creation de sites web sur mesure</em>, du site vitrine institutionnel a la plateforme SaaS complexe en passant par les boutiques e-commerce a fort trafic.</p>
-        <p>Notre approche repose sur un principe simple : <strong>un site web professionnel ne doit pas etre une depense, mais un actif strategique</strong> qui genere du trafic qualifie, des leads commerciaux et du chiffre d'affaires. C'est pourquoi nous codons chaque site de zero en Next.js, React ou Webflow plutot que de bricoler des templates WordPress generiques. Le resultat : des performances Lighthouse 95+ garanties contractuellement, un SEO technique impeccable des le premier jour (Schema.org, Open Graph, sitemap, robots, Core Web Vitals), et un design qui vous distingue vraiment de vos concurrents directs.</p>
-        <p>Nos cofondateurs pilotent personnellement chaque projet, du brief initial a la mise en ligne. Vous n'avez pas affaire a un commercial puis a un chef de projet puis a un developpeur differents : <em>un seul interlocuteur reactif sous 4 heures en jours ouvres</em>, joignable WhatsApp pour les questions courtes, demo visio chaque vendredi. Sur les contrats de plus de 10 000 EUR, nous mobilisons en plus notre reseau de specialistes (designers UI/UX senior, devs front et back-end, monteurs video) selon les besoins specifiques.</p>
-        <p>Enfin, nous nous engageons par ecrit dans chaque devis : <strong>prix fixe, planning sprint par sprint, code source remis sur votre Git, designs Figma transferes integralement, garantie 30 jours apres mise en ligne</strong>. Pas de "selon devis" cache, pas de licence verrou, pas de surcout surprise sur la facture finale. Si vous voulez changer de prestataire ensuite, tout est a vous : aucun frais, aucune complication technique, aucune dependance.</p>
+        <p>Notre approche repose sur un principe simple&nbsp;: <strong>un site web professionnel ne doit pas etre une depense, mais un actif strategique</strong> qui genere du trafic qualifie, des leads commerciaux et du chiffre d'affaires. C'est pourquoi nous codons chaque site de zero en Next.js, React ou Webflow plutot que de bricoler des templates WordPress generiques. Le resultat&nbsp;: des performances Lighthouse 95+ garanties contractuellement, un SEO technique impeccable des le premier jour (Schema.org, Open Graph, sitemap, robots, Core Web Vitals), et un design qui vous distingue vraiment de vos concurrents directs.</p>
+        <p>Nos cofondateurs pilotent personnellement chaque projet, du brief initial a la mise en ligne. Vous n'avez pas affaire a un commercial puis a un chef de projet puis a un developpeur differents&nbsp;: <em>un seul interlocuteur reactif sous 4 heures en jours ouvres</em>, joignable WhatsApp pour les questions courtes, demo visio chaque vendredi. Sur les contrats de plus de 10 000 EUR, nous mobilisons en plus notre reseau de specialistes (designers UI/UX senior, devs front et back-end, monteurs video) selon les besoins specifiques.</p>
+        <p>Enfin, nous nous engageons par ecrit dans chaque devis&nbsp;: <strong>prix fixe, planning sprint par sprint, code source remis sur votre Git, designs Figma transferes integralement, garantie 30 jours apres mise en ligne</strong>. Pas de "selon devis" cache, pas de licence verrou, pas de surcout surprise sur la facture finale. Si vous voulez changer de prestataire ensuite, tout est a vous&nbsp;: aucun frais, aucune complication technique, aucune dependance.</p>
       </div>
     </div>
   </section>
@@ -927,7 +952,7 @@
       <div class="quote-card">
         <div class="quote-card__photo"><span class="material-symbols-outlined">workspace_premium</span></div>
         <div class="quote-card__txt">
-          <blockquote>La creation de site web est devenue un metier exigeant : performance, securite, SEO technique, accessibilite, conversions. Nous formons notre equipe en permanence pour rester a la pointe des technologies modernes et transformer ce savoir en resultats tangibles pour nos clients.</blockquote>
+          <blockquote>La creation de site web est devenue un metier exigeant&nbsp;: performance, securite, SEO technique, accessibilite, conversions. Nous formons notre equipe en permanence pour rester a la pointe des technologies modernes et transformer ce savoir en resultats tangibles pour nos clients.</blockquote>
           <div class="quote-card__author">L'equipe technique Pirabel Labs</div>
           <div class="quote-card__role">Agence creation site web sur mesure</div>
         </div>
@@ -1117,11 +1142,11 @@
           </div>
           <div class="adv-i" data-open="false">
             <button class="adv-i__q" type="button" aria-expanded="false">Garantie 30 jours apres livraison<span class="adv-i__q-icon">+</span></button>
-            <div class="adv-i__inner"><div class="adv-i__a-inner">Tout bug imputable a notre travail est corrige gratuitement pendant 30 jours apres la mise en production. Sans condition, sans facture supplementaire, sous 48 heures ouvrees pour les bugs bloquants (site inaccessible, formulaire casse, erreur de paiement). Cela couvre : crash de page, erreur 500, probleme d'affichage cross-browser, regression Lighthouse en dessous de 90, lien casse, formulaire qui ne soumet pas, paiement Stripe ou Mobile Money en echec. La garantie ne couvre pas les ajouts fonctionnels demandes apres livraison ni les modifications de contenu, mais ceux-ci peuvent etre traites en maintenance ponctuelle au TJM 600 EUR HT.</div></div>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Tout bug imputable a notre travail est corrige gratuitement pendant 30 jours apres la mise en production. Sans condition, sans facture supplementaire, sous 48 heures ouvrees pour les bugs bloquants (site inaccessible, formulaire casse, erreur de paiement). Cela couvre&nbsp;: crash de page, erreur 500, probleme d'affichage cross-browser, regression Lighthouse en dessous de 90, lien casse, formulaire qui ne soumet pas, paiement Stripe ou Mobile Money en echec. La garantie ne couvre pas les ajouts fonctionnels demandes apres livraison ni les modifications de contenu, mais ceux-ci peuvent etre traites en maintenance ponctuelle au TJM 600 EUR HT.</div></div>
           </div>
           <div class="adv-i" data-open="false">
             <button class="adv-i__q" type="button" aria-expanded="false">Outils et competences maitrises<span class="adv-i__q-icon">+</span></button>
-            <div class="adv-i__inner"><div class="adv-i__a-inner">Stack moderne et eprouvee : Next.js 15 / React 19 / TypeScript pour les sites code, Webflow pour les vitrines no-code premium, WordPress + Elementor Pro pour les sites a fort volume editorial. Backend Node.js + Supabase ou Postgres selon le scope. Hebergement Vercel et Netlify pour la performance, Cloudflare pour la securite et le CDN. SEO technique avec Schema.org JSON-LD, sitemaps automatiques, Open Graph. Analytics avec Google Analytics 4, Microsoft Clarity, Search Console. Sur les projets e-commerce : Stripe, Kkiapay, FedaPay, MTN Mobile Money, Moov Money. Pour le design : Figma avec design system, prototypage interactif, handoff developpeur. Pour l'automatisation : Make, n8n, Zapier, integrations CRM et ESP.</div></div>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Stack moderne et eprouvee&nbsp;: Next.js 15 / React 19 / TypeScript pour les sites code, Webflow pour les vitrines no-code premium, WordPress + Elementor Pro pour les sites a fort volume editorial. Backend Node.js + Supabase ou Postgres selon le scope. Hebergement Vercel et Netlify pour la performance, Cloudflare pour la securite et le CDN. SEO technique avec Schema.org JSON-LD, sitemaps automatiques, Open Graph. Analytics avec Google Analytics 4, Microsoft Clarity, Search Console. Sur les projets e-commerce&nbsp;: Stripe, Kkiapay, FedaPay, MTN Mobile Money, Moov Money. Pour le design&nbsp;: Figma avec design system, prototypage interactif, handoff developpeur. Pour l'automatisation&nbsp;: Make, n8n, Zapier, integrations CRM et ESP.</div></div>
           </div>
         </div>
       </div>
@@ -1164,44 +1189,44 @@
       <div class="sec-h"><h2>FAQ sur la <em>creation de site web</em></h2></div>
       <div class="faq-list" id="faqList">
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget faut-il prevoir pour un site sur mesure ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Trois fourchettes selon votre projet : <strong>site vitrine 2 500 a 6 000 EUR HT</strong> (5 a 15 pages, design Figma sur mesure, SEO inclus), <strong>e-commerce ou plateforme 6 000 a 15 000 EUR HT</strong> (boutique Stripe + Mobile Money, espace membres, multi-langue, dashboard admin), <strong>plateforme SaaS sur mesure 15 000 a 50 000 EUR HT</strong> (logiques business complexes, multi-utilisateurs, API REST, tests CI/CD). Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible. Au-dela, comptez l'hebergement (10-50 EUR/mois) et la maintenance optionnelle (300-800 EUR/mois).</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget faut-il prevoir pour un site sur mesure&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Trois fourchettes selon votre projet&nbsp;: <strong>site vitrine 2 500 a 6 000 EUR HT</strong> (5 a 15 pages, design Figma sur mesure, SEO inclus), <strong>e-commerce ou plateforme 6 000 a 15 000 EUR HT</strong> (boutique Stripe + Mobile Money, espace membres, multi-langue, dashboard admin), <strong>plateforme SaaS sur mesure 15 000 a 50 000 EUR HT</strong> (logiques business complexes, multi-utilisateurs, API REST, tests CI/CD). Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible. Au-dela, comptez l'hebergement (10-50 EUR/mois) et la maintenance optionnelle (300-800 EUR/mois).</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la difference avec un site WordPress ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Un site WordPress repose sur un theme et des plugins existants : rapide a monter, moins cher (800 a 2 500 EUR), mais avec des limites importantes de design (templates utilises par des centaines de milliers de sites) et de performance (Lighthouse 50-70 le plus souvent). Un site sur mesure est code de zero en Next.js ou React : design unique, Lighthouse 95+ garanti, scalable, securise. Le sur mesure se rentabilise des que vous voulez une marque differenciante ou que votre site doit etre une source serieuse de leads commerciaux. Nous proposons les deux options et vous conseillons honnetement laquelle choisir selon votre contexte.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la difference avec un site WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Un site WordPress repose sur un theme et des plugins existants&nbsp;: rapide a monter, moins cher (800 a 2 500 EUR), mais avec des limites importantes de design (templates utilises par des centaines de milliers de sites) et de performance (Lighthouse 50-70 le plus souvent). Un site sur mesure est code de zero en Next.js ou React&nbsp;: design unique, Lighthouse 95+ garanti, scalable, securise. Le sur mesure se rentabilise des que vous voulez une marque differenciante ou que votre site doit etre une source serieuse de leads commerciaux. Nous proposons les deux options et vous conseillons honnetement laquelle choisir selon votre contexte.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend la livraison d'un site web ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Le delai depend du type de projet : <strong>site vitrine 5-10 pages : 3 a 5 semaines</strong>. <strong>E-commerce ou plateforme : 5 a 8 semaines</strong>. <strong>SaaS complexe : 8 a 16 semaines</strong>. Le planning detaille sprint par sprint est dans le devis ferme. Nous travaillons par sprints d'une semaine avec demos chaque vendredi sur un environnement de preview, ce qui vous permet de voir l'avancement reel et d'integrer les ajustements en continu.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend la livraison d'un site web&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le delai depend du type de projet&nbsp;: <strong>site vitrine 5-10 pages&nbsp;: 3 a 5 semaines</strong>. <strong>E-commerce ou plateforme&nbsp;: 5 a 8 semaines</strong>. <strong>SaaS complexe&nbsp;: 8 a 16 semaines</strong>. Le planning detaille sprint par sprint est dans le devis ferme. Nous travaillons par sprints d'une semaine avec demos chaque vendredi sur un environnement de preview, ce qui vous permet de voir l'avancement reel et d'integrer les ajustements en continu.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Qui possede le code source apres la livraison ?</span><span class="faq-i__q-icon">+</span></button>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Qui possede le code source apres la livraison&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
           <div class="faq-i__inner"><div class="faq-i__a-inner">Vous, integralement. Une fois la facture finale reglee, le code source est pousse sur votre depot GitHub ou GitLab avec la documentation technique complete. Les designs Figma vous sont transferes integralement avec design system reutilisable. L'hebergement Vercel ou Netlify est configure sur votre propre compte avec acces administrateur complet. Vous etes 100% autonome et pouvez changer de prestataire a tout moment sans rien re-acheter, sans frais de transfert, sans complication technique.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer Mobile Money pour le Benin et l'Afrique de l'Ouest ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est une de nos specialites. Nous integrons MTN Mobile Money, Moov Money, Wave, Orange Money via leurs API officielles ou via des agregateurs locaux comme Kkiapay, FedaPay, CinetPay et PayDunya. Pour l'Europe : Stripe, PayPal, virement SEPA. Pour le multi-marche (clients africains et europeens) : nous combinons les deux dans le meme checkout avec detection automatique de la devise et du mode de paiement adapte selon le pays du client.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer Mobile Money pour le Benin et l'Afrique de l'Ouest&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est une de nos specialites. Nous integrons MTN Mobile Money, Moov Money, Wave, Orange Money via leurs API officielles ou via des agregateurs locaux comme Kkiapay, FedaPay, CinetPay et PayDunya. Pour l'Europe&nbsp;: Stripe, PayPal, virement SEPA. Pour le multi-marche (clients africains et europeens)&nbsp;: nous combinons les deux dans le meme checkout avec detection automatique de la devise et du mode de paiement adapte selon le pays du client.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel CMS pour gerer le contenu apres la livraison ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon vos besoins : <strong>Sanity</strong> (headless CMS moderne, gratuit jusqu'a 10 000 requetes/mois, parfait pour les blogs et catalogues), <strong>Strapi</strong> (auto-hebergeable, open-source, pour les projets avec hebergement dedie), <strong>Contentful</strong> (premium, pour les grands volumes), ou pour du contenu tres simple un markdown versionne via GitHub. Pour Webflow, le CMS est integre nativement. Pour WordPress, on peut conserver WordPress comme back-office editorial et connecter un front Next.js (architecture headless).</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel CMS pour gerer le contenu apres la livraison&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon vos besoins&nbsp;: <strong>Sanity</strong> (headless CMS moderne, gratuit jusqu'a 10 000 requetes/mois, parfait pour les blogs et catalogues), <strong>Strapi</strong> (auto-hebergeable, open-source, pour les projets avec hebergement dedie), <strong>Contentful</strong> (premium, pour les grands volumes), ou pour du contenu tres simple un markdown versionne via GitHub. Pour Webflow, le CMS est integre nativement. Pour WordPress, on peut conserver WordPress comme back-office editorial et connecter un front Next.js (architecture headless).</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en France et en Europe ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Nous accompagnons regulierement des clients en France, Belgique, Suisse et Canada. Travail entierement a distance via Zoom ou Google Meet, Notion partage pour le suivi, WhatsApp pour les questions courtes, demos hebdomadaires en visio. Facturation en EUR via virement SEPA ou carte bancaire Stripe. Conformite RGPD assuree sur tous les sites livres en Europe : bannieres cookies, politique de confidentialite, formulaires conformes, sous-traitance documentee.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en France et en Europe&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Nous accompagnons regulierement des clients en France, Belgique, Suisse et Canada. Travail entierement a distance via Zoom ou Google Meet, Notion partage pour le suivi, WhatsApp pour les questions courtes, demos hebdomadaires en visio. Facturation en EUR via virement SEPA ou carte bancaire Stripe. Conformite RGPD assuree sur tous les sites livres en Europe&nbsp;: bannieres cookies, politique de confidentialite, formulaires conformes, sous-traitance documentee.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance apres la mise en ligne ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Garantie 30 jours incluse</strong> : tout bug imputable a notre travail est corrige gratuitement (crash, erreur formulaire, regression Lighthouse). Apres cette periode : option de <strong>forfait maintenance mensuel</strong> (300 a 800 EUR/mois selon scope) incluant corrections, mises a jour de securite, modifications de contenu mineures, monitoring Lighthouse mensuel, et 4h de developpement. Sinon, interventions ponctuelles au TJM 600 EUR HT. Nous recommandons un forfait minimum pour les sites a fort trafic ou les e-commerce.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance apres la mise en ligne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Garantie 30 jours incluse</strong>&nbsp;: tout bug imputable a notre travail est corrige gratuitement (crash, erreur formulaire, regression Lighthouse). Apres cette periode&nbsp;: option de <strong>forfait maintenance mensuel</strong> (300 a 800 EUR/mois selon scope) incluant corrections, mises a jour de securite, modifications de contenu mineures, monitoring Lighthouse mensuel, et 4h de developpement. Sinon, interventions ponctuelles au TJM 600 EUR HT. Nous recommandons un forfait minimum pour les sites a fort trafic ou les e-commerce.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux migrer mon site WordPress existant en sur mesure ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">C'est notre type de projet le plus frequent. Nous procedons en 5 etapes : <strong>audit du site existant</strong> (contenus, redirections, ranking SEO), <strong>extraction de la base de donnees WordPress</strong> vers un format reutilisable, <strong>reconstruction sur mesure</strong> en Next.js/Webflow, <strong>migration des contenus</strong> et mapping des URLs anciennes vers les nouvelles avec redirections 301 systematiques, <strong>mise en ligne accompagnee</strong> avec surveillance du ranking Google sur 30 jours. Comptez 4 a 8 semaines selon le volume de pages. Le SEO ne se perd pas si la migration est bien faite : nous l'avons fait sur plusieurs sites avec preservation totale du trafic organique.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux migrer mon site WordPress existant en sur mesure&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">C'est notre type de projet le plus frequent. Nous procedons en 5 etapes&nbsp;: <strong>audit du site existant</strong> (contenus, redirections, ranking SEO), <strong>extraction de la base de donnees WordPress</strong> vers un format reutilisable, <strong>reconstruction sur mesure</strong> en Next.js/Webflow, <strong>migration des contenus</strong> et mapping des URLs anciennes vers les nouvelles avec redirections 301 systematiques, <strong>mise en ligne accompagnee</strong> avec surveillance du ranking Google sur 30 jours. Comptez 4 a 8 semaines selon le volume de pages. Le SEO ne se perd pas si la migration est bien faite&nbsp;: nous l'avons fait sur plusieurs sites avec preservation totale du trafic organique.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faites-vous aussi le SEO et les campagnes ads apres la mise en ligne ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Pirabel Labs est une agence marketing digital 360 : nous proposons en plus de la creation de site les services SEO (audit, contenu, netlinking ethique), Google Ads, Meta Ads, automatisation Make/n8n/Zapier, tunnels de vente, community management, email marketing, et consulting strategique. Travailler avec une seule agence sur l'ensemble de votre presence digitale garantit la coherence des messages, de la marque et des donnees collectees. C'est aussi 30 a 50% d'economie versus jongler entre 4 ou 5 prestataires differents.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faites-vous aussi le SEO et les campagnes ads apres la mise en ligne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Pirabel Labs est une agence marketing digital 360&nbsp;: nous proposons en plus de la creation de site les services SEO (audit, contenu, netlinking ethique), Google Ads, Meta Ads, automatisation Make/n8n/Zapier, tunnels de vente, community management, email marketing, et consulting strategique. Travailler avec une seule agence sur l'ensemble de votre presence digitale garantit la coherence des messages, de la marque et des donnees collectees. C'est aussi 30 a 50% d'economie versus jongler entre 4 ou 5 prestataires differents.</div></div>
         </div>
       </div>
     </div>
@@ -1213,7 +1238,7 @@
       <div class="fcta">
         <div>
           <h2>Un site web ne promet pas la lune. Il vous apporte des resultats concrets et durables.</h2>
-          <p>Passons a l'action ! Vous souhaitez en savoir plus sur notre expertise creation de site web sur mesure, notre agence ou nos engagements ? Venez discuter de votre projet avec un cofondateur et obtenez des reponses concretes en moins de 30 minutes.</p>
+          <p>Passons a l'action&nbsp;! Vous souhaitez en savoir plus sur notre expertise creation de site web sur mesure, notre agence ou nos engagements&nbsp;? Venez discuter de votre projet avec un cofondateur et obtenez des reponses concretes en moins de 30 minutes.</p>
         </div>
         <a href="/contact?service=site-sur-mesure" class="fcta__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
       </div>
@@ -1221,6 +1246,19 @@
   </section>
 
 </main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Devis ferme sous <strong>48h</strong> &middot; garantie 30 jours</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=site-sur-mesure" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20de%20site%20web" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
 
 <footer class="footer">
   <div class="container">
@@ -1233,11 +1271,32 @@
         <div class="footer__title">Services</div>
         <ul class="footer__list">
           <li><a href="/creation-site-web">Sites web sur mesure</a></li>
-          <li><a href="/contact">Sites WordPress</a></li>
-          <li><a href="/contact">Applications web</a></li>
-          <li><a href="/contact">SEO & referencement</a></li>
-          <li><a href="/contact">Automatisation</a></li>
-          <li><a href="/contact">Tunnels de vente</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
         </ul>
       </div>
       <div>
@@ -1280,8 +1339,8 @@
       if (!btn) return;
       btn.addEventListener('click', function(){
         var isOpen = item.getAttribute('data-open') === 'true';
-        item.setAttribute('data-open', isOpen ? 'false' : 'true');
-        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        item.setAttribute('data-open', isOpen&nbsp;? 'false'&nbsp;: 'true');
+        btn.setAttribute('aria-expanded', isOpen&nbsp;? 'false'&nbsp;: 'true');
       });
     });
   }
@@ -1310,6 +1369,23 @@
     document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
   } else {
     document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
   }
 })();
 </script>

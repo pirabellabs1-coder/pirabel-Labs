@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestion avis Google - Pirabel Labs | Collecte + reponse + signalement</title>
+<meta name="description" content="Gestion professionnelle avis Google. Collecte strategique, reponses sous 48h, signalement faux avis. Boostez trust et SEO local.">
+<meta name="keywords" content="gestion avis google, avis google benin, e-reputation, signalement faux avis, reponse avis google, collecte avis google, e-reputation benin, avis google cotonou, faux avis google, monitoring avis google, reputation entreprise google, agence avis google, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/gestion-avis-google">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gestion avis Google - Pirabel Labs">
+<meta property="og:description" content="Collecte strategique, reponses sous 48h, signalement des faux avis. Boostez trust et SEO local avec une e-reputation maitrisee.">
+<meta property="og:url" content="https://www.pirabellabs.com/gestion-avis-google">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; }
+.s-hero__trust-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+.s-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta, .s-hero__trust { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Stats grid */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 64rem; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-2); }
+@media (max-width: 880px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+.stat-c { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.stat-c:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .stat-c:nth-child(2n) { border-right: 0; }
+  .stat-c:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .stat-c { border-right: 0; border-bottom: 1px solid var(--border); }
+  .stat-c:last-child { border-bottom: 0; }
+}
+.stat-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: var(--accent); }
+.stat-c__l { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+
+/* Zigzag methodologie - 5 etapes collecte */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* Templates reponse */
+.tpl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .tpl-grid { grid-template-columns: 1fr; max-width: 36rem; } }
+.tpl { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); position: relative; }
+.tpl:hover { border-color: var(--accent); }
+.tpl--pos { border-top: 4px solid #4ade80; }
+.tpl--mid { border-top: 4px solid #fbbf24; }
+.tpl--neg { border-top: 4px solid #ef4444; }
+.tpl__stars { display: flex; gap: 0.15rem; margin-bottom: 0.85rem; }
+.tpl__stars .material-symbols-outlined { font-size: 1.1rem; color: #fbbf24; }
+.tpl__stars .material-symbols-outlined.is-off { color: var(--border-2); }
+.tpl__h { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.6rem; }
+.tpl__sub { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; }
+.tpl__block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; margin-bottom: 0.85rem; }
+.tpl__block-tag { font-family: var(--font-display); font-weight: 700; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.55rem; display: inline-flex; align-items: center; gap: 0.35rem; }
+.tpl__block-tag .material-symbols-outlined { font-size: 0.85rem; }
+.tpl__quote { font-size: 0.86rem; line-height: 1.6; color: var(--text-muted); font-style: italic; }
+.tpl__reply { font-size: 0.86rem; line-height: 1.6; color: var(--text); }
+.tpl__reply strong { color: var(--accent); font-weight: 700; }
+.tpl__checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.45rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.tpl__checklist li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+.tpl__checklist li .material-symbols-outlined { font-size: 1rem; color: var(--accent); margin-top: 0.1rem; flex-shrink: 0; }
+
+/* Signalement zigzag - 4 etapes */
+.sig-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 76rem; margin: 0 auto; }
+@media (max-width: 880px) { .sig-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .sig-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.sig { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.65rem 1.45rem; display: flex; flex-direction: column; transition: border-color var(--t); position: relative; }
+.sig:hover { border-color: var(--accent); }
+.sig__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.sig__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.sig__icon .material-symbols-outlined { font-size: 1.5rem; }
+.sig__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.sig__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.sig__chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.7rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 600; font-size: 0.7rem; color: var(--accent); align-self: flex-start; }
+.sig__chip .material-symbols-outlined { font-size: 0.85rem; }
+
+/* Dashboard mockup */
+.dash { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.75rem; max-width: 64rem; margin: 0 auto; }
+.dash__h { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.85rem; }
+.dash__h-l { display: flex; align-items: center; gap: 0.75rem; }
+.dash__h-icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.dash__h-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.dash__h-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+.dash__h-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.85rem; background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.4); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; color: #4ade80; }
+.dash__h-pill .material-symbols-outlined { font-size: 0.9rem; }
+.dash__row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+@media (max-width: 720px) { .dash__row { grid-template-columns: repeat(2, 1fr); } }
+.dash__kpi { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.dash__kpi-l { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.dash__kpi-v { font-family: var(--font-display); font-weight: 800; font-size: 1.65rem; color: var(--text); line-height: 1; }
+.dash__kpi-delta { font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 0.25rem; }
+.dash__kpi-delta.is-up { color: #4ade80; }
+.dash__kpi-delta.is-down { color: #ef4444; }
+.dash__kpi-delta .material-symbols-outlined { font-size: 0.85rem; }
+.dash__rating { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: wrap; }
+.dash__rating-l { display: flex; flex-direction: column; gap: 0.25rem; }
+.dash__rating-l span:first-child { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.dash__rating-l span:last-child { font-size: 0.82rem; color: var(--text-muted); }
+.dash__rating-v { display: flex; align-items: center; gap: 0.5rem; }
+.dash__rating-v strong { font-family: var(--font-display); font-weight: 800; font-size: 2.25rem; color: var(--accent); line-height: 1; }
+.dash__rating-stars { display: flex; gap: 0.15rem; }
+.dash__rating-stars .material-symbols-outlined { font-size: 1.25rem; color: #fbbf24; }
+.dash__bars { display: flex; flex-direction: column; gap: 0.5rem; }
+.dash__bar { display: grid; grid-template-columns: 4rem 1fr 3rem; gap: 0.75rem; align-items: center; font-size: 0.78rem; }
+.dash__bar-l { font-family: var(--font-display); font-weight: 700; color: var(--text); display: inline-flex; align-items: center; gap: 0.25rem; }
+.dash__bar-l .material-symbols-outlined { font-size: 0.85rem; color: #fbbf24; }
+.dash__bar-track { background: var(--bg); border-radius: 999px; height: 0.55rem; overflow: hidden; }
+.dash__bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 999px; }
+.dash__bar-v { font-family: var(--font-display); font-weight: 700; color: var(--text-muted); text-align: right; }
+
+/* Tarifs cards */
+.tarifs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .tarifs-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.tarif { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.tarif--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.tarif__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.tarif__icon .material-symbols-outlined { font-size: 1.65rem; }
+.tarif__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.tarif__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.tarif__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.tarif__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.tarif__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.tarif__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.tarif__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.tarif__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.tarif__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.tarif--featured .tarif__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tarif--featured .tarif__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.tarif__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodology compact 4 etapes */
+.meth { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .meth { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .meth { grid-template-columns: 1fr; max-width: 28rem; } }
+.meth-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.35rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.meth-c:hover { border-color: var(--accent); }
+.meth-c__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.meth-c__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.meth-c__desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Services connexes */
+.syn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .syn-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.syn { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; text-decoration: none; color: var(--text); transition: all var(--t); }
+.syn:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.syn__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.syn__icon .material-symbols-outlined { font-size: 1.35rem; }
+.syn__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.syn__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.syn__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; transition: gap 0.2s; }
+.syn:hover .syn__link { gap: 0.5rem; }
+.syn__link .material-symbols-outlined { font-size: 0.95rem; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Parent service link block */
+.parent-link { background: linear-gradient(135deg, rgba(255,85,0,0.08) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; }
+@media (max-width: 720px) { .parent-link { grid-template-columns: 1fr; text-align: center; gap: 1.25rem; } }
+.parent-link__icon { width: 4rem; height: 4rem; background: var(--accent); color: #fff; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.parent-link__icon .material-symbols-outlined { font-size: 2rem; }
+@media (max-width: 720px) { .parent-link__icon { margin: 0 auto; } }
+.parent-link__txt h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 2vw, 1.45rem); margin-bottom: 0.5rem; }
+.parent-link__txt p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
+.parent-link__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.6rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); white-space: nowrap; }
+.parent-link__cta:hover { background: var(--accent-2); transform: translateX(3px); opacity: 1; }
+.parent-link__cta .material-symbols-outlined { font-size: 1rem; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Gestion des avis Google","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"}},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Gestion professionnelle des avis Google : collecte strategique, reponses sous 48h, signalement des faux avis, tableau de bord e-reputation.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"290","highPrice":"590"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/fiche-google-business">Fiche Google Business</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Gestion des avis Google</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">reviews</span> Gestion des avis Google</span>
+        <h1><em>Gestion des avis Google</em>&nbsp;: transformez votre reputation en levier.</h1>
+        <p class="s-hero__tagline">Collecte + Reponse + Signalement des faux avis &middot; Strategie e-reputation</p>
+        <p class="s-hero__lead">Pirabel Labs accompagne les PME au Benin, en France et en Afrique francophone dans la maitrise de leur reputation sur Google. Collecte structuree des avis clients, redaction de reponses professionnelles sous 48h, signalement des faux avis abusifs aupres de Google, tableau de bord mensuel des metriques cles. Une e-reputation maitrisee, c'est plus de trust local et un meilleur classement dans Google Maps et Google Search.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=gestion-avis-google" class="btn btn--primary btn--lg">Demander un audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20faire%20gerer%20mes%20avis%20Google" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+        <div class="s-hero__trust">
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">verified</span> Reponse sous 48h</span>
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">shield</span> Signalement encadre</span>
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">analytics</span> Tableau de bord mensuel</span>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">star</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">reviews</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">thumb_up</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> E-reputation maitrisee</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">trending_up</span> +0,8 etoile moyen</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">schedule</span> Reponse 48h max</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">shield</span> Faux avis signales</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. STATS POURQUOI -->
+  <section class="section" style="padding-top: 1rem;">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi vos avis Google sont <em>strategiques</em></h2>
+        <p class="sec-h__sub">Avant d'acheter, vos prospects lisent vos avis. Avant de classer votre fiche, Google compte vos avis. Avant de revenir, vos clients regardent vos reponses. Votre reputation Google est le premier filtre de votre acquisition locale&nbsp;: la negliger, c'est ceder du terrain a vos concurrents.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-c">
+          <div class="stat-c__v">93%</div>
+          <div class="stat-c__l">des consommateurs lisent les avis en ligne avant un achat local</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">+9%</div>
+          <div class="stat-c__l">de revenus pour chaque +0,1 etoile gagnee sur la note moyenne</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">4 etoiles</div>
+          <div class="stat-c__l">la note minimum attendue par 72% des prospects locaux</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">72%</div>
+          <div class="stat-c__l">font confiance a une marque qui repond aux avis (positifs ou negatifs)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. METHODE COLLECTE 5 ETAPES -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre methode pour <em>collecter plus d'avis</em></h2>
+        <p class="sec-h__sub">La majorite des clients satisfaits ne deposent pas d'avis spontanement&nbsp;: il faut les solliciter au bon moment, avec le bon outil et le bon message. Voici notre methode en 5 etapes, testee sur des dizaines de fiches Business Profile au Benin et en France.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Audit du parcours client</span>
+            <div class="zz-step__title">Identifier les bons moments de sollicitation</div>
+            <div class="zz-step__desc">Nous cartographions votre parcours client (premier achat, livraison, prestation terminee, sortie de magasin) pour identifier les 2 ou 3 moments precis ou la satisfaction est a son pic. Sollicitation au bon moment&nbsp;= taux de conversion 5 a 8 fois superieur a une demande mal cadree.</div>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 1 semaine</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Lien court Google personnalise</span>
+            <div class="zz-step__title">Generer un raccourci direct vers l'avis</div>
+            <div class="zz-step__desc">Nous generons votre URL courte officielle Google (type g.page/r/...) qui ouvre directement le formulaire d'avis en un clic, sans passer par la recherche. Cette URL devient l'epine dorsale de toute votre collecte&nbsp;: QR code, SMS, email, signature, ticket de caisse, page de remerciement.</div>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 2 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Sequences automatisees</span>
+            <div class="zz-step__title">SMS, email, WhatsApp et QR code</div>
+            <div class="zz-step__desc">Nous parametrons les sequences de sollicitation automatique&nbsp;: SMS 24h apres la prestation, email de relance a J+3, QR code sur le ticket de caisse, message WhatsApp post-livraison. Chaque canal est calibre pour respecter les regles Google (pas d'incitation, pas de filtre prealable).</div>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 1 a 2 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Formation des equipes</span>
+            <div class="zz-step__title">Demander l'avis sans paraitre commercial</div>
+            <div class="zz-step__desc">Nous formons votre equipe (vendeurs, livreurs, techniciens, agents d'accueil) a la demande orale d'avis&nbsp;: phrases types, gestion des objections, transmission du QR code, bonnes pratiques. Une demande humaine bien faite genere 3 a 4 fois plus d'avis qu'un email automatique seul.</div>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 1 atelier 2h</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">5</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Tableau de bord mensuel</span>
+            <div class="zz-step__title">Mesurer, ajuster, ameliorer</div>
+            <div class="zz-step__desc">Vous recevez chaque mois un rapport detaille&nbsp;: nombre d'avis collectes, note moyenne, taux de reponse, mots-cles recurrents (positifs et negatifs), comparatif concurrents. Cette boucle de feedback alimente l'amelioration continue de vos services et de vos messages de sollicitation.</div>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Mensuel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TEMPLATES REPONSE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Reponse type aux avis <em>positifs et negatifs</em></h2>
+        <p class="sec-h__sub">Repondre a un avis n'est pas une formalite&nbsp;: c'est un message public adresse a tous vos futurs prospects. Voici nos 3 modeles de reponses, calibres selon la note recue, avec exemples concrets a personnaliser.</p>
+      </div>
+      <div class="tpl-grid">
+        <div class="tpl tpl--pos">
+          <div class="tpl__stars">
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+          </div>
+          <h3 class="tpl__h">Avis 5 etoiles</h3>
+          <p class="tpl__sub">Remercier, reformuler le compliment cle, inviter au retour. Pas de copier-coller&nbsp;: chaque reponse doit citer un detail unique.</p>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">format_quote</span> Avis client</span>
+            <div class="tpl__quote">Service impeccable, equipe tres a l'ecoute. Le devis a ete clair et la prestation livree dans les delais. Je recommande sans hesitation.</div>
+          </div>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">reply</span> Reponse type</span>
+            <div class="tpl__reply">Bonjour <strong>Marie</strong>, merci beaucoup pour votre retour. Nous sommes ravis que <strong>la clarte du devis</strong> et le respect des delais aient repondu a vos attentes&nbsp;: c'est exactement ce que nous defendons au quotidien. Au plaisir de vous accompagner sur vos prochains projets&nbsp;!</div>
+          </div>
+          <ul class="tpl__checklist">
+            <li><span class="material-symbols-outlined">check_circle</span> Reponse en moins de 24h</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Personne nominative</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Reprise d'un mot-cle SEO local</li>
+          </ul>
+        </div>
+        <div class="tpl tpl--mid">
+          <div class="tpl__stars">
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+          </div>
+          <h3 class="tpl__h">Avis 3 etoiles</h3>
+          <p class="tpl__sub">Remercier la transparence, prendre le point de friction au serieux, proposer un contact prive. Objectif&nbsp;: montrer aux lecteurs futurs que vous ecoutez.</p>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">format_quote</span> Avis client</span>
+            <div class="tpl__quote">Prestation correcte mais delai de reponse au telephone trop long. La qualite est la, le service client a ameliorer.</div>
+          </div>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">reply</span> Reponse type</span>
+            <div class="tpl__reply">Bonjour <strong>Kossi</strong>, merci pour votre retour honnete. Vous avez raison&nbsp;: <strong>nos delais de reponse au telephone</strong> doivent progresser et nous y travaillons activement (nouvelle equipe support depuis mars). Pouvez-vous nous ecrire a contact@... pour qu'on regarde ensemble votre cas&nbsp;? Au plaisir de vous proposer mieux.</div>
+          </div>
+          <ul class="tpl__checklist">
+            <li><span class="material-symbols-outlined">check_circle</span> Reconnaissance du probleme</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Action concrete annoncee</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Bascule vers le prive</li>
+          </ul>
+        </div>
+        <div class="tpl tpl--neg">
+          <div class="tpl__stars">
+            <span class="material-symbols-outlined">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+            <span class="material-symbols-outlined is-off">star</span>
+          </div>
+          <h3 class="tpl__h">Avis 1-2 etoiles</h3>
+          <p class="tpl__sub">Garder son calme, ne jamais s'enerver publiquement, basculer en prive sous 24h. Objectif&nbsp;: transformer un mecontentement en retour positif visible.</p>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">format_quote</span> Avis client</span>
+            <div class="tpl__quote">Catastrophique&nbsp;! Commande non livree, aucun retour de l'equipe pendant 5 jours. A fuir.</div>
+          </div>
+          <div class="tpl__block">
+            <span class="tpl__block-tag"><span class="material-symbols-outlined">reply</span> Reponse type</span>
+            <div class="tpl__reply">Bonjour <strong>Aristide</strong>, nous comprenons votre frustration et vous prions de nous en excuser. Une commande non livree avec un silence de 5 jours n'est pas acceptable. Notre responsable client va vous contacter aujourd'hui pour <strong>regulariser la situation</strong> et comprendre ce qui s'est passe. Merci d'avoir signale&nbsp;: cela nous aide a progresser.</div>
+          </div>
+          <ul class="tpl__checklist">
+            <li><span class="material-symbols-outlined">check_circle</span> Ton mesure, jamais defensif</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Engagement de rappel sous 24h</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Suivi post-resolution</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SIGNALEMENT FAUX AVIS -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Signalement et gestion des <em>faux avis</em></h2>
+        <p class="sec-h__sub">Faux avis de concurrents, avis abusifs, propos diffamatoires, attaques coordonnees&nbsp;: ils existent et peuvent saboter votre note moyenne en quelques jours. Notre processus de signalement aupres de Google obtient un taux de retrait de 60 a 70% sur les cas legitimes documentes.</p>
+      </div>
+      <div class="sig-grid">
+        <div class="sig">
+          <div class="sig__num">ETAPE 1</div>
+          <div class="sig__icon"><span class="material-symbols-outlined">search</span></div>
+          <h3 class="sig__title">Audit et detection</h3>
+          <p class="sig__desc">Nous analysons l'historique de vos avis pour identifier les profils suspects&nbsp;: comptes recents, avis multiples sur des concurrents directs, langage repetitif, geolocalisation incoherente, modeles d'attaque coordonnee.</p>
+          <span class="sig__chip"><span class="material-symbols-outlined">analytics</span> Detection patterns</span>
+        </div>
+        <div class="sig">
+          <div class="sig__num">ETAPE 2</div>
+          <div class="sig__icon"><span class="material-symbols-outlined">folder</span></div>
+          <h3 class="sig__title">Dossier de preuves</h3>
+          <p class="sig__desc">Nous constituons un dossier solide&nbsp;: captures d'ecran, identification des comptes, historique des interactions, demonstration de violation des regles Google (avis non base sur experience reelle, diffamation, conflit d'interet, contenu interdit).</p>
+          <span class="sig__chip"><span class="material-symbols-outlined">description</span> Dossier complet</span>
+        </div>
+        <div class="sig">
+          <div class="sig__num">ETAPE 3</div>
+          <div class="sig__icon"><span class="material-symbols-outlined">flag</span></div>
+          <h3 class="sig__title">Signalement officiel</h3>
+          <p class="sig__desc">Nous soumettons le signalement via les canaux officiels Google Business Profile, accompagne de tous les justificatifs. Si necessaire, nous escaladons le dossier via le support entreprise et utilisons les voies juridiques (mise en demeure) en cas de diffamation grave.</p>
+          <span class="sig__chip"><span class="material-symbols-outlined">gavel</span> Voies officielles</span>
+        </div>
+        <div class="sig">
+          <div class="sig__num">ETAPE 4</div>
+          <div class="sig__icon"><span class="material-symbols-outlined">monitoring</span></div>
+          <h3 class="sig__title">Suivi et relances</h3>
+          <p class="sig__desc">Google peut mettre 5 a 30 jours pour traiter un signalement. Nous suivons chaque dossier, relancons si necessaire, documentons les decisions et conseillons sur les recours possibles en cas de refus initial. Suivi mensuel inclus jusqu'a resolution.</p>
+          <span class="sig__chip"><span class="material-symbols-outlined">schedule</span> 5 a 30 jours</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DASHBOARD MOCKUP -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>tableau de bord</em> avis Google</h2>
+        <p class="sec-h__sub">Chaque mois, vous recevez un rapport synthetique des metriques cles de votre e-reputation Google. Voici un apercu du tableau de bord que nous fournissons a nos clients en gestion mensuelle.</p>
+      </div>
+      <div class="dash">
+        <div class="dash__h">
+          <div class="dash__h-l">
+            <div class="dash__h-icon"><span class="material-symbols-outlined">monitoring</span></div>
+            <div>
+              <div class="dash__h-title">Tableau de bord avis Google</div>
+              <div class="dash__h-sub">Periode&nbsp;: 1er au 31 mai 2026 &middot; Fiche&nbsp;: Restaurant Le Baobab</div>
+            </div>
+          </div>
+          <span class="dash__h-pill"><span class="material-symbols-outlined">trending_up</span> En progression</span>
+        </div>
+        <div class="dash__row">
+          <div class="dash__kpi">
+            <div class="dash__kpi-l">Avis collectes</div>
+            <div class="dash__kpi-v">38</div>
+            <div class="dash__kpi-delta is-up"><span class="material-symbols-outlined">arrow_upward</span> +24% vs M-1</div>
+          </div>
+          <div class="dash__kpi">
+            <div class="dash__kpi-l">Avis repondus</div>
+            <div class="dash__kpi-v">38/38</div>
+            <div class="dash__kpi-delta is-up"><span class="material-symbols-outlined">check_circle</span> 100% sous 48h</div>
+          </div>
+          <div class="dash__kpi">
+            <div class="dash__kpi-l">Faux avis traites</div>
+            <div class="dash__kpi-v">3</div>
+            <div class="dash__kpi-delta is-up"><span class="material-symbols-outlined">shield</span> 2 retires Google</div>
+          </div>
+          <div class="dash__kpi">
+            <div class="dash__kpi-l">Vues fiche</div>
+            <div class="dash__kpi-v">8 240</div>
+            <div class="dash__kpi-delta is-up"><span class="material-symbols-outlined">arrow_upward</span> +18% vs M-1</div>
+          </div>
+        </div>
+        <div class="dash__rating">
+          <div class="dash__rating-l">
+            <span>Note moyenne actuelle</span>
+            <span>Calculee sur 247 avis publics &middot; +0,3 etoile en 90 jours</span>
+          </div>
+          <div class="dash__rating-v">
+            <strong>4,7</strong>
+            <div class="dash__rating-stars">
+              <span class="material-symbols-outlined">star</span>
+              <span class="material-symbols-outlined">star</span>
+              <span class="material-symbols-outlined">star</span>
+              <span class="material-symbols-outlined">star</span>
+              <span class="material-symbols-outlined">star_half</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash__bars">
+          <div class="dash__bar">
+            <div class="dash__bar-l">5<span class="material-symbols-outlined">star</span></div>
+            <div class="dash__bar-track"><div class="dash__bar-fill" style="width: 78%;"></div></div>
+            <div class="dash__bar-v">78%</div>
+          </div>
+          <div class="dash__bar">
+            <div class="dash__bar-l">4<span class="material-symbols-outlined">star</span></div>
+            <div class="dash__bar-track"><div class="dash__bar-fill" style="width: 14%;"></div></div>
+            <div class="dash__bar-v">14%</div>
+          </div>
+          <div class="dash__bar">
+            <div class="dash__bar-l">3<span class="material-symbols-outlined">star</span></div>
+            <div class="dash__bar-track"><div class="dash__bar-fill" style="width: 5%;"></div></div>
+            <div class="dash__bar-v">5%</div>
+          </div>
+          <div class="dash__bar">
+            <div class="dash__bar-l">2<span class="material-symbols-outlined">star</span></div>
+            <div class="dash__bar-track"><div class="dash__bar-fill" style="width: 2%;"></div></div>
+            <div class="dash__bar-v">2%</div>
+          </div>
+          <div class="dash__bar">
+            <div class="dash__bar-l">1<span class="material-symbols-outlined">star</span></div>
+            <div class="dash__bar-track"><div class="dash__bar-fill" style="width: 1%;"></div></div>
+            <div class="dash__bar-v">1%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. TARIFS -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Tarifs <em>gestion avis Google</em></h2>
+        <p class="sec-h__sub">Trois formules pour s'adapter a votre volume d'avis, votre exposition et votre besoin de reactivite. Tous les prix sont en EUR HT, facturation au mois ou en one-shot selon le pack choisi.</p>
+      </div>
+      <div class="tarifs-grid">
+        <div class="tarif">
+          <div class="tarif__icon"><span class="material-symbols-outlined">search</span></div>
+          <h3 class="tarif__title">Audit e-reputation</h3>
+          <p class="tarif__lead">Diagnostic complet de votre presence avis Google + plan d'action sur 90 jours. Livrable en moins de 7 jours.</p>
+          <ul class="tarif__feat">
+            <li>Audit qualitatif des 100 derniers avis</li>
+            <li>Detection des faux avis et profils suspects</li>
+            <li>Benchmark sur 3 concurrents directs</li>
+            <li>Plan d'action 90 jours personnalise</li>
+            <li>Restitution en visio 1h avec un expert</li>
+            <li>Templates de reponses adaptes a votre marque</li>
+          </ul>
+          <div class="tarif__price">A partir de <strong>490&nbsp;EUR</strong> &middot; paiement unique</div>
+          <a href="/contact?service=audit-avis-google" class="tarif__cta">Demander l'audit</a>
+        </div>
+        <div class="tarif tarif--featured">
+          <span class="tarif__badge">Plus choisi</span>
+          <div class="tarif__icon"><span class="material-symbols-outlined">reviews</span></div>
+          <h3 class="tarif__title">Gestion mensuelle</h3>
+          <p class="tarif__lead">Reponse a tous vos avis sous 48h + collecte automatisee + rapport mensuel. Pour les structures avec 10 a 40 avis par mois.</p>
+          <ul class="tarif__feat">
+            <li>Reponse personnalisee a 100% des avis sous 48h</li>
+            <li>Sequences de collecte automatisees</li>
+            <li>QR code et URL courte fournis</li>
+            <li>Signalement des faux avis (jusqu'a 3/mois)</li>
+            <li>Tableau de bord mensuel detaille</li>
+            <li>Point strategique trimestriel en visio</li>
+          </ul>
+          <div class="tarif__price">A partir de <strong>290&nbsp;EUR/mois</strong> &middot; engagement 3 mois min</div>
+          <a href="/contact?service=gestion-mensuelle-avis" class="tarif__cta">Choisir cette formule</a>
+        </div>
+        <div class="tarif">
+          <div class="tarif__icon"><span class="material-symbols-outlined">bolt</span></div>
+          <h3 class="tarif__title">Premium reactif</h3>
+          <p class="tarif__lead">Reponse sous 6h, monitoring quotidien, signalement illimite des faux avis. Pour les multi-sites, franchises et marques exposees.</p>
+          <ul class="tarif__feat">
+            <li>Reponse sous 6h (jours ouvres) a tous les avis</li>
+            <li>Monitoring quotidien et alertes en temps reel</li>
+            <li>Signalement illimite des faux avis</li>
+            <li>Gestion multi-fiches (jusqu'a 5 sites inclus)</li>
+            <li>Cellule de crise reputationnelle 24/24</li>
+            <li>Point hebdomadaire + rapport mensuel</li>
+          </ul>
+          <div class="tarif__price">A partir de <strong>590&nbsp;EUR/mois</strong> &middot; engagement 6 mois</div>
+          <a href="/contact?service=premium-avis-google" class="tarif__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. METHODOLOGIE COMPACT -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> en 4 etapes</h2>
+        <p class="sec-h__sub">De la prise de brief a la mise en autonomie de votre equipe, voici comment nous structurons une mission de gestion avis Google chez Pirabel Labs.</p>
+      </div>
+      <div class="meth">
+        <div class="meth-c">
+          <div class="meth-c__num">ETAPE 01</div>
+          <h3 class="meth-c__title">Audit initial</h3>
+          <p class="meth-c__desc">Analyse de votre fiche Google Business, audit qualitatif des avis existants, identification des leviers et angles morts. Restitution sous 5 jours ouvres.</p>
+        </div>
+        <div class="meth-c">
+          <div class="meth-c__num">ETAPE 02</div>
+          <h3 class="meth-c__title">Plan d'action</h3>
+          <p class="meth-c__desc">Recommandations precises sur la collecte, les sequences automatisees, les modeles de reponse, les faux avis a signaler. Validation conjointe en visio 1h.</p>
+        </div>
+        <div class="meth-c">
+          <div class="meth-c__num">ETAPE 03</div>
+          <h3 class="meth-c__title">Mise en oeuvre</h3>
+          <p class="meth-c__desc">Deploiement des sequences de collecte, redaction quotidienne des reponses, dossier de signalement des faux avis, formation de vos equipes terrain.</p>
+        </div>
+        <div class="meth-c">
+          <div class="meth-c__num">ETAPE 04</div>
+          <h3 class="meth-c__title">Pilotage continu</h3>
+          <p class="meth-c__desc">Rapport mensuel detaille, point strategique trimestriel, ajustements continus. Transmission progressive du savoir-faire pour votre autonomie a moyen terme.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FAQ -->
+  <section class="section" style="background: var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Questions <em>frequentes</em></h2>
+        <p class="sec-h__sub">Vous hesitez encore&nbsp;? Voici les 7 questions les plus posees par nos clients PME avant de demarrer une gestion de leurs avis Google.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien d'avis dois-je viser pour ma fiche Google&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Au minimum <strong>50 avis</strong> pour franchir le seuil de credibilite locale, ideal <strong>150 a 300 avis</strong> pour dominer votre secteur sur Google Maps. Au-dela, l'effet marginal diminue mais la frequence compte&nbsp;: <strong>5 a 10 nouveaux avis par mois</strong> est ce que Google attend pour considerer votre fiche comme active. Une fiche figee a 200 avis vieux d'un an performera moins qu'une fiche a 80 avis recents et frequents.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelles sont les regles Google pour collecter des avis&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Les regles sont strictes&nbsp;: <strong>interdiction d'offrir une contrepartie</strong> (cadeau, remise, points fidelite) en echange d'un avis, <strong>interdiction de filtrer les clients</strong> (envoyer la demande seulement aux satisfaits), <strong>interdiction de poster des faux avis</strong> (par vous, vos employes ou vos proches). Vous pouvez librement <strong>solliciter tous vos clients</strong> sans condition, leur fournir un lien direct, et les remercier de leur retour. Nos sequences automatisees respectent ces regles a la lettre&nbsp;: aucun risque de suspension de fiche.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel est le delai ideal pour repondre a un avis&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>48h maximum</strong> pour les avis positifs et neutres, <strong>24h maximum</strong> pour les avis negatifs (1 ou 2 etoiles). Une etude de BrightLocal montre que 53% des consommateurs s'attendent a une reponse dans la semaine, et 88% considerent qu'une entreprise qui repond aux avis est plus digne de confiance. Notre formule mensuelle garantit une reponse sous 48h, et la formule Premium descend a 6h sur jours ouvres pour les marques tres exposees.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment signaler un faux avis a Google&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Google accepte les signalements sur 7 motifs principaux&nbsp;: <strong>spam, contenu hors sujet, conflit d'interet, contenu inapproprie, contenu illegal, contenu sexuel, contenu trompeur</strong>. Le signalement se fait via votre console Google Business Profile, mais le taux de retrait est faible (15 a 20%) sans dossier solide. Avec un dossier de preuves bien construit (captures, historique du compte, demonstration claire de la violation), nous obtenons un taux de retrait de <strong>60 a 70%</strong>. En cas de refus initial, escalade via le support entreprise ou mise en demeure juridique pour diffamation.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels secteurs accompagnez-vous le plus souvent&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Tous les commerces et services locaux qui dependent du SEO local Google&nbsp;: <strong>restaurants, hotels, cabinets medicaux et dentaires, ecoles privees, agences immobilieres, garages auto, salons de coiffure, instituts de beaute, opticiens, pharmacies, artisans (plomberie, electricite, menuiserie), e-commerce avec point de retrait, agences de communication, consultants independants</strong>. Nous travaillons aussi avec des franchises et multi-sites necessitant une gestion centralisee de 5 a 50 fiches Google.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous remonter une note moyenne deja basse&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est notre cas le plus frequent. Une note de <strong>3,2 etoiles peut remonter a 4,5 etoiles en 4 a 8 mois</strong> via 3 leviers combines&nbsp;: <strong>collecte massive d'avis recents</strong> (qui dilue mecaniquement les anciens avis negatifs), <strong>reponses publiques pedagogiques</strong> sur les avis negatifs existants (qui rassurent les futurs lecteurs), <strong>signalement des faux avis abusifs</strong>. Important&nbsp;: il faut en parallele <strong>corriger les causes reelles</strong> des avis negatifs (qualite de service, communication, delais), sinon le probleme reviendra.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en dehors du Benin&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, regulierement. Notre siege est a <strong>Abomey-Calavi au Benin</strong>, mais nous accompagnons des PME en France, Belgique, Suisse, Cote d'Ivoire, Senegal, Cameroun, Togo, Burkina Faso et Mali. Tout se fait a distance via Zoom et WhatsApp, facturation en EUR ou FCFA selon votre localisation, supports adaptes aux specificites locales (langue, ton, references culturelles). Les regles Google sont mondiales, mais leur application optimale varie selon les marches&nbsp;: nous adaptons notre methode au contexte du votre.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. PARENT SERVICE LINK -->
+  <section class="section">
+    <div class="container">
+      <div class="parent-link">
+        <div class="parent-link__icon"><span class="material-symbols-outlined">storefront</span></div>
+        <div class="parent-link__txt">
+          <h3>Decouvrir Google Business complet</h3>
+          <p>La gestion des avis est un pilier essentiel de votre fiche Google Business Profile, mais ce n'est qu'une partie de la strategie. Decouvrez notre offre globale&nbsp;: creation, optimisation, photos professionnelles, posts hebdomadaires, gestion des Q&amp;R, attributs locaux et reporting integre.</p>
+        </div>
+        <a href="/fiche-google-business" class="parent-link__cta">Voir l'offre complete <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Vos avis Google meritent une strategie, pas du bricolage.</h2>
+          <p>Vous etes pret a transformer votre reputation en levier d'acquisition concret&nbsp;? Echangeons 30 minutes en visio avec un expert e-reputation pour auditer votre fiche, identifier vos angles morts et construire un plan d'action chiffre&nbsp;: sans engagement, sans jargon.</p>
+        </div>
+        <a href="/contact?service=gestion-avis-google" class="fcta__cta">Demander un audit <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Audit e-reputation gratuit &middot; reponse sous <strong>48h</strong></span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=gestion-avis-google" class="sticky-cta__cta">Demander mon audit <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20faire%20gerer%20mes%20avis%20Google" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/gestion-avis-google">Gestion avis Google</a></li>
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

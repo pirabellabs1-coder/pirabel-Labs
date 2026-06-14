@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing page haute conversion - Pirabel Labs | CRO et A/B tests</title>
+<meta name="description" content="Landing pages haute conversion. Copywriting, design, A/B tests, methodologie CRO. Conversion x3 en 30 jours. Devis 48h.">
+<meta name="keywords" content="landing page haute conversion, landing page CRO, A/B tests, copywriting conversion, agence landing, Webflow landing, Systeme.io landing, Hotjar, Microsoft Clarity, Optimizely, conversion rate optimization, page atterrissage, squeeze page, sales page, optimisation taux conversion, Pirabel Labs, agence Benin">
+<link rel="canonical" href="https://www.pirabellabs.com/landing-page-conversion">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Landing page haute conversion - Pirabel Labs">
+<meta property="og:description" content="Copywriting, design, A/B tests, methodologie CRO eprouvee. Conversion x3 en 30 jours. Devis ferme sous 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/landing-page-conversion">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Anatomie d'une landing - 6 elements stack */
+.anatomy-wrap { max-width: 60rem; margin: 0 auto; }
+.anatomy-stack { display: flex; flex-direction: column; gap: 0.85rem; }
+.anatomy-row { display: grid; grid-template-columns: 4rem 1fr; gap: 1.25rem; align-items: center; background: var(--bg-2); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 1.35rem 1.5rem; transition: all var(--t); }
+.anatomy-row:hover { border-color: var(--accent); transform: translateX(4px); }
+.anatomy-row__num { font-family: var(--font-display); font-weight: 800; font-size: 1.55rem; color: var(--accent); text-align: center; }
+.anatomy-row__body h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; }
+.anatomy-row__body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; margin: 0; }
+.anatomy-row__icon { width: 2.25rem; height: 2.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.55rem; }
+.anatomy-row__icon .material-symbols-outlined { font-size: 1.2rem; }
+
+/* Methode CRO 5 etapes verticale (zigzag-like) */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* Outils grid 6 */
+.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 880px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .tools-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.tool { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem 1.4rem; transition: all var(--t); display: flex; flex-direction: column; }
+.tool:hover { border-color: var(--accent); transform: translateY(-3px); }
+.tool__head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+.tool__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tool__icon .material-symbols-outlined { font-size: 1.3rem; }
+.tool__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; line-height: 1.2; }
+.tool__cat { font-family: var(--font-display); font-weight: 600; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.15rem; }
+.tool__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+
+/* Case studies 3 cards */
+.cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .cases-grid { grid-template-columns: 1fr; max-width: 32rem; margin: 0 auto; } }
+.case { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); position: relative; }
+.case:hover { border-color: var(--accent); }
+.case__tag { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 1rem; }
+.case__tag .material-symbols-outlined { font-size: 0.85rem; }
+.case__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.case__brief { font-size: 0.88rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.25rem; }
+.case__metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; padding-top: 1.25rem; border-top: 1px solid var(--border); margin-top: auto; }
+.case__metric { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.85rem 0.75rem; text-align: center; }
+.case__metric--ap { border-color: var(--accent); background: var(--accent-soft); }
+.case__metric-l { font-family: var(--font-display); font-weight: 600; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.35rem; }
+.case__metric-v { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; line-height: 1.1; }
+.case__metric--ap .case__metric-v { color: var(--accent); }
+.case__delta { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--success); background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.4); border-radius: 999px; padding: 0.3rem 0.7rem; margin-top: 1rem; align-self: flex-start; }
+.case__delta .material-symbols-outlined { font-size: 0.85rem; }
+
+/* Tarifs / Prestations cards */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodologie compacte 4 etapes */
+.meth-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 880px) { .meth-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .meth-row { grid-template-columns: 1fr; max-width: 22rem; } }
+.meth-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.25rem; position: relative; }
+.meth-step__num { font-family: var(--font-display); font-weight: 800; font-size: 0.65rem; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.65rem; }
+.meth-step__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; }
+.meth-step__icon .material-symbols-outlined { font-size: 1.25rem; }
+.meth-step__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.45rem; line-height: 1.3; }
+.meth-step__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Parent card "Decouvrir Tunnels en complet" */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 6rem 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+.parent-card::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 12rem; height: 12rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.2; pointer-events: none; }
+@media (max-width: 880px) { .parent-card { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; } }
+.parent-card__icon { width: 5rem; height: 5rem; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+@media (max-width: 880px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__icon .material-symbols-outlined { font-size: 2.2rem; }
+.parent-card__eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 2.3vw, 1.55rem); line-height: 1.2; margin-bottom: 0.75rem; }
+.parent-card__desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; max-width: 36rem; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: background var(--t); white-space: nowrap; }
+.parent-card__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp FAB */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Landing page haute conversion","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Landing pages haute conversion. Copywriting, design et A/B tests selon une methodologie CRO eprouvee. Conversion x3 en 30 jours.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"990","highPrice":"3990"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/tunnels-de-vente">Tunnels de vente</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Landing page haute conversion</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Sous-service Tunnels</span>
+        <h1><em>Landing page haute conversion</em>&nbsp;: conversion x3 en 30 jours.</h1>
+        <p class="s-hero__tagline">Copywriting + design + A/B tests &middot; Methodologie CRO eprouvee.</p>
+        <p class="s-hero__lead">Une landing page ne se contente pas d'etre jolie&nbsp;: elle doit convertir vos visiteurs en prospects qualifies ou clients. Chez Pirabel Labs, nous concevons des landing pages haute performance qui combinent <strong>copywriting persuasif</strong>, <strong>design epure oriente action</strong>, <strong>preuves sociales contextualisees</strong> et <strong>cycles d'A/B tests</strong>. Resultat moyen mesure sur nos 40 derniers projets&nbsp;: <em>taux de conversion multiplie par 2,8 en 30 jours</em>, avec une methode CRO reproductible quel que soit votre secteur.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=landing-page" class="btn btn--primary btn--lg">Demander mon devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="/tunnels-de-vente" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">arrow_back</span> Tunnels de vente</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">edit_note</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">ads_click</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">science</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">trending_up</span> Conversion x3 mesuree</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">science</span> A/B tests</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">edit</span> Copywriting CRO</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">speed</span> 30 jours</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ANATOMIE D'UNE LANDING QUI CONVERTIT -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Anatomie d'une <em>landing qui convertit</em></h2>
+        <p class="sec-h__sub">Une landing page haute conversion n'est jamais le fruit du hasard. Elle empile six elements indissociables, chacun joue un role precis dans la decision du visiteur. Voici la structure que nous appliquons systematiquement, validee sur des dizaines de projets.</p>
+      </div>
+      <div class="anatomy-wrap">
+        <div class="anatomy-stack">
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">01</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">title</span></div>
+              <h3>Headline percutante &middot; la promesse en 8 secondes</h3>
+              <p>Le visiteur arrive sur votre page avec une question unique en tete&nbsp;: <em>qu'est-ce que j'y gagne et en combien de temps</em>&nbsp;? La headline doit y repondre en moins de 8 secondes, c'est la fenetre d'attention moyenne mesuree par Microsoft Research. Pas de jargon, pas de slogan abstrait&nbsp;: un benefice concret, mesurable, avec un cadre temporel explicite.</p>
+            </div>
+          </article>
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">02</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">subtitles</span></div>
+              <h3>Sous-titre clarificateur &middot; le contexte et la methode</h3>
+              <p>La headline accroche, le sous-titre rassure et clarifie. Il precise <strong>pour qui</strong> est l'offre, <strong>comment</strong> elle fonctionne, et leve la premiere objection implicite. Sa longueur ideale&nbsp;: 1 a 2 lignes maximum, soit 15 a 25 mots. Au-dela, le visiteur decroche avant le scroll.</p>
+            </div>
+          </article>
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">03</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">visibility</span></div>
+              <h3>Visuel contextuel &middot; le hero qui montre la transformation</h3>
+              <p>Un hero visuel n'est pas une simple decoration. Pour un produit, il montre l'objet en situation d'usage. Pour un service, il met en scene le resultat ou la methode. Pour une formation, il revele le formateur en action. Le visuel doit <em>concretiser la promesse</em> de la headline, pas la repeter.</p>
+            </div>
+          </article>
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">04</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">groups</span></div>
+              <h3>Preuves sociales contextualisees &middot; la reassurance par les pairs</h3>
+              <p>Logos clients, temoignages avec chiffres, captures d'avis Google, certifications, screenshots de resultats clients reels. Les preuves sociales placees juste apres le hero diminuent l'anxiete d'achat de 40 a 60% selon les etudes Baymard Institute. Toujours contextualisees au profil du visiteur, jamais generiques.</p>
+            </div>
+          </article>
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">05</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">ads_click</span></div>
+              <h3>CTA principal &middot; l'action voulue, visible, repetee</h3>
+              <p>Un seul CTA principal par page, repete entre 3 et 5 fois selon la longueur. Verbe d'action a la 1re personne (<em>Je recupere mon devis</em>), couleur contrastante (#FF5500 chez Pirabel Labs), zone clic minimale 44x44 px conforme WCAG. Le CTA above the fold doit etre visible sans scroll sur 100% des viewports.</p>
+            </div>
+          </article>
+          <article class="anatomy-row">
+            <div class="anatomy-row__num">06</div>
+            <div class="anatomy-row__body">
+              <div class="anatomy-row__icon"><span class="material-symbols-outlined">shield</span></div>
+              <h3>Reassurance finale &middot; lever les dernieres objections</h3>
+              <p>Garantie satisfait ou rembourse, FAQ aux objections frequentes, badges securite (paiement SSL, RGPD), modalites d'annulation. La reassurance s'inscrit a deux endroits&nbsp;: pres du CTA principal sous forme de micro-copy, et en fin de page sous forme de FAQ ciblee. Elle leve l'inquietude residuelle qui fait reculer 15 a 30% des prospects au moment du clic final.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. NOTRE METHODE CRO EN 5 ETAPES -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre methode <em>CRO en 5 etapes</em></h2>
+        <p class="sec-h__sub">La conversion ne s'improvise pas&nbsp;: elle se construit avec une methode reproductible. Voici notre processus en 5 phases, applique sur chaque landing page que nous construisons pour vous, du brief initial jusqu'a l'optimisation continue post-lancement.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 01</span>
+            <h3 class="zz-step__title">Recherche audience &amp; voice of customer</h3>
+            <p class="zz-step__desc">Avant de rediger une seule ligne, nous interrogeons vos clients passes (ou ceux de vos concurrents). Sondages, mini-interviews 15 min, lecture des reviews Google et Trustpilot, analyse Hotjar et Microsoft Clarity de vos pages actuelles. Objectif&nbsp;: extraire les mots exacts de votre cible, identifier les vraies objections, comprendre le contexte d'achat.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 3 a 5 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 02</span>
+            <h3 class="zz-step__title">Wireframe et architecture persuasive</h3>
+            <p class="zz-step__desc">Construction du squelette de la page selon le framework PAS (Probleme, Agitation, Solution) ou AIDA selon votre offre. Definition des sections, hierarchie visuelle, points de friction et points de relance. Le wireframe est valide ensemble en 1 atelier de 60 min avant tout passage en design.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 2 a 3 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 03</span>
+            <h3 class="zz-step__title">Copywriting CRO &middot; chaque mot pese</h3>
+            <p class="zz-step__desc">Redaction des textes en respectant les regles eprouvees&nbsp;: titres benefice plutot que feature, verbes actifs, je plutot que vous, chiffres concrets, micro-engagements progressifs. Validation des textes par retour client en 24h avant integration. Inclut headline, sous-titres, bullet points, CTA, micro-copy de reassurance, FAQ.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 4 a 6 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 04</span>
+            <h3 class="zz-step__title">Design + integration responsive</h3>
+            <p class="zz-step__desc">Maquettes Figma desktop et mobile, design system reutilisable, integration en Webflow ou Next.js selon votre stack. Score Lighthouse 95+ garanti, Core Web Vitals (LCP, INP, CLS) tous au vert. Tests cross-browser sur Chrome, Safari, Firefox, Edge. Mise en ligne sur sous-domaine de test pour validation.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 5 a 8 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">5</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 05</span>
+            <h3 class="zz-step__title">A/B tests &amp; optimisation continue</h3>
+            <p class="zz-step__desc">Mise en place de Microsoft Clarity et Hotjar pour visualiser les comportements reels. Lancement d'A/B tests progressifs via Optimizely ou Google Optimize&nbsp;: variantes de headline, variantes de CTA, structures alternatives. Mesure du taux de conversion semaine apres semaine, iterations sur les blocs les moins performants jusqu'a stabilisation du gain.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 30 jours apres mise en ligne</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. OUTILS QUE NOUS UTILISONS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>outils</em> que nous utilisons</h2>
+        <p class="sec-h__sub">Pour construire et optimiser vos landing pages, nous nous appuyons sur une stack d'outils complementaires&nbsp;: editeurs visuels, outils d'analyse comportementale et plateformes d'A/B testing. Chaque outil est choisi en fonction de votre stack existante et de votre budget.</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div>
+              <div class="tool__name">Webflow</div>
+              <div class="tool__cat">Editeur visuel CMS</div>
+            </div>
+          </div>
+          <p class="tool__desc">Notre plateforme de predilection pour les landing pages premium. Editeur visuel sans code, hosting AWS Cloudfront integre, CMS natif, animations fluides, score Lighthouse natif 90+. Ideal pour les pages qui evolueront frequemment apres mise en ligne.</p>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">funnel</span></div>
+            <div>
+              <div class="tool__name">Systeme.io</div>
+              <div class="tool__cat">Tunnels &amp; pages tout-en-un</div>
+            </div>
+          </div>
+          <p class="tool__desc">Plateforme tout-en-un francaise pour creer landing, sequences email, espace membres et programmes d'affiliation. Ideal pour les infopreneurs, les coachs et les formations en ligne qui veulent un tunnel complet sans assembler 5 outils.</p>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">my_location</span></div>
+            <div>
+              <div class="tool__name">Hotjar</div>
+              <div class="tool__cat">Heatmaps &amp; recordings</div>
+            </div>
+          </div>
+          <p class="tool__desc">Heatmaps de clics, recordings de sessions reelles, sondages on-page contextuels. Nous l'utilisons systematiquement les 30 premiers jours apres mise en ligne pour identifier les zones de friction invisibles aux analytics traditionnels.</p>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">videocam</span></div>
+            <div>
+              <div class="tool__name">Microsoft Clarity</div>
+              <div class="tool__cat">Analyse comportementale</div>
+            </div>
+          </div>
+          <p class="tool__desc">Alternative gratuite et puissante a Hotjar, signee Microsoft. Recordings illimites, heatmaps detaillees, detection automatique des rage clicks et dead clicks. Nous le deployons sur 100% des landing pages que nous livrons, sans surcout pour le client.</p>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">science</span></div>
+            <div>
+              <div class="tool__name">Optimizely</div>
+              <div class="tool__cat">A/B testing avance</div>
+            </div>
+          </div>
+          <p class="tool__desc">Plateforme leader pour les A/B tests serieux avec significativite statistique calculee, segmentation par audience, multivariate testing. Ideal pour les sites a fort trafic (10 000 visiteurs/mois et plus) qui veulent industrialiser le CRO.</p>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">tune</span></div>
+            <div>
+              <div class="tool__name">Google Optimize / GA4</div>
+              <div class="tool__cat">Tracking conversion</div>
+            </div>
+          </div>
+          <p class="tool__desc">Bien que Google Optimize ait ete arrete officiellement, nous l'integrons via les evenements GA4 et le Tag Manager pour mesurer les conversions, les microconversions et les abandons. Setup analytics complet livre avec chaque landing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. EXEMPLES DE LANDING PAGES CASE STUDIES -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Exemples de <em>landing pages</em> que nous avons construites</h2>
+        <p class="sec-h__sub">Trois projets recents, trois secteurs differents, mais une meme methodologie CRO appliquee. Voici les resultats mesures avant et apres notre intervention sur des landing pages reelles.</p>
+      </div>
+      <div class="cases-grid">
+        <article class="case">
+          <span class="case__tag"><span class="material-symbols-outlined">shopping_cart</span> E-commerce mode</span>
+          <h3 class="case__title">Boutique vetements eco-responsables &middot; FR</h3>
+          <p class="case__brief">Marque DNVB qui peinait a convertir son trafic Meta Ads. La landing existante etait un copier-coller de la homepage&nbsp;: pas de focus produit, CTA noye, preuves sociales absentes. Refonte complete en 3 semaines.</p>
+          <div class="case__metrics">
+            <div class="case__metric">
+              <div class="case__metric-l">Avant</div>
+              <div class="case__metric-v">1,4 %</div>
+            </div>
+            <div class="case__metric case__metric--ap">
+              <div class="case__metric-l">Apres</div>
+              <div class="case__metric-v">4,2 %</div>
+            </div>
+          </div>
+          <span class="case__delta"><span class="material-symbols-outlined">trending_up</span> +200 % en 28 jours</span>
+        </article>
+        <article class="case">
+          <span class="case__tag"><span class="material-symbols-outlined">work</span> B2B SaaS</span>
+          <h3 class="case__title">Plateforme RH pour PME &middot; FR/BE</h3>
+          <p class="case__brief">SaaS RH qui generait du trafic LinkedIn Ads sans convertir en demos. Probleme identifie&nbsp;: copywriting trop technique, pas de preuve sociale chiffree, formulaire de 14 champs. Nouveau wireframe + formulaire reduit a 4 champs.</p>
+          <div class="case__metrics">
+            <div class="case__metric">
+              <div class="case__metric-l">Avant</div>
+              <div class="case__metric-v">0,9 %</div>
+            </div>
+            <div class="case__metric case__metric--ap">
+              <div class="case__metric-l">Apres</div>
+              <div class="case__metric-v">3,1 %</div>
+            </div>
+          </div>
+          <span class="case__delta"><span class="material-symbols-outlined">trending_up</span> +244 % en 30 jours</span>
+        </article>
+        <article class="case">
+          <span class="case__tag"><span class="material-symbols-outlined">school</span> Formation en ligne</span>
+          <h3 class="case__title">Formation marketing digital &middot; FR/BJ</h3>
+          <p class="case__brief">Programme de formation a 297 EUR. La page de vente faisait 12 sections sans hierarchie. Reecriture complete en framework PAS, integration des temoignages video, ajout d'une garantie 14 jours visible, FAQ contextualisee aux objections reelles.</p>
+          <div class="case__metrics">
+            <div class="case__metric">
+              <div class="case__metric-l">Avant</div>
+              <div class="case__metric-v">2,1 %</div>
+            </div>
+            <div class="case__metric case__metric--ap">
+              <div class="case__metric-l">Apres</div>
+              <div class="case__metric-v">6,8 %</div>
+            </div>
+          </div>
+          <span class="case__delta"><span class="material-symbols-outlined">trending_up</span> +224 % en 35 jours</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS LANDING PAGES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2><em>Tarifs</em> landing pages</h2>
+        <p class="sec-h__sub">Trois formules selon votre budget et votre ambition de conversion. Toutes incluent copywriting, design, integration responsive et mise en ligne. La difference se joue sur la profondeur des A/B tests post-lancement.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">bolt</span></div>
+          <div class="prest__title">Essentielle</div>
+          <p class="prest__lead">Pour startups, freelances et PME qui veulent une landing solide pour leurs premieres campagnes ads.</p>
+          <ul class="prest__feat">
+            <li>1 landing page desktop + mobile</li>
+            <li>Copywriting CRO complet (headline, sous-titres, CTA, FAQ)</li>
+            <li>Design Figma + integration Webflow ou Next.js</li>
+            <li>Score Lighthouse 95+ garanti</li>
+            <li>Tracking GA4 + Microsoft Clarity</li>
+            <li>Livre en 2 a 3 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 990 EUR HT</strong></div>
+          <a href="/contact?service=landing-essentielle" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+          <div class="prest__title">Premium</div>
+          <p class="prest__lead">Pour les entreprises qui veulent une landing optimisee des le jour 1, avec recherche audience approfondie et design haut de gamme.</p>
+          <ul class="prest__feat">
+            <li>Tout de l'Essentielle inclus</li>
+            <li>Recherche audience (sondages + interviews)</li>
+            <li>Design premium avec animations Webflow</li>
+            <li>Integration Hotjar + recordings analyses</li>
+            <li>Atelier wireframe collaboratif</li>
+            <li>2 cycles de revisions inclus</li>
+            <li>Livre en 3 a 4 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 1 990 EUR HT</strong></div>
+          <a href="/contact?service=landing-premium" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">science</span></div>
+          <div class="prest__title">A/B optimisee</div>
+          <p class="prest__lead">Pour les marques a fort trafic qui veulent industrialiser le CRO et obtenir un gain de conversion mesure et durable.</p>
+          <ul class="prest__feat">
+            <li>Tout de la Premium inclus</li>
+            <li>Setup Optimizely ou Google Optimize</li>
+            <li>3 cycles d'A/B tests pilotes</li>
+            <li>Rapport CRO mensuel pendant 90 jours</li>
+            <li>Optimisation continue des blocs les moins performants</li>
+            <li>Variantes mobile dediees</li>
+            <li>Livre en 4 a 6 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 3 990 EUR HT</strong></div>
+          <a href="/contact?service=landing-ab" class="prest__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACTE 4 ETAPES -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> projet en 4 etapes</h2>
+        <p class="sec-h__sub">De la prise de contact a la livraison, voici les 4 jalons clairs de chaque mission landing page chez Pirabel Labs.</p>
+      </div>
+      <div class="meth-row">
+        <div class="meth-step">
+          <div class="meth-step__num">Etape 01</div>
+          <div class="meth-step__icon"><span class="material-symbols-outlined">phone_in_talk</span></div>
+          <h3 class="meth-step__title">Brief decouverte 30 min</h3>
+          <p class="meth-step__desc">Echange visio gratuit pour comprendre votre offre, votre cible et vos objectifs de conversion. Identification des contraintes techniques et budgetaires.</p>
+        </div>
+        <div class="meth-step">
+          <div class="meth-step__num">Etape 02</div>
+          <div class="meth-step__icon"><span class="material-symbols-outlined">request_quote</span></div>
+          <h3 class="meth-step__title">Devis ferme sous 48h</h3>
+          <p class="meth-step__desc">Document complet avec scope, planning sprint par sprint, livrables detailles et conditions. Aucun cout cache, aucune mauvaise surprise apres signature.</p>
+        </div>
+        <div class="meth-step">
+          <div class="meth-step__num">Etape 03</div>
+          <div class="meth-step__icon"><span class="material-symbols-outlined">build_circle</span></div>
+          <h3 class="meth-step__title">Production en sprints</h3>
+          <p class="meth-step__desc">Travail par sprints d'une semaine avec demo chaque vendredi sur environnement de preview. Iterations en continu sur la base de vos retours.</p>
+        </div>
+        <div class="meth-step">
+          <div class="meth-step__num">Etape 04</div>
+          <div class="meth-step__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <h3 class="meth-step__title">Mise en ligne &amp; suivi</h3>
+          <p class="meth-step__desc">Deploiement sur votre domaine, configuration analytics, formation 1h de votre equipe. Suivi 30 jours minimum apres mise en ligne pour ajuster.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur les <em>landing pages haute conversion</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel est le delai pour livrer une landing page&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le delai depend du package choisi&nbsp;: <strong>Essentielle&nbsp;: 2 a 3 semaines</strong>, <strong>Premium&nbsp;: 3 a 4 semaines</strong>, <strong>A/B optimisee&nbsp;: 4 a 6 semaines</strong> (la phase d'A/B tests demarre apres mise en ligne et s'etale sur 30 a 90 jours selon volume de trafic). Le planning detaille sprint par sprint figure dans le devis. Si votre trafic est superieur a 10 000 visiteurs/mois, comptez 30 jours supplementaires pour atteindre la significativite statistique sur les A/B tests. Vous decouvrirez aussi notre methodologie tunnels complete sur la <a href="/tunnels-de-vente" style="color:var(--accent);">page Tunnels de vente</a>.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien d'A/B tests sont inclus dans le forfait A/B optimisee&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le forfait <strong>A/B optimisee</strong> a 3 990 EUR HT inclut <strong>3 cycles d'A/B tests pilotes</strong> sur 90 jours apres mise en ligne. Chaque cycle teste une variante majeure&nbsp;: headline, CTA, structure de bloc, formulaire. Nous attendons la significativite statistique (95% de confiance minimum, calculee via Optimizely ou un calculateur externe) avant de valider une variante. Si votre trafic est faible (moins de 2 000 visites/mois sur la landing), nous privilegions des tests qualitatifs via Hotjar et Microsoft Clarity plutot que des A/B quantitatifs.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget prevoir au-dela du forfait pour la traction reelle&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La landing page seule ne suffit pas, il faut y amener du trafic qualifie. Comptez en plus&nbsp;: <strong>budget Meta Ads ou Google Ads</strong> de 1 000 a 5 000 EUR/mois minimum (sinon vos A/B tests n'auront jamais assez de donnees), <strong>email marketing ou retargeting</strong> 300 a 800 EUR/mois, <strong>hosting</strong> 10 a 50 EUR/mois selon Webflow ou Vercel. Pour une vision complete tunnel de bout en bout, consultez notre <a href="/tunnels-de-vente" style="color:var(--accent);">page Tunnels de vente</a> qui detaille l'ensemble du dispositif acquisition + conversion + retention.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Le copywriting est-il vraiment fait par votre equipe ou sous-traite&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le copywriting est <strong>realise en interne par notre equipe Pirabel Labs</strong>, jamais sous-traite a l'aveugle. Nous travaillons avec une methodologie precise inspiree des classiques (Schwartz, Halbert, Kennedy) adaptee au contexte francophone et africain quand pertinent. Nous utilisons des outils d'aide a la redaction (GPT-4, Claude) pour acceleration et brainstorming, mais chaque mot final est valide et reecrit par un copywriter humain. Nous vous envoyons la trame en Google Docs avec commentaires actifs, et 1 cycle de revisions de votre cote est inclus dans tous les forfaits (2 cycles en Premium).</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Sur quelles plateformes pouvez-vous integrer la landing page&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous integrons sur les plateformes suivantes selon vos contraintes&nbsp;: <strong>Webflow</strong> (notre preference pour les landing premium evolutives), <strong>Next.js + Vercel</strong> (si vous avez deja un site Next.js, parfait pour une integration cohesive), <strong>Systeme.io</strong> (ideal pour les infopreneurs et formations), <strong>WordPress + Elementor Pro</strong> (si vous avez deja un site WordPress), <strong>Wix Studio</strong> ou <strong>Framer</strong> sur demande. Le choix de la plateforme est decide ensemble lors du brief decouverte selon vos competences internes d'edition future.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Hebergement et nom de domaine&nbsp;: dois-je gerer ca moi-meme&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous nous chargeons de toute la configuration technique&nbsp;: hebergement (Webflow Hosting, Vercel, OVH selon votre choix), connexion du nom de domaine, configuration des DNS, certificat SSL, redirections 301 si remplacement d'une ancienne page. Vous restez proprietaire de votre nom de domaine et de votre hosting&nbsp;: tous les acces administrateurs sont a votre nom. Si vous n'avez pas encore de nom de domaine, nous vous conseillons un registrar (OVH, Gandi, Cloudflare) et faisons l'achat avec vous en visio.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Que se passe-t-il si la landing ne convertit pas comme prevu&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">D'abord, nous regardons les donnees ensemble&nbsp;: source de trafic, volume, qualite des sessions Microsoft Clarity, taux de rebond, scroll depth. Une landing ne convertit jamais si le trafic n'est pas qualifie ou si l'offre ne resonne pas avec l'audience reelle. Nous ajustons par iterations sur les blocs problematiques (headline, CTA, formulaire, preuves sociales). Le forfait A/B optimisee inclut explicitement un <strong>rapport CRO mensuel pendant 90 jours</strong> avec recommandations d'ajustements. Au-dela, nous proposons des optimisations a la carte (TJM 600 EUR HT) ou un forfait suivi CRO mensuel (400 a 1 000 EUR/mois).</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL VERS PARENT -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Pret a multiplier vos conversions par 3 sur votre prochaine landing&nbsp;?</h2>
+          <p>Discutez de votre projet avec un cofondateur en moins de 30 min. Vous repartirez avec un diagnostic clair sur votre offre, vos axes d'optimisation et un devis ferme sous 48h. Et si vous voulez la vue d'ensemble de votre tunnel de vente, decouvrez la <strong>page Tunnels de vente</strong> qui detaille la strategie complete.</p>
+        </div>
+        <a href="/tunnels-de-vente" class="fcta__cta">Voir tunnels de vente <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DECOUVRIR TUNNELS EN COMPLET (PARENT CARD) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir <em>les tunnels de vente</em> en complet</h2>
+        <p class="sec-h__sub">La landing page haute conversion n'est qu'une partie de la mecanique. Pour une strategie complete d'acquisition, qualification, conversion et retention, decouvrez notre approche tunnels de vente integree.</p>
+      </div>
+      <a href="/tunnels-de-vente" class="parent-card" style="text-decoration:none; color:inherit;">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">funnel</span></div>
+        <div>
+          <div class="parent-card__eyebrow">Service parent</div>
+          <h3 class="parent-card__title">Tunnels de vente sur mesure</h3>
+          <p class="parent-card__desc">Strategie complete tunnel de vente&nbsp;: aimant a prospects, sequences email, qualification automatisee, landing pages, retargeting, retention. Decouvrez la mecanique complete avec exemples chiffres, methodologie et tarifs.</p>
+        </div>
+        <span class="parent-card__cta">Voir Tunnels <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Conversion x3 garantie en <strong>30 jours</strong> &middot; devis 48h</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=landing-page" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20une%20landing%20page%20haute%20conversion" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/landing-page-conversion">Landing page haute conversion</a></li>
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

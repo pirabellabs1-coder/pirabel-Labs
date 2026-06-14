@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence e-commerce - Pirabel Labs | Stripe + Mobile Money</title>
+<meta name="description" content="Agence e-commerce au Benin et France. Boutiques en ligne Stripe + Mobile Money + Kkiapay. WooCommerce, Shopify, Next.js. Devis 48h.">
+<meta name="keywords" content="agence ecommerce benin, boutique en ligne, stripe mobile money, woocommerce kkiapay, fedapay, shopify benin, ecommerce afrique francophone, agence webflow ecommerce, next.js stripe, paiement mobile money, MTN Mobile Money api, Moov Money api, Wave paiement, marketplace afrique, CRO ecommerce, conversion ecommerce, hebergement Vercel">
+<link rel="canonical" href="https://www.pirabellabs.com/agence-ecommerce">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence e-commerce - Pirabel Labs | Stripe + Mobile Money">
+<meta property="og:description" content="Boutiques en ligne performantes avec Stripe, PayPal et Mobile Money (Kkiapay, FedaPay, MTN, Moov, Wave). Pour le marche francophone et l'Afrique de l'Ouest.">
+<meta property="og:url" content="https://www.pirabellabs.com/agence-ecommerce">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+/* Breadcrumb */
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Solutions stacks (4 cards) */
+.stacks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .stacks-grid { grid-template-columns: 1fr; max-width: 32rem; } }
+.stack { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.75rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.stack:hover { border-color: var(--accent); }
+.stack__header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.15rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.stack__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stack__icon .material-symbols-outlined { font-size: 1.55rem; }
+.stack__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; line-height: 1.25; margin-bottom: 0.15rem; }
+.stack__tag { font-size: 0.72rem; color: var(--accent); font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.stack__desc { font-size: 0.92rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.25rem; }
+.stack__feat { display: flex; flex-direction: column; gap: 0.5rem; list-style: none; padding: 0; margin: 0 0 1.25rem; }
+.stack__feat li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.stack__feat li .material-symbols-outlined { color: var(--accent); font-size: 1rem; margin-top: 0.15rem; flex-shrink: 0; }
+.stack__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+.stack__price strong { color: var(--accent); font-weight: 800; }
+
+/* Paiements grid (7 items) */
+.pay-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 880px) { .pay-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .pay-grid { grid-template-columns: repeat(2, 1fr); } }
+.pay { display: flex; flex-direction: column; align-items: center; gap: 0.65rem; padding: 1.65rem 1rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); transition: all var(--t); text-align: center; }
+.pay:hover { border-color: var(--accent); transform: translateY(-2px); }
+.pay__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.pay__icon .material-symbols-outlined { font-size: 1.5rem; }
+.pay__name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+.pay__zone { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* CRO methodologie (5 etapes verticales) */
+.cro-list { display: flex; flex-direction: column; gap: 1.25rem; max-width: 56rem; margin: 0 auto; counter-reset: cro; }
+.cro-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.85rem 1.85rem 1.85rem 5.25rem; position: relative; transition: border-color var(--t); }
+.cro-step:hover { border-color: var(--accent); }
+.cro-step::before { counter-increment: cro; content: counter(cro, decimal-leading-zero); position: absolute; left: 1.65rem; top: 1.85rem; font-family: var(--font-display); font-weight: 800; font-size: 1.85rem; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
+.cro-step__tag { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.3rem 0.7rem; margin-bottom: 0.85rem; }
+.cro-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.cro-step__desc { font-size: 0.92rem; line-height: 1.65; color: var(--text-muted); margin-bottom: 0.85rem; }
+.cro-step__metric { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--accent); }
+.cro-step__metric .material-symbols-outlined { font-size: 1rem; }
+@media (max-width: 600px) {
+  .cro-step { padding: 4rem 1.5rem 1.5rem; }
+  .cro-step::before { top: 1.25rem; left: 1.5rem; font-size: 1.5rem; }
+}
+
+/* Hebergement (4 cards) */
+.host-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .host-grid { grid-template-columns: repeat(2, 1fr); max-width: 36rem; } }
+@media (max-width: 480px) { .host-grid { grid-template-columns: 1fr; max-width: 20rem; } }
+.host { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; transition: all var(--t); }
+.host:hover { border-color: var(--accent); transform: translateY(-3px); }
+.host__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.host__icon .material-symbols-outlined { font-size: 1.5rem; }
+.host__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.host__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Tarifs (3 cards) */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodologie compacte (4 etapes) */
+.method-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .method-grid { grid-template-columns: repeat(2, 1fr); max-width: 36rem; } }
+@media (max-width: 480px) { .method-grid { grid-template-columns: 1fr; max-width: 20rem; } }
+.method { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem 1.5rem; position: relative; transition: border-color var(--t); }
+.method:hover { border-color: var(--accent); }
+.method__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.65rem; }
+.method__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.method__icon .material-symbols-outlined { font-size: 1.35rem; }
+.method__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.method__desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.75rem; }
+.method__time { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+.method__time .material-symbols-outlined { font-size: 0.85rem; }
+
+/* FAQ */
+.faq-list { max-width: 56rem; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.faq-i { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color var(--t); }
+.faq-i:hover { border-color: var(--accent); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; color: var(--text); text-align: left; transition: background var(--t); }
+.faq-i__q:hover { background: rgba(255,85,0,0.04); }
+.faq-i__q-icon { width: 1.85rem; height: 1.85rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0; transition: transform var(--t); }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(45deg); background: var(--accent); color: #fff; }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 50rem; }
+.faq-i__a-inner { padding: 0 1.5rem 1.5rem; font-size: 0.92rem; line-height: 1.7; color: var(--text-muted); }
+.faq-i__a-inner strong { color: var(--text); }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); display: grid; grid-template-columns: 1.4fr auto; gap: 2rem; align-items: center; max-width: 72rem; margin: 0 auto; position: relative; overflow: hidden; }
+.fcta::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 14rem; height: 14rem; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%); pointer-events: none; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 2.6vw, 1.85rem); line-height: 1.25; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 0.95rem; line-height: 1.55; color: rgba(255,255,255,0.95); max-width: 38rem; }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1.05rem 1.65rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Parent link card (Decouvrir Creation web complete) */
+.parent-card { background: var(--bg-2); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: 2.25rem 2rem; max-width: 56rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 1.85rem; align-items: center; position: relative; overflow: hidden; }
+.parent-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,85,0,0.08), transparent 60%); pointer-events: none; }
+@media (max-width: 720px) { .parent-card { grid-template-columns: 1fr; text-align: center; gap: 1.25rem; } }
+.parent-card__icon { width: 4rem; height: 4rem; background: var(--accent); color: #fff; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; z-index: 1; }
+.parent-card__icon .material-symbols-outlined { font-size: 2rem; }
+@media (max-width: 720px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__txt { position: relative; z-index: 1; }
+.parent-card__eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.45rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.4rem; line-height: 1.3; }
+.parent-card__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.4rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: background var(--t); white-space: nowrap; position: relative; z-index: 1; }
+.parent-card__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* Intro narrative (storytelling) */
+.intro-story { max-width: 56rem; margin: 0 auto; }
+.intro-story p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.25rem; }
+.intro-story p strong { color: var(--text); font-weight: 700; }
+.intro-story p em { color: var(--accent); font-style: normal; font-weight: 600; }
+.intro-story__callout { background: var(--bg-2); border-left: 4px solid var(--accent); padding: 1.5rem 1.75rem; margin: 2rem 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.intro-story__callout-h { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.45rem; }
+.intro-story__callout-h .material-symbols-outlined { font-size: 1.1rem; }
+.intro-story__callout p { font-size: 0.98rem; line-height: 1.7; margin-bottom: 0; color: var(--text); }
+
+/* Stats e-commerce (4 colonnes) */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 64rem; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-2); }
+@media (max-width: 880px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+.stat-c { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.stat-c:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .stat-c:nth-child(2n) { border-right: 0; }
+  .stat-c:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .stat-c { border-right: 0; border-bottom: 1px solid var(--border); }
+  .stat-c:last-child { border-bottom: 0; }
+}
+.stat-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: var(--accent); }
+.stat-c__l { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-web">Creation de site web</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Agence e-commerce</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">storefront</span> Sous-service Creation web</span>
+        <h1><em>Agence e-commerce</em>&nbsp;: boutique en ligne performante pour le marche francophone.</h1>
+        <p class="s-hero__tagline">Stripe + Mobile Money &middot; Adapte au marche francophone et a l'Afrique de l'Ouest</p>
+        <p class="s-hero__lead">Pirabel Labs concoit des boutiques en ligne qui vendent vraiment. Stack adaptee a votre maturite (WooCommerce, Shopify, Webflow E-commerce ou Next.js + Stripe), paiements multi-pays (Stripe, PayPal, Kkiapay, FedaPay, MTN Mobile Money, Moov Money, Wave), methode CRO axee panier moyen et taux de conversion. Devis ferme sous 48h, code source remis, hebergement Vercel ou Cloudflare configure sur votre compte.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=ecommerce" class="btn btn--primary btn--lg">Demander mon devis e-commerce <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20e-commerce" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shopping_cart</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">storefront</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">payments</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Boutique pretes a vendre</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">credit_card</span> Stripe + Mobile Money</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">speed</span> Lighthouse 95+</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">trending_up</span> CRO inclus</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SOLUTIONS E-COMMERCE QUE NOUS DEPLOYONS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Solutions <em>e-commerce que nous deployons</em></h2>
+        <p class="sec-h__sub">Chaque stack repond a un niveau de maturite et de volume different. Nous vous conseillons honnetement sur le choix qui correspond a votre activite, votre catalogue et votre budget&nbsp;: pas de solution miracle universelle.</p>
+      </div>
+      <div class="stacks-grid">
+        <div class="stack">
+          <div class="stack__header">
+            <div class="stack__icon"><span class="material-symbols-outlined">extension</span></div>
+            <div>
+              <div class="stack__title">WooCommerce</div>
+              <div class="stack__tag">CMS + plugin &middot; PME debutante</div>
+            </div>
+          </div>
+          <p class="stack__desc">La solution la plus populaire dans le monde (environ 28% des boutiques en ligne). WordPress + WooCommerce reste imbattable pour demarrer rapidement, avec un budget maitrise et une autonomie editoriale totale apres la livraison.</p>
+          <ul class="stack__feat">
+            <li><span class="material-symbols-outlined">check</span> Catalogue jusqu'a 1 500 produits sans bridage</li>
+            <li><span class="material-symbols-outlined">check</span> Integration native Kkiapay, FedaPay, Stripe</li>
+            <li><span class="material-symbols-outlined">check</span> Espace admin maitrise par votre equipe en 1h</li>
+            <li><span class="material-symbols-outlined">check</span> Multi-langue WPML / Polylang inclus</li>
+          </ul>
+          <p class="stack__price">A partir de <strong>4 500 EUR HT</strong> &middot; livraison 3 a 5 semaines</p>
+        </div>
+        <div class="stack">
+          <div class="stack__header">
+            <div class="stack__icon"><span class="material-symbols-outlined">bolt</span></div>
+            <div>
+              <div class="stack__title">Shopify</div>
+              <div class="stack__tag">SaaS &middot; Vente rapide multi-pays</div>
+            </div>
+          </div>
+          <p class="stack__desc">Pour les marques qui veulent une boutique cle en main, scalable et internationale. Shopify gere l'hebergement, la securite PCI-DSS, le checkout optimise et les apps tierces (Klaviyo, Mailchimp, Trustpilot, etc.).</p>
+          <ul class="stack__feat">
+            <li><span class="material-symbols-outlined">check</span> Checkout natif converti a 3,2% en moyenne</li>
+            <li><span class="material-symbols-outlined">check</span> Theme custom Liquid sur identite de marque</li>
+            <li><span class="material-symbols-outlined">check</span> Multi-devise EUR / USD / XOF / GBP</li>
+            <li><span class="material-symbols-outlined">check</span> Apps connectees (Klaviyo, Judge.me, Recharge)</li>
+          </ul>
+          <p class="stack__price">A partir de <strong>5 500 EUR HT</strong> &middot; livraison 3 a 6 semaines + abonnement Shopify</p>
+        </div>
+        <div class="stack">
+          <div class="stack__header">
+            <div class="stack__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div>
+              <div class="stack__title">Webflow E-commerce</div>
+              <div class="stack__tag">No-code premium &middot; Design fort</div>
+            </div>
+          </div>
+          <p class="stack__desc">Pour les marques DNVB (Digital Native Vertical Brand) au design fort, avec un catalogue de 50 a 500 references. Webflow offre une liberte creative totale avec une experience admin moderne et un CMS integre.</p>
+          <ul class="stack__feat">
+            <li><span class="material-symbols-outlined">check</span> Design 100% sur mesure sans contrainte de theme</li>
+            <li><span class="material-symbols-outlined">check</span> CMS produits + collections + categories</li>
+            <li><span class="material-symbols-outlined">check</span> Stripe et PayPal natifs &middot; Mobile Money via API</li>
+            <li><span class="material-symbols-outlined">check</span> Animations et interactions premium incluses</li>
+          </ul>
+          <p class="stack__price">A partir de <strong>6 500 EUR HT</strong> &middot; livraison 4 a 7 semaines + abonnement Webflow</p>
+        </div>
+        <div class="stack">
+          <div class="stack__header">
+            <div class="stack__icon"><span class="material-symbols-outlined">code</span></div>
+            <div>
+              <div class="stack__title">Next.js + Stripe</div>
+              <div class="stack__tag">Sur mesure &middot; Performance maximale</div>
+            </div>
+          </div>
+          <p class="stack__desc">L'option la plus performante pour les boutiques a fort trafic, marketplace ou logiques metier complexes (abonnements, bundles, configurateur, dropshipping multi-fournisseurs). Lighthouse 95+ garanti, scalabilite illimitee.</p>
+          <ul class="stack__feat">
+            <li><span class="material-symbols-outlined">check</span> Architecture headless &middot; Front Next.js + back Sanity</li>
+            <li><span class="material-symbols-outlined">check</span> Stripe Checkout + Stripe Subscriptions integres</li>
+            <li><span class="material-symbols-outlined">check</span> API REST documentee pour ERP et CRM</li>
+            <li><span class="material-symbols-outlined">check</span> Tests automatises CI/CD &middot; deploy Vercel</li>
+          </ul>
+          <p class="stack__price">A partir de <strong>9 500 EUR HT</strong> &middot; livraison 5 a 10 semaines &middot; Vercel sur votre compte</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PAIEMENTS MULTI-PAYS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Paiements <em>multi-pays</em>&nbsp;: vendre en France, au Benin et partout en Afrique francophone</h2>
+        <p class="sec-h__sub">Une boutique en ligne moderne integre les modes de paiement de chaque marche cible. Nous combinons cartes bancaires europeennes, paypal international et Mobile Money africain dans un seul checkout, avec detection automatique selon le pays du client.</p>
+      </div>
+      <div class="pay-grid">
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">credit_card</span></div>
+          <div class="pay__name">Stripe</div>
+          <div class="pay__zone">Europe &middot; Monde</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+          <div class="pay__name">PayPal</div>
+          <div class="pay__zone">International</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">smartphone</span></div>
+          <div class="pay__name">MTN Mobile Money</div>
+          <div class="pay__zone">Benin &middot; Cote d'Ivoire &middot; Cameroun</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">payments</span></div>
+          <div class="pay__name">Moov Money</div>
+          <div class="pay__zone">Benin &middot; Togo &middot; Burkina</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">waves</span></div>
+          <div class="pay__name">Wave</div>
+          <div class="pay__zone">Senegal &middot; Cote d'Ivoire</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">contactless</span></div>
+          <div class="pay__name">Kkiapay</div>
+          <div class="pay__zone">Agregateur Afrique de l'Ouest</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">hub</span></div>
+          <div class="pay__name">FedaPay</div>
+          <div class="pay__zone">Benin &middot; Multi Mobile Money</div>
+        </div>
+        <div class="pay">
+          <div class="pay__icon"><span class="material-symbols-outlined">currency_exchange</span></div>
+          <div class="pay__name">SEPA &middot; Virement</div>
+          <div class="pay__zone">Europe &middot; B2B</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. METHODE CRO E-COMMERCE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre methode <em>CRO e-commerce</em> en 5 etapes</h2>
+        <p class="sec-h__sub">Le CRO (Conversion Rate Optimization) est la difference entre une boutique qui prend la poussiere et une boutique qui vend. Voici la methode appliquee sur chaque projet e-commerce Pirabel Labs, du jour 1 jusqu'a 90 jours apres la mise en ligne.</p>
+      </div>
+      <div class="cro-list">
+        <div class="cro-step">
+          <span class="cro-step__tag">Audit data</span>
+          <div class="cro-step__title">Analyse du panier moyen et du parcours d'achat</div>
+          <p class="cro-step__desc">Etude des donnees existantes (Google Analytics, Hotjar, Clarity) ou benchmark concurrentiel si vous demarrez. Identification des points de friction majeurs&nbsp;: taux de rebond catalogue, abandon panier, taux de transformation page produit, temps moyen sur le checkout. On chiffre l'impact potentiel avant de toucher au site.</p>
+          <span class="cro-step__metric"><span class="material-symbols-outlined">trending_up</span> Objectif&nbsp;: panier moyen +15 a +25%</span>
+        </div>
+        <div class="cro-step">
+          <span class="cro-step__tag">UX checkout</span>
+          <div class="cro-step__title">Optimisation du tunnel de paiement (checkout)</div>
+          <p class="cro-step__desc">Reduction du nombre d'etapes (ideal&nbsp;: une seule page), suppression des champs non essentiels, ajout du paiement en express (Apple Pay, Google Pay, Stripe Link), affichage transparent des frais de port et taxes des l'entree du panier. Les checkouts mal concus perdent en moyenne 70% des paniers en cours de remplissage.</p>
+          <span class="cro-step__metric"><span class="material-symbols-outlined">trending_up</span> Objectif&nbsp;: taux d'abandon -20 a -35%</span>
+        </div>
+        <div class="cro-step">
+          <span class="cro-step__tag">A/B tests</span>
+          <div class="cro-step__title">Tests A/B continus sur les pages cles</div>
+          <p class="cro-step__desc">Pendant les 90 premiers jours, nous testons systematiquement les variantes les plus impactantes&nbsp;: titre de la home, CTA de la page produit, agencement des photos, ordre des champs checkout, copy des emails transactionnels. Outils utilises&nbsp;: Vercel Edge Config, VWO, Convert.com ou Google Optimize self-hosted.</p>
+          <span class="cro-step__metric"><span class="material-symbols-outlined">trending_up</span> Objectif&nbsp;: 2 a 4 victoires statistiques par mois</span>
+        </div>
+        <div class="cro-step">
+          <span class="cro-step__tag">Email cart abandon</span>
+          <div class="cro-step__title">Sequence email panier abandonne (3 messages)</div>
+          <p class="cro-step__desc">Configuration d'une sequence automatisee declenchee 1h, 24h et 72h apres l'abandon. En moyenne, une bonne sequence email panier abandonne recupere entre 8 et 15% des paniers perdus. Outils&nbsp;: Klaviyo, Mailchimp, Brevo (ex-Sendinblue) ou MailerLite selon votre stack. Templates et copy fournis.</p>
+          <span class="cro-step__metric"><span class="material-symbols-outlined">trending_up</span> Objectif&nbsp;: +8 a +15% de revenue recupere</span>
+        </div>
+        <div class="cro-step">
+          <span class="cro-step__tag">Up-sell</span>
+          <div class="cro-step__title">Strategie up-sell et cross-sell post-achat</div>
+          <p class="cro-step__desc">Augmenter la valeur de chaque commande grace a&nbsp;: bundles produits intelligents sur la page panier, page de remerciement avec offre exclusive, sequence email post-achat (revue produit + offre complementaire a J+7), creation de programmes de fidelite simples. Le cout d'acquisition d'un client existant est 5 a 7 fois inferieur a celui d'un nouveau.</p>
+          <span class="cro-step__metric"><span class="material-symbols-outlined">trending_up</span> Objectif&nbsp;: LTV +30 a +50% sur 12 mois</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. HEBERGEMENT ET PERFORMANCE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Hebergement et <em>performance</em>&nbsp;: une boutique rapide est une boutique qui vend</h2>
+        <p class="sec-h__sub">1 seconde de latence en plus reduit le taux de conversion e-commerce de 7 a 12%. La performance technique n'est pas un detail&nbsp;: c'est la fondation de votre chiffre d'affaires en ligne. Voici notre stack d'hebergement par defaut.</p>
+      </div>
+      <div class="host-grid">
+        <div class="host">
+          <div class="host__icon"><span class="material-symbols-outlined">cloud</span></div>
+          <div class="host__title">Vercel CDN global</div>
+          <p class="host__desc">Reseau de diffusion sur 100+ points de presence dans le monde. Temps de reponse moyen inferieur a 50&nbsp;ms en Europe et en Afrique francophone. Mise en cache intelligente des pages produits et collections, regeneration statique (ISR) sur changement.</p>
+        </div>
+        <div class="host">
+          <div class="host__icon"><span class="material-symbols-outlined">shield</span></div>
+          <div class="host__title">Cloudflare WAF et anti-DDoS</div>
+          <p class="host__desc">Pare-feu applicatif (WAF) qui filtre les requetes malveillantes (injections SQL, XSS, bots de scraping). Protection anti-DDoS native. Bot Fight Mode pour bloquer les scrapers de prix. Tarif inclus dans la maintenance ou plan gratuit Cloudflare.</p>
+        </div>
+        <div class="host">
+          <div class="host__icon"><span class="material-symbols-outlined">backup</span></div>
+          <div class="host__title">Backups quotidiens automatiques</div>
+          <p class="host__desc">Sauvegarde quotidienne de la base de donnees produits, commandes et clients, retention 30 jours. Sauvegarde hebdomadaire des fichiers et medias, retention 90 jours. Test de restauration mensuel pour garantir la procedure en cas d'incident.</p>
+        </div>
+        <div class="host">
+          <div class="host__icon"><span class="material-symbols-outlined">https</span></div>
+          <div class="host__title">SSL automatique &middot; HTTPS 100%</div>
+          <p class="host__desc">Certificat SSL/TLS Let's Encrypt ou Cloudflare renouvele automatiquement. HTTPS sur 100% des pages (obligatoire pour PCI-DSS et Google ranking). Redirections HTTP vers HTTPS systematiques. HSTS et Content Security Policy configures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS E-COMMERCE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Tarifs <em>e-commerce</em>&nbsp;: 3 niveaux selon votre maturite</h2>
+        <p class="sec-h__sub">Devis ferme sous 48h apres l'appel decouverte. Prix fixe sans surprise, planning sprint par sprint, demos chaque vendredi. Echelonnement 30 / 30 / 40 possible. TVA selon votre pays. Hebergement et abonnements SaaS en supplement (10 a 80 EUR/mois selon stack).</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">storefront</span></div>
+          <div class="prest__title">Boutique simple</div>
+          <p class="prest__lead">Une marque, un catalogue de 10 a 100 produits, livraison sur 1 a 2 pays. Stack WooCommerce ou Shopify.</p>
+          <ul class="prest__feat">
+            <li>Design Figma sur mesure (5 a 10 pages)</li>
+            <li>Catalogue jusqu'a 100 produits</li>
+            <li>Stripe + Kkiapay ou FedaPay integres</li>
+            <li>Email transactionnels &middot; Mailchimp sync</li>
+            <li>SEO technique + Schema.org Product</li>
+            <li>Formation admin 1h &middot; garantie 30 jours</li>
+          </ul>
+          <p class="prest__price">A partir de <strong>4 500 EUR HT</strong><br>Livraison 3 a 5 semaines</p>
+          <a href="/contact?service=ecommerce-simple" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest prest--featured">
+          <div class="prest__badge">Le plus demande</div>
+          <div class="prest__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <div class="prest__title">E-commerce avance</div>
+          <p class="prest__lead">Catalogue etoffe, multi-langue, multi-devise, espace client, abonnements ou bundles. Stack Shopify, Webflow ou Next.js.</p>
+          <ul class="prest__feat">
+            <li>Design sur mesure (10 a 20 pages)</li>
+            <li>Catalogue 100 a 1 500 produits</li>
+            <li>Stripe + PayPal + 3 Mobile Money</li>
+            <li>Multi-langue FR / EN &middot; multi-devise</li>
+            <li>Espace client &middot; commandes &middot; historique</li>
+            <li>Sequence email panier abandon Klaviyo</li>
+            <li>CRO J90 &middot; A/B tests inclus</li>
+          </ul>
+          <p class="prest__price">A partir de <strong>8 000 EUR HT</strong><br>Livraison 5 a 8 semaines</p>
+          <a href="/contact?service=ecommerce-avance" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">hub</span></div>
+          <div class="prest__title">Marketplace</div>
+          <p class="prest__lead">Plateforme multi-vendeurs, configurateur produit complexe, dropshipping ou logiques metier sur mesure.</p>
+          <ul class="prest__feat">
+            <li>Architecture Next.js + Sanity + Stripe</li>
+            <li>Onboarding multi-vendeurs automatise</li>
+            <li>Split de paiement (Stripe Connect)</li>
+            <li>Dashboard vendeur &middot; commissions</li>
+            <li>API REST documentee &middot; webhooks</li>
+            <li>Tests CI/CD &middot; staging dedie</li>
+            <li>Accompagnement post-launch 3 mois</li>
+          </ul>
+          <p class="prest__price">A partir de <strong>15 000 EUR HT</strong><br>Livraison 8 a 16 semaines</p>
+          <a href="/contact?service=marketplace" class="prest__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACTE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie e-commerce</em> en 4 etapes</h2>
+        <p class="sec-h__sub">Une methode rodee, transparente, sans boite noire. Vous savez chaque vendredi ou nous en sommes, ce qui est livre, ce qui reste a faire. Du brief a la mise en ligne, etape par etape.</p>
+      </div>
+      <div class="method-grid">
+        <div class="method">
+          <div class="method__num">01</div>
+          <div class="method__icon"><span class="material-symbols-outlined">campaign</span></div>
+          <div class="method__title">Discovery e-commerce</div>
+          <p class="method__desc">Appel decouverte (45&nbsp;min), audit des concurrents, validation du catalogue cible, devis ferme sous 48h. Recommandation de stack honnete selon votre maturite et votre budget.</p>
+          <span class="method__time"><span class="material-symbols-outlined">timelapse</span> 1 semaine</span>
+        </div>
+        <div class="method">
+          <div class="method__num">02</div>
+          <div class="method__icon"><span class="material-symbols-outlined">design_services</span></div>
+          <div class="method__title">Design boutique</div>
+          <p class="method__desc">Maquettes Figma sur identite de marque&nbsp;: home, collections, page produit, panier, checkout, espace client. Validation par sprint avec retours integres.</p>
+          <span class="method__time"><span class="material-symbols-outlined">timelapse</span> 2 semaines</span>
+        </div>
+        <div class="method">
+          <div class="method__num">03</div>
+          <div class="method__icon"><span class="material-symbols-outlined">code</span></div>
+          <div class="method__title">Developpement</div>
+          <p class="method__desc">Integration design, mise en place catalogue produits, paiements et SEO. Demo chaque vendredi sur environnement de preview. Tests sur tous les paiements en mode sandbox.</p>
+          <span class="method__time"><span class="material-symbols-outlined">timelapse</span> 3 a 8 semaines</span>
+        </div>
+        <div class="method">
+          <div class="method__num">04</div>
+          <div class="method__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <div class="method__title">Mise en ligne</div>
+          <p class="method__desc">Deploiement production, DNS, SSL, redirections SEO, indexation Google, formation 1h pour votre equipe. Garantie 30 jours sur tout bug imputable.</p>
+          <span class="method__time"><span class="material-symbols-outlined">timelapse</span> 1 semaine</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ&nbsp;: <em>questions frequentes</em> sur le e-commerce</h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="true">
+          <button class="faq-i__q" type="button" aria-expanded="true"><span>Pouvez-vous vraiment integrer MTN Mobile Money et Moov Money sur une boutique en ligne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est une de nos specialites principales. Nous integrons <strong>MTN Mobile Money</strong> (via l'API MoMo Open API officielle ou via les agregateurs Kkiapay et FedaPay), <strong>Moov Money</strong> (API Moov Africa), <strong>Wave</strong> (Senegal et Cote d'Ivoire), et <strong>Orange Money</strong> selon les pays. Les paiements declenchent un push notification sur le telephone du client qui valide en saisissant son code PIN. Confirmation webhook en temps reel sur votre boutique. Frais de transaction&nbsp;: entre 1,5% et 2,5% selon l'agregateur. Pour les boutiques multi-pays, nous combinons Mobile Money + Stripe dans le meme checkout avec detection automatique du pays.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment gerez-vous une boutique multilingue (FR / EN / autres)&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon la stack&nbsp;: sur <strong>WooCommerce</strong>, nous utilisons WPML ou Polylang (multi-langue pro, traduction des produits, attributs et categories). Sur <strong>Shopify</strong>, le multi-langue est natif via Markets ou les apps Langify et Weglot. Sur <strong>Webflow</strong>, nous utilisons Weglot ou Localize pour traduire automatiquement avec validation manuelle. Sur <strong>Next.js</strong>, nous integrons next-intl avec gestion des routes localisees (/fr/produit, /en/product) et hreflang SEO. Pour les contenus generaux, nous travaillons avec des traducteurs natifs anglais, espagnol et portugais selon les marches cibles. Multi-langue ajoute environ 15 a 25% au budget total selon le volume.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Votre boutique e-commerce peut-elle absorber des pics de trafic (Black Friday, lancement, viral)&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, selon la stack choisie&nbsp;: <strong>Shopify</strong> et les boutiques <strong>Next.js + Vercel</strong> peuvent absorber des dizaines de milliers de visites simultanees sans broncher (infra serverless qui scale automatiquement). <strong>WooCommerce</strong> et <strong>Webflow E-commerce</strong> tiennent confortablement quelques milliers de visites simultanees avec un hebergement bien dimensionne (Cloudways, Kinsta, WP Engine). Avant les gros pics (Black Friday, lancement medias), nous realisons un audit de charge et configurons un CDN renforce. Sur les stack Next.js, le scale est totalement transparent grace a Vercel ou Cloudflare Workers. Aucune limite haute sur les boutiques sur mesure.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment gerer la livraison et l'expedition au Benin, en France et a l'international&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous integrons plusieurs solutions selon les marches&nbsp;: au Benin et en Afrique de l'Ouest, integration avec les transporteurs locaux (DHL, Aramex, GIM Benin Express) ou systeme de livraison interne avec partenaires moto. En France et en Europe, integration native Mondial Relay, Colissimo, Chronopost, UPS, FedEx via leurs API ou des solutions comme Sendcloud, Shipstation et Boxtal. Calcul automatique des frais de port selon le poids, le volume et la destination. Generation automatique des etiquettes d'expedition. Tracking livre au client par email et SMS. Pour les boutiques multi-pays&nbsp;: zones tarifaires configurables avec taux variable.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels paiements integrer pour vendre a la fois en Europe et en Afrique francophone&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le mix gagnant que nous recommandons pour le multi-marche francophone&nbsp;: <strong>Stripe</strong> (cartes Visa et Mastercard, Apple Pay, Google Pay, Stripe Link pour 1-click checkout) couvre 95% des clients en France et en Europe. <strong>PayPal</strong> pour la rassurance B2C (10 a 15% des clients europeens preferent PayPal). <strong>Kkiapay</strong> ou <strong>FedaPay</strong> comme agregateur unique pour MTN Mobile Money, Moov Money et Wave en Afrique de l'Ouest (avec une seule integration au lieu de 3 separees). <strong>Virement SEPA</strong> pour les commandes B2B au-dessus de 500 EUR (zero frais). Detection automatique du pays IP du client pour afficher les paiements pertinents en priorite, sans noyer l'interface.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment gerez-vous les taxes (TVA Europe, droits de douane, TVA Benin)&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous configurons la fiscalite selon vos pays de vente&nbsp;: en France et en UE, integration de la <strong>TVA selon le pays du client</strong> (regle OSS depuis 2021&nbsp;: TVA du pays d'expedition vers les particuliers). Stripe Tax ou TaxJar gerent automatiquement le calcul. Au Benin, application de la TVA 18% selon votre statut d'assujetti. Pour les ventes hors UE, generation automatique des factures avec TVA 0% et mention "Vente hors UE - exoneree". Affichage transparent des taxes des l'entree du panier (obligation Europe). Pour les boutiques B2B, gestion du systeme de validation des numeros TVA intracommunautaires (VIES). Nous vous orientons vers un expert-comptable specialise e-commerce si vous depassez 10 000 EUR/an de CA cross-border.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Etes-vous conforme au RGPD et a la protection des donnees clients&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Conformite RGPD integree des le design sur toutes nos boutiques livrees en Europe&nbsp;: <strong>banniere cookies conforme</strong> (granulaire, opt-in, refus aussi simple que l'acceptation), <strong>formulaires conformes</strong> (consentement explicite, registre des traitements), <strong>politique de confidentialite</strong> et <strong>mentions legales</strong> redigees ou validees par juriste partenaire. Hebergement sur infrastructures europeennes (Vercel EU, Cloudflare EU, OVH France). Sous-traitance documentee (DPA signes avec Stripe, Mailchimp, Klaviyo, etc.). Gestion des droits utilisateurs (acces, rectification, suppression) automatisee dans l'espace client. Conformite PCI-DSS pour le traitement des cartes via Stripe (niveau SAQ-A, la categorie la plus simple). Pour les clients au Benin&nbsp;: conformite a la <strong>loi 2017-20</strong> sur la protection des donnees a caractere personnel.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Pret a lancer votre boutique en ligne&nbsp;?</h2>
+          <p>Du catalogue de 10 produits a la marketplace multi-vendeurs&nbsp;: nous concevons des boutiques en ligne qui vendent vraiment, avec une methode CRO eprouvee et tous les paiements du marche francophone. Devis ferme sous 48h apres un appel decouverte de 45&nbsp;minutes.</p>
+        </div>
+        <a href="/contact?service=ecommerce" class="fcta__cta">Demander mon devis e-commerce <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. PARENT LINK -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir <em>Creation de site web</em> complete</h2>
+        <p class="sec-h__sub">Le e-commerce n'est qu'un des sous-services de notre offre Creation de site web. Explorez l'ensemble de nos expertises et savoir-faire en developpement de sites sur mesure, applications web et plateformes SaaS.</p>
+      </div>
+      <a href="/creation-site-web" style="text-decoration:none;">
+        <div class="parent-card">
+          <div class="parent-card__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="parent-card__txt">
+            <div class="parent-card__eyebrow">Service parent</div>
+            <div class="parent-card__title">Creation de site web sur mesure</div>
+            <p class="parent-card__desc">Sites vitrine, e-commerce, plateformes SaaS, applications web sur mesure. Stack Next.js, React, Webflow, WordPress selon vos enjeux. Lighthouse 95+, devis ferme sous 48h.</p>
+          </div>
+          <span class="parent-card__cta">Voir le service complet <span class="material-symbols-outlined">arrow_forward</span></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">storefront</span>Boutique en ligne &middot; devis ferme <strong>48h</strong> &middot; Stripe + Mobile Money</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=ecommerce" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20e-commerce" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

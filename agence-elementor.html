@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence Elementor Pro - Pirabel Labs | Sites WordPress flexibles</title>
+<meta name="description" content="Agence Elementor Pro pour WordPress. Editeur visuel, Theme Builder, 90+ widgets, edition autonome. Formation incluse. Devis 48h.">
+<meta name="keywords" content="agence elementor pro, elementor wordpress, elementor benin, theme builder elementor, formation elementor, widgets elementor, elementor pro france, elementor cotonou, site wordpress elementor, agence wordpress elementor, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/agence-elementor">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence Elementor Pro - Pirabel Labs | Sites WordPress flexibles">
+<meta property="og:description" content="Agence Elementor Pro pour WordPress. Editeur visuel, Theme Builder, 90+ widgets, edition autonome. Formation Elementor incluse. Devis ferme sous 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/agence-elementor">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero compact */
+.s-hero { position: relative; padding: clamp(2.5rem, 5vw, 4rem) var(--px-page) clamp(2rem, 4vw, 3rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.65rem, 4vw, 2.75rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 44rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 42rem; margin-bottom: 1.75rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 28rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 17rem; }
+}
+
+/* Reasons cards (4 cards grid) */
+.reasons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 76rem; margin: 0 auto; }
+@media (max-width: 1024px) { .reasons-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 580px) { .reasons-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.reason { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.reason:hover { border-color: var(--accent); }
+.reason__num { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.reason__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.reason__icon .material-symbols-outlined { font-size: 1.5rem; }
+.reason__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.reason__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Zigzag methodologie */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* Migration steps (4 etapes horizontales) */
+.migrate-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; position: relative; }
+@media (max-width: 1024px) { .migrate-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .migrate-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.migrate-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; position: relative; transition: border-color var(--t); }
+.migrate-step:hover { border-color: var(--accent); }
+.migrate-step__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.55rem; }
+.migrate-step__icon { width: 2.85rem; height: 2.85rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; }
+.migrate-step__icon .material-symbols-outlined { font-size: 1.45rem; }
+.migrate-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.migrate-step__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+
+/* Formation cards 3 formats */
+.forma-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 880px) { .forma-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.forma { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); }
+.forma:hover { border-color: var(--accent); transform: translateY(-3px); }
+.forma__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.forma__icon .material-symbols-outlined { font-size: 1.65rem; }
+.forma__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.55rem; }
+.forma__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.forma__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem; flex: 1; }
+.forma__feat { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.forma__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.84rem; color: var(--text); line-height: 1.5; }
+.forma__feat li .material-symbols-outlined { color: var(--accent); font-size: 1rem; margin-top: 0.1rem; flex-shrink: 0; }
+
+/* Prestations tarifs */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodology compact 4 steps */
+.method-compact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .method-compact { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .method-compact { grid-template-columns: 1fr; max-width: 24rem; } }
+.method-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; position: relative; transition: border-color var(--t); }
+.method-step:hover { border-color: var(--accent); }
+.method-step__num { font-family: var(--font-display); font-weight: 800; font-size: 2.5rem; letter-spacing: -0.04em; color: var(--accent); opacity: 0.25; line-height: 1; margin-bottom: 0.65rem; }
+.method-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.method-step__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 45rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Synergies cards (back to creation web) */
+.syn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .syn-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.syn { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; text-decoration: none; color: var(--text); transition: all var(--t); }
+.syn:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.syn__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.syn__icon .material-symbols-outlined { font-size: 1.35rem; }
+.syn__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.syn__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.syn__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; transition: gap 0.2s; }
+.syn:hover .syn__link { gap: 0.5rem; }
+.syn__link .material-symbols-outlined { font-size: 0.95rem; }
+
+/* Parent return card */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.08), var(--bg-2) 70%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+.parent-card::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 12rem; height: 12rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.15; pointer-events: none; }
+@media (max-width: 720px) { .parent-card { grid-template-columns: 1fr; text-align: center; gap: 1.25rem; } }
+.parent-card__icon { width: 4rem; height: 4rem; background: var(--accent); color: #fff; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 12px 32px rgba(255,85,0,0.3); }
+@media (max-width: 720px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__icon .material-symbols-outlined { font-size: 1.85rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.1rem, 2.1vw, 1.45rem); margin-bottom: 0.4rem; line-height: 1.25; }
+.parent-card__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.9rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); white-space: nowrap; }
+.parent-card__cta:hover { background: var(--accent-2); opacity: 1; transform: translateX(2px); }
+.parent-card__cta .material-symbols-outlined { font-size: 0.95rem; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Agence Elementor Pro","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"}},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Agence Elementor Pro specialisee dans la creation de sites WordPress flexibles avec editeur visuel, Theme Builder, 90+ widgets et edition autonome. Formation Elementor incluse. Pour PME au Benin, France et Afrique francophone.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"2500","highPrice":"15000"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Sites WordPress","item":"https://www.pirabellabs.com/creation-site-wordpress"},{"@type":"ListItem","position":3,"name":"Agence Elementor Pro","item":"https://www.pirabellabs.com/agence-elementor"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qui paie la licence Elementor Pro apres la livraison ?","acceptedAnswer":{"@type":"Answer","text":"La licence Elementor Pro est a votre nom des le depart. Vous restez 100% proprietaire du compte Elementor, du site WordPress et de la base de donnees. Plans Elementor Pro : 59 USD/an (Essential, 1 site), 99 USD/an (Advanced, 3 sites), 199 USD/an (Expert, 25 sites). Nous vous conseillons le plan optimal selon votre nombre de sites."}},{"@type":"Question","name":"Un site Elementor est-il performant ?","acceptedAnswer":{"@type":"Answer","text":"Oui, avec une mise en oeuvre rigoureuse : theme leger Hello Elementor, optimisation images WebP, mise en cache LiteSpeed ou WP Rocket, CDN Cloudflare, hebergement SSD performant. Nous atteignons Lighthouse 75 a 90 sur la plupart de nos sites Elementor en production."}}]}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-wordpress">Sites WordPress</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Agence Elementor Pro</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">design_services</span> Sous-service Sites WordPress</span>
+        <h1>Agence <em>Elementor Pro</em>&nbsp;: sites WordPress flexibles</h1>
+        <p class="s-hero__tagline">Editeur visuel + 90+ widgets + Theme Builder + Forms &middot; Edition autonome</p>
+        <p class="s-hero__lead">Pirabel Labs est une agence Elementor Pro qui concoit des sites WordPress flexibles et editables par votre equipe sans toucher au code. Nous combinons la puissance de WordPress (CMS le plus utilise au monde) et la souplesse de l'editeur visuel Elementor Pro&nbsp;: 90 widgets premium, Theme Builder complet (header, footer, single, archive, 404), Forms avec integrations marketing, ConvertKit, MailChimp et HubSpot. Formation a votre equipe incluse, devis ferme sous 48&nbsp;heures.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=elementor" class="btn btn--primary btn--lg">Demander mon devis Elementor <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20Elementor%20Pro" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">drag_indicator</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">widgets</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">brush</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">design_services</span> Sites Elementor Pro</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">widgets</span> 90+ widgets</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">construction</span> Theme Builder</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">edit_note</span> Edition autonome</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. POURQUOI ELEMENTOR PRO - 4 cards -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi choisir <em>Elementor Pro</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Elementor Pro est le constructeur visuel le plus utilise au monde sur WordPress&nbsp;: 18&nbsp;millions de sites en production, mises a jour mensuelles, ecosysteme stable. Voici les quatre raisons concretes pour lesquelles nous le recommandons.</p>
+      </div>
+      <div class="reasons-grid">
+        <div class="reason">
+          <div class="reason__num">01 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">drag_indicator</span></div>
+          <div class="reason__title">Editeur visuel drag-drop puissant</div>
+          <p class="reason__desc">L'editeur Elementor Pro est un editeur visuel drag-drop pixel-perfect&nbsp;: vous deposez les widgets sur la page, ajustez les marges, paddings, couleurs, typographies en direct sans rechargement. Responsive editing natif (desktop, tablette, mobile) avec breakpoints personnalisables. Aucune ligne de code a ecrire pour composer une page, un en-tete ou un pied de page complexe.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">02 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">widgets</span></div>
+          <div class="reason__title">90+ widgets premium prets a l'emploi</div>
+          <p class="reason__desc">Elementor Pro fournit plus de 90&nbsp;widgets premium prets a l'emploi&nbsp;: Posts, Portfolio, Forms avancees, Slides, Animated Headlines, Price Table, Countdown, Login Form, Nav Menu, Search Form, Sticky Bar, Lottie animations, Reviews, Testimonials Carousel, Facebook Posts, Mailchimp, ConvertKit. Tous les blocs courants d'un site professionnel sont couverts d'origine.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">03 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">construction</span></div>
+          <div class="reason__title">Theme Builder complet inclus</div>
+          <p class="reason__desc">Le Theme Builder Elementor Pro permet de creer en visuel tous les templates dynamiques du site WordPress&nbsp;: header, footer, single post, single page, archives categories, page d'auteur, 404, page de recherche, WooCommerce Shop, Product, Cart, Checkout. Conditions d'affichage avancees (par template, par categorie, par utilisateur). Plus besoin de coder un theme enfant&nbsp;: vous etes 100% autonome sur la structure du site.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">04 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">edit_note</span></div>
+          <div class="reason__title">Edition autonome par le client</div>
+          <p class="reason__desc">Apres formation, votre equipe edite les pages du site directement dans Elementor Pro&nbsp;: changer un texte, remplacer une image, ajouter un bloc, modifier une couleur, dupliquer une section. Les modifications sont immediatement visibles en preview, publiees en un clic. Plus besoin de demander a un developpeur la moindre retouche&nbsp;: vous gagnez en reactivite marketing et en cout de maintenance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. NOTRE APPROCHE ELEMENTOR - 5 etapes zigzag -->
+  <section class="section" style="background:var(--bg-2);" id="approche-elementor">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>approche Elementor</em> en 5 etapes</h2>
+        <p class="sec-h__sub">Du brief initial a la formation finale, voici notre methodologie eprouvee pour livrer un site Elementor Pro performant, propre et editable.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">01</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Cadrage</span>
+            <div class="zz-step__title">Brief + Wireframe arborescence</div>
+            <p class="zz-step__desc">Atelier de cadrage de 90&nbsp;minutes pour comprendre votre marche, vos personas et vos objectifs business. Definition de l'arborescence du site WordPress, des pages prioritaires, du ton et des references visuelles. Wireframe basse fidelite valide ensemble avant de passer au design.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 3 a 5 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">02</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Design Figma</span>
+            <div class="zz-step__title">Maquettes Figma desktop + mobile</div>
+            <p class="zz-step__desc">Conception des maquettes Figma desktop, tablette et mobile avec design system reutilisable&nbsp;: typographies, palette couleurs, composants Elementor reutilisables (boutons, cards, formulaires). Pages cles validees une par une, 2 rounds de retouches inclus avant le build.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">design_services</span> 1 a 3 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">03</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Theme Builder</span>
+            <div class="zz-step__title">Configuration Theme Builder Elementor</div>
+            <p class="zz-step__desc">Mise en place de WordPress sur theme Hello Elementor (leger, sans styles parasites), installation Elementor Pro, configuration du Theme Builder&nbsp;: header global, footer global, templates single post, archive blog, 404 personnalisee. Design system global Elementor configure (couleurs, polices, breakpoints).</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">construction</span> 5 a 8 jours</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">04</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Build pages</span>
+            <div class="zz-step__title">Construction des pages dans Elementor</div>
+            <p class="zz-step__desc">Construction pixel-perfect de toutes les pages dans Elementor Pro&nbsp;: home, services, a propos, blog, contact, mentions legales. Animations subtiles, micro-interactions sur les boutons, formulaires Elementor Forms avec integrations marketing. Optimisation images WebP, lazy-loading, mise en cache WP Rocket configures.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">code</span> 2 a 5 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">05</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Formation</span>
+            <div class="zz-step__title">Mise en ligne + formation equipe</div>
+            <p class="zz-step__desc">Mise en ligne accompagnee, connexion du domaine, configuration SSL, soumission Search Console, integration Google Analytics 4. Formation Elementor de 2&nbsp;heures en visio a votre equipe pour gerer le site en autonomie&nbsp;: editer pages, articles, formulaires, templates Theme Builder. Documentation Notion remise.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MIGRATION DE THEMES CLASSIQUES VERS ELEMENTOR - 4 etapes -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Migration de <em>themes classiques</em> vers Elementor</h2>
+        <p class="sec-h__sub">Votre site WordPress tourne sur un theme premium fige (Avada, Divi, BeTheme, theme custom) et vous ne pouvez plus rien editer sans developpeur&nbsp;? Nous migrons votre site existant vers Elementor Pro en 4&nbsp;etapes maitrisees, sans perte de contenu ni de SEO.</p>
+      </div>
+      <div class="migrate-grid">
+        <div class="migrate-step">
+          <div class="migrate-step__num">01 / 04</div>
+          <div class="migrate-step__icon"><span class="material-symbols-outlined">manage_search</span></div>
+          <div class="migrate-step__title">Audit du theme actuel</div>
+          <p class="migrate-step__desc">Audit complet du site WordPress en production&nbsp;: theme parent et theme enfant, plugins installes, structure des pages, custom post types, contenus a preserver, ranking SEO actuel des pages cles, redirections existantes. Identification des points sensibles avant migration.</p>
+        </div>
+        <div class="migrate-step">
+          <div class="migrate-step__num">02 / 04</div>
+          <div class="migrate-step__icon"><span class="material-symbols-outlined">cloud_download</span></div>
+          <div class="migrate-step__title">Export du contenu</div>
+          <p class="migrate-step__desc">Export complet de la base de donnees WordPress&nbsp;: articles, pages, medias, utilisateurs, commentaires, taxonomies. Sauvegarde du theme actuel pour rollback. Mise en place d'un environnement de staging chez nous pour rebuild sans toucher au site en production.</p>
+        </div>
+        <div class="migrate-step">
+          <div class="migrate-step__num">03 / 04</div>
+          <div class="migrate-step__icon"><span class="material-symbols-outlined">construction</span></div>
+          <div class="migrate-step__title">Rebuild dans Elementor</div>
+          <p class="migrate-step__desc">Reconstruction de toutes les pages dans Elementor Pro sur theme Hello Elementor avec design rafraichi ou identique selon votre choix. Theme Builder configure (header, footer, single, archives). Contenus reinjectes, mapping des URLs anciennes vers nouvelles avec redirections 301 systematiques.</p>
+        </div>
+        <div class="migrate-step">
+          <div class="migrate-step__num">04 / 04</div>
+          <div class="migrate-step__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <div class="migrate-step__title">Tests + lancement</div>
+          <p class="migrate-step__desc">Tests complets sur staging&nbsp;: navigation, formulaires, performance, responsive, SEO technique. Mise en ligne accompagnee en heure creuse, surveillance du ranking Google sur 30&nbsp;jours, ajustements si necessaire. Documentation des changements remise. Backup ancien site conserve 6&nbsp;mois.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FORMATION ELEMENTOR - 3 formats -->
+  <section class="section" style="background:var(--bg-2);" id="formation-elementor">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Formation <em>Elementor</em> pour votre equipe</h2>
+        <p class="sec-h__sub">Pour que votre site soit edite en autonomie sans nous appeler, nous incluons systematiquement une formation Elementor en trois formats complementaires. Vos editeurs deviennent operationnels en moins de 2&nbsp;heures.</p>
+      </div>
+      <div class="forma-grid">
+        <div class="forma">
+          <div class="forma__icon"><span class="material-symbols-outlined">video_call</span></div>
+          <span class="forma__tag">Visio 2h</span>
+          <div class="forma__title">Session live de formation</div>
+          <p class="forma__desc">Session de formation Elementor en visioconference Zoom ou Google Meet, 2&nbsp;heures, jusqu'a 3&nbsp;participants. Demonstration pratique sur votre site reel&nbsp;: editer une page, ajouter une section, dupliquer un bloc, gerer formulaires et integrations, comprendre le Theme Builder.</p>
+          <ul class="forma__feat">
+            <li><span class="material-symbols-outlined">check_circle</span> Enregistrement video remis</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Sur votre site reel, en conditions de production</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Questions illimitees pendant la session</li>
+          </ul>
+        </div>
+        <div class="forma">
+          <div class="forma__icon"><span class="material-symbols-outlined">menu_book</span></div>
+          <span class="forma__tag">Notion</span>
+          <div class="forma__title">Documentation ecrite Notion</div>
+          <p class="forma__desc">Page Notion dediee a votre site, avec procedures pas-a-pas illustrees de captures d'ecran annotees&nbsp;: editer une page, gerer un blog, ajouter une image, modifier un menu, configurer un formulaire, dupliquer un template. Acces partage avec votre equipe, modifications en direct.</p>
+          <ul class="forma__feat">
+            <li><span class="material-symbols-outlined">check_circle</span> 15 a 25 pages de documentation</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Captures d'ecran specifiques a votre site</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Mise a jour incluse pendant 6 mois</li>
+          </ul>
+        </div>
+        <div class="forma">
+          <div class="forma__icon"><span class="material-symbols-outlined">support_agent</span></div>
+          <span class="forma__tag">Support 30j</span>
+          <div class="forma__title">Support email post-formation</div>
+          <p class="forma__desc">30&nbsp;jours de support email illimite apres la livraison du site. Vous bloquez sur une edition Elementor, une publication d'article, un formulaire qui ne se soumet pas&nbsp;? Vous nous ecrivez, nous repondons sous 24h ouvrees avec captures et procedure de resolution. Garantie tranquillite.</p>
+          <ul class="forma__feat">
+            <li><span class="material-symbols-outlined">check_circle</span> Reponse sous 24h ouvrees</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Captures et procedures detaillees</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Inclus dans tous les forfaits</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS ELEMENTOR - 3 cards -->
+  <section class="section" id="tarifs-elementor">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>tarifs Elementor</em></h2>
+        <p class="sec-h__sub">Trois formules transparentes pour repondre a chaque besoin&nbsp;: du site simple PME au projet WordPress custom complexe. Devis ferme sous 48&nbsp;heures, prix fixe sans surcout cache.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="prest__title">Site Elementor simple</div>
+          <p class="prest__lead">Site vitrine WordPress + Elementor Pro pour PME, artisan, profession liberale qui veut un site simple et autonome.</p>
+          <ul class="prest__feat">
+            <li>5 a 8 pages Elementor sur mesure</li>
+            <li>Design Figma desktop + mobile</li>
+            <li>Theme Builder header + footer</li>
+            <li>Formulaire contact Elementor Forms</li>
+            <li>SEO technique + Schema.org</li>
+            <li>Formation visio 2h incluse</li>
+            <li>Livre en 3 a 4 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 2 500 EUR HT</strong></div>
+          <a href="/contact?service=elementor-simple" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">construction</span></div>
+          <div class="prest__title">Site Elementor standard</div>
+          <p class="prest__lead">Site WordPress Elementor Pro complet pour PME, marque B2B ou cabinet exigeant avec blog, Theme Builder avance et integrations marketing.</p>
+          <ul class="prest__feat">
+            <li>10 a 20 pages Elementor sur mesure</li>
+            <li>Theme Builder complet (single, archive, 404)</li>
+            <li>Blog avec categories et auteurs</li>
+            <li>Formulaires multi-etapes + integrations</li>
+            <li>Multi-langue WPML ou Polylang</li>
+            <li>Documentation Notion incluse</li>
+            <li>Livre en 4 a 7 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 4 500 EUR HT</strong></div>
+          <a href="/contact?service=elementor-standard" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">terminal</span></div>
+          <div class="prest__title">Custom Elementor complexe</div>
+          <p class="prest__lead">Projet WordPress complexe avec Elementor Pro&nbsp;: e-commerce WooCommerce, zone membres, integrations API, multi-sites ou design avance.</p>
+          <ul class="prest__feat">
+            <li>20+ pages avec architecture avancee</li>
+            <li>WooCommerce + Elementor Builder</li>
+            <li>Zone membres MemberPress / LearnDash</li>
+            <li>Integrations API personnalisees</li>
+            <li>Custom widgets Elementor sur mesure</li>
+            <li>Multi-sites WordPress Multisite</li>
+            <li>Livre en 8 a 14 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 8 000 EUR HT</strong></div>
+          <a href="/contact?service=elementor-custom" class="prest__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACTE 4 ETAPES -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Comment <em>travailler</em> avec nous&nbsp;?</h2>
+        <p class="sec-h__sub">Du premier contact a la mise en ligne, voici les quatre etapes simples pour demarrer votre projet Elementor Pro.</p>
+      </div>
+      <div class="method-compact">
+        <div class="method-step">
+          <div class="method-step__num">01</div>
+          <div class="method-step__title">Appel decouverte</div>
+          <p class="method-step__desc">Echange de 30&nbsp;minutes avec un cofondateur pour comprendre votre projet, votre marche et vos objectifs business. Gratuit, sans engagement.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">02</div>
+          <div class="method-step__title">Devis ferme 48h</div>
+          <p class="method-step__desc">Devis ecrit avec scope precis, planning sprint par sprint, conditions d'evolution et echelonnement de paiement 30/30/40.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">03</div>
+          <div class="method-step__title">Sprint hebdomadaire</div>
+          <p class="method-step__desc">Demos visio chaque vendredi sur lien staging Elementor Pro. Vous voyez l'avancement en temps reel et ajustez en continu.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">04</div>
+          <div class="method-step__title">Livraison + formation</div>
+          <p class="method-step__desc">Mise en ligne accompagnee, formation Elementor 2&nbsp;heures a votre equipe pour autonomie complete. Garantie 30&nbsp;jours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur les <em>sites Elementor Pro</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="true">
+          <button class="faq-i__q" type="button" aria-expanded="true"><span>Qui paie la licence Elementor Pro apres la livraison&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La licence Elementor Pro est a votre nom des le depart&nbsp;: vous achetez le plan directement sur elementor.com avec votre carte bancaire. Pendant la creation, nous travaillons via un acces collaborateur sur votre compte WordPress. Apres livraison, vous restez 100% proprietaire du compte Elementor, du site WordPress, du theme Hello Elementor et de la base de donnees. Vous pouvez changer de prestataire ou gerer le site en interne sans aucun blocage. Plans Elementor Pro disponibles&nbsp;: 59 USD/an (Essential, 1 site), 99 USD/an (Advanced, 3 sites), 199 USD/an (Expert, 25 sites), 399 USD/an (Studio, 100 sites). Nous vous conseillons le plan optimal selon votre situation. Pour les agences ou groupes a plusieurs sites, le plan Expert est generalement le plus rentable.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Un site Elementor est-il vraiment performant&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, a condition de respecter quatre bonnes pratiques&nbsp;: <strong>theme parent leger Hello Elementor</strong> (3 ko, sans styles parasites contrairement a Astra ou OceanWP charges), <strong>optimisation images en WebP</strong> avec compression Smush ou ShortPixel, <strong>mise en cache LiteSpeed Cache ou WP Rocket</strong> avec preload, minification CSS/JS et critical CSS, <strong>CDN Cloudflare gratuit</strong> avec optimisation Polish + Mirage + Auto Minify. Sur cette stack, nous atteignons Lighthouse 75 a 90 sur la plupart de nos sites Elementor en production, avec un temps de chargement entre 1,5 et 2,5&nbsp;secondes en 4G. Pour les projets ou la performance Lighthouse 95+ est absolument critique, nous recommandons plutot Next.js, mais Elementor reste un excellent compromis entre flexibilite et performance.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels plugins WordPress sont compatibles avec Elementor Pro&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">L'ecosysteme Elementor Pro est extremement large&nbsp;: la plupart des plugins WordPress majeurs proposent une integration native. Plugins ecommerce&nbsp;: <strong>WooCommerce</strong> (Elementor Pro inclut un WooCommerce Builder complet pour customiser shop, single product, cart, checkout). Plugins SEO&nbsp;: <strong>Yoast SEO, Rank Math, SEOPress</strong> entierement compatibles. Plugins formulaires&nbsp;: <strong>Elementor Forms</strong> natif, sinon WPForms, Gravity Forms, Contact Form 7 integrables. Plugins membres&nbsp;: <strong>MemberPress, LearnDash, Restrict Content Pro</strong> avec widgets dedies. Multi-langue&nbsp;: <strong>WPML, Polylang, TranslatePress</strong>. Cache&nbsp;: <strong>WP Rocket, LiteSpeed Cache, W3 Total Cache</strong>. Backup&nbsp;: <strong>UpdraftPlus, BackWPup</strong>. Au total plus de 200 plugins ont une integration officielle ou un widget Elementor dedie.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Elementor Pro gere-t-il les sites multilingues&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, Elementor Pro est totalement compatible avec les solutions multilingues WordPress majeures. Nous utilisons en general <strong>WPML</strong> (le plus complet, payant 39 a 199 USD/an) ou <strong>Polylang Pro</strong> (alternative populaire). WPML s'integre nativement a Elementor Pro&nbsp;: vous traduisez le contenu directement depuis le Theme Builder Elementor, gerez les templates par langue, configurez les balises hreflang automatiquement. Solutions adaptees au marche francais (FR + EN), Afrique francophone (FR + Yoruba ou Fon en option), Europe (FR + EN + ES + DE + IT). Pour les sites e-commerce WooCommerce multilingues, WPML Multilingual CMS combine avec WooCommerce Multilingual est la solution standard. Nous configurons tout en standard dans le forfait Standard et Custom.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>La formation Elementor est-elle suffisante pour gerer le site&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui dans la grande majorite des cas. La formation Elementor de 2&nbsp;heures que nous proposons couvre&nbsp;: edition de pages existantes (textes, images, boutons, sections), ajout d'articles de blog avec image a la une et categories, duplication de pages ou sections, gestion des menus de navigation, configuration des formulaires Elementor Forms et integrations marketing (MailChimp, ConvertKit, HubSpot), comprehension du Theme Builder pour modifier header / footer / single post, gestion des medias et bibliotheque, publication et previsualisation, gestion des utilisateurs WordPress. Nous remettons en plus une documentation Notion de 15 a 25&nbsp;pages specifique a votre site avec captures d'ecran annotees, plus 30&nbsp;jours de support email post-livraison. Pour les besoins plus avances (creer un nouveau template Theme Builder, modifier le design global, ajouter un custom post type), nous proposons soit un forfait maintenance mensuel (250 a 500&nbsp;EUR/mois), soit des interventions ponctuelles au TJM 600&nbsp;EUR HT.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel hebergement recommandez-vous pour un site Elementor Pro&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Elementor Pro fonctionne sur tout hebergeur WordPress, mais nous recommandons systematiquement un hebergement adapte aux sites Elementor (qui sont legerement plus lourds qu'un site WordPress sur theme classique). Trois categories selon votre budget&nbsp;: <strong>economique (5 a 15 EUR/mois)</strong>&nbsp;: o2switch (hebergeur francais avec LiteSpeed Cache natif), Hostinger Business, Bluehost WordPress. <strong>premium (20 a 50 EUR/mois)</strong>&nbsp;: SiteGround GrowBig ou GoGeek, Cloudways Vultr ou DigitalOcean, Kinsta Starter. <strong>geree (100+ EUR/mois)</strong>&nbsp;: Kinsta Business, WP Engine, Pressable&nbsp;: hosting WordPress geree avec backups automatiques, staging, CDN et support 24/7 specialise. Nous configurons l'hebergement de votre choix, ou vous proposons un forfait hebergement geree chez nous (Kinsta ou o2switch + maintenance) a partir de 49&nbsp;EUR/mois.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps faut-il pour livrer un site Elementor Pro&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Les delais dependent du scope&nbsp;: <strong>Site Elementor simple (5 a 8 pages)</strong>&nbsp;: 3 a 4&nbsp;semaines apres validation des maquettes Figma. <strong>Site Elementor standard (10 a 20 pages + blog + multilingue)</strong>&nbsp;: 4 a 7&nbsp;semaines selon le nombre de pages et la complexite des integrations marketing. <strong>Custom Elementor complexe (WooCommerce, zone membres, multi-sites)</strong>&nbsp;: 8 a 14&nbsp;semaines selon le scope, avec sprints hebdomadaires et demos visio chaque vendredi. Pour acceler la livraison, nous travaillons par sprints d'une semaine en parallele sur design, build et contenu. Si vous avez deja votre charte graphique et vos contenus rediges, nous pouvons reduire les delais de 30 a 50%. Les delais incluent toujours la phase de tests, la mise en ligne accompagnee, la formation et la garantie 30&nbsp;jours.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL VERS CONTACT -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Pret a creer votre site Elementor Pro&nbsp;?</h2>
+          <p>Echangeons 30&nbsp;minutes avec un cofondateur pour cadrer votre projet Elementor et obtenir un devis ferme sous 48&nbsp;heures. Decouvrez aussi <a href="/creation-site-wordpress" style="color:#fff;text-decoration:underline;">notre offre WordPress complete</a> pour comparer toutes les options.</p>
+        </div>
+        <a href="/contact?service=elementor" class="fcta__cta">Demander un devis Elementor <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DECOUVRIR WORDPRESS COMPLET -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir notre offre <em>WordPress</em> complete</h2>
+        <p class="sec-h__sub">Elementor Pro n'est qu'une des solutions WordPress que nous proposons. Decouvrez l'ensemble de notre expertise WordPress et les autres sous-services associes.</p>
+      </div>
+      <div class="parent-card" style="margin-bottom:2.5rem;">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">arrow_back</span></div>
+        <div>
+          <div class="parent-card__title">Retour a la page Creation de site WordPress</div>
+          <p class="parent-card__desc">Vue d'ensemble de notre expertise WordPress&nbsp;: sites sur Elementor Pro, themes premium, WordPress headless, WooCommerce, multilingue WPML, maintenance, hebergement geree. Comparatifs, tarifs et methodologie complete.</p>
+        </div>
+        <a href="/creation-site-wordpress" class="parent-card__cta">Voir la page mere <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+      <div class="syn-grid">
+        <a href="/agence-woocommerce" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+          <div class="syn__title">Agence WooCommerce</div>
+          <p class="syn__desc">Boutiques en ligne WordPress WooCommerce avec Elementor Pro WooCommerce Builder. Paiement, gestion produits, integrations marketing.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/agence-webflow" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">design_services</span></div>
+          <div class="syn__title">Agence Webflow</div>
+          <p class="syn__desc">Alternative no-code premium a WordPress + Elementor. Sites vitrine, CMS integre, hebergement Webflow Cloud inclus.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/agence-site-vitrine" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="syn__title">Agence site vitrine</div>
+          <p class="syn__desc">Sites vitrine professionnels en Next.js, Webflow ou WordPress Elementor selon vos enjeux. Performance, SEO et conversion au rendez-vous.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Devis Elementor Pro ferme sous <strong>48h</strong> &middot; formation 2h incluse</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=elementor" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20Elementor%20Pro" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-elementor">Elementor Pro</a></li>
+          <li><a href="/agence-woocommerce">WooCommerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

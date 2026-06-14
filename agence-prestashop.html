@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence Prestashop - Pirabel Labs | E-commerce CMS francais</title>
+<meta name="description" content="Agence Prestashop pour PME francophones. Sites e-commerce, modules natifs, multi-langue, multi-devise. Devis 48h, code remis.">
+<meta name="keywords" content="agence prestashop, prestashop benin, prestashop france, e-commerce prestashop, modules prestashop, boutique prestashop, theme prestashop, prestashop multi-boutique, prestashop SEO, integrateur prestashop, prestashop marketplace, prestashop multi-langue, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/agence-prestashop">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence Prestashop - Pirabel Labs | E-commerce CMS francais">
+<meta property="og:description" content="Agence Prestashop pour PME francophones. Sites e-commerce, modules natifs, multi-langue, multi-devise. Devis 48h, code remis.">
+<meta property="og:url" content="https://www.pirabellabs.com/agence-prestashop">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Reasons grid */
+.reasons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 76rem; margin: 0 auto; }
+@media (max-width: 1024px) { .reasons-grid { grid-template-columns: repeat(2, 1fr); max-width: 48rem; } }
+@media (max-width: 540px) { .reasons-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.reason { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.reason:hover { border-color: var(--accent); }
+.reason__num { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.reason__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.reason__icon .material-symbols-outlined { font-size: 1.5rem; }
+.reason__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.reason__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Modules grid (8 cards 4x2) */
+.mod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 76rem; margin: 0 auto; }
+@media (max-width: 1024px) { .mod-grid { grid-template-columns: repeat(2, 1fr); max-width: 48rem; } }
+@media (max-width: 540px) { .mod-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.mod { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; display: flex; flex-direction: column; transition: all var(--t); }
+.mod:hover { border-color: var(--accent); transform: translateY(-3px); }
+.mod__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.mod__icon .material-symbols-outlined { font-size: 1.35rem; }
+.mod__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.mod__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Zigzag methodologie */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+}
+
+/* Maintenance grid (4 columns) */
+.maint-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 1024px) { .maint-grid { grid-template-columns: repeat(2, 1fr); max-width: 48rem; } }
+@media (max-width: 540px) { .maint-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.maint { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; transition: border-color var(--t); }
+.maint:hover { border-color: var(--accent); }
+.maint__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.maint__icon .material-symbols-outlined { font-size: 1.5rem; }
+.maint__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; }
+.maint__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Pricing (3 cards) */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Compact 4-step method */
+.method-compact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .method-compact { grid-template-columns: repeat(2, 1fr); max-width: 36rem; } }
+@media (max-width: 480px) { .method-compact { grid-template-columns: 1fr; max-width: 22rem; } }
+.mc-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.35rem; position: relative; }
+.mc-step__num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: var(--accent); color: #fff; border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: 0.85rem; margin-bottom: 0.85rem; }
+.mc-step__title { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; margin-bottom: 0.5rem; }
+.mc-step__desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Parent service link card */
+.parent-link { background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 4rem 1fr auto; gap: 2rem; align-items: center; }
+@media (max-width: 720px) { .parent-link { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; } }
+.parent-link__icon { width: 4rem; height: 4rem; background: var(--accent); color: #fff; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+@media (max-width: 720px) { .parent-link__icon { margin: 0 auto; } }
+.parent-link__icon .material-symbols-outlined { font-size: 2rem; }
+.parent-link__txt h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; margin-bottom: 0.4rem; }
+.parent-link__txt p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+.parent-link__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; white-space: nowrap; transition: background var(--t); }
+.parent-link__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Agence Prestashop","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Agence Prestashop pour PME francophones. Sites e-commerce, modules natifs, multi-langue, multi-devise.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"4500","highPrice":"15000"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-web">Creation de site web</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Agence Prestashop</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">storefront</span> Sous-service Creation web</span>
+        <h1>Agence <em>Prestashop</em>&nbsp;: CMS e-commerce francais</h1>
+        <p class="s-hero__tagline">Modules natifs + gestion catalogue + paiements + SEO &middot; PME et marchands francophones</p>
+        <p class="s-hero__lead">Prestashop est le CMS e-commerce open-source francais le plus utilise en Europe, avec plus de 300 000 boutiques actives. Pirabel Labs vous accompagne sur l'integralite de la chaine&nbsp;: setup catalogue, personnalisation du theme, integration des modules indispensables (paiements, marketplace, multi-langue), optimisation SEO et formation de votre equipe. Devis ferme sous 48h, code source remis a votre societe, formation incluse.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=prestashop" class="btn btn--primary btn--lg">Demander mon devis Prestashop <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20une%20boutique%20Prestashop" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">storefront</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">shopping_cart</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">payments</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Integrateurs Prestashop</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">workspace_premium</span> CMS francais</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">extension</span> 3000+ modules</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">language</span> Multi-langue</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. POURQUOI PRESTASHOP -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi <em>Prestashop</em> pour votre boutique e-commerce&nbsp;?</h2>
+        <p class="sec-h__sub">Prestashop est le CMS e-commerce le plus utilise en France, en Belgique et dans l'Afrique francophone. Voici les quatre raisons qui en font un choix solide pour les PME marchandes.</p>
+      </div>
+      <div class="reasons-grid">
+        <div class="reason">
+          <div class="reason__num">01 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">flag</span></div>
+          <div class="reason__title">CMS francais et conforme RGPD</div>
+          <p class="reason__desc">Prestashop est ne en France en 2007 et reste un editeur europeen. L'interface back-office est nativement en francais, la documentation officielle est en francais, et les obligations legales europeennes (RGPD, factures, mentions legales) sont gerees nativement&nbsp;: bannieres cookies, politique de confidentialite, droit d'acces aux donnees client&mdash;tout est integre des l'installation.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">02 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">lock_open</span></div>
+          <div class="reason__title">Open-source et autonome</div>
+          <p class="reason__desc">Prestashop est <strong>100% open-source et gratuit</strong>. Pas de redevance mensuelle, pas de commission sur les ventes, pas de plafond de chiffre d'affaires&mdash;contrairement a Shopify qui prend 0,5 a 2% sur chaque transaction. Vous etes proprietaire du code, du theme, de la base de donnees, et vous choisissez librement votre hebergeur (OVH, IONOS, Vercel, AWS).</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">03 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">extension</span></div>
+          <div class="reason__title">Plus de 3000 modules disponibles</div>
+          <p class="reason__desc">L'Addons Marketplace officiel Prestashop reference plus de 3 000 modules pour ajouter en quelques clics&nbsp;: comparateurs de prix, marketplaces (Amazon, eBay, Cdiscount), modules de paiement (Stripe, PayPal, Mollie, Mobile Money), modules SEO avances, modules d'avis clients, modules d'abandon de panier. Pas besoin de redevelopper&nbsp;: tout est deja disponible.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">04 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">store</span></div>
+          <div class="reason__title">Multi-boutique natif</div>
+          <p class="reason__desc">Avec Prestashop, vous pouvez gerer <strong>plusieurs boutiques depuis un seul back-office</strong>&nbsp;: une boutique B2C et une boutique B2B, une boutique francophone et une boutique anglophone, une boutique principale et un outlet. Catalogue partage ou separe, gestion centralisee des commandes, statistiques consolidees&mdash;ideal pour les marchands multi-marche ou multi-marque.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. MODULES PRESTASHOP -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Modules <em>Prestashop</em> que nous integrons</h2>
+        <p class="sec-h__sub">Voici les huit modules indispensables que nous installons et configurons systematiquement pour faire de votre boutique Prestashop un outil de conversion performant.</p>
+      </div>
+      <div class="mod-grid">
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">login</span></div>
+          <div class="mod__title">Easy Login Facebook &amp; Google</div>
+          <p class="mod__desc">Authentification sociale en un clic pour reduire la friction d'inscription. Conversion checkout&nbsp;: +18% en moyenne.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">groups</span></div>
+          <div class="mod__title">Marketplace multivendeur</div>
+          <p class="mod__desc">Transformez votre boutique en place de marche multi-vendeurs. Commissions automatiques, comptes vendeurs separes, statistiques individuelles.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">stars</span></div>
+          <div class="mod__title">Avis Stars verifies</div>
+          <p class="mod__desc">Collecte d'avis clients verifies post-livraison. Integration Schema.org pour afficher les etoiles dans les SERP Google.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">shopping_cart_off</span></div>
+          <div class="mod__title">Cart Abandonment Pro</div>
+          <p class="mod__desc">Relance automatique par email et SMS des paniers abandonnes. Recuperation moyenne&nbsp;: 12 a 18% des paniers perdus.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">search</span></div>
+          <div class="mod__title">Module SEO avance</div>
+          <p class="mod__desc">URL canoniques, balises Schema.org Product, sitemap dynamique, breadcrumb avance, robots.txt optimise, Open Graph.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">language</span></div>
+          <div class="mod__title">Multi-langue natif</div>
+          <p class="mod__desc">Gestion native du multi-langue (FR, EN, ES, AR...) avec interfaces de traduction par produit, par categorie et par CMS.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">payments</span></div>
+          <div class="mod__title">Multi-devise et taux dynamiques</div>
+          <p class="mod__desc">Affichage automatique des prix en EUR, USD, XOF, GBP selon la geolocalisation client. Conversion temps reel via API BCE.</p>
+        </div>
+        <div class="mod">
+          <div class="mod__icon"><span class="material-symbols-outlined">credit_card</span></div>
+          <div class="mod__title">Paiement avance multi-PSP</div>
+          <p class="mod__desc">Stripe, PayPal, Mollie, Klarna, Mobile Money (MTN, Moov, Orange), Wave, virement SEPA. Detection automatique selon pays client.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. METHODOLOGIE PRESTASHOP -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> e-commerce Prestashop</h2>
+        <p class="sec-h__sub">Cinq etapes structurees pour livrer votre boutique Prestashop en 5 a 8 semaines, du brief initial a la mise en ligne, sans surprise sur le budget ni sur les delais.</p>
+      </div>
+      <div class="zigzag" id="zigzagMethod">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 1 &middot; 1 semaine</span>
+            <div class="zz-step__title">Audit besoins et catalogue</div>
+            <p class="zz-step__desc">Atelier 2h en visio pour comprendre votre activite, votre catalogue (nombre de references, variantes, attributs), votre logistique, vos modes de paiement souhaites, vos pays cibles. Cahier des charges fonctionnel valide ensemble. Livrable&nbsp;: backlog detaille, planning sprint par sprint, devis ferme.</p>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 2 &middot; 2 semaines</span>
+            <div class="zz-step__title">Theme et design e-commerce</div>
+            <p class="zz-step__desc">Personnalisation d'un theme Prestashop premium adapte a votre marque (couleurs, typographies, logo, illustrations) ou developpement d'un theme sur mesure. Maquettes Figma desktop, tablette et mobile validees avant integration. Tunnel de checkout optimise pour la conversion.</p>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 3 &middot; 1 a 2 semaines</span>
+            <div class="zz-step__title">Setup catalogue et import produits</div>
+            <p class="zz-step__desc">Import du catalogue produits via fichier CSV ou via API. Configuration des categories, des attributs, des declinaisons (taille, couleur), des prix, des stocks, des fournisseurs. Optimisation des fiches produit pour le SEO (titres, descriptions, balises Schema.org). Gestion des promotions et codes reduction.</p>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 4 &middot; 1 semaine</span>
+            <div class="zz-step__title">Integration des modules</div>
+            <p class="zz-step__desc">Installation et configuration des modules&nbsp;: paiements multi-PSP, marketplace si necessaire, avis verifies, relance panier abandonne, multi-langue, multi-devise, module SEO. Tests de chaque flux fonctionnel. Connexion Google Analytics 4, Google Tag Manager, Meta Pixel pour le tracking conversions.</p>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">5</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 5 &middot; 1 semaine</span>
+            <div class="zz-step__title">Tests + mise en ligne accompagnee</div>
+            <p class="zz-step__desc">Tests end-to-end de tous les parcours&nbsp;: ajout panier, checkout, paiement, email confirmation, statuts de commande, retours produits. Recette client. Mise en ligne en production avec surveillance des 7 premiers jours. Formation 2h de votre equipe au back-office. Garantie 30 jours incluse.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. MAINTENANCE PRESTASHOP -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Maintenance <em>Prestashop</em>&nbsp;: securite et performance dans la duree</h2>
+        <p class="sec-h__sub">Une boutique Prestashop necessite une maintenance reguliere pour rester rapide, securisee et conforme. Voici les quatre piliers de notre offre de maintenance mensuelle.</p>
+      </div>
+      <div class="maint-grid">
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">system_update</span></div>
+          <div class="maint__title">Updates Prestashop et modules</div>
+          <p class="maint__desc">Mise a jour mensuelle du coeur Prestashop, des modules et du theme, en environnement de staging avant production. Tests de non-regression systematiques. Patchs de securite appliques sous 48h apres publication officielle.</p>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">backup</span></div>
+          <div class="maint__title">Backup quotidien base et fichiers</div>
+          <p class="maint__desc">Sauvegarde automatisee quotidienne de la base de donnees (commandes, clients, produits) et des fichiers (theme, modules, images). Retention 30 jours. Restauration testee chaque trimestre. Tranquillite garantie en cas d'incident.</p>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">monitoring</span></div>
+          <div class="maint__title">Monitoring uptime et performance</div>
+          <p class="maint__desc">Surveillance uptime 24/7 avec alertes SMS en cas de panne. Suivi Lighthouse mensuel des pages cles (accueil, fiche produit, checkout). Detection des ralentissements et optimisations correctives proactives.</p>
+        </div>
+        <div class="maint">
+          <div class="maint__icon"><span class="material-symbols-outlined">shield_lock</span></div>
+          <div class="maint__title">Securite et anti-fraude</div>
+          <p class="maint__desc">Scan hebdomadaire des vulnerabilites connues. Configuration WAF (Web Application Firewall), protection brute-force sur le back-office, double authentification administrateur, audit annuel de securite par notre equipe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS PRESTASHOP -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Tarifs <em>Prestashop</em>&nbsp;: trois formules claires</h2>
+        <p class="sec-h__sub">Trois packages pour repondre a chaque etape de votre projet e-commerce Prestashop. Tarifs fermes, livrables detailles, code source remis a votre societe.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">storefront</span></div>
+          <div class="prest__title">Boutique simple</div>
+          <p class="prest__lead">Pour les PME marchandes qui lancent leur premiere boutique Prestashop avec un catalogue jusqu'a 200 produits.</p>
+          <ul class="prest__feat">
+            <li>Theme premium personnalise</li>
+            <li>Catalogue jusqu'a 200 produits</li>
+            <li>Paiement Stripe + PayPal</li>
+            <li>Multi-langue (FR + EN)</li>
+            <li>SEO technique de base</li>
+            <li>Formation 2h incluse</li>
+            <li>Garantie 30 jours</li>
+          </ul>
+          <div class="prest__price">A partir de <strong>4 500 EUR HT</strong> &middot; 5 a 6 semaines</div>
+          <a href="/contact?service=prestashop-simple" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">storefront</span></div>
+          <div class="prest__title">Boutique avancee</div>
+          <p class="prest__lead">Pour les marchands etablis qui veulent une boutique Prestashop optimisee pour la conversion et le SEO.</p>
+          <ul class="prest__feat">
+            <li>Theme sur mesure design</li>
+            <li>Catalogue jusqu'a 2 000 produits</li>
+            <li>Paiements multi-PSP + Mobile Money</li>
+            <li>Multi-langue + multi-devise</li>
+            <li>SEO avance + Schema.org</li>
+            <li>Avis verifies + relance panier</li>
+            <li>Formation 4h + documentation</li>
+            <li>Garantie 60 jours</li>
+          </ul>
+          <div class="prest__price">A partir de <strong>8 000 EUR HT</strong> &middot; 7 a 9 semaines</div>
+          <a href="/contact?service=prestashop-avance" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">store</span></div>
+          <div class="prest__title">Marketplace multi-boutique</div>
+          <p class="prest__lead">Pour les marketplaces multi-vendeurs et les enseignes avec plusieurs boutiques sous un seul back-office.</p>
+          <ul class="prest__feat">
+            <li>Multi-vendeurs ou multi-boutiques</li>
+            <li>Catalogue illimite</li>
+            <li>Commissions automatiques</li>
+            <li>Paiements split-payment</li>
+            <li>Espaces vendeurs separes</li>
+            <li>Integration ERP + logistique</li>
+            <li>Formation equipe complete</li>
+            <li>Garantie 90 jours</li>
+          </ul>
+          <div class="prest__price">A partir de <strong>15 000 EUR HT</strong> &middot; 10 a 16 semaines</div>
+          <a href="/contact?service=prestashop-marketplace" class="prest__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHOD COMPACT 4 ETAPES -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Comment <em>nous travaillons</em> &middot; 4 etapes cles</h2>
+        <p class="sec-h__sub">Une methodologie sprint par sprint, demos hebdomadaires, validations a chaque etape. Vous savez en permanence ou en est votre projet.</p>
+      </div>
+      <div class="method-compact">
+        <div class="mc-step">
+          <span class="mc-step__num">1</span>
+          <div class="mc-step__title">Brief et chiffrage</div>
+          <p class="mc-step__desc">Atelier 2h en visio, cahier des charges et devis ferme sous 48h.</p>
+        </div>
+        <div class="mc-step">
+          <span class="mc-step__num">2</span>
+          <div class="mc-step__title">Design Figma</div>
+          <p class="mc-step__desc">Maquettes desktop / tablette / mobile validees avant developpement.</p>
+        </div>
+        <div class="mc-step">
+          <span class="mc-step__num">3</span>
+          <div class="mc-step__title">Sprints hebdomadaires</div>
+          <p class="mc-step__desc">Demos chaque vendredi sur environnement de preview Prestashop.</p>
+        </div>
+        <div class="mc-step">
+          <span class="mc-step__num">4</span>
+          <div class="mc-step__title">Mise en ligne + suivi</div>
+          <p class="mc-step__desc">Recette, formation back-office, surveillance 30 jours, garantie incluse.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Questions <em>frequentes</em> sur Prestashop</h2>
+        <p class="sec-h__sub">Sept questions concretes pour vous aider a comprendre notre approche Prestashop, les delais, les tarifs et la maintenance.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels sont les delais pour une boutique Prestashop&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le delai depend de la complexite du projet&nbsp;: <strong>boutique simple (jusqu'a 200 produits)&nbsp;: 5 a 6 semaines</strong>. <strong>Boutique avancee (jusqu'a 2 000 produits, multi-langue, multi-devise)&nbsp;: 7 a 9 semaines</strong>. <strong>Marketplace multi-vendeurs ou multi-boutique&nbsp;: 10 a 16 semaines</strong>. Le planning detaille sprint par sprint est dans le devis ferme. Nous fonctionnons par sprints d'une semaine avec demos chaque vendredi sur un environnement de preview, ce qui vous permet de voir l'avancement reel et d'integrer les ajustements en continu.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien coutent les modules Prestashop premium&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Les modules Prestashop premium varient entre <strong>30 et 300 EUR par module en achat unique</strong> sur l'Addons Marketplace officiel. Pour une boutique standard, on installe en moyenne 8 a 12 modules premium pour un budget total de <strong>500 a 1 500 EUR</strong>&nbsp;: paiement Stripe (gratuit), PayPal (gratuit), Mobile Money (70 EUR), avis verifies (180 EUR), relance panier (160 EUR), SEO avance (140 EUR), multi-langue (gratuit dans Prestashop). Ces couts sont inclus dans nos devis fermes&mdash;pas de surprise apres signature.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel hebergeur pour une boutique Prestashop&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous recommandons des hebergeurs specialises e-commerce avec PHP 8.1+ et MySQL 8.0&nbsp;: <strong>o2switch</strong> (excellent rapport qualite-prix, 7 EUR/mois, ideal pour les boutiques en croissance), <strong>OVH performance</strong> (40 a 80 EUR/mois pour les catalogues importants), <strong>IONOS Cloud</strong> (offre scalable), ou <strong>PrestaShop Hosting officiel</strong> via Webhost1. Pour les boutiques a fort trafic (plus de 10 000 visites/jour) ou multi-boutique&nbsp;: serveur VPS dedie (Hetzner, Scaleway) avec CDN Cloudflare et cache Varnish. Nous gerons la configuration complete dans le devis.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous migrer une boutique WooCommerce ou Shopify vers Prestashop&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est l'une de nos specialites. Nous procedons en 4 etapes&nbsp;: <strong>extraction</strong> du catalogue produits, des clients, des commandes historiques depuis WooCommerce ou Shopify via API ou export CSV. <strong>Migration</strong> vers Prestashop avec mapping des categories, des attributs, des declinaisons. <strong>Redirection 301</strong> systematique des anciennes URL vers les nouvelles pour preserver le SEO. <strong>Mise en ligne accompagnee</strong> avec surveillance du ranking Google sur 30 jours. Comptez 6 a 10 semaines selon le volume. Le SEO ne se perd pas si la migration est bien orchestree&mdash;nous l'avons realise sur plusieurs boutiques avec preservation totale du trafic organique.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment fonctionne le multi-boutique sous Prestashop&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Prestashop integre nativement la fonctionnalite <strong>multi-boutique</strong>&nbsp;: depuis un seul back-office, vous gerez plusieurs boutiques distinctes (par exemple, une boutique B2C et une boutique B2B, ou une boutique France et une boutique export). Chaque boutique a son propre theme, son catalogue (partage ou separe), ses prix, ses devises, ses langues, ses clients. Les commandes sont consolidees ou separees selon votre choix. C'est ideal pour les enseignes multi-marques, les marchands franchises, ou pour separer un outlet d'une boutique premium. Cette fonctionnalite est incluse dans notre offre Marketplace multi-boutique.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Prestashop est-il conforme RGPD&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, Prestashop integre nativement les obligations RGPD europeennes&nbsp;: <strong>banniere cookies conforme</strong> avec consentement granulaire, <strong>page de politique de confidentialite</strong> generee automatiquement, <strong>droit d'acces et de suppression des donnees client</strong> via une interface dediee dans le back-office, <strong>export des donnees personnelles</strong> au format JSON sur demande, <strong>journal d'audit</strong> des actions sur les donnees sensibles. Nous configurons tous ces elements lors de la mise en ligne et vous fournissons les modeles de mentions legales, CGV et politique cookies adaptes a votre activite. Pour les clients hors UE&nbsp;: configurations RGPD-like pour le Benin, la Cote d'Ivoire et le Senegal selon les reglementations locales.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faites-vous aussi le SEO et les campagnes ads pour une boutique Prestashop&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Pirabel Labs est une agence marketing digital 360&nbsp;: nous proposons en plus de la creation de boutique Prestashop les services <strong>SEO e-commerce</strong> (audit, contenus categories, fiches produits optimisees, netlinking), <strong>Google Ads Shopping</strong> (flux produits, campagnes Performance Max), <strong>Meta Ads</strong> (catalogue dynamique Facebook et Instagram), <strong>email marketing</strong> (relances automatiques, newsletter, segmentation), <strong>community management</strong> et <strong>consulting strategique</strong>. Travailler avec une seule agence sur l'ensemble de votre presence digitale garantit la coherence des messages, de la marque et des donnees collectees, et reduit la facture totale de 30 a 50% versus plusieurs prestataires.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Votre boutique Prestashop&nbsp;: prete pour vendre.</h2>
+          <p>Passons a l'action&nbsp;! Discutez de votre projet Prestashop avec un cofondateur de Pirabel Labs. Audit gratuit de vos besoins, devis ferme sous 48h, code source remis a votre societe. Pour decouvrir l'integralite de notre expertise web, consultez notre page <a href="/creation-site-web" style="color:#fff;text-decoration:underline;">Creation de site web</a>.</p>
+        </div>
+        <a href="/contact?service=prestashop" class="fcta__cta">Demander un devis Prestashop <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. PARENT SERVICE LINK -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir notre <em>creation web</em> complete</h2>
+        <p class="sec-h__sub">Prestashop n'est qu'une partie de notre offre web. Decouvrez l'integralite de notre expertise en creation de site web sur mesure&nbsp;: vitrine, e-commerce, plateformes SaaS, refonte.</p>
+      </div>
+      <div class="parent-link">
+        <div class="parent-link__icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="parent-link__txt">
+          <h3>Creation de site web sur mesure</h3>
+          <p>Sites Next.js, React, WordPress, Webflow et Prestashop pour PME au Benin, en France et en Afrique francophone. Performance Lighthouse 95+, SEO optimise, code source remis, devis ferme sous 48h.</p>
+        </div>
+        <a href="/creation-site-web" class="parent-link__cta">Voir la page <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Devis Prestashop sous <strong>48h</strong> &middot; garantie 30 jours</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=prestashop" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20une%20boutique%20Prestashop" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/agence-prestashop">Prestashop</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  // Zigzag in-view animation
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

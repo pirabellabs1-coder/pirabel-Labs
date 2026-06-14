@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence refonte de site web - Pirabel Labs | Sans perte SEO</title>
+<meta name="description" content="Agence refonte de site web. Audit, redesign, migration 301, preservation ranking Google. Sans perte de trafic SEO. Devis 48h.">
+<meta name="keywords" content="refonte site web, agence refonte site, migration SEO, redirections 301, refonte WordPress, audit site web, refonte responsive, migration site internet, refonte Lighthouse, refonte sans perte SEO, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/refonte-site-web">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence refonte de site web - Pirabel Labs">
+<meta property="og:description" content="Audit + redesign + migration 301. Preservation du ranking Google. Devis ferme sous 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/refonte-site-web">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Signaux grid (6 cards) */
+.signals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .signals-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .signals-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.signal { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; transition: border-color var(--t); display: flex; flex-direction: column; }
+.signal:hover { border-color: var(--accent); }
+.signal__num { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.55rem; }
+.signal__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.signal__icon .material-symbols-outlined { font-size: 1.35rem; }
+.signal__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; line-height: 1.3; margin-bottom: 0.5rem; }
+.signal__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+.signal__metric { margin-top: 1rem; padding-top: 0.85rem; border-top: 1px dashed var(--border); font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--accent); }
+
+/* Zigzag methodologie */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* Migration SEO 4 etapes (timeline horizontale) */
+.migration-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; position: relative; }
+@media (max-width: 880px) { .migration-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .migration-row { grid-template-columns: 1fr; max-width: 28rem; } }
+.mig-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.4rem 1.5rem; position: relative; display: flex; flex-direction: column; transition: border-color var(--t); }
+.mig-step:hover { border-color: var(--accent); }
+.mig-step__num { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; margin-bottom: 1rem; box-shadow: 0 0 0 4px var(--bg-2), 0 0 14px rgba(255,85,0,0.45); }
+.mig-step__icon { width: 2.4rem; height: 2.4rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 0.95rem; }
+.mig-step__icon .material-symbols-outlined { font-size: 1.2rem; }
+.mig-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.mig-step__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+.mig-step__tools { margin-top: 0.95rem; padding-top: 0.85rem; border-top: 1px dashed var(--border); font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Results metrics (4 metrics big) */
+.results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 64rem; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-2); }
+@media (max-width: 880px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .results-grid { grid-template-columns: 1fr; } }
+.result-c { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.result-c:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .result-c:nth-child(2n) { border-right: 0; }
+  .result-c:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .result-c { border-right: 0; border-bottom: 1px solid var(--border); }
+  .result-c:last-child { border-bottom: 0; }
+}
+.result-c__icon { width: 2.5rem; height: 2.5rem; margin: 0 auto 0.85rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.result-c__icon .material-symbols-outlined { font-size: 1.3rem; }
+.result-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: var(--accent); }
+.result-c__l { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+
+/* Tarifs (3 tiers reuse prest) */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodologie compacte 4 etapes */
+.method-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 70rem; margin: 0 auto; }
+@media (max-width: 880px) { .method-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .method-row { grid-template-columns: 1fr; max-width: 24rem; } }
+.method { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.25rem; text-align: left; transition: border-color var(--t); }
+.method:hover { border-color: var(--accent); }
+.method__num { font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.method__title { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; margin-bottom: 0.45rem; line-height: 1.3; }
+.method__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Parent service card (Decouvrir creation web complete) */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+.parent-card::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 12rem; height: 12rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.18; pointer-events: none; }
+@media (max-width: 880px) { .parent-card { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; max-width: 32rem; } }
+.parent-card__icon { width: 4rem; height: 4rem; background: var(--bg); color: var(--accent); border: 2px solid var(--accent); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+@media (max-width: 880px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__icon .material-symbols-outlined { font-size: 2rem; }
+.parent-card__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 0.65rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 2.3vw, 1.55rem); line-height: 1.2; margin-bottom: 0.5rem; }
+.parent-card__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); white-space: nowrap; }
+.parent-card__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Refonte de site web","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Refonte de site web avec audit SEO complet, redesign UX, migration 301 et preservation du ranking Google. Sans perte de trafic SEO.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"3500","highPrice":"12000"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Creation de site web","item":"https://www.pirabellabs.com/creation-site-web"},{"@type":"ListItem","position":3,"name":"Refonte de site web","item":"https://www.pirabellabs.com/refonte-site-web"}]}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-web">Creation de site web</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Refonte de site web</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">refresh</span> Sous-service Creation web</span>
+        <h1>Agence <em>refonte de site web</em>&nbsp;: sans perte de trafic SEO</h1>
+        <p class="s-hero__tagline">Audit + redesign + migration 301 &middot; Preservation ranking Google</p>
+        <p class="s-hero__lead">Pirabel Labs accompagne les PME au Benin, en France et en Afrique francophone dans la refonte complete de leur site web. Notre methode combine un audit SEO approfondi, un redesign UX moderne et une migration technique rigoureuse avec redirections 301 systematiques. Resultat&nbsp;: votre nouveau site sort plus rapide, plus beau, plus efficace, sans jamais perdre le ranking Google que vous avez bati au fil des annees.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=refonte-site-web" class="btn btn--primary btn--lg">Demander mon audit refonte <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20d%27une%20refonte%20de%20site%20web" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">analytics</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">refresh</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">trending_up</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Migration SEO maitrisee</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">speed</span> Lighthouse 95+</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">shield</span> Zero perte SEO</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">schedule</span> 4-8 semaines</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. QUAND VOTRE SITE DOIT ETRE REFONDU - 6 SIGNES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Quand votre site doit&nbsp;etre&nbsp;<em>refondu</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Refondre un site n'est jamais une decision a prendre a la legere. Voici six signaux concrets qui indiquent que votre site actuel freine votre croissance et qu'une refonte devient rentable.</p>
+      </div>
+      <div class="signals-grid">
+        <div class="signal">
+          <div class="signal__num">01 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">speed</span></div>
+          <div class="signal__title">Score Lighthouse en-dessous de 60</div>
+          <p class="signal__desc">Votre site met plus de 3 secondes a charger sur mobile, les Core Web Vitals sont dans le rouge, Google declasse vos pages dans les resultats de recherche. La performance technique est devenue un critere de ranking depuis 2021.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">arrow_drop_down</span> -7 a 12% conversions / 1s latence</div>
+        </div>
+        <div class="signal">
+          <div class="signal__num">02 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">exit_to_app</span></div>
+          <div class="signal__title">Taux de rebond superieur a 70%</div>
+          <p class="signal__desc">Vos visiteurs quittent votre site sans interagir avec une seconde page. C'est souvent le signe d'un design depasse, d'un message confus, d'une navigation peu intuitive ou d'un temps de chargement excessif sur smartphone.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">arrow_drop_down</span> -40% rebond apres refonte</div>
+        </div>
+        <div class="signal">
+          <div class="signal__num">03 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">history</span></div>
+          <div class="signal__title">Design vieux de plus de 5 ans</div>
+          <p class="signal__desc">Votre identite visuelle a evolue mais votre site est reste fige en 2019. Les codes graphiques web changent vite (typographie, espacements, micro-interactions, dark mode) et un site qui parait date diminue immediatement la credibilite de votre marque.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">priority_high</span> Credibilite marque en chute</div>
+        </div>
+        <div class="signal">
+          <div class="signal__num">04 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">bug_report</span></div>
+          <div class="signal__title">Plugins en conflit et bugs recurrents</div>
+          <p class="signal__desc">Vous accumulez les plugins WordPress (souvent 20 ou plus), certains ne sont plus mis a jour, des conflits font tomber le site reguliere&shy;ment. Chaque mise a jour devient un casse-tete et chaque ajout de fonctionnalite genere de nouveaux bugs imprevisibles.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">warning</span> Maintenance qui derape</div>
+        </div>
+        <div class="signal">
+          <div class="signal__num">05 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">phone_iphone</span></div>
+          <div class="signal__title">Experience mobile mal pensee</div>
+          <p class="signal__desc">Plus de 60% du trafic web vient aujourd'hui du mobile, mais votre site a ete pense desktop d'abord. Boutons trop petits, formulaires illisibles, textes minuscules, images mal optimisees. Google a bascule en mobile-first&nbsp;: votre site est juge sur la version mobile.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">smartphone</span> 60%+ trafic mobile</div>
+        </div>
+        <div class="signal">
+          <div class="signal__num">06 / 06</div>
+          <div class="signal__icon"><span class="material-symbols-outlined">trending_down</span></div>
+          <div class="signal__title">Conversions faibles malgre le trafic</div>
+          <p class="signal__desc">Vous avez du trafic, parfois meme du bon trafic organique, mais les leads et les ventes ne suivent pas. Le tunnel de conversion est mal calibre, les call-to-action sont peu visibles, les pages produits ou contact ne donnent pas envie d'agir.</p>
+          <div class="signal__metric"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">arrow_drop_up</span> +147% leads apres refonte</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PROCESSUS DE REFONTE EN 6 ETAPES (Zigzag timeline) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>processus de refonte</em> en 6 etapes</h2>
+        <p class="sec-h__sub">Refondre un site ne se limite pas a refaire un design. C'est un projet technique et strategique qui exige une methode rigoureuse. Voici comment nous procedons, etape par etape, du diagnostic initial a la mise en ligne surveillee.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Diagnostic</span>
+            <h3 class="zz-step__title">Audit SEO complet et audit UX</h3>
+            <p class="zz-step__desc">Nous analysons en profondeur votre site existant&nbsp;: ranking actuel sur Google, top 50 mots-cles qui rapportent du trafic, pages les plus performantes, backlinks acquis, vitesse de chargement, taux de rebond par page, parcours utilisateur. Cet audit conditionne toute la suite&nbsp;: rien ne peut etre touche sans avoir cartographie l'existant.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 5 a 7 jours ouvres</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Strategie</span>
+            <h3 class="zz-step__title">Strategie de migration et arborescence</h3>
+            <p class="zz-step__desc">Nous concevons la nouvelle arborescence en preservant les URLs qui rapportent du trafic, en regroupant les pages faibles vers des cocons plus puissants, en planifiant chaque redirection 301. Document strategique livre, valide avec vous avant tout travail de design ou de developpement.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 3 a 5 jours ouvres</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Conception</span>
+            <h3 class="zz-step__title">Wireframes et arborescence detaillee</h3>
+            <p class="zz-step__desc">Avant le design final, nous produisons les wireframes en basse fidelite&nbsp;: structure des pages, hierarchie des informations, emplacement des CTA, parcours utilisateur. C'est l'etape ou on valide la logique de chaque page sans se laisser distraire par les couleurs ou les images.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 5 a 7 jours ouvres</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Design</span>
+            <h3 class="zz-step__title">Maquettes Figma haute fidelite</h3>
+            <p class="zz-step__desc">Design system complet, maquettes desktop, tablette et mobile pour chaque page, micro-interactions et animations specifiees. Vous validez chaque ecran avant le developpement, ce qui evite les retours couteux en fin de projet. Tous les fichiers Figma vous sont remis.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 7 a 14 jours ouvres</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">5</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Developpement</span>
+            <h3 class="zz-step__title">Developpement et tests qualite</h3>
+            <p class="zz-step__desc">Construction du site sur la techno choisie (Next.js, WordPress, Webflow), implementation du SEO technique, tests cross-browser et cross-device, validation Lighthouse 95+ sur chaque page, integration des outils analytics, repetitions de scenario utilisateur sur environnement de preview accessible 24/7.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 10 a 20 jours ouvres</div>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">6</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Mise en ligne</span>
+            <h3 class="zz-step__title">Mise en ligne et monitoring 30 jours</h3>
+            <p class="zz-step__desc">Bascule programmee de nuit pour minimiser l'impact, deploiement des 301, soumission du nouveau sitemap a Google Search Console, surveillance quotidienne du ranking et du trafic pendant 30 jours, correction immediate de toute anomalie detectee. Vous etes accompagne dans cette phase critique.</p>
+            <div class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 30 jours de monitoring</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MIGRATION SEO ET REDIRECTIONS 301 -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Migration <em>SEO</em> et redirections 301</h2>
+        <p class="sec-h__sub">La preservation du trafic organique est la partie la plus critique d'une refonte. Une migration mal faite peut faire chuter votre trafic Google de 50% ou plus. Voici notre protocole en 4 etapes pour zero perte SEO.</p>
+      </div>
+      <div class="migration-row">
+        <div class="mig-step">
+          <div class="mig-step__num">1</div>
+          <div class="mig-step__icon"><span class="material-symbols-outlined">list_alt</span></div>
+          <h3 class="mig-step__title">Inventaire complet des URLs</h3>
+          <p class="mig-step__desc">Crawl exhaustif du site avec Screaming Frog, export du sitemap, identification des pages indexees (Google Search Console), des pages qui generent du trafic (GA4), des pages avec backlinks (Ahrefs ou SEMrush). Aucune URL ne doit etre oubliee dans ce releve.</p>
+          <div class="mig-step__tools">Screaming Frog &middot; GSC &middot; GA4 &middot; Ahrefs</div>
+        </div>
+        <div class="mig-step">
+          <div class="mig-step__num">2</div>
+          <div class="mig-step__icon"><span class="material-symbols-outlined">swap_horiz</span></div>
+          <h3 class="mig-step__title">Mapping ancien vers nouveau</h3>
+          <p class="mig-step__desc">Tableau exhaustif des correspondances&nbsp;: chaque ancienne URL pointe vers une nouvelle URL precise. Les pages supprimees sont rediri&shy;gees vers la page la plus proche thematiquement. Validation systematique pour eviter les redirections en chaine ou vers des 404.</p>
+          <div class="mig-step__tools">Google Sheets &middot; Validation manuelle</div>
+        </div>
+        <div class="mig-step">
+          <div class="mig-step__num">3</div>
+          <div class="mig-step__icon"><span class="material-symbols-outlined">settings_ethernet</span></div>
+          <h3 class="mig-step__title">Configuration des 301 cote serveur</h3>
+          <p class="mig-step__desc">Mise en place technique des redirections HTTP 301 (et non 302) sur le serveur ou via le middleware applicatif. Test de chaque redirection avant la bascule. Verification de la conservation des parametres UTM et des ancres pour ne pas casser les campagnes en cours.</p>
+          <div class="mig-step__tools">Nginx &middot; Next.js &middot; Webflow &middot; .htaccess</div>
+        </div>
+        <div class="mig-step">
+          <div class="mig-step__num">4</div>
+          <div class="mig-step__icon"><span class="material-symbols-outlined">cloud_upload</span></div>
+          <h3 class="mig-step__title">Soumission Search Console</h3>
+          <p class="mig-step__desc">Soumission immediate du nouveau sitemap a Google Search Console, demande d'exploration prioritaire, surveillance quotidienne du rapport de couverture et des erreurs 4xx ou 5xx. Reaction sous 24h en cas d'anomalie pendant les 30 premiers jours.</p>
+          <div class="mig-step__tools">Search Console &middot; Bing Webmaster</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. RESULTATS MOYENS APRES REFONTE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Resultats <em>moyens</em> apres refonte</h2>
+        <p class="sec-h__sub">Les chiffres ci-dessous sont des moyennes constatees sur nos projets de refonte realises depuis 2020. Bien entendu, chaque cas est unique&nbsp;: ces ordres de grandeur vous donnent une base de comparaison realiste, pas une promesse contractuelle.</p>
+      </div>
+      <div class="results-grid">
+        <div class="result-c">
+          <div class="result-c__icon"><span class="material-symbols-outlined">speed</span></div>
+          <div class="result-c__v">+200%</div>
+          <div class="result-c__l">Score Lighthouse mobile<br>typiquement de 45 a 95+</div>
+        </div>
+        <div class="result-c">
+          <div class="result-c__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <div class="result-c__v">+147%</div>
+          <div class="result-c__l">Leads generes via formulaire<br>sur 90 jours apres bascule</div>
+        </div>
+        <div class="result-c">
+          <div class="result-c__icon"><span class="material-symbols-outlined">arrow_downward</span></div>
+          <div class="result-c__v">-40%</div>
+          <div class="result-c__l">Taux de rebond moyen<br>grace au nouveau parcours UX</div>
+        </div>
+        <div class="result-c">
+          <div class="result-c__icon"><span class="material-symbols-outlined">search</span></div>
+          <div class="result-c__v">x2.3</div>
+          <div class="result-c__l">Trafic SEO organique<br>sur 12 mois apres refonte</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS REFONTE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>tarifs</em> de refonte de site web</h2>
+        <p class="sec-h__sub">Trois formules selon l'ampleur des changements souhaites. Devis ferme remis sous 48h apres un appel decouverte de 30 minutes. Tarifs HT, paiement echelonne 30 / 30 / 40 possible.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">brush</span></div>
+          <div class="prest__title">Refonte legere</div>
+          <p class="prest__lead">Vous gardez votre techno actuelle (WordPress, Webflow) et vous voulez moderniser le design et booster les performances.</p>
+          <ul class="prest__feat">
+            <li>Audit SEO et UX du site existant</li>
+            <li>Nouveau design Figma sur 5 a 10 pages</li>
+            <li>Integration sur theme ou template existant</li>
+            <li>Optimisation Lighthouse 90+</li>
+            <li>Mise en ligne accompagnee</li>
+            <li>Garantie 30 jours</li>
+            <li>Livre en 4 a 6 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 3 500 EUR HT</strong></div>
+          <a href="/contact?service=refonte-legere" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">refresh</span></div>
+          <div class="prest__title">Refonte standard</div>
+          <p class="prest__lead">Refonte complete du design et changement de techno (vers Next.js ou Webflow), migration SEO incluse avec preservation du ranking.</p>
+          <ul class="prest__feat">
+            <li>Tout du pack Refonte legere inclus</li>
+            <li>Migration vers techno moderne</li>
+            <li>Nouvelle arborescence optimisee SEO</li>
+            <li>Mapping 301 complet et validation</li>
+            <li>10 a 25 pages redesignees</li>
+            <li>Monitoring SEO 60 jours</li>
+            <li>Livre en 6 a 8 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 6 500 EUR HT</strong></div>
+          <a href="/contact?service=refonte-standard" class="prest__cta">Demander un devis</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">construction</span></div>
+          <div class="prest__title">Refonte complete</div>
+          <p class="prest__lead">Refonte profonde&nbsp;: nouvelle marque, nouvelle architecture, e-commerce ou plateforme, multi-langue, integrations metier complexes.</p>
+          <ul class="prest__feat">
+            <li>Tout du pack Refonte standard inclus</li>
+            <li>Reflexion strategique de la marque</li>
+            <li>Refonte e-commerce ou plateforme</li>
+            <li>Multi-langue ou multi-devise</li>
+            <li>Integrations CRM, ERP, ESP</li>
+            <li>Monitoring SEO 90 jours</li>
+            <li>25 pages et plus &middot; 8 a 14 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 12 000 EUR HT</strong></div>
+          <a href="/contact?service=refonte-complete" class="prest__cta">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACT (4 etapes) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> en 4 grands phases</h2>
+        <p class="sec-h__sub">Vue synthetique du deroulement d'un projet de refonte avec Pirabel Labs. Chaque phase est validee par un livrable concret et un point de validation avec vous.</p>
+      </div>
+      <div class="method-row">
+        <div class="method">
+          <div class="method__num">PHASE 01</div>
+          <h3 class="method__title">Diagnostic et strategie</h3>
+          <p class="method__desc">Audit SEO et UX du site actuel, definition de la strategie de migration, validation de l'arborescence cible avec mapping 301.</p>
+        </div>
+        <div class="method">
+          <div class="method__num">PHASE 02</div>
+          <h3 class="method__title">Design et validation</h3>
+          <p class="method__desc">Wireframes basse fidelite puis maquettes Figma haute fidelite desktop / mobile, validees par vous ecran par ecran.</p>
+        </div>
+        <div class="method">
+          <div class="method__num">PHASE 03</div>
+          <h3 class="method__title">Developpement et tests</h3>
+          <p class="method__desc">Construction du site sur environnement de preview accessible 24/7, tests Lighthouse, cross-browser, recette utilisateur.</p>
+        </div>
+        <div class="method">
+          <div class="method__num">PHASE 04</div>
+          <h3 class="method__title">Mise en ligne et suivi</h3>
+          <p class="method__desc">Bascule de nuit, deploiement des 301, soumission Search Console, monitoring quotidien du ranking pendant 30 jours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur la <em>refonte de site web</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend une refonte de site web&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Les delais varient selon l'ampleur de la refonte&nbsp;: <strong>refonte legere&nbsp;: 4 a 6 semaines</strong> (audit + redesign sur theme existant), <strong>refonte standard&nbsp;: 6 a 8 semaines</strong> (migration techno + nouvelle arborescence + 301), <strong>refonte complete&nbsp;: 8 a 14 semaines</strong> (nouvelle marque + e-commerce + multi-langue). Nous travaillons par sprints d'une semaine avec demos chaque vendredi sur environnement de preview, ce qui vous permet de suivre l'avancement et d'integrer vos retours en continu sans bloquer le projet.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Est-ce que je vais perdre mon trafic SEO pendant la refonte&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Avec notre methode, la perte de trafic SEO est negligeable (souvent moins de 5% sur 7 jours, totalement recupere a J+30). La cle est dans <strong>la qualite du mapping 301</strong>&nbsp;: chaque ancienne URL pointe vers une nouvelle URL precise. Nous inventorions systematiquement toutes les pages indexees via Search Console et Ahrefs, validons le mapping page par page, puis surveillons quotidiennement le ranking pendant 30 jours apres la bascule. Sur nos derniers projets, le trafic organique a augmente de 30 a 230% sur les 12 mois suivant la refonte.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faut-il refaire tout le contenu editorial du site&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Pas necessairement. Apres l'audit, nous identifions <strong>les pages qui rapportent</strong> (trafic, conversions, backlinks)&nbsp;: celles-la sont preservees au maximum, le contenu peut etre rafraichi mais pas reecrit. Les pages faibles sont regroupees ou supprimees. Si vous souhaitez une refonte editoriale plus profonde, nous proposons une prestation complementaire de redaction SEO. Mais ce n'est pas un prerequis&nbsp;: une refonte peut tres bien preserver 80% du contenu existant tout en transformant totalement le design et la performance technique.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Dois-je changer d'hebergeur lors de la refonte&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Cela depend de votre techno cible. Pour une <strong>refonte vers Next.js ou React</strong>, nous recommandons Vercel ou Netlify (deployment automatique, CDN global, HTTPS inclus). Pour une <strong>refonte WordPress moderne</strong>, des hebergeurs specialises comme WP Engine, Kinsta ou O2switch sont plus performants. Pour <strong>Webflow</strong>, l'hebergement est inclus dans la plateforme. Nous vous conseillons selon votre projet, gerons la migration DNS et configurons tout sur votre compte. Vous restez proprietaire de l'hebergement&nbsp;: aucune dependance vis-a-vis de notre agence.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelles garanties offrez-vous apres la mise en ligne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Garantie 30 jours incluse</strong>&nbsp;: tout bug imputable a notre travail est corrige gratuitement (crash, erreur formulaire, regression Lighthouse, 301 cassee). <strong>Garantie SEO 60 jours</strong>&nbsp;: si le trafic organique chute de plus de 15% sur 30 jours du fait de la migration, nous intervenons gratuitement pour corriger. <strong>Monitoring 30 jours offert</strong>&nbsp;: surveillance quotidienne du ranking via Search Console et Ahrefs, alerte immediate en cas d'anomalie. Au-dela, option de forfait maintenance mensuel (300-800 EUR/mois) pour les sites a fort trafic ou les e-commerce.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Le site sera-t-il evolutif apres la livraison&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est un principe fondamental de notre approche. Nous concevons les nouveaux sites avec un <strong>design system reutilisable</strong> en Figma (composants, couleurs, typographies) et un <strong>code source documente et modulaire</strong>. Ajouter une nouvelle page, modifier un module, integrer une nouvelle fonctionnalite&nbsp;: tout est pense pour etre fait par vous ou par n'importe quel developpeur. Le code est remis sur votre Git, l'hebergement sur votre compte, les acces administrateur vous sont transferes. Aucune dependance technique vis-a-vis de Pirabel Labs apres la livraison.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe concrete&shy;ment la migration le jour J&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La bascule est planifiee la nuit (souvent entre 23h et 3h du matin local) pour minimiser l'impact sur le trafic en cours. Sequence&nbsp;: <strong>1)</strong> sauvegarde complete de l'ancien site et de la base de donnees, <strong>2)</strong> modification des enregistrements DNS, <strong>3)</strong> deploiement des 301 sur le nouveau serveur, <strong>4)</strong> test exhaustif des principales URLs (page d'accueil, top 10 trafic, formulaires, e-commerce checkout, pages legales), <strong>5)</strong> soumission du nouveau sitemap a Search Console, <strong>6)</strong> activation du monitoring. Le tout en moins de 4 heures, avec un point quotidien sur les 7 premiers jours pour reagir vite a toute anomalie.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL avec lien creation-site-web -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Une refonte reussie commence par un audit serieux. Discutons de votre site.</h2>
+          <p>Vous hesitez sur l'ampleur de la refonte&nbsp;? Vous voulez verifier la faisabilite SEO de votre projet&nbsp;? Reservez un appel decouverte de 30 minutes avec un cofondateur. Audit rapide de votre site actuel et recommandations concretes sous 48h. Sans engagement.</p>
+        </div>
+        <a href="/contact?service=refonte-site-web" class="fcta__cta">Demander mon audit refonte <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DECOUVRIR CREATION WEB COMPLETE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir le service <em>creation de site web</em> complet</h2>
+        <p class="sec-h__sub">La refonte n'est qu'un volet de notre expertise. Decouvrez l'ensemble de notre offre creation de site web sur mesure pour PME francophones.</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">code</span></div>
+        <div>
+          <div class="parent-card__eyebrow"><span class="material-symbols-outlined" style="font-size:0.9rem;">arrow_back</span> Service parent</div>
+          <h3 class="parent-card__title">Creation de site web sur mesure</h3>
+          <p class="parent-card__desc">Sites vitrine, e-commerce, plateformes SaaS, multi-langue. Next.js, React, Webflow, WordPress. Performance Lighthouse 95+, SEO inclus, devis 48h, code source remis.</p>
+        </div>
+        <a href="/creation-site-web" class="parent-card__cta">Voir le service complet <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Audit refonte sous <strong>48h</strong> &middot; sans perte SEO</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=refonte-site-web" class="sticky-cta__cta">Demander mon audit <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20d%27une%20refonte%20de%20site%20web" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  // Zigzag in-view animations
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

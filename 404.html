@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable - Pirabel Labs</title>
+<meta name="description" content="La page que vous recherchez n'existe pas ou a ete deplacee. Decouvrez nos services marketing digital sur Pirabel Labs.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.pirabellabs.com/404">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.err-wrap { min-height: calc(100vh - 6rem); display: flex; align-items: center; justify-content: center; padding: 4rem var(--px-page); position: relative; overflow: hidden; }
+.err-wrap::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,85,0,0.15) 0%, transparent 60%); pointer-events: none; }
+.err { max-width: 50rem; text-align: center; position: relative; z-index: 1; }
+.err__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(6rem, 18vw, 14rem); line-height: 1; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
+.err__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.err__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.err h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1rem; }
+.err h1 em { color: var(--accent); font-style: normal; }
+.err p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 2rem; max-width: 36rem; margin-left: auto; margin-right: auto; }
+.err__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 3rem; }
+.err__suggestions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 50rem; margin: 0 auto; }
+@media (max-width: 720px) { .err__suggestions { grid-template-columns: 1fr; max-width: 22rem; } }
+.err__suggestion { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.1rem; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.err__suggestion:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.err__suggestion-icon { width: 2.25rem; height: 2.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; }
+.err__suggestion-icon .material-symbols-outlined { font-size: 1.2rem; }
+.err__suggestion-title { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.err__suggestion-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="err-wrap">
+  <div class="err">
+    <span class="err__eyebrow"><span class="material-symbols-outlined">explore_off</span> Erreur 404</span>
+    <div class="err__num">404</div>
+    <h1>Cette page n'existe pas (ou n'existe <em>plus</em>).</h1>
+    <p>Le lien que vous avez suivi est peut-etre obsolete, ou l'adresse a ete mal saisie. Pas de souci&nbsp;: voici quelques pistes pour retrouver votre chemin.</p>
+    <div class="err__cta">
+      <a href="/" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">home</span> Retour a l'accueil</a>
+      <a href="/contact" class="btn btn--ghost btn--lg">Nous contacter</a>
+    </div>
+    <div class="err__suggestions">
+      <a href="/creation-site-web" class="err__suggestion">
+        <div class="err__suggestion-icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="err__suggestion-title">Creation de site web</div>
+        <div class="err__suggestion-desc">Sites sur mesure, WordPress, Webflow, SaaS</div>
+      </a>
+      <a href="/seo" class="err__suggestion">
+        <div class="err__suggestion-icon"><span class="material-symbols-outlined">search_insights</span></div>
+        <div class="err__suggestion-title">SEO et referencement</div>
+        <div class="err__suggestion-desc">Trafic organique qualifie qui convertit</div>
+      </a>
+      <a href="/automatisation-marketing" class="err__suggestion">
+        <div class="err__suggestion-icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="err__suggestion-title">Automatisation marketing</div>
+        <div class="err__suggestion-desc">Make, n8n, Zapier, agents IA</div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintenance WordPress - Pirabel Labs | Updates + securite</title>
+<meta name="description" content="Maintenance WordPress preventive&nbsp;: updates plugins, backups, securite, monitoring, support 4h. Forfaits mensuels. Devis 48h.">
+<meta name="keywords" content="maintenance wordpress, infogerance wordpress, updates wordpress, monitoring wordpress, securite wordpress, sauvegarde wordpress, support wordpress, contrat maintenance wordpress, agence maintenance wordpress, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/maintenance-wordpress">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maintenance WordPress - Pirabel Labs">
+<meta property="og:description" content="Maintenance WordPress preventive avec updates plugins, backups, securite, monitoring et support 4h. Forfaits mensuels.">
+<meta property="og:url" content="https://www.pirabellabs.com/maintenance-wordpress">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Reasons cards */
+.reasons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 76rem; margin: 0 auto; }
+@media (max-width: 1024px) { .reasons-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .reasons-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.reason { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.reason:hover { border-color: var(--accent); }
+.reason__num { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.reason__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.reason__icon .material-symbols-outlined { font-size: 1.5rem; }
+.reason__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.reason__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Checklist grid (8 items 2 cols) */
+.checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .checklist-grid { grid-template-columns: 1fr; max-width: 32rem; } }
+.checkitem { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.4rem; display: flex; gap: 1rem; align-items: flex-start; transition: border-color var(--t); }
+.checkitem:hover { border-color: var(--accent); }
+.checkitem__num { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; flex-shrink: 0; min-width: 2.2rem; }
+.checkitem__body { flex: 1; min-width: 0; }
+.checkitem__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; line-height: 1.3; display: flex; align-items: center; gap: 0.4rem; }
+.checkitem__title .material-symbols-outlined { font-size: 1.1rem; color: var(--accent); }
+.checkitem__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Forfaits (pricing cards) */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.3rem; }
+.prest__price-suffix { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-left: 0.2rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* SLA elements grid (4 cards horizontal) */
+.sla-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 1024px) { .sla-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .sla-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.sla-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.5rem; text-align: center; transition: all var(--t); }
+.sla-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.sla-card__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; }
+.sla-card__icon .material-symbols-outlined { font-size: 1.65rem; }
+.sla-card__metric { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 2.8vw, 2.1rem); color: var(--accent); line-height: 1; margin-bottom: 0.45rem; }
+.sla-card__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+.sla-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Methodology compact (4 steps horizontal) */
+.method-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; position: relative; }
+@media (max-width: 880px) { .method-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .method-grid { grid-template-columns: 1fr; max-width: 26rem; } }
+.method-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; position: relative; transition: border-color var(--t); }
+.method-step:hover { border-color: var(--accent); }
+.method-step__num { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 0.9rem; margin-bottom: 0.95rem; }
+.method-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+.method-step__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Parent service card (back to WordPress page) */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.08), var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 5rem 1fr auto; gap: 2rem; align-items: center; }
+@media (max-width: 720px) { .parent-card { grid-template-columns: 1fr; text-align: center; gap: 1.25rem; } }
+.parent-card__icon { width: 5rem; height: 5rem; background: var(--accent); color: #fff; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; }
+@media (max-width: 720px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__icon .material-symbols-outlined { font-size: 2.5rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 2vw, 1.4rem); margin-bottom: 0.45rem; }
+.parent-card__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: background var(--t); white-space: nowrap; }
+.parent-card__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Maintenance WordPress","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Maintenance WordPress preventive avec updates plugins, backups quotidiens, securite, monitoring, support 4h. Forfaits mensuels.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"150","highPrice":"700"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-wordpress">Sites WordPress</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Maintenance WordPress</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">build</span> Maintenance WordPress</span>
+        <h1><em>Maintenance WordPress</em>&nbsp;: updates, securite, monitoring.</h1>
+        <p class="s-hero__tagline">Un WordPress maintenu chaque mois&nbsp;: zero faille, zero downtime, zero stress.</p>
+        <p class="s-hero__lead">Pirabel Labs gere la maintenance preventive et corrective de votre site WordPress&nbsp;: mises a jour du core et des plugins, sauvegardes automatiques, scan de malwares, monitoring uptime, suivi des performances Lighthouse, corrections rapides. Trois forfaits mensuels adaptes a votre trafic et a vos enjeux. Support reactif sous 4 heures en jours ouvres, interventions urgentes sous 1 heure. Devis ferme sous 48h apres audit gratuit de votre site.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=maintenance-wordpress" class="btn btn--primary btn--lg">Demander mon devis maintenance <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20un%20forfait%20maintenance%20WordPress" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shield_lock</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">build</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">monitoring</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Maintenance proactive</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">timer</span> Support 4h</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">backup</span> Backups quotidiens</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">verified_user</span> Zero downtime</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. POURQUOI MAINTENIR WORDPRESS (4 raisons) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi votre WordPress <em>doit etre maintenu</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Un site WordPress non maintenu est un site qui meurt lentement. Voici les quatre risques majeurs qu'une maintenance reguliere previent.</p>
+      </div>
+      <div class="reasons-grid">
+        <div class="reason">
+          <div class="reason__num">01 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">bug_report</span></div>
+          <div class="reason__title">Failles plugins critiques</div>
+          <p class="reason__desc">Plus de 90&nbsp;% des piratages WordPress proviennent de plugins ou themes obsoletes. Chaque mois, des dizaines de vulnerabilites critiques sont divulguees (CVE) sur les plugins populaires comme WooCommerce, Elementor, Yoast SEO ou Contact Form 7. Sans patch applique rapidement, votre site devient une cible facile pour les attaquants automatises.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">02 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <div class="reason__title">Bot scanning permanent</div>
+          <p class="reason__desc">Votre site WordPress est scanne en moyenne <strong>50 a 200 fois par jour</strong> par des bots automatises qui cherchent des failles connues, des formulaires de login mal proteges, des fichiers de configuration exposes. Sans WAF, sans fail2ban, sans rate limiting et sans monitoring des tentatives, vous etes aveugle face a ces tentatives d'intrusion permanentes.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">03 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <div class="reason__title">Impact SEO direct</div>
+          <p class="reason__desc">Google penalise severement les sites lents, les sites avec erreurs 404 non corrigees, les sites infectes par du contenu malveillant injecte. Une seule alerte Safe Browsing peut faire chuter votre trafic organique de <strong>60 a 90&nbsp;% en quelques jours</strong>. La maintenance preventive protege votre referencement durement acquis.</p>
+        </div>
+        <div class="reason">
+          <div class="reason__num">04 / 04</div>
+          <div class="reason__icon"><span class="material-symbols-outlined">speed</span></div>
+          <div class="reason__title">Degradation des performances</div>
+          <p class="reason__desc">Sans optimisation reguliere, la base de donnees WordPress accumule transients, revisions, commentaires spam et tables orphelines, ce qui ralentit progressivement le site. Les nouvelles versions de plugins consomment plus de ressources. Sans audit Lighthouse mensuel, le score chute de 95 a 60 en moins d'un an sans qu'on s'en apercoive.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CHECK-LIST MAINTENANCE MENSUELLE (8 items) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre check-list <em>maintenance mensuelle</em></h2>
+        <p class="sec-h__sub">Chaque mois, nous executons un protocole precis et documente. Vous recevez un rapport detaille avec captures d'ecran, scores et recommandations.</p>
+      </div>
+      <div class="checklist-grid">
+        <div class="checkitem">
+          <div class="checkitem__num">01</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">system_update</span> Mises a jour du core</div>
+            <p class="checkitem__desc">Mise a jour de WordPress vers la derniere version stable, avec test prealable sur environnement de staging. Verification de la compatibilite avec le theme et les plugins critiques avant deploiement en production.</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">02</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">extension</span> Mises a jour des plugins</div>
+            <p class="checkitem__desc">Mise a jour selective de tous les plugins actifs avec verification des changelogs et tests post-update. Identification des plugins abandonnes, suggestion d'alternatives maintenues. Suppression des plugins inactifs.</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">03</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">backup</span> Sauvegardes verifiees</div>
+            <p class="checkitem__desc">Backups quotidiens automatises (fichiers + base de donnees) stockes hors site sur S3 ou Google Cloud Storage. Test mensuel de restauration sur staging pour garantir l'integrite. Retention 30 jours minimum.</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">04</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">security</span> Scan malware + vulnerabilites</div>
+            <p class="checkitem__desc">Scan complet avec Wordfence ou Sucuri pour detecter malwares, backdoors, fichiers suspects. Audit des vulnerabilites connues (CVE) sur le core, les plugins et le theme actif. Quarantaine et nettoyage si necessaire.</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">05</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">speed</span> Audit Lighthouse complet</div>
+            <p class="checkitem__desc">Test Lighthouse mobile et desktop sur les 5 pages cles. Verification des Core Web Vitals (LCP, INP, CLS). Identification des regressions de performance et actions correctives (optimisation images, cache, JS critique).</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">06</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">link_off</span> Erreurs 404 + liens casses</div>
+            <p class="checkitem__desc">Audit complet des erreurs 404 via Search Console et crawl maison. Mise en place de redirections 301 pour les URL importantes. Detection et correction des liens internes casses qui penalisent l'experience et le SEO.</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">07</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">description</span> Analyse des logs serveur</div>
+            <p class="checkitem__desc">Lecture des logs PHP, MySQL et nginx pour detecter les erreurs recurrentes, les requetes lentes, les tentatives d'intrusion. Optimisation de la base de donnees (nettoyage des revisions, transients, autoloaded options trop lourds).</p>
+          </div>
+        </div>
+        <div class="checkitem">
+          <div class="checkitem__num">08</div>
+          <div class="checkitem__body">
+            <div class="checkitem__title"><span class="material-symbols-outlined">summarize</span> Rapport mensuel detaille</div>
+            <p class="checkitem__desc">Rapport PDF envoye le 1er de chaque mois avec captures Lighthouse, scores avant/apres, liste des updates appliques, alertes securite traitees, temps de support consomme et recommandations pour le mois suivant.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FORFAITS MAINTENANCE (3 tiers) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>forfaits maintenance</em> WordPress</h2>
+        <p class="sec-h__sub">Trois niveaux d'engagement pour s'adapter a votre trafic, votre criticite business et votre budget. Engagement minimum 3 mois, resiliation libre ensuite.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">shield</span></div>
+          <div class="prest__title">Basic</div>
+          <p class="prest__lead">Pour sites vitrine petits et moyens, trafic limite, criticite business moderee.</p>
+          <ul class="prest__feat">
+            <li>Updates core + plugins mensuels</li>
+            <li>Backups quotidiens (retention 30 jours)</li>
+            <li>Scan securite mensuel</li>
+            <li>Rapport mensuel par email</li>
+            <li>Support email sous 24h ouvres</li>
+            <li>1h d'interventions incluses</li>
+          </ul>
+          <div class="prest__price"><strong>150 EUR</strong><span class="prest__price-suffix">HT / mois</span></div>
+          <a href="/contact?service=maintenance-basic" class="prest__cta">Choisir Basic</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">verified_user</span></div>
+          <div class="prest__title">Pro</div>
+          <p class="prest__lead">Pour sites a fort trafic, e-commerce WooCommerce, sites lead-gen avec criticite business reelle.</p>
+          <ul class="prest__feat">
+            <li>Tout du forfait Basic inclus</li>
+            <li>Backups toutes les 6 heures</li>
+            <li>Monitoring uptime 24/7 + alertes</li>
+            <li>Audit Lighthouse mensuel complet</li>
+            <li>Support WhatsApp sous 4h ouvres</li>
+            <li>Staging dedie pour les updates</li>
+            <li>4h d'interventions incluses</li>
+          </ul>
+          <div class="prest__price"><strong>350 EUR</strong><span class="prest__price-suffix">HT / mois</span></div>
+          <a href="/contact?service=maintenance-pro" class="prest__cta">Choisir Pro</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+          <div class="prest__title">Premium</div>
+          <p class="prest__lead">Pour sites critiques business (e-commerce gros volume, plateformes SaaS), garantie de service maximale.</p>
+          <ul class="prest__feat">
+            <li>Tout du forfait Pro inclus</li>
+            <li>Backups toutes les heures</li>
+            <li>Intervention urgences sous 1h</li>
+            <li>Garantie zero downtime 99,9&nbsp;%</li>
+            <li>Suivi SEO + Search Console</li>
+            <li>Reunion mensuelle 1h visio</li>
+            <li>10h d'interventions incluses</li>
+          </ul>
+          <div class="prest__price"><strong>700 EUR</strong><span class="prest__price-suffix">HT / mois</span></div>
+          <a href="/contact?service=maintenance-premium" class="prest__cta">Choisir Premium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SLA ET REACTIVITE (4 elements) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>engagements SLA</em> et reactivite</h2>
+        <p class="sec-h__sub">Quand votre site WordPress tombe, chaque heure compte. Voici les garanties chiffrees que nous prenons par ecrit dans chaque contrat de maintenance.</p>
+      </div>
+      <div class="sla-grid">
+        <div class="sla-card">
+          <div class="sla-card__icon"><span class="material-symbols-outlined">schedule</span></div>
+          <div class="sla-card__metric">4h</div>
+          <div class="sla-card__title">Reponse jours ouvres</div>
+          <p class="sla-card__desc">Toute demande de support adressee en jours ouvres (8h-18h) recoit une premiere reponse qualifiee sous 4 heures maximum. Diagnostic initial inclus.</p>
+        </div>
+        <div class="sla-card">
+          <div class="sla-card__icon"><span class="material-symbols-outlined">emergency</span></div>
+          <div class="sla-card__metric">1h</div>
+          <div class="sla-card__title">Intervention urgences</div>
+          <p class="sla-card__desc">Forfait Premium&nbsp;: pour les incidents bloquants (site down, piratage, paiement casse), intervention sous 1 heure maximum, y compris en soiree et week-end.</p>
+        </div>
+        <div class="sla-card">
+          <div class="sla-card__icon"><span class="material-symbols-outlined">summarize</span></div>
+          <div class="sla-card__metric">100&nbsp;%</div>
+          <div class="sla-card__title">Reporting mensuel</div>
+          <p class="sla-card__desc">Chaque mois, vous recevez un rapport PDF complet avec captures, scores Lighthouse, updates appliques, alertes traitees et temps consomme. Transparence totale.</p>
+        </div>
+        <div class="sla-card">
+          <div class="sla-card__icon"><span class="material-symbols-outlined">verified</span></div>
+          <div class="sla-card__metric">99,9&nbsp;%</div>
+          <div class="sla-card__title">Garantie zero downtime</div>
+          <p class="sla-card__desc">Forfait Premium&nbsp;: garantie de disponibilite de 99,9&nbsp;% sur l'annee. Compensation par avoir de maintenance en cas de non-respect, calcul mensuel automatique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. METHODOLOGIE COMPACT (4 etapes) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Comment se passe la <em>mise en place</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Quatre etapes simples pour reprendre la maintenance de votre WordPress, meme si vous avez deja un autre prestataire ou si vous gerez en interne.</p>
+      </div>
+      <div class="method-grid">
+        <div class="method-step">
+          <div class="method-step__num">1</div>
+          <div class="method-step__title">Audit gratuit</div>
+          <p class="method-step__desc">Vous nous donnez l'URL de votre site. Sous 48h, nous realisons un audit gratuit&nbsp;: securite, performances, plugins, vulnerabilites connues, recommandations chiffrees.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">2</div>
+          <div class="method-step__title">Devis ferme</div>
+          <p class="method-step__desc">En fonction de l'audit, nous proposons le forfait adapte (Basic, Pro ou Premium) avec scope precis, engagement 3 mois minimum et conditions claires de resiliation.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">3</div>
+          <div class="method-step__title">Onboarding 1 semaine</div>
+          <p class="method-step__desc">Reception des acces (FTP, admin WP, hebergeur, DNS, registrar). Mise en place du monitoring, des backups automatises, du staging et des outils internes de maintenance.</p>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">4</div>
+          <div class="method-step__title">Routine mensuelle</div>
+          <p class="method-step__desc">Execution de la check-list mensuelle, traitement des tickets de support en cours de mois, envoi du rapport detaille le 1er du mois suivant. Renouvellement automatique sans engagement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. FAQ (7 questions) -->
+  <section class="section" style="background:var(--bg-2);" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur la <em>maintenance WordPress</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels sont les delais d'intervention reels selon les forfaits&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Les delais d'intervention dependent du forfait souscrit. <strong>Basic</strong>&nbsp;: reponse email sous 24h ouvres (8h-18h, lundi-vendredi), interventions planifiees dans la semaine. <strong>Pro</strong>&nbsp;: reponse WhatsApp sous 4h ouvres, interventions urgentes le jour meme. <strong>Premium</strong>&nbsp;: hotline 24/7, intervention urgences sous 1h y compris le week-end et en soiree. Ces delais sont contractuels et leur non-respect declenche un avoir automatique de maintenance proportionnel.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Que se passe-t-il en cas d'urgence (piratage, site down)&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">En cas d'urgence (site inaccessible, defacement, piratage detecte, paiement Stripe casse, formulaire down), nous intervenons immediatement selon le SLA de votre forfait. <strong>Procedure standard</strong>&nbsp;: 1) mise en mode maintenance pour proteger les visiteurs, 2) restauration depuis le dernier backup propre, 3) identification du vecteur d'attaque, 4) nettoyage complet et patch, 5) rapport d'incident detaille. Les interventions urgences hors forfait sont facturees au TJM 600 EUR HT. En Premium, 5 incidents critiques par an sont inclus sans surcout.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous gerer aussi les evolutions et nouvelles fonctionnalites&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, mais la maintenance et les evolutions sont distinguees clairement. La maintenance couvre&nbsp;: bugs, updates, securite, monitoring, optimisations mineures. Les evolutions (ajout de pages, nouveau plugin metier, refonte de section, integration API) sont facturees separement au TJM 600 EUR HT ou via un budget evolution mensuel optionnel (500 a 2000 EUR/mois selon volume). Cette distinction garantit la transparence et evite les melanges qui penalisent la maintenance reelle.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Gerez-vous le multi-sites WordPress ou les portefeuilles de sites&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, nous gerons aussi bien les installations WordPress Multisite (un seul WP qui heberge plusieurs sites) que les portefeuilles de sites independants (10 a 50 sites). Pour les agences, holdings et franchises, nous proposons des <strong>tarifs degressifs</strong>&nbsp;: -15&nbsp;% des le 3e site, -25&nbsp;% des le 5e site, -35&nbsp;% au-dela de 10 sites. Outils centralises de monitoring et de reporting consolides. Devis sur mesure apres audit du portefeuille complet, sous 48h.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la garantie en cas de probleme cause par un update&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Tous les updates sont testes <strong>au prealable sur un environnement de staging dedie</strong> (forfaits Pro et Premium). Si malgre cela un bug apparait en production apres update, nous garantissons un retour arriere immediat (rollback) en moins de 30 minutes via restauration du backup pre-update. Aucun cout supplementaire, aucune facturation. C'est notre risque, pas le votre. Cette garantie est ecrite dans le contrat de maintenance et constitue un engagement contractuel ferme.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Que couvre exactement le forfait, et qu'est-ce qui est hors scope&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Couvert</strong>&nbsp;: updates core/plugins/theme, backups, scan securite, monitoring, audit Lighthouse, corrections de bugs, optimisation base de donnees, support email/WhatsApp/telephone selon forfait, rapport mensuel. <strong>Hors scope</strong>&nbsp;: creation de nouvelles pages, ajout de plugins payants (licence a votre charge), redesign, integrations API tierces, contenu editorial (textes, photos, videos), SEO offsite (netlinking, contenu), campagnes marketing. Ces prestations sont disponibles en complement via nos autres services. Le perimetre exact est detaille dans chaque contrat.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la sortie ou le changement de prestataire&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Apres les 3 premiers mois d'engagement, vous pouvez resilier librement avec un preavis d'<strong>un mois calendaire</strong>. A la sortie, nous remettons&nbsp;: tous les acces (que vous nous aviez confies), la documentation technique complete du site, le dernier backup verifie en deux formats (fichiers ZIP + dump SQL), le journal des interventions des 12 derniers mois, et l'historique des audits Lighthouse. Aucun frais de sortie, aucune retention de donnees, aucune licence captive. Notre engagement&nbsp;: vous laisser dans un etat operationnel meilleur qu'a votre arrivee.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CTA FINAL (lien creation-site-wordpress) -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Confiez votre WordPress a une equipe qui en prend vraiment soin chaque mois.</h2>
+          <p>Vous voulez securiser durablement votre site WordPress et eviter le prochain piratage, la prochaine chute de SEO, le prochain ralentissement&nbsp;? Demandez un audit gratuit&nbsp;: sous 48h, vous recevez un diagnostic complet et le forfait adapte a votre situation.</p>
+        </div>
+        <a href="/contact?service=maintenance-wordpress" class="fcta__cta">Demander mon audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. DECOUVRIR WORDPRESS COMPLET -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir <em>WordPress complet</em></h2>
+        <p class="sec-h__sub">La maintenance n'est qu'un volet de notre expertise WordPress. Decouvrez l'ensemble de nos prestations sur la page parent.</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">web_asset</span></div>
+        <div>
+          <div class="parent-card__title">Creation et gestion de site WordPress</div>
+          <p class="parent-card__desc">Conception, refonte, optimisation, themes premium, plugins WooCommerce, hebergement infogere, formation editeur. Une agence WordPress complete pour les PME au Benin et en France.</p>
+        </div>
+        <a href="/creation-site-wordpress" class="parent-card__cta">Voir la page WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Audit gratuit sous <strong>48h</strong> &middot; forfaits a partir de 150 EUR / mois</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=maintenance-wordpress" class="sticky-cta__cta">Demander mon audit <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20un%20forfait%20maintenance%20WordPress" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-wordpress">Maintenance WordPress</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

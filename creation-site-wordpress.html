@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence WordPress - Pirabel Labs&nbsp;| Sites WordPress + Elementor</title>
+<meta name="description" content="Agence WordPress au Benin, en France. Sites vitrine + WooCommerce + Elementor Pro. Devis ferme sous 48h, code remis, maintenance possible.">
+<meta name="keywords" content="agence wordpress, creation site wordpress, elementor pro, woocommerce, wordpress benin, wordpress france, maintenance wordpress, securite wordpress, refonte wordpress, theme wordpress sur mesure, hebergement wordpress, plugins wordpress, yoast seo, wp rocket, wordfence, acf pro, divi, astra, agence wordpress cotonou, agence wordpress abomey-calavi, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/creation-site-wordpress">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence WordPress - Pirabel Labs">
+<meta property="og:description" content="Sites WordPress administrables, performants, optimises SEO. Elementor Pro + WooCommerce. PME Benin, France et Afrique francophone.">
+<meta property="og:url" content="https://www.pirabellabs.com/creation-site-wordpress">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Reasons cards (horizontal scroll) */
+.reasons-wrap { position: relative; max-width: 76rem; margin: 0 auto; }
+.reasons-row { display: grid; grid-auto-flow: column; grid-auto-columns: 20rem; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0.5rem var(--px-page) 1.75rem; margin: 0 calc(var(--px-page) * -1); scroll-padding-left: var(--px-page); -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.reasons-row::-webkit-scrollbar { height: 6px; }
+.reasons-row::-webkit-scrollbar-track { background: transparent; }
+.reasons-row::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+.reasons-row::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+@media (max-width: 880px) { .reasons-row { grid-auto-columns: 85%; } }
+.reason { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem 1.65rem; display: flex; flex-direction: column; transition: border-color var(--t); scroll-snap-align: start; }
+.reason:hover { border-color: var(--accent); }
+.reason__num { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent); margin-bottom: 0.65rem; }
+.reason__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.15rem; }
+.reason__icon .material-symbols-outlined { font-size: 1.5rem; }
+.reason__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; line-height: 1.3; }
+.reason__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.reasons-nav { display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem; }
+.reasons-nav button { width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--bg-2); border: 1px solid var(--border-2); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--t); padding: 0; }
+.reasons-nav button:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.05); }
+.reasons-nav button .material-symbols-outlined { font-size: 1.35rem; }
+
+/* Expertises (sub-services row) */
+.expertises-row { display: grid; grid-auto-flow: column; grid-auto-columns: 17rem; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0.5rem var(--px-page) 1.75rem; margin: 0 calc(var(--px-page) * -1); scroll-padding-left: var(--px-page); -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.expertises-row::-webkit-scrollbar { height: 6px; }
+.expertises-row::-webkit-scrollbar-track { background: transparent; }
+.expertises-row::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+.expertises-row::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+@media (max-width: 880px) { .expertises-row { grid-auto-columns: 78%; } }
+.expertise { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.65rem 1.4rem; display: flex; flex-direction: column; transition: border-color var(--t), transform var(--t); scroll-snap-align: start; }
+.expertise:hover { border-color: var(--accent); transform: translateY(-3px); }
+.expertise__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.expertise__icon .material-symbols-outlined { font-size: 1.35rem; }
+.expertise__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.expertise__desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; flex: 1; }
+.expertise__cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.7rem 1rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: background var(--t); margin-top: auto; }
+.expertise__cta:hover { background: var(--accent-2); opacity: 1; }
+.expertise__cta .material-symbols-outlined { font-size: 0.9rem; }
+
+/* Comparison table WordPress vs autres CMS */
+.cmp-wrap { max-width: 72rem; margin: 0 auto; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.cmp-wrap::-webkit-scrollbar { height: 6px; }
+.cmp-wrap::-webkit-scrollbar-track { background: transparent; }
+.cmp-wrap::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+.cmp-table { width: 100%; min-width: 56rem; border-collapse: separate; border-spacing: 0; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.cmp-table th, .cmp-table td { padding: 1.05rem 1.1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.92rem; line-height: 1.5; vertical-align: top; }
+.cmp-table thead th { background: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; color: var(--text); border-bottom: 2px solid var(--border); }
+.cmp-table thead th.cmp-col-feature { background: var(--accent-soft); color: var(--accent); position: relative; }
+.cmp-table thead th.cmp-col-feature::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+.cmp-table tbody tr:last-child td { border-bottom: 0; }
+.cmp-table .cmp-criterion { font-family: var(--font-display); font-weight: 700; color: var(--text); background: var(--bg); white-space: nowrap; }
+.cmp-table .cmp-criterion .cmp-criterion__icon { color: var(--accent); font-size: 1rem; margin-right: 0.4rem; vertical-align: middle; }
+.cmp-table td.cmp-feature { background: rgba(255,85,0,0.04); border-left: 2px solid var(--accent); }
+.cmp-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
+.cmp-badge--ok { background: rgba(74,222,128,0.12); color: #4ade80; }
+.cmp-badge--mid { background: rgba(251,191,36,0.14); color: #fbbf24; }
+.cmp-badge--ko { background: rgba(248,113,113,0.12); color: #f87171; }
+.cmp-badge .material-symbols-outlined { font-size: 0.85rem; }
+.cmp-table td .cmp-note { display: block; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Plugins WordPress grid */
+.plugins-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 1024px) { .plugins-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px) { .plugins-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .plugins-grid { grid-template-columns: 1fr; max-width: 24rem; } }
+.plugin-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; transition: all var(--t); position: relative; }
+.plugin-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.plugin-card__head { display: flex; align-items: center; gap: 0.7rem; }
+.plugin-card__icon { width: 2.5rem; height: 2.5rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.plugin-card__icon .material-symbols-outlined { font-size: 1.3rem; }
+.plugin-card__name { font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; line-height: 1.2; }
+.plugin-card__type { font-family: var(--font-display); font-weight: 600; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 0.15rem; }
+.plugin-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+.plugin-card__tag { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.6rem; align-self: flex-start; }
+.plugin-card__tag .material-symbols-outlined { font-size: 0.8rem; color: var(--accent); }
+
+/* Promesse vs Defi */
+.pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .pd-grid { grid-template-columns: 1fr; } }
+.pd { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; }
+.pd__h { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.pd__h-icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.pd--prom .pd__h-icon { background: rgba(74,222,128,0.12); color: #4ade80; }
+.pd--def .pd__h-icon { background: rgba(251,191,36,0.12); color: #fbbf24; }
+.pd__h-title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+.pd__list { display: flex; flex-direction: column; gap: 0.85rem; padding: 0; list-style: none; }
+.pd__item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.92rem; color: var(--text); line-height: 1.5; }
+.pd__item .material-symbols-outlined { flex-shrink: 0; font-size: 1.15rem; margin-top: 0.05rem; }
+.pd--prom .pd__item .material-symbols-outlined { color: #4ade80; }
+.pd--def .pd__item .material-symbols-outlined { color: #fbbf24; }
+
+/* CTA milieu */
+.midcta { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+.midcta::before { content: ''; position: absolute; bottom: -2rem; right: -2rem; width: 10rem; height: 10rem; background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%); pointer-events: none; }
+@media (max-width: 720px) { .midcta { grid-template-columns: 1fr; text-align: center; } }
+.midcta h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2.4vw, 1.65rem); line-height: 1.25; color: #fff; margin-bottom: 0.75rem; }
+.midcta p { font-size: 0.92rem; line-height: 1.5; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 32rem; }
+@media (max-width: 720px) { .midcta p { margin-left: auto; margin-right: auto; } }
+.midcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: transform var(--t); }
+.midcta__cta:hover { transform: translateX(4px); opacity: 1; }
+.midcta__visual { position: relative; aspect-ratio: 1; max-width: 12rem; justify-self: center; }
+.midcta__avatar { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%); border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+.midcta__avatar .material-symbols-outlined { font-size: 3rem; }
+.midcta__role { position: absolute; bottom: -0.75rem; left: 50%; transform: translateX(-50%); background: var(--bg); border: 1px solid #fff; border-radius: 999px; padding: 0.35rem 0.85rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #fff; white-space: nowrap; }
+
+/* Pourquoi nous */
+.pourquoi { max-width: 50rem; margin: 0 auto; }
+.pourquoi p { font-size: 1rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 1.25rem; }
+.pourquoi p strong { color: var(--text); }
+.pourquoi p em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+/* Quote card */
+.quote-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 2rem 2rem 2.5rem; max-width: 48rem; margin: 0 auto; position: relative; display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; }
+@media (max-width: 720px) { .quote-card { grid-template-columns: 1fr; text-align: center; padding: 2rem 1.5rem; } }
+.quote-card::before { content: '\201C'; position: absolute; top: -1rem; left: 1rem; font-family: var(--font-display); font-size: 5rem; color: var(--accent); opacity: 0.3; line-height: 1; }
+.quote-card__photo { width: 5rem; height: 5rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 2px solid var(--accent); }
+.quote-card__photo .material-symbols-outlined { font-size: 2rem; }
+@media (max-width: 720px) { .quote-card__photo { margin: 0 auto; } }
+.quote-card__txt blockquote { font-size: 1.05rem; line-height: 1.55; color: var(--text); margin-bottom: 1rem; font-style: italic; }
+.quote-card__author { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; }
+.quote-card__role { font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-top: 0.25rem; }
+
+/* Stats grid */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 64rem; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-2); }
+@media (max-width: 880px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+.stat-c { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.stat-c:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .stat-c:nth-child(2n) { border-right: 0; }
+  .stat-c:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .stat-c { border-right: 0; border-bottom: 1px solid var(--border); }
+  .stat-c:last-child { border-bottom: 0; }
+}
+.stat-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: var(--accent); }
+.stat-c__l { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+
+/* Zigzag methodologie */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Avantages accordion */
+.adv-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; max-width: 64rem; margin: 0 auto; align-items: center; }
+@media (max-width: 880px) { .adv-grid { grid-template-columns: 1fr; gap: 2rem; } }
+.adv__visual { position: relative; aspect-ratio: 4/5; max-width: 18rem; margin: 0 auto; width: 100%; }
+.adv__visual-frame { width: 100%; height: 100%; border-radius: 18rem 18rem 0 0; background: linear-gradient(180deg, var(--accent-soft) 0%, var(--bg-2) 100%); border: 1px solid var(--accent); display: flex; align-items: flex-end; justify-content: center; padding: 2rem; position: relative; overflow: hidden; }
+.adv__visual-frame::before { content: ''; position: absolute; top: 12%; left: 50%; transform: translateX(-50%); width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,85,0,0.2), transparent 70%); }
+.adv__icon-circle { width: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); position: relative; z-index: 1; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.adv__icon-circle .material-symbols-outlined { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+.adv-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.adv-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s; }
+.adv-i:hover { border-color: var(--border-2); }
+.adv-i[data-open="true"] { border-color: var(--accent); }
+.adv-i__q { width: 100%; background: transparent; border: 0; padding: 1.1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); text-align: left; }
+.adv-i__q-icon { font-size: 1.3rem; color: var(--text-muted); transition: transform 0.35s, color 0.2s; flex-shrink: 0; }
+.adv-i[data-open="true"] .adv-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.adv-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.adv-i[data-open="true"] .adv-i__inner { max-height: 32rem; }
+.adv-i__a-inner { padding: 0 1.25rem 1.25rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Synergies */
+.syn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .syn-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.syn { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; text-decoration: none; color: var(--text); transition: all var(--t); }
+.syn:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.syn__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.syn__icon .material-symbols-outlined { font-size: 1.35rem; }
+.syn__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.syn__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.syn__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; transition: gap 0.2s; }
+.syn:hover .syn__link { gap: 0.5rem; }
+.syn__link .material-symbols-outlined { font-size: 0.95rem; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp FAB */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Agence WordPress - creation de site WordPress","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Creation de sites WordPress administrables, performants et optimises SEO. Themes sur mesure, Elementor Pro, WooCommerce, maintenance et securite.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"1500","highPrice":"15000"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/#services">Services</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Creation de site WordPress</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">web_asset</span> Creation de site WordPress</span>
+        <h1>Agence <em>WordPress</em>&nbsp;: sites administrables, performants, optimises SEO</h1>
+        <p class="s-hero__tagline">WordPress + Elementor Pro + WooCommerce &middot; Pour PME francophones au Benin, en France et en Afrique de l'Ouest</p>
+        <p class="s-hero__lead">Vous voulez un site que vous pouvez piloter vous-meme, sans depender d'un developpeur pour chaque modification de texte ou ajout de page&nbsp;? WordPress reste, en 2026, le choix le plus rentable pour les PME&nbsp;: open-source, ecosysteme mature, edition autonome avec Elementor, e-commerce avec WooCommerce. Pirabel Labs concoit des sites WordPress rapides (Lighthouse 85 a 95 selon scope), securises, optimises SEO des le premier jour, avec themes sur mesure ou themes premium adaptes a votre marque. Devis ferme sous 48h, code source remis, maintenance possible apres livraison.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=wordpress" class="btn btn--primary btn--lg">Demander mon devis WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20de%20site%20WordPress" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">extension</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">web_asset</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shopping_cart</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified</span> Experts WordPress &amp; Elementor</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">workspace_premium</span> Elementor Pro</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">storefront</span> WooCommerce</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">shield_lock</span> Securise</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PRESTATIONS WORDPRESS (Sub-services row) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos <em>prestations WordPress</em></h2>
+        <p class="sec-h__sub">Vitrine, boutique en ligne, Elementor Pro, maintenance, securite, refonte&nbsp;: nous couvrons l'ensemble du cycle de vie de votre site WordPress. Voici les expertises que notre agence peut mettre a votre disposition.</p>
+      </div>
+      <div class="reasons-wrap">
+        <div class="expertises-row" id="expertisesRow">
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">web</span></div>
+            <div class="expertise__title">Vitrine WordPress</div>
+            <p class="expertise__desc">Sites institutionnels, cabinets, agences, restaurants, hotels. Theme sur mesure ou premium adapte, edition autonome par votre equipe.</p>
+            <a href="/agence-site-vitrine" class="expertise__cta">Agence Vitrine <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+            <div class="expertise__title">WooCommerce</div>
+            <p class="expertise__desc">Boutiques en ligne WooCommerce, du catalogue de 20 produits a la marketplace multi-vendeurs. Paiements Stripe, Mobile Money et CB.</p>
+            <a href="/agence-woocommerce" class="expertise__cta">Agence WooCommerce <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div class="expertise__title">Elementor Pro</div>
+            <p class="expertise__desc">Sites concus avec Elementor Pro pour une autonomie totale sur le contenu, le design, et les pop-up. Templates dynamiques et theme builder maitrises.</p>
+            <a href="/agence-elementor" class="expertise__cta">Agence Elementor <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">build</span></div>
+            <div class="expertise__title">Maintenance WordPress</div>
+            <p class="expertise__desc">Mises a jour mensuelles, sauvegardes automatisees, monitoring de disponibilite, corrections de bugs. Votre site reste a jour sans y penser.</p>
+            <a href="/maintenance-wordpress" class="expertise__cta">Agence Maintenance <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">shield_lock</span></div>
+            <div class="expertise__title">Securite WordPress</div>
+            <p class="expertise__desc">Audit de vulnerabilites, hardening WordPress, Wordfence + 2FA, sauvegardes externalisees, protection brute-force et anti-malware.</p>
+            <a href="/securite-wordpress" class="expertise__cta">Agence Securite <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">refresh</span></div>
+            <div class="expertise__title">Refonte WordPress</div>
+            <p class="expertise__desc">Vous avez un site WordPress vieillissant ou lent&nbsp;? Nous le repensons en preservant votre SEO, vos contenus et vos URLs strategiques.</p>
+            <a href="/refonte-site-web" class="expertise__cta">Agence Refonte <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">speed</span></div>
+            <div class="expertise__title">Optimisation perf WordPress</div>
+            <p class="expertise__desc">Votre site charge en 5 secondes&nbsp;? Nous l'amenons sous 2 secondes&nbsp;: WP Rocket, cache CDN, images optimisees, base de donnees nettoyee.</p>
+            <a href="/contact?service=performance-wordpress" class="expertise__cta">Agence Performance <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">search_insights</span></div>
+            <div class="expertise__title">SEO WordPress</div>
+            <p class="expertise__desc">Yoast SEO, structure Schema.org, Core Web Vitals, sitemap, redirections 301, optimisation contenu. Du SEO technique cle en main.</p>
+            <a href="/seo" class="expertise__cta">Agence SEO <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">cloud</span></div>
+            <div class="expertise__title">Hebergement WordPress</div>
+            <p class="expertise__desc">Hebergement WordPress optimise&nbsp;: WP Engine, Kinsta, Hostinger, ou serveur dedie LiteSpeed. PHP 8.3, MySQL 8, cache serveur, CDN inclus.</p>
+            <a href="/hebergement-web" class="expertise__cta">Agence Hebergement <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+          <div class="expertise">
+            <div class="expertise__icon"><span class="material-symbols-outlined">language</span></div>
+            <div class="expertise__title">WordPress multilingue</div>
+            <p class="expertise__desc">Site WordPress multilingue avec WPML ou Polylang. Pour cibler clients francophones et anglophones avec contenu adapte par marche.</p>
+            <a href="/contact?service=wordpress-multilingue" class="expertise__cta">Agence Multilingue <span class="material-symbols-outlined">arrow_forward</span></a>
+          </div>
+        </div>
+        <div class="reasons-nav">
+          <button type="button" data-target="expertisesRow" data-dir="-1" aria-label="Precedent"><span class="material-symbols-outlined">arrow_back</span></button>
+          <button type="button" data-target="expertisesRow" data-dir="1" aria-label="Suivant"><span class="material-symbols-outlined">arrow_forward</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. POURQUOI CHOISIR WORDPRESS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi <em>choisir WordPress</em> pour votre site&nbsp;?</h2>
+        <p class="sec-h__sub">Pres de <strong>43% des sites mondiaux tournent sur WordPress</strong>, et ce n'est pas un hasard. Voici six raisons concretes qui en font, pour beaucoup de PME, le choix le plus rentable en 2026.</p>
+      </div>
+      <div class="reasons-wrap">
+        <div class="reasons-row" id="reasonsPourquoi">
+          <div class="reason">
+            <div class="reason__num">01 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">lock_open</span></div>
+            <div class="reason__title">Open-source et gratuit a vie</div>
+            <p class="reason__desc">WordPress est un logiciel libre, gratuit et ouvert. Pas de licence annuelle a payer comme sur Wix ou Squarespace, pas d'abonnement obligatoire comme sur Webflow. Vous payez la creation, l'hebergement et eventuellement quelques plugins premium, mais le coeur du systeme reste gratuit a vie. <strong>Aucun risque de hausse tarifaire</strong> de la part d'un editeur SaaS qui change ses prix unilateralement.</p>
+          </div>
+          <div class="reason">
+            <div class="reason__num">02 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">extension</span></div>
+            <div class="reason__title">Ecosysteme de plugins gigantesque</div>
+            <p class="reason__desc">Plus de <strong>59 000 plugins gratuits</strong> sur le repertoire officiel WordPress.org, et plusieurs milliers de plugins premium chez CodeCanyon ou directement chez les editeurs. Resultat&nbsp;: presque tout besoin metier peut etre couvert sans developpement specifique. E-commerce, reservation, espace membres, formation en ligne, multi-langue, conformite RGPD, anti-spam, securite, performance&nbsp;: tout existe deja.</p>
+          </div>
+          <div class="reason">
+            <div class="reason__num">03 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">edit_note</span></div>
+            <div class="reason__title">Edition autonome au quotidien</div>
+            <p class="reason__desc">Une fois le site livre, vous pouvez modifier vous-meme les textes, ajouter des articles de blog, changer des images, creer des pages, gerer un catalogue produits, sans avoir a appeler votre agence pour la moindre virgule. Avec Elementor ou Gutenberg, l'interface est visuelle&nbsp;: vous voyez le rendu en temps reel. Une formation d'1 a 2 heures suffit en general a votre equipe.</p>
+          </div>
+          <div class="reason">
+            <div class="reason__num">04 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">search_insights</span></div>
+            <div class="reason__title">SEO-friendly nativement</div>
+            <p class="reason__desc">WordPress est pense pour le referencement&nbsp;: URLs personnalisables, structure HTML semantique, breadcrumbs natifs, sitemap automatique. Avec un plugin comme Yoast SEO ou Rank Math, vous gerez en plus les meta titles, descriptions, Open Graph, Schema.org, redirections. Google adore WordPress&nbsp;: une majorite des sites en premiere page sont sous WordPress, ce qui n'est pas un hasard.</p>
+          </div>
+          <div class="reason">
+            <div class="reason__num">05 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">trending_up</span></div>
+            <div class="reason__title">Scalable pour votre croissance</div>
+            <p class="reason__desc">WordPress propulse des sites de tous volumes&nbsp;: blogs personnels comme grands medias (TechCrunch, The New Yorker, Reuters), petites boutiques comme grosses plateformes e-commerce. Avec un hebergement adapte (WP Engine, Kinsta) et une architecture propre, votre site WordPress peut absorber plusieurs <strong>millions de visites par mois</strong> sans probleme. Vous ne changez pas d'outil quand votre business grandit&nbsp;: vous montez en gamme.</p>
+          </div>
+          <div class="reason">
+            <div class="reason__num">06 / 06</div>
+            <div class="reason__icon"><span class="material-symbols-outlined">groups</span></div>
+            <div class="reason__title">Communaute mondiale active</div>
+            <p class="reason__desc">Une communaute de millions de developpeurs, integrateurs, designers, dans tous les pays. Resultat&nbsp;: vous trouverez toujours quelqu'un pour intervenir sur votre site WordPress, partout dans le monde, a tous les niveaux de tarif. <strong>Zero dependance a un seul prestataire</strong>&nbsp;: si l'on ne vous convient plus, vous pouvez transferer le site a une autre agence sans rien re-acheter.</p>
+          </div>
+        </div>
+        <div class="reasons-nav">
+          <button type="button" data-target="reasonsPourquoi" data-dir="-1" aria-label="Precedent"><span class="material-symbols-outlined">arrow_back</span></button>
+          <button type="button" data-target="reasonsPourquoi" data-dir="1" aria-label="Suivant"><span class="material-symbols-outlined">arrow_forward</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. WORDPRESS VS AUTRES CMS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>WordPress face aux <em>autres solutions</em>&nbsp;: comparatif honnete</h2>
+        <p class="sec-h__sub">Aucun CMS n'est universellement le meilleur. Voici un comparatif honnete entre WordPress, Wix, Webflow et le sur mesure code, sur six criteres qui pesent vraiment dans la duree.</p>
+      </div>
+      <div class="cmp-wrap">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>Critere</th>
+              <th class="cmp-col-feature">WordPress</th>
+              <th>Wix</th>
+              <th>Webflow</th>
+              <th>Sur mesure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">payments</span> Prix initial</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">check_circle</span> Maitrise</span>
+                <span class="cmp-note">1 500 a 6 000 EUR HT selon scope. Hebergement 10-50 EUR/mois.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">check_circle</span> Bas</span>
+                <span class="cmp-note">25 a 50 EUR/mois en abonnement, sans frais initiaux. Mais design limite.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Moyen</span>
+                <span class="cmp-note">3 000 a 10 000 EUR HT creation + 25 EUR/mois plan CMS.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">trending_up</span> Eleve</span>
+                <span class="cmp-note">A partir de 2 500 EUR HT, monte vite a 10 000+ EUR pour des fonctionnalites avancees.</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">speed</span> Performance</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Variable</span>
+                <span class="cmp-note">Lighthouse 50 a 95 selon optimisation. Excellent avec WP Rocket + theme leger.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">close</span> Faible</span>
+                <span class="cmp-note">Lighthouse 30-60 le plus souvent. Code genere lourd, peu optimisable.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">check_circle</span> Bonne</span>
+                <span class="cmp-note">Lighthouse 75-90 typique. Code propre et hebergement optimise.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Excellente</span>
+                <span class="cmp-note">Lighthouse 95-100 garanti. Next.js + Vercel, controle total.</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">tune</span> Flexibilite</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Maximum</span>
+                <span class="cmp-note">59 000 plugins, themes infinis, customisation totale du code si necessaire.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">close</span> Tres limitee</span>
+                <span class="cmp-note">Vous restez dans le cadre Wix. Editeur visuel, pas d'acces au code.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Bonne</span>
+                <span class="cmp-note">Tres souple pour le design, mais limites sur la logique metier.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Totale</span>
+                <span class="cmp-note">Tout est possible, mais chaque fonctionnalite specifique coute du temps dev.</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">trending_up</span> Evolutivite</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">check_circle</span> Excellente</span>
+                <span class="cmp-note">Du blog perso au site a 5M de vues/mois. Hebergement modulable.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">close</span> Faible</span>
+                <span class="cmp-note">Plafonne vite pour les besoins business specifiques. Difficile a migrer.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Bonne</span>
+                <span class="cmp-note">Plans CMS et e-commerce structures. Limites au-dela de certains volumes.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Maximum</span>
+                <span class="cmp-note">Architecture pensee specifiquement pour vos volumes futurs.</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">vpn_key</span> Propriete</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Totale</span>
+                <span class="cmp-note">Logiciel libre, hebergement chez vous, exportable n'importe quand.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">close</span> Verrouillee</span>
+                <span class="cmp-note">Site impossible a exporter sur une autre plateforme. Vous restez chez Wix.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Limitee</span>
+                <span class="cmp-note">Export HTML/CSS possible, mais re-importation complexe ailleurs.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">workspace_premium</span> Totale</span>
+                <span class="cmp-note">Code source vous appartient. Sur Git, deployable n'importe ou.</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="cmp-criterion"><span class="material-symbols-outlined cmp-criterion__icon">school</span> Prise en main</td>
+              <td class="cmp-feature">
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Moderee</span>
+                <span class="cmp-note">1 a 2h pour gerer le contenu courant. Quelques jours pour les fonctions avancees.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ok"><span class="material-symbols-outlined">check_circle</span> Tres facile</span>
+                <span class="cmp-note">Editeur drag-and-drop accessible aux total debutants en 30 min.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--mid"><span class="material-symbols-outlined">trending_flat</span> Moderee</span>
+                <span class="cmp-note">Tres puissant mais courbe d'apprentissage notable pour Webflow Designer.</span>
+              </td>
+              <td>
+                <span class="cmp-badge cmp-badge--ko"><span class="material-symbols-outlined">close</span> Reservee aux devs</span>
+                <span class="cmp-note">Modification du contenu necessite developpeur ou CMS headless ajoute.</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PLUGINS WORDPRESS QUE NOUS INTEGRONS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>plugins WordPress</em> que nous integrons et maitrisons</h2>
+        <p class="sec-h__sub">Voici les principaux plugins qui composent nos sites WordPress, choisis pour leur fiabilite, leur maintenance reguliere et leur impact business reel. Pas de plugins gadget&nbsp;: chaque ajout est justifie.</p>
+      </div>
+      <div class="plugins-grid">
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+            <div>
+              <div class="plugin-card__name">Yoast SEO</div>
+              <div class="plugin-card__type">SEO</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Le standard du SEO sur WordPress&nbsp;: analyse de chaque page, meta titles, descriptions, Open Graph, sitemap, breadcrumbs, redirections. Adopte par plus de 13 millions de sites.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">verified</span> Indispensable</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+            <div>
+              <div class="plugin-card__name">WP Rocket</div>
+              <div class="plugin-card__type">Performance</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Le meilleur cache WordPress premium&nbsp;: mise en cache de pages, minification CSS/JS, lazy-loading images, optimisation base de donnees. Gain typique de 30 a 60 points Lighthouse.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">speed</span> Performance</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">shield_lock</span></div>
+            <div>
+              <div class="plugin-card__name">Wordfence</div>
+              <div class="plugin-card__type">Securite</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Pare-feu d'application web, scanner anti-malware, protection brute-force, blocage IP malveillantes, alertes mail. Bouclier essentiel pour tout site WordPress.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">verified</span> Indispensable</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">design_services</span></div>
+            <div>
+              <div class="plugin-card__name">Elementor Pro</div>
+              <div class="plugin-card__type">Page builder</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Le page builder le plus utilise au monde&nbsp;: theme builder complet, popups, formulaires avances, WooCommerce builder, motion effects, dynamic content. Edition visuelle puissante.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">workspace_premium</span> Premium</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+            <div>
+              <div class="plugin-card__name">WooCommerce</div>
+              <div class="plugin-card__type">E-commerce</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Le moteur e-commerce WordPress&nbsp;: gestion produits, panier, checkout, taxes, livraison, coupons. Compatible Stripe, PayPal, et passerelles Mobile Money locales.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">storefront</span> E-commerce</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">edit_note</span></div>
+            <div>
+              <div class="plugin-card__name">ACF Pro</div>
+              <div class="plugin-card__type">Custom fields</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Advanced Custom Fields&nbsp;: permet de creer des champs personnalises pour vos pages, articles ou types de contenu. Indispensable pour structurer des templates riches.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">code</span> Developpeur</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">mail</span></div>
+            <div>
+              <div class="plugin-card__name">WPForms</div>
+              <div class="plugin-card__type">Formulaires</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Createur de formulaires drag-and-drop&nbsp;: contact, devis, sondages, paiements. Anti-spam reCAPTCHA, integration Mailchimp / Brevo / ActiveCampaign / Notion.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">check</span> Conversion</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">campaign</span></div>
+            <div>
+              <div class="plugin-card__name">Mailchimp / Brevo</div>
+              <div class="plugin-card__type">Email marketing</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Connecteurs natifs pour synchroniser vos formulaires WordPress avec vos listes de diffusion. Automatisations welcome, sequences nurturing, panier abandonne pour WooCommerce.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">trending_up</span> CRM</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">save</span></div>
+            <div>
+              <div class="plugin-card__name">UpdraftPlus</div>
+              <div class="plugin-card__type">Backup</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Sauvegardes automatiques quotidiennes ou hebdomadaires de votre site WordPress vers Google Drive, Dropbox, AWS S3. Restauration en 1 clic. Indispensable pour la securite.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">verified</span> Indispensable</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">savings</span></div>
+            <div>
+              <div class="plugin-card__name">Kkiapay WooCommerce</div>
+              <div class="plugin-card__type">Mobile Money</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Passerelle Mobile Money pour WooCommerce en Afrique de l'Ouest&nbsp;: MTN, Moov, Orange Money. Critique pour vendre en ligne au Benin, Togo, Cote d'Ivoire, Burkina.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">public</span> Afrique</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">language</span></div>
+            <div>
+              <div class="plugin-card__name">WPML / Polylang</div>
+              <div class="plugin-card__type">Multilingue</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Gestion multilingue du site WordPress&nbsp;: francais, anglais, espagnol, arabe. Traduction des pages, articles, menus, produits WooCommerce. Compatible Yoast et Elementor.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">translate</span> International</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">image</span></div>
+            <div>
+              <div class="plugin-card__name">Smush / ShortPixel</div>
+              <div class="plugin-card__type">Images</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Compression et conversion WebP automatique des images au moment de l'upload. Gain de poids 60-80% sans perte de qualite visible. Lazy-load natif inclus.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">speed</span> Performance</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">policy</span></div>
+            <div>
+              <div class="plugin-card__name">Complianz / Cookiebot</div>
+              <div class="plugin-card__type">RGPD</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Banniere cookies conforme RGPD, gestion des consentements, blocage automatique des scripts tiers tant que le visiteur n'a pas accepte. Conformite CNIL et GDPR garantie.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">verified</span> Legal</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">analytics</span></div>
+            <div>
+              <div class="plugin-card__name">Site Kit by Google</div>
+              <div class="plugin-card__type">Analytics</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Connexion native a Google Analytics 4, Search Console, PageSpeed Insights, AdSense. Tableau de bord unifie directement dans WordPress avec metriques cles.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">verified</span> Indispensable</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">event</span></div>
+            <div>
+              <div class="plugin-card__name">Amelia / WP Forms</div>
+              <div class="plugin-card__type">Reservation</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Reservation et prise de rendez-vous en ligne&nbsp;: cabinets, restaurants, hotels, coiffeurs, consulting. Synchronisation Google Calendar, paiement en ligne, rappels SMS.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">schedule</span> Booking</span>
+        </div>
+        <div class="plugin-card">
+          <div class="plugin-card__head">
+            <div class="plugin-card__icon"><span class="material-symbols-outlined">school</span></div>
+            <div>
+              <div class="plugin-card__name">LearnDash / Tutor</div>
+              <div class="plugin-card__type">E-learning</div>
+            </div>
+          </div>
+          <p class="plugin-card__desc">Plateformes de formation en ligne sur WordPress&nbsp;: cours, modules, quiz, certificats, paiement. Pour creer votre academie ou monetiser votre expertise metier.</p>
+          <span class="plugin-card__tag"><span class="material-symbols-outlined">workspace_premium</span> Premium</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PROMESSE VS DEFI -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Est-ce que <em>WordPress chez Pirabel Labs</em> est adapte pour vous&nbsp;?</h2>
+        <p class="sec-h__sub">WordPress est une excellente solution pour beaucoup de PME, mais pas pour tous les besoins. Voici ce que nous promettons concretement, et ce que nous attendons de votre cote pour reussir.</p>
+      </div>
+      <div class="pd-grid">
+        <div class="pd pd--prom">
+          <div class="pd__h">
+            <div class="pd__h-icon"><span class="material-symbols-outlined">verified</span></div>
+            <div class="pd__h-title">Ce que vous gagnez avec WordPress chez Pirabel</div>
+          </div>
+          <ul class="pd__list">
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Un site WordPress personnalise, pas un theme generique recycle</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Elementor Pro inclus pour 1 an + theme child sur mesure</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Performance Lighthouse 85-95 mobile garantie avec WP Rocket</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> SEO cle en main&nbsp;: Yoast configure, Schema.org, sitemap, redirections</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Securite hardenee&nbsp;: Wordfence + 2FA + sauvegardes externalisees</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Formation 1h a votre equipe + documentation ecrite remise</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne, sans condition</li>
+          </ul>
+        </div>
+        <div class="pd pd--def">
+          <div class="pd__h">
+            <div class="pd__h-icon"><span class="material-symbols-outlined">warning</span></div>
+            <div class="pd__h-title">Ce que vous devez apporter</div>
+          </div>
+          <ul class="pd__list">
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une comprehension claire de vos objectifs business et de votre cible</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Vos contenus (textes, photos, logos) remis dans les delais convenus</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Un creneau hebdomadaire de 30 min pour les demos sprint</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une volonte de gerer le site en interne apres la livraison</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Un budget realiste&nbsp;: WordPress est moins cher que du sur mesure, pas gratuit</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> L'engagement de maintenir le site (mises a jour, securite) ou de souscrire au forfait</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CTA MILIEU - Audit gratuit -->
+  <section class="section">
+    <div class="container">
+      <div class="midcta">
+        <div>
+          <h3>Audit WordPress <em>gratuit</em> de votre site existant + recommandations chiffrees sous 48h</h3>
+          <p>Vous avez deja un site WordPress et vous voulez savoir s'il est performant, securise et bien optimise pour le SEO&nbsp;? Donnez-nous l'URL, on vous renvoie sous 48h un audit complet&nbsp;: Lighthouse, plugins installes, themes, vulnerabilites, SEO technique, recommandations prioritisees. Sans engagement, sans script commercial.</p>
+          <a href="/contact?service=audit-wordpress" class="midcta__cta">Recevoir mon audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="midcta__visual">
+          <div class="midcta__avatar"><span class="material-symbols-outlined">monitoring</span></div>
+          <span class="midcta__role">Audit en 48h</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. POURQUOI NOUS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi choisir <em>Pirabel Labs</em> pour votre site WordPress&nbsp;?</h2>
+      </div>
+      <div class="pourquoi">
+        <p>Pirabel Labs est <strong>une agence marketing digital 360 fondee en 2020</strong> et basee a Abomey-Calavi, au Benin. WordPress fait partie des trois piliers technologiques de notre studio depuis le premier jour, aux cotes de Next.js et Webflow. Nous concevons et maintenons des sites WordPress pour des PME au Benin, en France, en Cote d'Ivoire, au Togo, au Senegal et dans toute l'Afrique francophone, du site vitrine d'avocat ou de cabinet conseil a la boutique WooCommerce avec paiements Mobile Money.</p>
+        <p>Notre conviction est simple&nbsp;: <strong>WordPress reste, en 2026, le meilleur compromis entre cout, autonomie et puissance</strong> pour la grande majorite des sites de PME. Encore faut-il bien le faire&nbsp;: choisir le theme adapte (Hello Elementor + child theme custom, ou Astra Pro, ou GeneratePress, selon le projet), selectionner les bons plugins (12-15 plugins maitrises plutot que 40 plugins redondants), optimiser la performance des le depart (WP Rocket, conversion WebP, lazy-load), securiser correctement (Wordfence + 2FA + sauvegardes externalisees), et configurer le SEO technique proprement (Yoast, Schema.org, Search Console).</p>
+        <p>Nos cofondateurs pilotent <em>personnellement</em> chaque projet WordPress, du brief initial a la mise en ligne. Vous n'avez pas affaire a un commercial puis a un integrateur puis a un developpeur differents qui se renvoient la balle&nbsp;: un seul interlocuteur reactif sous 4 heures en jours ouvres, joignable WhatsApp pour les questions courtes, demo visio chaque vendredi sur environnement de preview. Sur les projets de plus de 5 000 EUR, nous mobilisons en plus notre reseau d'integrateurs WordPress senior et de developpeurs PHP/WooCommerce selon les besoins specifiques.</p>
+        <p>Enfin, nous nous engageons par ecrit dans chaque devis&nbsp;: <strong>prix ferme, planning sprint par sprint, code remis (theme child et fichiers personnalises sur Git), licences plugins premium incluses pour 1 an, garantie 30 jours apres mise en ligne</strong>. Pas de "selon devis" cache en cours de route, pas de surfacturation surprise, pas de verrou technique. Si vous voulez changer de prestataire ensuite, tout est a vous et tout est documente.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CITATION EXPERT -->
+  <section class="section">
+    <div class="container">
+      <div class="quote-card">
+        <div class="quote-card__photo"><span class="material-symbols-outlined">web_asset</span></div>
+        <div class="quote-card__txt">
+          <blockquote>WordPress n'est pas juste un CMS&nbsp;: c'est un ecosysteme entier qui permet a une PME de devenir autonome sur son site sans renoncer aux performances ni a la securite. Notre travail, c'est de bien le configurer des le depart pour que vous n'ayez plus a y penser pendant des annees.</blockquote>
+          <div class="quote-card__author">L'equipe WordPress Pirabel Labs</div>
+          <div class="quote-card__role">Agence WordPress &amp; Elementor</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. STATS AGENCE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h"><h2>Quelques <em>chiffres</em> sur notre expertise WordPress</h2></div>
+      <div class="stats-grid">
+        <div class="stat-c">
+          <div class="stat-c__v">2020</div>
+          <div class="stat-c__l">annee de fondation<br>de l'agence</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">85-95</div>
+          <div class="stat-c__l">Lighthouse mobile<br>vise sur WordPress</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">48h</div>
+          <div class="stat-c__l">delai devis WordPress<br>ferme apres decouverte</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">30j</div>
+          <div class="stat-c__l">garantie post-livraison<br>sans condition</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. METHODOLOGIE ZIGZAG -->
+  <section class="section" id="methodologie">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> WordPress en 5 etapes</h2>
+        <p class="sec-h__sub">Du premier echange a la mise en ligne. Pas de boite noire, pas de surprise, pas de "selon devis" en cours de route.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">01</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Audit</span>
+            <div class="zz-step__title">Audit besoin + appel decouverte 30 min</div>
+            <p class="zz-step__desc">Echange avec un cofondateur. On comprend votre business, vos contenus, votre besoin en autonomie. Si WordPress n'est pas la solution adaptee (perf critique, design ultra-premium), on vous oriente honnetement vers Next.js ou Webflow.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> Gratuit, sans engagement</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">02</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Cadrage</span>
+            <div class="zz-step__title">Devis WordPress ferme + planning sprint</div>
+            <p class="zz-step__desc">Sous 48h vous recevez un devis ecrit&nbsp;: scope precis (pages, plugins, integrations), choix du theme, planning sprint par sprint, conditions d'evolution, echelonnement 30/30/40. Licences premium plugins incluses pour 1 an.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">verified</span> Devis sous 48h</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">03</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Design</span>
+            <div class="zz-step__title">Maquettes Figma + validation pages cles</div>
+            <p class="zz-step__desc">Maquettes desktop + tablette + mobile pour les pages principales (home, page service type, page produit type, contact). 2 rounds de retouches inclus. Style guide WordPress livre&nbsp;: typos, couleurs, composants Elementor reutilisables.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">design_services</span> 1 a 2 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">04</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Developpement</span>
+            <div class="zz-step__title">Integration WordPress + Elementor</div>
+            <p class="zz-step__desc">Installation WordPress, theme child, Elementor Pro, plugins selectionnes. Construction des pages, integration des contenus, optimisation perf (WP Rocket, WebP), config SEO (Yoast), securisation (Wordfence + 2FA). Demos chaque vendredi sur preview.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">rocket_launch</span> 2 a 5 semaines</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">05</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Mise en ligne</span>
+            <div class="zz-step__title">Deploiement + formation equipe</div>
+            <p class="zz-step__desc">Mise en production accompagnee. Configuration DNS, HTTPS, redirections 301 si refonte, soumission Search Console et Bing. Formation 1h a votre equipe sur Elementor et WordPress admin. Documentation ecrite remise. Garantie 30 jours active.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. AVANTAGES ACCORDION -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>avantages</em> Pirabel Labs sur WordPress</h2>
+        <p class="sec-h__sub">Ce qui nous distingue concretement des autres agences WordPress sur le marche francophone.</p>
+      </div>
+      <div class="adv-grid">
+        <div class="adv__visual">
+          <div class="adv__visual-frame">
+            <div class="adv__icon-circle"><span class="material-symbols-outlined">web_asset</span></div>
+          </div>
+        </div>
+        <div class="adv-list" id="advList">
+          <div class="adv-i" data-open="true">
+            <button class="adv-i__q" type="button" aria-expanded="true">Transparence totale et engagement ecrit<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Devis WordPress ferme sous 48h avec scope precis (theme, plugins, pages, integrations), planning sprint par sprint, prix fixe sans surprise. Demo chaque vendredi sur environnement de preview accessible par lien partage. Vous voyez l'avancement reel chaque semaine. Tous les fichiers Figma sont accessibles. Les eventuels imprevus sont communiques immediatement avec impact chiffre en EUR et nouvelle estimation de delai. Aucun "selon devis" cache, aucune surprise sur la facture finale.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Cofondateur dedie sur votre projet<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Un cofondateur de l'agence pilote personnellement votre projet WordPress, du brief initial a la mise en ligne&nbsp;: pas un commercial puis un chef de projet puis un developpeur differents qui se renvoient la balle. Reactivite garantie sous 4 heures en jours ouvres pour les questions, sous 48 heures pour les changements de scope. Joignable WhatsApp pour les questions courtes, visio Google Meet pour les revues hebdomadaires, Notion partage pour le suivi asynchrone. Sur les projets de plus de 5 000 EUR, nous mobilisons en plus notre reseau d'integrateurs WordPress senior et de developpeurs PHP/WooCommerce selon les besoins specifiques.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Code remis et site 100% a vous<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Une fois la facture finale reglee, le theme child custom et tous les fichiers PHP/CSS/JS personnalises sont pousses sur votre depot GitHub ou GitLab avec README detaille. Les designs Figma sont transferes. Les licences plugins premium (Elementor Pro, WP Rocket, ACF Pro, WPForms) sont enregistrees a votre nom. L'hebergement WordPress est configure sur VOTRE compte (WP Engine, Kinsta, Hostinger ou autre). Acces administrateur complet (WordPress, hebergeur, registrar, Cloudflare). Vous pouvez changer de prestataire le lendemain de la livraison sans rien re-acheter.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Garantie 30 jours apres mise en ligne<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Tout bug imputable a notre travail est corrige gratuitement pendant 30 jours apres la mise en production. Sans condition, sans facture supplementaire, sous 48 heures ouvrees pour les bugs bloquants. Couvert&nbsp;: crash page, erreur 500, conflit plugin, regression Lighthouse en dessous de 80, lien casse, formulaire qui ne soumet pas, paiement WooCommerce en echec, mauvaise configuration Yoast ou redirection. Non couvert&nbsp;: ajouts fonctionnels demandes apres livraison, modifications de contenu majeures, nouveaux plugins, mais ceux-ci peuvent etre traites en maintenance ponctuelle au TJM 500 EUR HT.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Maintenance proactive en option<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Apres la garantie 30 jours, nous proposons un forfait de maintenance WordPress mensuel de 150 a 500 EUR/mois selon scope, incluant&nbsp;: mises a jour mensuelles de WordPress, theme et plugins (avec tests sur environnement de preview avant mise en production), sauvegardes automatiques quotidiennes externalisees, monitoring de disponibilite 24/7, audit securite mensuel, monitoring Lighthouse, corrections de bugs mineurs, et un volant horaire mensuel de developpement (2 a 6h selon forfait). C'est la difference entre un site WordPress qui fonctionne bien pendant 5 ans et un site qui tombe en panne 6 mois apres la livraison faute de mise a jour.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. SERVICES CONNEXES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Exploiter les <em>synergies</em> avec d'autres leviers</h2>
+        <p class="sec-h__sub">Un site WordPress seul ne suffit pas pour generer du trafic et des conversions. Voici nos services qui se combinent parfaitement avec votre site.</p>
+      </div>
+      <div class="syn-grid">
+        <a href="/creation-site-web" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">code</span></div>
+          <div class="syn__title">Sites web sur mesure</div>
+          <p class="syn__desc">Vous depasserez bientot les limites de WordPress&nbsp;? Decouvrez notre offre site sur mesure en Next.js ou Webflow&nbsp;: design unique, Lighthouse 95+ garanti, architecture evolutive pour les marques premium.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/seo" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <div class="syn__title">SEO et referencement</div>
+          <p class="syn__desc">Un beau site WordPress qui ne se trouve pas sur Google ne sert a rien. Audit Yoast, strategie de contenu, netlinking ethique. Du trafic qualifie mesurable mois apres mois.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/maintenance-wordpress" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">build</span></div>
+          <div class="syn__title">Maintenance WordPress</div>
+          <p class="syn__desc">Forfait maintenance mensuel&nbsp;: mises a jour, sauvegardes, monitoring, securite, corrections. Votre site reste a jour, securise et performant sans que vous ayez a y penser.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. FAQ -->
+  <section class="section" style="background:var(--bg-2);" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur la <em>creation de site WordPress</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget faut-il prevoir pour un site WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Trois fourchettes selon votre projet&nbsp;: <strong>vitrine WordPress 1 500 a 3 500 EUR HT</strong> (5 a 12 pages, Elementor Pro, theme adapte, SEO Yoast, securite Wordfence). <strong>WooCommerce 3 500 a 7 000 EUR HT</strong> (boutique 20-100 produits, Stripe + Mobile Money, gestion stocks, comptes clients). <strong>WordPress complexe 7 000 a 15 000 EUR HT</strong> (multi-langue WPML, plateforme e-learning LearnDash, espace membres avance, integrations API specifiques). Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible. Au-dela&nbsp;: hebergement WordPress (10-50 EUR/mois selon trafic), maintenance optionnelle (150-500 EUR/mois pour un suivi proactif).</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps faut-il pour creer un site WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Le delai depend de la complexite du projet WordPress&nbsp;: <strong>site vitrine 5-12 pages&nbsp;: 3 a 5 semaines</strong>. <strong>WooCommerce avec 50-200 produits&nbsp;: 5 a 7 semaines</strong>. <strong>Plateforme WordPress complexe (multi-langue, membres, e-learning)&nbsp;: 7 a 10 semaines</strong>. Le planning detaille sprint par sprint est inclus dans le devis ferme. Nous travaillons par sprints d'une semaine avec demos chaque vendredi sur un environnement de preview, ce qui vous permet de voir l'avancement reel et d'integrer les ajustements en continu sans surprise a la fin.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Faut-il choisir un theme premium ou un theme sur mesure&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Cela depend de votre budget et de votre niveau d'exigence sur le design. Un <strong>theme premium adapte</strong> (Astra Pro, GeneratePress, Kadence) coute 50-100 EUR/an, est leger, performant, et largement personnalisable avec Elementor Pro&nbsp;: solution rentable pour 80% des PME. Un <strong>theme child sur mesure</strong> (developpe par notre equipe en partant de Hello Elementor ou Underscores) coute 1 000-2 500 EUR supplementaires mais offre une marque vraiment unique, un controle complet sur le code, et de meilleures performances natives. Nous vous conseillons honnetement selon votre contexte&nbsp;: la majorite de nos clients PME demarrent sur theme premium et passent au sur mesure quand leur business grandit.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de plugins integrez-vous en moyenne&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Entre <strong>12 et 18 plugins en moyenne sur nos sites WordPress</strong>, soigneusement selectionnes. Trop de plugins (au-dela de 30) ralentit le site et multiplie les risques de conflit. Nos plugins indispensables&nbsp;: Yoast SEO (referencement), WP Rocket (cache), Wordfence (securite), UpdraftPlus (sauvegardes), Elementor Pro (page builder), Site Kit by Google (analytics), Complianz (RGPD), Smush (images), WPForms (formulaires). Pour WooCommerce on ajoute&nbsp;: WooCommerce, passerelles de paiement (Stripe, Kkiapay), gestion stocks. Pour le multilingue&nbsp;: WPML ou Polylang. Chaque plugin est justifie par un besoin business ou technique reel, pas par habitude.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer Mobile Money sur mon site WooCommerce&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, c'est une de nos specialites pour les clients en Afrique de l'Ouest. Nous integrons sur WooCommerce les passerelles Mobile Money via <strong>Kkiapay, FedaPay, CinetPay et PayDunya</strong> qui couvrent MTN Mobile Money, Moov Money, Orange Money et Wave. Pour les clients en France et Europe&nbsp;: Stripe (CB), PayPal, virement SEPA. Pour le multi-marche&nbsp;: nous combinons toutes ces solutions dans le meme checkout avec detection automatique du pays du visiteur et affichage des modes de paiement adaptes. Configuration, tests en sandbox, mise en production et formation a votre equipe inclus.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel hebergement recommandez-vous pour WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Tout depend du trafic et du budget. <strong>Pour les PME (jusqu'a 50 000 visites/mois)</strong>&nbsp;: Hostinger Business (4 EUR/mois) ou o2switch (8 EUR/mois) suffisent largement, avec PHP 8.3, LiteSpeed cache integre et serveur en Europe. <strong>Pour les sites a fort trafic ou e-commerce</strong>&nbsp;: WP Engine, Kinsta ou Cloudways Vultr High Frequency (30 a 100 EUR/mois), avec hebergement WordPress dedie, CDN global, sauvegardes automatiques, support 24/7 WordPress. <strong>Pour les clients en Afrique de l'Ouest qui veulent un serveur local</strong>&nbsp;: Cloudways Cape Town ou serveur dedie OVH France. Nous configurons l'hebergement sur votre compte avec vos identifiants.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment WordPress se positionne-t-il sur le SEO&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">WordPress est <strong>nativement SEO-friendly</strong>&nbsp;: URLs personnalisables, structure HTML semantique, sitemap automatique, robots.txt configurable. Avec Yoast SEO ou Rank Math, vous gerez les meta titles, descriptions, Open Graph, Schema.org, breadcrumbs, redirections 301. Nous configurons en plus&nbsp;: structure d'URL en /categorie/article/ (pas /?p=123), images optimisees avec alt text, vitesse de chargement (WP Rocket + WebP), Search Console et Bing Webmaster connectes des le lancement. <strong>Une majorite des sites en premiere page Google sont sous WordPress</strong>&nbsp;: ce n'est pas un hasard. La cle&nbsp;: technique propre + contenu de qualite publie regulierement + netlinking ethique.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance WordPress apres la livraison&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Garantie 30 jours incluse</strong>&nbsp;: tout bug imputable a notre travail est corrige gratuitement. Apres cette periode&nbsp;: option de <strong>forfait maintenance WordPress mensuel</strong>&nbsp;: Starter (150 EUR/mois&nbsp;: mises a jour, sauvegardes, monitoring uptime), Pro (300 EUR/mois&nbsp;: ajout securite, scan malware, optimisation perf mensuelle, 2h dev), Premium (500 EUR/mois&nbsp;: ajout monitoring avance, audit Lighthouse, 6h dev). Sinon, interventions ponctuelles au TJM 500 EUR HT. <strong>Nous recommandons fortement un forfait minimum</strong> pour les sites WordPress&nbsp;: c'est la difference entre un site qui fonctionne pendant 5 ans et un site qui se fait pirater 6 mois apres la livraison faute de mise a jour.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment securisez-vous mon site WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La securite WordPress repose sur 6 piliers que nous mettons systematiquement en place&nbsp;: <strong>1. Wordfence</strong> (pare-feu d'application, anti-malware, blocage IP malveillantes), <strong>2. Authentification 2FA</strong> (Google Authenticator) sur tous les comptes admin, <strong>3. URL de connexion masquee</strong> (pas de /wp-admin par defaut), <strong>4. Sauvegardes externalisees quotidiennes</strong> sur Google Drive ou AWS S3, <strong>5. Mises a jour automatiques</strong> de WordPress core et plugins de securite, <strong>6. Hebergement WordPress de qualite</strong> avec SSL, isolation des sites, scan malware serveur. <strong>92% des piratages WordPress visent des sites non maintenus</strong>&nbsp;: la maintenance proactive divise ce risque par 20.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux migrer mon site WordPress existant vers du sur mesure&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">C'est un projet que nous gerons frequemment. Nous procedons en 5 etapes&nbsp;: <strong>1. Audit du WordPress existant</strong> (contenus, structure SEO, plugins, vulnerabilites, performance), <strong>2. Export des contenus</strong> via API REST WordPress ou export XML, structures en JSON reutilisable, <strong>3. Reconstruction sur mesure</strong> en Next.js ou Webflow avec design Figma original, <strong>4. Migration des contenus</strong> et mapping des URLs anciennes vers les nouvelles avec redirections 301 systematiques, <strong>5. Mise en ligne accompagnee</strong> avec surveillance du ranking Google sur 30 jours et ajustements si besoin. Comptez 5 a 10 semaines selon le volume. <strong>Le SEO ne se perd pas si la migration est bien faite</strong>&nbsp;: nous l'avons fait sur plusieurs sites avec preservation totale du trafic organique. Decouvrez aussi notre service de <a href="/creation-site-web" style="color:var(--accent);">creation de site web sur mesure</a>.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15. CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>WordPress bien fait, c'est un site qui dure des annees sans vous ralentir.</h2>
+          <p>Passons a l'action&nbsp;! Vous souhaitez en savoir plus sur notre expertise WordPress, sur Elementor Pro, sur WooCommerce ou sur la maintenance proactive&nbsp;? Venez discuter de votre projet avec un cofondateur et obtenez des reponses concretes en moins de 30 minutes.</p>
+        </div>
+        <a href="/contact?service=wordpress" class="fcta__cta">Demander un devis WordPress <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Devis WordPress sous <strong>48h</strong> &middot; garantie 30 jours</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=wordpress" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20mon%20projet%20de%20site%20WordPress" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services WordPress</div>
+        <ul class="footer__list">
+          <li><a href="/agence-woocommerce">Agence WooCommerce</a></li>
+          <li><a href="/agence-elementor">Agence Elementor</a></li>
+          <li><a href="/maintenance-wordpress">Maintenance WordPress</a></li>
+          <li><a href="/securite-wordpress">Securite WordPress</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+  bindAccordion('.adv-i');
+
+  // Reasons-row + expertises-row horizontal scroll buttons
+  document.querySelectorAll('.reasons-nav button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetId = btn.getAttribute('data-target');
+      var dir = parseInt(btn.getAttribute('data-dir'), 10);
+      var row = document.getElementById(targetId);
+      if (!row) return;
+      var firstCard = row.querySelector('.reason, .expertise');
+      if (!firstCard) return;
+      var cardW = firstCard.getBoundingClientRect().width + 20;
+      row.scrollBy({ left: dir * cardW, behavior: 'smooth' });
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

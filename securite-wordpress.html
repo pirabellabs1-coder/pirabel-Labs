@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Securite WordPress - Pirabel Labs | Hardening + firewall + audit</title>
+<meta name="description" content="Securite WordPress professionnelle : audit failles, hardening, firewall WAF, monitoring intrusions. Wordfence, Sucuri, Cloudflare. Devis 48h.">
+<meta name="keywords" content="securite wordpress, hardening wordpress, wordfence sucuri, audit securite wordpress, firewall wordpress, protection wordpress, malware wordpress, intrusion wordpress, cloudflare waf, securisation site wordpress, agence securite wordpress, pirabel labs">
+<link rel="canonical" href="https://www.pirabellabs.com/securite-wordpress">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Securite WordPress - Pirabel Labs">
+<meta property="og:description" content="Hardening WordPress, firewall WAF, audit failles, monitoring intrusions. Wordfence Premium, Sucuri, Cloudflare. Intervention 24/7 en cas de piratage.">
+<meta property="og:url" content="https://www.pirabellabs.com/securite-wordpress">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta, .s-hero__trust { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Failles cards */
+.failles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+@media (max-width: 1024px) { .failles-grid { grid-template-columns: repeat(2, 1fr); max-width: 48rem; margin: 0 auto; } }
+@media (max-width: 560px) { .failles-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.faille { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.4rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.faille:hover { border-color: var(--accent); transform: translateY(-3px); }
+.faille__pct { position: absolute; top: 1rem; right: 1rem; font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; }
+.faille__pct sub { font-size: 0.55em; color: var(--text-muted); font-weight: 600; }
+.faille__icon { width: 2.85rem; height: 2.85rem; background: rgba(239,68,68,0.12); color: #ef4444; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.faille__icon .material-symbols-outlined { font-size: 1.45rem; }
+.faille__title { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; line-height: 1.3; margin-bottom: 0.5rem; }
+.faille__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Hardening checklist */
+.check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .check-grid { grid-template-columns: 1fr; max-width: 32rem; } }
+.check-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem 1.35rem; display: flex; gap: 0.85rem; align-items: flex-start; transition: border-color var(--t); }
+.check-item:hover { border-color: var(--accent); }
+.check-item__icon { width: 2.25rem; height: 2.25rem; background: rgba(74,222,128,0.12); color: #4ade80; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.check-item__icon .material-symbols-outlined { font-size: 1.15rem; }
+.check-item__body { flex: 1; min-width: 0; }
+.check-item__title { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; margin-bottom: 0.3rem; line-height: 1.3; }
+.check-item__desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+.check-item__tag { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: var(--accent-soft); padding: 0.15rem 0.5rem; border-radius: 4px; margin-top: 0.4rem; }
+
+/* Tools grid */
+.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; }
+@media (max-width: 880px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .tools-grid { grid-template-columns: 1fr; max-width: 26rem; } }
+.tool { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.55rem; display: flex; flex-direction: column; transition: all var(--t); }
+.tool:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tool__head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.tool__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tool__icon .material-symbols-outlined { font-size: 1.5rem; }
+.tool__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; line-height: 1.2; }
+.tool__type { font-family: var(--font-display); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 0.2rem; }
+.tool__desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; flex: 1; margin-bottom: 1rem; }
+.tool__feat { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+.tool__feat li { display: flex; align-items: flex-start; gap: 0.45rem; font-size: 0.8rem; color: var(--text); line-height: 1.4; }
+.tool__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.35rem; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* Incident response zigzag */
+.incident { max-width: 60rem; margin: 0 auto; }
+.incident-step { display: grid; grid-template-columns: 4rem 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); position: relative; }
+.incident-step:last-child { border-bottom: 0; }
+.incident-step__num { width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; flex-shrink: 0; box-shadow: 0 0 0 5px var(--accent-soft); }
+.incident-step__body { flex: 1; }
+.incident-step__head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.incident-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+.incident-step__sla { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.3rem 0.75rem; }
+.incident-step__sla .material-symbols-outlined { font-size: 0.9rem; }
+.incident-step__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 0.6rem; }
+.incident-step__acts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.incident-step__act { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; color: var(--text); background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 6px; padding: 0.3rem 0.6rem; }
+.incident-step__act .material-symbols-outlined { font-size: 0.85rem; color: var(--accent); }
+@media (max-width: 600px) {
+  .incident-step { grid-template-columns: 1fr; gap: 1rem; }
+  .incident-step__num { width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+}
+
+/* Tarifs */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); list-style: none; padding-left: 0; }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodologie zigzag */
+.zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
+.zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.zz-step--left { transform: translate(-45px, 25px); }
+.zz-step--right { transform: translate(45px, 25px); }
+.zz-step.in-view { opacity: 1; transform: translate(0, 0); }
+.zz-step:last-child { margin-bottom: 0; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
+.zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+.zz-step__time { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.85rem; font-family: var(--font-display); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); }
+.zz-step__time .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); }
+.zz-step--left .zz-step__card { grid-column: 1; justify-self: end; margin-right: 3rem; text-align: right; }
+.zz-step--right .zz-step__card { grid-column: 2; justify-self: start; margin-left: 3rem; text-align: left; }
+.zz-step--left .zz-step__time { flex-direction: row-reverse; }
+@media (max-width: 720px) {
+  .zigzag::before { left: 1.75rem; }
+  .zz-step { grid-template-columns: 1fr; }
+  .zz-step__num { left: 1.75rem; width: 2.75rem; height: 2.75rem; font-size: 0.95rem; }
+  .zz-step--left .zz-step__card, .zz-step--right .zz-step__card { grid-column: 1; justify-self: start; margin: 0 0 0 4.5rem; text-align: left; max-width: none; }
+  .zz-step--left .zz-step__time { flex-direction: row; }
+}
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Parent link section */
+.parent-link { max-width: 60rem; margin: 0 auto; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2.25rem 2rem; display: grid; grid-template-columns: 4rem 1fr auto; gap: 1.5rem; align-items: center; }
+@media (max-width: 720px) { .parent-link { grid-template-columns: 1fr; text-align: center; } }
+.parent-link__icon { width: 4rem; height: 4rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; }
+@media (max-width: 720px) { .parent-link__icon { margin: 0 auto; } }
+.parent-link__icon .material-symbols-outlined { font-size: 2rem; }
+.parent-link__title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.4rem; }
+.parent-link__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+.parent-link__cta { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.85rem 1.35rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); white-space: nowrap; }
+.parent-link__cta:hover { background: var(--accent-2); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+
+/* Hero alert chip */
+.s-hero__urgency { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: #ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.5); border-radius: 999px; padding: 0.45rem 0.95rem; margin-bottom: 1.25rem; }
+.s-hero__urgency::before { content: ''; width: 0.55rem; height: 0.55rem; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); animation: pulse-dot 1.8s infinite; }
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Securite WordPress","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Securisation WordPress professionnelle : audit failles, hardening complet, firewall WAF, monitoring intrusions, intervention urgence 24/7.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"490","highPrice":"1500"}}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-wordpress">Sites WordPress</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Securite WordPress</span>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">shield_lock</span> Securite WordPress</span>
+        <span class="s-hero__urgency">Un site WordPress est pirate toutes les 39 secondes dans le monde</span>
+        <h1><em>Securite WordPress</em>&nbsp;: hardening + firewall + monitoring 24/7</h1>
+        <p class="s-hero__tagline">Audit complet, durcissement systeme et surveillance continue &middot; Wordfence, Sucuri, Cloudflare WAF</p>
+        <p class="s-hero__lead">Votre site WordPress est la cible numero un des cyberattaques&nbsp;: 43% des piratages CMS visent WordPress selon Sucuri. Pirabel Labs realise un audit securite complet, deploie un firewall applicatif (WAF), applique notre check-list hardening de 30+ points et met en place une surveillance continue des intrusions. En cas d'incident, nous intervenons en moins de 4&nbsp;heures pour nettoyer, restaurer et durcir. Devis ferme sous 48h, garantie de resultat sur l'audit.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=securite-wordpress" class="btn btn--primary btn--lg">Demander mon audit securite <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20mon%20site%20WordPress%20a%20un%20probleme%20de%20securite" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> Urgence WhatsApp</a>
+        </div>
+        <div class="s-hero__trust">
+          <span class="s-hero__trust-item" style="color: var(--text-muted);"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">verified</span> Wordfence Premium certifie</span>
+          <span class="s-hero__trust-item" style="color: var(--text-muted);"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">support_agent</span> Intervention 24/7</span>
+          <span class="s-hero__trust-item" style="color: var(--text-muted);"><span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">history</span> Restauration sous 4h</span>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shield</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">lock</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">monitoring</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">verified_user</span> Protection 360 deg</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">gpp_good</span> Firewall WAF actif</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">visibility</span> Monitoring 24/7</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">bolt</span> SLA 4h</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FAILLES WORDPRESS COURANTES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2><em>Failles WordPress</em> les plus courantes</h2>
+        <p class="sec-h__sub">Comprendre ou se cachent les vulnerabilites est le premier pas pour les neutraliser. Voici les 5 vecteurs d'attaque qui represente plus de 95% des piratages WordPress observes en 2025-2026 selon Sucuri et Wordfence.</p>
+      </div>
+      <div class="failles-grid">
+        <div class="faille">
+          <div class="faille__pct">56<sub>%</sub></div>
+          <div class="faille__icon"><span class="material-symbols-outlined">extension</span></div>
+          <div class="faille__title">Plugins vulnerables non mis a jour</div>
+          <p class="faille__desc">56% des piratages WordPress proviennent de plugins obsoletes ou abandonnes par leurs developpeurs. Failles XSS, SQL injection, RCE laissees ouvertes pendant des mois.</p>
+        </div>
+        <div class="faille">
+          <div class="faille__pct">12<sub>%</sub></div>
+          <div class="faille__icon"><span class="material-symbols-outlined">brush</span></div>
+          <div class="faille__title">Themes nulled ou pirates</div>
+          <p class="faille__desc">12% des piratages viennent de themes premium telecharges gratuitement sur des sites pirates. Ils contiennent souvent des backdoors caches qui donnent un acces total au site.</p>
+        </div>
+        <div class="faille">
+          <div class="faille__pct">18<sub>%</sub></div>
+          <div class="faille__icon"><span class="material-symbols-outlined">password</span></div>
+          <div class="faille__title">Brute force sur wp-login</div>
+          <p class="faille__desc">18% des attaques sont des tentatives massives de connexion au compte admin via /wp-login.php. Bots qui testent des milliers de mots de passe par minute.</p>
+        </div>
+        <div class="faille">
+          <div class="faille__pct">8<sub>%</sub></div>
+          <div class="faille__icon"><span class="material-symbols-outlined">database</span></div>
+          <div class="faille__title">SQL injection</div>
+          <p class="faille__desc">8% des incidents impliquent une injection SQL via des formulaires mal proteges ou des plugins qui n'echappent pas correctement les requetes vers la base de donnees.</p>
+        </div>
+        <div class="faille">
+          <div class="faille__pct">6<sub>%</sub></div>
+          <div class="faille__icon"><span class="material-symbols-outlined">code</span></div>
+          <div class="faille__title">Cross-Site Scripting (XSS)</div>
+          <p class="faille__desc">6% des failles exploitees sont des XSS qui permettent d'injecter du JavaScript malveillant dans les pages, voler des sessions et detourner les utilisateurs vers des sites de phishing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CHECK-LIST HARDENING -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre check-list <em>hardening WordPress</em> de 30+ points</h2>
+        <p class="sec-h__sub">Voici les 8 mesures de durcissement essentielles que nous appliquons systematiquement sur chaque site WordPress que nous prenons en main. La check-list complete contient 30 points repartis sur configuration serveur, application, base de donnees, sessions et monitoring.</p>
+      </div>
+      <div class="check-grid">
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">shield</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Wordfence Premium installe et configure</div>
+            <p class="check-item__desc">Firewall applicatif WAF, scan malware quotidien, blocage IP malveillantes, alertes email en temps reel, protection brute force avancee.</p>
+            <span class="check-item__tag">Critique</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">visibility_off</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">URL de connexion masquee</div>
+            <p class="check-item__desc">L'URL /wp-admin et /wp-login.php sont remplacees par une URL aleatoire connue de vous seul. Reduit de 90% les tentatives de brute force automatique.</p>
+            <span class="check-item__tag">Critique</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">key</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Authentification 2 facteurs (2FA) admin</div>
+            <p class="check-item__desc">Google Authenticator ou Authy obligatoire pour tous les comptes administrateurs et editeurs. Meme si un mot de passe fuite, l'attaquant ne peut pas se connecter.</p>
+            <span class="check-item__tag">Critique</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">cancel</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Desactivation XML-RPC</div>
+            <p class="check-item__desc">XML-RPC est un vecteur majeur d'attaques par amplification et brute force. Desactivation complete si non necessaire ou restriction par IP whitelist sinon.</p>
+            <span class="check-item__tag">Important</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">do_not_disturb_on</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Limitation des tentatives de login</div>
+            <p class="check-item__desc">Maximum 3 tentatives de connexion par IP en 15 minutes, blocage 24h apres echec. Limite drastiquement le brute force humain et automatique.</p>
+            <span class="check-item__tag">Critique</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">lock</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">SSL/TLS 1.3 et HSTS</div>
+            <p class="check-item__desc">Certificat SSL Let's Encrypt ou commercial avec TLS 1.3 minimum, header HSTS preload, redirection HTTPS systematique, certificat renouvele automatiquement.</p>
+            <span class="check-item__tag">Critique</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">edit_off</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Editeur de fichiers desactive</div>
+            <p class="check-item__desc">Constante DISALLOW_FILE_EDIT activee dans wp-config.php. Empeche un attaquant qui a obtenu un acces admin d'editer directement les fichiers PHP via l'interface.</p>
+            <span class="check-item__tag">Important</span>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-item__icon"><span class="material-symbols-outlined">storage</span></div>
+          <div class="check-item__body">
+            <div class="check-item__title">Prefixe de base de donnees randomise</div>
+            <p class="check-item__desc">Le prefixe par defaut wp_ est remplace par un prefixe aleatoire (ex: wp_8f2k_). Mitigation supplementaire contre les attaques SQL injection automatisees.</p>
+            <span class="check-item__tag">Recommande</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. OUTILS SECURITE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>outils de securite</em> que nous deployons</h2>
+        <p class="sec-h__sub">Nous avons selectionne les 6 solutions les plus robustes du marche, eprouvees sur des centaines de sites en production. Stack defensive complete combinant WAF cloud, scanner malware, gestion des correctifs et sauvegardes versionnees.</p>
+      </div>
+      <div class="tools-grid">
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">shield</span></div>
+            <div>
+              <div class="tool__name">Wordfence Premium</div>
+              <div class="tool__type">Firewall + scanner</div>
+            </div>
+          </div>
+          <p class="tool__desc">La reference du firewall applicatif WordPress. Plus de 4 millions de sites proteges, base de signatures mise a jour en temps reel, blocage des botnets connus.</p>
+          <ul class="tool__feat">
+            <li>Pare-feu WAF en temps reel</li>
+            <li>Scan malware quotidien</li>
+            <li>Protection brute force ML</li>
+            <li>Reputation IP globale</li>
+          </ul>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">verified_user</span></div>
+            <div>
+              <div class="tool__name">Sucuri Security</div>
+              <div class="tool__type">WAF cloud + CDN</div>
+            </div>
+          </div>
+          <p class="tool__desc">Solution de securite cloud premium avec WAF en amont du serveur. Bloque les attaques avant qu'elles n'atteignent votre infrastructure, accelere le site via CDN integre.</p>
+          <ul class="tool__feat">
+            <li>WAF cloud globale</li>
+            <li>Protection DDoS niveau 7</li>
+            <li>Nettoyage malware inclus</li>
+            <li>CDN accelerateur</li>
+          </ul>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">bug_report</span></div>
+            <div>
+              <div class="tool__name">MalCare</div>
+              <div class="tool__type">Detection comportementale</div>
+            </div>
+          </div>
+          <p class="tool__desc">Scanner malware avec analyse comportementale qui detecte les menaces zero-day non identifiees par les bases de signatures classiques. Nettoyage automatique en un clic.</p>
+          <ul class="tool__feat">
+            <li>Scan IA des fichiers</li>
+            <li>Detection zero-day</li>
+            <li>Nettoyage automatise</li>
+            <li>Sans impact sur la perf</li>
+          </ul>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">cloud</span></div>
+            <div>
+              <div class="tool__name">Cloudflare WAF</div>
+              <div class="tool__type">Edge security</div>
+            </div>
+          </div>
+          <p class="tool__desc">Reseau global de 300+ datacenters. Filtre les requetes malveillantes en peripherie avant qu'elles atteignent votre serveur. Protection DDoS illimitee, regles OWASP.</p>
+          <ul class="tool__feat">
+            <li>Anti-DDoS illimite</li>
+            <li>Regles OWASP Top 10</li>
+            <li>Bot management</li>
+            <li>Rate limiting avance</li>
+          </ul>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">policy</span></div>
+            <div>
+              <div class="tool__name">iThemes Security Pro</div>
+              <div class="tool__type">Hardening systeme</div>
+            </div>
+          </div>
+          <p class="tool__desc">Suite complete de durcissement WordPress&nbsp;: 30+ regles de hardening preconfigurees, gestion des permissions fichiers, surveillance d'integrite, journalisation complete.</p>
+          <ul class="tool__feat">
+            <li>30+ regles hardening</li>
+            <li>2FA admin integre</li>
+            <li>Audit log complet</li>
+            <li>File change detection</li>
+          </ul>
+        </div>
+        <div class="tool">
+          <div class="tool__head">
+            <div class="tool__icon"><span class="material-symbols-outlined">backup</span></div>
+            <div>
+              <div class="tool__name">UpdraftPlus Premium</div>
+              <div class="tool__type">Sauvegarde + restauration</div>
+            </div>
+          </div>
+          <p class="tool__desc">Sauvegardes incrementales automatiques vers stockage externe (Google Drive, Dropbox, S3). Restauration en 1 clic en cas d'incident, retention 30 jours minimum.</p>
+          <ul class="tool__feat">
+            <li>Sauvegarde quotidienne</li>
+            <li>Stockage externe chiffre</li>
+            <li>Restauration 1 clic</li>
+            <li>Migration incluse</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PLAN REPONSE INCIDENT -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>plan de reponse</em> en cas d'incident</h2>
+        <p class="sec-h__sub">Quand un site est compromis, chaque minute compte. Notre protocole en 5 etapes permet de contenir l'incident, restaurer l'integrite et eviter qu'il se reproduise. Engagement de delai documente dans le contrat.</p>
+      </div>
+      <div class="incident">
+        <div class="incident-step">
+          <div class="incident-step__num">1</div>
+          <div class="incident-step__body">
+            <div class="incident-step__head">
+              <h3 class="incident-step__title">Detection et alerte initiale</h3>
+              <span class="incident-step__sla"><span class="material-symbols-outlined">bolt</span> SLA 30 minutes</span>
+            </div>
+            <p class="incident-step__desc">Les outils de monitoring (Wordfence, Sucuri, UptimeRobot) declenchent une alerte automatique vers notre equipe d'astreinte&nbsp;: modification de fichiers core, pic de trafic anormal, code malveillant detecte. Confirmation manuelle par un ingenieur securite sous 30 minutes maximum.</p>
+            <div class="incident-step__acts">
+              <span class="incident-step__act"><span class="material-symbols-outlined">notifications</span> Alertes multi-canal</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">phone</span> Astreinte 24/7</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">visibility</span> Triage rapide</span>
+            </div>
+          </div>
+        </div>
+        <div class="incident-step">
+          <div class="incident-step__num">2</div>
+          <div class="incident-step__body">
+            <div class="incident-step__head">
+              <h3 class="incident-step__title">Isolation et contenu de la menace</h3>
+              <span class="incident-step__sla"><span class="material-symbols-outlined">bolt</span> SLA 1 heure</span>
+            </div>
+            <p class="incident-step__desc">Mise en mode maintenance immediate pour proteger les visiteurs, blocage de l'IP source via WAF Cloudflare, desactivation des plugins compromis, revocation des sessions actives, changement des cles secrets WordPress (SALT, AUTH_KEY). Isolation complete pour bloquer la progression de l'attaque.</p>
+            <div class="incident-step__acts">
+              <span class="incident-step__act"><span class="material-symbols-outlined">build</span> Mode maintenance</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">block</span> Blocage IP</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">vpn_key</span> Rotation des cles</span>
+            </div>
+          </div>
+        </div>
+        <div class="incident-step">
+          <div class="incident-step__num">3</div>
+          <div class="incident-step__body">
+            <div class="incident-step__head">
+              <h3 class="incident-step__title">Investigation forensique</h3>
+              <span class="incident-step__sla"><span class="material-symbols-outlined">bolt</span> SLA 2 a 4 heures</span>
+            </div>
+            <p class="incident-step__desc">Analyse complete des logs serveur, base de donnees et fichiers pour identifier le vecteur d'entree exact, le payload deploye, les donnees potentiellement exfiltrees et les utilisateurs/admins compromis. Comparaison MD5 des fichiers core WordPress avec les versions officielles pour reperer les backdoors.</p>
+            <div class="incident-step__acts">
+              <span class="incident-step__act"><span class="material-symbols-outlined">search</span> Analyse logs</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">fingerprint</span> Checksum MD5</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">history</span> Timeline attaque</span>
+            </div>
+          </div>
+        </div>
+        <div class="incident-step">
+          <div class="incident-step__num">4</div>
+          <div class="incident-step__body">
+            <div class="incident-step__head">
+              <h3 class="incident-step__title">Restauration et nettoyage</h3>
+              <span class="incident-step__sla"><span class="material-symbols-outlined">bolt</span> SLA 4 a 8 heures</span>
+            </div>
+            <p class="incident-step__desc">Restauration depuis la derniere sauvegarde saine (anterieure a la compromission), nettoyage manuel des fichiers infectes restants, mise a jour de tous les plugins et themes vers les dernieres versions stables, regeneration des mots de passe administrateurs, remise en ligne progressive avec monitoring renforce pendant 7 jours.</p>
+            <div class="incident-step__acts">
+              <span class="incident-step__act"><span class="material-symbols-outlined">restore</span> Backup propre</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">cleaning_services</span> Nettoyage manuel</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">monitoring</span> Surveillance 7j</span>
+            </div>
+          </div>
+        </div>
+        <div class="incident-step">
+          <div class="incident-step__num">5</div>
+          <div class="incident-step__body">
+            <div class="incident-step__head">
+              <h3 class="incident-step__title">Post-mortem et durcissement</h3>
+              <span class="incident-step__sla"><span class="material-symbols-outlined">bolt</span> SLA 7 jours</span>
+            </div>
+            <p class="incident-step__desc">Rapport detaille de l'incident remis sous 7 jours&nbsp;: chronologie complete, vecteur d'entree, impact business, donnees exposees, mesures correctives mises en place. Plan de durcissement complementaire (renforcement WAF, segmentation, monitoring etendu) pour eviter la reproduction. Si donnees personnelles exposees, notification CNIL/AAIP sous 72h.</p>
+            <div class="incident-step__acts">
+              <span class="incident-step__act"><span class="material-symbols-outlined">description</span> Rapport detaille</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">policy</span> Notification CNIL</span>
+              <span class="incident-step__act"><span class="material-symbols-outlined">tips_and_updates</span> Recommandations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TARIFS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2><em>Tarifs</em> securite WordPress</h2>
+        <p class="sec-h__sub">Trois formules complementaires selon votre niveau d'exigence. De l'audit ponctuel pour faire le point a la maintenance securitaire continue avec intervention prioritaire en cas d'incident. Devis ferme sous 48 heures, sans engagement de duree.</p>
+      </div>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">fact_check</span></div>
+          <div class="prest__title">Audit securite WordPress</div>
+          <p class="prest__lead">Diagnostic complet de votre site WordPress avec rapport detaille des vulnerabilites et plan de remediation priorise.</p>
+          <ul class="prest__feat">
+            <li>Scan complet des fichiers et BDD</li>
+            <li>Inventaire plugins et themes</li>
+            <li>Test des permissions et acces</li>
+            <li>Analyse des logs sur 30 jours</li>
+            <li>Rapport PDF 20-30 pages</li>
+            <li>Plan de remediation priorise</li>
+            <li>Visio de restitution 1h</li>
+          </ul>
+          <div class="prest__price"><strong>490 EUR HT</strong> &middot; livraison 5 jours</div>
+          <a href="/contact?service=audit-securite-wordpress" class="prest__cta">Commander l'audit</a>
+        </div>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">shield_lock</span></div>
+          <div class="prest__title">Hardening complet</div>
+          <p class="prest__lead">Mise en oeuvre des 30+ points de notre check-list de durcissement, installation des outils, configuration optimale.</p>
+          <ul class="prest__feat">
+            <li>Audit securite inclus</li>
+            <li>Wordfence Premium configure</li>
+            <li>Cloudflare WAF deploye</li>
+            <li>2FA admin active</li>
+            <li>Sauvegardes automatisees</li>
+            <li>Monitoring active</li>
+            <li>Formation equipe 2h</li>
+            <li>Documentation remise</li>
+            <li>Garantie 30 jours</li>
+          </ul>
+          <div class="prest__price"><strong>1 500 EUR HT</strong> &middot; livraison 10 jours</div>
+          <a href="/contact?service=hardening-wordpress" class="prest__cta">Reserver le hardening</a>
+        </div>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">support_agent</span></div>
+          <div class="prest__title">Maintenance + securite</div>
+          <p class="prest__lead">Forfait mensuel avec monitoring continu, mises a jour, sauvegardes verifiees et intervention prioritaire en cas d'incident.</p>
+          <ul class="prest__feat">
+            <li>Hardening initial inclus</li>
+            <li>Mises a jour mensuelles</li>
+            <li>Scans hebdomadaires</li>
+            <li>Sauvegardes verifiees</li>
+            <li>Monitoring 24/7</li>
+            <li>Intervention urgence 4h</li>
+            <li>Rapport mensuel</li>
+            <li>4h dev incluses</li>
+            <li>SLA contractuel</li>
+          </ul>
+          <div class="prest__price"><strong>600 EUR HT / mois</strong> &middot; sans engagement</div>
+          <a href="/contact?service=maintenance-securite-wordpress" class="prest__cta">Souscrire au forfait</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> en 4 etapes</h2>
+        <p class="sec-h__sub">Une demarche eprouvee sur plus de 80 sites WordPress securises depuis 2020, de la PME locale au e-commerce a fort trafic. Chaque etape produit un livrable concret et un point de validation explicite.</p>
+      </div>
+      <div class="zigzag">
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">1</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 01</span>
+            <h3 class="zz-step__title">Diagnostic initial gratuit</h3>
+            <p class="zz-step__desc">Echange de 30 minutes en visio ou WhatsApp. Nous identifions vos enjeux, l'historique du site, les incidents passes eventuels et nous vous remettons un pre-diagnostic gratuit avec 3 recommandations prioritaires.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 30 minutes &middot; gratuit</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">2</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 02</span>
+            <h3 class="zz-step__title">Audit complet et rapport</h3>
+            <p class="zz-step__desc">Scan technique complet des fichiers, base de donnees, plugins, themes, permissions. Test penetration de surface, analyse des logs sur 30 jours. Rapport PDF detaille de 20-30 pages avec criticite, impact et remediation pour chaque vulnerabilite.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 3 a 5 jours ouvres</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--left">
+          <div class="zz-step__num">3</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 03</span>
+            <h3 class="zz-step__title">Hardening et deploiement</h3>
+            <p class="zz-step__desc">Application des 30+ points de durcissement&nbsp;: configuration Wordfence, Cloudflare WAF, 2FA, hardening fichiers, sauvegardes automatisees, monitoring. Tests post-deploiement et validation que le site fonctionne normalement.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 5 a 10 jours ouvres</span>
+          </div>
+        </div>
+        <div class="zz-step zz-step--right">
+          <div class="zz-step__num">4</div>
+          <div class="zz-step__card">
+            <span class="zz-step__tag">Etape 04</span>
+            <h3 class="zz-step__title">Formation et suivi</h3>
+            <p class="zz-step__desc">Session de formation de 2 heures avec votre equipe sur les bonnes pratiques WordPress et la lecture des alertes. Remise de la documentation complete. Suivi mensuel optionnel via forfait maintenance avec rapport mensuel et intervention urgence.</p>
+            <span class="zz-step__time"><span class="material-symbols-outlined">schedule</span> 2h + suivi continu</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur la <em>securite WordPress</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Proposez-vous un audit gratuit&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, nous offrons un <strong>pre-diagnostic gratuit de 30 minutes</strong> par visio ou WhatsApp. Pendant cet echange, nous identifions les principales vulnerabilites visibles, vos enjeux business et vous repartez avec 3 recommandations concretes immediatement actionnables. L'audit complet payant (490 EUR HT) avec rapport PDF detaille de 20-30 pages, analyse forensique des logs, scan complet et plan de remediation priorise est lui un livrable a part entiere. C'est ce que nous facturons. Le pre-diagnostic gratuit est sans engagement et nous engageons pas a vous proposer un devis si vous ne souhaitez pas continuer.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel plugin de securite WordPress recommandez-vous&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Notre recommandation depend de votre contexte&nbsp;: pour la <strong>plupart des sites WordPress (vitrine, blog, e-commerce moyen)</strong>, nous deployons Wordfence Premium (~99 USD/an) qui offre le meilleur rapport qualite/prix avec WAF temps reel, scan malware quotidien et protection brute force avancee. Pour les <strong>sites a fort trafic ou e-commerce critique</strong>, nous ajoutons Sucuri (~199 USD/an) pour beneficier d'un WAF cloud en amont du serveur et d'une protection DDoS robuste. Pour les <strong>grands comptes ou sites strategiques</strong>, on combine Cloudflare WAF en peripherie + Wordfence en applicatif + iThemes Security pour le hardening systeme. La cle, c'est de ne pas empiler 5 plugins de securite qui se marchent dessus et ralentissent le site.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Mon site WordPress est-il conforme RGPD&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La conformite RGPD/AAIP depasse la simple installation d'un plugin. Notre offre inclut&nbsp;: <strong>banniere cookies conforme</strong> (consentement granulaire, retrait facile, journalisation), <strong>politique de confidentialite</strong> redigee selon votre activite, <strong>formulaires conformes</strong> (mention legale, consentement explicite, finalite documentee), <strong>registre des traitements</strong> aligne sur l'article 30, <strong>contrat de sous-traitance</strong> RGPD avec votre hebergeur. En cas d'incident de securite avec exposition de donnees personnelles, nous vous accompagnons pour la <strong>notification a la CNIL ou AAIP du Benin sous 72 heures</strong>, comme l'exige la reglementation. Important&nbsp;: l'hebergeur doit etre dans l'UE ou un pays adequat. Si vous hebergez en Afrique de l'Ouest, nous appliquons la loi 2017-20 du Benin sur la protection des donnees.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Intervenez-vous en urgence si mon site est pirate&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui, nous proposons un service d'<strong>intervention urgence 24/7</strong>. Contactez-nous immediatement via WhatsApp (+229 95 00 00 00) ou par email a contact@pirabellabs.com avec en objet "URGENCE SECURITE". Premiere reponse sous 30 minutes en heures ouvrables, sous 2 heures en heures non ouvrables. Notre protocole d'urgence&nbsp;: detection &amp; alerte (30 min), isolation &amp; confinement (1h), investigation forensique (2-4h), restauration &amp; nettoyage (4-8h), post-mortem (sous 7 jours). Tarif intervention urgence ponctuelle&nbsp;: <strong>800 EUR HT (jusqu'a 8h de travail)</strong> puis 100 EUR HT/heure supplementaire. <strong>Pour les clients en forfait maintenance, l'intervention est incluse</strong> jusqu'a 4h par mois sans surcout.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est votre garantie sur le hardening&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Nous offrons une <strong>garantie 30 jours</strong> sur l'offre Hardening complet (1 500 EUR HT)&nbsp;: si votre site est compromis par une faille que nous aurions du corriger pendant cette periode, nous intervenons gratuitement pour le nettoyer, restaurer la version saine et renforcer les mesures de protection. Important&nbsp;: cette garantie ne couvre pas les compromissions liees a vos propres actions (telechargement d'un theme nulled apres notre intervention, partage de mots de passe admin, installation d'un plugin verole) ou aux failles zero-day pour lesquelles aucun correctif n'existe encore au moment de l'attaque. Pour une couverture continue au-dela des 30 jours, nous recommandons le forfait maintenance + securite (600 EUR HT/mois) qui inclut un SLA contractuel et l'intervention urgence prioritaire.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend un audit securite WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Comptez <strong>5 jours ouvres en moyenne</strong> pour un audit complet d'un site WordPress standard&nbsp;: jour 1 = collecte des acces et inventaire technique, jours 2-3 = scan automatise et analyse manuelle approfondie (plugins, themes, BDD, logs), jour 4 = redaction du rapport detaille de 20-30 pages, jour 5 = visio de restitution d'une heure. Pour les <strong>sites complexes</strong> (e-commerce a forte volumetrie, multisite, plus de 50 plugins, custom code important), comptez 7 a 10 jours ouvres. Si vous etes en situation d'urgence post-piratage, nous pouvons reduire le delai a <strong>48 heures en intervention prioritaire</strong> avec une surcharge de +30% sur le tarif standard.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec d'autres CMS que WordPress&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Notre specialite premiere est WordPress (plus de 80 sites securises), mais nous intervenons aussi sur <strong>Prestashop, Joomla et Drupal</strong> avec les memes principes&nbsp;: audit, hardening, monitoring, intervention urgence. Pour <strong>les sites code en Next.js, React, Webflow</strong>, nous proposons un service de securite adapte (revue code, audit dependances npm, scan CSP, tests intrusion API). Pour les <strong>infrastructures cloud</strong> (AWS, GCP, Azure, Vercel), nous realisons des audits de configuration IAM, des revues d'architecture securite et des tests d'intrusion externes. Demandez-nous un devis ferme sous 48h en precisant votre stack technique exacte.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL VERS PARENT -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Securiser votre site WordPress, c'est proteger votre business.</h2>
+          <p>Un site WordPress compromis, c'est en moyenne <strong style="color:#fff;">3 a 7 jours de revenu perdu</strong>, des donnees clients exposees, du SEO ravage par Google et une reputation a reconstruire. Discutons de votre situation pendant 30 minutes et identifions les actions prioritaires a mettre en place cette semaine.</p>
+        </div>
+        <a href="/contact?service=securite-wordpress" class="fcta__cta">Demander mon audit <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. PARENT LINK (WordPress complet) -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir notre <em>expertise WordPress</em> complete</h2>
+        <p class="sec-h__sub">La securite est un volet essentiel mais notre accompagnement WordPress va bien au-dela. Creation, refonte, performance, maintenance, formation&nbsp;: decouvrez l'integralite de notre offre.</p>
+      </div>
+      <div class="parent-link">
+        <div class="parent-link__icon"><span class="material-symbols-outlined">web_asset</span></div>
+        <div>
+          <div class="parent-link__title">Agence WordPress sur mesure</div>
+          <p class="parent-link__desc">Creation de sites WordPress haute performance avec Elementor Pro, Bricks Builder ou developpement headless. SEO optimise, design unique, code source remis. Devis ferme sous 48h pour des sites vitrine, e-commerce WooCommerce, plateformes membres et blogs editoriaux.</p>
+        </div>
+        <a href="/creation-site-wordpress" class="parent-link__cta">Voir l'offre complete <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">shield</span>Devis audit securite sous <strong>48h</strong> &middot; intervention urgence 24/7</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=securite-wordpress" class="sticky-cta__cta">Demander mon audit <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20j%27ai%20besoin%20d%27aide%20pour%20la%20securite%20de%20mon%20site%20WordPress" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">WordPress</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-wordpress">Creation WordPress</a></li>
+          <li><a href="/securite-wordpress">Securite WordPress</a></li>
+          <li><a href="/maintenance-wordpress">Maintenance WordPress</a></li>
+          <li><a href="/refonte-wordpress">Refonte WordPress</a></li>
+          <li><a href="/woocommerce">WooCommerce</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  if ('IntersectionObserver' in window) {
+    var ioAnim = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in-view'); ioAnim.unobserve(e.target); }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.zz-step').forEach(function(el){ ioAnim.observe(el); });
+  } else {
+    document.querySelectorAll('.zz-step').forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Sticky CTA visible apres le hero (~700px scroll)
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

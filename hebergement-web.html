@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agence hebergement web - Pirabel Labs | Vercel, Netlify, Cloudflare</title>
+<meta name="description" content="Agence hebergement web. Vercel, Netlify, Cloudflare. CDN global, SSL, backups. 99.9% uptime garanti. Devis 48h.">
+<meta name="keywords" content="agence hebergement web, vercel netlify cloudflare, hebergement performant, cdn global, hosting cdn, ssl tls automatique, backup quotidien, edge nodes, http3 brotli, ddos protection, waf firewall, monitoring 24 7, hebergement nextjs, hebergement webflow, hebergement wordpress, infrastructure cloud, hebergement Benin, hebergement France, Pirabel Labs">
+<link rel="canonical" href="https://www.pirabellabs.com/hebergement-web">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agence hebergement web - Pirabel Labs">
+<meta property="og:description" content="Vercel, Netlify, Cloudflare. CDN global, SSL automatique, backups quotidiens, 99.9% uptime. Devis ferme sous 48h.">
+<meta property="og:url" content="https://www.pirabellabs.com/hebergement-web">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
+.sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+.sec-h h2 em { color: var(--accent); font-style: normal; }
+.sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
+
+.bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
+.bc a { color: var(--text-muted); text-decoration: none; }
+.bc a:hover { color: var(--accent); opacity: 1; }
+.bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
+.bc__current { color: var(--text); font-weight: 600; }
+
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 3fr 2fr; gap: 4rem; align-items: center; max-width: 80rem; margin: 0 auto; }
+.s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.s-hero h1 { font-size: clamp(1.75rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 0.85rem; max-width: 48rem; }
+.s-hero h1 em { color: var(--accent); font-style: normal; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 44rem; margin-bottom: 2rem; }
+.s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 30rem; margin: 0 auto; width: 100%; }
+.hero-photo { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(255,85,0,0.04) 60%, var(--bg) 100%); border: 4px solid var(--accent); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(255,85,0,0.25); }
+.hero-photo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.18), transparent 60%); pointer-events: none; }
+.hero-photo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 70%); pointer-events: none; }
+.hero-photo__scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; z-index: 1; }
+.hero-photo__avatars { display: flex; align-items: center; }
+.hero-photo__av { width: clamp(4.5rem, 9vw, 6.5rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+.hero-photo__av .material-symbols-outlined { font-size: clamp(2rem, 4vw, 2.85rem); }
+.hero-photo__av:not(:first-child) { margin-left: -1.25rem; }
+.hero-photo__av--main { background: var(--accent); color: #fff; z-index: 2; transform: scale(1.18); border-color: #fff; }
+.hero-photo__caption { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--text); background: rgba(14,14,14,0.85); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1.1rem; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: inline-flex; align-items: center; gap: 0.4rem; }
+.hero-photo__caption .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 3; white-space: nowrap; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 6%; right: -4%; }
+.s-hero__chip--2 { bottom: 6%; left: -6%; }
+.s-hero__chip--3 { top: 50%; right: -8%; transform: translateY(-50%); }
+@media (max-width: 880px) {
+  .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .s-hero__lead { margin-left: auto; margin-right: auto; }
+  .s-hero__cta { justify-content: center; }
+  .s-hero__visual { max-width: 18rem; }
+}
+
+/* Plateformes (4 cards) */
+.plat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 1024px) { .plat-grid { grid-template-columns: repeat(2, 1fr); max-width: 36rem; margin: 0 auto; } }
+@media (max-width: 480px) { .plat-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.plat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; transition: all var(--t); }
+.plat:hover { border-color: var(--accent); transform: translateY(-3px); }
+.plat__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; }
+.plat__icon .material-symbols-outlined { font-size: 1.6rem; }
+.plat__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.plat__sub { font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.85rem; }
+.plat__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.plat__tag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.7rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 600; font-size: 0.7rem; color: var(--text-muted); align-self: flex-start; }
+.plat__tag .material-symbols-outlined { font-size: 0.85rem; color: var(--accent); }
+
+/* Securite (5 elements stack) */
+.sec-list { display: flex; flex-direction: column; gap: 1rem; max-width: 60rem; margin: 0 auto; }
+.sec-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center; transition: border-color var(--t); }
+.sec-item:hover { border-color: var(--accent); }
+@media (max-width: 720px) { .sec-item { grid-template-columns: auto 1fr; gap: 1rem; } .sec-item__chip { grid-column: 1 / -1; justify-self: start; } }
+.sec-item__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sec-item__icon .material-symbols-outlined { font-size: 1.7rem; }
+.sec-item__body { min-width: 0; }
+.sec-item__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; line-height: 1.3; }
+.sec-item__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.sec-item__chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.85rem; background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.4); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: #4ade80; white-space: nowrap; }
+.sec-item__chip .material-symbols-outlined { font-size: 0.85rem; }
+
+/* Performance (4 cards) */
+.perf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 1024px) { .perf-grid { grid-template-columns: repeat(2, 1fr); max-width: 36rem; margin: 0 auto; } }
+@media (max-width: 480px) { .perf-grid { grid-template-columns: 1fr; max-width: 22rem; } }
+.perf { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.4rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.perf:hover { border-color: var(--accent); }
+.perf__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.perf__icon .material-symbols-outlined { font-size: 1.4rem; }
+.perf__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.perf__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.85rem; flex: 1; }
+.perf__metric { font-family: var(--font-display); font-weight: 800; font-size: 0.85rem; color: var(--accent); padding-top: 0.85rem; border-top: 1px solid var(--border); }
+
+/* Plans (3 pricing cards) */
+.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .plans-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.plan { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.plan--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.plan__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.plan__icon .material-symbols-outlined { font-size: 1.65rem; }
+.plan__title { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; }
+.plan__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 3rem; }
+.plan__price { padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+.plan__price-v { font-family: var(--font-display); font-weight: 800; font-size: 2.1rem; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
+.plan__price-u { font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-left: 0.3rem; }
+.plan__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding: 0; list-style: none; }
+.plan__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+.plan__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.plan__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.plan__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.plan--featured .plan__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.plan--featured .plan__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.plan__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
+
+/* Methodologie compact (4 etapes inline) */
+.method-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 72rem; margin: 0 auto; position: relative; }
+@media (max-width: 880px) { .method-grid { grid-template-columns: 1fr; max-width: 28rem; } }
+.method-step { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.35rem; position: relative; }
+.method-step__num { width: 2.25rem; height: 2.25rem; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 0.85rem; margin-bottom: 0.9rem; }
+.method-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3; }
+.method-step__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.65rem; }
+.method-step__time { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 600; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+.method-step__time .material-symbols-outlined { font-size: 0.85rem; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
+.faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
+.faq-i:hover { border-color: var(--border-2); }
+.faq-i[data-open="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,85,0,0.18), 0 8px 24px rgba(0,0,0,0.2); }
+.faq-i__q { width: 100%; background: transparent; border: 0; padding: 1.25rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: left; }
+.faq-i__q-icon { display: inline-flex; width: 1.6rem; height: 1.6rem; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.35s, color 0.2s; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+.faq-i[data-open="true"] .faq-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.faq-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.faq-i[data-open="true"] .faq-i__inner { max-height: 40rem; }
+.faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
+
+/* CTA final */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
+
+/* Parent service card (decouvrir creation web) */
+.parent-card { background: linear-gradient(135deg, rgba(255,85,0,0.08), var(--bg-2) 70%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; }
+@media (max-width: 880px) { .parent-card { grid-template-columns: 1fr; text-align: center; } }
+.parent-card__icon { width: 4.5rem; height: 4.5rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+@media (max-width: 880px) { .parent-card__icon { margin: 0 auto; } }
+.parent-card__icon .material-symbols-outlined { font-size: 2.25rem; }
+.parent-card__body { min-width: 0; }
+.parent-card__eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.5rem; }
+.parent-card__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 2.3vw, 1.55rem); line-height: 1.25; margin-bottom: 0.6rem; }
+.parent-card__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; max-width: 36rem; }
+.parent-card__cta { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); white-space: nowrap; }
+.parent-card__cta:hover { background: var(--accent-2); transform: translateX(4px); opacity: 1; }
+
+/* Sticky CTA bar */
+.sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14,14,14,0.96); border-top: 2px solid var(--accent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 0.9rem var(--px-page); display: flex; align-items: center; justify-content: space-between; gap: 1rem; z-index: 100; box-shadow: 0 -8px 40px rgba(0,0,0,0.6); transform: translateY(105%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-cta__txt { font-size: 0.85rem; color: var(--text); font-family: var(--font-display); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+.sticky-cta__txt strong { color: var(--accent); }
+.sticky-cta__txt .material-symbols-outlined { font-size: 1.05rem; color: var(--success); }
+.sticky-cta__actions { display: flex; gap: 0.5rem; align-items: center; }
+.sticky-cta__cta { background: var(--accent); color: #fff; padding: 0.75rem 1.3rem; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; transition: all var(--t); }
+.sticky-cta__cta:hover { background: var(--accent-2); opacity: 1; transform: translateY(-1px); }
+.sticky-cta__cta .material-symbols-outlined { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .sticky-cta__txt { display: none; }
+  .sticky-cta { justify-content: center; padding: 0.75rem; }
+}
+
+/* WhatsApp floating action button */
+.wa-fab { position: fixed; bottom: 5.5rem; right: 1.5rem; width: 3.5rem; height: 3.5rem; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 99; text-decoration: none; transition: transform var(--t); animation: wa-pulse 2.5s infinite; }
+.wa-fab:hover { transform: scale(1.08); opacity: 1; }
+.wa-fab .material-symbols-outlined { font-size: 1.75rem; color: #fff; }
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgba(37,211,102,0.6); }
+  50% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 14px rgba(37,211,102,0); }
+}
+@media (max-width: 600px) {
+  .wa-fab { bottom: 4.5rem; right: 1rem; width: 3rem; height: 3rem; }
+  .wa-fab .material-symbols-outlined { font-size: 1.5rem; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Service","name":"Hebergement web performant","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Hebergement web professionnel sur Vercel, Netlify, Cloudflare Pages et AWS. CDN global, SSL automatique, backups quotidiens, 99.9% uptime garanti.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"19","highPrice":"149"},"isPartOf":{"@type":"Service","name":"Creation de site web sur mesure","url":"https://www.pirabellabs.com/creation-site-web"}}
+</script>
+</head>
+<body>
+
+<!-- 1. NAV -->
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="/#services" class="nav__link">Services</a>
+      <a href="/#realisations" class="nav__link">Realisations</a>
+      <a href="/#tarifs" class="nav__link">Tarifs</a>
+      <a href="/#avis" class="nav__link">Avis</a>
+      <a href="/contact" class="nav__cta">Contactez-nous</a>
+    </div>
+    <button class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="bc">
+  <a href="/">Accueil</a><span class="bc__sep">&rsaquo;</span><a href="/creation-site-web">Creation de site web</a><span class="bc__sep">&rsaquo;</span><span class="bc__current">Hebergement web</span>
+</div>
+
+<main id="main">
+
+  <!-- 2. HERO -->
+  <section class="s-hero">
+    <div class="s-hero__inner">
+      <div class="s-hero__txt">
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">cloud</span> Sous-service Creation web</span>
+        <h1>Agence <em>hebergement web</em>&nbsp;: Vercel, Netlify, Cloudflare</h1>
+        <p class="s-hero__tagline">CDN global + SSL automatique + Backups + 99.9% uptime</p>
+        <p class="s-hero__lead">Pirabel Labs est l'agence d'hebergement web qui met votre site sur les meilleures infrastructures cloud du marche&nbsp;: Vercel, Netlify, Cloudflare Pages et AWS. Edge nodes repartis sur 100+ regions, HTTPS automatique avec TLS 1.3, protection DDoS et WAF integrees, backups quotidiens chiffres et monitoring 24/7. Vous obtenez un site rapide partout dans le monde, securise par defaut et stable meme en cas de pic de trafic. Devis ferme sous 48h, migration sans interruption garantie.</p>
+        <div class="s-hero__cta">
+          <a href="/contact?service=hebergement-web" class="btn btn--primary btn--lg">Demander un devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20l%27hebergement%20de%20mon%20site" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>
+        </div>
+      </div>
+      <div class="s-hero__visual">
+        <div class="hero-photo">
+          <div class="hero-photo__scene">
+            <div class="hero-photo__avatars">
+              <div class="hero-photo__av"><span class="material-symbols-outlined">dns</span></div>
+              <div class="hero-photo__av hero-photo__av--main"><span class="material-symbols-outlined">cloud</span></div>
+              <div class="hero-photo__av"><span class="material-symbols-outlined">shield_lock</span></div>
+            </div>
+            <div class="hero-photo__caption"><span class="material-symbols-outlined">public</span> CDN mondial &middot; Edge</div>
+          </div>
+        </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">verified</span> 99.9% uptime</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">lock</span> SSL/TLS 1.3</span>
+        <span class="s-hero__chip s-hero__chip--3"><span class="material-symbols-outlined">backup</span> Backups</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PLATEFORMES QUE NOUS UTILISONS -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Plateformes d'<em>hebergement</em> que nous utilisons</h2>
+        <p class="sec-h__sub">Quatre infrastructures cloud de reference, selectionnees apres des annees d'experience sur des projets PME et grands comptes. Chacune a son terrain de force&nbsp;: nous choisissons celle qui correspond a votre projet.</p>
+      </div>
+      <div class="plat-grid">
+        <div class="plat">
+          <div class="plat__icon"><span class="material-symbols-outlined">bolt</span></div>
+          <div class="plat__title">Vercel</div>
+          <div class="plat__sub">L'optimum pour Next.js</div>
+          <p class="plat__desc">Plateforme creee par les auteurs de Next.js. Deploy automatique depuis Git, previews par branche, edge functions natives, ISR (Incremental Static Regeneration) pour des sites toujours frais. 119 regions edge dans le monde. Notre choix par defaut pour les sites Next.js et React.</p>
+          <span class="plat__tag"><span class="material-symbols-outlined">check_circle</span> Recommande PME</span>
+        </div>
+        <div class="plat">
+          <div class="plat__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <div class="plat__title">Netlify</div>
+          <div class="plat__sub">Polyvalent JAMstack</div>
+          <p class="plat__desc">Pionnier du JAMstack. Excellent pour Gatsby, Nuxt, Hugo, Astro et tout projet statique ou hybride. Forms natifs, Netlify Functions (serverless), split testing, gestion des roles equipe avancee. Tres bon back-office pour les agences gerant plusieurs clients.</p>
+          <span class="plat__tag"><span class="material-symbols-outlined">check_circle</span> Multi-frameworks</span>
+        </div>
+        <div class="plat">
+          <div class="plat__icon"><span class="material-symbols-outlined">shield</span></div>
+          <div class="plat__title">Cloudflare Pages</div>
+          <div class="plat__sub">Edge le plus dense au monde</div>
+          <p class="plat__desc">300+ centres edge sur 120 pays&nbsp;: le reseau CDN le plus dense du marche. Protection DDoS et WAF incluses gratuitement. Workers (edge computing), R2 storage compatible S3, Stream pour la video. Le meilleur choix pour les sites a trafic mondial ou africain.</p>
+          <span class="plat__tag"><span class="material-symbols-outlined">check_circle</span> Optimal Afrique</span>
+        </div>
+        <div class="plat">
+          <div class="plat__icon"><span class="material-symbols-outlined">cloud_queue</span></div>
+          <div class="plat__title">AWS S3 + CloudFront</div>
+          <div class="plat__sub">Pour besoins specifiques</div>
+          <p class="plat__desc">L'infrastructure cloud historique d'Amazon. S3 pour le stockage objet, CloudFront pour le CDN, Route 53 pour le DNS. Indispensable pour les projets avec conformite stricte (SOC 2, ISO 27001, HIPAA), volumes massifs de stockage ou integration avec un ecosysteme AWS existant.</p>
+          <span class="plat__tag"><span class="material-symbols-outlined">check_circle</span> Enterprise</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. NOTRE APPROCHE SECURITE HEBERGEMENT -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre approche <em>securite hebergement</em></h2>
+        <p class="sec-h__sub">Cinq couches de defense activees des le premier jour. Aucun module premium a acheter, aucun plugin de securite a configurer&nbsp;: tout est inclus dans notre offre d'hebergement managee.</p>
+      </div>
+      <div class="sec-list">
+        <div class="sec-item">
+          <div class="sec-item__icon"><span class="material-symbols-outlined">shield</span></div>
+          <div class="sec-item__body">
+            <div class="sec-item__title">Firewall WAF (Web Application Firewall)</div>
+            <p class="sec-item__desc">Filtre applicatif qui bloque automatiquement les attaques OWASP Top 10 (injections SQL, XSS, CSRF, scans de vulnerabilites). Regles managees par Cloudflare et mises a jour en continu contre les nouvelles menaces zero-day. Vous ne touchez a rien.</p>
+          </div>
+          <span class="sec-item__chip"><span class="material-symbols-outlined">check_circle</span> Inclus</span>
+        </div>
+        <div class="sec-item">
+          <div class="sec-item__icon"><span class="material-symbols-outlined">block</span></div>
+          <div class="sec-item__body">
+            <div class="sec-item__title">Protection DDoS automatique</div>
+            <p class="sec-item__desc">Capacite d'absorption mondiale de plusieurs terabits par seconde. Detection comportementale qui distingue trafic legitime et flood malveillant. Aucune intervention de votre part lors d'une attaque&nbsp;: Cloudflare et Vercel filtrent en amont, votre site reste accessible.</p>
+          </div>
+          <span class="sec-item__chip"><span class="material-symbols-outlined">check_circle</span> Inclus</span>
+        </div>
+        <div class="sec-item">
+          <div class="sec-item__icon"><span class="material-symbols-outlined">lock</span></div>
+          <div class="sec-item__body">
+            <div class="sec-item__title">SSL / TLS 1.3 automatique</div>
+            <p class="sec-item__desc">Certificats Let's Encrypt provisionnes et renouveles automatiquement tous les 90 jours. Forcing HTTPS sur tout le domaine, HSTS active, redirections 301 systematiques. Note A+ sur SSL Labs des la mise en ligne. Aucun frais ni aucune manipulation cote vous.</p>
+          </div>
+          <span class="sec-item__chip"><span class="material-symbols-outlined">check_circle</span> Inclus</span>
+        </div>
+        <div class="sec-item">
+          <div class="sec-item__icon"><span class="material-symbols-outlined">backup</span></div>
+          <div class="sec-item__body">
+            <div class="sec-item__title">Backup quotidien chiffre</div>
+            <p class="sec-item__desc">Sauvegarde quotidienne automatique de la base de donnees et des assets, chiffree en AES-256, stockee sur une region differente du serveur primaire. Retention 30 jours minimum. Restauration en moins d'une heure en cas d'incident. Tests de restauration mensuels.</p>
+          </div>
+          <span class="sec-item__chip"><span class="material-symbols-outlined">check_circle</span> Inclus</span>
+        </div>
+        <div class="sec-item">
+          <div class="sec-item__icon"><span class="material-symbols-outlined">monitoring</span></div>
+          <div class="sec-item__body">
+            <div class="sec-item__title">Monitoring 24/7 et alertes</div>
+            <p class="sec-item__desc">Surveillance continue de la disponibilite (ping toutes les 60 secondes depuis 7 regions mondiales), des temps de reponse, des erreurs 5xx et des certificats SSL. Alertes email + SMS + Slack en cas d'incident. Nous voyons les problemes avant vos clients.</p>
+          </div>
+          <span class="sec-item__chip"><span class="material-symbols-outlined">check_circle</span> Inclus</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PERFORMANCE ET CDN GLOBAL -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Performance et <em>CDN global</em></h2>
+        <p class="sec-h__sub">Un site qui se charge en 1 seconde depuis Cotonou doit aussi se charger en 1 seconde depuis Paris, Lyon, Abidjan ou Montreal. Voici les quatre technologies que nous activons par defaut.</p>
+      </div>
+      <div class="perf-grid">
+        <div class="perf">
+          <div class="perf__icon"><span class="material-symbols-outlined">public</span></div>
+          <div class="perf__title">Edge nodes mondiaux</div>
+          <p class="perf__desc">Votre site est replique sur 100 a 300 centres edge selon la plateforme. Le visiteur recoit le contenu depuis le serveur le plus proche, reduisant la latence reseau de 200-400 ms a moins de 30 ms.</p>
+          <div class="perf__metric">100 a 300 regions edge</div>
+        </div>
+        <div class="perf">
+          <div class="perf__icon"><span class="material-symbols-outlined">image</span></div>
+          <div class="perf__title">Image optimization auto</div>
+          <p class="perf__desc">Conversion automatique en WebP et AVIF selon le navigateur, redimensionnement responsive, compression intelligente. Une image de 4 MB devient 80 a 200 KB sans perte visuelle perceptible.</p>
+          <div class="perf__metric">-85% poids images</div>
+        </div>
+        <div class="perf">
+          <div class="perf__icon"><span class="material-symbols-outlined">compress</span></div>
+          <div class="perf__title">Compression Brotli</div>
+          <p class="perf__desc">Algorithme de compression developpe par Google, 15 a 25% plus efficace que Gzip sur le HTML, le CSS et le JavaScript. Active automatiquement pour tous les navigateurs compatibles.</p>
+          <div class="perf__metric">-25% poids HTML/CSS/JS</div>
+        </div>
+        <div class="perf">
+          <div class="perf__icon"><span class="material-symbols-outlined">network_check</span></div>
+          <div class="perf__title">HTTP/3 et QUIC</div>
+          <p class="perf__desc">Le protocole le plus recent, bati sur UDP au lieu de TCP. Connexions plus rapides, resiliente aux pertes de paquets (utile sur 4G africaine), zero-RTT pour les retours sur le site.</p>
+          <div class="perf__metric">-30% latence mobile</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PLANS DE HOSTING ET TARIFS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Plans d'<em>hosting et tarifs</em></h2>
+        <p class="sec-h__sub">Trois formules transparentes pour repondre a chaque type de site. Hebergement manage, infrastructure incluse, support technique inclus&nbsp;: pas de surprise sur la facture.</p>
+      </div>
+      <div class="plans-grid">
+        <div class="plan">
+          <div class="plan__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="plan__title">Starter</div>
+          <p class="plan__lead">Pour les sites vitrine et petits e-commerce avec moins de 50 000 visites par mois.</p>
+          <div class="plan__price">
+            <span class="plan__price-v">19 EUR</span><span class="plan__price-u">/ mois HT</span>
+          </div>
+          <ul class="plan__feat">
+            <li>Vercel ou Netlify gere</li>
+            <li>Domaine principal + SSL inclus</li>
+            <li>CDN edge mondial</li>
+            <li>50 000 visites / mois</li>
+            <li>Backups quotidiens 30 jours</li>
+            <li>Monitoring email 24/7</li>
+            <li>Support email sous 48h</li>
+          </ul>
+          <a href="/contact?service=hebergement-starter" class="plan__cta">Choisir Starter</a>
+        </div>
+        <div class="plan plan--featured">
+          <span class="plan__badge">Le plus demande</span>
+          <div class="plan__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <div class="plan__title">Growth</div>
+          <p class="plan__lead">Pour les e-commerce actifs, plateformes SaaS et sites a fort trafic jusqu'a 500 000 visites par mois.</p>
+          <div class="plan__price">
+            <span class="plan__price-v">49 EUR</span><span class="plan__price-u">/ mois HT</span>
+          </div>
+          <ul class="plan__feat">
+            <li>Tout du pack Starter inclus</li>
+            <li>Cloudflare Pro (WAF managee)</li>
+            <li>500 000 visites / mois</li>
+            <li>Backups instantanes 90 jours</li>
+            <li>Monitoring SMS + Slack</li>
+            <li>SLA 99.9% uptime</li>
+            <li>Support email sous 4h</li>
+            <li>2 environnements (prod + staging)</li>
+          </ul>
+          <a href="/contact?service=hebergement-growth" class="plan__cta">Choisir Growth</a>
+        </div>
+        <div class="plan">
+          <div class="plan__icon"><span class="material-symbols-outlined">apartment</span></div>
+          <div class="plan__title">Enterprise</div>
+          <p class="plan__lead">Pour les plateformes critiques, marketplaces et sites avec exigences specifiques de conformite.</p>
+          <div class="plan__price">
+            <span class="plan__price-v">149+ EUR</span><span class="plan__price-u">/ mois HT</span>
+          </div>
+          <ul class="plan__feat">
+            <li>Tout du pack Growth inclus</li>
+            <li>Vercel Enterprise ou AWS dedie</li>
+            <li>Trafic illimite</li>
+            <li>Conformite SOC 2, ISO 27001</li>
+            <li>Backups multi-region</li>
+            <li>SLA 99.99% uptime</li>
+            <li>Support telephone 24/7</li>
+            <li>Astreinte technique dediee</li>
+            <li>Audit securite trimestriel</li>
+          </ul>
+          <a href="/contact?service=hebergement-enterprise" class="plan__cta">Discuter Enterprise</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. METHODOLOGIE COMPACT 4 ETAPES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Notre <em>methodologie</em> en 4 etapes</h2>
+        <p class="sec-h__sub">De l'audit de votre infrastructure actuelle a la mise en ligne sur la nouvelle plateforme, sans interruption ni perte de SEO.</p>
+      </div>
+      <div class="method-grid">
+        <div class="method-step">
+          <div class="method-step__num">01</div>
+          <div class="method-step__title">Audit infrastructure</div>
+          <p class="method-step__desc">Diagnostic de votre hebergement actuel&nbsp;: latence, uptime historique, certificats SSL, backups, vulnerabilites. Recommandations de plateforme adaptees a votre stack.</p>
+          <span class="method-step__time"><span class="material-symbols-outlined">schedule</span> 3 a 5 jours</span>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">02</div>
+          <div class="method-step__title">Configuration cible</div>
+          <p class="method-step__desc">Mise en place de votre nouveau compte (Vercel, Netlify, Cloudflare), configuration DNS, CDN, WAF, SSL, monitoring. Tout est documente dans un runbook partage avec votre equipe.</p>
+          <span class="method-step__time"><span class="material-symbols-outlined">schedule</span> 2 a 4 jours</span>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">03</div>
+          <div class="method-step__title">Migration sans coupure</div>
+          <p class="method-step__desc">Bascule progressive avec preview en parallele de l'ancien site. Tests de charge, validation des formulaires, verification SEO. Cutover DNS finalise en heure creuse.</p>
+          <span class="method-step__time"><span class="material-symbols-outlined">schedule</span> 1 a 2 jours</span>
+        </div>
+        <div class="method-step">
+          <div class="method-step__num">04</div>
+          <div class="method-step__title">Monitoring et garantie</div>
+          <p class="method-step__desc">Surveillance accrue pendant 30 jours apres la migration&nbsp;: alertes en temps reel, rapport hebdomadaire de performance et de disponibilite, ajustements continus.</p>
+          <span class="method-step__time"><span class="material-symbols-outlined">schedule</span> 30 jours</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h"><h2>FAQ sur l'<em>hebergement web</em></h2></div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la garantie d'uptime que vous proposez&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Notre engagement est <strong>99.9% d'uptime mensuel</strong> sur le plan Growth (soit moins de 43 minutes d'indisponibilite par mois) et <strong>99.99% sur le plan Enterprise</strong> (soit moins de 5 minutes par mois). Cet engagement s'appuie directement sur les SLA des plateformes que nous utilisons&nbsp;: Vercel Enterprise garantit 99.99%, Cloudflare 100% sur leur Magic Transit, Netlify 99.99% en Pro. En cas de non-respect du SLA, vous beneficiez d'un avoir proportionnel au temps d'indisponibilite. Nous publions un rapport mensuel de disponibilite verifiable sur status.pirabellabs.com.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment garantissez-vous la securite de mon site et de mes donnees&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La securite repose sur cinq couches&nbsp;: <strong>1) WAF Cloudflare</strong> qui bloque les attaques OWASP Top 10 en temps reel, <strong>2) protection DDoS</strong> de plusieurs Tbps absorbant les attaques volumetriques, <strong>3) SSL/TLS 1.3</strong> automatique avec note A+ sur SSL Labs, <strong>4) backups quotidiens chiffres en AES-256</strong> stockes en region differente, <strong>5) monitoring 24/7</strong> avec alertes en temps reel. Pour les sites manipulant des donnees sensibles (sante, finance), nous proposons en plus le plan Enterprise avec conformite SOC 2, ISO 27001, audits de penetration trimestriels et chiffrement at-rest et in-transit complet.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment votre infrastructure scale-t-elle en cas de pic de trafic&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Vercel, Netlify et Cloudflare Pages sont des plateformes <strong>serverless qui scalent automatiquement</strong> de 1 visiteur a plusieurs millions par seconde sans aucune intervention. L'infrastructure ajoute des ressources en quelques secondes pour absorber le pic, puis les libere apres. Vous ne payez que ce que vous consommez (sur les plans usage-based) ou rien de plus sur les plans fixes. Concretement&nbsp;: un site herberge chez nous a tenu un pic de 850 000 visiteurs en 2h apres un passage TV, sans aucune intervention manuelle et avec un temps de reponse stable sous 800 ms.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la migration depuis mon hebergeur actuel&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Migration sans interruption en 4 etapes&nbsp;: <strong>1) audit</strong> de votre infrastructure actuelle (DNS, mails, base de donnees, taille des fichiers), <strong>2) construction</strong> en parallele sur la nouvelle plateforme avec un sous-domaine de preview (staging.votre-site.com), <strong>3) tests complets</strong> sur la preview (formulaires, paiements, SEO, performance), <strong>4) cutover DNS</strong> realise en heure creuse (souvent 23h heure africaine pour les sites a trafic majoritairement local). Propagation DNS terminee en 4 a 24h. Le SEO ne se perd pas&nbsp;: redirections 301 systematiques de l'ancien site vers le nouveau, Search Console mis a jour. Sur 100% des migrations realisees, aucune perte de trafic organique constatee.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle region serveur recommandez-vous selon ma cible&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">La force des plateformes que nous utilisons (Vercel, Netlify, Cloudflare), c'est qu'il n'y a <strong>pas de region unique</strong>&nbsp;: votre site est replique sur tous les edge nodes du monde en meme temps. Un visiteur a Cotonou recoit le contenu depuis Lagos ou Accra, un visiteur a Paris depuis Roissy, un visiteur a Montreal depuis le Quebec. Pour les bases de donnees ou les fonctions serverless qui ne peuvent pas etre repliquees, nous choisissons la region selon votre cible majoritaire&nbsp;: <strong>Paris (eu-west-3)</strong> pour les cibles Europe et Afrique de l'Ouest, <strong>Dublin (eu-west-1)</strong> pour Europe + UK, <strong>Cape Town (af-south-1)</strong> pour Afrique australe, ou <strong>Virginia (us-east-1)</strong> pour les cibles Ameriques.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Est-ce que votre hebergement convient pour mon site WordPress existant&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Vercel et Netlify hebergent nativement des sites statiques ou serverless (Next.js, Nuxt, Astro, Gatsby, Hugo, sites HTML). <strong>Pour WordPress traditionnel</strong> (PHP + MySQL), nous proposons soit un hebergement Kinsta ou WP Engine que nous gerons pour vous (350-800 EUR/mois selon le trafic), soit une architecture <strong>headless WordPress</strong>&nbsp;: vous gardez WordPress en backoffice editorial, mais le front est genere statiquement et servi depuis Vercel. Cette derniere option combine la souplesse de WordPress pour vos redacteurs avec la performance et la securite des plateformes edge. Tres adapte aux migrations progressives.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Qui possede les acces et que se passe-t-il si je veux partir&nbsp;?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Vous possedez integralement votre infrastructure. Les comptes Vercel, Netlify, Cloudflare, AWS sont ouverts <strong>a votre nom et payes sur votre carte</strong> (ou refacturez par nos soins si vous preferez la simplicite). Vous etes administrateur principal avec acces complet. Nous sommes ajoutes en collaborateur pour la gestion technique. Si vous decidez de partir, vous retirez simplement nos acces&nbsp;: tout votre site, vos backups, votre DNS et vos certificats restent en place sur votre compte. Aucune licence verrou, aucun cout de migration, aucune perte de donnees. La transparence est notre regle.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CTA FINAL avec lien vers /creation-site-web -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Un hebergement performant change tout pour votre site web.</h2>
+          <p>Discutez avec un cofondateur de votre infrastructure actuelle, de vos volumes de trafic, de vos enjeux securite. Nous vous recommandons honnetement la plateforme et le plan adaptes a votre projet. Decouvrez aussi notre service de <a href="/creation-site-web" style="color:#fff;text-decoration:underline;font-weight:600;">creation de site web sur mesure</a> dont l'hebergement est l'extension naturelle.</p>
+        </div>
+        <a href="/contact?service=hebergement-web" class="fcta__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DECOUVRIR CREATION WEB COMPLET -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Decouvrir <em>creation web complet</em></h2>
+        <p class="sec-h__sub">L'hebergement n'est qu'une brique de votre presence digitale. Decouvrez l'ensemble du service creation de site web sur mesure de Pirabel Labs.</p>
+      </div>
+      <a href="/creation-site-web" class="parent-card" style="text-decoration:none;color:var(--text);">
+        <div class="parent-card__icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="parent-card__body">
+          <div class="parent-card__eyebrow">Service parent</div>
+          <div class="parent-card__title">Creation de site web sur mesure</div>
+          <p class="parent-card__desc">Sites vitrine, e-commerce, plateformes SaaS et applications metier developpes en Next.js, React, Webflow ou WordPress. Lighthouse 95+, SEO inclus, devis ferme sous 48h, code source remis. L'hebergement est inclus la premiere annee.</p>
+        </div>
+        <span class="parent-card__cta">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- 11. FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">Pirabel Labs</div>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. Sites, applications, SEO, social, video, tunnels, automatisation, email marketing, consulting.</p>
+      </div>
+      <div>
+        <div class="footer__title">Services</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
+          <li><a href="/creation-application-web">Applications web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Services (suite)</div>
+        <ul class="footer__list">
+          <li><a href="/fiche-google-business">Fiche Google Business</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/montage-video">Montage video</a></li>
+          <li><a href="/email-marketing-crm">Email marketing &amp; CRM</a></li>
+          <li><a href="/consulting-marketing">Consulting marketing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Sous-services</div>
+        <ul class="footer__list">
+          <li><a href="/agence-site-vitrine">Site vitrine</a></li>
+          <li><a href="/agence-ecommerce">E-commerce</a></li>
+          <li><a href="/agence-webflow">Webflow</a></li>
+          <li><a href="/refonte-site-web">Refonte de site</a></li>
+          <li><a href="/hebergement-web">Hebergement web</a></li>
+          <li><a href="/maintenance-site-web">Maintenance</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__title">Studio</div>
+        <ul class="footer__list">
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/#methodologie">Methodologie</a></li>
+          <li><a href="/#tarifs">Tarifs</a></li>
+          <li><a href="/#avis">Avis clients</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits reserves. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+    </div>
+  </div>
+</footer>
+
+<!-- 12a. STICKY CTA -->
+<div class="sticky-cta" id="stickyCta">
+  <span class="sticky-cta__txt"><span class="material-symbols-outlined">verified</span>Devis ferme sous <strong>48h</strong> &middot; 99.9% uptime garanti</span>
+  <div class="sticky-cta__actions">
+    <a href="/contact?service=hebergement-web" class="sticky-cta__cta">Demander mon devis <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<!-- 12b. WHATSAPP FAB -->
+<a href="https://wa.me/22995000000?text=Bonjour%2C%20je%20souhaite%20discuter%20de%20l%27hebergement%20de%20mon%20site" target="_blank" rel="noopener" class="wa-fab" aria-label="Discuter sur WhatsApp">
+  <span class="material-symbols-outlined">chat</span>
+</a>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var links=document.getElementById('navLinks');
+  if(burger && links) {
+    burger.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      burger.classList.toggle('open',open);
+      burger.setAttribute('aria-expanded',open);
+    });
+    links.addEventListener('click', function(e){
+      if (e.target.tagName === 'A' && window.innerWidth < 980) {
+        links.classList.remove('open');
+        burger.classList.remove('open');
+      }
+    });
+  }
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
+    });
+  }
+  bindAccordion('.faq-i');
+
+  // Sticky CTA visible apres le hero
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var lastY = 0;
+    function updateStickyCta() {
+      var y = window.scrollY;
+      if (y > 700 && y > lastY - 50) {
+        stickyCta.classList.add('is-visible');
+      } else if (y < 600) {
+        stickyCta.classList.remove('is-visible');
+      }
+      lastY = y;
+    }
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    updateStickyCta();
+  }
+})();
+</script>
+</body>
+</html>

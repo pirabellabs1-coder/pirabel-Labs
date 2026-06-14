@@ -39,11 +39,8 @@
     { "source": "/blog/:slug*", "destination": "/contact", "permanent": false },
     { "source": "/realisations", "destination": "/contact", "permanent": false },
     { "source": "/realisations/:slug*", "destination": "/contact", "permanent": false },
-    { "source": "/creation-application", "destination": "/contact", "permanent": false },
-    { "source": "/automatisation", "destination": "/contact", "permanent": false },
-    { "source": "/seo", "destination": "/contact", "permanent": false },
-    { "source": "/mentions-legales", "destination": "/contact", "permanent": false },
-    { "source": "/politique-confidentialite", "destination": "/contact", "permanent": false },
+    { "source": "/creation-application", "destination": "/creation-application-web", "permanent": true },
+    { "source": "/automatisation", "destination": "/automatisation-marketing", "permanent": true },
     { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },
     { "source": "/lesson/:slug*", "destination": "/contact", "permanent": false },
     { "source": "/en/:slug*", "destination": "/", "permanent": false }

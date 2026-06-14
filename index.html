@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pirabel Labs - Agence marketing digital 360 au Benin et France</title>
-<meta name="description" content="Agence marketing digital 360 basee au Benin. 9 expertises : sites web, applications, WordPress, SEO, Google Business, community management, video, automatisation, email marketing.">
+<meta name="description" content="Agence marketing digital 360 basee au Benin. 11 expertises : sites web, applications, WordPress, SEO, Google Business, community, video, automatisation, email, tunnels de vente, consulting.">
 <link rel="canonical" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="fr" href="https://www.pirabellabs.com/">
 <link rel="alternate" hreflang="x-default" href="https://www.pirabellabs.com/">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pirabel Labs - Agence marketing digital 360">
-<meta property="og:description" content="9 expertises marketing digital reunies. Sites, apps, SEO, Google Business, community, video, automatisation, email. Devis ferme sous 48h.">
+<meta property="og:description" content="11 expertises marketing digital reunies. Sites, apps, SEO, social, video, automatisation, tunnels de vente, consulting. Devis ferme sous 48h.">
 <meta property="og:url" content="https://www.pirabellabs.com/">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:site_name" content="Pirabel Labs">
@@ -74,8 +74,10 @@
 .better__txt p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
 @media (max-width: 880px) { .better { grid-template-columns: 1fr; } .better__visual { min-height: 14rem; } }
 
-/* 5. SERVICES 3x3 */
-.svc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; }
+/* 5. SERVICES (force 3 par ligne) */
+.svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 880px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .svc-grid { grid-template-columns: 1fr; } }
 .svc-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; text-align: left; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; }
 .svc-c:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
 .svc-c__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
@@ -252,7 +254,7 @@
   <section class="h-hero">
     <div class="h-hero__inner">
       <h1>Votre <em>agence marketing digital 360</em>, du site web aux campagnes qui convertissent.</h1>
-      <p>Sites web sur mesure, applications, WordPress, SEO, Google Business, community management, video, automatisation, email marketing : 9 expertises au service de votre croissance, avec un seul interlocuteur du brief a la mise en ligne.</p>
+      <p>Sites web, applications, WordPress, SEO, Google Business, community management, video, automatisation, email, tunnels de vente, consulting : 11 expertises au service de votre croissance, avec un seul interlocuteur du brief a la mise en ligne.</p>
       <div class="h-hero__cta">
         <a href="/contact" class="btn btn--primary btn--lg">Reserver un appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
         <a href="#services" class="btn btn--ghost btn--lg">Voir tous nos services</a>
@@ -272,7 +274,7 @@
       <span class="trust-logos__item"><span class="material-symbols-outlined">school</span> EdTech Maroc</span>
     </div>
     <div class="stats-3">
-      <div class="stat-c"><div class="stat-c__v">9</div><div class="stat-c__l">expertises maitrisees</div></div>
+      <div class="stat-c"><div class="stat-c__v">11</div><div class="stat-c__l">expertises maitrisees</div></div>
       <div class="stat-c"><div class="stat-c__v">48h</div><div class="stat-c__l">devis ferme</div></div>
       <div class="stat-c"><div class="stat-c__v">100%</div><div class="stat-c__l">garantie satisfait</div></div>
     </div>
@@ -288,8 +290,8 @@
       <div class="diff-grid">
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">hub</span></div>
-          <div class="diff__title">9 expertises sous un meme toit</div>
-          <p class="diff__desc">Tech, design, SEO, social, video : tout est gere en interne. Pas de sous-traitance. Coherence sur l'ensemble de votre presence digitale.</p>
+          <div class="diff__title">11 expertises sous un meme toit</div>
+          <p class="diff__desc">Tech, design, SEO, social, video, tunnels, conseil : tout est gere en interne. Pas de sous-traitance. Coherence sur l'ensemble de votre presence digitale.</p>
         </div>
         <div class="diff">
           <div class="diff__icon"><span class="material-symbols-outlined">handshake</span></div>
@@ -319,7 +321,7 @@
         </div>
         <div class="better__txt">
           <h3>Une meilleure facon de construire votre marketing digital</h3>
-          <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, video et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte 9 expertises a la demande pour livrer ce dont vous avez besoin en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
+          <p>Recruter une equipe marketing complete coute 80 000 a 200 000 EUR par an. Travailler avec 5 freelances independants devient ingerable des qu'il faut coordonner site, SEO, social, video, tunnels et automatisation. Confier votre digital a une grosse agence vous fait perdre en agilite. Pirabel Labs vous apporte 11 expertises a la demande pour livrer ce dont vous avez besoin en 1 a 12 semaines, avec une coherence d'ensemble que personne d'autre ne peut offrir.</p>
         </div>
       </div>
     </div>
@@ -329,7 +331,7 @@
   <section class="section" id="services">
     <div class="container">
       <div class="sec-h">
-        <h2>Nos <em>9 expertises</em> marketing digital</h2>
+        <h2>Nos <em>11 expertises</em> marketing digital</h2>
         <p class="sec-h__sub">Toute la chaine du marketing digital reunie sous un seul toit, avec un seul interlocuteur. Plus besoin de jongler entre 5 prestataires.</p>
       </div>
       <div class="svc-grid">
@@ -385,6 +387,18 @@
           <div class="svc-c__icon"><span class="material-symbols-outlined">mail</span></div>
           <div class="svc-c__title">Email marketing & CRM</div>
           <p class="svc-c__desc">Brevo, Mailchimp, HubSpot. Sequences nurturing, segmentation, A/B tests. Setup CRM + integration aux outils existants.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+          <div class="svc-c__title">Tunnels de vente</div>
+          <p class="svc-c__desc">Landing pages haute conversion, funnels lead gen, CRO, A/B tests. Plus de leads qualifies, plus de ventes, taux de conversion mesure.</p>
+          <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact" class="svc-c">
+          <div class="svc-c__icon"><span class="material-symbols-outlined">psychology</span></div>
+          <div class="svc-c__title">Consulting marketing</div>
+          <p class="svc-c__desc">Audit, strategie, accompagnement. On pose les bonnes questions avant d'agir. Sessions ponctuelles ou suivi mensuel pour piloter votre croissance.</p>
           <span class="svc-c__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
       </div>
@@ -532,7 +546,7 @@
           <div class="cmp__c">1-2 specialites</div>
           <div class="cmp__c">1 par poste</div>
           <div class="cmp__c">Variable</div>
-          <div class="cmp__c cmp__c--us">9 expertises reunies</div>
+          <div class="cmp__c cmp__c--us">11 expertises reunies</div>
 
           <div class="cmp__c cmp__c--label">Delai de demarrage</div>
           <div class="cmp__c">Jours / semaines</div>
@@ -635,7 +649,7 @@
           <div class="plan__title">Forfait mensuel</div>
           <p class="plan__price">Abonnement - <strong>Facturation mensuelle</strong></p>
           <ul>
-            <li>Demandes illimitees sur les 9 expertises</li>
+            <li>Demandes illimitees sur les 11 expertises</li>
             <li>Pause ou arret a tout moment</li>
             <li>Acces privilegie a un cofondateur dedie</li>
             <li>Consulting hebdomadaire de 45 min (optionnel)</li>
@@ -857,7 +871,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__brand">Pirabel Labs</div>
-        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. 9 expertises reunies : sites web, applications, SEO, social, video, automatisation, email.</p>
+        <p class="footer__tagline">Agence marketing digital 360 pour PME francophones. 11 expertises reunies : sites web, applications, SEO, social, video, automatisation, email, tunnels de vente, consulting.</p>
       </div>
       <div>
         <div class="footer__title">Services</div>
@@ -876,7 +890,8 @@
           <li><a href="/contact">Community management</a></li>
           <li><a href="/contact">Montage video</a></li>
           <li><a href="/contact">Email marketing & CRM</a></li>
-          <li><a href="/realisations">Nos realisations</a></li>
+          <li><a href="/contact">Tunnels de vente</a></li>
+          <li><a href="/contact">Consulting marketing</a></li>
         </ul>
       </div>
       <div>

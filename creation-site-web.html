@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Creation de site web sur mesure - Pirabel Labs</title>
-<meta name="description" content="Creation de sites web sur mesure en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise. Devis ferme sous 48h. Pour PME en Benin, France et Afrique francophone.">
+<meta name="description" content="Agence creation site web sur mesure (Next.js, React, Webflow). Lighthouse 95+, SEO inclus, devis ferme sous 48h. Pour PME au Benin, France, Afrique francophone. Tarifs 2 500 a 50 000 EUR.">
 <link rel="canonical" href="https://www.pirabellabs.com/creation-site-web">
 <link rel="icon" type="image/png" href="/img/favicon.png">
 <link rel="apple-touch-icon" href="/img/favicon.png">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Creation de site web sur mesure - Pirabel Labs">
-<meta property="og:description" content="Sites web sur mesure developpes en code. Performance Lighthouse 95+, design unique, evolutif. Devis sous 48h.">
+<meta property="og:description" content="Sites code en Next.js/React, performance Lighthouse 95+, devis ferme sous 48h.">
 <meta property="og:url" content="https://www.pirabellabs.com/creation-site-web">
 <meta property="og:image" content="https://www.pirabellabs.com/img/og-image.png">
 <meta property="og:locale" content="fr_FR">
@@ -21,77 +21,176 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
 <style>
-/* ===== Service page commun ===== */
 .sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
 .sec-h h2 { font-size: clamp(1.85rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
 .sec-h h2 em { color: var(--accent); font-style: normal; }
 .sec-h__sub { font-size: clamp(0.95rem, 1.35vw, 1.1rem); color: var(--text-muted); line-height: 1.65; }
+.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.container { max-width: 76rem; margin: 0 auto; }
 
-/* === BREADCRUMB === */
+/* Breadcrumb */
 .bc { padding: 1.25rem var(--px-page) 0; font-size: 0.82rem; }
 .bc a { color: var(--text-muted); text-decoration: none; }
 .bc a:hover { color: var(--accent); opacity: 1; }
 .bc__sep { color: var(--text-faint); margin: 0 0.4rem; }
 .bc__current { color: var(--text); font-weight: 600; }
 
-/* === HERO === */
-.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
-.s-hero__inner { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
+/* Hero */
+.s-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) var(--px-page) clamp(2rem, 4vw, 3.5rem); overflow: hidden; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,85,0,0.10) 0%, transparent 60%), var(--bg); }
+.s-hero__inner { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; gap: 4rem; align-items: center; max-width: 78rem; margin: 0 auto; }
 .s-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
 .s-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
-.s-hero h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; }
+.s-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 0.85rem; }
 .s-hero h1 em { color: var(--accent); font-style: normal; }
-.s-hero__lead { font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: var(--text-muted); max-width: 36rem; margin-bottom: 2rem; }
+.s-hero__tagline { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 1.25rem; }
+.s-hero__lead { font-size: clamp(0.95rem, 1.3vw, 1.05rem); line-height: 1.65; color: var(--text-muted); max-width: 36rem; margin-bottom: 2rem; }
 .s-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
 .s-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; }
 .s-hero__trust-item { display: inline-flex; align-items: center; gap: 0.35rem; }
 .s-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1rem; }
-.s-hero__visual { position: relative; aspect-ratio: 4/3; }
-.s-mock { width: 100%; height: 100%; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); transform: perspective(1400px) rotateY(-6deg) rotateX(2deg); }
-.s-mock__bar { background: var(--surface); padding: 0.65rem 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
-.s-mock__dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; flex-shrink: 0; }
-.s-mock__dot.r { background: #f87171; } .s-mock__dot.y { background: #fbbf24; } .s-mock__dot.g { background: #4ade80; }
-.s-mock__url { flex: 1; text-align: center; font-size: 0.65rem; color: var(--text-faint); background: var(--bg); padding: 0.3rem 0.7rem; border-radius: 999px; font-family: var(--font-display); margin-left: 0.5rem; }
-.s-mock__body { padding: 1.25rem; background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.04) 100%); flex: 1; display: flex; flex-direction: column; gap: 0.85rem; }
-.smk-row { display: flex; gap: 0.45rem; align-items: center; }
-.smk-block { background: var(--text); opacity: 0.85; border-radius: 3px; height: 0.6rem; }
-.smk-block.w90 { width: 90%; } .smk-block.w70 { width: 70%; } .smk-block.w50 { width: 50%; } .smk-block.w30 { width: 30%; }
-.smk-block.acc { background: var(--accent); opacity: 1; }
-.smk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: auto; }
-.smk-card { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; color: var(--accent); }
-.smk-card .material-symbols-outlined { font-size: 1.1rem; opacity: 0.7; }
+.s-hero__visual { position: relative; aspect-ratio: 1; max-width: 28rem; margin: 0 auto; }
+.team-circle { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-2) 70%); border: 2px solid var(--accent); position: relative; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 80px rgba(255,85,0,0.2); display: flex; align-items: center; justify-content: center; }
+.team-circle::before { content: ''; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(255,85,0,0.15), transparent 70%); }
+.team-circle__inner { position: relative; z-index: 1; display: flex; gap: -1rem; align-items: center; }
+.team-av { width: clamp(5rem, 12vw, 9rem); aspect-ratio: 1; border-radius: 50%; background: var(--bg-2); border: 3px solid var(--bg); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 3.5vw, 2.5rem); color: var(--accent); flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.team-av:not(:first-child) { margin-left: -1.5rem; }
+.team-av--mid { background: var(--accent); color: #fff; z-index: 1; transform: translateY(-0.8rem); }
+.s-hero__chip { position: absolute; background: var(--bg-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; color: var(--text); display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2; }
+.s-hero__chip .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.s-hero__chip--1 { top: 4%; right: -2%; }
+.s-hero__chip--2 { bottom: 8%; left: -4%; }
 @media (max-width: 880px) {
   .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
   .s-hero__lead { margin-left: auto; margin-right: auto; }
   .s-hero__cta, .s-hero__trust { justify-content: center; }
-  .s-hero__visual { max-width: 28rem; margin: 0 auto; }
-  .s-mock { transform: none; }
+  .s-hero__visual { max-width: 18rem; }
 }
 
-/* === SECTIONS === */
-.section { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
-.container { max-width: 76rem; margin: 0 auto; }
+/* Prestations */
+.prest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .prest-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.prest { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all var(--t); position: relative; }
+.prest--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
+.prest__icon { width: 3.25rem; height: 3.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.prest__icon .material-symbols-outlined { font-size: 1.65rem; }
+.prest__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.prest__lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.25rem; min-height: 4rem; }
+.prest__feat { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__feat li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; list-style: none; }
+.prest__feat li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
+.prest__price { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.prest__price strong { color: var(--text); font-weight: 800; font-size: 1.1rem; }
+.prest__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
+.prest__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.prest--featured .prest__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
+.prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
 
-/* === POUR QUI === */
-.aud-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
-@media (max-width: 720px) { .aud-grid { grid-template-columns: 1fr; } }
-.aud { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.75rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: border-color var(--t); }
-.aud:hover { border-color: var(--accent); }
-.aud__icon { width: 3rem; height: 3rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
-.aud__icon .material-symbols-outlined { font-size: 1.5rem; }
-.aud__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.45rem; }
-.aud__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
+/* Temoignages */
+.temo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .temo-grid { grid-template-columns: 1fr; max-width: 32rem; margin: 0 auto; } }
+.temo { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; transition: border-color var(--t); }
+.temo:hover { border-color: var(--accent); }
+.temo__tag { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 1rem; }
+.temo__tag .material-symbols-outlined { font-size: 0.85rem; }
+.temo__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.55rem; }
+.temo__quote { font-size: 0.88rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.25rem; flex: 1; font-style: italic; }
+.temo__metrics { display: flex; gap: 1rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid var(--border); }
+.temo__metric { display: flex; flex-direction: column; gap: 0.15rem; }
+.temo__metric strong { font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--accent); }
+.temo__metric span { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; }
+.temo__author { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.temo__avatar { width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; flex-shrink: 0; }
+.temo__author-name { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; }
+.temo__author-role { font-size: 0.7rem; color: var(--text-muted); }
 
-/* === CE QU'ON FAIT === */
-.deliv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-@media (max-width: 880px) { .deliv-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 540px) { .deliv-grid { grid-template-columns: 1fr; } }
-.deliv { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; }
-.deliv__num { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
-.deliv__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.55rem; }
-.deliv__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+/* Lead magnet */
+.lm-card { background: linear-gradient(135deg, rgba(255,85,0,0.10) 0%, var(--bg-2) 65%); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.lm-card::before { content: ''; position: absolute; top: -3rem; right: -3rem; width: 12rem; height: 12rem; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.2; pointer-events: none; }
+@media (max-width: 880px) { .lm-card { grid-template-columns: 1fr; gap: 2rem; } }
+.lm__book { position: relative; aspect-ratio: 3/4; max-width: 14rem; margin: 0 auto; }
+.lm__book-cover { position: absolute; inset: 0; background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%); border: 1px solid var(--accent); border-radius: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.5), -8px 0 0 -1px var(--accent), -8px 0 0 -2px rgba(255,255,255,0.08); padding: 1.5rem 1.25rem; display: flex; flex-direction: column; transform: rotate(-3deg); }
+.lm__book-tag { font-family: var(--font-display); font-weight: 800; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.85rem; }
+.lm__book-title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; line-height: 1.2; margin-bottom: 0.85rem; }
+.lm__book-title em { color: var(--accent); font-style: normal; }
+.lm__book-lines { display: flex; flex-direction: column; gap: 0.4rem; margin-top: auto; opacity: 0.5; }
+.lm__book-line { height: 0.3rem; background: var(--text); border-radius: 2px; }
+.lm__book-line.w80 { width: 80%; } .lm__book-line.w60 { width: 60%; } .lm__book-line.w90 { width: 90%; }
+.lm__txt { min-width: 0; }
+.lm__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--bg); border: 1px solid var(--accent); border-radius: 999px; padding: 0.4rem 0.85rem; margin-bottom: 1.25rem; }
+.lm__eyebrow .material-symbols-outlined { font-size: 0.9rem; }
+.lm__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2.5vw, 1.7rem); line-height: 1.2; margin-bottom: 0.85rem; }
+.lm__desc { font-size: 0.92rem; color: var(--text); line-height: 1.6; margin-bottom: 1.5rem; }
+.lm__form { display: flex; flex-direction: column; gap: 0.75rem; }
+.lm__field { background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius); padding: 0.85rem 1rem; color: var(--text); font-family: var(--font-body); font-size: 0.92rem; transition: border-color var(--t); width: 100%; }
+.lm__field:focus { outline: none; border-color: var(--accent); }
+.lm__field::placeholder { color: var(--text-faint); }
+.lm__submit { padding: 0.95rem 1.5rem; background: var(--accent); color: #fff; border: 0; border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background var(--t); display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+.lm__submit:hover { background: var(--accent-2); }
+.lm__legal { font-size: 0.74rem; color: var(--text-muted); margin-top: 0.25rem; }
 
-/* === METHODOLOGIE (zigzag identique a la home) === */
+/* Promesse vs Defi */
+.pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; max-width: 64rem; margin: 0 auto; }
+@media (max-width: 720px) { .pd-grid { grid-template-columns: 1fr; } }
+.pd { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; }
+.pd__h { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.pd__h-icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+.pd--prom .pd__h-icon { background: rgba(74,222,128,0.12); color: #4ade80; }
+.pd--def .pd__h-icon { background: rgba(251,191,36,0.12); color: #fbbf24; }
+.pd__h-title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+.pd__list { display: flex; flex-direction: column; gap: 0.85rem; }
+.pd__item { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.92rem; color: var(--text); line-height: 1.5; }
+.pd__item .material-symbols-outlined { flex-shrink: 0; font-size: 1.15rem; margin-top: 0.05rem; }
+.pd--prom .pd__item .material-symbols-outlined { color: #4ade80; }
+.pd--def .pd__item .material-symbols-outlined { color: #fbbf24; }
+
+/* CTA milieu (consultant card) */
+.midcta { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 2.75rem); max-width: 64rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; align-items: center; position: relative; overflow: hidden; }
+.midcta::before { content: ''; position: absolute; bottom: -2rem; right: -2rem; width: 10rem; height: 10rem; background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%); pointer-events: none; }
+@media (max-width: 720px) { .midcta { grid-template-columns: 1fr; text-align: center; } }
+.midcta h3 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2.4vw, 1.65rem); line-height: 1.25; color: #fff; margin-bottom: 0.75rem; }
+.midcta p { font-size: 0.92rem; line-height: 1.5; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 32rem; }
+@media (max-width: 720px) { .midcta p { margin-left: auto; margin-right: auto; } }
+.midcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: transform var(--t); }
+.midcta__cta:hover { transform: translateX(4px); opacity: 1; }
+.midcta__visual { position: relative; aspect-ratio: 1; max-width: 12rem; justify-self: center; }
+.midcta__avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--bg-2); border: 3px solid #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 3rem; color: #fff; background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%); box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+.midcta__role { position: absolute; bottom: -0.75rem; left: 50%; transform: translateX(-50%); background: var(--bg); border: 1px solid #fff; border-radius: 999px; padding: 0.35rem 0.85rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #fff; white-space: nowrap; }
+
+/* Pourquoi nous (long form) */
+.pourquoi { max-width: 50rem; margin: 0 auto; }
+.pourquoi p { font-size: 1rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 1.25rem; }
+.pourquoi p strong { color: var(--text); }
+.pourquoi p em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+/* Citation expert */
+.quote-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 2rem 2rem 2.5rem; max-width: 48rem; margin: 0 auto; position: relative; display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; }
+@media (max-width: 720px) { .quote-card { grid-template-columns: 1fr; text-align: center; padding: 2rem 1.5rem; } }
+.quote-card::before { content: '\201C'; position: absolute; top: -1rem; left: 1rem; font-family: var(--font-display); font-size: 5rem; color: var(--accent); opacity: 0.3; line-height: 1; }
+.quote-card__photo { width: 5rem; height: 5rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; flex-shrink: 0; border: 2px solid var(--accent); }
+@media (max-width: 720px) { .quote-card__photo { margin: 0 auto; } }
+.quote-card__txt blockquote { font-size: 1.05rem; line-height: 1.55; color: var(--text); margin-bottom: 1rem; font-style: italic; }
+.quote-card__author { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; }
+.quote-card__role { font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-top: 0.25rem; }
+
+/* Stats agence */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 64rem; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-2); }
+@media (max-width: 880px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+.stat-c { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
+.stat-c:last-child { border-right: 0; }
+@media (max-width: 880px) {
+  .stat-c:nth-child(2n) { border-right: 0; }
+  .stat-c:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .stat-c { border-right: 0; border-bottom: 1px solid var(--border); }
+  .stat-c:last-child { border-bottom: 0; }
+}
+.stat-c__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: var(--accent); }
+.stat-c__l { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.4; }
+
+/* Zigzag methodologie */
 .zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
 .zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
 .zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
@@ -99,8 +198,8 @@
 .zz-step--right { transform: translate(45px, 25px); }
 .zz-step.in-view { opacity: 1; transform: translate(0, 0); }
 .zz-step:last-child { margin-bottom: 0; }
-.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg-2), 0 0 24px rgba(255,85,0,0.4); }
-.zz-step__card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
+.zz-step__num { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; z-index: 2; box-shadow: 0 0 0 6px var(--bg), 0 0 24px rgba(255,85,0,0.4); }
+.zz-step__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.6rem; max-width: 23rem; }
 .zz-step__tag { font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.65rem; display: block; }
 .zz-step__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.55rem; line-height: 1.3; }
 .zz-step__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
@@ -117,55 +216,7 @@
   .zz-step--left .zz-step__time { flex-direction: row; }
 }
 
-/* === STACK === */
-.stack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 60rem; margin: 0 auto; }
-@media (max-width: 720px) { .stack-grid { grid-template-columns: 1fr; } }
-.stack-cat { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.4rem; }
-.stack-cat__h { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.1rem; }
-.stack-cat__icon { width: 2.25rem; height: 2.25rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
-.stack-cat__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
-.stack-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-.stack-list span { background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; font-family: var(--font-display); font-weight: 600; }
-
-/* === RESULTATS === */
-.res-grid { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; max-width: 64rem; margin: 0 auto; background: var(--bg-2); }
-@media (max-width: 880px) { .res-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .res-grid { grid-template-columns: 1fr; } }
-.res { padding: 2.25rem 1.25rem; text-align: center; border-right: 1px solid var(--border); }
-.res:last-child { border-right: 0; }
-@media (max-width: 880px) {
-  .res:nth-child(2n) { border-right: 0; }
-  .res:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
-}
-@media (max-width: 480px) {
-  .res { border-right: 0; border-bottom: 1px solid var(--border); }
-  .res:last-child { border-bottom: 0; }
-}
-.res__icon { color: var(--accent); margin-bottom: 0.85rem; }
-.res__icon .material-symbols-outlined { font-size: 1.65rem; }
-.res__v { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.35rem); color: var(--text); line-height: 1; letter-spacing: -0.02em; margin-bottom: 0.45rem; }
-.res__v em { color: var(--accent); font-style: normal; }
-.res__l { font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; line-height: 1.45; }
-
-/* === TARIFS === */
-.tarif-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 68rem; margin: 0 auto; align-items: stretch; }
-@media (max-width: 880px) { .tarif-grid { grid-template-columns: 1fr; max-width: 28rem; } }
-.tarif { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.25rem 1.75rem; display: flex; flex-direction: column; position: relative; }
-.tarif--featured { border-color: var(--accent); background: linear-gradient(180deg, rgba(255,85,0,.06), var(--bg-2) 40%); }
-.tarif__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
-.tarif__title { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.45rem; }
-.tarif__price { font-family: var(--font-display); font-weight: 800; font-size: 1.55rem; color: var(--accent); margin-bottom: 0.3rem; line-height: 1.1; }
-.tarif__price-from { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; }
-.tarif__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
-.tarif ul { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.5rem; flex: 1; }
-.tarif li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--text); line-height: 1.5; }
-.tarif li::before { content: ''; flex-shrink: 0; margin-top: 0.32rem; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); background-size: 70%; background-position: center; background-repeat: no-repeat; }
-.tarif__cta { display: block; padding: 0.9rem 1.2rem; text-align: center; background: transparent; color: var(--text); border: 1px solid var(--border-2); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: all var(--t); }
-.tarif__cta:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
-.tarif--featured .tarif__cta { background: var(--accent); color: #fff; border-color: var(--accent); }
-.tarif--featured .tarif__cta:hover { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
-
-/* === FAQ === */
+/* FAQ */
 .faq-list { display: flex; flex-direction: column; gap: 0.65rem; max-width: 48rem; margin: 0 auto; }
 .faq-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s, box-shadow 0.25s; }
 .faq-i:hover { border-color: var(--border-2); }
@@ -177,36 +228,51 @@
 .faq-i[data-open="true"] .faq-i__inner { max-height: 32rem; }
 .faq-i__a-inner { padding: 0 1.4rem 1.4rem; font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; }
 
-/* === CTA FINAL === */
-.cta-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden; max-width: 64rem; margin: 0 auto; }
-.cta-card__txt { padding: 3rem 2.5rem; align-self: center; }
-.cta-card__txt h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2; margin-bottom: 1rem; }
-.cta-card__txt h2 em { color: var(--accent); font-style: normal; }
-.cta-card__txt p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.6; }
-.cta-card__visual { background: linear-gradient(135deg, rgba(255,85,0,0.1), transparent 70%); display: flex; align-items: center; justify-content: center; min-height: 16rem; }
-.cta-card__visual-box { width: 5rem; height: 5rem; background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); box-shadow: 0 0 30px rgba(255,85,0,0.2); }
-.cta-card__visual-box .material-symbols-outlined { font-size: 2.5rem; }
-@media (max-width: 880px) { .cta-card { grid-template-columns: 1fr; } .cta-card__visual { min-height: 12rem; } }
+/* Avantages accordion + photo */
+.adv-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; max-width: 64rem; margin: 0 auto; align-items: center; }
+@media (max-width: 880px) { .adv-grid { grid-template-columns: 1fr; gap: 2rem; } }
+.adv__visual { position: relative; aspect-ratio: 4/5; max-width: 18rem; margin: 0 auto; width: 100%; }
+.adv__visual-frame { width: 100%; height: 100%; border-radius: 18rem 18rem 0 0; background: linear-gradient(180deg, var(--accent-soft) 0%, var(--bg-2) 100%); border: 1px solid var(--accent); display: flex; align-items: flex-end; justify-content: center; padding: 2rem; position: relative; overflow: hidden; }
+.adv__visual-frame::before { content: ''; position: absolute; top: 12%; left: 50%; transform: translateX(-50%); width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,85,0,0.2), transparent 70%); }
+.adv__avatar { width: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 6vw, 4rem); color: var(--accent); position: relative; z-index: 1; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.adv-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.adv-i { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); transition: border-color 0.25s; }
+.adv-i:hover { border-color: var(--border-2); }
+.adv-i[data-open="true"] { border-color: var(--accent); }
+.adv-i__q { width: 100%; background: transparent; border: 0; padding: 1.1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); text-align: left; }
+.adv-i__q-icon { font-size: 1.3rem; color: var(--text-muted); transition: transform 0.35s, color 0.2s; flex-shrink: 0; }
+.adv-i[data-open="true"] .adv-i__q-icon { transform: rotate(135deg); color: var(--accent); }
+.adv-i__inner { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.adv-i[data-open="true"] .adv-i__inner { max-height: 16rem; }
+.adv-i__a-inner { padding: 0 1.25rem 1.25rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Services connexes (synergies) */
+.syn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 880px) { .syn-grid { grid-template-columns: 1fr; max-width: 28rem; margin: 0 auto; } }
+.syn { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; text-decoration: none; color: var(--text); transition: all var(--t); }
+.syn:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
+.syn__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.syn__icon .material-symbols-outlined { font-size: 1.35rem; }
+.syn__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.syn__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+.syn__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; transition: gap 0.2s; }
+.syn:hover .syn__link { gap: 0.5rem; }
+.syn__link .material-symbols-outlined { font-size: 0.95rem; }
+
+/* CTA final bleu */
+.fcta { background: linear-gradient(135deg, var(--accent) 0%, #b34000 100%); border-radius: var(--radius-lg); padding: clamp(2.5rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; display: grid; grid-template-columns: 1.4fr auto; gap: 2.5rem; align-items: center; position: relative; overflow: hidden; }
+.fcta::before, .fcta::after { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%); pointer-events: none; }
+.fcta::before { top: -3rem; right: 30%; width: 14rem; height: 14rem; }
+.fcta::after { bottom: -3rem; right: 5%; width: 10rem; height: 10rem; }
+@media (max-width: 720px) { .fcta { grid-template-columns: 1fr; text-align: center; } }
+.fcta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem); line-height: 1.2; color: #fff; margin-bottom: 0.75rem; }
+.fcta p { font-size: 1rem; color: rgba(255,255,255,0.92); margin-bottom: 1.5rem; max-width: 38rem; line-height: 1.55; position: relative; z-index: 1; }
+@media (max-width: 720px) { .fcta p { margin-left: auto; margin-right: auto; } }
+.fcta__cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.75rem; background: #fff; color: var(--accent); border-radius: 999px; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 1; transition: transform var(--t); white-space: nowrap; }
+.fcta__cta:hover { transform: translateX(4px); opacity: 1; }
 </style>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Service",
-  "name": "Creation de site web sur mesure",
-  "provider": {
-    "@type": "Organization",
-    "name": "Pirabel Labs",
-    "url": "https://www.pirabellabs.com"
-  },
-  "areaServed": ["BJ","FR","CI","SN","CM","TG","BF","ML"],
-  "description": "Creation de sites web sur mesure developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise.",
-  "offers": {
-    "@type": "AggregateOffer",
-    "priceCurrency": "EUR",
-    "lowPrice": "2500",
-    "highPrice": "25000"
-  }
-}
+{"@context":"https://schema.org","@type":"Service","name":"Creation de site web sur mesure","provider":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"areaServed":["BJ","FR","CI","SN","CM","TG","BF","ML"],"description":"Creation de sites web sur mesure developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise.","offers":{"@type":"AggregateOffer","priceCurrency":"EUR","lowPrice":"2500","highPrice":"50000"}}
 </script>
 </head>
 <body>
@@ -234,135 +300,286 @@
 
 <main id="main">
 
-  <!-- HERO -->
+  <!-- 1. HERO -->
   <section class="s-hero">
     <div class="s-hero__inner">
       <div class="s-hero__txt">
-        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Sites web sur mesure</span>
-        <h1>Un site web <em>sur mesure</em> qui convertit, pas une vitrine generique de plus.</h1>
-        <p class="s-hero__lead">Sites institutionnels, e-commerce et plateformes developpes en code (Next.js, React, Webflow). Performance Lighthouse 95+, design unique, SEO optimise des le 1er jour. Mise en ligne en 3 a 8 semaines selon scope.</p>
+        <span class="s-hero__eyebrow"><span class="material-symbols-outlined">code</span> Agence creation site web</span>
+        <h1>Un site web <em>sur mesure</em> qui vous distingue, pas une vitrine generique.</h1>
+        <p class="s-hero__tagline">Pour PME ambitieuses au Benin, en France et en Afrique francophone.</p>
+        <p class="s-hero__lead">Depuis 2020, nous concevons et developpons des sites institutionnels, e-commerce et plateformes 100% sur mesure en Next.js, React ou Webflow. Performance Lighthouse 95+, design unique, SEO inclus, devis ferme sous 48h. Nos sites deviennent des actifs strategiques, pas de simples vitrines de plus.</p>
         <div class="s-hero__cta">
-          <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander un devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
-          <a href="#methodologie" class="btn btn--ghost btn--lg">Voir notre methode</a>
+          <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Demander mon devis ferme <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
         <div class="s-hero__trust">
-          <span class="s-hero__trust-item"><span class="material-symbols-outlined">verified</span> Devis sous 48h</span>
+          <span class="s-hero__trust-item"><span class="material-symbols-outlined">verified</span> Devis 48h</span>
           <span class="s-hero__trust-item"><span class="material-symbols-outlined">speed</span> Lighthouse 95+ garanti</span>
           <span class="s-hero__trust-item"><span class="material-symbols-outlined">shield</span> Garantie 30 jours</span>
         </div>
       </div>
       <div class="s-hero__visual">
-        <div class="s-mock">
-          <div class="s-mock__bar">
-            <div class="s-mock__dot r"></div><div class="s-mock__dot y"></div><div class="s-mock__dot g"></div>
-            <div class="s-mock__url">www.votre-entreprise.com</div>
-          </div>
-          <div class="s-mock__body">
-            <div class="smk-row">
-              <div class="smk-block w30"></div>
-              <div class="smk-block acc w30" style="margin-left:auto;"></div>
-            </div>
-            <div class="smk-block w90"></div>
-            <div class="smk-block w70"></div>
-            <div class="smk-block acc w30"></div>
-            <div class="smk-grid">
-              <div class="smk-card"><span class="material-symbols-outlined">grid_view</span></div>
-              <div class="smk-card"><span class="material-symbols-outlined">show_chart</span></div>
-              <div class="smk-card"><span class="material-symbols-outlined">bolt</span></div>
-            </div>
+        <div class="team-circle">
+          <div class="team-circle__inner">
+            <div class="team-av">LG</div>
+            <div class="team-av team-av--mid"><span class="material-symbols-outlined" style="font-size:inherit;">code</span></div>
+            <div class="team-av">FI</div>
           </div>
         </div>
+        <span class="s-hero__chip s-hero__chip--1"><span class="material-symbols-outlined">workspace_premium</span> Cofondateurs</span>
+        <span class="s-hero__chip s-hero__chip--2"><span class="material-symbols-outlined">verified</span> Depuis 2020</span>
       </div>
     </div>
   </section>
 
-  <!-- POUR QUI -->
-  <section class="section">
-    <div class="container">
-      <div class="sec-h">
-        <h2>A <em>qui</em> s'adresse ce service ?</h2>
-        <p class="sec-h__sub">Notre approche sur mesure convient quand le besoin de votre projet depasse ce qu'un template WordPress ou Wix peut faire.</p>
-      </div>
-      <div class="aud-grid">
-        <div class="aud">
-          <div class="aud__icon"><span class="material-symbols-outlined">corporate_fare</span></div>
-          <div>
-            <div class="aud__title">PME et ETI ambitieuses</div>
-            <p class="aud__desc">Vous voulez un site qui reflete votre niveau d'expertise. Pas un theme generique sur lequel votre concurrent est aussi. Un site qui devient un actif strategique, pas une depense.</p>
-          </div>
-        </div>
-        <div class="aud">
-          <div class="aud__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
-          <div>
-            <div class="aud__title">E-commerce en croissance</div>
-            <p class="aud__desc">Vous etes a l'etroit sur Shopify, votre WooCommerce rame, ou vous avez besoin de logiques specifiques (Mobile Money, multi-devises, abonnements). Un site sur mesure scale sans bricolage.</p>
-          </div>
-        </div>
-        <div class="aud">
-          <div class="aud__icon"><span class="material-symbols-outlined">refresh</span></div>
-          <div>
-            <div class="aud__title">Refonte de site existant</div>
-            <p class="aud__desc">Votre site actuel est lent (Lighthouse < 60), ne convertit pas, ou date d'il y a 5 ans. Refonte complete pour repartir sur des bases techniques et UX modernes.</p>
-          </div>
-        </div>
-        <div class="aud">
-          <div class="aud__icon"><span class="material-symbols-outlined">design_services</span></div>
-          <div>
-            <div class="aud__title">Marques exigeantes sur le design</div>
-            <p class="aud__desc">Vous voulez un site qui se distingue visuellement, avec animations, micro-interactions, identite visuelle forte. Impossible avec un template, requis sur mesure.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CE QU'ON FAIT -->
+  <!-- 2. NOS PRESTATIONS -->
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
       <div class="sec-h">
-        <h2>Ce que vous <em>obtenez</em> concretement</h2>
-        <p class="sec-h__sub">6 livrables tangibles, documentes et transferes a la fin du projet.</p>
+        <h2>Nos <em>prestations</em> creation de site web</h2>
+        <p class="sec-h__sub">Trois formules pour repondre a chaque etape de votre projet, du site vitrine a la plateforme SaaS complexe.</p>
       </div>
-      <div class="deliv-grid">
-        <div class="deliv">
-          <div class="deliv__num">01</div>
-          <div class="deliv__title">Audit + cadrage strategique</div>
-          <p class="deliv__desc">Analyse de vos objectifs business, de votre cible, de la concurrence et de l'arborescence ideale. Document de cadrage 15-20 pages remis avant developpement.</p>
+      <div class="prest-grid">
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">web</span></div>
+          <div class="prest__title">Site vitrine</div>
+          <p class="prest__lead">Pour PME, cabinets, professions liberales, restaurants, hotels qui veulent une presence professionnelle.</p>
+          <ul class="prest__feat">
+            <li>5 a 15 pages developpees sur mesure</li>
+            <li>Design Figma desktop / tablette / mobile</li>
+            <li>SEO technique optimise + Schema.org</li>
+            <li>Formulaire contact + RGPD</li>
+            <li>Hebergement Vercel 1 an offert</li>
+            <li>Livre en 3 a 5 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 2 500 EUR HT</strong></div>
+          <a href="/contact?service=site-vitrine" class="prest__cta">Demander un devis</a>
         </div>
-        <div class="deliv">
-          <div class="deliv__num">02</div>
-          <div class="deliv__title">Designs Figma haute fidelite</div>
-          <p class="deliv__desc">Maquettes Figma desktop + tablette + mobile sur l'ensemble des pages. 2 rounds de retouches inclus. Design system reutilisable livre avec les fichiers sources.</p>
+        <div class="prest prest--featured">
+          <span class="prest__badge">Le plus demande</span>
+          <div class="prest__icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+          <div class="prest__title">E-commerce ou plateforme</div>
+          <p class="prest__lead">Boutique en ligne, marketplaces, espace membres, comparateurs, plateformes B2B avec logiques metier.</p>
+          <ul class="prest__feat">
+            <li>Tout du pack Vitrine inclus</li>
+            <li>E-commerce Stripe + Mobile Money</li>
+            <li>Espace membres / authentification</li>
+            <li>Multi-langue ou multi-devise</li>
+            <li>Tableau de bord admin sur mesure</li>
+            <li>Integrations CRM, ERP, ESP</li>
+            <li>Livre en 5 a 8 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 6 000 EUR HT</strong></div>
+          <a href="/contact?service=ecommerce" class="prest__cta">Demander un devis</a>
         </div>
-        <div class="deliv">
-          <div class="deliv__num">03</div>
-          <div class="deliv__title">Site code et hebergement</div>
-          <p class="deliv__desc">Site code en Next.js, React ou Webflow selon votre besoin. Hebergement Vercel/Netlify sur votre compte. SSL, CDN global, sauvegardes automatiques.</p>
-        </div>
-        <div class="deliv">
-          <div class="deliv__num">04</div>
-          <div class="deliv__title">SEO technique optimise</div>
-          <p class="deliv__desc">Meta tags, schema.org JSON-LD, sitemap.xml, robots.txt, Open Graph, canonical, hreflang si multi-langue. Indexable Google sans configuration.</p>
-        </div>
-        <div class="deliv">
-          <div class="deliv__num">05</div>
-          <div class="deliv__title">Performance Lighthouse 95+</div>
-          <p class="deliv__desc">Score Lighthouse Performance, Accessibility, Best Practices et SEO superieurs a 95 sur mobile et desktop. Sinon, nous corrigeons gratuitement.</p>
-        </div>
-        <div class="deliv">
-          <div class="deliv__num">06</div>
-          <div class="deliv__title">Formation + documentation</div>
-          <p class="deliv__desc">Session de formation 1h pour votre equipe a la prise en main du back-office (si CMS). Documentation ecrite remise, video tutorielle si demandee.</p>
+        <div class="prest">
+          <div class="prest__icon"><span class="material-symbols-outlined">terminal</span></div>
+          <div class="prest__title">Plateforme SaaS</div>
+          <p class="prest__lead">SaaS, MVP, applications metier, plateformes avec logiques business complexes et utilisateurs multi-roles.</p>
+          <ul class="prest__feat">
+            <li>Tout du pack E-commerce inclus</li>
+            <li>Architecture backend dediee</li>
+            <li>Base de donnees sur mesure</li>
+            <li>API REST ou GraphQL</li>
+            <li>Tests automatises CI/CD</li>
+            <li>Documentation technique complete</li>
+            <li>Livre en 8 a 16 semaines</li>
+          </ul>
+          <div class="prest__price"><strong>A partir de 15 000 EUR HT</strong></div>
+          <a href="/contact?service=saas" class="prest__cta">Demander un devis</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- METHODOLOGIE -->
+  <!-- 3. TEMOIGNAGES -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Nos clients <em>en parlent</em> mieux que nous</h2>
+        <p class="sec-h__sub">Ils nous ont confie leur projet de creation de site web. Voici ce qu'ils en retiennent.</p>
+      </div>
+      <div class="temo-grid">
+        <div class="temo">
+          <div class="temo__tag"><span class="material-symbols-outlined">web</span> Site WordPress</div>
+          <div class="temo__title">Cabinet conseil - Cotonou</div>
+          <p class="temo__quote">"Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui repond en moins de 4h."</p>
+          <div class="temo__metrics">
+            <div class="temo__metric"><strong>+187%</strong><span>leads / 3 mois</span></div>
+            <div class="temo__metric"><strong>98</strong><span>Lighthouse</span></div>
+          </div>
+          <div class="temo__author"><div class="temo__avatar">AA</div><div><div class="temo__author-name">A. Akouete</div><div class="temo__author-role">Cabinet conseil</div></div></div>
+        </div>
+        <div class="temo">
+          <div class="temo__tag"><span class="material-symbols-outlined">shopping_cart</span> E-commerce</div>
+          <div class="temo__title">Boutique mode - Cotonou</div>
+          <p class="temo__quote">"Boutique livree en 4 semaines, paiements Mobile Money integres, chiffre x3 en 6 mois. On recommande sans hesiter."</p>
+          <div class="temo__metrics">
+            <div class="temo__metric"><strong>x3,2</strong><span>CA / 6 mois</span></div>
+            <div class="temo__metric"><strong>2,1%</strong><span>taux conv</span></div>
+          </div>
+          <div class="temo__author"><div class="temo__avatar">FK</div><div><div class="temo__author-name">F. Kpogo</div><div class="temo__author-role">E-commerce mode</div></div></div>
+        </div>
+        <div class="temo">
+          <div class="temo__tag"><span class="material-symbols-outlined">terminal</span> SaaS</div>
+          <div class="temo__title">SaaS gestion clinique</div>
+          <p class="temo__quote">"Plateforme livree en 12 semaines. Code propre, doc complete. On peut faire evoluer en interne maintenant."</p>
+          <div class="temo__metrics">
+            <div class="temo__metric"><strong>12 sem</strong><span>livraison</span></div>
+            <div class="temo__metric"><strong>4</strong><span>cliniques</span></div>
+          </div>
+          <div class="temo__author"><div class="temo__avatar">MB</div><div><div class="temo__author-name">M. Bocandy</div><div class="temo__author-role">Clinique - Abidjan</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. LEAD MAGNET LIVRE BLANC -->
+  <section class="section" style="background:var(--bg-2);" id="livre-blanc">
+    <div class="container">
+      <div class="lm-card">
+        <div class="lm__book">
+          <div class="lm__book-cover">
+            <div class="lm__book-tag">Livre blanc gratuit</div>
+            <div class="lm__book-title">47 criteres pour evaluer un <em>site web pro</em> en 2026</div>
+            <div class="lm__book-lines">
+              <div class="lm__book-line w90"></div>
+              <div class="lm__book-line w80"></div>
+              <div class="lm__book-line w60"></div>
+            </div>
+          </div>
+        </div>
+        <div class="lm__txt">
+          <span class="lm__eyebrow"><span class="material-symbols-outlined">menu_book</span> A paraitre bientot</span>
+          <h3 class="lm__title">Recevez le guide complet a sa sortie</h3>
+          <p class="lm__desc">Notre guide de 38 pages : performance, design, SEO, securite, conversions. Inscrivez-vous, on vous l'envoie automatiquement le jour de la sortie. Pas de spam, jamais.</p>
+          <form class="lm__form" action="/api/contact" method="POST">
+            <input type="hidden" name="service" value="livre-blanc-sites">
+            <input class="lm__field" type="text" name="name" placeholder="Votre prenom" required>
+            <input class="lm__field" type="email" name="email" placeholder="Votre email professionnel" required>
+            <input class="lm__field" type="text" name="company" placeholder="Nom de votre entreprise (optionnel)">
+            <button type="submit" class="lm__submit">Recevoir le guide a sa sortie <span class="material-symbols-outlined">arrow_forward</span></button>
+            <div class="lm__legal">En vous inscrivant, vous acceptez d'etre contacte uniquement pour la diffusion du livre blanc.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PROMESSE VS DEFI -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Est-ce que la <em>creation sur mesure</em> est adaptee pour vous ?</h2>
+        <p class="sec-h__sub">Tout le monde n'a pas besoin d'un site sur mesure. Voici ce que nous promettons, et ce que nous attendons de votre cote.</p>
+      </div>
+      <div class="pd-grid">
+        <div class="pd pd--prom">
+          <div class="pd__h">
+            <div class="pd__h-icon"><span class="material-symbols-outlined">verified</span></div>
+            <div class="pd__h-title">Notre promesse</div>
+          </div>
+          <ul class="pd__list">
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Site code en Next.js / React, performance Lighthouse 95+ garantie</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Design Figma sur mesure, valide page par page avec vous</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Devis ferme sous 48h, prix fixe, perimetre clair</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Cofondateur dedie reactif sous 4h en jours ouvres</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Code, designs et hebergement vous appartiennent integralement</li>
+            <li class="pd__item"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne, sans condition</li>
+          </ul>
+        </div>
+        <div class="pd pd--def">
+          <div class="pd__h">
+            <div class="pd__h-icon"><span class="material-symbols-outlined">warning</span></div>
+            <div class="pd__h-title">Ce qu'on attend de vous</div>
+          </div>
+          <ul class="pd__list">
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Disponibilite pour 1 demo visio de 30 min chaque semaine</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Retours sous 48h sur les designs et maquettes</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Contenus (textes, photos, videos) remis dans les delais</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Acompte de 30% pour bloquer notre planning</li>
+            <li class="pd__item"><span class="material-symbols-outlined">priority_high</span> Une vraie vision business (pas juste "un beau site")</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CTA MIDDLE -->
+  <section class="section">
+    <div class="container">
+      <div class="midcta">
+        <div>
+          <h3>Vous voulez evaluer la pertinence d'un site sur mesure pour votre business ?</h3>
+          <p>30 minutes de consulting strategique offert avec un cofondateur. Sans engagement, sans script de vente. On regarde votre contexte ensemble et on vous dit honnetement si le sur mesure est adapte.</p>
+          <a href="/contact?service=consulting-site" class="midcta__cta">Prendre rendez-vous <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="midcta__visual">
+          <div class="midcta__avatar">LG</div>
+          <span class="midcta__role">Cofondateur</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. POURQUOI NOUS CHOISIR -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Pourquoi choisir <em>Pirabel Labs</em>, agence specialisee creation de site ?</h2>
+      </div>
+      <div class="pourquoi">
+        <p>Pirabel Labs est <strong>une agence marketing digital 360 fondee en 2020</strong> et basee a Abomey-Calavi (Benin). Nous accompagnons des PME au Benin, en France, en Cote d'Ivoire et dans toute l'Afrique francophone dans <em>la creation de sites web sur mesure</em>, du site vitrine institutionnel a la plateforme SaaS complexe.</p>
+        <p>Notre approche repose sur un principe simple : <strong>un site web ne doit pas etre une depense, mais un actif strategique</strong> qui genere du trafic, des leads et du chiffre d'affaires. C'est pourquoi nous codons chaque site de zero en Next.js, React ou Webflow plutot que de bricoler des templates WordPress. Le resultat : des performances Lighthouse 95+ garanties, un SEO technique impeccable des le 1er jour, et un design qui vous distingue vraiment de vos concurrents.</p>
+        <p>Nos cofondateurs, <strong>Lissanon Gildas</strong> (Lead Tech) et <strong>Fidah Imorou</strong> (Lead Marketing), pilotent personnellement chaque projet. Vous n'avez pas affaire a un commercial puis a un chef de projet puis a un developpeur : <em>un seul interlocuteur reactif sous 4h</em>, du brief a la mise en ligne. Sur les contrats de plus de 10 000 EUR, nous mobilisons en plus notre reseau de specialistes (designers UI/UX, devs front/back) selon les besoins.</p>
+        <p>Enfin, nous nous engageons par ecrit dans chaque devis : <strong>prix fixe, planning sprint par sprint, code source remis sur votre Git, designs Figma transferes integralement, garantie 30 jours apres mise en ligne</strong>. Pas de "selon devis" cache, pas de licence verrou, pas de surcout surprise. Si vous voulez changer de prestataire ensuite, tout est a vous.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CITATION EXPERT -->
+  <section class="section">
+    <div class="container">
+      <div class="quote-card">
+        <div class="quote-card__photo">LG</div>
+        <div class="quote-card__txt">
+          <blockquote>La creation de site web est devenue un metier exigeant : performance, securite, SEO, accessibilite, conversions. Nous formons notre equipe en permanence pour rester a la pointe des technologies modernes, et transformer ce savoir en resultats tangibles pour nos clients.</blockquote>
+          <div class="quote-card__author">Lissanon Gildas</div>
+          <div class="quote-card__role">Cofondateur &middot; Lead Tech & Produit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. STATS AGENCE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h"><h2>Quelques <em>chiffres</em> sur Pirabel Labs</h2></div>
+      <div class="stats-grid">
+        <div class="stat-c">
+          <div class="stat-c__v">2020</div>
+          <div class="stat-c__l">annee de fondation<br>de l'agence</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">95+</div>
+          <div class="stat-c__l">Lighthouse mobile<br>garanti contractuellement</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">48h</div>
+          <div class="stat-c__l">delai devis ferme<br>apres l'appel decouverte</div>
+        </div>
+        <div class="stat-c">
+          <div class="stat-c__v">100%</div>
+          <div class="stat-c__l">projets livres<br>avec garantie 30 jours</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. METHODOLOGIE ZIGZAG -->
   <section class="section" id="methodologie">
     <div class="container">
       <div class="sec-h">
-        <h2>Notre <em>methodologie</em> en 5 etapes</h2>
+        <h2>La <em>methodologie</em> Pirabel Labs en 5 etapes</h2>
         <p class="sec-h__sub">Du premier echange a la mise en ligne. Pas de boite noire, pas de surprise.</p>
       </div>
       <div class="zigzag">
@@ -380,7 +597,7 @@
           <div class="zz-step__card">
             <span class="zz-step__tag">Cadrage</span>
             <div class="zz-step__title">Devis ferme + planning</div>
-            <p class="zz-step__desc">Sous 48h vous recevez un devis ecrit avec scope precis, planning de livraison sprint par sprint, et conditions d'evolution. Aucun "selon devis" cache.</p>
+            <p class="zz-step__desc">Sous 48h vous recevez un devis ecrit avec scope precis, planning sprint par sprint, et conditions d'evolution. Aucun "selon devis" cache.</p>
             <span class="zz-step__time"><span class="material-symbols-outlined">verified</span> Devis sous 48h</span>
           </div>
         </div>
@@ -398,7 +615,7 @@
           <div class="zz-step__card">
             <span class="zz-step__tag">Developpement</span>
             <div class="zz-step__title">Sprints hebdo + demos visio</div>
-            <p class="zz-step__desc">Developpement en sprints d'une semaine. Demo chaque vendredi sur environnement de preview. Ajustements integres en continu. Vous voyez l'avancement reel.</p>
+            <p class="zz-step__desc">Developpement en sprints d'une semaine. Demo chaque vendredi sur environnement de preview. Ajustements integres en continu.</p>
             <span class="zz-step__time"><span class="material-symbols-outlined">rocket_launch</span> 2 a 6 semaines selon scope</span>
           </div>
         </div>
@@ -408,221 +625,128 @@
             <span class="zz-step__tag">Mise en ligne</span>
             <div class="zz-step__title">Deploiement + formation</div>
             <p class="zz-step__desc">Mise en production accompagnee. Configuration DNS, SSL, redirections, indexation Google. Formation a votre equipe (1h). Documentation ecrite remise.</p>
-            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours apres mise en ligne</span>
+            <span class="zz-step__time"><span class="material-symbols-outlined">check_circle</span> Garantie 30 jours</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- STACK -->
-  <section class="section" style="background:var(--bg-2);">
+  <!-- 11. FAQ -->
+  <section class="section" style="background:var(--bg-2);" id="faq">
     <div class="container">
-      <div class="sec-h">
-        <h2>Notre <em>stack technique</em></h2>
-        <p class="sec-h__sub">Technologies modernes choisies pour la performance, la maintenabilite et la longevite.</p>
-      </div>
-      <div class="stack-grid">
-        <div class="stack-cat">
-          <div class="stack-cat__h">
-            <div class="stack-cat__icon"><span class="material-symbols-outlined">code</span></div>
-            <div class="stack-cat__name">Framework & langages</div>
-          </div>
-          <div class="stack-list">
-            <span>Next.js 15</span>
-            <span>React 19</span>
-            <span>TypeScript</span>
-            <span>Webflow</span>
-            <span>Astro</span>
-          </div>
-        </div>
-        <div class="stack-cat">
-          <div class="stack-cat__h">
-            <div class="stack-cat__icon"><span class="material-symbols-outlined">database</span></div>
-            <div class="stack-cat__name">Backend & data</div>
-          </div>
-          <div class="stack-list">
-            <span>Node.js</span>
-            <span>Postgres</span>
-            <span>Supabase</span>
-            <span>MongoDB</span>
-            <span>Sanity CMS</span>
-          </div>
-        </div>
-        <div class="stack-cat">
-          <div class="stack-cat__h">
-            <div class="stack-cat__icon"><span class="material-symbols-outlined">cloud</span></div>
-            <div class="stack-cat__name">Hebergement & infra</div>
-          </div>
-          <div class="stack-list">
-            <span>Vercel</span>
-            <span>Netlify</span>
-            <span>Cloudflare</span>
-            <span>AWS S3</span>
-          </div>
-        </div>
-        <div class="stack-cat">
-          <div class="stack-cat__h">
-            <div class="stack-cat__icon"><span class="material-symbols-outlined">payments</span></div>
-            <div class="stack-cat__name">E-commerce & paiement</div>
-          </div>
-          <div class="stack-list">
-            <span>Stripe</span>
-            <span>WooCommerce</span>
-            <span>Mobile Money</span>
-            <span>Snipcart</span>
-            <span>Shopify Headless</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULTATS -->
-  <section class="section">
-    <div class="container">
-      <div class="sec-h">
-        <h2>Ce que vous pouvez <em>esperer</em></h2>
-        <p class="sec-h__sub">Chiffres aggreges sur nos sites web sur mesure livres. Cas particulier sur demande lors de l'appel decouverte.</p>
-      </div>
-      <div class="res-grid">
-        <div class="res">
-          <div class="res__icon"><span class="material-symbols-outlined">speed</span></div>
-          <div class="res__v"><em>95</em>+</div>
-          <div class="res__l">Lighthouse mobile<br>garanti contractuellement</div>
-        </div>
-        <div class="res">
-          <div class="res__icon"><span class="material-symbols-outlined">trending_up</span></div>
-          <div class="res__v"><em>+147</em>%</div>
-          <div class="res__l">leads inbound<br>en moyenne sur 6 mois</div>
-        </div>
-        <div class="res">
-          <div class="res__icon"><span class="material-symbols-outlined">schedule</span></div>
-          <div class="res__v"><em>1,2</em>s</div>
-          <div class="res__l">temps de chargement<br>moyen sur 4G</div>
-        </div>
-        <div class="res">
-          <div class="res__icon"><span class="material-symbols-outlined">search_insights</span></div>
-          <div class="res__v"><em>x2,3</em></div>
-          <div class="res__l">trafic organique<br>moyen a 12 mois</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TARIFS -->
-  <section class="section" style="background:var(--bg-2);" id="tarifs">
-    <div class="container">
-      <div class="sec-h">
-        <h2>Combien <em>ca coute</em> ?</h2>
-        <p class="sec-h__sub">Trois fourchettes selon votre projet. Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible.</p>
-      </div>
-      <div class="tarif-grid">
-        <div class="tarif">
-          <div class="tarif__title">Site vitrine</div>
-          <div class="tarif__price">2 500 - 6 000 EUR</div>
-          <div class="tarif__price-from">a partir de 2 500 EUR HT</div>
-          <p class="tarif__desc">5 a 15 pages, 1 langue. Pour PME, cabinets, professions liberales, restaurants, hotels.</p>
-          <ul>
-            <li>Design Figma sur mesure</li>
-            <li>5 a 15 pages developpees</li>
-            <li>SEO technique optimise</li>
-            <li>Formulaire contact + RGPD</li>
-            <li>Hebergement Vercel 1 an offert</li>
-            <li>Livre en 3 a 5 semaines</li>
-          </ul>
-          <a href="/contact?service=site-vitrine" class="tarif__cta">Demander un devis</a>
-        </div>
-        <div class="tarif tarif--featured">
-          <span class="tarif__badge">Le plus demande</span>
-          <div class="tarif__title">E-commerce ou plateforme</div>
-          <div class="tarif__price">6 000 - 15 000 EUR</div>
-          <div class="tarif__price-from">a partir de 6 000 EUR HT</div>
-          <p class="tarif__desc">E-commerce, marketplaces, sites avec espace membres, comparateurs, plateformes B2B.</p>
-          <ul>
-            <li>Tout du pack Vitrine inclus</li>
-            <li>E-commerce Stripe + Mobile Money</li>
-            <li>Espace membres / authentification</li>
-            <li>Multi-langue ou multi-devise</li>
-            <li>Tableau de bord admin sur mesure</li>
-            <li>Integrations CRM, ERP, ESP</li>
-            <li>Livre en 5 a 8 semaines</li>
-          </ul>
-          <a href="/contact?service=ecommerce" class="tarif__cta">Demander un devis</a>
-        </div>
-        <div class="tarif">
-          <div class="tarif__title">Plateforme sur mesure</div>
-          <div class="tarif__price">15 000 - 50 000 EUR</div>
-          <div class="tarif__price-from">a partir de 15 000 EUR HT</div>
-          <p class="tarif__desc">SaaS, MVP, applications metier, plateformes complexes avec logiques business specifiques.</p>
-          <ul>
-            <li>Tout du pack E-commerce inclus</li>
-            <li>Architecture backend dediee</li>
-            <li>Base de donnees sur mesure</li>
-            <li>API REST ou GraphQL</li>
-            <li>Tests automatises</li>
-            <li>Documentation technique complete</li>
-            <li>Livre en 8 a 16 semaines</li>
-          </ul>
-          <a href="/contact?service=saas" class="tarif__cta">Demander un devis</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="section" id="faq">
-    <div class="container">
-      <div class="sec-h"><h2>FAQ <em>Sites web sur mesure</em></h2></div>
+      <div class="sec-h"><h2>FAQ sur la <em>creation de site web</em></h2></div>
       <div class="faq-list" id="faqList">
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la difference entre un site sur mesure et un site WordPress ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Un site WordPress repose sur un theme et des plugins existants : rapide a monter, moins cher, mais avec des limites de design et de performance (souvent Lighthouse 50-70). Un site sur mesure est code de zero en Next.js/React : design unique, performance Lighthouse 95+, scalable, mais demande plus d'investissement initial (2 500 EUR+ vs 800 EUR+ pour WordPress). Le sur mesure se rentabilise des que vous voulez une marque differenciante ou que votre site doit etre une source serieuse de leads.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel budget faut-il prevoir pour un site sur mesure ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Trois fourchettes selon votre projet : <strong>site vitrine 2 500 a 6 000 EUR HT</strong> (5 a 15 pages), <strong>e-commerce ou plateforme 6 000 a 15 000 EUR HT</strong> (boutique, espace membres, multi-langue), <strong>plateforme SaaS sur mesure 15 000 a 50 000 EUR HT</strong> (logiques business complexes, multi-utilisateurs). Devis ferme sous 48h apres l'appel decouverte. Echelonnement 30/30/40 possible.</div></div>
+        </div>
+        <div class="faq-i" data-open="false">
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelle est la difference avec un site WordPress ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Un site WordPress repose sur un theme et des plugins existants : rapide a monter, moins cher (800-2500 EUR), mais avec des limites de design et de performance (Lighthouse 50-70 souvent). Un site sur mesure est code de zero en Next.js/React : design unique, Lighthouse 95+ garanti, scalable, mais demande plus d'investissement (2 500 EUR+). Le sur mesure se rentabilise des que vous voulez une marque differenciante ou que votre site doit etre une source serieuse de leads.</div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Combien de temps prend la livraison ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Pour un site vitrine 5-10 pages : 3 a 5 semaines. Pour un e-commerce ou une plateforme : 5 a 8 semaines. Pour un SaaS complexe : 8 a 16 semaines. Le planning detaille sprint par sprint est dans le devis ferme. Nous travaillons par sprints d'une semaine avec demos chaque vendredi.</div></div>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Site vitrine 5-10 pages : <strong>3 a 5 semaines</strong>. E-commerce ou plateforme : <strong>5 a 8 semaines</strong>. SaaS complexe : <strong>8 a 16 semaines</strong>. Le planning detaille sprint par sprint est dans le devis ferme. Demos chaque vendredi sur environnement de preview pour voir l'avancement.</div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Qui possede le code source apres la livraison ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Vous, integralement. Une fois la facture finale reglee, le code source est pousse sur votre compte GitHub/GitLab. Les designs Figma vous sont transferes. L'hebergement Vercel/Netlify est sous votre compte. Vous etes 100% autonome et pouvez changer de prestataire a tout moment sans rien re-acheter.</div></div>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Vous, integralement. Une fois la facture finale reglee, le code source est pousse sur votre GitHub/GitLab, les designs Figma vous sont transferes, l'hebergement Vercel/Netlify est sous votre compte. Vous etes 100% autonome et pouvez changer de prestataire a tout moment.</div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Pouvez-vous integrer Mobile Money pour le Benin / Afrique de l'Ouest ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Nous integrons MTN Mobile Money, Moov Money, Wave, Orange Money via leurs API officielles ou via des agregateurs comme Kkiapay, FedaPay, CinetPay. Pour l'Europe : Stripe, PayPal, virement SEPA. Pour le multi-marche : on peut combiner les deux dans le meme checkout.</div></div>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Nous integrons MTN Mobile Money, Moov Money, Wave, Orange Money via leurs API officielles ou via des agregateurs comme Kkiapay, FedaPay, CinetPay. Pour l'Europe : Stripe, PayPal, virement SEPA. Pour le multi-marche : on combine les deux dans le meme checkout.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance apres la mise en ligne ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Garantie 30 jours incluse : tout bug imputable a notre travail est corrige gratuitement. Apres cette periode : option de forfait maintenance mensuel (300-800 EUR/mois selon scope) qui inclut corrections, mises a jour de securite, modifications de contenu et optimisations. Sinon ponctuel a la demande au TJM 600 EUR HT.</div></div>
-        </div>
-        <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel CMS pour gerer le contenu si je veux mettre a jour le site moi-meme ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon vos besoins, on integre : Sanity (headless CMS moderne, gratuit jusqu'a 10k requetes/mois), Strapi (auto-hebergeable), Contentful (premium), ou pour de l'edition tres simple un fichier markdown versionne via GitHub. Pour les sites Webflow, le CMS est integre. Pour WordPress, on garde WordPress comme back-office mais on connecte un front Next.js (headless).</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quel CMS pour gerer le contenu apres la livraison ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner">Selon vos besoins : <strong>Sanity</strong> (headless moderne, gratuit jusqu'a 10k requetes/mois), <strong>Strapi</strong> (auto-hebergeable), <strong>Contentful</strong> (premium), ou pour du contenu tres simple un markdown versionne. Pour Webflow, le CMS est integre. Pour WordPress, on peut connecter un front Next.js (headless).</div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Travaillez-vous avec des clients en France et en Europe ?</span><span class="faq-i__q-icon">+</span></button>
           <div class="faq-i__inner"><div class="faq-i__a-inner">Oui. Plusieurs clients en France, Belgique, Suisse, Canada. Travail entierement a distance via Zoom/Google Meet, Notion partage, demos hebdomadaires. Facturation en EUR via virement SEPA ou CB Stripe. Conformite RGPD assuree.</div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Et si je veux refaire mon site WordPress existant en sur mesure ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a-inner">Refonte avec migration des contenus existants, gestion des redirections SEO (301) pour preserver le ranking Google, et optimisation Lighthouse de 38 a 95+. C'est notre projet le plus frequent. Comptez 4 a 8 semaines selon le volume de pages. Le SEO ne se perd pas si la migration est bien faite.</div></div>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Comment se passe la maintenance apres la mise en ligne ?</span><span class="faq-i__q-icon">+</span></button>
+          <div class="faq-i__inner"><div class="faq-i__a-inner"><strong>Garantie 30 jours incluse</strong> : tout bug imputable a notre travail est corrige gratuitement. Apres : forfait maintenance mensuel (300-800 EUR/mois selon scope) pour corrections, mises a jour de securite, modifications de contenu et optimisations. Sinon a la demande au TJM 600 EUR HT.</div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA FINAL -->
+  <!-- 12. AVANTAGES (accordion + image) -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Les <em>avantages</em> de Pirabel Labs</h2>
+        <p class="sec-h__sub">Ce qui nous distingue concretement des autres agences de creation de site.</p>
+      </div>
+      <div class="adv-grid">
+        <div class="adv__visual">
+          <div class="adv__visual-frame">
+            <div class="adv__avatar">FI</div>
+          </div>
+        </div>
+        <div class="adv-list" id="advList">
+          <div class="adv-i" data-open="true">
+            <button class="adv-i__q" type="button" aria-expanded="true">Transparence totale<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Devis ferme sous 48h, planning sprint par sprint, demo chaque vendredi sur environnement de preview. Vous voyez l'avancement reel chaque semaine. Pas de boite noire.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Cofondateur dedie<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Un seul interlocuteur, un cofondateur, du brief a la mise en ligne. Reactif sous 4h en jours ouvres. Joignable WhatsApp pour les questions courtes.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Code source remis sur votre Git<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Le code, les designs Figma, les assets graphiques, la documentation et les acces admin sont integralement a vous. Aucune licence, aucun verrou.</div></div>
+          </div>
+          <div class="adv-i" data-open="false">
+            <button class="adv-i__q" type="button" aria-expanded="false">Garantie 30 jours apres livraison<span class="adv-i__q-icon">+</span></button>
+            <div class="adv-i__inner"><div class="adv-i__a-inner">Tout bug imputable a notre travail est corrige gratuitement pendant 30 jours apres la mise en ligne. Sans condition, sans facture supplementaire.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. SERVICES CONNEXES -->
   <section class="section" style="background:var(--bg-2);">
     <div class="container">
-      <div class="cta-card">
-        <div class="cta-card__txt">
-          <h2>Prets a transformer votre site en <em>actif de croissance</em> ?</h2>
-          <p>30 minutes d'echange gratuit pour cadrer votre projet, comprendre vos contraintes et evaluer si on est la bonne equipe. Devis ferme sous 48h apres l'appel.</p>
-          <a href="/contact?service=site-sur-mesure" class="btn btn--primary btn--lg">Reserver mon appel decouverte <span class="material-symbols-outlined">arrow_forward</span></a>
+      <div class="sec-h">
+        <h2>Exploiter les <em>synergies</em> avec d'autres leviers d'acquisition</h2>
+        <p class="sec-h__sub">Un site web seul ne suffit pas. Voici nos services qui se combinent parfaitement avec la creation sur mesure.</p>
+      </div>
+      <div class="syn-grid">
+        <a href="/contact?service=seo" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <div class="syn__title">SEO et referencement</div>
+          <p class="syn__desc">Un beau site qui ne se trouve pas sur Google ne sert a rien. Audit, contenu, netlinking ethique. Du trafic qualifie mesurable mois apres mois.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact?service=tunnels" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+          <div class="syn__title">Tunnels de vente</div>
+          <p class="syn__desc">Landing pages haute conversion + funnels lead gen + A/B tests. Convertir le trafic en leads qualifies, puis en clients.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/contact?service=automatisation" class="syn">
+          <div class="syn__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <div class="syn__title">Automatisation marketing</div>
+          <p class="syn__desc">Make, n8n, Zapier, agents IA. Connectez votre site a votre CRM, CRM a vos campagnes. 10-30h economisees par semaine.</p>
+          <span class="syn__link">Decouvrir <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. CTA FINAL -->
+  <section class="section">
+    <div class="container">
+      <div class="fcta">
+        <div>
+          <h2>Un site web ne promet pas la lune. Il vous apporte des resultats concrets et durables.</h2>
+          <p>Passons a l'action ! Vous souhaitez en savoir plus sur notre expertise, notre agence ou les talents qui l'animent ? Venez discuter avec nous de votre projet et obtenir des solutions pertinentes.</p>
         </div>
-        <div class="cta-card__visual">
-          <div class="cta-card__visual-box"><span class="material-symbols-outlined">rocket_launch</span></div>
-        </div>
+        <a href="/contact?service=site-sur-mesure" class="fcta__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
       </div>
     </div>
   </section>
@@ -639,7 +763,7 @@
       <div>
         <div class="footer__title">Services</div>
         <ul class="footer__list">
-          <li><a href="/contact">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
           <li><a href="/contact">Sites WordPress</a></li>
           <li><a href="/contact">Applications web</a></li>
           <li><a href="/contact">SEO & referencement</a></li>
@@ -681,16 +805,22 @@
       }
     });
   }
-  var faqs = document.querySelectorAll('.faq-i');
-  faqs.forEach(function(item){
-    var btn = item.querySelector('.faq-i__q');
-    if (!btn) return;
-    btn.addEventListener('click', function(){
-      var isOpen = item.getAttribute('data-open') === 'true';
-      item.setAttribute('data-open', isOpen ? 'false' : 'true');
-      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+  // FAQ + Avantages accordions
+  function bindAccordion(selector){
+    document.querySelectorAll(selector).forEach(function(item){
+      var btn = item.querySelector('button');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      });
     });
-  });
+  }
+  bindAccordion('.faq-i');
+  bindAccordion('.adv-i');
+
+  // Zigzag scroll-reveal
   if ('IntersectionObserver' in window) {
     var ioAnim = new IntersectionObserver(function(entries){
       entries.forEach(function(e){

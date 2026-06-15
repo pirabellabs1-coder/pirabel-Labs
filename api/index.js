@@ -60,8 +60,32 @@ app.use(globalSanitize);
 // === DB connection (lazy, partagee entre invocations serverless) ===
 let dbReady = null;
 async function ensureDB() {
-  if (!dbReady) dbReady = connectDB();
+  if (!dbReady) {
+    dbReady = connectDB().then(async () => {
+      try { await bootstrapAdmin(); } catch (e) { console.error('[bootstrap] failed:', e.message); }
+    });
+  }
   return dbReady;
+}
+
+// === Auto-create admin on first boot if env vars are set ===
+// Set INITIAL_ADMIN_EMAIL + INITIAL_ADMIN_PASSWORD in Vercel env vars,
+// redeploy once: the admin gets created on first DB connection. Then you
+// can remove the env vars (or keep them — they're only used when no admin exists).
+async function bootstrapAdmin() {
+  const email = (process.env.INITIAL_ADMIN_EMAIL || '').trim().toLowerCase();
+  const password = process.env.INITIAL_ADMIN_PASSWORD || '';
+  if (!email || !password) return;
+  if (password.length < 8) {
+    console.warn('[bootstrap] INITIAL_ADMIN_PASSWORD too short (need 8+ chars), skipping');
+    return;
+  }
+  const count = await User.countDocuments({ role: 'admin' });
+  if (count > 0) return; // admin already exists
+  const name = (process.env.INITIAL_ADMIN_NAME || 'Admin').trim();
+  const user = new User({ name, email, password, role: 'admin', isActive: true });
+  await user.save();
+  console.log(`[bootstrap] admin created: ${email} (id: ${user._id})`);
 }
 app.use(async (req, res, next) => {
   try {

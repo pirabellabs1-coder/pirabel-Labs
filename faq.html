@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ - Questions frequentes - Pirabel Labs</title>
+<meta name="description" content="FAQ Pirabel Labs : reponses a 40+ questions sur nos services, tarifs, methodologie, delais, paiements, garanties. Tout ce que vous voulez savoir avant de demander un devis.">
+<link rel="canonical" href="https://www.pirabellabs.com/faq">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="FAQ - Pirabel Labs">
+<meta property="og:description" content="FAQ Pirabel Labs : reponses a 40+ questions sur nos services, tarifs, methodologie, delais, paiements, garanties.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/faq">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="/css/global.css">
+<style>
+.faq-wrap { max-width: 80rem; margin: 0 auto; padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+.faq-hero { text-align: center; margin-bottom: 4rem; }
+.faq-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.faq-hero h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; color: var(--text); }
+.faq-hero h1 em { color: var(--accent); font-style: normal; }
+.faq-hero__sub { font-size: 1.1rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin: 0 auto 2rem; }
+
+.faq-toc { max-width: 64rem; margin: 0 auto 4rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.75rem; }
+.faq-toc a { display: flex; align-items: center; gap: 0.55rem; padding: 0.85rem 1.1rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
+.faq-toc a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.faq-toc a .material-symbols-outlined { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; }
+
+.faq-section { max-width: 64rem; margin: 0 auto 4rem; scroll-margin-top: 6rem; }
+.faq-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 3vw, 2.2rem); line-height: 1.15; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.faq-section h2 em { color: var(--accent); font-style: normal; }
+.faq-section h2 .material-symbols-outlined { color: var(--accent); font-size: 1.8rem; }
+.faq-section__intro { font-size: 0.95rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 2rem; }
+
+.faq-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.75rem; }
+.faq-item[open] { border-color: var(--accent); }
+.faq-item__q { list-style: none; cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; color: var(--text); }
+.faq-item__q::-webkit-details-marker { display: none; }
+.faq-item__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.faq-item[open] .faq-item__q .material-symbols-outlined { transform: rotate(180deg); }
+.faq-item__a { padding: 0 1.5rem 1.5rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.faq-item__a a { color: var(--accent); }
+.faq-item__a ul { padding-left: 1.2rem; margin: 0.8rem 0; }
+.faq-item__a li { margin-bottom: 0.4rem; }
+
+.cta-band { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.08) 100%); border: 1px solid var(--border); border-radius: 18px; padding: clamp(2.5rem, 5vw, 4rem); text-align: center; max-width: 64rem; margin: 4rem auto 0; }
+.cta-band h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 1rem; line-height: 1.15; }
+.cta-band h2 em { color: var(--accent); font-style: normal; }
+.cta-band p { color: var(--text-muted); font-size: 1rem; line-height: 1.65; max-width: 40rem; margin: 0 auto 2rem; }
+.cta-band__row { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+@media (max-width: 720px) {
+  .faq-hero { text-align: left; }
+  .faq-hero__sub { margin-left: 0; margin-right: 0; }
+  .faq-section h2 { font-size: 1.4rem; }
+}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Combien coute un site web avec Pirabel Labs ?","acceptedAnswer":{"@type":"Answer","text":"Site vitrine : a partir de 500 000 FCFA (Benin / Afrique de l'Ouest) ou 2 000 EUR (Europe). E-commerce : a partir de 1 200 000 FCFA ou 4 000 EUR. Devis ferme sous 48h apres un appel decouverte gratuit."}},
+{"@type":"Question","name":"Quels delais pour livrer un site ?","acceptedAnswer":{"@type":"Answer","text":"Site vitrine : 3 a 5 semaines. E-commerce : 6 a 10 semaines. Application sur mesure : 8 a 16 semaines. Nous travaillons en sprints hebdomadaires avec demos regulieres."}},
+{"@type":"Question","name":"Etes-vous physiquement disponibles dans ma ville ?","acceptedAnswer":{"@type":"Answer","text":"Notre siege est a Abomey-Calavi (Benin). Pour les missions courantes, nous travaillons a distance (visio, Slack, WhatsApp). Pour les projets strategiques, nous pouvons nous deplacer dans toute l'Afrique francophone et en Europe."}},
+{"@type":"Question","name":"Quels moyens de paiement acceptez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Virement SEPA (Europe), carte bancaire via Stripe, Mobile Money (MTN, Orange, Moov, Wave, SAMA), virement bancaire en FCFA (XOF, XAF), GNF, EUR ou USD. Facturation legalisee."}},
+{"@type":"Question","name":"Combien de temps pour obtenir un devis ?","acceptedAnswer":{"@type":"Answer","text":"Devis ferme sous 48h apres un appel decouverte gratuit de 30 minutes. Pas de devis a la legere : nous voulons comprendre votre projet avant de chiffrer."}},
+{"@type":"Question","name":"Acceptez-vous le paiement echelonne ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Pour les projets a partir de 1 500 EUR ou 1 000 000 FCFA : 30% acompte, 40% mi-projet, 30% livraison. Pour les engagements mensuels : facturation debut de mois."}}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"FAQ","item":"https://www.pirabellabs.com/faq"}]}
+</script>
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Expertises <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--2col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Web &amp; visibilite</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Creation de site web</div></div></a>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; referencement</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Conversion &amp; conseil</div>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Automatisation</div></div></a>
+              <a href="/consulting-marketing" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Consulting marketing</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Villes <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Benin &amp; Afrique centrale</div>
+              <a href="/agence-marketing-abomey-calavi" class="nav-mega__link"><div><div class="nav-mega__link-title">Abomey-Calavi</div></div></a>
+              <a href="/agence-marketing-cotonou" class="nav-mega__link"><div><div class="nav-mega__link-title">Cotonou</div></div></a>
+              <a href="/agence-marketing-porto-novo" class="nav-mega__link"><div><div class="nav-mega__link-title">Porto-Novo</div></div></a>
+              <a href="/agence-web-yaounde" class="nav-mega__link"><div><div class="nav-mega__link-title">Yaounde</div></div></a>
+              <a href="/agence-web-douala" class="nav-mega__link"><div><div class="nav-mega__link-title">Douala</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Afrique de l'Ouest</div>
+              <a href="/agence-web-abidjan" class="nav-mega__link"><div><div class="nav-mega__link-title">Abidjan</div></div></a>
+              <a href="/agence-web-dakar" class="nav-mega__link"><div><div class="nav-mega__link-title">Dakar</div></div></a>
+              <a href="/agence-web-lome" class="nav-mega__link"><div><div class="nav-mega__link-title">Lome</div></div></a>
+              <a href="/agence-web-bamako" class="nav-mega__link"><div><div class="nav-mega__link-title">Bamako</div></div></a>
+              <a href="/agence-web-conakry" class="nav-mega__link"><div><div class="nav-mega__link-title">Conakry</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Europe</div>
+              <a href="/agence-web-paris" class="nav-mega__link"><div><div class="nav-mega__link-title">Paris</div></div></a>
+              <a href="/agence-web-lyon" class="nav-mega__link"><div><div class="nav-mega__link-title">Lyon</div></div></a>
+              <a href="/agence-web-bruxelles" class="nav-mega__link"><div><div class="nav-mega__link-title">Bruxelles</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Ressources <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/blog" class="nav-mega__link"><span class="material-symbols-outlined">article</span><div><div class="nav-mega__link-title">Blog</div></div></a>
+              <a href="/realisations" class="nav-mega__link"><span class="material-symbols-outlined">collections</span><div><div class="nav-mega__link-title">Realisations</div></div></a>
+              <a href="/methodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Methodologie</div></div></a>
+              <a href="/tarifs" class="nav-mega__link"><span class="material-symbols-outlined">payments</span><div><div class="nav-mega__link-title">Tarifs</div></div></a>
+              <a href="/faq" class="nav-mega__link"><span class="material-symbols-outlined">help</span><div><div class="nav-mega__link-title">FAQ</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Nous decouvrir <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/a-propos" class="nav-mega__link"><span class="material-symbols-outlined">group</span><div><div class="nav-mega__link-title">A propos</div></div></a>
+              <a href="/mentions-legales" class="nav-mega__link"><span class="material-symbols-outlined">gavel</span><div><div class="nav-mega__link-title">Mentions legales</div></div></a>
+              <a href="/politique-confidentialite" class="nav-mega__link"><span class="material-symbols-outlined">shield</span><div><div class="nav-mega__link-title">Confidentialite</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="faq-wrap">
+
+  <nav class="breadcrumb" aria-label="Fil d'Ariane" style="max-width:78rem;margin:0 auto 2rem;">
+    <ol style="display:flex;flex-wrap:wrap;gap:0.5rem;list-style:none;padding:0;margin:0;font-size:0.78rem;color:var(--text-muted);">
+      <li><a href="/" style="color:var(--text-muted);text-decoration:none;">Accueil</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li aria-current="page" style="color:var(--accent);">FAQ</li>
+    </ol>
+  </nav>
+
+  <section class="faq-hero">
+    <span class="faq-hero__eyebrow"><span class="material-symbols-outlined">help</span> FAQ</span>
+    <h1>Questions <em>frequentes</em></h1>
+    <p class="faq-hero__sub">Toutes les reponses aux questions que vous vous posez avant de demander un devis. 40+ questions classees par theme : services, tarifs, methodologie, delais, paiements, garanties.</p>
+  </section>
+
+  <!-- Table des matieres -->
+  <nav class="faq-toc" aria-label="Sections FAQ">
+    <a href="#services"><span class="material-symbols-outlined">work</span> Nos services</a>
+    <a href="#tarifs-faq"><span class="material-symbols-outlined">payments</span> Tarifs &amp; devis</a>
+    <a href="#methodologie-faq"><span class="material-symbols-outlined">timeline</span> Methodologie</a>
+    <a href="#delais"><span class="material-symbols-outlined">schedule</span> Delais</a>
+    <a href="#paiements"><span class="material-symbols-outlined">credit_card</span> Paiements</a>
+    <a href="#equipe"><span class="material-symbols-outlined">group</span> Equipe</a>
+    <a href="#garanties"><span class="material-symbols-outlined">verified</span> Garanties</a>
+    <a href="#international"><span class="material-symbols-outlined">public</span> International</a>
+  </nav>
+
+  <!-- SERVICES -->
+  <section class="faq-section" id="services">
+    <h2><span class="material-symbols-outlined">work</span> Nos <em>services</em></h2>
+    <p class="faq-section__intro">Qu'est-ce que Pirabel Labs fait exactement, et quels sont nos perimetres d'intervention.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Quels services proposez-vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Nous sommes une agence marketing digital 360 :
+        <ul>
+          <li>Creation de sites web (vitrine, e-commerce, sur mesure)</li>
+          <li>SEO et referencement</li>
+          <li>Community management et social media</li>
+          <li>Tunnels de vente et CRO</li>
+          <li>Google Business Profile et SEO local</li>
+          <li>Automatisation marketing (Make, n8n, HubSpot, Brevo)</li>
+          <li>Email marketing</li>
+          <li>Montage video et motion design</li>
+          <li>Publicite Meta Ads, TikTok Ads, Google Ads</li>
+          <li>Consulting marketing strategique</li>
+        </ul>
+        Voir la liste complete sur <a href="/services">/services</a>.
+      </div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pouvez-vous gerer toute ma presence digitale ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. C'est meme notre force : avoir une seule equipe qui gere site web, SEO, social, ads, email, automatisation. Vous evitez de jongler avec 5 prestataires differents qui ne se parlent pas. Tout est aligne sur une seule strategie, avec un seul point de contact.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Travaillez-vous avec des petites entreprises ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Notre cible principale est la PME (5 a 100 employes). Nous accompagnons aussi des solopreneurs, des consultants, des cabinets, des associations, des startups. Notre seuil minimum : un projet a partir de 500 000 FCFA (Afrique) ou 2 000 EUR (Europe).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Travaillez-vous avec des grandes entreprises ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui pour les projets bien delimites (refonte de site, projet SEO, campagne pub). Pour les grands comptes avec des process internes lourds (appels d'offre, validation legale longue), nous orientons souvent vers des partenaires plus structures. Nous restons une equipe agile.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pouvez-vous reprendre un site existant ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Reprise, refonte, maintenance, ajouts de fonctionnalites. Nous travaillons sur WordPress, Webflow, Shopify, Next.js, React. Audit initial pour evaluer l'etat du site et chiffrer la reprise.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Faites-vous du SEO seul (sans site) ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Si vous avez deja un site (meme imparfait), nous pouvons travailler le SEO dessus. Si le site est trop ancien ou techniquement bloque, nous recommandons une refonte avant. Mais le SEO seul est tout a fait possible.</div>
+    </details>
+  </section>
+
+  <!-- TARIFS & DEVIS -->
+  <section class="faq-section" id="tarifs-faq">
+    <h2><span class="material-symbols-outlined">payments</span> Tarifs <em>&amp; devis</em></h2>
+    <p class="faq-section__intro">Combien ca coute, comment obtenir un devis, ce qui est inclus.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien coute un site web avec vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">
+        <ul>
+          <li>Site vitrine : 500 000 a 2 500 000 FCFA / 2 000 a 5 000 EUR</li>
+          <li>E-commerce : 1 200 000 a 5 000 000 FCFA / 4 000 a 12 000 EUR</li>
+          <li>Application sur mesure : devis personnalise</li>
+        </ul>
+        Voir la grille complete sur <a href="/tarifs">/tarifs</a>.
+      </div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comment obtenir un devis ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">3 etapes : (1) remplissez le <a href="/contact">formulaire de contact</a> ou ecrivez-nous sur WhatsApp, (2) nous fixons un appel decouverte gratuit de 30 minutes, (3) vous recevez un devis ferme sous 48h. Sans engagement.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Y a-t-il des frais caches ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Non. Le devis ferme comprend tout : design, developpement, integration, contenu, tests, mise en ligne, formation, suivi 30 jours. Les seuls couts supplementaires (toujours mentionnes des le devis) sont l'hebergement (30 a 200 EUR/an), le nom de domaine (10 a 30 EUR/an), eventuelles licences (themes premium, plugins).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Vos tarifs sont-ils negociables ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Le tarif est ferme apres le devis. Le scope peut s'adapter (moins de pages, fonctionnalites differees) pour rester dans votre budget. Nous avons aussi des paiements echelonnes pour les gros projets.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pourquoi vos tarifs varient selon les pays ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Nous adaptons nos tarifs au pouvoir d'achat de chaque marche. Un site web a Paris se vend 5 a 15 fois plus cher qu'a Cotonou pour des couts de production similaires. Notre implantation au Benin nous permet de pratiquer des tarifs justes : accessibles en Afrique, 30 a 50% sous les agences locales en Europe.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Faites-vous des reductions ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui dans certains cas : associations a but non lucratif (-20% sur presentation des statuts), engagements annuels (gratuit 1 mois sur 12), bouche-a-oreille (10% de reduction sur le projet d'un client recommande qui signe).</div>
+    </details>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="faq-section" id="methodologie-faq">
+    <h2><span class="material-symbols-outlined">timeline</span> <em>Methodologie</em></h2>
+    <p class="faq-section__intro">Comment on travaille concretement, du brief a la livraison.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comment se deroule un projet avec vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">5 etapes : (1) decouverte gratuite 30 min, (2) cadrage et devis ferme sous 48h, (3) design ou strategie, (4) production en sprints hebdomadaires avec demos regulieres, (5) lancement + suivi 30 jours. Detail complet sur <a href="/methodologie">/methodologie</a>.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comment se passe la collaboration au quotidien ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Visio hebdomadaire (Google Meet ou Zoom), Slack ou WhatsApp pour les echanges, Notion ou Trello pour le suivi des taches, rapports mensuels structures avec KPIs.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien de personnes interviennent sur mon projet ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Typiquement 2 a 4 personnes selon le projet : un chef de projet (votre point de contact unique), un designer, un developpeur, et eventuellement un specialiste (SEO, video, ads, automatisation). Pour les engagements mensuels (SEO, community), 2 personnes en moyenne.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comment validez-vous les livrables ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Nous travaillons en demos hebdomadaires (visio 30 min) pendant la production. Vous voyez le projet avancer en direct. Pour les designs, nous utilisons Figma en mode commentaire. Pour les sites, des liens de preview sont mis a jour en continu.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Que se passe-t-il si je ne suis pas satisfait d'un livrable ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Nous integrons systematiquement 2 cycles de revision par livrable majeur (design, fonctionnalite). Au-dela, les revisions sont facturees au temps passe. Mais en pratique, les demos hebdomadaires evitent les grosses surprises a la fin.</div>
+    </details>
+  </section>
+
+  <!-- DELAIS -->
+  <section class="faq-section" id="delais">
+    <h2><span class="material-symbols-outlined">schedule</span> <em>Delais</em></h2>
+    <p class="faq-section__intro">Combien de temps pour livrer chaque type de projet.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien de temps pour un site vitrine ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">3 a 5 semaines en moyenne, selon le nombre de pages et la complexite du design. Repartition typique : 1 semaine de cadrage et design, 2 semaines de developpement, 1 semaine de revisions et lancement.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien de temps pour un e-commerce ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">6 a 10 semaines selon la taille du catalogue (jusqu'a 50 produits : 6 sem, 50 a 500 : 8 sem, 500+ : 10 sem ou plus) et les integrations specifiques (Mobile Money, transporteur, ERP).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien de temps pour voir des resultats SEO ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Premiers signaux a 8 a 12 semaines (Google indexe et commence a positionner). Resultats solides a 6 mois. Resultats consolides a 12 mois. Le SEO est un investissement long terme : nous engageons sur 6 a 12 mois minimum.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pouvez-vous travailler en urgence ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui pour les petits projets (landing page, campagne pub, ajustements site). Pour les gros projets, une vraie qualite necessite du temps. Nous evitons les promesses irrealistes : un site web express bacle vous coute plus cher a moyen terme.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Quel est votre delai de reponse pour les messages ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">24h ouvrees pour les emails et formulaires. Quelques heures sur WhatsApp en heures de bureau (8h-20h GMT). Pour les clients sous contrat, intervention rapide sous 4h ouvrees.</div>
+    </details>
+  </section>
+
+  <!-- PAIEMENTS -->
+  <section class="faq-section" id="paiements">
+    <h2><span class="material-symbols-outlined">credit_card</span> <em>Paiements</em></h2>
+    <p class="faq-section__intro">Comment vous nous payez, en quelle monnaie, avec quelles facilites.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Quels moyens de paiement acceptez-vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">
+        <ul>
+          <li>Virement SEPA (Europe)</li>
+          <li>Carte bancaire via Stripe (Visa, Mastercard)</li>
+          <li>Bancontact (Belgique)</li>
+          <li>Mobile Money : MTN MoMo, Orange Money, Moov Money, Wave, SAMA Money</li>
+          <li>Virement bancaire international en EUR ou USD</li>
+          <li>Virement bancaire local en FCFA (XOF, XAF), GNF</li>
+        </ul>
+      </div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Acceptez-vous le paiement echelonne ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Pour les projets a partir de 1 500 EUR ou 1 000 000 FCFA : 30% acompte au lancement, 40% a mi-projet (validation maquettes), 30% a la livraison. Pour les engagements mensuels : facturation au debut de chaque mois.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>En quelle monnaie facturez-vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Selon votre region et votre preference : EUR (Europe), USD (international), FCFA XOF (Benin, Cote d'Ivoire, Senegal, Togo, Mali, Burkina Faso, Niger, Guinee-Bissau), FCFA XAF (Cameroun, Gabon, Tchad, RCA, Congo, Guinee equatoriale), GNF (Guinee), MAD (Maroc), TND (Tunisie).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Facturez-vous la TVA ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Nous sommes etablis au Benin. Nos factures sont legalisees et acceptees par les comptables francais, belges, ivoiriens, etc. Pas de TVA appliquee (regime prestataire africain). Si votre comptable exige une TVA, nous pouvons facturer via une entite partenaire EU (sur demande).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Que se passe-t-il si je ne paie pas a temps ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Premiere relance amicale a J+7. Deuxieme relance a J+14. Suspension du projet ou des prestations a J+30. Procedure de recouvrement a J+60. Mais en realite, ca n'arrive presque jamais : nos contrats sont clairs, nos factures aussi.</div>
+    </details>
+  </section>
+
+  <!-- EQUIPE -->
+  <section class="faq-section" id="equipe">
+    <h2><span class="material-symbols-outlined">group</span> <em>Equipe</em> &amp; identite</h2>
+    <p class="faq-section__intro">Qui nous sommes, ou nous sommes, comment nous travaillons.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Qui sont les fondateurs ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Pirabel Labs a ete fonde en 2020 par <strong>Lissanon Gildas</strong> (CEO, expert produit et strategie) et <strong>Fidah Imorou</strong> (CTO, expert technique et IA). Tous deux beninois, formes a l'international, passionnes par le digital. Voir la page <a href="/a-propos">A propos</a>.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Combien de personnes dans votre equipe ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Une equipe core de 8 a 12 personnes (developpeurs, designers, SEO, content, video, gestion projet) au siege a Abomey-Calavi, plus un reseau de specialistes freelance francophones (motion design, traduction, photographie) selon les besoins projet.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Ou etes-vous situes physiquement ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Notre siege est a Abomey-Calavi, dans le departement de l'Atlantique au Benin (a cote de Cotonou). Nous accompagnons des clients sur 4 continents (Afrique, Europe, Amerique du Nord, Moyen-Orient francophone).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pouvez-vous vous deplacer chez moi ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui pour les projets strategiques (kick-off, ateliers, presentations stakeholders). Frais de deplacement a la charge du client. Au quotidien, le travail a distance avec visios hebdomadaires est notre standard.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Quelles langues parlez-vous ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Francais (langue principale, tous les contrats et echanges). Anglais (production de contenu, gestion projets internationaux). Pour le neerlandais (NL) et autres langues europeennes, nous collaborons avec des traducteurs natifs.</div>
+    </details>
+  </section>
+
+  <!-- GARANTIES -->
+  <section class="faq-section" id="garanties">
+    <h2><span class="material-symbols-outlined">verified</span> <em>Garanties</em></h2>
+    <p class="faq-section__intro">Ce sur quoi vous pouvez compter, ce que nous garantissons.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Avez-vous une garantie de satisfaction ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Pour les projets de site web : suivi 30 jours post-lancement inclus pour corriger les bugs et ajuster ce qui doit l'etre. Si une fonctionnalite ne marche pas comme prevu dans le devis, nous la corrigeons sans frais.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Garantissez-vous des resultats SEO ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Aucune agence serieuse ne garantit des positions Google : c'est l'algorithme qui decide. Nous garantissons par contre : une methodologie rigoureuse, un reporting transparent, une amelioration mesurable du trafic et des positions dans les 6 mois. Si pas d'amelioration apres 6 mois, refonte gratuite de la strategie.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Que se passe-t-il si le site tombe en panne ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Pour les sites avec contrat de maintenance : intervention sous 4h ouvrees. Pour les sites sans contrat : intervention possible (facturation au temps passe) mais avec delai pouvant aller a 24-48h selon la charge.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Etes-vous RGPD compliant ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Mentions legales, politique de confidentialite, banniere cookies conforme, registre des traitements, contrats de sous-traitance avec les hebergeurs EU. Nous livrons des sites prets a passer un audit CNIL.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Que devient mon site si on arrete de travailler ensemble ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Le site et le code vous appartiennent. Nous vous transmettons tous les acces (admin, hebergement, nom de domaine si chez nous). Vous pouvez reprendre la main avec une autre equipe sans rien perdre. Pas de verrou technique.</div>
+    </details>
+  </section>
+
+  <!-- INTERNATIONAL -->
+  <section class="faq-section" id="international">
+    <h2><span class="material-symbols-outlined">public</span> <em>International</em></h2>
+    <p class="faq-section__intro">Travailler avec nous depuis l'etranger, multilingue, gestion de la distance.</p>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Travaillez-vous avec des clients hors Afrique ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Plusieurs clients reguliers en France (Paris, Lyon), Belgique (Bruxelles), Suisse, Canada, Maroc. Notre methodologie est adaptee au travail a distance avec des fuseaux horaires differents.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comment gerez-vous le decalage horaire ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Notre fuseau est GMT (Cotonou). Cela couvre confortablement l'Europe (GMT+1/+2), l'Afrique de l'Ouest (GMT), l'Afrique centrale (GMT+1), le Maroc (GMT/+1), et permet des creneaux matin pour le Canada de l'Est (GMT-5). Visios calees aux heures de bureau communes.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Pouvez-vous gerer des sites multilingues ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Nous gerons FR (langue native). Pour les autres langues (EN, NL, DE, ES, IT, AR), nous collaborons avec des traducteurs natifs. Integration multilingue propre (hreflang, URLs separees, balises canonical correctes).</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Connaissez-vous le RGPD europeen ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Nous avons forme plusieurs membres de l'equipe sur le RGPD. Nos sites EU sont livres conformes : mentions legales, politique de confidentialite, banniere cookies validee, registre des traitements, contrats sous-traitance hebergeur EU.</div>
+    </details>
+    <details class="faq-item">
+      <summary class="faq-item__q"><span>Comprenez-vous le marche francais / belge / suisse ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+      <div class="faq-item__a">Oui. Nous avons des clients reguliers dans ces marches depuis 2020. Nous connaissons les habitudes de consommation, le cadre legal (RGPD, droit consommation, mentions obligatoires), les attentes en design et ton. Nous referencons sur Google.fr, Google.be, Google.ch.</div>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <h2>Vous avez une <em>autre question</em> ?</h2>
+    <p>Ecrivez-nous. Reponse garantie sous 24h ouvrees par un cofondateur. Pas de bot, pas de commercial, juste un humain qui connait le sujet.</p>
+    <div class="cta-band__row">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un devis</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Envoyer un email</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col footer__col--brand">
+        <a href="/" class="footer__brand-link" aria-label="Pirabel Labs - accueil">
+          <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36">
+          <strong class="footer__brand">PIRABEL LABS</strong>
+        </a>
+        <p class="footer__tagline">Agence marketing digital francophone pour PME ambitieuses. Sites web, SEO, social, video, automatisation, email, consulting - sous le meme toit.</p>
+        <div class="footer__social">
+          <a href="https://wa.me/16139273067" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer__social-link"><span class="material-symbols-outlined">chat</span></a>
+          <a href="mailto:contact@pirabellabs.com" aria-label="Email" class="footer__social-link"><span class="material-symbols-outlined">mail</span></a>
+          <a href="tel:+16139273067" aria-label="Telephone" class="footer__social-link"><span class="material-symbols-outlined">phone</span></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Expertises</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Creation de site web</a></li>
+          <li><a href="/seo">SEO &amp; referencement</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/services" class="footer__link--accent">Tous nos services &rarr;</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Villes</div>
+        <ul class="footer__list">
+          <li><a href="/agence-marketing-cotonou">Cotonou</a></li>
+          <li><a href="/agence-web-abidjan">Abidjan</a></li>
+          <li><a href="/agence-web-dakar">Dakar</a></li>
+          <li><a href="/agence-web-lome">Lome</a></li>
+          <li><a href="/agence-web-yaounde">Yaounde</a></li>
+          <li><a href="/agence-web-douala">Douala</a></li>
+          <li><a href="/agence-web-bamako">Bamako</a></li>
+          <li><a href="/agence-web-conakry">Conakry</a></li>
+          <li><a href="/agence-web-paris">Paris</a></li>
+          <li><a href="/agence-web-bruxelles">Bruxelles</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Pirabel Labs</div>
+        <ul class="footer__list">
+          <li><a href="/a-propos">A propos</a></li>
+          <li><a href="/methodologie">Methodologie</a></li>
+          <li><a href="/realisations">Realisations</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/tarifs">Tarifs</a></li>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs &middot; Tous droits reserves &middot; <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Benin</span>
+      <span class="footer__credits">Fait avec passion par <strong>Lissanon Gildas</strong> &amp; <strong>Fidah Imorou</strong></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu = document.getElementById('navMenu');
+  if (burger && menu) {
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click', function(e){
+        if (window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if (item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

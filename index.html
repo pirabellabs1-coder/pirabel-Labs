@@ -37,42 +37,55 @@
 .h-hero { position: relative; padding: clamp(4rem, 9vw, 7rem) var(--px-page) clamp(3rem, 5vw, 4.5rem); overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%), var(--bg); }
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
-.h-hero__inner--centered { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 56rem; gap: 0; position: relative; z-index: 2; }
-.h-hero__inner--centered .h-hero__eyebrow { margin: 0 auto 1.5rem; }
-.h-hero__inner--centered h1 { margin-bottom: 1.5rem; }
-.h-hero__inner--centered p { max-width: 50rem; margin: 0 auto 2.5rem; font-size: 1.05rem; }
-.h-hero__inner--centered .h-hero__cta { justify-content: center; flex-wrap: wrap; }
-.h-hero--centered { position: relative; overflow: hidden; }
+/* Hero clean : centre + cercles colores + badges */
+.hero-deco { position: absolute; z-index: 1; pointer-events: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 8px 24px rgba(0,0,0,0.35); animation: heroFloat 7s ease-in-out infinite; }
+.hero-deco .material-symbols-outlined { font-size: 1.35rem; color: #fff; }
+@keyframes heroFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.hero-deco--l1 { top: 14%; left: 7%; width: 3.5rem; height: 3.5rem; background: var(--accent); }
+.hero-deco--l3 { top: 55%; left: 5%; width: 3.5rem; height: 3.5rem; background: #38bdf8; animation-delay: 1.2s; }
+.hero-deco--l4 { top: 78%; left: 9%; width: 3rem; height: 3rem; background: #4ade80; animation-delay: 2.4s; }
+.hero-deco--r1 { top: 13%; right: 7%; width: 3.5rem; height: 3.5rem; background: #ec4899; animation-delay: 0.6s; }
+.hero-deco--r3 { top: 52%; right: 6%; width: 3.5rem; height: 3.5rem; background: #a855f7; animation-delay: 1.8s; }
+.hero-deco--r4 { top: 28%; right: 12%; width: 3rem; height: 3rem; background: #fbbf24; animation-delay: 3s; }
+.hero-deco--badge { border-radius: 999px; padding: 0.55rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--text); background: var(--bg-2); border: 1px solid var(--border-2); box-shadow: 0 8px 24px rgba(0,0,0,0.35); width: auto; height: auto; }
+.hero-deco--l2 { top: 38%; left: 3%; animation-delay: 3.6s; }
+.hero-deco--r2 { top: 75%; right: 5%; animation-delay: 4.2s; }
+@media (max-width: 880px) {
+  .hero-deco { display: none; }
+}
 
-/* Decorations laterales style Noiise */
-.hero-deco { position: absolute; z-index: 1; pointer-events: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 8px 24px rgba(0,0,0,0.35); animation: heroFloat 6s ease-in-out infinite; }
-.hero-deco .material-symbols-outlined { font-size: 1.4rem; color: #fff; }
-@keyframes heroFloat { 0%,100%{transform: translateY(0)} 50%{transform: translateY(-12px)} }
+/* (capsules retirees) */
+.h-hero--clean { position: relative; overflow: hidden; padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.h-hero--clean::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,85,0,0.10) 0%, transparent 60%); pointer-events: none; }
+.h-hero__inner--clean { display: block; max-width: 68rem; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+.h-hero__inner--clean .h-hero__eyebrow { display: inline-flex; margin-bottom: 1.25rem; }
+.h-hero__inner--clean h1 { font-size: clamp(1.6rem, 2.8vw, 2.2rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin: 0 auto 1.25rem; max-width: 50rem; text-align: center; text-wrap: balance; }
+.h-hero__inner--clean p { font-size: 1rem; line-height: 1.7; color: var(--text-muted); margin: 0 auto 2rem; max-width: 58rem; text-align: center; }
+.h-hero__inner--clean .h-hero__cta { display: inline-flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
 
-/* Cercle simple icon */
-.hero-deco--l1 { top: 14%; left: 8%; width: 3.5rem; height: 3.5rem; background: var(--accent); }
-.hero-deco--l3 { top: 65%; left: 5%; width: 3.25rem; height: 3.25rem; background: #4ade80; animation-delay: 1.2s; }
-.hero-deco--l4 { top: 38%; left: 14%; width: 2.85rem; height: 2.85rem; background: #38bdf8; animation-delay: 2.4s; }
-.hero-deco--r1 { top: 18%; right: 7%; width: 3.5rem; height: 3.5rem; background: #ec4899; animation-delay: 0.6s; }
-.hero-deco--r3 { top: 62%; right: 6%; width: 3.25rem; height: 3.25rem; background: #a855f7; animation-delay: 1.8s; }
-.hero-deco--r4 { top: 35%; right: 13%; width: 2.85rem; height: 2.85rem; background: #fbbf24; animation-delay: 3s; }
+/* Capsules verticales — petites, decoratives */
+.hero-cap { position: absolute; z-index: 1; pointer-events: none; animation: heroFloat 7s ease-in-out infinite; }
+.hero-cap__body { width: 4rem; height: 8.5rem; border-radius: 999px; border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+.hero-cap__body .material-symbols-outlined { font-size: 1.5rem; color: rgba(229,226,225,0.85); }
+.hero-cap__body--orange { background: linear-gradient(180deg, rgba(255,85,0,0.22) 0%, var(--bg-2) 80%); }
+.hero-cap__body--green { background: linear-gradient(180deg, rgba(74,222,128,0.22) 0%, var(--bg-2) 80%); }
+.hero-cap__body--pink { background: linear-gradient(180deg, rgba(236,72,153,0.22) 0%, var(--bg-2) 80%); }
+.hero-cap__body--purple { background: linear-gradient(180deg, rgba(168,85,247,0.22) 0%, var(--bg-2) 80%); }
 
-/* Badge stats */
-.hero-deco--badge { border-radius: 999px; padding: 0.5rem 1rem; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--text); background: var(--bg-2); border: 1px solid var(--border-2); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-.hero-deco--l2 { top: 42%; left: 3%; animation-delay: 3.6s; }
-.hero-deco--r2 { top: 45%; right: 3%; animation-delay: 4.2s; }
+.hero-cap--l1 { top: 12%; left: 5%; }
+.hero-cap--l2 { top: 58%; left: 8%; animation-delay: 2s; }
+.hero-cap--r1 { top: 14%; right: 5%; animation-delay: 1s; }
+.hero-cap--r2 { top: 56%; right: 8%; animation-delay: 3s; }
+
+@keyframes heroFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
 @media (max-width: 880px) {
-  .hero-deco--l4, .hero-deco--r4, .hero-deco--l2, .hero-deco--r2 { display: none; }
-  .hero-deco--l1, .hero-deco--l3, .hero-deco--r1, .hero-deco--r3 { width: 2.5rem; height: 2.5rem; }
-  .hero-deco--l1 { top: 6%; left: 4%; }
-  .hero-deco--l3 { top: 78%; left: 3%; }
-  .hero-deco--r1 { top: 8%; right: 4%; }
-  .hero-deco--r3 { top: 76%; right: 3%; }
+  .hero-cap { display: none; }
 }
 .h-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
 .h-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
-.h-hero h1 { font-size: clamp(2.1rem, 5.5vw, 4.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; text-align: left; }
+.h-hero h1 { font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; margin-bottom: 1.25rem; text-align: left; }
+.h-hero__txt p { font-size: 0.98rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.75rem; max-width: 32rem; }
 .h-hero h1 em { color: var(--accent); font-style: normal; }
 .h-hero p { font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: var(--text-muted); max-width: 36rem; margin: 0 0 2rem; }
 .h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
@@ -458,7 +471,7 @@
           <div class="nav-mega__panel-inner">
             <div>
               <div class="nav-mega__col-title">Web &amp; visibilite</div>
-              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Creation de site web</div><div class="nav-mega__link-desc">Sites sur mesure, WordPress, Webflow</div></div></a>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Creation de site web</div><div class="nav-mega__link-desc">Sites sur mesuré, WordPress, Webflow</div></div></a>
               <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; referencement</div><div class="nav-mega__link-desc">Trafic organique qualifie</div></div></a>
               <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
             </div>
@@ -536,7 +549,7 @@
           <div class="nav-mega__panel-inner">
             <div>
               <a href="/audit-seo" class="nav-mega__link"><span class="material-symbols-outlined">analytics</span><div><div class="nav-mega__link-title">Audit SEO gratuit</div><div class="nav-mega__link-desc">Diagnostic complet 15 min</div></div></a>
-              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">support_agent</span><div><div class="nav-mega__link-title">Audit marketing</div><div class="nav-mega__link-desc">Recommandations chiffrees</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">support_agent</span><div><div class="nav-mega__link-title">Audit marketing</div><div class="nav-mega__link-desc">Recommandations chiffrées</div></div></a>
               <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">menu_book</span><div><div class="nav-mega__link-title">Livres blancs</div><div class="nav-mega__link-desc">SEO, sites, automatisation</div></div></a>
               <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">article</span><div><div class="nav-mega__link-title">Blog</div><div class="nav-mega__link-desc">Conseils marketing</div></div></a>
             </div>
@@ -565,26 +578,26 @@
 
 <main id="main">
 
-  <!-- 1. HERO CENTRE (style Noiise avec decorations laterales) -->
-  <section class="h-hero h-hero--centered">
-    <!-- Decorations gauche -->
+  <!-- 1. HERO centre avec cercles colores + badges laterales -->
+  <section class="h-hero h-hero--clean">
+    <!-- Gauche -->
     <span class="hero-deco hero-deco--l1"><span class="material-symbols-outlined">trending_up</span></span>
     <span class="hero-deco hero-deco--l2 hero-deco--badge">150+ projets</span>
-    <span class="hero-deco hero-deco--l3"><span class="material-symbols-outlined">code</span></span>
-    <span class="hero-deco hero-deco--l4"><span class="material-symbols-outlined">search_insights</span></span>
-    <!-- Decorations droite -->
+    <span class="hero-deco hero-deco--l3"><span class="material-symbols-outlined">search_insights</span></span>
+    <span class="hero-deco hero-deco--l4"><span class="material-symbols-outlined">code</span></span>
+    <!-- Droite -->
     <span class="hero-deco hero-deco--r1"><span class="material-symbols-outlined">campaign</span></span>
     <span class="hero-deco hero-deco--r2 hero-deco--badge">+187% leads</span>
     <span class="hero-deco hero-deco--r3"><span class="material-symbols-outlined">smart_toy</span></span>
     <span class="hero-deco hero-deco--r4"><span class="material-symbols-outlined">movie</span></span>
 
-    <div class="h-hero__inner h-hero__inner--centered">
+    <div class="h-hero__inner h-hero__inner--clean">
       <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360&deg;</span>
-      <h1>Votre stratégie digitale, <em>nous l'écrivons ensemble.</em></h1>
-      <p>Pirabel Labs est l'agence marketing digital francophone qui rassemble sous le même toit toutes les expertises dont votre entreprise a besoin pour grandir&nbsp;: sites web sur mesure, SEO, community management, vidéo, tunnels de vente, automatisation, email marketing, consulting. Depuis Abomey-Calavi (Bénin), nos équipes accompagnent les PME francophones d'Afrique de l'Ouest et d'Europe. Une seule promesse&nbsp;: des résultats mesurables, un interlocuteur unique du brief à la mise en ligne, et aucun intermédiaire caché.</p>
+      <h1>Une agence pour propulser votre <em>croissance digitale.</em></h1>
+      <p>Pirabel Labs accompagne les PME francophones d'Afrique et d'Europe grâce à ses expertises en acquisition et création digitale. Nos équipes passionnées imaginent et déploient votre stratégie marketing dans une logique de performance et de rentabilité, avec un seul interlocuteur du brief à la mise en ligne. Sites web, SEO, social, vidéo, tunnels de vente, automatisation, email marketing&nbsp;: tous les leviers de votre croissance sous le même toit.</p>
       <div class="h-hero__cta">
         <a href="/contact" class="btn btn--primary btn--lg">Contactez-nous <span class="material-symbols-outlined">arrow_forward</span></a>
-        <a href="/services" class="btn btn--ghost btn--lg">Nous découvrir <span class="material-symbols-outlined">arrow_forward</span></a>
+        <a href="/services" class="btn btn--ghost btn--lg">Nous découvrir</a>
       </div>
     </div>
   </section>
@@ -627,13 +640,13 @@
       <div class="audit-card">
         <div class="audit-card__inner">
           <span class="audit-card__eyebrow"><span class="material-symbols-outlined">card_giftcard</span> Gratuit &middot; sous 24h</span>
-          <h2>Recevez votre <em>audit marketing</em> personnalise en 15 minutes</h2>
-          <p class="audit-card__lead">Nous analysons votre présence digitale actuelle et on vous envoie un plan d'action concret avec 5 à 10 recommandations chiffrées et prioritisees. Sans engagement, sans relance commerciale.</p>
+          <h2>Recevez votre <em>audit marketing</em> personnalisé en 15 minutes</h2>
+          <p class="audit-card__lead">Nous analysons votre présence digitale actuelle et nous vous envoyons un plan d'action concret avec 5 à 10 recommandations chiffrées et priorisées. Sans engagement, sans relance commerciale.</p>
           <ul class="audit-card__benefits">
             <li>Audit SEO technique et éditorial de votre site actuel</li>
             <li>Analyse de vos canaux d'acquisition (organique, ads, social)</li>
-            <li>Plan d'action 90 jours prioritise et chiffré en EUR / FCFA</li>
-            <li>Quick wins immediat applicables sans nous</li>
+            <li>Plan d'action 90 jours priorisé et chiffré en EUR / FCFA</li>
+            <li>Quick wins immédiats applicables sans nous</li>
           </ul>
           <a href="/contact?utm=audit-gratuit" class="btn btn--primary btn--lg">Demander mon audit gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
           <div class="audit-card__legal"><span class="material-symbols-outlined">lock</span> Sans engagement &middot; vos données jamais revendues</div>
@@ -652,7 +665,7 @@
       <div class="svc-grid" id="svcGrid">
         <a href="/creation-site-web" class="svc-c">
           <div class="svc-c__icon"><span class="material-symbols-outlined">code</span></div>
-          <div class="svc-c__title">Sites web sur mesure</div>
+          <div class="svc-c__title">Sites web sur mesuré</div>
           <p class="svc-c__desc">Sites institutionnels et e-commerce développés en code (Next.js, React). Performance maximale, design unique, évolutif.</p>
           <span class="svc-c__link">Découvrir <span class="material-symbols-outlined">arrow_forward</span></span>
         </a>
@@ -1226,7 +1239,7 @@
           <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Si vous gerez une PME en croissance et que vous n'avez ni le temps ni l'envie de recruter une équipe marketing complete, oui. On le déterminé ensemble lors d'un appel gratuit de 30 minutes : on regarde votre contexte, votre ciblé, vos objectifs, et on vous dit franchement si on est la bonne équipe.</div></div></div>
         </div>
         <div class="faq-i" data-open="false">
-          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels résultats attendre concretement ?</span><span class="faq-i__q-icon">+</span></button>
+          <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels résultats attendre concrètement ?</span><span class="faq-i__q-icon">+</span></button>
           <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Pour un site web : mise en ligne en 3-6 semaines, Lighthouse 95+. Pour de l'automatisation : 10-30h economisees par semaine, mesurable en 60 jours. Pour le SEO : premiers signés à 30-60 jours, montee en position à 3-6 mois. Pour le community management : +5-15% engagement par mois si on part de zéro.</div></div></div>
         </div>
         <div class="faq-i" data-open="false">
@@ -1400,7 +1413,7 @@
       <div>
         <div class="footer__title">Services</div>
         <ul class="footer__list">
-          <li><a href="/creation-site-web">Sites web sur mesure</a></li>
+          <li><a href="/creation-site-web">Sites web sur mesuré</a></li>
           <li><a href="/creation-site-wordpress">Sites WordPress</a></li>
           <li><a href="/creation-application-web">Applications web</a></li>
           <li><a href="/seo">SEO &amp; référencement</a></li>

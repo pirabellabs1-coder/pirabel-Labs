@@ -777,12 +777,12 @@
     }
   } catch(e) {}
 
-  // Form validation feedback on submit
+  // Form AJAX submission avec feedback inline
   var form = document.getElementById('contactForm');
   if (form) {
-    form.addEventListener('submit', function(e){
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
       if (!form.checkValidity()) {
-        e.preventDefault();
         var first = form.querySelector(':invalid');
         if (first) {
           first.focus();
@@ -791,10 +791,73 @@
         }
         return;
       }
-      // Keep native POST behavior to /api/contact
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      var btnText = submitBtn ? submitBtn.innerHTML : '';
+      var msgBox = document.getElementById('contactFormMsg');
+      if (!msgBox) {
+        msgBox = document.createElement('div');
+        msgBox.id = 'contactFormMsg';
+        msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: none;';
+        form.insertBefore(msgBox, submitBtn);
+      }
+
+      // Payload : map les champs du form aux champs attendus par l'API
+      var formData = new FormData(form);
+      var raw = {};
+      formData.forEach(function(v, k){ raw[k] = v; });
+      var payload = {
+        name: ((raw.prenom || '') + ' ' + (raw.nom || '')).trim() || raw.name || '',
+        email: raw.email || '',
+        phone: raw.telephone || raw.phone || '',
+        company: raw.entreprise || raw.company || '',
+        service: raw.service || 'autre',
+        message: raw.message || raw.brief || ('Type: ' + (raw.type || 'n/a') + ' / Budget: ' + (raw.budget || 'n/a') + ' / Delai: ' + (raw.delai || 'n/a')),
+        website_url: raw.website_url || '', // honeypot
+      };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">progress_activity</span> Envoi en cours...';
+      }
+      msgBox.style.display = 'none';
+
+      try {
+        var res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var data = await res.json().catch(function(){ return {}; });
+
+        if (res.ok) {
+          msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #4ade80;';
+          msgBox.innerHTML = '<strong>Merci&nbsp;!</strong> Votre demande a bien été envoyée. Nous vous répondons sous 24h ouvrées.';
+          form.reset();
+          if (submitBtn) {
+            submitBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Demande envoyée';
+          }
+          setTimeout(function(){ msgBox.scrollIntoView({behavior:'smooth', block:'center'}); }, 100);
+        } else {
+          msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171;';
+          msgBox.innerHTML = '<strong>Erreur.</strong> ' + (data.error || 'Impossible d\'envoyer la demande. Veuillez réessayer ou écrire à contact@pirabellabs.com');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = btnText;
+          }
+        }
+      } catch (err) {
+        msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171;';
+        msgBox.innerHTML = '<strong>Erreur réseau.</strong> Vérifiez votre connexion et réessayez. Ou écrivez à contact@pirabellabs.com';
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = btnText;
+        }
+      }
     });
   }
 })();
 </script>
+<style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
 </body>
 </html>

@@ -328,6 +328,103 @@
       </div>
     </div>
   </section>
+  <!-- COMPARAISON CONCURRENTS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Quel LLM <em>pour quel cas d'usage</em>&nbsp;?</h2>
+        <p class="sec-h__sub">Nous choisissons le modèle d'IA selon votre besoin (qualité raisonnement, coût, latence, langue). Voici notre matrice de décision.</p>
+      </div>
+      <div class="cards-4" style="grid-template-columns:repeat(4,1fr);gap:1rem;">
+        <div class="card" style="border-color:var(--accent);background:linear-gradient(180deg,rgba(255,85,0,.05),var(--bg-2) 50%);">
+          <div class="card__icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+          <div class="card__title">Claude Opus 4</div>
+          <p class="card__desc"><strong>Le plus puissant en raisonnement.</strong> Excellent en français, contexte 1M tokens, idéal pour agents complexes, génération de code, analyse documents longs.</p>
+          <p style="font-size:0.78rem;color:#4ade80;margin-top:0.6rem;font-weight:700;">Notre LLM par défaut</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">chat</span></div>
+          <div class="card__title">GPT-4 (OpenAI)</div>
+          <p class="card__desc">Référence historique, excellent en multimodal (images, audio Whisper), nombreuses intégrations tierces, écosystème mature, plugin store.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">stars</span></div>
+          <div class="card__title">Gemini 2.5 (Google)</div>
+          <p class="card__desc">Très bon en recherche live (Google Search natif), prix compétitifs, contexte long, idéal pour chatbots à grande échelle.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">cloud_off</span></div>
+          <div class="card__title">Llama / Mistral (open)</div>
+          <p class="card__desc">Self-hosted possible, données chez vous, RGPD ultime, coût marginal après setup. Pour cas critiques en confidentialité.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAS D'USAGE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>6 agents IA que <em>nous déployons</em></h2>
+        <p class="sec-h__sub">Du chatbot simple à l'agent autonome multi-étapes. Voici les cas qui rapportent le plus à nos clients en 2026.</p>
+      </div>
+      <div class="cards-3" style="grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">support_agent</span></div>
+          <div class="card__title">Support client WhatsApp 24/7</div>
+          <p class="card__desc">Chatbot WhatsApp Business avec RAG sur votre documentation, FAQ, base produits. Répond 80% des questions, escalade à un humain si besoin. <strong style="color:var(--accent);">Économise 20h/semaine support.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">checklist</span></div>
+          <div class="card__title">Qualification leads auto</div>
+          <p class="card__desc">L'agent dialogue avec chaque lead entrant, qualifie selon BANT, route vers le bon commercial avec contexte. <strong style="color:var(--accent);">+187% de RDV qualifiés.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">receipt_long</span></div>
+          <div class="card__title">Génération devis instantané</div>
+          <p class="card__desc">L'agent interroge le client (besoins, volume, délais), calcule un devis personnalisé selon votre grille tarifaire, génère le PDF, envoie. <strong style="color:var(--accent);">Réponse en 2 minutes vs 1 jour.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">menu_book</span></div>
+          <div class="card__title">FAQ dynamique semantique</div>
+          <p class="card__desc">Recherche RAG sur votre base de connaissance, génère des réponses contextualisées avec sources citées. Bien meilleur qu'une FAQ statique.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">handshake</span></div>
+          <div class="card__title">Agent pré-vente commercial</div>
+          <p class="card__desc">Dialogue avec le prospect, identifie ses besoins, présente l'offre adaptée, planifie le RDV avec un commercial humain. Pré-qualifié et chaud.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">edit_note</span></div>
+          <div class="card__title">Copywriter IA spécialisé</div>
+          <p class="card__desc">Agent qui produit emails, posts sociaux, landing pages, descriptions produits dans votre ton de marque. Génération à la chaîne avec validation humaine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK TECHNIQUE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Stack technique <em>moderne et solide</em></h2>
+        <p class="sec-h__sub">Nous utilisons les meilleures briques open-source et APIs pour construire des agents fiables, sécurisés et évolutifs.</p>
+      </div>
+      <div class="cards-4" style="grid-template-columns:repeat(4,1fr);gap:1rem;">
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">api</span></div><div class="card__title">APIs LLM</div><p class="card__desc">Anthropic Claude, OpenAI GPT, Google Gemini selon besoin.</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">database</span></div><div class="card__title">Pinecone &amp; Weaviate</div><p class="card__desc">Vector DB pour RAG (Retrieval Augmented Generation).</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">linked_services</span></div><div class="card__title">n8n / Make</div><p class="card__desc">Orchestration multi-étapes, gestion des workflows complexes.</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">hub</span></div><div class="card__title">MCP servers</div><p class="card__desc">Model Context Protocol pour outils standardisés (Anthropic).</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">chat</span></div><div class="card__title">WhatsApp Business API</div><p class="card__desc">Intégration officielle Meta, flows visuels, templates approuvés.</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">verified_user</span></div><div class="card__title">Sécurité &amp; RGPD</div><p class="card__desc">Données chiffrées, opt-in clair, audit logs, conformité française.</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">monitoring</span></div><div class="card__title">Monitoring &amp; analytics</div><p class="card__desc">LangSmith, Helicone pour tracer chaque appel LLM, mesurer coûts.</p></div>
+        <div class="card"><div class="card__icon"><span class="material-symbols-outlined">code</span></div><div class="card__title">Custom dev (Node/Python)</div><p class="card__desc">Backend Express ou FastAPI pour logique métier sur-mesure.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARENT CARD -->
+
   <section class="section">
     <div class="container">
       <div class="parent-card">

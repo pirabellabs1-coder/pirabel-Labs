@@ -315,6 +315,107 @@
       </div>
     </div>
   </section>
+  <!-- COMPARAISON CONCURRENTS -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>n8n vs <em>Zapier vs Make</em></h2>
+        <p class="sec-h__sub">Pourquoi n8n est notre choix par défaut pour les workflows complexes&nbsp;: open-source, self-hosted, prix maîtrisé, flexibilité maximale.</p>
+      </div>
+      <div class="cards-3" style="grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+        <div class="card" style="border-color:var(--accent);background:linear-gradient(180deg,rgba(255,85,0,.05),var(--bg-2) 50%);">
+          <div class="card__icon"><span class="material-symbols-outlined">account_tree</span></div>
+          <div class="card__title">n8n (recommandé)</div>
+          <p class="card__desc"><strong>0 EUR (self-hosted) ou 20-50 EUR/mois (cloud)</strong>. Open-source, code custom JavaScript dans les nodes, 400+ intégrations natives, illimité en exécutions, données chez vous.</p>
+          <p style="font-size:0.78rem;color:#4ade80;margin-top:0.6rem;font-weight:700;">✓ Notre choix par défaut pour workflows avancés</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">link</span></div>
+          <div class="card__title">Make (Integromat)</div>
+          <p class="card__desc"><strong>9-29 EUR/mois</strong> selon volume opérations. Très visuel, parfait pour démarrer. Limites&nbsp;: dépendance cloud, coût qui explose au-delà de 10k opérations/mois, pas de code custom.</p>
+          <p style="font-size:0.78rem;color:var(--text-faint);margin-top:0.6rem;">Pour besoins simples et volumes faibles</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">bolt</span></div>
+          <div class="card__title">Zapier</div>
+          <p class="card__desc"><strong>20-300 EUR/mois</strong>. Le plus connu, énormément d'intégrations, mais cher dès qu'on dépasse 750 tâches/mois. Latence parfois élevée. Aucun contrôle sur la data.</p>
+          <p style="font-size:0.78rem;color:var(--text-faint);margin-top:0.6rem;">Pour intégrations simples one-shot</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAS D'USAGE -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-h">
+        <h2>6 workflows <em>concrets</em> que nous déployons</h2>
+        <p class="sec-h__sub">n8n excelle sur les workflows multi-étapes avec logique conditionnelle, transformation de données, appels API custom.</p>
+      </div>
+      <div class="cards-3" style="grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">sync</span></div>
+          <div class="card__title">Sync CRM ↔ Excel/Sheets</div>
+          <p class="card__desc">Bidirectionnel temps réel. Quand un lead arrive dans HubSpot, ligne ajoutée dans Sheets. Quand statut modifié dans Sheets, sync vers CRM. <strong style="color:var(--accent);">Zéro saisie manuelle.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">travel_explore</span></div>
+          <div class="card__title">Scraping web → Sheets</div>
+          <p class="card__desc">Récupération automatique de données publiques (prix concurrents, annonces, stats). Nettoyage, déduplication, alerte Slack si changement détecté. <strong style="color:var(--accent);">Économise 10h/semaine.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">notifications</span></div>
+          <div class="card__title">Notifications multi-canal</div>
+          <p class="card__desc">Événement déclencheur → Slack + Email + WhatsApp + SMS selon criticité. Logic conditionnelle (jour/heure, priorité, équipe). Routing intelligent.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">picture_as_pdf</span></div>
+          <div class="card__title">Génération PDF automatique</div>
+          <p class="card__desc">Devis, factures, rapports générés à la demande depuis template HTML, sauvegardés sur Google Drive, envoyés par email signé. <strong style="color:var(--accent);">Quelques secondes vs 30 min manuel.</strong></p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">credit_card</span></div>
+          <div class="card__title">Intégration Stripe avancée</div>
+          <p class="card__desc">Webhook Stripe → MAJ CRM + email confirmation + ajout cours en ligne + Slack équipe + comptabilité. Gestion abonnements, dunning, prorations.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <div class="card__title">Workflows multi-IA</div>
+          <p class="card__desc">GPT-4 + Claude + Gemini en pipeline. Ex&nbsp;: transcription Whisper → résumé Claude → tags GPT-4 → publication Notion. Orchestration sophistiquée.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEBERGEMENT & STACK -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="sec-h">
+        <h2>Hébergement n8n <em>flexible</em></h2>
+        <p class="sec-h__sub">Self-hosted Docker chez vous, n8n Cloud officiel, ou hébergement managé Pirabel Labs. Nous vous orientons selon votre cas.</p>
+      </div>
+      <div class="cards-3" style="grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">cloud_off</span></div>
+          <div class="card__title">Self-hosted Docker</div>
+          <p class="card__desc">Sur votre VPS ou serveur (DigitalOcean, Hetzner, OVH). <strong>10-25 EUR/mois</strong> serveur, exécutions illimitées, contrôle total. Setup Pirabel Labs&nbsp;: 1000 EUR.</p>
+        </div>
+        <div class="card" style="border-color:var(--accent);">
+          <div class="card__icon"><span class="material-symbols-outlined">cloud</span></div>
+          <div class="card__title">n8n Cloud officiel</div>
+          <p class="card__desc"><strong>20-50 EUR/mois</strong>. Zéro maintenance, mises à jour auto, SLA officiel. Idéal pour démarrer ou si vous ne voulez pas gérer serveur.</p>
+        </div>
+        <div class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">support_agent</span></div>
+          <div class="card__title">Hébergement Pirabel</div>
+          <p class="card__desc">Nous hébergeons votre n8n sur infra dédiée, sauvegardes auto, monitoring 24/7, intervention sous 4h. <strong>120 EUR/mois</strong> hébergement + maintenance inclus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARENT CARD -->
+
   <section class="section">
     <div class="container">
       <div class="parent-card">

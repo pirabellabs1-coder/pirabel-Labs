@@ -21,9 +21,9 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
 <style>
 /* ============ HOME v5 - Agence 360 (refonte) ============ */
@@ -38,17 +38,36 @@
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
 /* === HERO premium type Linear/Framer/Stripe === */
-.h-hero--framed { position: relative; padding: clamp(5rem, 10vw, 10rem) clamp(2rem, 8vw, 6rem) clamp(4rem, 8vw, 7rem); overflow: hidden; min-height: 100vh; display: flex; align-items: center; background: #050505; }
+.h-hero--framed { position: relative; padding: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 8vw, 6rem) clamp(3rem, 6vw, 5rem); overflow: hidden; background: #050505; }
 .h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.025) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); pointer-events: none; z-index: 0; }
 .h-hero--framed::after { content: ''; position: absolute; top: 30%; left: 30%; width: 38rem; height: 38rem; background: radial-gradient(circle, rgba(255,107,0,0.18) 0%, rgba(255,107,0,0.05) 30%, transparent 65%); filter: blur(60px); pointer-events: none; z-index: 0; transform: translate(-50%, -50%); }
 .hero-frame { position: relative; width: 100%; max-width: 88rem; margin: 0 auto; padding: 0; }
 .hero-frame__glow { position: absolute; pointer-events: none; z-index: 0; }
 .hero-frame__glow--tl { top: -10rem; left: 2%; width: 30rem; height: 28rem; background: radial-gradient(ellipse at top, rgba(255,107,0,0.55) 0%, rgba(255,107,0,0.15) 38%, transparent 72%); filter: blur(50px); }
 .hero-frame__glow--br { top: -10rem; right: 2%; bottom: auto; width: 30rem; height: 28rem; background: radial-gradient(ellipse at top, rgba(255,107,0,0.55) 0%, rgba(255,107,0,0.15) 38%, transparent 72%); filter: blur(50px); }
-.hero-frame__inner { position: relative; z-index: 1; width: 100%; max-width: 56rem; margin: 0; text-align: left; }
-.h-hero__h1--framed { position: relative; font-family: var(--font-display); font-size: clamp(2.5rem, 5.5vw, 4.5rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin: 0 0 2rem; max-width: 56rem; text-align: left; color: #F5F4F1; }
+.hero-frame__inner { position: relative; z-index: 1; width: 100%; max-width: 78rem; margin: 0 auto; text-align: center; }
+
+/* Bulles décoratives hero (derrière le texte, sur les côtés) */
+.hero-bulle { position: absolute; z-index: 0; pointer-events: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 12px 28px rgba(0,0,0,0.45); animation: heroBulleFloat 7s ease-in-out infinite; }
+.hero-frame__inner { z-index: 2 !important; }
+.hero-bulle .material-symbols-outlined { font-size: 1.3rem; color: #fff; }
+@keyframes heroBulleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.hero-bulle--l1 { top: 5%; left: 1%; width: 2.85rem; height: 2.85rem; background: #FF6B00; }
+.hero-bulle--l3 { top: 85%; left: 1.5%; width: 2.85rem; height: 2.85rem; background: rgba(255,107,0,0.85); border: 1px solid rgba(255,107,0,0.4); animation-delay: 1.4s; }
+.hero-bulle--r1 { top: 6%; right: 1%; width: 2.85rem; height: 2.85rem; background: rgba(255,107,0,0.85); border: 1px solid rgba(255,107,0,0.4); animation-delay: 0.7s; }
+.hero-bulle--r3 { top: 84%; right: 1.5%; width: 2.85rem; height: 2.85rem; background: #FF6B00; animation-delay: 2.1s; }
+.hero-bulle--badge { border-radius: 999px; padding: 0.45rem 0.85rem; font-family: var(--font-display); font-weight: 700; font-size: 0.74rem; color: #F5F4F1; background: rgba(15,15,15,0.85); border: 1px solid rgba(245,244,241,0.12); width: auto; height: auto; gap: 0.4rem; backdrop-filter: blur(10px); }
+.hero-bulle__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; display: inline-block; flex-shrink: 0; background: var(--accent) !important; }
+.hero-bulle--l2 { top: 26%; left: 0%; animation-delay: 3.2s; }
+.hero-bulle--r2 { top: 26%; right: 0%; animation-delay: 3.8s; }
+@media (max-width: 1400px) { .hero-bulle--l2, .hero-bulle--r2 { display: none; } }
+@media (max-width: 1200px) { .hero-bulle--l3, .hero-bulle--r3 { display: none; } }
+@media (max-width: 1000px) { .hero-bulle { display: none; } }
+@media (max-width: 880px) { .hero-bulle { display: none; } }
+.h-hero__h1--framed { position: relative; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, sans-serif; font-size: clamp(2.1rem, 4.2vw, 3.5rem); line-height: 1.15; letter-spacing: -0.02em; font-weight: 800; margin: 0 auto 1.75rem; max-width: 68rem; text-align: center; color: #F5F4F1; }
 .h-hero__h1--framed em { color: #FF6B00; font-style: normal; }
-.h-hero__p--framed { font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.55; color: rgba(245,244,241,0.65); margin: 0 0 2.75rem; max-width: 48rem; text-align: left; }
+.h-hero__p--framed { font-size: clamp(0.95rem, 1.05vw, 1.05rem); line-height: 1.6; color: rgba(245,244,241,0.62); margin: 0 auto 2.75rem; max-width: 62rem; text-align: center; }
+.h-hero__p--framed strong { color: #F5F4F1; font-weight: 700; }
 .hero-icon-inline { display: none; }
 
 /* Badge eyebrow premium */
@@ -56,7 +75,7 @@
 .h-hero--framed .h-hero__eyebrow .material-symbols-outlined { font-size: 1rem; }
 
 /* CTAs hero premium */
-.h-hero--framed .h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.9rem; }
+.h-hero--framed .h-hero__cta { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
 .h-hero--framed .h-hero__cta .btn { padding: 1.1rem 1.85rem; font-size: 0.92rem; font-weight: 700; border-radius: 14px; letter-spacing: 0.01em; text-transform: none; min-height: 3.5rem; }
 .h-hero--framed .h-hero__cta .btn--primary { background: #FF6B00; color: #fff; box-shadow: 0 16px 36px rgba(255,107,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18); transition: all 0.25s ease; }
 .h-hero--framed .h-hero__cta .btn--primary:hover { background: #FF7A1A; transform: translateY(-2px); box-shadow: 0 20px 44px rgba(255,107,0,0.45); }
@@ -119,10 +138,10 @@
 }
 .h-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
 .h-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
-.h-hero h1 { font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; margin-bottom: 1.25rem; text-align: left; }
+.h-hero h1 { font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, sans-serif; font-size: clamp(2.1rem, 4.2vw, 3.5rem); line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; margin-bottom: 1.5rem; text-align: center; }
 .h-hero__txt p { font-size: 0.98rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.75rem; max-width: 32rem; }
 .h-hero h1 em { color: var(--accent); font-style: normal; }
-.h-hero p { font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; color: var(--text-muted); max-width: 36rem; margin: 0 0 2rem; }
+.h-hero p { font-size: clamp(0.95rem, 1.05vw, 1.05rem); line-height: 1.6; color: rgba(245,244,241,0.62); max-width: 62rem; margin: 0 auto 2.75rem; text-align: center; }
 .h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
 .h-hero__trust { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); }
 .h-hero__trust-stars { color: var(--accent); letter-spacing: 0.05em; }
@@ -178,6 +197,65 @@
 .stat-c__l { font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; }
 
 /* === 3. DIFFERENTIATORS === */
+/* === EXPERTISES 2-COL (style Noiise White Mirror) === */
+.expertises-2col .container { display: flex; flex-direction: column; gap: clamp(4rem, 8vw, 7rem); max-width: 78rem; }
+.expertise-row { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+.expertise-row--reverse { grid-template-columns: 1fr 1.05fr; }
+.expertise-row--reverse .expertise-row__txt { order: 2; }
+.expertise-row--reverse .expertise-row__visual { order: 1; }
+.expertise-row__txt h2 { font-family: 'Montserrat', system-ui, sans-serif; font-size: clamp(1.65rem, 2.6vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin-bottom: 1.5rem; color: #F5F4F1; }
+.expertise-row__txt p { font-size: 0.98rem; line-height: 1.65; color: rgba(245,244,241,0.65); margin-bottom: 1rem; }
+.expertise-row__txt p strong { color: #F5F4F1; font-weight: 700; }
+.expertise-row__txt .btn { margin-top: 1.25rem; }
+.hl-pink, .hl-blue, .hl-purple, .hl-green { background: rgba(255,107,0,0.16); color: #FF6B00; padding: 0.05em 0.3em; border-radius: 6px; font-style: normal; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.expertise-row__visual { position: relative; }
+.expertise-visual { position: relative; aspect-ratio: 4/3; background: linear-gradient(135deg, rgba(255,107,0,0.06) 0%, var(--bg-2) 70%); border: 1px solid var(--border-2); border-radius: 20px; padding: 2rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.expertise-visual--seo { background: linear-gradient(135deg, rgba(255,107,0,0.06) 0%, var(--bg-2) 70%); }
+.expertise-visual--ads { background: linear-gradient(135deg, rgba(255,107,0,0.06) 0%, var(--bg-2) 70%); }
+.expertise-visual--social { background: linear-gradient(135deg, rgba(255,107,0,0.06) 0%, var(--bg-2) 70%); }
+.expertise-visual--social .ev-badge .material-symbols-outlined { color: var(--accent); }
+.ev-social { width: 65%; }
+.ev-social__post { background: #0f0f0f; border: 1px solid var(--border-2); border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.55); }
+.ev-social__head { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.95rem; border-bottom: 1px solid var(--border); }
+.ev-social__avatar { width: 1.85rem; height: 1.85rem; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.ev-social__name { font-size: 0.82rem; font-weight: 700; color: #F5F4F1; }
+.ev-social__img { width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, rgba(255,107,0,0.18) 0%, rgba(255,122,51,0.18) 100%); }
+.ev-social__actions { display: flex; gap: 0.9rem; padding: 0.6rem 0.95rem; }
+.ev-social__actions .material-symbols-outlined { font-size: 1.3rem; color: #F5F4F1; }
+.ev-social__actions .material-symbols-outlined:first-child { color: var(--accent); }
+.ev-social__stats { padding: 0 0.95rem 0.85rem; font-size: 0.78rem; font-weight: 700; color: #F5F4F1; }
+.ev-badge { position: absolute; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1rem; border-radius: 999px; background: rgba(15,15,15,0.85); border: 1px solid rgba(245,244,241,0.12); font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: #F5F4F1; backdrop-filter: blur(10px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 2; }
+.ev-badge--1 { top: 8%; left: 6%; }
+.ev-badge--2 { bottom: 8%; right: 6%; }
+.ev-badge .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.expertise-visual--seo .ev-badge .material-symbols-outlined { color: var(--accent); }
+.expertise-visual--ads .ev-badge .material-symbols-outlined { color: var(--accent); }
+.ev-card { width: 75%; background: #0f0f0f; border: 1px solid var(--border-2); border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.55); }
+.ev-card__bar { display: flex; gap: 0.4rem; padding: 0.7rem; background: #181818; border-bottom: 1px solid var(--border); }
+.ev-dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; }
+.ev-dot--r { background: #ff5f56; } .ev-dot--y { background: #ffbd2e; } .ev-dot--g { background: #27c93f; }
+.ev-card__body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.ev-line { height: 0.55rem; border-radius: 999px; background: rgba(245,244,241,0.08); }
+.ev-line--w90 { width: 90%; } .ev-line--w70 { width: 70%; } .ev-line--w50 { width: 50%; }
+.ev-cta { margin-top: 0.5rem; padding: 0.55rem 0.95rem; background: var(--accent); color: #fff; border-radius: 8px; font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; text-align: center; align-self: flex-start; }
+.ev-search { width: 80%; background: #0f0f0f; border: 1px solid var(--border-2); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.55); }
+.ev-search__bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: #181818; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: rgba(245,244,241,0.55); }
+.ev-search__bar .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+.ev-search__result { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: rgba(245,244,241,0.7); display: flex; gap: 0.6rem; align-items: center; }
+.ev-search__result:last-child { border-bottom: 0; }
+.ev-search__result strong { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 0.72rem; background: rgba(255,107,0,0.15); padding: 0.18rem 0.5rem; border-radius: 6px; flex-shrink: 0; }
+.ev-funnel { width: 78%; display: flex; flex-direction: column; gap: 0.7rem; }
+.ev-funnel__step { background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.22); border-radius: 10px; padding: 0.85rem 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+.ev-funnel__step span { font-size: 0.85rem; color: rgba(245,244,241,0.7); }
+.ev-funnel__step strong { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; color: var(--accent); }
+.ev-funnel__step--2 { width: 80%; align-self: center; }
+.ev-funnel__step--3 { width: 62%; align-self: center; background: rgba(255,107,0,0.2); border-color: rgba(255,107,0,0.4); }
+@media (max-width: 860px) {
+  .expertise-row, .expertise-row--reverse { grid-template-columns: 1fr; gap: 2rem; }
+  .expertise-row--reverse .expertise-row__txt { order: 1; }
+  .expertise-row--reverse .expertise-row__visual { order: 2; }
+}
+
 .diff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
 @media (max-width: 880px) { .diff-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .diff-grid { grid-template-columns: 1fr; } }
@@ -200,14 +278,26 @@
 .better__txt p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
 @media (max-width: 880px) { .better { grid-template-columns: 1fr; } .better__visual { min-height: 14rem; } }
 
-/* === 5. SERVICES === */
-.svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+/* === 5. SERVICES (premium bento) === */
+#services { position: relative; overflow: hidden; }
+#services::before { content: ''; position: absolute; top: 20%; left: 50%; width: 60rem; height: 30rem; background: radial-gradient(ellipse, rgba(255,107,0,0.08) 0%, transparent 60%); transform: translateX(-50%); filter: blur(60px); pointer-events: none; z-index: 0; }
+#services .container { position: relative; z-index: 1; }
+.svc-c { position: relative; background: linear-gradient(180deg, var(--bg-2) 0%, rgba(20,20,20,0.6) 100%); border: 1px solid var(--border-2); border-radius: 18px; padding: 1.75rem 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; isolation: isolate; }
+.svc-c::before { content: ''; position: absolute; top: 0; left: 50%; width: 80%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); transform: translateX(-50%); opacity: 0; transition: opacity 0.4s; }
+.svc-c::after { content: ''; position: absolute; inset: -1px; border-radius: 18px; padding: 1px; background: linear-gradient(135deg, transparent 0%, rgba(255,107,0,0) 50%, transparent 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.4s, background 0.4s; pointer-events: none; }
+.svc-c:hover { transform: translateY(-4px); border-color: rgba(255,107,0,0.35); box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,107,0,0.15); }
+.svc-c:hover::before { opacity: 1; }
+.svc-c:hover::after { opacity: 1; background: linear-gradient(135deg, var(--accent) 0%, rgba(255,107,0,0.2) 50%, var(--accent) 100%); }
+.svc-c:hover .svc-c__icon { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); color: #fff; transform: scale(1.05) rotate(-3deg); box-shadow: 0 8px 24px rgba(255,107,0,0.4); }
+.svc-c:hover .svc-c__link { color: #FF8533; }
+.svc-c:hover .svc-c__link .material-symbols-outlined { transform: translateX(3px); }
+.svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
 @media (max-width: 880px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .svc-grid { grid-template-columns: 1fr; } }
-.svc-c { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; text-align: left; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; }
-.svc-c:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
-.svc-c__icon { width: 2.75rem; height: 2.75rem; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-.svc-c__icon .material-symbols-outlined { font-size: 1.4rem; }
+.svc-c__icon { width: 3.2rem; height: 3.2rem; background: rgba(255,107,0,0.1); color: #FF6B00; border: 1px solid rgba(255,107,0,0.2); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.svc-c__icon .material-symbols-outlined { font-size: 1.6rem; transition: color 0.3s; }
+.svc-c__link .material-symbols-outlined { transition: transform 0.3s; }
+/* (anciennes regles .svc-c retirees — remplacees par la version premium plus haut) */
 .svc-c__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
 .svc-c__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
 .svc-c__link { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; }
@@ -496,12 +586,12 @@
 <nav class="nav-mega" id="nav">
   <div class="nav-mega__inner">
     <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
-      <img src="/img/logo.png" alt="Pirabel Labs" width="34" height="34" fetchpriority="high">
-      <span>PIRABEL LABS</span>
+      <img src="/img/logo.png" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
     </a>
     <div class="nav-mega__menu" id="navMenu">
       <div class="nav-mega__item">
-        <button class="nav-mega__trigger" type="button">Services <span class="material-symbols-outlined">expand_more</span></button>
+        <button class="nav-mega__trigger" type="button">Expertises <span class="material-symbols-outlined">expand_more</span></button>
         <div class="nav-mega__panel nav-mega__panel--2col">
           <div class="nav-mega__panel-inner">
             <div>
@@ -522,27 +612,113 @@
           </div>
         </div>
       </div>
-      <a href="/services" class="nav-mega__main-link">Realisations</a>
-      <a href="/contact" class="nav-mega__main-link">A propos</a>
-      <a href="/contact" class="nav-mega__main-link">Blog</a>
-      <a href="/contact" class="nav-mega__main-link">Contact</a>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Agences <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Sites &amp; e-commerce</div>
+              <a href="/agence-webflow" class="nav-mega__link"><span class="material-symbols-outlined">web</span><div><div class="nav-mega__link-title">Agence Webflow</div></div></a>
+              <a href="/agence-elementor" class="nav-mega__link"><span class="material-symbols-outlined">dashboard_customize</span><div><div class="nav-mega__link-title">Agence Elementor</div></div></a>
+              <a href="/agence-woocommerce" class="nav-mega__link"><span class="material-symbols-outlined">shopping_cart</span><div><div class="nav-mega__link-title">Agence WooCommerce</div></div></a>
+              <a href="/agence-prestashop" class="nav-mega__link"><span class="material-symbols-outlined">storefront</span><div><div class="nav-mega__link-title">Agence PrestaShop</div></div></a>
+              <a href="/agence-ecommerce" class="nav-mega__link"><span class="material-symbols-outlined">point_of_sale</span><div><div class="nav-mega__link-title">Agence e-commerce</div></div></a>
+              <a href="/agence-site-vitrine" class="nav-mega__link"><span class="material-symbols-outlined">window</span><div><div class="nav-mega__link-title">Agence site vitrine</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Automatisation &amp; IA</div>
+              <a href="/agence-make" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Agence Make</div></div></a>
+              <a href="/agence-n8n" class="nav-mega__link"><span class="material-symbols-outlined">account_tree</span><div><div class="nav-mega__link-title">Agence n8n</div></div></a>
+              <a href="/agents-ia-chatbots" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agents IA &amp; chatbots</div></div></a>
+              <a href="/agence-systeme-io" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Agence Systeme.io</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Email, social, video</div>
+              <a href="/agence-hubspot" class="nav-mega__link"><span class="material-symbols-outlined">hub</span><div><div class="nav-mega__link-title">Agence HubSpot</div></div></a>
+              <a href="/agence-brevo" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Agence Brevo</div></div></a>
+              <a href="/community-instagram" class="nav-mega__link"><span class="material-symbols-outlined">photo_camera</span><div><div class="nav-mega__link-title">Agence Instagram</div></div></a>
+              <a href="/community-tiktok" class="nav-mega__link"><span class="material-symbols-outlined">music_video</span><div><div class="nav-mega__link-title">Agence TikTok</div></div></a>
+              <a href="/community-linkedin" class="nav-mega__link"><span class="material-symbols-outlined">work</span><div><div class="nav-mega__link-title">Agence LinkedIn</div></div></a>
+              <a href="/agence-netlinking" class="nav-mega__link"><span class="material-symbols-outlined">link</span><div><div class="nav-mega__link-title">Agence netlinking</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Villes <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Benin</div>
+              <a href="/agence-marketing-abomey-calavi" class="nav-mega__link"><span class="material-symbols-outlined">home_pin</span><div><div class="nav-mega__link-title">Abomey-Calavi</div><div class="nav-mega__link-desc">Notre siege</div></div></a>
+              <a href="/agence-marketing-cotonou" class="nav-mega__link"><span class="material-symbols-outlined">location_city</span><div><div class="nav-mega__link-title">Cotonou</div></div></a>
+              <a href="/agence-marketing-porto-novo" class="nav-mega__link"><span class="material-symbols-outlined">apartment</span><div><div class="nav-mega__link-title">Porto-Novo</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Afrique de l&#39;Ouest</div>
+              <a href="/agence-web-abidjan" class="nav-mega__link"><span class="material-symbols-outlined">domain</span><div><div class="nav-mega__link-title">Abidjan</div><div class="nav-mega__link-desc">Cote d&#39;Ivoire</div></div></a>
+              <a href="/agence-web-dakar" class="nav-mega__link"><span class="material-symbols-outlined">corporate_fare</span><div><div class="nav-mega__link-title">Dakar</div><div class="nav-mega__link-desc">Senegal</div></div></a>
+              <a href="/agence-web-lome" class="nav-mega__link"><span class="material-symbols-outlined">apartment</span><div><div class="nav-mega__link-title">Lome</div><div class="nav-mega__link-desc">Togo</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Europe</div>
+              <a href="/agence-web-paris" class="nav-mega__link"><span class="material-symbols-outlined">tour</span><div><div class="nav-mega__link-title">Paris</div><div class="nav-mega__link-desc">France</div></div></a>
+              <a href="/agence-web-lyon" class="nav-mega__link"><span class="material-symbols-outlined">location_city</span><div><div class="nav-mega__link-title">Lyon</div><div class="nav-mega__link-desc">France</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Ressources <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/audit-seo" class="nav-mega__link"><span class="material-symbols-outlined">analytics</span><div><div class="nav-mega__link-title">Audit SEO gratuit</div><div class="nav-mega__link-desc">Diagnostic complet 15 min</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">support_agent</span><div><div class="nav-mega__link-title">Audit marketing</div><div class="nav-mega__link-desc">Recommandations chiffrees</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">menu_book</span><div><div class="nav-mega__link-title">Livres blancs</div><div class="nav-mega__link-desc">SEO, sites, automatisation</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">article</span><div><div class="nav-mega__link-title">Blog</div><div class="nav-mega__link-desc">Conseils marketing</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Nous decouvrir <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">group</span><div><div class="nav-mega__link-title">A propos</div></div></a>
+              <a href="/#methodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Methodologie</div></div></a>
+              <a href="/#tarifs" class="nav-mega__link"><span class="material-symbols-outlined">payments</span><div><div class="nav-mega__link-title">Tarifs</div></div></a>
+              <a href="/#avis" class="nav-mega__link"><span class="material-symbols-outlined">reviews</span><div><div class="nav-mega__link-title">Avis clients</div></div></a>
+              <a href="/mentions-legales" class="nav-mega__link"><span class="material-symbols-outlined">gavel</span><div><div class="nav-mega__link-title">Mentions legales</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <a href="/contact" class="nav-mega__cta">Obtenir un devis</a>
+    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
     <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <main id="main">
 
-  <!-- 1. HERO style MKTGNCY : cadre borde + glow corners + icone flottante + logos -->
+  <!-- 1. HERO style MKTGNCY : cadre borde + glow corners + bulles decoratives -->
   <section class="h-hero h-hero--framed">
     <div class="hero-frame">
       <div class="hero-frame__glow hero-frame__glow--tl"></div>
       <div class="hero-frame__glow hero-frame__glow--br"></div>
+      <!-- Bulles decoratives -->
+      <span class="hero-bulle hero-bulle--l1"><span class="material-symbols-outlined">trending_up</span></span>
+      <span class="hero-bulle hero-bulle--l2 hero-bulle--badge"><span class="hero-bulle__dot" style="background:#4ade80;"></span>150+ projets</span>
+      <span class="hero-bulle hero-bulle--l3"><span class="material-symbols-outlined">search_insights</span></span>
+      <span class="hero-bulle hero-bulle--r1"><span class="material-symbols-outlined">campaign</span></span>
+      <span class="hero-bulle hero-bulle--r2 hero-bulle--badge"><span class="hero-bulle__dot" style="background:#FF6B00;"></span>+187% leads</span>
+      <span class="hero-bulle hero-bulle--r3"><span class="material-symbols-outlined">smart_toy</span></span>
       <div class="hero-frame__inner">
         <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360&deg;</span>
         <h1 class="h-hero__h1--framed">Transformez votre présence en ligne en véritable moteur de <em>croissance.</em></h1>
-        <p class="h-hero__p--framed">Pirabel Labs aide les entreprises à attirer davantage de clients grâce à une stratégie digitale complète&nbsp;: création de sites web, référencement SEO, acquisition de trafic et automatisation marketing.</p>
+        <p class="h-hero__p--framed">Pirabel Labs accompagne les entreprises ambitieuses grâce à ses <strong>expertises en acquisition et création digitale</strong>. Nos équipes passionnées imaginent et déploient votre stratégie marketing dans une logique de <strong>performance et de rentabilité</strong>, avec un seul interlocuteur du brief à la mise en ligne.</p>
         <div class="h-hero__cta">
           <a href="/contact" class="btn btn--primary btn--lg">Obtenir un devis gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
           <a href="/services" class="btn btn--ghost btn--lg">Découvrir nos réalisations <span class="material-symbols-outlined">arrow_forward</span></a>
@@ -551,33 +727,98 @@
     </div>
   </section>
 
-  <!-- 3. POURQUOI NOUS -->
-  <section class="section">
+  <!-- 3. EXPERTISES (2-col sections style Noiise) -->
+  <section class="section expertises-2col">
     <div class="container">
-      <div class="sec-h">
-        <h2>Pourquoi choisir <em>Pirabel Labs</em></h2>
-        <p class="sec-h__sub">Une agence marketing 360 degrés qui combine expertise technique et stratégie marketing, avec une exigence sur le livrable et la transparence.</p>
+      <div class="expertise-row">
+        <div class="expertise-row__txt">
+          <h2>Découvrez <span class="hl-pink">Pirabel Sites</span>, agence <span class="hl-pink">création web</span> du studio.</h2>
+          <p>Pirabel Sites conçoit des sites web pensés pour la conversion, en combinant design moderne et performance technique.</p>
+          <p>Création de sites vitrines, e-commerce et applications web sur-mesure : notre équipe transforme votre vision en plateforme rapide, optimisée SEO et taillée pour vos objectifs business.</p>
+          <p><strong>Notre combo gagnant&nbsp;: design unique, code propre, ROI mesurable.</strong></p>
+          <a href="/creation-site-web" class="btn btn--primary btn--lg">Voir nos réalisations web <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="expertise-row__visual">
+          <div class="expertise-visual expertise-visual--web">
+            <div class="ev-badge ev-badge--1"><span class="material-symbols-outlined">code</span> Sites sur mesure</div>
+            <div class="ev-badge ev-badge--2"><span class="material-symbols-outlined">rocket_launch</span> Performance</div>
+            <div class="ev-card">
+              <div class="ev-card__bar"><div class="ev-dot ev-dot--r"></div><div class="ev-dot ev-dot--y"></div><div class="ev-dot ev-dot--g"></div></div>
+              <div class="ev-card__body">
+                <div class="ev-line ev-line--w90"></div>
+                <div class="ev-line ev-line--w70"></div>
+                <div class="ev-line ev-line--w50"></div>
+                <div class="ev-cta">Acheter maintenant</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="diff-grid">
-        <div class="diff">
-          <div class="diff__icon"><span class="material-symbols-outlined">hub</span></div>
-          <div class="diff__title">Toutes vos expertises au même endroit</div>
-          <p class="diff__desc">Tech, design, SEO, social, vidéo, tunnels, conseil : tout est gère en interne. Coherence sur l'ensemble.</p>
+
+      <div class="expertise-row expertise-row--reverse">
+        <div class="expertise-row__txt">
+          <h2>Travaillez avec <span class="hl-blue">Pirabel SEO</span>, l'agence qui <span class="hl-blue">vise la première page Google</span>.</h2>
+          <p>Pirabel SEO déploie des stratégies de référencement pensées pour ramener un trafic qualifié, durable et mesurable.</p>
+          <p>Audit technique, recherche de mots-clés, contenu éditorial et netlinking éthique : notre équipe positionne votre marque sur les requêtes qui transforment vos visiteurs en clients.</p>
+          <p><strong>Notre combo gagnant&nbsp;: technique + contenu + autorité.</strong></p>
+          <a href="/seo" class="btn btn--primary btn--lg">Explorer notre méthode SEO <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
-        <div class="diff">
-          <div class="diff__icon"><span class="material-symbols-outlined">handshake</span></div>
-          <div class="diff__title">Un interlocuteur dédié</div>
-          <p class="diff__desc">Un cofondateur suit votre projet du brief à la mise en ligne. Plus d'allers-retours entre 3 personnes.</p>
+        <div class="expertise-row__visual">
+          <div class="expertise-visual expertise-visual--seo">
+            <div class="ev-badge ev-badge--1"><span class="material-symbols-outlined">trending_up</span> +187% trafic</div>
+            <div class="ev-badge ev-badge--2"><span class="material-symbols-outlined">target</span> Top 3 Google</div>
+            <div class="ev-search">
+              <div class="ev-search__bar"><span class="material-symbols-outlined">search</span> votre-marque.com</div>
+              <div class="ev-search__result"><strong>Top 1</strong> votre-marque.com</div>
+              <div class="ev-search__result"><strong>Top 2</strong> votre-marque.com/blog</div>
+              <div class="ev-search__result"><strong>Top 3</strong> votre-marque.com/services</div>
+            </div>
+          </div>
         </div>
-        <div class="diff">
-          <div class="diff__icon"><span class="material-symbols-outlined">verified</span></div>
-          <div class="diff__title">Devis fermé sous 48h</div>
-          <p class="diff__desc">Prix fixe, perimetre clair, planning de livraison documente. Pas de surprise en cours de route.</p>
+      </div>
+
+      <div class="expertise-row">
+        <div class="expertise-row__txt">
+          <h2>Boostez vos ventes avec <span class="hl-purple">Pirabel Ads</span>, spécialiste de l'<span class="hl-purple">acquisition payante</span>.</h2>
+          <p>Pirabel Ads conçoit des campagnes Google Ads, Meta Ads et TikTok Ads pensées pour la performance.</p>
+          <p>Tunnels de vente, landing pages CRO, automatisation marketing et email&nbsp;: notre équipe orchestre l'ensemble de votre acquisition payante pour transformer chaque euro investi en chiffre d'affaires.</p>
+          <p><strong>Notre combo gagnant&nbsp;: tunnels + ads + automatisation.</strong></p>
+          <a href="/tunnels-de-vente" class="btn btn--primary btn--lg">Explorer nos tunnels de vente <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
-        <div class="diff">
-          <div class="diff__icon"><span class="material-symbols-outlined">payments</span></div>
-          <div class="diff__title">Tarifs adaptés au marché</div>
-          <p class="diff__desc">EUR, FCFA, Mobile Money, virement, CB. Echelonnement possible. PME africaines et europeennes.</p>
+        <div class="expertise-row__visual">
+          <div class="expertise-visual expertise-visual--ads">
+            <div class="ev-badge ev-badge--1"><span class="material-symbols-outlined">conversion_path</span> Tunnels CRO</div>
+            <div class="ev-badge ev-badge--2"><span class="material-symbols-outlined">smart_toy</span> Automatisation</div>
+            <div class="ev-funnel">
+              <div class="ev-funnel__step"><span>Visiteurs</span><strong>12 480</strong></div>
+              <div class="ev-funnel__step ev-funnel__step--2"><span>Leads</span><strong>1 240</strong></div>
+              <div class="ev-funnel__step ev-funnel__step--3"><span>Clients</span><strong>187</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expertise-row expertise-row--reverse">
+        <div class="expertise-row__txt">
+          <h2>Faites rayonner votre marque avec <span class="hl-green">Pirabel Social</span>, expert <span class="hl-green">community management</span>.</h2>
+          <p>Pirabel Social transforme vos réseaux sociaux en véritables leviers business, avec une ligne éditoriale forte et un calendrier maîtrisé.</p>
+          <p>Instagram, TikTok, LinkedIn, Facebook : nos community managers produisent contenu, animation et reporting pour faire grandir votre audience et générer du trafic qualifié vers vos offres.</p>
+          <p><strong>Notre combo gagnant&nbsp;: contenu créatif, animation, reporting.</strong></p>
+          <a href="/community-management" class="btn btn--primary btn--lg">Voir nos campagnes sociales <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="expertise-row__visual">
+          <div class="expertise-visual expertise-visual--social">
+            <div class="ev-badge ev-badge--1"><span class="material-symbols-outlined">favorite</span> +148k abonnés</div>
+            <div class="ev-badge ev-badge--2"><span class="material-symbols-outlined">play_circle</span> Reels viraux</div>
+            <div class="ev-social">
+              <div class="ev-social__post">
+                <div class="ev-social__head"><div class="ev-social__avatar"></div><div class="ev-social__name">votremarque</div></div>
+                <div class="ev-social__img"></div>
+                <div class="ev-social__actions"><span class="material-symbols-outlined">favorite</span><span class="material-symbols-outlined">chat_bubble</span><span class="material-symbols-outlined">send</span></div>
+                <div class="ev-social__stats">12 480 likes</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -849,7 +1090,7 @@
     <div class="trust-scroll__intro container">
       <div class="sec-h">
         <h2>Pourquoi <em>nous faire confiance</em></h2>
-        <p class="sec-h__sub">4 engagements concrets écrits dans chaque devis. Faites defiler pour découvrir.</p>
+        <p class="sec-h__sub">4 engagements concrets écrits dans chaque devis. Faites défiler pour découvrir.</p>
       </div>
     </div>
     <div class="trust-scroll__inner">
@@ -866,27 +1107,27 @@
         <div class="trust-scroll__panel" data-icon="description">
           <div class="trust-scroll__tag">01 &middot; Contrat</div>
           <h3>Devis fermé sous 48h, contrat écrit clair</h3>
-          <p>Pas de "selon devis" en cours de route. Prix fixe, perimetre défini, planning de livraison documente. Tout est sur papier dès le depart.</p>
+          <p>Pas de «&nbsp;selon devis&nbsp;» en cours de route. Prix fixe, périmètre défini, planning de livraison documenté. Tout est sur papier dès le départ.</p>
           <ul>
             <li>Scope détaillé avec ce qui est inclus / exclu</li>
             <li>Planning par sprint hebdomadaire</li>
-            <li>Conditions d'évolution écrites à l\'avancé</li>
+            <li>Conditions d'évolution écrites à l'avance</li>
           </ul>
         </div>
         <div class="trust-scroll__panel" data-icon="schedule">
           <div class="trust-scroll__tag">02 &middot; Réactivité</div>
-          <h3>Réponse sous 4h en jours ouvres</h3>
-          <p>Vous n'attendez pas 3 jours pour un retour. Cofondateur dédié, ligne WhatsApp directe pour les questions courtes, demos visio chaque vendredi en sprint.</p>
+          <h3>Réponse sous 4h en jours ouvrés</h3>
+          <p>Vous n'attendez pas 3 jours pour un retour. Cofondateur dédié, ligne WhatsApp directe pour les questions courtes, démos visio chaque vendredi en sprint.</p>
           <ul>
-            <li>Cofondateur joignable, pas un sales</li>
+            <li>Cofondateur joignable, pas un commercial</li>
             <li>WhatsApp + email + Notion partagé</li>
-            <li>Demo visio hebdomadaire</li>
+            <li>Démo visio hebdomadaire</li>
           </ul>
         </div>
         <div class="trust-scroll__panel" data-icon="lock_open">
-          <div class="trust-scroll__tag">03 &middot; Propriete</div>
+          <div class="trust-scroll__tag">03 &middot; Propriété</div>
           <h3>Le code et les designs vous appartiennent</h3>
-          <p>Une fois la facturé reglee, tout vous appartient : code source, designs Figma, assets graphiques, documentation, accès admin et hébergement. Aucun verrou.</p>
+          <p>Une fois la facture réglée, tout vous appartient&nbsp;: code source, designs Figma, assets graphiques, documentation, accès admin et hébergement. Aucun verrou.</p>
           <ul>
             <li>Code source remis sur votre Git</li>
             <li>Designs Figma intégralement transférés</li>
@@ -896,10 +1137,10 @@
         <div class="trust-scroll__panel" data-icon="check_circle">
           <div class="trust-scroll__tag">04 &middot; Garantie</div>
           <h3>Garantie 30 jours après livraison</h3>
-          <p>Tout bug imputable à notre travail est corrige gratuitement pendant 30 jours après la mise en production. Sans condition, sans facturé supplementaire.</p>
+          <p>Tout bug imputable à notre travail est corrigé gratuitement pendant 30 jours après la mise en production. Sans condition, sans facturation supplémentaire.</p>
           <ul>
-            <li>Bugs corriges sous 48h ouvres</li>
-            <li>Aucune condition, aucun coût cache</li>
+            <li>Bugs corrigés sous 48h ouvrées</li>
+            <li>Aucune condition, aucun coût caché</li>
             <li>Documentation de prise en main remise</li>
           </ul>
         </div>
@@ -1518,6 +1759,72 @@
     document.querySelectorAll('.zz-step, .anim-fade, .anim-up').forEach(function(el){
       el.classList.add('in-view');
     });
+  }
+
+  // === MARQUEE AVIS : defilement horizontal infini ===
+  var marquee = document.getElementById('marquee');
+  if (marquee) {
+    var track = marquee.querySelector('.marquee__track');
+    if (track && !track.dataset.cloned) {
+      // Cloner les cards pour faire un loop infini
+      var originals = Array.from(track.children);
+      originals.forEach(function(c){ track.appendChild(c.cloneNode(true)); });
+      track.dataset.cloned = '1';
+      var speed = 0.4; // px par frame
+      var x = 0;
+      var paused = false;
+      marquee.addEventListener('mouseenter', function(){ paused = true; });
+      marquee.addEventListener('mouseleave', function(){ paused = false; });
+      function animateMarquee(){
+        if (!paused) {
+          x -= speed;
+          var half = track.scrollWidth / 2;
+          if (-x >= half) x += half;
+          track.style.transform = 'translateX(' + x + 'px)';
+        }
+        requestAnimationFrame(animateMarquee);
+      }
+      requestAnimationFrame(animateMarquee);
+    }
+  }
+
+  // === TRUST SCROLL : panel actif + icone change selon panneau visible au centre ===
+  var trustCore = document.getElementById('trustCore');
+  var trustPanels = document.querySelectorAll('.trust-scroll__panel');
+  if (trustCore && trustPanels.length) {
+    function updateTrustActive(){
+      var middle = window.scrollY + window.innerHeight * 0.5;
+      var best = null, bestDist = Infinity;
+      trustPanels.forEach(function(p){
+        var r = p.getBoundingClientRect();
+        var center = window.scrollY + r.top + r.height * 0.5;
+        var dist = Math.abs(center - middle);
+        if (dist < bestDist) { bestDist = dist; best = p; }
+      });
+      if (best) {
+        if (best.classList.contains('is-active')) return;
+        trustPanels.forEach(function(p){ p.classList.remove('is-active'); });
+        best.classList.add('is-active');
+        var icon = best.getAttribute('data-icon');
+        var span = trustCore.querySelector('.material-symbols-outlined');
+        if (span && icon && span.textContent !== icon) {
+          span.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+          span.style.transform = 'scale(0.55) rotate(-20deg)';
+          span.style.opacity = '0';
+          setTimeout(function(){
+            span.textContent = icon;
+            span.style.transform = 'scale(1) rotate(0)';
+            span.style.opacity = '1';
+          }, 260);
+        }
+      }
+    }
+    var trustRaf = null;
+    window.addEventListener('scroll', function(){
+      if (trustRaf) cancelAnimationFrame(trustRaf);
+      trustRaf = requestAnimationFrame(updateTrustActive);
+    }, { passive: true });
+    updateTrustActive();
   }
 
   // === STICKY CTA visibility on scroll ===

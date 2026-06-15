@@ -37,7 +37,26 @@
 .h-hero { position: relative; padding: clamp(4rem, 9vw, 7rem) var(--px-page) clamp(3rem, 5vw, 4.5rem); overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%), var(--bg); }
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
-/* Hero clean : centre + cercles colores + badges */
+/* === HERO FRAMED (style MKTGNCY) === */
+.h-hero--framed { padding: 1.5rem var(--px-page) 0; }
+.hero-frame { position: relative; max-width: 80rem; margin: 0 auto; background: var(--bg); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem) clamp(2.5rem, 4vw, 4rem); }
+.hero-frame__glow { position: absolute; width: 30rem; height: 30rem; border-radius: 50%; filter: blur(80px); opacity: 0.55; pointer-events: none; z-index: 0; }
+.hero-frame__glow--tl { top: -10rem; left: -8rem; background: radial-gradient(circle, var(--accent), transparent 70%); }
+.hero-frame__glow--br { bottom: -10rem; right: -8rem; background: radial-gradient(circle, var(--accent), transparent 70%); }
+.hero-frame__inner { position: relative; z-index: 1; max-width: 60rem; margin: 0 auto; text-align: center; }
+.h-hero__h1--framed { font-family: var(--font-display); font-size: clamp(1.85rem, 3.5vw, 2.85rem); line-height: 1.18; letter-spacing: -0.025em; font-weight: 800; margin: 0 auto 1.25rem; max-width: 50rem; text-align: center; text-wrap: balance; }
+.h-hero__h1--framed em { color: var(--accent); font-style: normal; }
+.h-hero__p--framed { font-size: 1rem; line-height: 1.65; color: var(--text-muted); margin: 0 auto 2rem; max-width: 44rem; text-align: center; text-wrap: balance; }
+.hero-icon-inline { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: 12px; vertical-align: middle; margin: -0.3rem 0.3rem 0; box-shadow: 0 8px 20px rgba(255,85,0,0.4); transform: rotate(-6deg); }
+.hero-icon-inline .material-symbols-outlined { font-size: 1.4rem; color: #fff; }
+.hero-trust { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.hero-trust__label { display: block; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 1.25rem; text-align: center; }
+.hero-trust__logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(1.25rem, 3vw, 2.5rem); }
+.hero-logo { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: rgba(229,226,225,0.5); transition: color 0.2s; }
+.hero-logo:hover { color: var(--text); }
+.hero-logo .material-symbols-outlined { font-size: 1.2rem; }
+
+/* Anciennes deco retirees pour ce hero */
 .hero-deco { position: absolute; z-index: 1; pointer-events: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 8px 24px rgba(0,0,0,0.35); animation: heroFloat 7s ease-in-out infinite; }
 .hero-deco .material-symbols-outlined { font-size: 1.35rem; color: #fff; }
 @keyframes heroFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
@@ -60,7 +79,7 @@
 .h-hero__inner--clean { display: block; max-width: 68rem; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
 .h-hero__inner--clean .h-hero__eyebrow { display: inline-flex; margin-bottom: 1.25rem; }
 .h-hero__inner--clean h1 { font-size: clamp(1.6rem, 2.8vw, 2.2rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin: 0 auto 1.25rem; max-width: 50rem; text-align: center; text-wrap: balance; }
-.h-hero__inner--clean p { font-size: 1rem; line-height: 1.7; color: var(--text-muted); margin: 0 auto 2rem; max-width: 58rem; text-align: center; }
+.h-hero__inner--clean p { font-size: 1rem; line-height: 1.7; color: var(--text-muted); margin: 0 auto 2rem; max-width: 52rem; text-align: center; text-wrap: balance; }
 .h-hero__inner--clean .h-hero__cta { display: inline-flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
 
 /* Capsules verticales — petites, decoratives */
@@ -578,26 +597,29 @@
 
 <main id="main">
 
-  <!-- 1. HERO centre avec cercles colores + badges laterales -->
-  <section class="h-hero h-hero--clean">
-    <!-- Gauche -->
-    <span class="hero-deco hero-deco--l1"><span class="material-symbols-outlined">trending_up</span></span>
-    <span class="hero-deco hero-deco--l2 hero-deco--badge">150+ projets</span>
-    <span class="hero-deco hero-deco--l3"><span class="material-symbols-outlined">search_insights</span></span>
-    <span class="hero-deco hero-deco--l4"><span class="material-symbols-outlined">code</span></span>
-    <!-- Droite -->
-    <span class="hero-deco hero-deco--r1"><span class="material-symbols-outlined">campaign</span></span>
-    <span class="hero-deco hero-deco--r2 hero-deco--badge">+187% leads</span>
-    <span class="hero-deco hero-deco--r3"><span class="material-symbols-outlined">smart_toy</span></span>
-    <span class="hero-deco hero-deco--r4"><span class="material-symbols-outlined">movie</span></span>
-
-    <div class="h-hero__inner h-hero__inner--clean">
-      <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360&deg;</span>
-      <h1>Transformez votre présence en ligne en véritable <em>moteur de croissance.</em></h1>
-      <p>Pirabel Labs aide les entreprises à attirer davantage de clients grâce à une stratégie digitale complète&nbsp;: création de sites web, référencement SEO, acquisition de trafic et automatisation marketing.</p>
-      <div class="h-hero__cta">
-        <a href="/contact" class="btn btn--primary btn--lg">Contactez-nous <span class="material-symbols-outlined">arrow_forward</span></a>
-        <a href="/services" class="btn btn--ghost btn--lg">Nous découvrir</a>
+  <!-- 1. HERO style MKTGNCY : cadre borde + glow corners + icone flottante + logos -->
+  <section class="h-hero h-hero--framed">
+    <div class="hero-frame">
+      <div class="hero-frame__glow hero-frame__glow--tl"></div>
+      <div class="hero-frame__glow hero-frame__glow--br"></div>
+      <div class="hero-frame__inner">
+        <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360&deg;</span>
+        <h1 class="h-hero__h1--framed">Transformez votre présence en ligne en <span class="hero-icon-inline"><span class="material-symbols-outlined">trending_up</span></span> véritable <em>moteur de croissance.</em></h1>
+        <p class="h-hero__p--framed">Pirabel Labs aide les entreprises à attirer davantage de clients grâce à une stratégie digitale complète&nbsp;: création de sites web, référencement SEO, acquisition de trafic et automatisation marketing.</p>
+        <div class="h-hero__cta">
+          <a href="/contact" class="btn btn--primary btn--lg">Voir nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+          <a href="/contact" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">event</span> Réserver un appel 15 min</a>
+        </div>
+        <div class="hero-trust">
+          <span class="hero-trust__label">Adoptés par des PME ambitieuses et marques en croissance</span>
+          <div class="hero-trust__logos">
+            <span class="hero-logo"><span class="material-symbols-outlined">storefront</span> Boutiques</span>
+            <span class="hero-logo"><span class="material-symbols-outlined">restaurant</span> Restaurants</span>
+            <span class="hero-logo"><span class="material-symbols-outlined">medical_services</span> Cliniques</span>
+            <span class="hero-logo"><span class="material-symbols-outlined">school</span> Écoles</span>
+            <span class="hero-logo"><span class="material-symbols-outlined">handshake</span> Services pro</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>

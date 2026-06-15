@@ -37,18 +37,34 @@
 .h-hero { position: relative; padding: clamp(4rem, 9vw, 7rem) var(--px-page) clamp(3rem, 5vw, 4.5rem); overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%), var(--bg); }
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
-/* === HERO style MKTAGCNY : spotlights top + grid + sans frame === */
-.h-hero--framed { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--px-page) clamp(4rem, 8vw, 7rem); overflow: hidden; min-height: 80vh; display: flex; align-items: center; }
-.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.03) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 75%); pointer-events: none; z-index: 0; }
-.hero-frame { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; padding: 0; }
+/* === HERO premium type Linear/Framer/Stripe === */
+.h-hero--framed { position: relative; padding: clamp(5rem, 10vw, 10rem) clamp(2rem, 8vw, 6rem) clamp(4rem, 8vw, 7rem); overflow: hidden; min-height: 100vh; display: flex; align-items: center; background: #050505; }
+.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.025) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); pointer-events: none; z-index: 0; }
+.h-hero--framed::after { content: ''; position: absolute; top: 30%; left: 30%; width: 38rem; height: 38rem; background: radial-gradient(circle, rgba(255,107,0,0.18) 0%, rgba(255,107,0,0.05) 30%, transparent 65%); filter: blur(60px); pointer-events: none; z-index: 0; transform: translate(-50%, -50%); }
+.hero-frame { position: relative; width: 100%; max-width: 88rem; margin: 0 auto; padding: 0; }
 .hero-frame__glow { position: absolute; pointer-events: none; z-index: 0; }
-.hero-frame__glow--tl { top: -12rem; left: 5%; width: 32rem; height: 30rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.6) 0%, rgba(255,85,0,0.18) 38%, transparent 72%); filter: blur(40px); }
-.hero-frame__glow--br { top: -12rem; right: 5%; bottom: auto; width: 32rem; height: 30rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.6) 0%, rgba(255,85,0,0.18) 38%, transparent 72%); filter: blur(40px); }
-.hero-frame__inner { position: relative; z-index: 1; width: 100%; max-width: 72rem; margin: 0 auto; text-align: center; }
-.h-hero__h1--framed { position: relative; font-family: var(--font-display); font-size: clamp(2.25rem, 5vw, 4.25rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin: 0 auto 1.75rem; max-width: 60rem; text-align: center; text-wrap: balance; color: var(--text); }
-.h-hero__h1--framed em { color: var(--accent); font-style: normal; }
-.h-hero__p--framed { font-size: clamp(0.95rem, 1.15vw, 1.1rem); line-height: 1.7; color: var(--text-muted); margin: 0 auto 2.5rem; max-width: 56rem; text-align: center; text-wrap: balance; }
+.hero-frame__glow--tl { top: -10rem; left: 2%; width: 30rem; height: 28rem; background: radial-gradient(ellipse at top, rgba(255,107,0,0.55) 0%, rgba(255,107,0,0.15) 38%, transparent 72%); filter: blur(50px); }
+.hero-frame__glow--br { top: -10rem; right: 2%; bottom: auto; width: 30rem; height: 28rem; background: radial-gradient(ellipse at top, rgba(255,107,0,0.55) 0%, rgba(255,107,0,0.15) 38%, transparent 72%); filter: blur(50px); }
+.hero-frame__inner { position: relative; z-index: 1; width: 100%; max-width: 56rem; margin: 0; text-align: left; }
+.h-hero__h1--framed { position: relative; font-family: var(--font-display); font-size: clamp(2.5rem, 5.5vw, 4.5rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin: 0 0 2rem; max-width: 56rem; text-align: left; color: #F5F4F1; }
+.h-hero__h1--framed em { color: #FF6B00; font-style: normal; }
+.h-hero__p--framed { font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.55; color: rgba(245,244,241,0.65); margin: 0 0 2.75rem; max-width: 48rem; text-align: left; }
 .hero-icon-inline { display: none; }
+
+/* Badge eyebrow premium */
+.h-hero--framed .h-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: #FF6B00; background: transparent; border: 1px solid rgba(255,107,0,0.45); border-radius: 999px; padding: 0.55rem 1.1rem; margin-bottom: 2rem; box-shadow: 0 0 24px rgba(255,107,0,0.15), inset 0 0 16px rgba(255,107,0,0.05); }
+.h-hero--framed .h-hero__eyebrow .material-symbols-outlined { font-size: 1rem; }
+
+/* CTAs hero premium */
+.h-hero--framed .h-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.9rem; }
+.h-hero--framed .h-hero__cta .btn { padding: 1.1rem 1.85rem; font-size: 0.92rem; font-weight: 700; border-radius: 14px; letter-spacing: 0.01em; text-transform: none; min-height: 3.5rem; }
+.h-hero--framed .h-hero__cta .btn--primary { background: #FF6B00; color: #fff; box-shadow: 0 16px 36px rgba(255,107,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18); transition: all 0.25s ease; }
+.h-hero--framed .h-hero__cta .btn--primary:hover { background: #FF7A1A; transform: translateY(-2px); box-shadow: 0 20px 44px rgba(255,107,0,0.45); }
+.h-hero--framed .h-hero__cta .btn--ghost { background: rgba(245,244,241,0.02); color: #F5F4F1; border: 1px solid rgba(245,244,241,0.18); transition: all 0.25s ease; }
+.h-hero--framed .h-hero__cta .btn--ghost:hover { background: rgba(245,244,241,0.06); border-color: rgba(245,244,241,0.28); transform: translateY(-2px); }
+.h-hero--framed .h-hero__cta .btn .material-symbols-outlined { font-size: 1.1rem; transition: transform 0.25s ease; }
+.h-hero--framed .h-hero__cta .btn:hover .material-symbols-outlined { transform: translateX(3px); }
+
 .hero-trust { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
 .hero-trust__label { display: block; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 1.25rem; text-align: center; }
 .hero-trust__logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(1.25rem, 3vw, 2.5rem); }

@@ -24,7 +24,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const connectDB = require('../app/config/db');
-const { sendEmail } = require('../app/config/email');
+const { sendEmail, masterTemplate, newOrderEmail } = require('../app/config/email');
 const {
   rateLimit, sanitize, sanitizeEmail, honeypotCheck, limitBody,
   isValidEmail, securityHeaders, globalSanitize,
@@ -149,26 +149,43 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       ipHash,
     });
 
+    // Email admin (beau template avec details lead)
     sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] Nouvelle demande - ' + service,
-      '<h2>Nouvelle demande contact</h2>' +
-        '<p><strong>De :</strong> ' + escapeHtml(name) + ' &lt;' + escapeHtml(email) + '&gt;</p>' +
-        (phone ? '<p><strong>Telephone :</strong> ' + escapeHtml(phone) + '</p>' : '') +
-        (company ? '<p><strong>Entreprise :</strong> ' + escapeHtml(company) + '</p>' : '') +
-        '<p><strong>Service :</strong> ' + escapeHtml(service) + '</p>' +
-        '<hr><p style="white-space:pre-wrap;">' + escapeHtml(message) + '</p>' +
-        '<hr><p style="font-size:.85em;color:#888;">ID: ' + lead._id + '</p>',
+      newOrderEmail({ name, email, phone, company, service, message }),
       { replyTo: email }
     ).catch(e => console.error('[contact] admin email error:', e.message));
+
+    // Email confirmation client (beau template Pirabel Labs)
+    const confirmHtml = masterTemplate({
+      headerType: 'hero',
+      preheader: 'Demande recue, reponse sous 24h',
+      title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
+      subtitle: 'Votre demande est entre nos mains',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci de nous avoir contactes&nbsp;! Nous avons bien recu votre demande concernant <strong style="color:#FF5500;">' + escapeHtml(service) + '</strong>.</p>' +
+        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Un membre de notre equipe (souvent un cofondateur) vous repond sous <strong style="color:#e5e2e1;">24h ouvrees</strong> avec :</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">' +
+        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Une premiere estimation</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Budget realiste et planning indicatif</span></td></tr>' +
+        '<tr><td style="height:8px;"></td></tr>' +
+        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Une proposition d&apos;etape suivante</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Appel decouverte gratuit de 30 min ou devis ferme sous 48h</span></td></tr>' +
+        '<tr><td style="height:8px;"></td></tr>' +
+        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Aucune relance commerciale</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">On vous repond une fois, vous prenez le temps de reflechir</span></td></tr>' +
+        '</table>' +
+        '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:16px 20px;background:rgba(255,85,0,0.03);margin:24px 0;">' +
+        '<p style="margin:0;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;"><strong style="color:#e5e2e1;">Une urgence ?</strong> Joignez-nous directement sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a> ou repondez a cet email.</p>' +
+        '</div>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">A tres vite,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong><br>Lissanon Gildas &amp; Fidah Imorou, cofondateurs</p>',
+      cta: 'Visiter notre site',
+      ctaUrl: 'https://www.pirabellabs.com',
+      ctaSecondary: 'Voir nos realisations',
+      ctaSecondaryUrl: 'https://www.pirabellabs.com/realisations',
+    });
 
     sendEmail(
       email,
       'Pirabel Labs - Demande recue, reponse sous 24h',
-      '<h2>Bonjour ' + escapeHtml(name) + ',</h2>' +
-        '<p>Nous avons bien recu votre demande concernant <strong>' + escapeHtml(service) + '</strong>.</p>' +
-        '<p>Un membre de notre equipe vous repond sous 24h ouvres avec une premiere estimation et la prochaine etape proposee.</p>' +
-        '<p>A tres vite,<br>L\'equipe Pirabel Labs</p>'
+      confirmHtml
     ).catch(e => console.error('[contact] confirm email error:', e.message));
 
     res.json({ success: true, message: 'Demande envoyee. Reponse sous 24h ouvres.' });

@@ -335,6 +335,49 @@ app.get('/admin/leads', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-dashboard.html'));
 });
 
+// === ADMIN SETUP (one-time, gated by zero-admin check) ===
+// GET /admin/setup : sert la page de creation initiale si aucun admin n'existe.
+// Une fois un admin cree, retourne 404 et la page n'est plus accessible.
+app.get('/admin/setup', async (req, res) => {
+  try {
+    const adminCount = await User.countDocuments({ role: 'admin' });
+    if (adminCount > 0) return res.status(404).send('Not found');
+    res.sendFile(path.join(__dirname, '..', 'app', 'views', 'admin-setup.html'));
+  } catch (err) {
+    console.error('[setup]', err.message);
+    res.status(500).send('Erreur serveur.');
+  }
+});
+
+// POST /api/admin/setup : cree le compte admin si aucun n'existe.
+const setupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 5,
+  message: 'Trop de tentatives. Reessayez dans 1 heure.',
+  keyPrefix: 'setup',
+});
+app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
+  try {
+    const adminCount = await User.countDocuments({ role: 'admin' });
+    if (adminCount > 0) {
+      return res.status(403).json({ error: 'Un compte administrateur existe deja.' });
+    }
+    const name = sanitize(req.body.name || '', 120);
+    const email = sanitizeEmail(req.body.email);
+    const password = String(req.body.password || '');
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis (2 caracteres minimum).' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Adresse e-mail invalide.' });
+    if (password.length < 12) return res.status(400).json({ error: 'Mot de passe trop court (12 caracteres minimum).' });
+
+    const user = new User({ name, email, password, role: 'admin', isActive: true });
+    await user.save();
+    console.log(`[setup] admin created via web setup: ${email} (id: ${user._id})`);
+    res.json({ success: true, message: 'Compte administrateur cree.' });
+  } catch (err) {
+    console.error('[setup]', err.message);
+    res.status(500).json({ error: 'Erreur serveur. Reessayez.' });
+  }
+});
+
 // Bloque URLs admin obvious
 ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator'].forEach(p => {
   app.get(p, (req, res) => res.status(404).send('Not found'));

@@ -37,6 +37,12 @@
 .h-hero { position: relative; padding: clamp(4rem, 9vw, 7rem) var(--px-page) clamp(3rem, 5vw, 4.5rem); overflow: hidden; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%), var(--bg); }
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
+.h-hero__inner--centered { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 56rem; gap: 0; }
+.h-hero__inner--centered .h-hero__eyebrow { margin: 0 auto 1.5rem; }
+.h-hero__inner--centered h1 { margin-bottom: 1.5rem; }
+.h-hero__inner--centered p { max-width: 50rem; margin: 0 auto 2.5rem; font-size: 1.05rem; }
+.h-hero__inner--centered .h-hero__cta { justify-content: center; flex-wrap: wrap; }
+.h-hero__trust--centered { justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
 .h-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
 .h-hero__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
 .h-hero h1 { font-size: clamp(2.1rem, 5.5vw, 4.25rem); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 1.5rem; text-align: left; }
@@ -421,36 +427,22 @@
     <div class="nav-mega__menu" id="navMenu">
       <div class="nav-mega__item">
         <button class="nav-mega__trigger" type="button">Expertises <span class="material-symbols-outlined">expand_more</span></button>
-        <div class="nav-mega__panel">
+        <div class="nav-mega__panel nav-mega__panel--2col">
           <div class="nav-mega__panel-inner">
             <div>
-              <div class="nav-mega__col-title">Creation web</div>
-              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Sites sur mesure</div><div class="nav-mega__link-desc">Next.js, React, Webflow</div></div></a>
-              <a href="/creation-site-wordpress" class="nav-mega__link"><span class="material-symbols-outlined">web_asset</span><div><div class="nav-mega__link-title">Sites WordPress</div><div class="nav-mega__link-desc">Elementor + WooCommerce</div></div></a>
-              <a href="/creation-application-web" class="nav-mega__link"><span class="material-symbols-outlined">terminal</span><div><div class="nav-mega__link-title">Applications web</div><div class="nav-mega__link-desc">SaaS, MVP, plateformes</div></div></a>
-              <a href="/refonte-site-web" class="nav-mega__link"><span class="material-symbols-outlined">autorenew</span><div><div class="nav-mega__link-title">Refonte de site</div><div class="nav-mega__link-desc">Audit + redesign</div></div></a>
-            </div>
-            <div>
-              <div class="nav-mega__col-title">SEO &amp; visibilite</div>
+              <div class="nav-mega__col-title">Web &amp; visibilite</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Creation de site web</div><div class="nav-mega__link-desc">Sites sur mesure, WordPress, Webflow</div></div></a>
               <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; referencement</div><div class="nav-mega__link-desc">Trafic organique qualifie</div></div></a>
-              <a href="/seo-local" class="nav-mega__link"><span class="material-symbols-outlined">my_location</span><div><div class="nav-mega__link-title">SEO local</div><div class="nav-mega__link-desc">Pack local Google Maps</div></div></a>
-              <a href="/fiche-google-business" class="nav-mega__link"><span class="material-symbols-outlined">location_on</span><div><div class="nav-mega__link-title">Google Business</div><div class="nav-mega__link-desc">Pack local top 3</div></div></a>
               <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
-              <a href="/montage-video" class="nav-mega__link"><span class="material-symbols-outlined">movie</span><div><div class="nav-mega__link-title">Montage video</div><div class="nav-mega__link-desc">Reels, TikTok, YouTube</div></div></a>
             </div>
             <div>
-              <div class="nav-mega__col-title">Conversion</div>
+              <div class="nav-mega__col-title">Conversion &amp; conseil</div>
               <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
-              <a href="/landing-page-conversion" class="nav-mega__link"><span class="material-symbols-outlined">flag</span><div><div class="nav-mega__link-title">Landing pages</div><div class="nav-mega__link-desc">Pages a forte conversion</div></div></a>
-              <a href="/email-marketing-crm" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Email &amp; CRM</div><div class="nav-mega__link-desc">HubSpot, Brevo, sequences</div></div></a>
               <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
-            </div>
-            <div>
-              <div class="nav-mega__col-title">Conseil &amp; bonus</div>
               <a href="/consulting-marketing" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Consulting marketing</div><div class="nav-mega__link-desc">Audit, strategie, CMO</div></div></a>
-              <a href="/audit-seo" class="nav-mega__link"><span class="material-symbols-outlined">analytics</span><div><div class="nav-mega__link-title">Audit SEO</div><div class="nav-mega__link-desc">Diagnostic complet</div></div></a>
-              <a href="/services" class="nav-mega__link"><span class="material-symbols-outlined">apps</span><div><div class="nav-mega__link-title">Tous nos services</div><div class="nav-mega__link-desc">Vue d&#39;ensemble</div></div></a>
-              <a href="/contact" class="nav-mega__link nav-mega__link--cta"><span class="material-symbols-outlined">card_giftcard</span><div><div class="nav-mega__link-title">Audit gratuit 15 min</div><div class="nav-mega__link-desc">Recommandations chiffrees</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
             </div>
           </div>
         </div>
@@ -546,49 +538,19 @@
 
 <main id="main">
 
-  <!-- 1. HERO 2-COL -->
-  <section class="h-hero">
-    <div class="h-hero__inner">
-      <div class="h-hero__txt">
-        <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360</span>
-        <h1>Votre <em>présence digitale</em> en mode 360, par une seule équipe.</h1>
-        <p>Sites web, tunnels de vente, SEO, Google Business, community management, vidéo, automatisation, email marketing. On gère l'ensemble pour vous, du brief à la mise en ligne, avec un seul interlocuteur.</p>
-        <div class="h-hero__cta">
-          <a href="#audit-gratuit" class="btn btn--primary btn--lg">Audit gratuit en 15 min <span class="material-symbols-outlined">arrow_forward</span></a>
-          <a href="/contact" class="btn btn--ghost btn--lg">Réserver un appel</a>
-        </div>
-        <div class="h-hero__trust">
-          <span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">verified</span>
-          <span><strong>Depuis 2020</strong> &middot; cofondateurs nommes (Gildas + Fidah) &middot; base à Abomey-Calavi</span>
-        </div>
+  <!-- 1. HERO CENTRE -->
+  <section class="h-hero h-hero--centered">
+    <div class="h-hero__inner h-hero__inner--centered">
+      <span class="h-hero__eyebrow"><span class="material-symbols-outlined">bolt</span> Agence marketing digital 360 degrés</span>
+      <h1>Votre stratégie digitale, <em>nous l'écrivons ensemble.</em></h1>
+      <p>Pirabel Labs est l'agence marketing digital francophone qui rassemble sous le même toit toutes les expertises dont votre entreprise a besoin pour grandir&nbsp;: sites web sur mesure, SEO, community management, vidéo, tunnels de vente, automatisation, email marketing, consulting. Depuis Abomey-Calavi (Bénin), nos équipes accompagnent les PME francophones d'Afrique de l'Ouest et d'Europe. Une seule promesse&nbsp;: des résultats mesurables, un interlocuteur unique du brief à la mise en ligne, et aucun intermédiaire caché.</p>
+      <div class="h-hero__cta">
+        <a href="/contact" class="btn btn--primary btn--lg">Contactez-nous <span class="material-symbols-outlined">arrow_forward</span></a>
+        <a href="/services" class="btn btn--ghost btn--lg">Nous découvrir <span class="material-symbols-outlined">arrow_forward</span></a>
       </div>
-      <div class="h-hero__visual">
-        <span class="hero-chip hero-chip--1"><span class="material-symbols-outlined">trending_up</span> +187% leads</span>
-        <span class="hero-chip hero-chip--2"><span class="material-symbols-outlined">speed</span> Lighthouse 98</span>
-        <div class="hero-browser">
-          <div class="hero-browser__bar">
-            <div class="hb-dot r"></div><div class="hb-dot y"></div><div class="hb-dot g"></div>
-            <div class="hero-browser__url">www.votre-marqué.com</div>
-          </div>
-          <div class="hero-browser__body">
-            <div class="hbn">
-              <div class="hbn__logo"></div>
-              <div class="hbn__label"></div>
-              <div class="hbn__links"><div class="hbn__link"></div><div class="hbn__link"></div><div class="hbn__link"></div></div>
-              <div class="hbn__cta"></div>
-            </div>
-            <div class="hbh">
-              <div class="hbl w90"></div>
-              <div class="hbl w70"></div>
-              <div class="hbl acc"></div>
-            </div>
-            <div class="hbg">
-              <div class="hbb"><span class="material-symbols-outlined">grid_view</span></div>
-              <div class="hbb"><span class="material-symbols-outlined">show_chart</span></div>
-              <div class="hbb"><span class="material-symbols-outlined">bolt</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="h-hero__trust h-hero__trust--centered">
+        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1rem;">verified</span>
+        <span><strong>Depuis 2020</strong> &middot; cofondée par Lissanon Gildas et Fidah Imorou &middot; siège à Abomey-Calavi (Bénin)</span>
       </div>
     </div>
   </section>
@@ -598,7 +560,7 @@
     <div class="container">
       <div class="sec-h">
         <h2>Pourquoi choisir <em>Pirabel Labs</em></h2>
-        <p class="sec-h__sub">Une agence marketing 360 qui combiné expertise technique et stratégie marketing, avec une exigence sur le livrable et la transparence.</p>
+        <p class="sec-h__sub">Une agence marketing 360 degrés qui combine expertise technique et stratégie marketing, avec une exigence sur le livrable et la transparence.</p>
       </div>
       <div class="diff-grid">
         <div class="diff">
@@ -632,7 +594,7 @@
         <div class="audit-card__inner">
           <span class="audit-card__eyebrow"><span class="material-symbols-outlined">card_giftcard</span> Gratuit &middot; sous 24h</span>
           <h2>Recevez votre <em>audit marketing</em> personnalise en 15 minutes</h2>
-          <p class="audit-card__lead">On analyse votre présence digitale actuelle et on vous envoie un plan d'action concret avec 5 à 10 recommandations chiffrées et prioritisees. Sans engagement, sans relance commerciale.</p>
+          <p class="audit-card__lead">Nous analysons votre présence digitale actuelle et on vous envoie un plan d'action concret avec 5 à 10 recommandations chiffrées et prioritisees. Sans engagement, sans relance commerciale.</p>
           <ul class="audit-card__benefits">
             <li>Audit SEO technique et éditorial de votre site actuel</li>
             <li>Analyse de vos canaux d'acquisition (organique, ads, social)</li>
@@ -1173,7 +1135,7 @@
         </div>
         <div class="rev">
           <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="rev__quote">"SaaS de gestion patient livré en 12 semaines. Code propre, doc complete. On peut faire évoluer en interne."</p>
+          <p class="rev__quote">"SaaS de gestion patient livré en 12 semaines. Code propre, doc complete. Nous pouvons faire évoluer en interne."</p>
           <div class="rev__author"><div class="rev__avatar">MB</div><div><div class="rev__name">M. Bocandy</div><div class="rev__role">Clinique médicale - Abidjan</div></div></div>
         </div>
         <div class="rev">
@@ -1203,7 +1165,7 @@
         </div>
         <div class="rev" aria-hidden="true">
           <div class="rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="rev__quote">"SaaS de gestion patient livré en 12 semaines. Code propre, doc complete. On peut faire évoluer en interne."</p>
+          <p class="rev__quote">"SaaS de gestion patient livré en 12 semaines. Code propre, doc complete. Nous pouvons faire évoluer en interne."</p>
           <div class="rev__author"><div class="rev__avatar">MB</div><div><div class="rev__name">M. Bocandy</div><div class="rev__role">Clinique médicale - Abidjan</div></div></div>
         </div>
         <div class="rev" aria-hidden="true">
@@ -1251,7 +1213,7 @@
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Vous faites aussi du community management ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui. Notre force est justement la coherence : si on fait votre site, on peut aussi gérer votre communauté sur les mêmes valeurs, votre ligne edito, votre identité visuelle. Pas besoin de re-expliquer 4 fois qui vous êtes.</div></div></div>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Oui. Notre force est justement la coherence : si on fait votre site, Nous pouvons aussi gérer votre communauté sur les mêmes valeurs, votre ligne edito, votre identité visuelle. Pas besoin de re-expliquer 4 fois qui vous êtes.</div></div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Quels formats vidéos vous produisez ?</span><span class="faq-i__q-icon">+</span></button>
@@ -1267,7 +1229,7 @@
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Faut-il des competences techniques de votre côté ?</span><span class="faq-i__q-icon">+</span></button>
-          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Non. On parle votre langage business, pas le notre. Après la livraison, votre équipe peut utiliser le site/app/automatisation sans connaissance technique. Formation incluse.</div></div></div>
+          <div class="faq-i__inner"><div class="faq-i__a"><div class="faq-i__a-inner">Non. Nous parlons votre langage business, pas le notre. Après la livraison, votre équipe peut utiliser le site/app/automatisation sans connaissance technique. Formation incluse.</div></div></div>
         </div>
         <div class="faq-i" data-open="false">
           <button class="faq-i__q" type="button" aria-expanded="false"><span>Quelles plateformes et technologies utilisez-vous ?</span><span class="faq-i__q-icon">+</span></button>

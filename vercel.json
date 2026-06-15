@@ -35,7 +35,6 @@
     { "source": "/pirabel-admin-7x9k2m", "destination": "/api/index.js" }
   ],
   "redirects": [
-    { "source": "/blog/:slug*", "destination": "/blog", "permanent": false },
     { "source": "/realisations/:slug*", "destination": "/realisations", "permanent": false },
     { "source": "/creation-application", "destination": "/creation-application-web", "permanent": true },
     { "source": "/automatisation", "destination": "/automatisation-marketing", "permanent": true },

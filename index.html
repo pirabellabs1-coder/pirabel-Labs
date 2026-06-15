@@ -38,16 +38,16 @@
 .h-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%); pointer-events: none; z-index: 0; }
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
 /* === HERO style MKTAGCNY : spotlights top + grid + sans frame === */
-.h-hero--framed { position: relative; padding: clamp(4rem, 9vw, 8rem) var(--px-page) clamp(3rem, 6vw, 5rem); overflow: hidden; }
-.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.025) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 70%); pointer-events: none; z-index: 0; }
-.hero-frame { position: relative; max-width: 80rem; margin: 0 auto; padding: 0; }
+.h-hero--framed { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--px-page) clamp(4rem, 8vw, 7rem); overflow: hidden; min-height: 80vh; display: flex; align-items: center; }
+.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.03) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 75%); pointer-events: none; z-index: 0; }
+.hero-frame { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; padding: 0; }
 .hero-frame__glow { position: absolute; pointer-events: none; z-index: 0; }
-.hero-frame__glow--tl { top: -8rem; left: -2rem; width: 32rem; height: 26rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.55) 0%, rgba(255,85,0,0.15) 35%, transparent 70%); filter: blur(40px); }
-.hero-frame__glow--br { top: -8rem; right: -2rem; bottom: auto; width: 32rem; height: 26rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.55) 0%, rgba(255,85,0,0.15) 35%, transparent 70%); filter: blur(40px); }
-.hero-frame__inner { position: relative; z-index: 1; max-width: 64rem; margin: 0 auto; text-align: center; }
-.h-hero__h1--framed { position: relative; font-family: var(--font-display); font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin: 0 auto 1.75rem; max-width: 58rem; text-align: center; text-wrap: balance; color: var(--text); }
+.hero-frame__glow--tl { top: -12rem; left: 5%; width: 32rem; height: 30rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.6) 0%, rgba(255,85,0,0.18) 38%, transparent 72%); filter: blur(40px); }
+.hero-frame__glow--br { top: -12rem; right: 5%; bottom: auto; width: 32rem; height: 30rem; background: radial-gradient(ellipse at top, rgba(255,85,0,0.6) 0%, rgba(255,85,0,0.18) 38%, transparent 72%); filter: blur(40px); }
+.hero-frame__inner { position: relative; z-index: 1; width: 100%; max-width: 72rem; margin: 0 auto; text-align: center; }
+.h-hero__h1--framed { position: relative; font-family: var(--font-display); font-size: clamp(2.25rem, 5vw, 4.25rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; margin: 0 auto 1.75rem; max-width: 60rem; text-align: center; text-wrap: balance; color: var(--text); }
 .h-hero__h1--framed em { color: var(--accent); font-style: normal; }
-.h-hero__p--framed { font-size: 1.05rem; line-height: 1.7; color: var(--text-muted); margin: 0 auto 2.5rem; max-width: 44rem; text-align: center; text-wrap: balance; }
+.h-hero__p--framed { font-size: clamp(0.95rem, 1.15vw, 1.1rem); line-height: 1.7; color: var(--text-muted); margin: 0 auto 2.5rem; max-width: 56rem; text-align: center; text-wrap: balance; }
 .hero-icon-inline { display: none; }
 .hero-trust { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
 .hero-trust__label { display: block; font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 1.25rem; text-align: center; }

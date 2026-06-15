@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notre méthodologie - Pirabel Labs</title>
+<meta name="description" content="Découvrez la méthodologie Pirabel Labs en 7 étapes : découverte, cadrage, stratégie, design, production, lancement, suivi. Transparence, sprints, livrables clairs.">
+<link rel="canonical" href="https://www.pirabellabs.com/methodologie">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Notre méthodologie en 7 étapes - Pirabel Labs">
+<meta property="og:description" content="Une méthodologie éprouvée, transparente et orientée résultats. De l'appel découverte au suivi mensuel, chaque étape est cadrée et documentée.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/methodologie">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-methodologie.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Notre méthodologie en 7 étapes - Pirabel Labs">
+<meta name="twitter:description" content="Découverte, cadrage, stratégie, design, production, lancement, suivi. Une méthode claire qui livre des résultats mesurables.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="/css/global.css">
+<style>
+/* ===== METHODOLOGIE PAGE STYLES ===== */
+.metho-wrap { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+
+/* HERO */
+.metho-hero { max-width: 64rem; margin: 0 auto 6rem; text-align: center; position: relative; }
+.metho-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.metho-hero h1 { font-family: 'Montserrat', var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 5.5vw, 4rem); line-height: 1.04; letter-spacing: -0.035em; margin-bottom: 1.5rem; }
+.metho-hero h1 em { color: var(--accent); font-style: normal; }
+.metho-hero__lead { font-size: 1.1rem; color: var(--text-muted); line-height: 1.7; max-width: 46rem; margin: 0 auto 2.5rem; }
+.metho-hero__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1.5rem; max-width: 48rem; margin: 0 auto 2.5rem; }
+.metho-hero__stat { text-align: center; }
+.metho-hero__stat-num { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--accent); line-height: 1; margin-bottom: 0.35rem; }
+.metho-hero__stat-lbl { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.metho-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+/* TIMELINE ZIGZAG PROCESS */
+.metho-process { max-width: 78rem; margin: 0 auto 6rem; position: relative; }
+.metho-process__head { text-align: center; margin-bottom: 4rem; }
+.metho-process__eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 1rem; }
+.metho-process h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.12; letter-spacing: -0.025em; margin-bottom: 1rem; }
+.metho-process h2 em { color: var(--accent); font-style: normal; }
+.metho-process__sub { font-size: 1rem; color: var(--text-muted); line-height: 1.65; max-width: 44rem; margin: 0 auto; }
+
+.metho-timeline { position: relative; padding: 2rem 0; }
+.metho-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent 0%, var(--accent) 8%, var(--accent) 92%, transparent 100%); transform: translateX(-50%); opacity: 0.35; }
+
+.metho-step { position: relative; display: grid; grid-template-columns: 1fr 4rem 1fr; gap: 2rem; align-items: center; margin-bottom: 4rem; }
+.metho-step:last-child { margin-bottom: 0; }
+
+.metho-step__num { grid-column: 2; display: flex; align-items: center; justify-content: center; width: 4rem; height: 4rem; background: var(--bg-2); border: 2px solid var(--accent); border-radius: 50%; font-family: 'Montserrat', var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--accent); position: relative; z-index: 2; box-shadow: 0 0 0 8px var(--bg), 0 0 30px rgba(255,107,0,0.25); }
+
+.metho-step__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.85rem; position: relative; transition: all var(--t); }
+.metho-step__card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.5); }
+.metho-step__card::before { content: ''; position: absolute; top: 50%; width: 2.5rem; height: 1px; background: var(--accent); opacity: 0.4; }
+
+.metho-step--left .metho-step__card { grid-column: 1; text-align: right; }
+.metho-step--left .metho-step__card::before { right: -2.5rem; }
+.metho-step--right .metho-step__card { grid-column: 3; }
+.metho-step--right .metho-step__card::before { left: -2.5rem; }
+
+.metho-step__icon { display: inline-flex; width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: 12px; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.metho-step__icon .material-symbols-outlined { font-size: 1.6rem; }
+
+.metho-step__phase { font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 0.5rem; display: block; }
+.metho-step__title { font-family: var(--font-display); font-weight: 800; font-size: 1.45rem; line-height: 1.2; margin-bottom: 0.85rem; letter-spacing: -0.015em; }
+.metho-step__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem; }
+
+.metho-step__meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.metho-step--left .metho-step__meta { justify-content: flex-end; }
+.metho-step__chip { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; padding: 0.35rem 0.7rem; background: rgba(255,107,0,0.08); border: 1px solid rgba(255,107,0,0.25); border-radius: 999px; color: var(--accent); }
+.metho-step__chip .material-symbols-outlined { font-size: 0.9rem; }
+
+.metho-step__delivery { border-top: 1px dashed var(--border); padding-top: 1rem; margin-top: 0.5rem; }
+.metho-step__delivery-title { font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 0.55rem; opacity: 0.9; }
+.metho-step__delivery-list { list-style: none; padding: 0; margin: 0; font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; }
+.metho-step__delivery-list li { display: flex; align-items: flex-start; gap: 0.4rem; padding: 0.18rem 0; }
+.metho-step--left .metho-step__delivery-list li { flex-direction: row-reverse; }
+.metho-step__delivery-list .material-symbols-outlined { font-size: 0.95rem; color: var(--accent); flex-shrink: 0; margin-top: 0.18rem; }
+
+@media (max-width: 880px) {
+  .metho-timeline::before { left: 1.5rem; }
+  .metho-step { grid-template-columns: 3rem 1fr; gap: 1.25rem; padding-left: 0; }
+  .metho-step__num { grid-column: 1; width: 3rem; height: 3rem; font-size: 1.15rem; box-shadow: 0 0 0 6px var(--bg), 0 0 20px rgba(255,107,0,0.2); }
+  .metho-step--left .metho-step__card, .metho-step--right .metho-step__card { grid-column: 2; text-align: left; }
+  .metho-step--left .metho-step__card::before, .metho-step--right .metho-step__card::before { display: none; }
+  .metho-step--left .metho-step__meta, .metho-step--left .metho-step__delivery-list li { justify-content: flex-start; flex-direction: row; }
+}
+
+/* OUTILS & STACK */
+.metho-stack { max-width: 80rem; margin: 0 auto 6rem; }
+.metho-stack__head { text-align: center; margin-bottom: 3rem; }
+.metho-stack__eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 1rem; }
+.metho-stack h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-stack h2 em { color: var(--accent); font-style: normal; }
+.metho-stack__sub { color: var(--text-muted); max-width: 44rem; margin: 0 auto; line-height: 1.6; }
+
+.metho-stack__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+.metho-tool { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; transition: all var(--t); }
+.metho-tool:hover { border-color: var(--accent); transform: translateY(-2px); }
+.metho-tool__cat { font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
+.metho-tool__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.metho-tool__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+.metho-tool__icon { width: 2.4rem; height: 2.4rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.4rem; }
+.metho-tool__icon .material-symbols-outlined { font-size: 1.3rem; }
+
+/* ENGAGEMENTS */
+.metho-engage { max-width: 76rem; margin: 0 auto 6rem; }
+.metho-engage__head { text-align: center; margin-bottom: 3rem; }
+.metho-engage h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-engage h2 em { color: var(--accent); font-style: normal; }
+.metho-engage__sub { color: var(--text-muted); max-width: 44rem; margin: 0 auto; line-height: 1.6; }
+.metho-engage__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.metho-pillar { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.75rem; text-align: center; position: relative; transition: all var(--t); }
+.metho-pillar:hover { border-color: var(--accent); transform: translateY(-3px); }
+.metho-pillar__icon { display: inline-flex; width: 3.5rem; height: 3.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 14px; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.metho-pillar__icon .material-symbols-outlined { font-size: 1.8rem; }
+.metho-pillar__title { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; margin-bottom: 0.7rem; line-height: 1.25; }
+.metho-pillar__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* PRICING */
+.metho-pricing { max-width: 80rem; margin: 0 auto 6rem; }
+.metho-pricing__head { text-align: center; margin-bottom: 3rem; }
+.metho-pricing h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-pricing h2 em { color: var(--accent); font-style: normal; }
+.metho-pricing__sub { color: var(--text-muted); max-width: 46rem; margin: 0 auto; line-height: 1.6; }
+.metho-pricing__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.metho-price { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.75rem; display: flex; flex-direction: column; gap: 1rem; transition: all var(--t); position: relative; }
+.metho-price:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.45); }
+.metho-price--featured { border-color: var(--accent); background: linear-gradient(160deg, var(--bg-2) 0%, rgba(255,107,0,0.06) 100%); }
+.metho-price--featured::before { content: 'Le plus demandé'; position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.3rem 0.8rem; border-radius: 999px; white-space: nowrap; }
+.metho-price__cat { font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
+.metho-price__name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; line-height: 1.2; }
+.metho-price__from { font-size: 0.78rem; color: var(--text-muted); }
+.metho-price__amount { font-family: 'Montserrat', var(--font-display); font-weight: 800; font-size: 2rem; color: var(--text); line-height: 1; }
+.metho-price__amount span { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.metho-price__list { list-style: none; padding: 0; margin: 0.5rem 0 1rem; flex: 1; }
+.metho-price__list li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); padding: 0.3rem 0; line-height: 1.5; }
+.metho-price__list .material-symbols-outlined { font-size: 1rem; color: var(--accent); flex-shrink: 0; margin-top: 0.18rem; }
+.metho-price__cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 10px; color: var(--text); text-decoration: none; transition: all var(--t); }
+.metho-price__cta:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* CALENDRIER */
+.metho-calendar { max-width: 74rem; margin: 0 auto 6rem; }
+.metho-calendar__head { text-align: center; margin-bottom: 3rem; }
+.metho-calendar h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-calendar h2 em { color: var(--accent); font-style: normal; }
+.metho-calendar__sub { color: var(--text-muted); max-width: 44rem; margin: 0 auto; line-height: 1.6; }
+.metho-gantt { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; overflow-x: auto; }
+.metho-gantt__weeks { display: grid; grid-template-columns: 11rem repeat(12, 1fr); gap: 0.4rem; min-width: 50rem; align-items: center; padding: 0.45rem 0; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+.metho-gantt__weeks span { font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+.metho-gantt__weeks span:first-child { text-align: left; }
+.metho-gantt__row { display: grid; grid-template-columns: 11rem repeat(12, 1fr); gap: 0.4rem; min-width: 50rem; align-items: center; padding: 0.55rem 0; }
+.metho-gantt__label { font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 0.45rem; }
+.metho-gantt__label .material-symbols-outlined { font-size: 1.05rem; color: var(--accent); }
+.metho-gantt__bar { grid-column-end: span var(--span, 1); height: 1.7rem; background: linear-gradient(90deg, rgba(255,107,0,0.65) 0%, var(--accent) 100%); border-radius: 6px; display: flex; align-items: center; padding: 0 0.6rem; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; color: #fff; box-shadow: 0 4px 14px rgba(255,107,0,0.25); }
+
+/* COMPARISON TABLE */
+.metho-compare { max-width: 78rem; margin: 0 auto 6rem; }
+.metho-compare__head { text-align: center; margin-bottom: 3rem; }
+.metho-compare h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-compare h2 em { color: var(--accent); font-style: normal; }
+.metho-compare__sub { color: var(--text-muted); max-width: 44rem; margin: 0 auto; line-height: 1.6; }
+.metho-compare__wrap { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+.metho-compare__table { width: 100%; min-width: 48rem; border-collapse: collapse; font-size: 0.9rem; }
+.metho-compare__table thead th { padding: 1.4rem 1rem; text-align: left; font-family: var(--font-display); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,107,0,0.04); border-bottom: 2px solid var(--border); }
+.metho-compare__table thead th.metho-compare__featured { color: var(--accent); background: rgba(255,107,0,0.1); }
+.metho-compare__table tbody td { padding: 1rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; line-height: 1.5; }
+.metho-compare__table tbody tr:last-child td { border-bottom: none; }
+.metho-compare__table tbody td:first-child { font-family: var(--font-display); font-weight: 700; color: var(--text); }
+.metho-compare__table tbody td.metho-compare__featured-cell { background: rgba(255,107,0,0.06); color: var(--text); font-weight: 500; }
+.metho-compare__yes { color: var(--accent); display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; }
+.metho-compare__no { color: var(--text-muted); opacity: 0.6; display: inline-flex; align-items: center; gap: 0.35rem; }
+.metho-compare__yes .material-symbols-outlined, .metho-compare__no .material-symbols-outlined { font-size: 1.1rem; }
+
+/* TESTIMONIALS */
+.metho-testi { max-width: 76rem; margin: 0 auto 6rem; }
+.metho-testi__head { text-align: center; margin-bottom: 3rem; }
+.metho-testi h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-testi h2 em { color: var(--accent); font-style: normal; }
+.metho-testi__sub { color: var(--text-muted); max-width: 44rem; margin: 0 auto; line-height: 1.6; }
+.metho-testi__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.metho-quote { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; position: relative; }
+.metho-quote::before { content: '"'; position: absolute; top: -0.5rem; right: 1.25rem; font-family: 'Montserrat', serif; font-size: 5rem; color: var(--accent); opacity: 0.18; line-height: 1; font-weight: 900; }
+.metho-quote__text { font-size: 0.95rem; line-height: 1.7; color: var(--text); font-style: italic; }
+.metho-quote__author { display: flex; align-items: center; gap: 0.85rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.metho-quote__avatar { width: 2.8rem; height: 2.8rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+.metho-quote__who { display: flex; flex-direction: column; }
+.metho-quote__name { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+.metho-quote__role { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+.metho-quote__stars { color: var(--accent); display: flex; gap: 0.1rem; }
+.metho-quote__stars .material-symbols-outlined { font-size: 0.95rem; font-variation-settings: 'FILL' 1; }
+
+/* FAQ */
+.metho-faq { max-width: 56rem; margin: 0 auto 6rem; }
+.metho-faq__head { text-align: center; margin-bottom: 3rem; }
+.metho-faq h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.15; margin-bottom: 0.9rem; }
+.metho-faq h2 em { color: var(--accent); font-style: normal; }
+.metho-faq__sub { color: var(--text-muted); max-width: 42rem; margin: 0 auto; line-height: 1.6; }
+.metho-faq__list { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 2.5rem; }
+.metho-faq__item { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color var(--t); }
+.metho-faq__item:hover { border-color: var(--accent); }
+.metho-faq__item[open] { border-color: var(--accent); }
+.metho-faq__q { cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; }
+.metho-faq__q::-webkit-details-marker { display: none; }
+.metho-faq__q::after { content: 'add'; font-family: 'Material Symbols Outlined'; font-size: 1.4rem; color: var(--accent); transition: transform var(--t); flex-shrink: 0; }
+.metho-faq__item[open] .metho-faq__q::after { content: 'remove'; transform: rotate(180deg); }
+.metho-faq__a { padding: 0 1.5rem 1.5rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.7; }
+
+/* FINAL CTA */
+.metho-final { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.08) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(2.25rem, 5vw, 4rem); text-align: center; max-width: 66rem; margin: 4rem auto 0; position: relative; overflow: hidden; }
+.metho-final::before { content: ''; position: absolute; top: -50%; right: -20%; width: 30rem; height: 30rem; background: radial-gradient(circle, rgba(255,107,0,0.15) 0%, transparent 60%); pointer-events: none; }
+.metho-final__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; position: relative; }
+.metho-final h2 { font-family: 'Montserrat', var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3.5vw, 2.5rem); margin-bottom: 1.25rem; line-height: 1.15; letter-spacing: -0.02em; position: relative; }
+.metho-final h2 em { color: var(--accent); font-style: normal; }
+.metho-final p { color: var(--text-muted); font-size: 1rem; line-height: 1.65; margin-bottom: 2.25rem; max-width: 42rem; margin-left: auto; margin-right: auto; position: relative; }
+.metho-final__row { display: inline-flex; flex-wrap: wrap; gap: 0.85rem; justify-content: center; position: relative; }
+.metho-final__guarantee { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 2rem; font-size: 0.82rem; color: var(--text-muted); position: relative; }
+.metho-final__guarantee span { display: inline-flex; align-items: center; gap: 0.35rem; }
+.metho-final__guarantee .material-symbols-outlined { font-size: 1rem; color: var(--accent); }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"Méthodologie projet Pirabel Labs en 7 étapes","description":"Méthodologie éprouvée de l'agence Pirabel Labs pour livrer un projet marketing digital en 7 étapes : découverte, cadrage, stratégie, design, production, lancement et suivi.","totalTime":"P90D","image":"https://www.pirabellabs.com/img/methodologie-cover.jpg","supply":[{"@type":"HowToSupply","name":"Brief client détaillé"},{"@type":"HowToSupply","name":"Accès aux comptes existants (Analytics, CMS, ads)"},{"@type":"HowToSupply","name":"Charte graphique ou éléments de marque"}],"tool":[{"@type":"HowToTool","name":"Figma"},{"@type":"HowToTool","name":"Notion"},{"@type":"HowToTool","name":"Slack"},{"@type":"HowToTool","name":"GitHub"},{"@type":"HowToTool","name":"Google Analytics"}],"step":[{"@type":"HowToStep","position":1,"name":"Découverte","text":"Appel gratuit de 30 minutes pour comprendre vos objectifs, votre marché, vos contraintes et vos enjeux. Audit rapide de l'existant.","url":"https://www.pirabellabs.com/methodologie#etape-1"},{"@type":"HowToStep","position":2,"name":"Cadrage","text":"Devis ferme sous 48 h, scope écrit, planning sprint, conditions claires. Aucune surprise.","url":"https://www.pirabellabs.com/methodologie#etape-2"},{"@type":"HowToStep","position":3,"name":"Stratégie","text":"Workshop, personas, parcours client, objectifs SMART, indicateurs de réussite.","url":"https://www.pirabellabs.com/methodologie#etape-3"},{"@type":"HowToStep","position":4,"name":"Design et maquettage","text":"Wireframes puis maquettes haute fidélité Figma, validations en mode commentaire, deux rounds inclus.","url":"https://www.pirabellabs.com/methodologie#etape-4"},{"@type":"HowToStep","position":5,"name":"Production et développement","text":"Sprints hebdomadaires, démos en fin de sprint, code review interne, environnement de préproduction accessible.","url":"https://www.pirabellabs.com/methodologie#etape-5"},{"@type":"HowToStep","position":6,"name":"Lancement","text":"Recette QA multi-supports, mise en production, formation client, documentation livrée.","url":"https://www.pirabellabs.com/methodologie#etape-6"},{"@type":"HowToStep","position":7,"name":"Suivi et itération","text":"Reporting mensuel, optimisations continues, support technique, A/B tests, accompagnement long terme.","url":"https://www.pirabellabs.com/methodologie#etape-7"}],"provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+16139273067","email":"contact@pirabellabs.com","url":"https://www.pirabellabs.com"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Méthodologie","item":"https://www.pirabellabs.com/methodologie"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi travailler en sprints hebdomadaires ?","acceptedAnswer":{"@type":"Answer","text":"Les sprints hebdomadaires permettent de livrer du concret chaque semaine, d'ajuster le tir tôt et d'éviter l'effet tunnel des projets de 3 à 6 mois où vous ne voyez rien jusqu'à la fin."}},{"@type":"Question","name":"Comment validez-vous les livrables ?","acceptedAnswer":{"@type":"Answer","text":"Chaque livrable est partagé via Figma, Notion ou un environnement de préproduction. Vous commentez directement sur le support. Deux rounds de retours sont inclus par livrable."}},{"@type":"Question","name":"Que se passe-t-il si je ne suis pas satisfait ?","acceptedAnswer":{"@type":"Answer","text":"Nous offrons une garantie de 30 jours après la livraison. Tout bug, ajustement mineur ou correction est pris en charge gratuitement. Au-delà, nous proposons un forfait maintenance."}},{"@type":"Question","name":"Combien de temps prend un projet en moyenne ?","acceptedAnswer":{"@type":"Answer","text":"Un site vitrine prend 4 à 6 semaines, un e-commerce 8 à 12 semaines, une refonte SEO complète 3 mois. Le planning précis est annoncé lors du cadrage et tenu à 95 %."}},{"@type":"Question","name":"Travaillez-vous en régie ou au forfait ?","acceptedAnswer":{"@type":"Answer","text":"Au forfait pour les projets définis (site, refonte, identité). En régie ou abonnement mensuel pour le SEO, le community management et la maintenance. Vous choisissez le format qui correspond à votre besoin."}},{"@type":"Question","name":"Qui est mon interlocuteur au quotidien ?","acceptedAnswer":{"@type":"Answer","text":"Un chef de projet dédié dès le kick-off. Il centralise les échanges, les validations et le reporting. Vous n'avez pas à courir après plusieurs personnes."}},{"@type":"Question","name":"Le code et les designs m'appartiennent-ils ?","acceptedAnswer":{"@type":"Answer","text":"Oui, 100 %. Tout ce que nous produisons devient votre propriété intellectuelle à la livraison finale. Vous obtenez les fichiers sources, les accès et la documentation."}},{"@type":"Question","name":"Et après le lancement, vous disparaissez ?","acceptedAnswer":{"@type":"Answer","text":"Non, c'est notre point d'orgueil. Le suivi mensuel inclut reporting, support, optimisations. Nos clients restent en moyenne 18 mois, parce que la valeur continue de monter sprint après sprint."}}]}
+</script>
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="34" height="34" fetchpriority="high">
+      <span>PIRABEL LABS</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Services <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--2col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Web &amp; visibilité</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Création de site web</div><div class="nav-mega__link-desc">Sites sur mesure, WordPress, Webflow</div></div></a>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; référencement</div><div class="nav-mega__link-desc">Trafic organique qualifié</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Conversion &amp; conseil</div>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
+              <a href="/consulting-marketing" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Consulting marketing</div><div class="nav-mega__link-desc">Audit, stratégie, CMO</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="/services" class="nav-mega__main-link">Réalisations</a>
+      <a href="/contact" class="nav-mega__main-link">A propos</a>
+      <a href="/contact" class="nav-mega__main-link">Blog</a>
+      <a href="/contact" class="nav-mega__main-link">Contact</a>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Obtenir un devis</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="metho-wrap">
+
+  <!-- HERO -->
+  <section class="metho-hero">
+    <span class="metho-hero__eyebrow"><span class="material-symbols-outlined">timeline</span> Méthodologie projet</span>
+    <h1>Notre méthodologie<br>en <em>7 étapes</em>.</h1>
+    <p class="metho-hero__lead">Une méthode claire, transparente, éprouvée sur plus de 80 projets francophones. De l'appel découverte aux optimisations mensuelles, chaque étape est cadrée, documentée et alignée sur vos objectifs business. Aucune surprise, aucun jargon, aucun sous-traitant caché. Vous savez à chaque instant où en est votre projet, ce qui arrive ensuite et combien ça coûte.</p>
+    <div class="metho-hero__stats">
+      <div class="metho-hero__stat">
+        <span class="metho-hero__stat-num">7</span>
+        <span class="metho-hero__stat-lbl">étapes balisées</span>
+      </div>
+      <div class="metho-hero__stat">
+        <span class="metho-hero__stat-num">48 h</span>
+        <span class="metho-hero__stat-lbl">devis ferme</span>
+      </div>
+      <div class="metho-hero__stat">
+        <span class="metho-hero__stat-num">4 h</span>
+        <span class="metho-hero__stat-lbl">délai réponse</span>
+      </div>
+      <div class="metho-hero__stat">
+        <span class="metho-hero__stat-num">30 j</span>
+        <span class="metho-hero__stat-lbl">garantie post-livraison</span>
+      </div>
+    </div>
+    <div class="metho-hero__cta">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver un appel découverte</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+    </div>
+  </section>
+
+  <!-- TIMELINE PROCESS -->
+  <section class="metho-process">
+    <div class="metho-process__head">
+      <span class="metho-process__eyebrow"><span class="material-symbols-outlined">route</span> Le processus complet</span>
+      <h2>De l'idée à la <em>croissance durable</em></h2>
+      <p class="metho-process__sub">Chaque projet suit cette même trame, adaptée à votre contexte. Vous savez ce qui arrive, qui fait quoi, à quelle date, et quel livrable atterrit dans votre boîte mail.</p>
+    </div>
+
+    <div class="metho-timeline">
+
+      <!-- ETAPE 1 - LEFT -->
+      <div class="metho-step metho-step--left" id="etape-1">
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">explore</span></div>
+          <span class="metho-step__phase">Phase 1 sur 7</span>
+          <h3 class="metho-step__title">Découverte</h3>
+          <p class="metho-step__desc">Tout commence par un appel gratuit de 30 minutes, en visio ou WhatsApp. On écoute votre projet, vos objectifs, votre marché, vos contraintes. On regarde votre site actuel, vos comptes sociaux, votre positionnement. Vous repartez avec un premier diagnostic honnête, même si nous ne travaillons pas ensemble. Pas de baratin, pas de pression commerciale.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 30 minutes</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">redeem</span> Gratuit</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Compte rendu écrit de l'appel</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Premier diagnostic visuel</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Liste de recommandations rapides</li>
+            </ul>
+          </div>
+        </div>
+        <div class="metho-step__num">1</div>
+      </div>
+
+      <!-- ETAPE 2 - RIGHT -->
+      <div class="metho-step metho-step--right" id="etape-2">
+        <div class="metho-step__num">2</div>
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">description</span></div>
+          <span class="metho-step__phase">Phase 2 sur 7</span>
+          <h3 class="metho-step__title">Cadrage et devis</h3>
+          <p class="metho-step__desc">Dans les 48 heures qui suivent l'appel, vous recevez un devis ferme, un scope écrit ligne par ligne, un planning sprint par sprint et nos conditions générales. Tout est chiffré, daté, signé. Si vous validez, on bloque notre planning et on démarre. Si vous voulez réfléchir, le devis reste valable 30 jours sans engagement.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 48 heures</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">handshake</span> Sans engagement</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Devis ferme PDF</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Cahier des charges écrit</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Planning sprint détaillé</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Conditions générales claires</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAPE 3 - LEFT -->
+      <div class="metho-step metho-step--left" id="etape-3">
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">psychology</span></div>
+          <span class="metho-step__phase">Phase 3 sur 7</span>
+          <h3 class="metho-step__title">Stratégie et workshop</h3>
+          <p class="metho-step__desc">Un atelier de 2 à 4 heures, en visio ou présentiel à Abomey-Calavi, pour creuser le projet. On co-construit vos personas, vos parcours utilisateur, votre positionnement et vos objectifs SMART. À la sortie, vous avez une vision claire de ce qu'on va produire, pourquoi, et comment on mesurera le succès. Plus de zone grise.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 1 semaine</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">groups</span> Workshop inclus</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Personas documentés</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Parcours utilisateur cartographiés</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Objectifs SMART chiffrés</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Roadmap éditoriale ou produit</li>
+            </ul>
+          </div>
+        </div>
+        <div class="metho-step__num">3</div>
+      </div>
+
+      <!-- ETAPE 4 - RIGHT -->
+      <div class="metho-step metho-step--right" id="etape-4">
+        <div class="metho-step__num">4</div>
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">draw</span></div>
+          <span class="metho-step__phase">Phase 4 sur 7</span>
+          <h3 class="metho-step__title">Design et maquettage</h3>
+          <p class="metho-step__desc">On démarre par des wireframes basse fidélité pour figer la structure. Puis nous concevons les maquettes haute fidélité sur Figma, avec votre charte de marque ou une charte refondue. Vous commentez directement dans Figma, on itère en 48 h. Deux rounds de retours sont inclus, avec des révisions illimitées sur les détails. Aucune impression PDF, tout est interactif.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 2 à 3 semaines</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">edit_note</span> 2 rounds inclus</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Wireframes complets</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Maquettes haute fidélité Figma</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Design system documenté</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Prototype cliquable interactif</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAPE 5 - LEFT -->
+      <div class="metho-step metho-step--left" id="etape-5">
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">code</span></div>
+          <span class="metho-step__phase">Phase 5 sur 7</span>
+          <h3 class="metho-step__title">Production et développement</h3>
+          <p class="metho-step__desc">L'équipe technique entre en jeu. Sprints hebdomadaires, démo en fin de chaque sprint, environnement de préproduction accessible 24h/24. Code review interne systématique, tests automatisés, performances Core Web Vitals contrôlées. Vous voyez l'avancée concrète semaine après semaine, pas un grand reveal final stressant. Slack ouvert pour vos questions de fond.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 3 à 8 semaines</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">visibility</span> Démo hebdo</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Environnement de préproduction</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Démos hebdomadaires enregistrées</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Code source documenté GitHub</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Rapports de tests automatisés</li>
+            </ul>
+          </div>
+        </div>
+        <div class="metho-step__num">5</div>
+      </div>
+
+      <!-- ETAPE 6 - RIGHT -->
+      <div class="metho-step metho-step--right" id="etape-6">
+        <div class="metho-step__num">6</div>
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <span class="metho-step__phase">Phase 6 sur 7</span>
+          <h3 class="metho-step__title">Lancement</h3>
+          <p class="metho-step__desc">Recette QA approfondie sur tous les supports (mobile, tablette, desktop, navigateurs majeurs). Mise en production avec sauvegarde, certificat SSL, monitoring uptime. Formation client en visio sur le CMS, l'admin, le reporting. Documentation complète remise par écrit. Vous repartez autonome, avec toutes les clés en main, immédiatement opérationnel.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> 1 semaine</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">school</span> Formation incluse</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Recette QA documentée</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Site ou outil mis en production</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Documentation utilisateur PDF</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Session de formation enregistrée</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Tous les accès remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ETAPE 7 - LEFT -->
+      <div class="metho-step metho-step--left" id="etape-7">
+        <div class="metho-step__card">
+          <div class="metho-step__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <span class="metho-step__phase">Phase 7 sur 7</span>
+          <h3 class="metho-step__title">Suivi et itération</h3>
+          <p class="metho-step__desc">La livraison n'est pas la fin, c'est le début du vrai travail. Reporting mensuel détaillé (trafic, conversions, performances, ROI), optimisations basées sur les données réelles, A/B tests réguliers, support technique réactif sous 4 heures ouvrées. C'est cette phase qui transforme un projet réussi en croissance durable. Nos clients restent en moyenne 18 mois pour cette raison.</p>
+          <div class="metho-step__meta">
+            <span class="metho-step__chip"><span class="material-symbols-outlined">schedule</span> Mensuel</span>
+            <span class="metho-step__chip"><span class="material-symbols-outlined">support</span> Support 4 h</span>
+          </div>
+          <div class="metho-step__delivery">
+            <div class="metho-step__delivery-title">Livrables</div>
+            <ul class="metho-step__delivery-list">
+              <li><span class="material-symbols-outlined">check_circle</span> Rapport mensuel PDF chiffré</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Tableau de bord Looker Studio</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Recommandations d'optimisation</li>
+              <li><span class="material-symbols-outlined">check_circle</span> Support technique prioritaire</li>
+            </ul>
+          </div>
+        </div>
+        <div class="metho-step__num">7</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- OUTILS & STACK -->
+  <section class="metho-stack">
+    <div class="metho-stack__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">build</span> Outils et stack</span>
+      <h2>Notre boîte à <em>outils professionnels</em></h2>
+      <p class="metho-stack__sub">Des outils éprouvés, modernes, transparents. Vous avez accès en lecture à tous nos espaces de travail tout au long du projet. Aucune dépendance cachée, tout est documenté.</p>
+    </div>
+
+    <div class="metho-stack__grid">
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">design_services</span></div>
+        <span class="metho-tool__cat">Design</span>
+        <h3 class="metho-tool__name">Figma</h3>
+        <p class="metho-tool__desc">Maquettes, prototypes interactifs, design systems, commentaires temps réel. Vous gardez l'accès final.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">webhook</span></div>
+        <span class="metho-tool__cat">Développement</span>
+        <h3 class="metho-tool__name">Next.js &amp; React</h3>
+        <p class="metho-tool__desc">Sites sur mesure haute performance, déployés sur Vercel ou serveur dédié. Code propre, scalable.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">web_asset</span></div>
+        <span class="metho-tool__cat">CMS</span>
+        <h3 class="metho-tool__name">WordPress &amp; Webflow</h3>
+        <p class="metho-tool__desc">Pour les sites éditables en autonomie. Elementor, WooCommerce, ACF Pro, plugins premium inclus.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">edit_document</span></div>
+        <span class="metho-tool__cat">Documentation</span>
+        <h3 class="metho-tool__name">Notion</h3>
+        <p class="metho-tool__desc">Espace projet partagé, comptes rendus, brief, roadmap, base de connaissances. Vous gardez l'accès.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">chat</span></div>
+        <span class="metho-tool__cat">Communication</span>
+        <h3 class="metho-tool__name">Slack &amp; WhatsApp</h3>
+        <p class="metho-tool__desc">Canal dédié pour votre projet. Réponses sous 4 heures ouvrées. WhatsApp pour les urgences réelles.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">analytics</span></div>
+        <span class="metho-tool__cat">Analyse</span>
+        <h3 class="metho-tool__name">Google Analytics 4</h3>
+        <p class="metho-tool__desc">Tracking événements, conversions, parcours. Configuration RGPD-compliant, anonymisation IP.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">monitoring</span></div>
+        <span class="metho-tool__cat">Reporting</span>
+        <h3 class="metho-tool__name">Looker Studio</h3>
+        <p class="metho-tool__desc">Tableaux de bord visuels personnalisés, mis à jour automatiquement. Accès en lecture pour l'équipe.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">mail</span></div>
+        <span class="metho-tool__cat">Email marketing</span>
+        <h3 class="metho-tool__name">Brevo &amp; HubSpot</h3>
+        <p class="metho-tool__desc">Séquences automatisées, segmentation, lead scoring, délivrabilité. CRM intégré au site.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">manage_search</span></div>
+        <span class="metho-tool__cat">SEO</span>
+        <h3 class="metho-tool__name">Ahrefs &amp; Semrush</h3>
+        <p class="metho-tool__desc">Recherche de mots-clés, audit technique, suivi positions, analyse backlinks concurrents.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <span class="metho-tool__cat">Automatisation</span>
+        <h3 class="metho-tool__name">Make &amp; n8n</h3>
+        <p class="metho-tool__desc">Workflows complexes, intégrations CRM, agents IA, chatbots WhatsApp, scraping légal.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">storage</span></div>
+        <span class="metho-tool__cat">Versionning</span>
+        <h3 class="metho-tool__name">GitHub</h3>
+        <p class="metho-tool__desc">Code source versionné, branches par sprint, pull requests revues, historique complet remis.</p>
+      </div>
+      <div class="metho-tool">
+        <div class="metho-tool__icon"><span class="material-symbols-outlined">photo_library</span></div>
+        <span class="metho-tool__cat">Création visuelle</span>
+        <h3 class="metho-tool__name">Adobe Creative Suite</h3>
+        <p class="metho-tool__desc">Photoshop, Illustrator, Premiere Pro, After Effects. Visuels, vidéos, motion design pro.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENGAGEMENTS -->
+  <section class="metho-engage">
+    <div class="metho-engage__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">verified</span> Nos engagements</span>
+      <h2>4 engagements <em>contractuels</em>, écrits noir sur blanc</h2>
+      <p class="metho-engage__sub">Ces engagements sont mentionnés dans chacun de nos devis et nos conditions générales. Ce ne sont pas des promesses marketing, ce sont des clauses signées.</p>
+    </div>
+
+    <div class="metho-engage__grid">
+      <div class="metho-pillar">
+        <div class="metho-pillar__icon"><span class="material-symbols-outlined">receipt_long</span></div>
+        <h3 class="metho-pillar__title">Devis ferme sous 48 h</h3>
+        <p class="metho-pillar__desc">Chiffrage écrit, scope détaillé, planning sprint, livrables listés. Le prix annoncé est le prix final. Aucune surprise en cours de route, aucun avenant caché.</p>
+      </div>
+      <div class="metho-pillar">
+        <div class="metho-pillar__icon"><span class="material-symbols-outlined">bolt</span></div>
+        <h3 class="metho-pillar__title">Réactivité 4 heures ouvrées</h3>
+        <p class="metho-pillar__desc">Réponse garantie à toute question ou demande dans les 4 heures ouvrées. Slack, WhatsApp, email, peu importe le canal. Vous n'attendez jamais une semaine.</p>
+      </div>
+      <div class="metho-pillar">
+        <div class="metho-pillar__icon"><span class="material-symbols-outlined">key</span></div>
+        <h3 class="metho-pillar__title">Propriété 100 % du code</h3>
+        <p class="metho-pillar__desc">Le code source, les designs, les contenus produits, les accès, tout devient votre propriété intellectuelle à la livraison finale. Aucune dépendance à notre agence.</p>
+      </div>
+      <div class="metho-pillar">
+        <div class="metho-pillar__icon"><span class="material-symbols-outlined">shield</span></div>
+        <h3 class="metho-pillar__title">Garantie 30 jours post-livraison</h3>
+        <p class="metho-pillar__desc">Pendant 30 jours après la mise en production, tout bug, ajustement mineur ou correction est pris en charge gratuitement. Vous démarrez sereinement.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TRANSPARENCY -->
+  <section class="metho-pricing">
+    <div class="metho-pricing__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">payments</span> Tarifs indicatifs</span>
+      <h2>Une grille tarifaire <em>transparente</em></h2>
+      <p class="metho-pricing__sub">Voici les fourchettes indicatives de nos prestations les plus demandées. Le devis final est toujours personnalisé après l'appel découverte. Tarifs en HT, valables pour la zone francophone (Bénin, Côte d'Ivoire, Sénégal, France, Canada).</p>
+    </div>
+
+    <div class="metho-pricing__grid">
+      <div class="metho-price">
+        <span class="metho-price__cat">Site vitrine</span>
+        <h3 class="metho-price__name">Pack Lancement</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">1 800 € <span>HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> Site WordPress 6 à 10 pages</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Design responsive sur mesure</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Rédaction SEO incluse</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Formation à la prise en main</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Mise en production complète</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+      <div class="metho-price metho-price--featured">
+        <span class="metho-price__cat">Site sur mesure</span>
+        <h3 class="metho-price__name">Pack Croissance</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">4 500 € <span>HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> Site Next.js ou Webflow premium</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Design system complet</li>
+          <li><span class="material-symbols-outlined">check_circle</span> SEO technique avancé</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Animations et interactions</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Tracking conversions GA4</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Hébergement 12 mois inclus</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+      <div class="metho-price">
+        <span class="metho-price__cat">Abonnement SEO</span>
+        <h3 class="metho-price__name">Pack Visibilité</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">890 € <span>/ mois HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> Audit technique trimestriel</li>
+          <li><span class="material-symbols-outlined">check_circle</span> 4 articles SEO par mois</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Netlinking éthique</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Optimisations on-page continues</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Reporting mensuel détaillé</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+      <div class="metho-price">
+        <span class="metho-price__cat">Community management</span>
+        <h3 class="metho-price__name">Pack Social</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">650 € <span>/ mois HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> 12 posts par mois (2 réseaux)</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Stratégie éditoriale trimestrielle</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Modération et réponses</li>
+          <li><span class="material-symbols-outlined">check_circle</span> 4 reels ou vidéos courtes</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Reporting mensuel</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+      <div class="metho-price">
+        <span class="metho-price__cat">E-commerce</span>
+        <h3 class="metho-price__name">Pack Boutique</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">3 200 € <span>HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> WooCommerce ou Shopify</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Jusqu'à 50 produits initiaux</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Paiement local et international</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Tunnel de vente optimisé CRO</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Formation gestion boutique</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+
+      <div class="metho-price">
+        <span class="metho-price__cat">Consulting CMO</span>
+        <h3 class="metho-price__name">Pack Stratégie</h3>
+        <span class="metho-price__from">À partir de</span>
+        <div class="metho-price__amount">1 200 € <span>/ mois HT</span></div>
+        <ul class="metho-price__list">
+          <li><span class="material-symbols-outlined">check_circle</span> Point hebdo 1 h en visio</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Roadmap trimestrielle</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Audit récurrent acquisition</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Conseil sur arbitrages budget</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Support Slack illimité</li>
+        </ul>
+        <a href="/contact" class="metho-price__cta">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDRIER TYPE -->
+  <section class="metho-calendar">
+    <div class="metho-calendar__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">calendar_month</span> Calendrier type</span>
+      <h2>Une <em>refonte web</em> en 12 semaines</h2>
+      <p class="metho-calendar__sub">Voici un planning Gantt réel d'un projet de refonte de site vitrine pro. Chaque barre représente une phase, chaque colonne une semaine. C'est la trame que nous suivons pour tenir nos délais à 95 %.</p>
+    </div>
+
+    <div class="metho-gantt">
+      <div class="metho-gantt__weeks">
+        <span>Phase</span>
+        <span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span>
+        <span>S7</span><span>S8</span><span>S9</span><span>S10</span><span>S11</span><span>S12</span>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">explore</span> Découverte</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 2;">S1</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">description</span> Cadrage</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 3;">S2</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">psychology</span> Stratégie</div>
+        <div class="metho-gantt__bar" style="--span: 2; grid-column-start: 3;">S2 - S3</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">draw</span> Design Figma</div>
+        <div class="metho-gantt__bar" style="--span: 3; grid-column-start: 4;">S3 - S5</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">edit_note</span> Rédaction SEO</div>
+        <div class="metho-gantt__bar" style="--span: 3; grid-column-start: 5;">S4 - S6</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">code</span> Développement</div>
+        <div class="metho-gantt__bar" style="--span: 4; grid-column-start: 6;">S5 - S8</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">integration_instructions</span> Intégration contenus</div>
+        <div class="metho-gantt__bar" style="--span: 2; grid-column-start: 9;">S8 - S9</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">bug_report</span> Recette QA</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 10;">S10</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">rocket_launch</span> Mise en production</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 11;">S11</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">school</span> Formation client</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 11;">S11</div>
+      </div>
+      <div class="metho-gantt__row">
+        <div class="metho-gantt__label"><span class="material-symbols-outlined">trending_up</span> Suivi initial</div>
+        <div class="metho-gantt__bar" style="--span: 1; grid-column-start: 12;">S12</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARAISON -->
+  <section class="metho-compare">
+    <div class="metho-compare__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">compare_arrows</span> Comparatif honnête</span>
+      <h2>Pirabel Labs face aux <em>autres options</em></h2>
+      <p class="metho-compare__sub">Trois options s'offrent à vous pour un projet digital : un freelance solo, une grosse agence parisienne, ou une boutique francophone comme Pirabel Labs. Voici un comparatif honnête, sans biais, pour vous aider à choisir.</p>
+    </div>
+
+    <div class="metho-compare__wrap">
+      <table class="metho-compare__table">
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Freelance solo</th>
+            <th class="metho-compare__featured">Pirabel Labs</th>
+            <th>Grosse agence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Devis ferme sous 48 h</td>
+            <td><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Oui</span></td>
+            <td class="metho-compare__featured-cell"><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Oui, garanti</span></td>
+            <td><span class="metho-compare__no"><span class="material-symbols-outlined">close</span> 1 à 3 semaines</span></td>
+          </tr>
+          <tr>
+            <td>Réactivité support</td>
+            <td>Variable</td>
+            <td class="metho-compare__featured-cell">4 h ouvrées garanties</td>
+            <td>24 à 72 h selon ticket</td>
+          </tr>
+          <tr>
+            <td>Couverture des expertises</td>
+            <td>1 à 2 expertises max</td>
+            <td class="metho-compare__featured-cell">11 expertises complètes</td>
+            <td>Toutes expertises</td>
+          </tr>
+          <tr>
+            <td>Continuité en cas d'absence</td>
+            <td><span class="metho-compare__no"><span class="material-symbols-outlined">close</span> Risque réel</span></td>
+            <td class="metho-compare__featured-cell"><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Équipe de relais</span></td>
+            <td><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Équipe large</span></td>
+          </tr>
+          <tr>
+            <td>Tarif site vitrine pro</td>
+            <td>800 à 3 000 €</td>
+            <td class="metho-compare__featured-cell">1 800 à 4 500 €</td>
+            <td>15 000 à 60 000 €</td>
+          </tr>
+          <tr>
+            <td>Interlocuteur unique</td>
+            <td><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Oui</span></td>
+            <td class="metho-compare__featured-cell"><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Chef de projet dédié</span></td>
+            <td><span class="metho-compare__no"><span class="material-symbols-outlined">close</span> 3 à 5 personnes</span></td>
+          </tr>
+          <tr>
+            <td>Sous-traitance cachée</td>
+            <td><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Aucune</span></td>
+            <td class="metho-compare__featured-cell"><span class="metho-compare__yes"><span class="material-symbols-outlined">check</span> Aucune</span></td>
+            <td><span class="metho-compare__no"><span class="material-symbols-outlined">close</span> Fréquente</span></td>
+          </tr>
+          <tr>
+            <td>Propriété du code et des assets</td>
+            <td>Selon contrat</td>
+            <td class="metho-compare__featured-cell">100 % à la livraison</td>
+            <td>Selon contrat, parfois limitée</td>
+          </tr>
+          <tr>
+            <td>Reporting mensuel chiffré</td>
+            <td>Rare ou payant</td>
+            <td class="metho-compare__featured-cell">Inclus dès le mois 1</td>
+            <td>Souvent payant en option</td>
+          </tr>
+          <tr>
+            <td>Garantie post-livraison</td>
+            <td>Variable, 0 à 15 j</td>
+            <td class="metho-compare__featured-cell">30 jours écrits</td>
+            <td>15 à 30 j selon contrat</td>
+          </tr>
+          <tr>
+            <td>Ancrage francophone</td>
+            <td>Variable</td>
+            <td class="metho-compare__featured-cell">Bénin + couverture Afrique francophone</td>
+            <td>Souvent France uniquement</td>
+          </tr>
+          <tr>
+            <td>Idéal pour</td>
+            <td>Très petits budgets</td>
+            <td class="metho-compare__featured-cell">PME, scale-ups, marques ambitieuses</td>
+            <td>Grands comptes, budgets 50 K€+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TEMOIGNAGES -->
+  <section class="metho-testi">
+    <div class="metho-testi__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">format_quote</span> Témoignages méthode</span>
+      <h2>Ce que disent nos clients <em>de la méthode</em></h2>
+      <p class="metho-testi__sub">Au-delà des résultats chiffrés, voici ce que nos clients retiennent du processus de travail au quotidien avec Pirabel Labs.</p>
+    </div>
+
+    <div class="metho-testi__grid">
+      <div class="metho-quote">
+        <div class="metho-quote__stars">
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <p class="metho-quote__text">Ce qui m'a marquée, c'est la rigueur du cadrage. En 48 heures, j'avais un devis ferme, un planning sprint par sprint, et un cahier des charges qui correspondait exactement à ce dont j'avais parlé pendant l'appel. Aucune zone grise. Aucune surprise pendant les 3 mois de production. Le site a été livré à la date promise, au prix promis. Une expérience rare.</p>
+        <div class="metho-quote__author">
+          <div class="metho-quote__avatar">AK</div>
+          <div class="metho-quote__who">
+            <span class="metho-quote__name">Aïssatou K.</span>
+            <span class="metho-quote__role">Fondatrice, marque de cosmétiques Dakar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metho-quote">
+        <div class="metho-quote__stars">
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <p class="metho-quote__text">Les démos hebdomadaires changent tout. Au lieu de stresser pendant 3 mois en attendant un grand reveal, je voyais l'avancée chaque vendredi. Je pouvais ajuster une couleur, demander un changement de texte, valider une fonctionnalité. À la fin, le résultat correspondait à 100 % à ce que j'avais en tête. Pas besoin de tout reprendre après livraison.</p>
+        <div class="metho-quote__author">
+          <div class="metho-quote__avatar">MD</div>
+          <div class="metho-quote__who">
+            <span class="metho-quote__name">Marc D.</span>
+            <span class="metho-quote__role">Directeur général, PME logistique Abidjan</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metho-quote">
+        <div class="metho-quote__stars">
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <p class="metho-quote__text">Ce qui me bluffe encore aujourd'hui, c'est le suivi mensuel. Le rapport arrive le 5 de chaque mois, propre, chiffré, avec les recommandations pour le mois suivant. Le ROI est mesurable, les arbitrages budgétaires sont rationnels. On a doublé notre trafic en 8 mois grâce à cette discipline du reporting. Je recommande sans hésitation.</p>
+        <div class="metho-quote__author">
+          <div class="metho-quote__avatar">FS</div>
+          <div class="metho-quote__who">
+            <span class="metho-quote__name">Fatou S.</span>
+            <span class="metho-quote__role">Responsable marketing, école supérieure Cotonou</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="metho-faq">
+    <div class="metho-faq__head">
+      <span class="metho-stack__eyebrow"><span class="material-symbols-outlined">help</span> Questions méthodologie</span>
+      <h2>Vos questions, <em>nos réponses</em></h2>
+      <p class="metho-faq__sub">Les 8 questions que nos clients posent le plus souvent sur notre façon de travailler. Si la vôtre n'y est pas, contactez-nous directement.</p>
+    </div>
+
+    <div class="metho-faq__list">
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Pourquoi travailler en sprints hebdomadaires ?</summary>
+        <div class="metho-faq__a">Les sprints hebdomadaires permettent de livrer du concret chaque semaine, d'ajuster le tir tôt et d'éviter l'effet tunnel des projets de 3 à 6 mois où vous ne voyez rien jusqu'à la fin. À la fin de chaque sprint, vous avez une démo, vous validez, on continue. C'est la méthode standard des équipes produit modernes (Spotify, Stripe, Notion utilisent toutes ce modèle). Résultat : moins de stress, moins de retours en arrière, plus de satisfaction finale.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Comment validez-vous concrètement les livrables ?</summary>
+        <div class="metho-faq__a">Chaque livrable est partagé via le support adapté : Figma pour les maquettes, Notion pour les documents stratégiques, un environnement de préproduction pour le code, Google Drive pour les contenus. Vous commentez directement sur le support, on itère en 48 heures maximum. Deux rounds de retours sont inclus par livrable, avec des révisions illimitées sur les détails mineurs. La validation finale se fait par email écrit pour tracer l'accord.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Qu'est-ce qu'un livrable exactement ?</summary>
+        <div class="metho-faq__a">Un livrable est un élément concret et utilisable que nous vous remettons à une étape précise du projet. Par exemple : les wireframes en fin de phase 4a, les maquettes Figma en fin de phase 4b, l'environnement de préproduction en cours de phase 5, le code source GitHub en fin de phase 6, le rapport mensuel en phase 7. Chaque livrable est listé dans le devis initial avec sa date prévisionnelle, pour que vous sachiez exactement ce que vous recevez et quand.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Que se passe-t-il si je ne suis pas satisfait du résultat ?</summary>
+        <div class="metho-faq__a">Première mesure : la garantie de 30 jours après la livraison couvre tout bug, ajustement mineur ou correction sans frais supplémentaire. Deuxième mesure : les deux rounds de retours inclus à chaque livrable permettent d'ajuster en cours de route, ce qui réduit énormément le risque d'insatisfaction finale. Troisième mesure : si malgré tout le résultat ne correspond pas, nous proposons une session de cadrage gratuite pour identifier le décalage et reprendre la partie concernée.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Combien de temps prend un projet en moyenne ?</summary>
+        <div class="metho-faq__a">Cela dépend du type de projet : un site vitrine pro prend 4 à 6 semaines, un site sur mesure Next.js 8 à 12 semaines, un e-commerce 10 à 14 semaines, une refonte SEO complète 3 mois, une application web métier 12 à 24 semaines. Le planning précis vous est annoncé lors du cadrage en phase 2, et nous le tenons à 95 % grâce à la discipline des sprints. Si un retard intervient de notre côté, vous êtes prévenu sous 48 heures avec un plan de rattrapage.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Travaillez-vous au forfait ou en régie ?</summary>
+        <div class="metho-faq__a">Au forfait pour les projets définis et bornés : création de site, refonte, identité graphique, tunnel de vente, application MVP. Le périmètre est figé, le prix est fixe. En régie ou abonnement mensuel pour les prestations récurrentes : SEO, community management, maintenance, consulting CMO. Vous payez un montant mensuel défini pour un volume de travail garanti. Vous choisissez le format qui correspond à votre besoin, nous vous conseillons honnêtement le plus pertinent.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Qui est mon interlocuteur au quotidien ?</summary>
+        <div class="metho-faq__a">Dès le kick-off de la phase 3, un chef de projet dédié vous est attribué. Il centralise tous les échanges, les validations, le reporting et l'organisation des démos hebdomadaires. Vous n'avez pas à courir après plusieurs personnes ni à expliquer dix fois la même chose. Pour les sujets pointus, le chef de projet mobilise l'expert concerné (designer, développeur, rédacteur SEO, etc.) et fait le pont. Une seule porte d'entrée, simple et efficace.</div>
+      </details>
+
+      <details class="metho-faq__item">
+        <summary class="metho-faq__q">Et après le lancement, vous disparaissez ?</summary>
+        <div class="metho-faq__a">Non, c'est notre point d'orgueil. Le suivi mensuel de la phase 7 inclut un reporting chiffré, du support technique sous 4 heures ouvrées, des optimisations continues basées sur les données réelles, et un point trimestriel stratégique. Nos clients restent en moyenne 18 mois en abonnement post-livraison, parce que la valeur continue de monter sprint après sprint. Vous restez libre : aucun engagement contractuel ne vous empêche de partir, vous gardez 100 % de votre propriété.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="metho-final">
+    <span class="metho-final__eyebrow"><span class="material-symbols-outlined">flag</span> Prêt à démarrer&nbsp;?</span>
+    <h2>Commençons par un <em>appel découverte gratuit</em></h2>
+    <p>30 minutes en visio ou WhatsApp pour comprendre votre projet, regarder votre situation actuelle et vous proposer 3 priorités chiffrées. Si nous travaillons ensemble, formidable. Si non, vous repartez quand même avec un plan d'action exploitable. Aucun engagement, aucune pression.</p>
+    <div class="metho-final__row">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver l'appel découverte</a>
+      <a href="/contact" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">request_quote</span> Demander un devis sous 48 h</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+    </div>
+    <div class="metho-final__guarantee">
+      <span><span class="material-symbols-outlined">verified</span> Devis ferme sous 48 h</span>
+      <span><span class="material-symbols-outlined">verified</span> Réactivité 4 h ouvrées</span>
+      <span><span class="material-symbols-outlined">verified</span> Garantie 30 jours</span>
+      <span><span class="material-symbols-outlined">verified</span> Sans engagement</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits réservés. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Bénin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var menu=document.getElementById('navMenu');
+  if(burger && menu) {
+    burger.addEventListener('click',function(){
+      var open=menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open',open);
+      burger.setAttribute('aria-expanded',open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click',function(e){
+        if(window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if(item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

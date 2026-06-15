@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>À propos - Pirabel Labs</title>
+<meta name="description" content="Pirabel Labs, agence francophone de marketing digital fondée en 2020 à Abomey-Calavi par Lissanon Gildas et Fidah Imorou. Équipe pour PME en Afrique et Europe.">
+<link rel="canonical" href="https://www.pirabellabs.com/a-propos">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/favicon.png">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="À propos - Pirabel Labs">
+<meta property="og:description" content="Une agence francophone fondée en 2020 par Lissanon Gildas et Fidah Imorou. Notre histoire, notre équipe, notre mission pour les PME ambitieuses.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/a-propos">
+<meta property="og:image" content="https://www.pirabellabs.com/img/og-a-propos.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="À propos - Pirabel Labs">
+<meta name="twitter:description" content="L'histoire, l'équipe et la mission de Pirabel Labs, agence francophone basée à Abomey-Calavi au Bénin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="/css/global.css">
+<style>
+/* =========================================================
+   PAGE À PROPOS - STYLES SPÉCIFIQUES
+   ========================================================= */
+
+.about-wrap { padding: clamp(3rem, 6vw, 5rem) var(--px-page); }
+
+/* ---------- HERO ---------- */
+.about-hero {
+  max-width: 64rem;
+  margin: 0 auto 6rem;
+  text-align: center;
+  position: relative;
+}
+.about-hero::before {
+  content: "";
+  position: absolute;
+  top: -3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle, rgba(255,107,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+.about-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.about-hero h1 {
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.5rem;
+}
+.about-hero h1 em { color: var(--accent); font-style: normal; }
+.about-hero p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 48rem;
+  margin: 0 auto 2.25rem;
+}
+.about-hero__cta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* ---------- SECTION COMMON ---------- */
+.about-section { max-width: 72rem; margin: 0 auto 6rem; }
+.about-section__head { text-align: center; margin-bottom: 3.5rem; }
+.about-section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 0.85rem;
+}
+.about-section__eyebrow .material-symbols-outlined { font-size: 0.95rem; }
+.about-section h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.85rem;
+}
+.about-section h2 em { color: var(--accent); font-style: normal; }
+.about-section__sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+/* ---------- HISTOIRE / TIMELINE ---------- */
+.timeline {
+  position: relative;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+.timeline__item {
+  position: relative;
+  padding-left: 4rem;
+  margin-bottom: 2.5rem;
+}
+.timeline__item:last-child { margin-bottom: 0; }
+.timeline__dot {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 4px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.timeline__dot .material-symbols-outlined {
+  font-size: 0.85rem;
+  color: var(--bg);
+  font-weight: 700;
+}
+.timeline__year {
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.timeline__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+.timeline__desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* ---------- FONDATEURS ---------- */
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 2rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+.founder-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--t);
+}
+.founder-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+.founder-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+}
+.founder-card__avatar {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #ff8c3a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  color: var(--bg);
+  letter-spacing: -0.02em;
+}
+.founder-card__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+.founder-card__role {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.25rem;
+}
+.founder-card__bio {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+}
+.founder-card__expertise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.founder-card__tag {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+}
+
+/* ---------- VALEURS ---------- */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
+.value-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  transition: all var(--t);
+  position: relative;
+}
+.value-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+}
+.value-card__icon {
+  width: 3rem;
+  height: 3rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.value-card__icon .material-symbols-outlined { font-size: 1.6rem; }
+.value-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.55rem;
+  letter-spacing: -0.015em;
+}
+.value-card__desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* ---------- ÉQUIPE ---------- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.25rem;
+}
+.team-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition: all var(--t);
+}
+.team-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  background: linear-gradient(180deg, var(--bg-2) 0%, rgba(255,107,0,0.05) 100%);
+}
+.team-card__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.team-card__icon .material-symbols-outlined { font-size: 1.7rem; }
+.team-card__role {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.015em;
+}
+.team-card__count {
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: 0.72rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.6rem;
+}
+.team-card__desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ---------- IMPLANTATION ---------- */
+.implantation {
+  background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.06) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 4vw, 3.5rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .implantation { grid-template-columns: 1fr; gap: 2rem; }
+}
+.implantation__text h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.25rem;
+}
+.implantation__text h2 em { color: var(--accent); font-style: normal; }
+.implantation__text p {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.implantation__zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.zone-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.zone-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.7rem;
+}
+.zone-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.zone-card li {
+  font-size: 0.88rem;
+  color: var(--text);
+  padding: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.zone-card li::before {
+  content: "•";
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ---------- CHIFFRES CLÉS ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1.25rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+.stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  position: relative;
+  transition: all var(--t);
+}
+.stat-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+}
+.stat-card__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.stat-card__icon .material-symbols-outlined { font-size: 1.4rem; }
+.stat-card__number {
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 4.5vw, 3.5rem);
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+  margin-bottom: 0.5rem;
+}
+.stat-card__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+/* ---------- FAQ ---------- */
+.faq-list {
+  max-width: 52rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.faq-item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all var(--t);
+}
+.faq-item:hover { border-color: var(--accent); }
+.faq-item[open] { border-color: var(--accent); }
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary .material-symbols-outlined {
+  flex-shrink: 0;
+  font-size: 1.4rem;
+  color: var(--accent);
+  transition: transform var(--t);
+}
+.faq-item[open] summary .material-symbols-outlined { transform: rotate(45deg); }
+.faq-item__answer {
+  padding: 0 1.5rem 1.5rem;
+  font-size: 0.93rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* ---------- CTA FINAL ---------- */
+.about-final {
+  background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.1) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(2.5rem, 5vw, 4rem);
+  text-align: center;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+.about-final h2 {
+  font-family: 'Montserrat', var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+}
+.about-final h2 em { color: var(--accent); font-style: normal; }
+.about-final p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-bottom: 2rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.about-final__row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Pirabel Labs","alternateName":"Pirabel Labs - Agence francophone de marketing digital","url":"https://www.pirabellabs.com","logo":"https://www.pirabellabs.com/img/logo.png","email":"contact@pirabellabs.com","telephone":"+16139273067","foundingDate":"2020","foundingLocation":{"@type":"Place","name":"Abomey-Calavi, Bénin"},"founder":[{"@type":"Person","name":"Lissanon Gildas","jobTitle":"Cofondateur & CEO","worksFor":{"@type":"Organization","name":"Pirabel Labs"}},{"@type":"Person","name":"Fidah Imorou","jobTitle":"Cofondateur & COO","worksFor":{"@type":"Organization","name":"Pirabel Labs"}}],"address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressRegion":"Atlantique","addressCountry":"BJ"},"areaServed":["BJ","CI","SN","TG","FR","BE","CH","CA","CM","BF","ML"],"sameAs":["https://www.linkedin.com/company/pirabel-labs","https://www.instagram.com/pirabellabs"],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"52","bestRating":"5","worstRating":"1"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"Pirabel Labs","image":"https://www.pirabellabs.com/img/logo.png","@id":"https://www.pirabellabs.com/a-propos","url":"https://www.pirabellabs.com","telephone":"+16139273067","email":"contact@pirabellabs.com","priceRange":"$$","address":{"@type":"PostalAddress","streetAddress":"Abomey-Calavi","addressLocality":"Abomey-Calavi","addressRegion":"Atlantique","postalCode":"01 BP","addressCountry":"BJ"},"geo":{"@type":"GeoCoordinates","latitude":6.4486,"longitude":2.3554},"openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"19:00"},"areaServed":["Bénin","Côte d'Ivoire","Sénégal","Togo","Burkina Faso","Mali","Cameroun","France","Belgique","Suisse","Canada"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Lissanon Gildas","jobTitle":"Cofondateur & CEO","worksFor":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"description":"Cofondateur et CEO de Pirabel Labs, expert en stratégie digitale, SEO et croissance pour les PME francophones.","knowsAbout":["Marketing digital","SEO","Stratégie de croissance","Acquisition","Automatisation marketing"],"nationality":"BJ"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Fidah Imorou","jobTitle":"Cofondateur & COO","worksFor":{"@type":"Organization","name":"Pirabel Labs","url":"https://www.pirabellabs.com"},"description":"Cofondateur et COO de Pirabel Labs, expert en opérations, gestion de projets digitaux et développement web pour PME francophones.","knowsAbout":["Gestion de projets","Développement web","Opérations","Performance","Expérience client"],"nationality":"BJ"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"À propos","item":"https://www.pirabellabs.com/a-propos"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment fixez-vous vos tarifs ?","acceptedAnswer":{"@type":"Answer","text":"Nos tarifs sont transparents et adaptés à la taille du projet. Nous proposons trois formats : forfait pour un livrable précis, mensuel pour un accompagnement récurrent, ou jours-homme pour des missions ponctuelles. Tout est devisé clairement avant de démarrer."}},{"@type":"Question","name":"Travaillez-vous à distance avec des clients à l'étranger ?","acceptedAnswer":{"@type":"Answer","text":"Oui, près de 70% de notre activité est réalisée à distance avec des clients en Côte d'Ivoire, au Sénégal, au Togo, en France et en Belgique. Outils collaboratifs (Notion, Slack, Loom, Zoom), reporting hebdomadaire et disponibilité sur fuseau GMT/GMT+1."}},{"@type":"Question","name":"Dans quelles langues travaillez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Notre langue principale est le français. Nous produisons aussi en anglais pour les clients européens et pouvons gérer le fon, le yoruba ou le wolof pour des campagnes locales en Afrique de l'Ouest."}},{"@type":"Question","name":"Quels types de contrats proposez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Trois formats : mission ponctuelle avec livrables fixes, abonnement mensuel (3 ou 6 mois minimum), ou retainer annuel avec engagement long terme et tarifs préférentiels. Pas de clause cachée, résiliation possible avec préavis de 30 jours."}},{"@type":"Question","name":"Faites-vous appel à des sous-traitants ?","acceptedAnswer":{"@type":"Answer","text":"Non, toute notre équipe est interne et basée à Abomey-Calavi. Nous ne sous-traitons jamais le travail facturé. Vous avez un interlocuteur unique et une équipe stable qui connaît votre dossier."}},{"@type":"Question","name":"Comment se passe la facturation à l'international ?","acceptedAnswer":{"@type":"Answer","text":"Nous facturons en euro pour la France et la Belgique, en franc CFA pour la zone UEMOA, et en dollar canadien pour le Canada. Virement bancaire, Wise, ou Mobile Money selon le pays. Factures conformes aux normes locales."}}]}
+</script>
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png" alt="Pirabel Labs" width="34" height="34" fetchpriority="high">
+      <span>PIRABEL LABS</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Services <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--2col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Web &amp; visibilité</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Création de site web</div><div class="nav-mega__link-desc">Sites sur mesure, WordPress, Webflow</div></div></a>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; référencement</div><div class="nav-mega__link-desc">Trafic organique qualifié</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Conversion &amp; conseil</div>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
+              <a href="/consulting-marketing" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Consulting marketing</div><div class="nav-mega__link-desc">Audit, stratégie, CMO</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="/services" class="nav-mega__main-link">Réalisations</a>
+      <a href="/a-propos" class="nav-mega__main-link">À propos</a>
+      <a href="/contact" class="nav-mega__main-link">Blog</a>
+      <a href="/contact" class="nav-mega__main-link">Contact</a>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Obtenir un devis</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="about-wrap">
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="about-hero">
+    <span class="about-hero__eyebrow"><span class="material-symbols-outlined">groups</span> À propos de Pirabel Labs</span>
+    <h1>Une agence francophone, pensée pour les <em>PME ambitieuses</em></h1>
+    <p>Pirabel Labs, c'est une équipe de 14 spécialistes basée à Abomey-Calavi qui aide les entreprises francophones d'Afrique de l'Ouest et d'Europe à transformer leur présence digitale en moteur de croissance. Pas d'agence absente, pas de sous-traitance cachée, pas de jargon : juste du travail solide, mesurable et livré.</p>
+    <div class="about-hero__cta">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver un audit gratuit</a>
+      <a href="/services" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">apps</span> Voir nos services</a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       NOTRE HISTOIRE / TIMELINE
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">history_edu</span> Notre histoire</span>
+      <h2>De deux passionnés à une <em>agence 360°</em></h2>
+      <p class="about-section__sub">Six ans à apprendre, à corriger, à grandir. Voici les étapes clés qui ont façonné Pirabel Labs.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">flag</span></div>
+        <div class="timeline__year">2020 — Le démarrage</div>
+        <h3 class="timeline__title">Création de Pirabel Labs à Abomey-Calavi</h3>
+        <p class="timeline__desc">Lissanon Gildas et Fidah Imorou, deux amis d'études devenus collègues, lancent l'agence dans un petit bureau partagé à Abomey-Calavi. Premiers clients : trois commerces locaux et une startup togolaise. Objectif initial : prouver qu'on peut faire du marketing digital de qualité depuis le Bénin, pour la francophonie.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">trending_up</span></div>
+        <div class="timeline__year">2021 — Premiers gros contrats</div>
+        <h3 class="timeline__title">Lancement de l'offre SEO et structuration de l'équipe</h3>
+        <p class="timeline__desc">Signature de notre premier contrat annuel avec un acteur du tourisme en Côte d'Ivoire. Recrutement de deux développeurs et d'un responsable SEO. Mise en place du studio vidéo et premiers tournages pour des marques de cosmétique béninoises.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">public</span></div>
+        <div class="timeline__year">2022 — Ouverture sur l'Europe</div>
+        <h3 class="timeline__title">Premiers clients en France et en Belgique</h3>
+        <p class="timeline__desc">Une PME française du secteur agroalimentaire nous confie son SEO. Suit une coopérative belge, puis une consulting parisienne. L'équipe passe à 8 personnes et l'agence déménage dans des locaux dédiés. Adoption de Notion, Slack et de processus de gestion de projet pro.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">memory</span></div>
+        <div class="timeline__year">2023 — Tournant automatisation</div>
+        <h3 class="timeline__title">Intégration de Make, n8n et premiers agents IA</h3>
+        <p class="timeline__desc">Lancement de l'offre automatisation et chatbots IA. Premiers déploiements d'agents conversationnels Claude et GPT pour des e-commerces ivoiriens. Formation interne complète de l'équipe sur les LLM et les workflows automatisés.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">workspace_premium</span></div>
+        <div class="timeline__year">2024 — Reconnaissance et certifications</div>
+        <h3 class="timeline__title">Partenariats Brevo, HubSpot et certifications Google</h3>
+        <p class="timeline__desc">Pirabel Labs devient partenaire officiel Brevo et obtient les certifications Google Ads, Google Analytics 4 et HubSpot Marketing. Cinquante clients actifs répartis sur huit pays. L'équipe atteint 12 collaborateurs permanents.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="timeline__year">2025 — Année charnière</div>
+        <h3 class="timeline__title">Refonte de marque et lancement du pôle vidéo dédié</h3>
+        <p class="timeline__desc">Nouveau logo, nouvelle identité visuelle, nouveau site. Création d'un pôle vidéo et motion design avec deux profils dédiés. Cap des 130 projets livrés. Lancement de notre blog et de notre newsletter destinée aux dirigeants de PME francophones.</p>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__dot"><span class="material-symbols-outlined">stars</span></div>
+        <div class="timeline__year">2026 — Aujourd'hui</div>
+        <h3 class="timeline__title">Une agence 360° au service des PME francophones</h3>
+        <p class="timeline__desc">Quatorze experts, plus de 150 projets livrés, 50 clients actifs dans 8 pays. Onze expertises couvertes en interne : web, SEO, social, vidéo, automatisation, IA, email, tunnels, consulting, hébergement, maintenance. Et toujours la même obsession : être l'agence sur qui les patrons de PME peuvent compter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FONDATEURS
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">person_pin</span> Les fondateurs</span>
+      <h2>Deux profils <em>complémentaires</em>, une seule vision</h2>
+      <p class="about-section__sub">Lissanon et Fidah se sont rencontrés à l'université. Six ans plus tard, ils dirigent ensemble Pirabel Labs avec une conviction partagée : faire du marketing utile, mesurable et honnête.</p>
+    </div>
+    <div class="founders-grid">
+      <article class="founder-card">
+        <div class="founder-card__avatar">LG</div>
+        <h3 class="founder-card__name">Lissanon Gildas</h3>
+        <div class="founder-card__role">Cofondateur · CEO</div>
+        <p class="founder-card__bio">Stratège et bâtisseur, Gildas pilote la vision, les relations clients et la stratégie de croissance de l'agence. Formé au marketing digital et à l'analyse de données, il accompagne personnellement les dirigeants sur les sujets de positionnement, d'acquisition et de SEO. Sa signature : transformer une intuition métier en plan d'action chiffré et exécutable.</p>
+        <div class="founder-card__expertise">
+          <span class="founder-card__tag">Stratégie digitale</span>
+          <span class="founder-card__tag">SEO</span>
+          <span class="founder-card__tag">Acquisition</span>
+          <span class="founder-card__tag">CMO externalisé</span>
+          <span class="founder-card__tag">Consulting</span>
+        </div>
+      </article>
+      <article class="founder-card">
+        <div class="founder-card__avatar">FI</div>
+        <h3 class="founder-card__name">Fidah Imorou</h3>
+        <div class="founder-card__role">Cofondateur · COO</div>
+        <p class="founder-card__bio">Opérationnel et exigeant, Fidah dirige la production, le pôle technique et la qualité des livrables. Développeur de formation, il supervise les projets web complexes, les déploiements e-commerce et la veille technologique sur l'IA et l'automatisation. C'est lui qui veille à ce que chaque livrable parte propre, documenté et durable.</p>
+        <div class="founder-card__expertise">
+          <span class="founder-card__tag">Développement</span>
+          <span class="founder-card__tag">E-commerce</span>
+          <span class="founder-card__tag">Automatisation</span>
+          <span class="founder-card__tag">Gestion de projet</span>
+          <span class="founder-card__tag">Qualité</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VALEURS / MISSION
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">favorite</span> Notre mission &amp; nos valeurs</span>
+      <h2>Faire du marketing <em>utile</em>, pas du marketing décoratif</h2>
+      <p class="about-section__sub">Notre mission : permettre à chaque PME francophone de bâtir une présence digitale solide, sans dépendre d'agences absentes ou d'outsiders qui ne comprennent ni le marché ni la langue.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">visibility</span></div>
+        <h3 class="value-card__title">Transparence radicale</h3>
+        <p class="value-card__desc">Devis détaillés, reporting hebdomadaire, accès direct à l'équipe. Pas de boîte noire, pas de jargon pour masquer le travail. Si une stratégie ne marche pas, on le dit et on corrige.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">monitoring</span></div>
+        <h3 class="value-card__title">Mesurable, toujours</h3>
+        <p class="value-card__desc">Chaque action a un objectif chiffré : trafic, leads, ventes, taux de conversion. Pas de vanité sur les likes. On parle ROI, coût par lead et chiffre d'affaires généré.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">translate</span></div>
+        <h3 class="value-card__title">Francophone par conviction</h3>
+        <p class="value-card__desc">Nous écrivons, parlons et pensons en français. Nous connaissons les codes culturels d'Abidjan, de Dakar, de Cotonou, de Paris ou de Bruxelles. Pas de traduction automatique mal calibrée.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">engineering</span></div>
+        <h3 class="value-card__title">Excellence technique</h3>
+        <p class="value-card__desc">Sites rapides, code propre, sécurité sérieuse, SEO impeccable. Nous formons l'équipe en continu sur les évolutions techniques pour livrer des produits durables.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">diversity_3</span></div>
+        <h3 class="value-card__title">Équipe stable</h3>
+        <p class="value-card__desc">Pas de turnover, pas de sous-traitance. L'équipe qui démarre votre projet est celle qui le finit. Vous parlez aux mêmes personnes pendant des années, pas à des inconnus.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card__icon"><span class="material-symbols-outlined">handshake</span></div>
+        <h3 class="value-card__title">Proximité réelle</h3>
+        <p class="value-card__desc">Réponse en moins de 4 heures en semaine. Visites sur site possibles en Afrique de l'Ouest. Visios hebdomadaires, WhatsApp direct, Slack partagé. On est joignables, vraiment.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       ÉQUIPE
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">groups_3</span> L'équipe</span>
+      <h2>14 spécialistes, <em>tous sous le même toit</em></h2>
+      <p class="about-section__sub">Designers, développeurs, experts SEO, community managers, monteurs vidéo, automation engineers : toute la chaîne de valeur du marketing digital, internalisée à Abomey-Calavi.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">design_services</span></div>
+        <h3 class="team-card__role">Designers UI/UX</h3>
+        <div class="team-card__count">2 profils</div>
+        <p class="team-card__desc">Maquettes Figma, charte graphique, design system. Sites élégants pensés pour la conversion.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">code</span></div>
+        <h3 class="team-card__role">Développeurs web</h3>
+        <div class="team-card__count">3 profils</div>
+        <p class="team-card__desc">Next.js, WordPress, Webflow, Shopify. Sites rapides, sécurisés, propres en code.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+        <h3 class="team-card__role">Experts SEO</h3>
+        <div class="team-card__count">2 profils</div>
+        <p class="team-card__desc">Audits techniques, stratégie de contenu, netlinking éthique. Trafic organique mesurable.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">forum</span></div>
+        <h3 class="team-card__role">Community managers</h3>
+        <div class="team-card__count">2 profils</div>
+        <p class="team-card__desc">Instagram, TikTok, LinkedIn, Facebook. Stratégie éditoriale, animation, reporting.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">movie</span></div>
+        <h3 class="team-card__role">Monteurs vidéo</h3>
+        <div class="team-card__count">2 profils</div>
+        <p class="team-card__desc">Réels, TikTok, capsules longues. Motion design, sous-titres, sound design soignés.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <h3 class="team-card__role">Automation engineers</h3>
+        <div class="team-card__count">1 profil</div>
+        <p class="team-card__desc">Make, n8n, Zapier, agents IA. Workflows complexes pour CRM, support et opérations.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">mail</span></div>
+        <h3 class="team-card__role">Spécialistes email &amp; CRM</h3>
+        <div class="team-card__count">1 profil</div>
+        <p class="team-card__desc">HubSpot, Brevo, Mailchimp. Séquences automatisées, lead scoring, délivrabilité.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-card__icon"><span class="material-symbols-outlined">edit_document</span></div>
+        <h3 class="team-card__role">Rédacteurs &amp; content</h3>
+        <div class="team-card__count">1 profil</div>
+        <p class="team-card__desc">Articles SEO, pages produit, scripts vidéo, newsletters. Français natif, plume affûtée.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       IMPLANTATION
+       ============================================ -->
+  <section class="about-section">
+    <div class="implantation">
+      <div class="implantation__text">
+        <span class="about-section__eyebrow" style="margin-bottom:0.85rem;"><span class="material-symbols-outlined">location_city</span> Pourquoi le Bénin ?</span>
+        <h2>Abomey-Calavi, <em>au cœur de la francophonie</em></h2>
+        <p>Le Bénin est francophone, central en Afrique de l'Ouest, branché aux fibres internationales et à 2h de décalage maximum avec Paris. C'est un hub naturel pour servir une clientèle francophone dispersée sur trois continents.</p>
+        <p>Notre siège à Abomey-Calavi, à 18 km de Cotonou, nous donne la sérénité d'un campus urbain et un accès rapide à l'aéroport. C'est ici que nous accueillons clients, candidats et partenaires.</p>
+        <p>Plus important encore : nous comprenons les codes des marchés que nous servons. Quand un client à Abidjan, Dakar ou Lomé nous parle de son secteur, nous parlons la même langue, au sens littéral comme culturel.</p>
+      </div>
+      <div class="implantation__zones">
+        <div class="zone-card">
+          <div class="zone-card__title">Afrique de l'Ouest</div>
+          <ul>
+            <li>Bénin</li>
+            <li>Côte d'Ivoire</li>
+            <li>Sénégal</li>
+            <li>Togo</li>
+            <li>Burkina Faso</li>
+            <li>Mali</li>
+            <li>Cameroun</li>
+          </ul>
+        </div>
+        <div class="zone-card">
+          <div class="zone-card__title">Europe &amp; Amérique</div>
+          <ul>
+            <li>France</li>
+            <li>Belgique</li>
+            <li>Suisse</li>
+            <li>Luxembourg</li>
+            <li>Canada (Québec)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CHIFFRES CLÉS
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">insights</span> Pirabel Labs en chiffres</span>
+      <h2>Six ans, <em>jamais sans nos clients</em></h2>
+      <p class="about-section__sub">Quelques chiffres pour donner la mesure du travail accompli depuis 2020.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="stat-card__number">150+</div>
+        <div class="stat-card__label">Projets livrés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">groups</span></div>
+        <div class="stat-card__number">50+</div>
+        <div class="stat-card__label">Clients actifs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">public</span></div>
+        <div class="stat-card__number">8</div>
+        <div class="stat-card__label">Pays servis</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">calendar_today</span></div>
+        <div class="stat-card__number">6</div>
+        <div class="stat-card__label">Années d'expérience</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">person</span></div>
+        <div class="stat-card__number">14</div>
+        <div class="stat-card__label">Talents en interne</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+        <div class="stat-card__number">11</div>
+        <div class="stat-card__label">Expertises couvertes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">star</span></div>
+        <div class="stat-card__number">4.9/5</div>
+        <div class="stat-card__label">Note clients moyenne</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon"><span class="material-symbols-outlined">schedule</span></div>
+        <div class="stat-card__number">&lt;4h</div>
+        <div class="stat-card__label">Délai de réponse moyen</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FAQ
+       ============================================ -->
+  <section class="about-section">
+    <div class="about-section__head">
+      <span class="about-section__eyebrow"><span class="material-symbols-outlined">help</span> Questions fréquentes</span>
+      <h2>Tout ce que vous voulez <em>savoir avant de nous appeler</em></h2>
+      <p class="about-section__sub">Tarifs, contrats, méthodes, langues, facturation : nos réponses claires aux questions qu'on nous pose le plus.</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Comment fixez-vous vos tarifs ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Nos tarifs sont transparents et adaptés à la taille du projet. Trois formats au choix : forfait pour un livrable précis (un site, une campagne, un audit), abonnement mensuel pour un accompagnement récurrent (SEO, community, automation), ou jours-homme pour des missions ponctuelles. Avant tout démarrage, vous recevez un devis chiffré ligne par ligne, sans surprise et sans frais cachés. Nous publions également une grille indicative dans notre page Services pour donner des ordres de grandeur.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Travaillez-vous à distance avec des clients à l'étranger ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Oui, près de 70 % de notre activité est réalisée à distance avec des clients en Côte d'Ivoire, au Sénégal, au Togo, en France, en Belgique et au Canada. Nous travaillons avec Notion pour la documentation, Slack pour la conversation quotidienne, Loom pour les démonstrations vidéo et Zoom ou Google Meet pour les points hebdomadaires. Notre fuseau horaire (GMT+1) chevauche celui de toute l'Europe et de toute l'Afrique francophone, ce qui rend les échanges fluides.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Dans quelles langues travaillez-vous ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Notre langue principale est le français. Nous produisons aussi du contenu en anglais pour les clients européens qui ciblent une audience internationale. Pour les campagnes très locales en Afrique de l'Ouest, nous pouvons également travailler en fon (langue parlée au Bénin), en yoruba (Bénin, Nigeria), en wolof (Sénégal) ou en lingala selon les besoins. Nos rédacteurs sont francophones natifs et écrivent un français maîtrisé, sans le ton mécanique des traductions automatiques.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Quels types de contrats proposez-vous ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Trois formats principaux : mission ponctuelle avec livrables fixes et date de fin, abonnement mensuel (3 ou 6 mois minimum selon les services), ou retainer annuel avec engagement long terme et tarifs préférentiels. Nos contrats sont rédigés en français, conformes au droit OHADA pour les clients d'Afrique de l'Ouest et au droit français ou belge pour les clients européens. Pas de clause cachée, résiliation possible avec préavis de 30 jours sur tous les abonnements.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Faites-vous appel à des sous-traitants ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Non, toute notre équipe est interne et basée à Abomey-Calavi. Nous ne sous-traitons jamais le travail facturé. Cela vous garantit trois choses : un interlocuteur unique qui connaît votre dossier, une équipe stable qui ne change pas tous les trois mois, et un contrôle qualité maîtrisé de bout en bout. Si une compétence très spécialisée est nécessaire (par exemple un développeur spécialisé sur une techno rare), nous le précisons en amont et vous présentons la personne.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Comment se passe la facturation à l'international ? <span class="material-symbols-outlined">add</span></summary>
+        <div class="faq-item__answer">Nous facturons dans la devise qui vous convient le mieux : euro pour la France, la Belgique, la Suisse et le Luxembourg ; franc CFA (XOF) pour la zone UEMOA (Bénin, Côte d'Ivoire, Sénégal, Togo, Burkina, Mali) ; et dollar canadien pour le Canada. Les modes de paiement acceptés sont le virement bancaire international (SWIFT), Wise, et Mobile Money (Wave, MTN, Orange Money) pour l'Afrique de l'Ouest. Les factures sont conformes aux normes comptables locales et la TVA est gérée selon votre pays de résidence fiscale.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CTA FINAL
+       ============================================ -->
+  <section class="about-final">
+    <h2>Envie de <em>nous rencontrer</em>&nbsp;?</h2>
+    <p>Un café virtuel de 15 minutes pour faire connaissance, comprendre vos enjeux et voir si on peut vraiment vous être utile. Pas de pitch commercial, pas de PowerPoint. Une conversation honnête entre dirigeants.</p>
+    <div class="about-final__row">
+      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver un audit gratuit</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Envoyer un email</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs. Tous droits réservés. &middot; <a href="mailto:contact@pirabellabs.com" style="color:var(--text-muted);">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Bénin</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger=document.getElementById('navBurger');
+  var menu=document.getElementById('navMenu');
+  if(burger && menu) {
+    burger.addEventListener('click',function(){
+      var open=menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open',open);
+      burger.setAttribute('aria-expanded',open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click',function(e){
+        if(window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if(item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

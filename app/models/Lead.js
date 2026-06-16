@@ -28,11 +28,9 @@ const leadSchema = new mongoose.Schema({
   company: { type: String, default: '', trim: true, maxlength: 120 },
 
   // Champs spécifiques au formulaire contact (optionnels pour livre-blanc)
-  service: {
-    type: String,
-    enum: ['site-web', 'application', 'automatisation', 'seo', 'autre', 'livre-blanc', ''],
-    default: ''
-  },
+  // Chaine libre : la validation reelle se fait cote API (whitelist VALID_SERVICES).
+  // Pas d'enum ici pour eviter les ValidationError sur les nombreux slugs de service du formulaire.
+  service: { type: String, default: '', trim: true, maxlength: 60 },
   message: { type: String, default: '', maxlength: 5000 },
 
   // Données client (remplies après conversion prospect -> client)

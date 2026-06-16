@@ -193,8 +193,13 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
 
     res.json({ success: true, message: 'Demande envoyee. Reponse sous 24h ouvres.' });
   } catch (err) {
-    console.error('[contact] error:', err.message);
-    res.status(500).json({ error: 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com' });
+    console.error('[contact] error:', err && err.message, err && err.name);
+    // Toujours renvoyer une CHAINE (jamais l'objet d'erreur) pour eviter "[object Object]" cote client
+    var msg = 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com';
+    if (err && err.name === 'ValidationError') {
+      msg = 'Donnees invalides. Verifiez les champs et reessayez.';
+    }
+    res.status(500).json({ error: msg });
   }
 });
 

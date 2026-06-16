@@ -872,7 +872,16 @@
         });
         var data = await res.json().catch(function(){ return {}; });
 
-        if (res.ok) {
+        // Extraction ROBUSTE du message d'erreur (jamais "[object Object]")
+        function extractError(d) {
+          if (!d) return '';
+          if (typeof d.error === 'string') return d.error;
+          if (d.error && typeof d.error === 'object') return d.error.message || d.error.error || JSON.stringify(d.error);
+          if (typeof d.message === 'string' && !d.success) return d.message;
+          return '';
+        }
+
+        if (res.ok && data.success !== false) {
           msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #4ade80;';
           msgBox.innerHTML = '<strong>Merci&nbsp;!</strong> Votre demande a bien été envoyée. Nous vous répondons sous 24h ouvrées.';
           form.reset();
@@ -881,8 +890,9 @@
           }
           setTimeout(function(){ msgBox.scrollIntoView({behavior:'smooth', block:'center'}); }, 100);
         } else {
+          var errMsg = extractError(data) || ('Impossible d\'envoyer la demande (erreur ' + res.status + '). Réessayez ou écrivez à contact@pirabellabs.com');
           msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171;';
-          msgBox.innerHTML = '<strong>Erreur.</strong> ' + (data.error || 'Impossible d\'envoyer la demande. Veuillez réessayer ou écrire à contact@pirabellabs.com');
+          msgBox.innerHTML = '<strong>Erreur.</strong> ' + errMsg;
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = btnText;

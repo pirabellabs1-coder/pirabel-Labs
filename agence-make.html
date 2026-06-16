@@ -110,7 +110,7 @@
 .cmp__mid { color: #fbbf24; display: inline-flex; align-items: center; gap: 0.3rem; }
 .cmp__good .material-symbols-outlined, .cmp__bad .material-symbols-outlined, .cmp__mid .material-symbols-outlined { font-size: 1rem; }
 
-/* Zigzag methodologie */
+/* Zigzag méthodologie */
 .zigzag { position: relative; max-width: 56rem; margin: 0 auto; padding: 1rem 0 2rem; }
 .zigzag::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, var(--accent) 8%, var(--accent) 92%, transparent); transform: translateX(-50%); opacity: 0.4; }
 .zz-step { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 3rem; opacity: 0; transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1); }
@@ -156,7 +156,7 @@
 .prest--featured .prest__cta:hover { background: var(--accent-2); border-color: var(--accent-2); }
 .prest__badge { position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%); font-family: var(--font-display); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #fff; padding: 0.35rem 0.85rem; background: var(--accent); border: 1px solid var(--accent); border-radius: 999px; white-space: nowrap; }
 
-/* Steps row (4 etapes horizontal) */
+/* Steps row (4 étapes horizontal) */
 .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; max-width: 76rem; margin: 0 auto; position: relative; }
 @media (max-width: 880px) { .steps-row { grid-template-columns: 1fr; max-width: 28rem; } }
 .step-h { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; position: relative; transition: border-color var(--t); }
@@ -282,7 +282,7 @@
               <a href="/agence-make" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Agence Make</div></div></a>
               <a href="/agence-n8n" class="nav-mega__link"><span class="material-symbols-outlined">account_tree</span><div><div class="nav-mega__link-title">Agence n8n</div></div></a>
               <a href="/agents-ia-chatbots" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agents IA &amp; chatbots</div></div></a>
-              <a href="/agence-systeme-io" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Agence Système.io</div></div></a>
+              <a href="/agence-système-io" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Agence Système.io</div></div></a>
             </div>
             <div>
               <div class="nav-mega__col-title">Email, social, vidéo</div>
@@ -334,12 +334,12 @@
         </div>
       </div>
       <div class="nav-mega__item">
-        <button class="nav-mega__trigger" type="button">Nous decouvrir <span class="material-symbols-outlined">expand_more</span></button>
+        <button class="nav-mega__trigger" type="button">Nous découvrir <span class="material-symbols-outlined">expand_more</span></button>
         <div class="nav-mega__panel nav-mega__panel--small">
           <div class="nav-mega__panel-inner">
             <div>
               <a href="/a-propos" class="nav-mega__link"><span class="material-symbols-outlined">group</span><div><div class="nav-mega__link-title">A propos</div></div></a>
-              <a href="/methodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Méthodologie</div></div></a>
+              <a href="/méthodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Méthodologie</div></div></a>
               <a href="/#tarifs" class="nav-mega__link"><span class="material-symbols-outlined">payments</span><div><div class="nav-mega__link-title">Tarifs</div></div></a>
               <a href="/#avis" class="nav-mega__link"><span class="material-symbols-outlined">reviews</span><div><div class="nav-mega__link-title">Avis clients</div></div></a>
               <a href="/mentions-legales" class="nav-mega__link"><span class="material-symbols-outlined">gavel</span><div><div class="nav-mega__link-title">Mentions legales</div></div></a>
@@ -840,6 +840,300 @@
     </div>
   </section>
 
+
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+/* Split 2-col editorial */
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+/* Accordion grid */
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+/* FAQ grid */
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+/* Related grid */
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+/* Mobile responsive */
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence Make</em> ?</h2>
+        <p>Une agence Make est une équipe spécialisée dans l'automatisation de workflows avec <strong>Make (anciennement Integromat)</strong>, la plateforme no-code la plus visuelle du marché. Make permet de connecter +1700 applications et d'orchestrer des processus complexes sans coder.</p>
+        <p>Chez Pirabel Labs, nous automatisons les processus marketing, commerciaux et opérationnels de PME francophones depuis 2022. Notre expertise Make couvre <strong>les connecteurs avancés</strong> (HubSpot, Brevo, Stripe, WhatsApp Business, OpenAI, Notion).</p>
+        <p>Notre approche est ROI-first : nous identifions les 3-5 workflows à fort impact business avant de coder. Résultat typique : <strong>15 à 30 heures économisées par semaine</strong> pour une PME de 10-30 personnes.</p>
+      </div>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence Make</em> ?" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi Make</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi choisir <em>Make</em> pour automatiser ?</h2>
+      <p class="ns-lead ns-lead--center">Make s'est imposé comme l'alternative supérieure à Zapier pour les workflows complexes. Voici les 6 raisons techniques.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Builder visuel ultra-intuitif</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">100%</div>
+          <p class="ns-acc__desc">Make visualise vos workflows comme des schémas. Vous voyez exactement ce qui se passe à chaque étape, comment les données circulent. Debug 10x plus rapide qu'avec Zapier.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Tarification à l'opération, pas au workflow</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">70%</div>
+          <p class="ns-acc__desc">Make facture à l'opération (chaque action dans un workflow). Pour les workflows complexes multi-étapes, c'est 70% moins cher que Zapier qui facture à la 'task'.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Gestion d'erreurs avancée</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Auto</div>
+          <p class="ns-acc__desc">Retry automatique configurable, branches d'erreur (Error Handler), rollback transactionnel, alertes Slack/email en cas d'échec. Workflows robustes en production.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Routeurs et filtres natifs</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Illimité</div>
+          <p class="ns-acc__desc">Logique conditionnelle complexe sans coder : 'Si X et (Y ou Z), alors action A, sinon action B'. Make gère les structures de données nested, arrays, dates avec précision.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Intégrations IA natives</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">OpenAI</div>
+          <p class="ns-acc__desc">Modules OpenAI, Claude, Gemini natifs : génération de texte, analyse sentiment, classification, traduction, extraction de données. IA dans vos workflows sans coder.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Webhooks et HTTP custom illimités</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">0 limite</div>
+          <p class="ns-acc__desc">Pour les APIs non supportées nativement : modules HTTP custom, webhooks entrants/sortants, parsing JSON/XML/CSV. Pas de limite technique.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> Make orientée ROI." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre approche</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> Make orientée ROI.</h2>
+        <p>Avant de coder le moindre workflow, nous <strong>cartographions vos processus actuels</strong> : trafic, leads, suivi, relances, ventes, retention. Identification précise des fuites de temps et opportunités d'automatisation à fort ROI.</p>
+        <p>Nos workflows Make sont conçus pour la <strong>fiabilité production</strong> : gestion d'erreurs systématique, monitoring continu, alertes proactives, documentation des branches conditionnelles, tests avant déploiement.</p>
+        <p>Formation de votre équipe Make (2h hands-on + documentation Notion), support post-livraison, optimisations continues. Vous restez autonome ou nous gérons en mensuel selon votre préférence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> sur Make</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Make vs Zapier, lequel choisir ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Make pour workflows complexes (5+ étapes), logique conditionnelle, équipes techniques. Zapier pour workflows simples, équipes non-tech, intégrations exotiques. Make est 50-70% moins cher pour des volumes équivalents.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte Make ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Plan gratuit : 1000 opérations/mois. Core : 9 USD/mois (10K ops). Pro : 16 USD/mois (10K ops + features). Teams : 29 USD/utilisateur/mois. Nos clients PME sont typiquement sur Pro ou Teams.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Mes données passent-elles par Make ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, transitoirement. Make traite les données entre vos apps. Hébergement EU (RGPD compliant). Pour données ultra-sensibles, nous recommandons n8n self-hosted comme alternative.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quels types de workflows automatisez-vous ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Lead qualification, suivi commercial, relances email, synchro CRM, post social automatique, reporting auto, paiements et facturation, onboarding client, support niveau 1 chatbot IA.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Make peut-il s'intégrer à WhatsApp Business ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, via 360dialog ou WhatsApp Cloud API. Workflows : notifications client, qualification lead WhatsApp, alertes admin, chatbot WhatsApp orchestré par Make + OpenAI.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour automatiser un process ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Workflow simple (3-5 étapes) : 2 à 5 jours. Workflow complexe (10+ étapes, branches, IA) : 1 à 3 semaines. Audit + roadmap 5 workflows : 1 à 2 semaines.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Et si Make ou un de mes outils tombe en panne ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Make a une uptime 99.9%. Pour vos outils tiers, nous configurons des alertes monitoring (Better Uptime, Uptime Robot) + workflows de fallback. Pour les cas critiques : redondance n8n self-hosted.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Pouvez-vous migrer mes workflows Zapier vers Make ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Audit gratuit de vos Zaps existants, estimation du gain de coût et de fiabilité, migration progressive workflow par workflow. ROI typique de la migration : 3-6 mois.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-n8n" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">account_tree</span></div>
+        <div class="ns-rel-card__title">Agence n8n</div>
+        <div class="ns-rel-card__desc">Alternative open source</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Automatisation marketing</div>
+        <div class="ns-rel-card__desc">Service complet</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agents-ia-chatbots" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Agents IA & chatbots</div>
+        <div class="ns-rel-card__desc">Bots intelligents</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-ia" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
+        <div class="ns-rel-card__title">Agence IA</div>
+        <div class="ns-rel-card__desc">Solutions IA complètes</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-hubspot" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">hub</span></div>
+        <div class="ns-rel-card__title">Agence HubSpot</div>
+        <div class="ns-rel-card__desc">CRM et marketing</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-brevo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">mail</span></div>
+        <div class="ns-rel-card__title">Agence Brevo</div>
+        <div class="ns-rel-card__desc">Email marketing</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
+
 </main>
 
 <!-- Sticky CTA bar -->
@@ -899,8 +1193,8 @@
         <div class="footer__title">Pirabel Labs</div>
         <ul class="footer__list">
           <li><a href="/a-propos">À propos</a></li>
-          <li><a href="/methodologie">Méthodologie</a></li>
-          <li><a href="/realisations">Réalisations</a></li>
+          <li><a href="/méthodologie">Méthodologie</a></li>
+          <li><a href="/réalisations">Réalisations</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/contact">Contact</a></li>
           <li><a href="/mentions-legales">Mentions légales</a></li>

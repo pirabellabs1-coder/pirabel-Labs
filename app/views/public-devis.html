@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devis Pirabel Labs</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap">
+<style>
+:root { --bg:#0E0E0E; --bg2:#161616; --surface:#1a1a1a; --border:rgba(229,226,225,0.08); --text:#E5E2E1; --muted:rgba(229,226,225,0.62); --accent:#FF5500; --success:#4ade80; --danger:#f87171; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; padding:2rem 1rem; }
+.wrap { max-width: 56rem; margin: 0 auto; }
+.header { display:flex; align-items:center; gap:0.85rem; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+.logo { width:2.5rem; height:2.5rem; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; }
+.brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.05rem; }
+.brand small { display:block; font-weight:600; font-size:0.72rem; color:var(--muted); margin-top:2px; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:2rem; margin-bottom:1.25rem; }
+.ref { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.78rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.5rem; }
+.title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.85rem; line-height:1.2; margin-bottom:1rem; }
+.meta { display:flex; gap:1.5rem; flex-wrap:wrap; font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+.meta strong { color:var(--text); font-weight:600; }
+.intro { font-size:0.95rem; line-height:1.7; color:var(--muted); }
+table { width:100%; border-collapse:collapse; margin:1rem 0; }
+th { text-align:left; padding:0.75rem 0.5rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); border-bottom:1px solid var(--border); font-weight:700; }
+td { padding:0.85rem 0.5rem; border-bottom:1px solid rgba(229,226,225,0.05); font-size:0.92rem; }
+th.r, td.r { text-align:right; }
+.totals { background:var(--surface); padding:1.25rem; border-radius:10px; margin-top:1.25rem; }
+.totals .row { display:flex; justify-content:space-between; padding:0.4rem 0; font-size:0.92rem; color:var(--muted); }
+.totals .row.total { font-family:'Montserrat',sans-serif; font-size:1.35rem; font-weight:800; color:var(--accent); padding-top:0.85rem; margin-top:0.5rem; border-top:1px solid var(--border); }
+.terms { font-size:0.85rem; color:var(--muted); line-height:1.7; white-space:pre-line; }
+.actions { display:flex; gap:0.75rem; flex-wrap:wrap; padding:1.5rem; background:var(--bg2); border:1px solid var(--accent); border-radius:14px; margin-top:1.5rem; }
+.actions .info { flex:1; min-width:14rem; font-size:0.88rem; color:var(--muted); line-height:1.55; }
+.actions .info strong { color:var(--text); display:block; margin-bottom:0.3rem; }
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.5rem; background:var(--accent); color:#fff; border:0; border-radius:10px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; transition:opacity 0.2s; }
+.btn:hover { opacity:0.9; }
+.btn--ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
+.btn--ghost:hover { border-color:var(--accent); color:var(--accent); opacity:1; }
+.btn--danger { background:var(--danger); }
+.status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
+.status-badge.envoye { background:rgba(96,165,250,0.15); color:#60a5fa; }
+.status-badge.consulte { background:rgba(251,191,36,0.15); color:#fbbf24; }
+.status-badge.accepte { background:rgba(74,222,128,0.15); color:var(--success); }
+.status-badge.refuse { background:rgba(248,113,113,0.15); color:var(--danger); }
+.msg { padding:1rem 1.25rem; border-radius:10px; margin-top:1rem; font-size:0.9rem; display:none; }
+.msg.show { display:block; }
+.msg.success { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--success); }
+.msg.error { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:var(--danger); }
+.loading { text-align:center; padding:4rem 2rem; color:var(--muted); }
+.error-page { text-align:center; padding:4rem 2rem; }
+@media (max-width:640px) { .title { font-size:1.4rem; } th.r, td.r { font-size:0.8rem; } .totals .row.total { font-size:1.1rem; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo">P</div>
+    <div class="brand">PIRABEL LABS<small>Devis professionnel</small></div>
+  </div>
+
+  <div id="loading" class="loading">Chargement du devis...</div>
+  <div id="errorBlock" class="error-page" style="display:none;">
+    <h1 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;">Devis introuvable</h1>
+    <p style="color:var(--muted);">Le lien est invalide ou le devis a expire. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
+  </div>
+  <div id="content" style="display:none;"></div>
+</div>
+
+<script>
+const token = window.location.pathname.split('/').pop();
+const loading = document.getElementById('loading');
+const content = document.getElementById('content');
+const errorBlock = document.getElementById('errorBlock');
+
+function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
+function formatMoney(v, c) { return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2,maximumFractionDigits:2}).format(v) + ' ' + c; }
+
+async function loadQuote() {
+  try {
+    const r = await fetch('/api/quotes/' + token);
+    if (!r.ok) throw new Error('not found');
+    const q = await r.json();
+    renderQuote(q);
+  } catch (e) {
+    loading.style.display = 'none';
+    errorBlock.style.display = 'block';
+  }
+}
+
+function renderQuote(q) {
+  loading.style.display = 'none';
+  content.style.display = 'block';
+
+  const itemsHtml = q.items.map(i => `<tr><td>${escapeHtml(i.description)}</td><td class="r">${i.quantity}</td><td class="r">${formatMoney(i.unitPrice, q.currency)}</td><td class="r" style="font-weight:600;">${formatMoney(i.total, q.currency)}</td></tr>`).join('');
+
+  const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoye', consulte: 'Consulte', accepte: 'Accepte', refuse: 'Refuse', expire: 'Expire' };
+
+  let actionsHtml = '';
+  if (q.status === 'accepte') {
+    actionsHtml = '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Devis accepte</strong>Vous avez accepte ce devis. Nous vous contactons sous 24h pour planifier le kick-off.</div></div>';
+  } else if (q.status === 'refuse') {
+    actionsHtml = '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refuse</strong>Vous avez refuse ce devis. Si vous changez d\'avis, contactez-nous directement.</div></div>';
+  } else {
+    actionsHtml = '<div class="actions"><div class="info"><strong>Donner votre reponse</strong>Vous pouvez accepter pour demarrer le projet, ou refuser. Pour une question avant decision, ecrivez-nous a contact@pirabellabs.com.</div><button class="btn" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter ce devis</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
+  }
+
+  content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(q.reference) + '</div><h1 class="title">' + escapeHtml(q.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(q.clientName) + (q.clientCompany ? ' &middot; ' + escapeHtml(q.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(q.issuedAt) + '</div><div><strong>Valide jusqu\'au :</strong> ' + formatDate(q.validUntil) + '</div><div><span class="status-badge ' + q.status + '">' + (statusLabels[q.status] || q.status) + '</span></div></div>' +
+    (q.introduction ? '<p class="intro">' + escapeHtml(q.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
+    '</div>' +
+    '<div class="card"><table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table><div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(q.subtotal, q.currency) + '</span></div>' +
+    (q.taxRate > 0 ? '<div class="row"><span>TVA ' + q.taxRate + '%</span><span>' + formatMoney(q.taxAmount, q.currency) + '</span></div>' : '') +
+    '<div class="row total"><span>Total</span><span>' + formatMoney(q.total, q.currency) + '</span></div></div></div>' +
+    (q.terms ? '<div class="card"><h3 style="font-family:Montserrat,sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.85rem;">Conditions</h3><div class="terms">' + escapeHtml(q.terms) + '</div></div>' : '') +
+    actionsHtml +
+    '<div id="msg" class="msg"></div>';
+}
+
+async function acceptQuote() {
+  if (!confirm('Confirmer l\'acceptation de ce devis ?')) return;
+  const msg = document.getElementById('msg');
+  try {
+    const r = await fetch('/api/quotes/' + token + '/accept', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    const data = await r.json();
+    if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; setTimeout(loadQuote, 1500); }
+    else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+}
+
+async function refuseQuote() {
+  const reason = prompt('Pouvez-vous nous donner la raison du refus ? (optionnel, mais utile)');
+  if (reason === null) return; // cancel
+  const msg = document.getElementById('msg');
+  try {
+    const r = await fetch('/api/quotes/' + token + '/refuse', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ reason: reason || '' }) });
+    const data = await r.json();
+    if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; setTimeout(loadQuote, 1500); }
+    else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+}
+
+loadQuote();
+</script>
+</body>
+</html>

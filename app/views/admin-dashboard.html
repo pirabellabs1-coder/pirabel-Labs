@@ -197,7 +197,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <div class="sidebar__section">Pilotage</div>
     <nav class="sidebar__nav">
       <a class="sidebar__link is-active" data-view="dashboard"><span class="material-symbols-outlined">dashboard</span> Tableau de bord</a>
-      <a class="sidebar__link" data-view="leads"><span class="material-symbols-outlined">person_search</span> Leads (CRM)</a>
+      <a class="sidebar__link" data-view="leads"><span class="material-symbols-outlined">person_search</span> Prospects (CRM)</a>
+      <a class="sidebar__link" data-view="clients"><span class="material-symbols-outlined">verified_user</span> Clients</a>
+      <a class="sidebar__link" data-view="quotes"><span class="material-symbols-outlined">request_quote</span> Devis</a>
+      <a class="sidebar__link" data-view="reviews"><span class="material-symbols-outlined">reviews</span> Avis clients</a>
       <a class="sidebar__link" data-view="livres-blancs"><span class="material-symbols-outlined">menu_book</span> Livres blancs</a>
       <a class="sidebar__link" data-view="bulk-email"><span class="material-symbols-outlined">campaign</span> Envoi email masse</a>
       <a class="sidebar__link" data-view="analytics"><span class="material-symbols-outlined">analytics</span> Analytics</a>
@@ -205,6 +208,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <div class="sidebar__section">Contenu</div>
     <nav class="sidebar__nav">
       <a class="sidebar__link" data-view="cases"><span class="material-symbols-outlined">workspaces</span> Cas clients</a>
+      <a class="sidebar__link" data-view="gallery"><span class="material-symbols-outlined">photo_library</span> Galerie images</a>
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
@@ -436,6 +440,91 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
     </div>
 
+    <!-- CLIENTS VIEW -->
+    <div class="view" data-view="clients">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Clients</h1><div class="topbar__sub">Prospects ayant accepté un devis (devenus clients).</div></div>
+        <button class="btn btn--ghost btn--sm" id="clRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+      </div>
+      <div class="kpi-grid" id="clKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div class="card">
+        <div class="card__header"><div><div class="card__title">Tous les clients</div><div class="card__sub">Statut "client" = devis accepté ou conversion manuelle.</div></div></div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Devenu client</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Nom</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Email</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Entreprise</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">CA cumule</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Devis</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
+            </tr></thead>
+            <tbody id="clTbody"><tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTES VIEW -->
+    <div class="view" data-view="quotes">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Devis</h1><div class="topbar__sub">Gérer et suivre vos devis envoyés aux prospects.</div></div>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost btn--sm" id="qRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+          <button class="btn btn--sm" id="qNew"><span class="material-symbols-outlined">add</span> Nouveau devis</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="qKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div class="card">
+        <div class="card__header"><div><div class="card__title">Tous les devis</div></div></div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Reference</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Date</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Client</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Titre</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Total</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Statut</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
+            </tr></thead>
+            <tbody id="qTbody"><tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS VIEW -->
+    <div class="view" data-view="reviews">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Avis clients</h1><div class="topbar__sub">Demandes envoyées, avis reçus, modération avant publication.</div></div>
+        <button class="btn btn--ghost btn--sm" id="rvRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+      </div>
+      <div class="kpi-grid" id="rvKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div class="card">
+        <div class="card__header"><div><div class="card__title">Tous les avis</div></div></div>
+        <div id="rvList" style="display:grid;gap:1rem;">
+          <div style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY VIEW -->
+    <div class="view" data-view="gallery">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Galerie images</h1><div class="topbar__sub">Uploadez vos images, organisez par dossier, copiez les URLs.</div></div>
+        <div class="topbar__actions">
+          <label for="galUpload" class="btn btn--sm" style="cursor:pointer;"><span class="material-symbols-outlined">cloud_upload</span> Uploader image(s)</label>
+          <input type="file" id="galUpload" multiple accept="image/*" style="display:none;">
+        </div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;" id="galFolders"></div>
+      <div id="galGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:1rem;">
+        <div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</div>
+      </div>
+    </div>
+
     <!-- SETTINGS VIEW -->
     <div class="view" data-view="settings">
       <div class="card">
@@ -535,7 +624,7 @@ function statusBadge(status) { return '<span class="badge badge--' + status + '"
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Leads CRM', 'Gestion des contacts entrants'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], settings: ['Parametres', 'Compte et notifications'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Creer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyees + moderation'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Parametres', 'Compte et notifications'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -543,7 +632,245 @@ function setView(view) {
   if (view === 'leads' && !STATE.leads.length) loadLeads();
   if (view === 'livres-blancs') loadLivresBlancs();
   if (view === 'bulk-email') initBulkEmail();
+  if (view === 'clients') loadClients();
+  if (view === 'quotes') loadQuotes();
+  if (view === 'reviews') loadReviews();
+  if (view === 'gallery') loadGallery();
   window.location.hash = view;
+}
+
+// ============ CLIENTS ============
+async function loadClients() {
+  try {
+    const data = await api('/api/admin/leads?status=converti');
+    let clients = (data.leads || []).filter(l => l.stage === 'client' || l.status === 'converti');
+    const kpis = document.getElementById('clKpis');
+    const total = clients.length;
+    const totalCa = clients.reduce((s, c) => s + (c.clientData?.totalContractValue || 0), 0);
+    const avgCa = total ? Math.round(totalCa / total) : 0;
+    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">verified_user</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total clients</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalCa.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA total cumule</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + avgCa.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">Panier moyen client</div></div>';
+
+    const tbody = document.getElementById('clTbody');
+    if (!clients.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun client pour l\'instant. Convertissez un prospect via un devis accepte.</td></tr>'; return; }
+    tbody.innerHTML = clients.map(c => '<tr style="border-bottom:1px solid var(--border);">' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + (c.clientData?.becameClientAt ? new Date(c.clientData.becameClientAt).toLocaleDateString('fr-FR') : '-') + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:600;">' + escape(c.name) + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;"><a href="mailto:' + escape(c.email) + '" style="color:var(--accent);">' + escape(c.email) + '</a></td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(c.company || '-') + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--success);">' + (c.clientData?.totalContractValue || 0).toLocaleString('fr-FR') + ' &euro;</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;">' + (c.clientData?.quotesCount || 0) + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;"><button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">reviews</span> Demander avis</button></td>' +
+      '</tr>').join('');
+  } catch(e) { console.error(e); toast('Erreur chargement clients', 'error'); }
+}
+
+async function requestReview(leadId) {
+  if (!confirm('Envoyer un email de demande d\'avis a ce client ?')) return;
+  try {
+    const data = await api('/api/admin/reviews/request', { method: 'POST', body: JSON.stringify({ leadId }) });
+    toast('Demande d\'avis envoyee', 'success');
+  } catch(e) { toast('Erreur envoi demande', 'error'); }
+}
+
+// ============ QUOTES ============
+async function loadQuotes() {
+  try {
+    const data = await api('/api/admin/quotes');
+    const quotes = data.quotes || [];
+    const stats = data.stats || [];
+
+    const kpis = document.getElementById('qKpis');
+    const total = quotes.length;
+    const accepted = quotes.filter(q => q.status === 'accepte').length;
+    const totalAccepted = quotes.filter(q => q.status === 'accepte').reduce((s, q) => s + q.total, 0);
+    const conv = total ? Math.round((accepted / total) * 100) : 0;
+    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">request_quote</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total devis</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + accepted + '</div><div class="kpi__label">Acceptes</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalAccepted.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA devis acceptes</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">percent</span></div></div><div class="kpi__value">' + conv + '%</div><div class="kpi__label">Taux acceptation</div></div>';
+
+    const tbody = document.getElementById('qTbody');
+    if (!quotes.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun devis. Cliquez sur "Nouveau devis" pour commencer.</td></tr>'; return; }
+    const labels = { brouillon: ['Brouillon','badge--new'], envoye: ['Envoye','badge--info'], consulte: ['Consulte','badge--warning'], accepte: ['Accepte','badge--won'], refuse: ['Refuse','badge--lost'], expire: ['Expire','badge--lost'] };
+    tbody.innerHTML = quotes.map(q => {
+      const lab = labels[q.status] || [q.status, ''];
+      return '<tr style="border-bottom:1px solid var(--border);">' +
+        '<td style="padding:0.85rem 0.5rem;font-family:monospace;font-size:0.82rem;color:var(--accent);">' + escape(q.reference) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(q.createdAt).toLocaleDateString('fr-FR') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;">' + escape(q.clientName) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(q.title) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;">' + q.total.toLocaleString('fr-FR') + ' ' + q.currency + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span></td>' +
+        '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;">' +
+          (q.status === 'brouillon' ? '<button onclick="sendQuote(\'' + q._id + '\')" class="btn btn--sm"><span class="material-symbols-outlined">send</span></button>' : '') +
+          '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">visibility</span></a>' +
+          (q.status === 'brouillon' ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span></button>' : '') +
+        '</td>' +
+        '</tr>';
+    }).join('');
+  } catch(e) { console.error(e); toast('Erreur chargement devis', 'error'); }
+}
+
+async function sendQuote(id) {
+  if (!confirm('Envoyer ce devis par email au client ?')) return;
+  try {
+    await api('/api/admin/quotes/' + id + '/send', { method: 'POST', body: '{}' });
+    toast('Devis envoye au client', 'success');
+    loadQuotes();
+  } catch(e) { toast('Erreur envoi', 'error'); }
+}
+
+async function deleteQuote(id) {
+  if (!confirm('Supprimer ce devis ?')) return;
+  try {
+    await api('/api/admin/quotes/' + id, { method: 'DELETE' });
+    toast('Devis supprime', 'success');
+    loadQuotes();
+  } catch(e) { toast('Erreur suppression', 'error'); }
+}
+
+function openNewQuoteModal() {
+  // Simple prompt-based pour MVP (peut etre remplace par modal complet)
+  const leadId = prompt('ID du prospect (visible dans Prospects CRM) :');
+  if (!leadId) return;
+  const title = prompt('Titre du devis (ex : Creation site web vitrine) :');
+  if (!title) return;
+  const desc1 = prompt('Description ligne 1 :');
+  const qty1 = parseFloat(prompt('Quantite ligne 1 :', '1'));
+  const price1 = parseFloat(prompt('Prix unitaire ligne 1 (EUR) :'));
+  if (!desc1 || isNaN(qty1) || isNaN(price1)) return;
+  const taxRate = parseFloat(prompt('Taux TVA % (0 si pas de TVA) :', '0')) || 0;
+  const items = [{ description: desc1, quantity: qty1, unitPrice: price1 }];
+
+  // Ligne 2 optionnelle
+  if (confirm('Ajouter une 2eme ligne ?')) {
+    const d2 = prompt('Description ligne 2 :');
+    const q2 = parseFloat(prompt('Quantite ligne 2 :', '1'));
+    const p2 = parseFloat(prompt('Prix unitaire ligne 2 (EUR) :'));
+    if (d2 && !isNaN(q2) && !isNaN(p2)) items.push({ description: d2, quantity: q2, unitPrice: p2 });
+  }
+
+  api('/api/admin/quotes', { method: 'POST', body: JSON.stringify({ leadId, title, items, taxRate, currency: 'EUR' }) })
+    .then(() => { toast('Devis cree (brouillon)', 'success'); loadQuotes(); })
+    .catch(e => toast('Erreur creation : ' + (e.message || ''), 'error'));
+}
+
+// ============ REVIEWS ============
+async function loadReviews() {
+  try {
+    const data = await api('/api/admin/reviews');
+    const reviews = data.reviews || [];
+    const kpis = document.getElementById('rvKpis');
+    const pending = reviews.filter(r => r.status === 'en_attente' && r.submittedAt).length;
+    const published = reviews.filter(r => r.publishedOnSite).length;
+    const requestSent = reviews.filter(r => !r.submittedAt).length;
+    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">reviews</span></div></div><div class="kpi__value">' + reviews.length + '</div><div class="kpi__label">Total avis</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule_send</span></div></div><div class="kpi__value">' + requestSent + '</div><div class="kpi__label">Demandes en attente</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + pending + '</div><div class="kpi__label">A moderer</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + published + '</div><div class="kpi__label">Publies sur site</div></div>';
+
+    const list = document.getElementById('rvList');
+    const submitted = reviews.filter(r => r.submittedAt);
+    if (!submitted.length) { list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun avis recu. Demandez-en depuis la page Clients.</div>'; return; }
+
+    list.innerHTML = submitted.map(r => {
+      const stars = '&#9733;'.repeat(r.rating) + '<span style="color:rgba(229,226,225,0.2);">' + '&#9733;'.repeat(5 - r.rating) + '</span>';
+      return '<div style="padding:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;gap:1rem;">' +
+        '<div><div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:0.95rem;">' + escape(r.clientName) + (r.clientRole ? ' &middot; ' + escape(r.clientRole) : '') + '</div>' +
+        '<div style="font-size:0.78rem;color:var(--text-muted);">' + escape(r.clientEmail) + (r.clientCity ? ' &middot; ' + escape(r.clientCity) : '') + '</div></div>' +
+        '<div style="font-size:1rem;color:var(--accent);">' + stars + '</div></div>' +
+        '<p style="font-size:0.92rem;line-height:1.6;color:var(--text);margin-bottom:0.85rem;font-style:italic;">"' + escape(r.comment) + '"</p>' +
+        '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">' +
+        '<span class="badge ' + (r.publishedOnSite ? 'badge--won' : 'badge--new') + '">' + (r.publishedOnSite ? 'Publie' : 'Non publie') + '</span>' +
+        '<button onclick="togglePublishReview(\'' + r._id + '\', ' + !r.publishedOnSite + ')" class="btn btn--sm" style="margin-left:auto;">' + (r.publishedOnSite ? '<span class="material-symbols-outlined">visibility_off</span> Depublier' : '<span class="material-symbols-outlined">visibility</span> Publier sur site') + '</button>' +
+        '<button onclick="deleteReview(\'' + r._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span></button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) { console.error(e); toast('Erreur chargement avis', 'error'); }
+}
+
+async function togglePublishReview(id, publish) {
+  try {
+    await api('/api/admin/reviews/' + id, { method: 'PATCH', body: JSON.stringify({ publishedOnSite: publish, status: publish ? 'publie' : 'en_attente' }) });
+    toast(publish ? 'Avis publie' : 'Avis depublie', 'success');
+    loadReviews();
+  } catch(e) { toast('Erreur', 'error'); }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Supprimer cet avis ?')) return;
+  try { await api('/api/admin/reviews/' + id, { method: 'DELETE' }); toast('Avis supprime', 'success'); loadReviews(); }
+  catch(e) { toast('Erreur', 'error'); }
+}
+
+// ============ GALLERY ============
+async function loadGallery(folder) {
+  try {
+    const url = folder ? '/api/admin/media?folder=' + folder : '/api/admin/media';
+    const data = await api(url);
+    const items = data.items || [];
+    const folders = data.folders || [];
+
+    // Folder filter
+    const folEl = document.getElementById('galFolders');
+    const total = folders.reduce((s, f) => s + f.count, 0);
+    folEl.innerHTML = '<button class="btn ' + (!folder ? '' : 'btn--ghost') + ' btn--sm" onclick="loadGallery()">Tous (' + total + ')</button>' +
+      folders.map(f => '<button class="btn ' + (folder === f._id ? '' : 'btn--ghost') + ' btn--sm" onclick="loadGallery(\'' + f._id + '\')">' + f._id + ' (' + f.count + ')</button>').join('');
+
+    const grid = document.getElementById('galGrid');
+    if (!items.length) { grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--text-muted);">Aucune image. Cliquez sur "Uploader image(s)" pour commencer.</div>'; return; }
+    grid.innerHTML = items.map(m => '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">' +
+      '<div style="aspect-ratio:1;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="viewMedia(\'' + m._id + '\')"><img src="/api/admin/media/' + m._id + '" data-id="' + m._id + '" alt="' + escape(m.alt) + '" style="max-width:100%;max-height:100%;object-fit:contain;" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=\\\'material-symbols-outlined\\\' style=\\\'color:rgba(229,226,225,0.3);font-size:3rem;\\\'>image</span>\'"></div>' +
+      '<div style="padding:0.75rem;">' +
+      '<div style="font-size:0.78rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escape(m.filename) + '">' + escape(m.filename) + '</div>' +
+      '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:0.5rem;">' + escape(m.folder) + ' &middot; ' + Math.round(m.size/1024) + ' KB</div>' +
+      '<div style="display:flex;gap:0.3rem;">' +
+      '<button onclick="copyMediaUrl(\'' + m._id + '\')" class="btn btn--ghost btn--sm" style="flex:1;font-size:0.7rem;padding:0.4rem 0.5rem;"><span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span> URL</button>' +
+      '<button onclick="deleteMedia(\'' + m._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);padding:0.4rem 0.5rem;"><span class="material-symbols-outlined" style="font-size:0.95rem;">delete</span></button>' +
+      '</div></div></div>').join('');
+  } catch(e) { console.error(e); toast('Erreur chargement galerie', 'error'); }
+}
+
+async function viewMedia(id) {
+  try {
+    const m = await api('/api/admin/media/' + id);
+    const w = window.open('', '_blank');
+    w.document.write('<title>' + m.filename + '</title><body style="background:#000;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="' + m.data + '" style="max-width:100%;max-height:100vh;"></body>');
+  } catch(e) { toast('Erreur', 'error'); }
+}
+
+async function copyMediaUrl(id) {
+  try {
+    const m = await api('/api/admin/media/' + id);
+    await navigator.clipboard.writeText(m.data);
+    toast('Data URL copiee (' + Math.round(m.data.length/1024) + ' KB)', 'success');
+  } catch(e) { toast('Erreur copie', 'error'); }
+}
+
+async function deleteMedia(id) {
+  if (!confirm('Supprimer cette image ?')) return;
+  try { await api('/api/admin/media/' + id, { method: 'DELETE' }); toast('Image supprimee', 'success'); loadGallery(); }
+  catch(e) { toast('Erreur', 'error'); }
+}
+
+function uploadFiles(files) {
+  const folder = prompt('Dossier ? (general, realisations, blog, team, logos, icones, autres)', 'general');
+  if (!folder) return;
+  Array.from(files).forEach(file => {
+    if (file.size > 2 * 1024 * 1024) { toast(file.name + ' trop gros (2MB max)', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      try {
+        await api('/api/admin/media', { method: 'POST', body: JSON.stringify({ data: e.target.result, filename: file.name, alt: file.name.replace(/\.[^.]+$/, ''), folder }) });
+        loadGallery();
+        toast('Image uploadee : ' + file.name, 'success');
+      } catch(err) { toast('Erreur upload : ' + (err.message || file.name), 'error'); }
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 // ============ Livres blancs ============
@@ -1023,6 +1350,18 @@ async function init() {
   const bulkSendBtn = document.getElementById('bulkSend');
   if (bulkPreviewBtn) bulkPreviewBtn.addEventListener('click', bulkPreview);
   if (bulkSendBtn) bulkSendBtn.addEventListener('click', bulkSend);
+
+  // Clients/Quotes/Reviews/Gallery handlers
+  var clRefresh = document.getElementById('clRefresh');
+  if (clRefresh) clRefresh.addEventListener('click', loadClients);
+  var qRefresh = document.getElementById('qRefresh');
+  if (qRefresh) qRefresh.addEventListener('click', loadQuotes);
+  var qNew = document.getElementById('qNew');
+  if (qNew) qNew.addEventListener('click', openNewQuoteModal);
+  var rvRefresh = document.getElementById('rvRefresh');
+  if (rvRefresh) rvRefresh.addEventListener('click', loadReviews);
+  var galUpload = document.getElementById('galUpload');
+  if (galUpload) galUpload.addEventListener('change', function(e) { uploadFiles(e.target.files); e.target.value = ''; });
 
   await loadMe();
   await Promise.all([loadStats(), loadLeads()]);

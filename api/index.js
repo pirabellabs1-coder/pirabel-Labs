@@ -32,12 +32,15 @@ const {
 const { auth, adminOnly } = require('../app/middleware/auth');
 const User = require('../app/models/User');
 const Lead = require('../app/models/Lead');
+const Media = require('../app/models/Media');
+const Quote = require('../app/models/Quote');
+const Review = require('../app/models/Review');
 
 const app = express();
 
 // === Middlewares ===
 app.set('trust proxy', 1);
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: '3mb' })); // 3MB pour upload images base64
 app.use(cookieParser());
 
 const ALLOWED_ORIGINS = new Set([
@@ -594,6 +597,661 @@ app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
 // Bloque URLs admin obvious
 ['/login', '/admin', '/admin-login', '/wp-admin', '/wp-login.php', '/administrator'].forEach(p => {
   app.get(p, (req, res) => res.status(404).send('Not found'));
+});
+
+// ========================================================================
+// === MEDIA (image upload + galerie admin) ===
+// ========================================================================
+
+// Helper : valide une dataURL d'image
+function validateImageDataUrl(dataUrl) {
+  if (typeof dataUrl !== 'string') return null;
+  const match = dataUrl.match(/^data:(image\/(jpeg|jpg|png|webp|gif|svg\+xml));base64,(.+)$/i);
+  if (!match) return null;
+  const mime = match[1];
+  const base64 = match[3];
+  const size = Math.floor(base64.length * 0.75); // approximate binary size
+  if (size > 2 * 1024 * 1024) return null; // 2MB max
+  return { mime, size, base64 };
+}
+
+// POST /api/admin/media : upload une image (base64)
+app.post('/api/admin/media', auth, adminOnly, limitBody(3000), async (req, res) => {
+  try {
+    const { data, filename, alt, folder, tags, width, height } = req.body;
+    const validated = validateImageDataUrl(data);
+    if (!validated) return res.status(400).json({ error: 'Image invalide (formats acceptes : JPG, PNG, WEBP, GIF, SVG ; max 2MB).' });
+
+    const VALID_FOLDERS = ['general', 'realisations', 'blog', 'team', 'logos', 'icones', 'autres'];
+
+    const media = await Media.create({
+      filename: sanitize(filename || 'image', 200),
+      alt: sanitize(alt || '', 200),
+      mimeType: validated.mime,
+      size: validated.size,
+      width: Math.max(0, parseInt(width) || 0),
+      height: Math.max(0, parseInt(height) || 0),
+      data,
+      folder: VALID_FOLDERS.includes(folder) ? folder : 'general',
+      tags: Array.isArray(tags) ? tags.slice(0, 10).map(t => sanitize(String(t), 50)) : [],
+      uploadedBy: req.user._id
+    });
+
+    res.json({ success: true, media: { _id: media._id, filename: media.filename, alt: media.alt, folder: media.folder, size: media.size, mimeType: media.mimeType, createdAt: media.createdAt } });
+  } catch (err) {
+    console.error('[media] upload error:', err.message);
+    res.status(500).json({ error: 'Erreur upload : ' + err.message });
+  }
+});
+
+// GET /api/admin/media : liste (sans data, juste metadata + thumbnails)
+app.get('/api/admin/media', auth, adminOnly, async (req, res) => {
+  try {
+    const folder = sanitize(req.query.folder || '', 50);
+    const q = {};
+    if (folder) q.folder = folder;
+    const items = await Media.find(q, '-data').sort({ createdAt: -1 }).limit(200);
+    const folders = await Media.aggregate([
+      { $group: { _id: '$folder', count: { $sum: 1 }, totalSize: { $sum: '$size' } } }
+    ]);
+    res.json({ items, folders });
+  } catch (err) {
+    console.error('[media] list error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// GET /api/admin/media/:id : retourne le data URL complet
+app.get('/api/admin/media/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const media = await Media.findById(req.params.id);
+    if (!media) return res.status(404).json({ error: 'Media introuvable.' });
+    res.json({ _id: media._id, filename: media.filename, alt: media.alt, mimeType: media.mimeType, data: media.data, size: media.size, width: media.width, height: media.height, folder: media.folder, tags: media.tags, createdAt: media.createdAt });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PATCH /api/admin/media/:id : update alt, tags, folder
+app.patch('/api/admin/media/:id', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const media = await Media.findById(req.params.id);
+    if (!media) return res.status(404).json({ error: 'Media introuvable.' });
+    if (req.body.alt !== undefined) media.alt = sanitize(req.body.alt, 200);
+    if (req.body.filename !== undefined) media.filename = sanitize(req.body.filename, 200);
+    if (req.body.folder !== undefined) {
+      const VALID = ['general', 'realisations', 'blog', 'team', 'logos', 'icones', 'autres'];
+      if (VALID.includes(req.body.folder)) media.folder = req.body.folder;
+    }
+    if (Array.isArray(req.body.tags)) media.tags = req.body.tags.slice(0, 10).map(t => sanitize(String(t), 50));
+    await media.save();
+    res.json({ success: true, media: { _id: media._id, filename: media.filename, alt: media.alt, folder: media.folder, tags: media.tags } });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// DELETE /api/admin/media/:id
+app.delete('/api/admin/media/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const media = await Media.findByIdAndDelete(req.params.id);
+    if (!media) return res.status(404).json({ error: 'Media introuvable.' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// ========================================================================
+// === QUOTES (devis) ===
+// ========================================================================
+
+function generateQuoteReference() {
+  const year = new Date().getFullYear();
+  const random = Math.floor(Math.random() * 9000) + 1000;
+  return `DEVIS-${year}-${random}`;
+}
+
+function generateToken() {
+  return crypto.randomBytes(24).toString('hex');
+}
+
+function recalcQuote(items, taxRate) {
+  const cleaned = items.map(i => {
+    const qty = Math.max(0, Number(i.quantity) || 1);
+    const price = Math.max(0, Number(i.unitPrice) || 0);
+    return {
+      description: sanitize(String(i.description || ''), 500),
+      quantity: qty,
+      unitPrice: Math.round(price * 100) / 100,
+      total: Math.round(qty * price * 100) / 100
+    };
+  });
+  const subtotal = cleaned.reduce((s, i) => s + i.total, 0);
+  const tax = Math.round((subtotal * (taxRate || 0) / 100) * 100) / 100;
+  return { items: cleaned, subtotal: Math.round(subtotal * 100) / 100, taxAmount: tax, total: Math.round((subtotal + tax) * 100) / 100 };
+}
+
+// POST /api/admin/quotes : créer un devis (brouillon)
+app.post('/api/admin/quotes', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const { leadId, title, items, taxRate, currency, introduction, terms, validDays } = req.body;
+    if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Lead invalide.' });
+    if (!title || title.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+
+    const lead = await Lead.findById(leadId);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+
+    const totals = recalcQuote(Array.isArray(items) ? items : [], Number(taxRate) || 0);
+
+    const quote = await Quote.create({
+      reference: generateQuoteReference(),
+      leadId: lead._id,
+      clientName: lead.name,
+      clientEmail: lead.email,
+      clientCompany: lead.company || '',
+      clientPhone: lead.phone || '',
+      clientAddress: lead.clientData?.address || '',
+      items: totals.items,
+      subtotal: totals.subtotal,
+      taxRate: Math.max(0, Number(taxRate) || 0),
+      taxAmount: totals.taxAmount,
+      total: totals.total,
+      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(currency) ? currency : 'EUR',
+      title: sanitize(title, 200),
+      introduction: sanitize(introduction || '', 2000),
+      terms: sanitize(terms || '', 5000),
+      validUntil: new Date(Date.now() + (Number(validDays) || 30) * 86400000),
+      publicToken: generateToken(),
+      createdBy: req.user._id
+    });
+
+    res.json({ success: true, quote });
+  } catch (err) {
+    console.error('[quotes] create error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+  }
+});
+
+// GET /api/admin/quotes : liste
+app.get('/api/admin/quotes', auth, adminOnly, async (req, res) => {
+  try {
+    const status = sanitize(req.query.status || '', 30);
+    const leadId = sanitize(req.query.leadId || '', 30);
+    const q = {};
+    if (['brouillon', 'envoye', 'consulte', 'accepte', 'refuse', 'expire'].includes(status)) q.status = status;
+    if (/^[a-f0-9]{24}$/i.test(leadId)) q.leadId = leadId;
+    const quotes = await Quote.find(q).sort({ createdAt: -1 }).limit(300);
+    const stats = await Quote.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 }, total: { $sum: '$total' } } }
+    ]);
+    res.json({ quotes, stats });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// GET /api/admin/quotes/:id
+app.get('/api/admin/quotes/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    res.json(quote);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PATCH /api/admin/quotes/:id : update
+app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (quote.status === 'accepte' || quote.status === 'refuse') {
+      return res.status(403).json({ error: 'Devis verrouille (deja accepte/refuse).' });
+    }
+
+    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'validUntil'];
+    fields.forEach(f => {
+      if (req.body[f] !== undefined) {
+        if (f === 'taxRate') quote.taxRate = Math.max(0, Number(req.body.taxRate) || 0);
+        else if (f === 'validUntil') quote.validUntil = new Date(req.body.validUntil);
+        else quote[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
+      }
+    });
+
+    if (Array.isArray(req.body.items)) {
+      const totals = recalcQuote(req.body.items, quote.taxRate);
+      quote.items = totals.items;
+    }
+
+    await quote.save();
+    res.json({ success: true, quote });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// DELETE /api/admin/quotes/:id
+app.delete('/api/admin/quotes/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const quote = await Quote.findByIdAndDelete(req.params.id);
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/quotes/:id/send : envoyer par email
+app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+
+    const publicUrl = `https://www.pirabellabs.com/devis/${quote.publicToken}`;
+
+    const itemsRows = quote.items.map(i =>
+      `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.unitPrice.toFixed(2)} ${quote.currency}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${quote.currency}</td></tr>`
+    ).join('');
+
+    const html = masterTemplate({
+      headerType: 'hero',
+      preheader: `Votre devis ${quote.reference} - ${quote.title}`,
+      title: 'Bonjour ' + escapeHtml(quote.clientName.split(' ')[0]) + ',',
+      subtitle: 'Votre devis est prêt',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Comme convenu, voici votre devis personnalise :</p>' +
+        '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(quote.reference) + '</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(quote.title) + '</div>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Qte</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">PU</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Total</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
+        '<div style="margin-top:16px;text-align:right;"><div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">Sous-total : ' + quote.subtotal.toFixed(2) + ' ' + quote.currency + '</div>' +
+        (quote.taxRate > 0 ? '<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">TVA ' + quote.taxRate + '% : ' + quote.taxAmount.toFixed(2) + ' ' + quote.currency + '</div>' : '') +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + quote.total.toFixed(2) + ' ' + quote.currency + '</div></div>' +
+        '</div>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Valide jusqu&apos;au <strong style="color:#e5e2e1;">' + quote.validUntil.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) + '</strong>.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le detail, accepter ou refuser le devis directement en ligne.</p>',
+      cta: 'Consulter et valider le devis',
+      ctaUrl: publicUrl
+    });
+
+    sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html)
+      .catch(e => console.error('[quotes] send email error:', e.message));
+
+    quote.status = 'envoye';
+    quote.sentAt = new Date();
+    await quote.save();
+
+    // Update lead
+    await Lead.findByIdAndUpdate(quote.leadId, {
+      $inc: { quotesSent: 1 },
+      $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' }
+    });
+
+    res.json({ success: true, message: 'Devis envoye au client.', publicUrl });
+  } catch (err) {
+    console.error('[quotes] send error:', err.message);
+    res.status(500).json({ error: 'Erreur envoi : ' + err.message });
+  }
+});
+
+// === PUBLIC quote view (no auth, by token) ===
+app.get('/api/quotes/:token', async (req, res) => {
+  try {
+    const quote = await Quote.findOne({ publicToken: req.params.token });
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+
+    if (!quote.viewedAt) {
+      quote.viewedAt = new Date();
+      if (quote.status === 'envoye') quote.status = 'consulte';
+      await quote.save();
+    }
+
+    res.json({
+      reference: quote.reference,
+      title: quote.title,
+      clientName: quote.clientName,
+      clientCompany: quote.clientCompany,
+      items: quote.items,
+      subtotal: quote.subtotal,
+      taxRate: quote.taxRate,
+      taxAmount: quote.taxAmount,
+      total: quote.total,
+      currency: quote.currency,
+      introduction: quote.introduction,
+      terms: quote.terms,
+      validUntil: quote.validUntil,
+      issuedAt: quote.issuedAt,
+      status: quote.status
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+app.post('/api/quotes/:token/accept', async (req, res) => {
+  try {
+    const quote = await Quote.findOne({ publicToken: req.params.token });
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (quote.status === 'accepte') return res.json({ success: true, message: 'Devis deja accepte.' });
+    if (quote.status === 'refuse') return res.status(403).json({ error: 'Devis deja refuse.' });
+
+    quote.status = 'accepte';
+    quote.acceptedAt = new Date();
+    await quote.save();
+
+    // Convertir le lead en client
+    const lead = await Lead.findById(quote.leadId);
+    if (lead) {
+      lead.stage = 'client';
+      lead.status = 'converti';
+      lead.clientData = lead.clientData || {};
+      if (!lead.clientData.becameClientAt) lead.clientData.becameClientAt = new Date();
+      lead.clientData.totalContractValue = (lead.clientData.totalContractValue || 0) + quote.total;
+      lead.clientData.quotesCount = (lead.clientData.quotesCount || 0) + 1;
+      await lead.save();
+    }
+
+    // Email admin
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Pirabel Labs] Devis ACCEPTE - ${quote.reference} (${quote.total} ${quote.currency})`,
+      masterTemplate({
+        title: 'Devis accepte !',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}) vient d'etre accepte par <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}).</p><p>Montant : <strong>${quote.total} ${quote.currency}</strong></p><p>Le lead a ete converti en client. Lancement du projet a planifier.</p>`,
+        cta: 'Ouvrir le dashboard',
+        ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
+      })
+    ).catch(e => console.error('[quotes] accept admin email:', e.message));
+
+    // Email confirmation client
+    sendEmail(
+      quote.clientEmail,
+      `Devis accepte - ${quote.reference}`,
+      masterTemplate({
+        title: 'Merci ' + escapeHtml(quote.clientName.split(' ')[0]) + ' !',
+        body: `<p>Nous avons bien recu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Un cofondateur (Lissanon Gildas ou Fidah Imorou) vous contactera sous 24h pour planifier le kick-off.</p><p>A tres vite,<br><strong>L'equipe Pirabel Labs</strong></p>`,
+        cta: 'Visiter pirabellabs.com',
+        ctaUrl: 'https://www.pirabellabs.com'
+      })
+    ).catch(e => console.error('[quotes] accept client email:', e.message));
+
+    res.json({ success: true, message: 'Devis accepte. Nous vous recontactons sous 24h.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+app.post('/api/quotes/:token/refuse', async (req, res) => {
+  try {
+    const quote = await Quote.findOne({ publicToken: req.params.token });
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (quote.status === 'accepte') return res.status(403).json({ error: 'Devis deja accepte.' });
+
+    quote.status = 'refuse';
+    quote.refusedAt = new Date();
+    quote.internalNotes = (quote.internalNotes || '') + '\n[Refus client] ' + sanitize(req.body?.reason || 'Aucune raison fournie', 1000);
+    await quote.save();
+
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Pirabel Labs] Devis REFUSE - ${quote.reference}`,
+      masterTemplate({
+        title: 'Devis refuse',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> vient d'etre refuse par <strong>${escapeHtml(quote.clientName)}</strong>.</p><p>Raison : ${escapeHtml(req.body?.reason || 'non precisee')}</p>`,
+        cta: 'Ouvrir le dashboard',
+        ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
+      })
+    ).catch(() => {});
+
+    res.json({ success: true, message: 'Devis refuse. Merci pour votre retour.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// Static : page publique devis
+app.get('/devis/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'public-devis.html'));
+});
+
+// ========================================================================
+// === REVIEWS (demandes d'avis client) ===
+// ========================================================================
+
+// POST /api/admin/reviews/request : envoie email demande d'avis a un lead
+app.post('/api/admin/reviews/request', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const { leadId, serviceUsed } = req.body;
+    if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Lead invalide.' });
+
+    const lead = await Lead.findById(leadId);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+
+    const review = await Review.create({
+      leadId: lead._id,
+      clientName: lead.name,
+      clientEmail: lead.email,
+      clientCompany: lead.company || '',
+      clientCity: lead.clientData?.city || '',
+      rating: 5, // placeholder, sera ecrasé à la submission
+      comment: 'En attente de soumission',
+      serviceUsed: sanitize(serviceUsed || lead.service || '', 100),
+      status: 'en_attente',
+      requestToken: generateToken(),
+      source: 'admin_request'
+    });
+
+    const publicUrl = `https://www.pirabellabs.com/avis/${review.requestToken}`;
+
+    const html = masterTemplate({
+      headerType: 'hero',
+      preheader: 'Quelques minutes pour partager votre experience',
+      title: 'Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',',
+      subtitle: 'Votre avis compte enormement',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Apres notre collaboration, nous aimerions beaucoup avoir votre retour honnete sur notre travail.</p>' +
+        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Cela nous prend <strong style="color:#e5e2e1;">2 minutes</strong> et nous aide enormement a progresser et a rassurer les prochains clients qui hesitent.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Merci infiniment,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong></p>',
+      cta: 'Laisser mon avis (2 min)',
+      ctaUrl: publicUrl
+    });
+
+    sendEmail(lead.email, 'Votre avis sur Pirabel Labs (2 min)', html)
+      .catch(e => console.error('[reviews] request email error:', e.message));
+
+    lead.reviewRequestedAt = new Date();
+    await lead.save();
+
+    res.json({ success: true, message: 'Demande d&apos;avis envoyee.', publicUrl });
+  } catch (err) {
+    console.error('[reviews] request error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// GET /api/admin/reviews
+app.get('/api/admin/reviews', auth, adminOnly, async (req, res) => {
+  try {
+    const status = sanitize(req.query.status || '', 30);
+    const q = {};
+    if (['en_attente', 'publie', 'rejete'].includes(status)) q.status = status;
+    const reviews = await Review.find(q).sort({ createdAt: -1 }).limit(200);
+    const stats = await Review.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
+    res.json({ reviews, stats });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PATCH /api/admin/reviews/:id : valider/rejeter/publier
+app.patch('/api/admin/reviews/:id', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.id);
+    if (!review) return res.status(404).json({ error: 'Avis introuvable.' });
+    if (req.body.status && ['en_attente', 'publie', 'rejete'].includes(req.body.status)) {
+      review.status = req.body.status;
+    }
+    if (typeof req.body.publishedOnSite === 'boolean') {
+      review.publishedOnSite = req.body.publishedOnSite;
+      if (req.body.publishedOnSite && !review.publishedAt) review.publishedAt = new Date();
+    }
+    await review.save();
+    res.json({ success: true, review });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+app.delete('/api/admin/reviews/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const r = await Review.findByIdAndDelete(req.params.id);
+    if (!r) return res.status(404).json({ error: 'Avis introuvable.' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PUBLIC : récupère le formulaire d'avis par token
+app.get('/api/reviews/:token', async (req, res) => {
+  try {
+    const review = await Review.findOne({ requestToken: req.params.token });
+    if (!review) return res.status(404).json({ error: 'Lien invalide ou expire.' });
+    res.json({
+      clientName: review.clientName,
+      clientCompany: review.clientCompany,
+      serviceUsed: review.serviceUsed,
+      alreadySubmitted: !!review.submittedAt
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PUBLIC : soumission avis
+const reviewSubmitLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 5,
+  keyPrefix: 'review-submit'
+});
+
+app.post('/api/reviews/:token', reviewSubmitLimiter, limitBody(5), async (req, res) => {
+  try {
+    const review = await Review.findOne({ requestToken: req.params.token });
+    if (!review) return res.status(404).json({ error: 'Lien invalide ou expire.' });
+    if (review.submittedAt) return res.status(403).json({ error: 'Avis deja soumis.' });
+
+    const rating = Math.max(1, Math.min(5, parseInt(req.body.rating) || 0));
+    const comment = sanitize(req.body.comment || '', 2000);
+    const role = sanitize(req.body.role || '', 100);
+    const city = sanitize(req.body.city || '', 100);
+
+    if (!rating) return res.status(400).json({ error: 'Note requise (1-5).' });
+    if (!comment || comment.length < 30) return res.status(400).json({ error: 'Commentaire trop court (30 caracteres min).' });
+
+    const ipHash = crypto.createHash('sha256')
+      .update((req.ip || '') + (process.env.JWT_SECRET || ''))
+      .digest('hex').slice(0, 32);
+
+    review.rating = rating;
+    review.comment = comment;
+    if (role) review.clientRole = role;
+    if (city) review.clientCity = city;
+    review.submittedAt = new Date();
+    review.status = 'en_attente'; // toujours moderé avant publication
+    review.ipHash = ipHash;
+    await review.save();
+
+    // Update lead
+    await Lead.findByIdAndUpdate(review.leadId, { $set: { reviewSubmittedAt: new Date() } });
+
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Pirabel Labs] Nouvel avis client - ${rating}/5 - ${review.clientName}`,
+      masterTemplate({
+        title: 'Nouvel avis client',
+        body: `<p><strong>${escapeHtml(review.clientName)}</strong> (${escapeHtml(review.clientEmail)}) a laisse un avis :</p><p>Note : <strong>${rating}/5</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(comment)}</blockquote><p>A moderer dans le dashboard avant publication sur le site.</p>`,
+        cta: 'Moderer l\'avis',
+        ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
+      })
+    ).catch(() => {});
+
+    res.json({ success: true, message: 'Merci pour votre avis ! Il sera publie apres moderation.' });
+  } catch (err) {
+    console.error('[reviews] submit error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// Static : page publique avis
+app.get('/avis/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'public-avis.html'));
+});
+
+// ========================================================================
+// === EXTENDED LEAD STAGE UPDATE ===
+// ========================================================================
+app.patch('/api/admin/leads/:id/stage', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.params.id);
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+
+    const VALID_STAGES = ['prospect', 'qualifie', 'devis_envoye', 'client', 'inactif'];
+    if (req.body.stage && VALID_STAGES.includes(req.body.stage)) {
+      lead.stage = req.body.stage;
+      if (req.body.stage === 'client' && !lead.clientData?.becameClientAt) {
+        lead.clientData = lead.clientData || {};
+        lead.clientData.becameClientAt = new Date();
+      }
+    }
+    if (req.body.clientData && typeof req.body.clientData === 'object') {
+      lead.clientData = lead.clientData || {};
+      ['address', 'city', 'country', 'role', 'industry', 'teamSize', 'website', 'notes'].forEach(f => {
+        if (req.body.clientData[f] !== undefined) lead.clientData[f] = sanitize(String(req.body.clientData[f]), 500);
+      });
+    }
+    await lead.save();
+    res.json({ success: true, lead });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// ========================================================================
+// === EXTENDED STATS (avec devis + clients + reviews) ===
+// ========================================================================
+app.get('/api/admin/stats-extended', auth, adminOnly, async (req, res) => {
+  try {
+    const now = new Date();
+    const d30 = new Date(now.getTime() - 30 * 86400000);
+
+    const [
+      leadsTotal, prospects, clients, quotesTotal, quotesPending, quotesAccepted, quotesRevenue,
+      reviewsPending, reviewsPublished, byStage, leadsLast30, conversionsLast30
+    ] = await Promise.all([
+      Lead.countDocuments({}),
+      Lead.countDocuments({ stage: 'prospect' }),
+      Lead.countDocuments({ stage: 'client' }),
+      Quote.countDocuments({}),
+      Quote.countDocuments({ status: { $in: ['envoye', 'consulte'] } }),
+      Quote.countDocuments({ status: 'accepte' }),
+      Quote.aggregate([{ $match: { status: 'accepte' } }, { $group: { _id: null, total: { $sum: '$total' } } }]),
+      Review.countDocuments({ status: 'en_attente', submittedAt: { $ne: null } }),
+      Review.countDocuments({ publishedOnSite: true }),
+      Lead.aggregate([{ $group: { _id: '$stage', count: { $sum: 1 } } }]),
+      Lead.countDocuments({ createdAt: { $gte: d30 } }),
+      Lead.countDocuments({ stage: 'client', 'clientData.becameClientAt': { $gte: d30 } })
+    ]);
+
+    res.json({
+      leads: { total: leadsTotal, prospects, clients, last30: leadsLast30, conversionsLast30 },
+      quotes: { total: quotesTotal, pending: quotesPending, accepted: quotesAccepted, revenue: quotesRevenue[0]?.total || 0 },
+      reviews: { pending: reviewsPending, published: reviewsPublished },
+      byStage
+    });
+  } catch (err) {
+    console.error('[stats-extended] error:', err.message);
+    res.status(500).json({ error: 'Erreur stats.' });
+  }
 });
 
 // === ERROR HANDLER ===

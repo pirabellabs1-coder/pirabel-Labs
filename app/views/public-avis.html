@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Donner votre avis - Pirabel Labs</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap">
+<style>
+:root { --bg:#0E0E0E; --bg2:#161616; --surface:#1a1a1a; --border:rgba(229,226,225,0.08); --text:#E5E2E1; --muted:rgba(229,226,225,0.62); --accent:#FF5500; --success:#4ade80; --danger:#f87171; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; padding:2rem 1rem; display:flex; align-items:center; justify-content:center; }
+.wrap { max-width: 36rem; width:100%; }
+.header { display:flex; align-items:center; gap:0.85rem; margin-bottom:2rem; }
+.logo { width:2.5rem; height:2.5rem; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; }
+.brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.05rem; }
+.brand small { display:block; font-weight:600; font-size:0.72rem; color:var(--muted); margin-top:2px; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:18px; padding:2.5rem 2rem; }
+.eyebrow { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--accent); margin-bottom:0.75rem; }
+h1 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.75rem; line-height:1.2; margin-bottom:0.85rem; }
+.sub { font-size:0.95rem; color:var(--muted); line-height:1.6; margin-bottom:2rem; }
+.stars { display:flex; gap:0.5rem; justify-content:center; margin-bottom:2rem; }
+.star { font-size:2.5rem; color:rgba(229,226,225,0.2); cursor:pointer; transition:all 0.15s; user-select:none; }
+.star:hover, .star.active { color:var(--accent); transform:scale(1.1); }
+.field { margin-bottom:1.25rem; }
+.field label { display:block; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.85rem; margin-bottom:0.5rem; color:var(--text); }
+.field label span { color:var(--accent); }
+.field input, .field textarea { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.85rem 1rem; font-family:'Inter',sans-serif; font-size:0.92rem; color:var(--text); }
+.field input:focus, .field textarea:focus { outline:0; border-color:var(--accent); }
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.95rem 1.5rem; background:var(--accent); color:#fff; border:0; border-radius:10px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; width:100%; justify-content:center; transition:opacity 0.2s; }
+.btn:hover:not(:disabled) { opacity:0.9; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.msg { padding:1rem; border-radius:10px; margin-top:1rem; font-size:0.9rem; display:none; line-height:1.5; }
+.msg.show { display:block; }
+.msg.success { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--success); }
+.msg.error { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:var(--danger); }
+.loading { text-align:center; padding:3rem 2rem; color:var(--muted); }
+.thanks { text-align:center; padding:2rem 1rem; }
+.thanks .check { width:5rem; height:5rem; border-radius:50%; background:rgba(74,222,128,0.15); color:var(--success); display:flex; align-items:center; justify-content:center; font-size:3rem; margin:0 auto 1.5rem; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo">P</div>
+    <div class="brand">PIRABEL LABS<small>Votre avis compte</small></div>
+  </div>
+
+  <div id="loading" class="loading">Chargement...</div>
+  <div id="errorBlock" class="card" style="display:none;text-align:center;">
+    <h1>Lien invalide</h1>
+    <p class="sub">Ce lien n'est plus valide ou a deja ete utilise. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
+  </div>
+  <div id="formBlock" class="card" style="display:none;">
+    <div class="eyebrow">Avis client</div>
+    <h1>Quelle note donneriez-vous a <span id="brandLabel" style="color:var(--accent);">Pirabel Labs</span> ?</h1>
+    <p class="sub" id="introText">Votre retour honnete nous aide enormement a progresser et rassure nos prochains clients qui hesitent. Merci d'avance pour les 2 minutes que vous nous accordez.</p>
+
+    <div class="stars" id="stars">
+      <span class="star" data-rating="1">&#9733;</span>
+      <span class="star" data-rating="2">&#9733;</span>
+      <span class="star" data-rating="3">&#9733;</span>
+      <span class="star" data-rating="4">&#9733;</span>
+      <span class="star" data-rating="5">&#9733;</span>
+    </div>
+
+    <form id="reviewForm">
+      <div class="field">
+        <label for="comment">Votre avis <span>*</span></label>
+        <textarea id="comment" name="comment" rows="5" required minlength="30" maxlength="2000" placeholder="Qu'est-ce qui a fonctionne ? Qu'est-ce qui pourrait etre ameliore ? Recommanderiez-vous Pirabel Labs ?"></textarea>
+      </div>
+      <div class="field">
+        <label for="role">Votre role / poste</label>
+        <input type="text" id="role" name="role" maxlength="100" placeholder="ex : Directrice marketing, CEO, Responsable e-commerce">
+      </div>
+      <div class="field">
+        <label for="city">Votre ville</label>
+        <input type="text" id="city" name="city" maxlength="100" placeholder="ex : Cotonou, Paris, Casablanca">
+      </div>
+
+      <div id="msg" class="msg"></div>
+
+      <button type="submit" class="btn" id="submitBtn">
+        <span class="material-symbols-outlined">send</span>
+        <span id="submitText">Envoyer mon avis</span>
+      </button>
+    </form>
+  </div>
+
+  <div id="thanksBlock" class="card thanks" style="display:none;">
+    <div class="check">&#10003;</div>
+    <h1>Merci !</h1>
+    <p class="sub">Votre avis a bien ete enregistre. Apres moderation rapide, il pourra apparaitre sur notre site. Belle journee !</p>
+  </div>
+</div>
+
+<script>
+const token = window.location.pathname.split('/').pop();
+const loading = document.getElementById('loading');
+const formBlock = document.getElementById('formBlock');
+const errorBlock = document.getElementById('errorBlock');
+const thanksBlock = document.getElementById('thanksBlock');
+const msg = document.getElementById('msg');
+const submitBtn = document.getElementById('submitBtn');
+const submitText = document.getElementById('submitText');
+
+let rating = 0;
+
+document.querySelectorAll('.star').forEach(s => {
+  s.addEventListener('click', function() {
+    rating = parseInt(this.dataset.rating);
+    document.querySelectorAll('.star').forEach((ss, i) => ss.classList.toggle('active', i < rating));
+  });
+});
+
+async function loadReviewInfo() {
+  try {
+    const r = await fetch('/api/reviews/' + token);
+    if (!r.ok) throw new Error('not found');
+    const data = await r.json();
+    loading.style.display = 'none';
+    if (data.alreadySubmitted) { thanksBlock.style.display = 'block'; return; }
+    formBlock.style.display = 'block';
+    document.getElementById('introText').textContent = 'Bonjour ' + data.clientName.split(' ')[0] + ', votre retour honnete nous aide enormement a progresser et rassure nos prochains clients. Merci d\'avance pour les 2 minutes que vous nous accordez.';
+  } catch (e) {
+    loading.style.display = 'none';
+    errorBlock.style.display = 'block';
+  }
+}
+
+document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  msg.className = 'msg';
+  if (!rating) { msg.className = 'msg error show'; msg.textContent = 'Cliquez sur les etoiles pour donner une note.'; return; }
+  const comment = document.getElementById('comment').value.trim();
+  if (comment.length < 30) { msg.className = 'msg error show'; msg.textContent = 'Commentaire trop court (30 caracteres min).'; return; }
+
+  submitBtn.disabled = true;
+  submitText.textContent = 'Envoi...';
+
+  try {
+    const r = await fetch('/api/reviews/' + token, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rating,
+        comment,
+        role: document.getElementById('role').value.trim(),
+        city: document.getElementById('city').value.trim()
+      })
+    });
+    const data = await r.json();
+    if (data.success) {
+      formBlock.style.display = 'none';
+      thanksBlock.style.display = 'block';
+    } else {
+      msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.';
+      submitBtn.disabled = false; submitText.textContent = 'Envoyer mon avis';
+    }
+  } catch (e) {
+    msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.';
+    submitBtn.disabled = false; submitText.textContent = 'Envoyer mon avis';
+  }
+});
+
+loadReviewInfo();
+</script>
+</body>
+</html>

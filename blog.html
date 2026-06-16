@@ -82,6 +82,9 @@
 .blog-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: var(--text); display: flex; flex-direction: column; transition: all var(--t); }
 .blog-card:hover { border-color: var(--accent); transform: translateY(-4px) scale(1.01); opacity: 1; box-shadow: 0 14px 32px rgba(0,0,0,0.4); }
 .blog-card__img { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(135deg, rgba(255,85,0,0.16) 0%, rgba(255,122,51,0.06) 50%, rgba(14,14,14,1) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.blog-card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; position: relative; z-index: 1; }
+.blog-card:hover .blog-card__img img { transform: scale(1.06); }
+.blog-card__img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(20,19,19,0.5) 100%); pointer-events: none; z-index: 2; }
 .blog-card__img::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 35% 45%, rgba(255,85,0,0.2), transparent 65%), radial-gradient(circle at 75% 65%, rgba(255,122,51,0.12), transparent 55%); }
 .blog-card__img .material-symbols-outlined { font-size: 3.2rem; color: var(--accent); opacity: 0.8; position: relative; z-index: 1; filter: drop-shadow(0 3px 12px rgba(255,85,0,0.35)); }
 .blog-card__cat-badge { position: absolute; top: 0.85rem; left: 0.85rem; background: rgba(14,14,14,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid var(--accent); z-index: 2; }
@@ -360,7 +363,7 @@
       <a href="/article-seo-local-2026-pme-beninoises" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">SEO</span>
-          <span class="material-symbols-outlined">my_location</span>
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Analytics SEO sur ordinateur" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Comment optimiser votre SEO local en 2026 : guide complet pour PME béninoises</h3>
@@ -377,7 +380,7 @@
       <a href="/article-wordpress-vs-webflow-vs-nextjs-2026" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Sites web</span>
-          <span class="material-symbols-outlined">code</span>
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" alt="Code sur ecran ordinateur" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">WordPress vs Webflow vs Next.js : quelle solution pour votre site en 2026 ?</h3>
@@ -394,7 +397,7 @@
       <a href="/article-outils-automatisation-marketing-make-n8n-zapier" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Automatisation</span>
-          <span class="material-symbols-outlined">smart_toy</span>
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Automatisation et workflows" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Les 10 outils d'automatisation marketing indispensables (Make, n8n, Zapier)</h3>
@@ -411,7 +414,7 @@
       <a href="/article-strategie-instagram-pme-erreurs-bonnes-pratiques" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Social média</span>
-          <span class="material-symbols-outlined">photo_camera</span>
+          <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80" alt="Instagram sur smartphone" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Stratégie Instagram pour PME : 8 erreurs à éviter et 12 bonnes pratiques</h3>
@@ -428,7 +431,7 @@
       <a href="/article-fiche-google-business-guide-pack-local" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">SEO</span>
-          <span class="material-symbols-outlined">location_on</span>
+          <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80" alt="Google Maps localisation" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Fiche Google Business Profile : le guide ultime pour le pack local</h3>
@@ -445,7 +448,7 @@
       <a href="/article-tunnels-vente-conversion-90-jours" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Stratégie</span>
-          <span class="material-symbols-outlined">conversion_path</span>
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80" alt="Analytics et conversion" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Tunnels de vente : comment passer de 1% à 5% de conversion en 90 jours</h3>
@@ -462,7 +465,7 @@
       <a href="/article-ia-marketing-chatgpt-claude-gemini-cas-usage" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Automatisation</span>
-          <span class="material-symbols-outlined">psychology</span>
+          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" alt="Intelligence artificielle" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">L'IA dans le marketing : ChatGPT, Claude, Gemini - cas d'usage réels</h3>
@@ -479,7 +482,7 @@
       <a href="/article-email-marketing-2026-rgpd-automation-pme" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Stratégie</span>
-          <span class="material-symbols-outlined">mail</span>
+          <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=800&q=80" alt="Email marketing" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Email marketing 2026 : RGPD, délivrabilité, automation pour PME</h3>
@@ -496,7 +499,7 @@
       <a href="/article-refonte-site-checklist-40-points" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Sites web</span>
-          <span class="material-symbols-outlined">checklist</span>
+          <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=800&q=80" alt="Design de site web" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Refonte de site : checklist complète avant de lancer (40 points)</h3>
@@ -513,7 +516,7 @@
       <a href="/article-marketing-benin-stats-marche-afrique-ouest" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Stratégie</span>
-          <span class="material-symbols-outlined">public</span>
+          <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80" alt="Marche africain digital" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Marketing au Bénin : les vraies stats du marché digital ouest-africain</h3>
@@ -530,7 +533,7 @@
       <a href="/article-tiktok-pme-roi-strategie-contenu" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">Social média</span>
-          <span class="material-symbols-outlined">music_video</span>
+          <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=800&q=80" alt="Video sur smartphone" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">TikTok pour les PME : ROI réel et stratégie de contenu efficace</h3>
@@ -547,7 +550,7 @@
       <a href="/article-audit-seo-gratuit-25-criteres" class="blog-card">
         <div class="blog-card__img">
           <span class="blog-card__cat-badge">SEO</span>
-          <span class="material-symbols-outlined">analytics</span>
+          <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80" alt="Audit et analyse de donnees" loading="lazy">
         </div>
         <div class="blog-card__body">
           <h3 class="blog-card__title">Audit SEO gratuit : 25 critères que nous vérifions sur chaque site</h3>

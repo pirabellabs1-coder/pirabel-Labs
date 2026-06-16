@@ -189,6 +189,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .card__chart { position: relative; height: 18rem; }
 .card__chart--lg { height: 24rem; }
 .card__chart--sm { height: 14rem; }
+.chart-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-faint); text-align: center; padding: 1rem; }
+.chart-empty .material-symbols-outlined { font-size: 2.5rem; opacity: 0.4; }
+.chart-empty span:last-child { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; }
 
 /* Table */
 .table-wrap { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
@@ -1241,6 +1244,29 @@ function populateServiceFilter() {
 // ============ Charts ============
 let charts = {};
 function destroyChart(name) { if (charts[name]) { charts[name].destroy(); delete charts[name]; } }
+
+// Etat vide propre : si pas de donnees, masque le canvas et affiche un message centre.
+// Retourne true si VIDE (le rendu du chart doit alors etre saute).
+function chartEmpty(canvasId, isEmpty, msg) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return true;
+  var wrap = canvas.closest('.card__chart') || canvas.parentNode;
+  var existing = wrap ? wrap.querySelector('.chart-empty') : null;
+  if (isEmpty) {
+    canvas.style.display = 'none';
+    if (!existing && wrap) {
+      var el = document.createElement('div');
+      el.className = 'chart-empty';
+      el.innerHTML = '<span class="material-symbols-outlined">bar_chart</span><span>' + (msg || 'Aucune donnee pour le moment') + '</span>';
+      wrap.appendChild(el);
+    }
+    return true;
+  } else {
+    canvas.style.display = '';
+    if (existing) existing.remove();
+    return false;
+  }
+}
 function chartDefaults() {
   return {
     plugins: { legend: { labels: { color: CHART_COLORS.text, font: { family: 'Inter', size: 11 } } }, tooltip: { backgroundColor: '#1a1a1a', borderColor: 'rgba(229,226,225,0.15)', borderWidth: 1, padding: 12, titleFont: { family: 'Space Grotesk', weight: 700 }, bodyFont: { family: 'Inter' } } },
@@ -1260,7 +1286,7 @@ function renderDashboardCharts() {
   (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
   for (let i = 1; i <= 12; i++) { labels.push(months[i-1]); values.push(monthMap[i] || 0); }
   const ctx1 = document.getElementById('chartLeadsOverTime');
-  if (ctx1) {
+  if (ctx1 && !chartEmpty('chartLeadsOverTime', values.every(function(v){ return v === 0; }))) {
     charts.leadsOverTime = new Chart(ctx1, {
       type: 'line',
       data: { labels: labels, datasets: [{ label: 'Leads', data: values, borderColor: CHART_COLORS.primary, backgroundColor: CHART_COLORS.primaryGradient, fill: true, tension: 0.35, pointBackgroundColor: CHART_COLORS.primary, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6 }] },
@@ -1272,7 +1298,7 @@ function renderDashboardCharts() {
   destroyChart('byService');
   const svcData = (s.byService || []).slice(0, 6);
   const ctx2 = document.getElementById('chartByService');
-  if (ctx2) {
+  if (ctx2 && !chartEmpty('chartByService', svcData.length === 0)) {
     charts.byService = new Chart(ctx2, {
       type: 'doughnut',
       data: { labels: svcData.map(function(d){ return d._id || 'autre'; }), datasets: [{ data: svcData.map(function(d){ return d.count; }), backgroundColor: ['#FF5500', '#FF7A33', '#FFA366', '#60a5fa', '#4ade80', '#fbbf24'], borderColor: '#161616', borderWidth: 2 }] },
@@ -1306,7 +1332,7 @@ function renderAnalyticsCharts() {
   (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
   for (let i = 1; i <= 12; i++) { labels.push(months[i-1]); values.push(monthMap[i] || 0); }
   const ctx1 = document.getElementById('chartTrend');
-  if (ctx1) {
+  if (ctx1 && !chartEmpty('chartTrend', values.every(function(v){ return v === 0; }))) {
     charts.trend = new Chart(ctx1, {
       type: 'bar',
       data: { labels: labels, datasets: [{ label: 'Leads', data: values, backgroundColor: CHART_COLORS.primary, borderRadius: 6 }] },
@@ -1318,7 +1344,7 @@ function renderAnalyticsCharts() {
   destroyChart('status');
   const statusData = s.byStatus || [];
   const ctx2 = document.getElementById('chartStatus');
-  if (ctx2) {
+  if (ctx2 && !chartEmpty('chartStatus', statusData.length === 0)) {
     charts.status = new Chart(ctx2, {
       type: 'polarArea',
       data: { labels: statusData.map(function(d){ return STATUS_LABELS[d._id] || d._id; }), datasets: [{ data: statusData.map(function(d){ return d.count; }), backgroundColor: statusData.map(function(d){ return STATUS_COLORS[d._id] || CHART_COLORS.primary; }) }] },
@@ -1330,7 +1356,7 @@ function renderAnalyticsCharts() {
   destroyChart('services');
   const svcData = (s.byService || []).slice(0, 10);
   const ctx3 = document.getElementById('chartServices');
-  if (ctx3) {
+  if (ctx3 && !chartEmpty('chartServices', svcData.length === 0)) {
     charts.services = new Chart(ctx3, {
       type: 'bar',
       data: { labels: svcData.map(function(d){ return d._id || 'autre'; }), datasets: [{ label: 'Leads', data: svcData.map(function(d){ return d.count; }), backgroundColor: 'rgba(255,85,0,0.65)', borderRadius: 6 }] },
@@ -1342,7 +1368,7 @@ function renderAnalyticsCharts() {
   destroyChart('sources');
   const srcData = s.bySource || [];
   const ctx4 = document.getElementById('chartSources');
-  if (ctx4) {
+  if (ctx4 && !chartEmpty('chartSources', srcData.length === 0)) {
     charts.sources = new Chart(ctx4, {
       type: 'doughnut',
       data: { labels: srcData.map(function(d){ return d._id || 'direct'; }), datasets: [{ data: srcData.map(function(d){ return d.count; }), backgroundColor: ['#FF5500', '#60a5fa', '#4ade80', '#fbbf24', '#f87171'], borderColor: '#161616', borderWidth: 2 }] },
@@ -1355,7 +1381,7 @@ function renderAnalyticsCharts() {
   const statusMap = {}; (s.byStatus || []).forEach(function(d){ statusMap[d._id] = d.count; });
   const total = s.kpis.total;
   const ctx5 = document.getElementById('chartFunnel');
-  if (ctx5) {
+  if (ctx5 && !chartEmpty('chartFunnel', !total)) {
     charts.funnel = new Chart(ctx5, {
       type: 'bar',
       data: { labels: ['Tous', 'Lus', 'En cours', 'Convertis'], datasets: [{ label: 'Volume', data: [ total, (statusMap.lu || 0) + (statusMap.en_cours || 0) + (statusMap.converti || 0), (statusMap.en_cours || 0) + (statusMap.converti || 0), statusMap.converti || 0 ], backgroundColor: ['rgba(96,165,250,0.8)', 'rgba(251,191,36,0.8)', 'rgba(255,85,0,0.8)', 'rgba(74,222,128,0.8)'], borderRadius: 8 }] },
@@ -1384,7 +1410,7 @@ function renderAnalyticsCharts() {
     dayValues.push(dayMap[k] || 0);
   }
   const ctx6 = document.getElementById('chartWeekly');
-  if (ctx6) {
+  if (ctx6 && !chartEmpty('chartWeekly', dayValues.every(function(v){ return v === 0; }))) {
     charts.weekly = new Chart(ctx6, {
       type: 'line',
       data: { labels: dayLabels, datasets: [{ label: 'Leads', data: dayValues, borderColor: CHART_COLORS.primary, backgroundColor: CHART_COLORS.primaryGradient, fill: true, tension: 0.35, pointBackgroundColor: CHART_COLORS.primary, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4 }] },

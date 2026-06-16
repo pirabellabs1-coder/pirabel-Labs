@@ -25,27 +25,79 @@
 body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
 
 /* Layout */
-.app { display: grid; grid-template-columns: 16rem 1fr; min-height: 100vh; }
-@media (max-width: 880px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } .sidebar.is-open { display: block; position: fixed; top: 0; left: 0; bottom: 0; width: 16rem; z-index: 100; } }
+.app { display: grid; grid-template-columns: 16rem 1fr; min-height: 100vh; transition: grid-template-columns 0.25s ease; }
+.app.is-collapsed { grid-template-columns: 4.5rem 1fr; }
+
+/* Backdrop mobile */
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 99; opacity: 0; transition: opacity 0.2s; }
+.sidebar-backdrop.is-show { display: block; opacity: 1; }
 
 /* Sidebar */
-.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1.5rem 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-.sidebar__brand { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.5rem; margin-bottom: 2rem; }
-.sidebar__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
-.sidebar__name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
-.sidebar__nav { display: flex; flex-direction: column; gap: 0.2rem; padding: 0 0.75rem; }
-.sidebar__link { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0.85rem; border-radius: var(--radius-sm); color: var(--text-muted); text-decoration: none; font-family: var(--font-display); font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.15s; }
+.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1.5rem 0 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; transition: width 0.25s ease, transform 0.25s ease; overflow: hidden; }
+.sidebar__brand { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.5rem; margin-bottom: 1.5rem; min-height: 2.25rem; }
+.sidebar__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
+.sidebar__name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s; }
+
+/* Toggle button (desktop) */
+.sidebar__toggle { display: none; position: absolute; top: 1.5rem; right: -0.85rem; width: 1.7rem; height: 1.7rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 50%; color: var(--text); cursor: pointer; align-items: center; justify-content: center; transition: all 0.2s; z-index: 50; }
+.sidebar__toggle:hover { border-color: var(--accent); color: var(--accent); }
+.sidebar__toggle .material-symbols-outlined { font-size: 1.1rem; transition: transform 0.25s; }
+.app.is-collapsed .sidebar__toggle .material-symbols-outlined { transform: rotate(180deg); }
+@media (min-width: 881px) { .sidebar__toggle { display: flex; } }
+
+/* Close button (mobile only, in sidebar) */
+.sidebar__close { display: none; position: absolute; top: 1.2rem; right: 1rem; background: none; border: 0; color: var(--text-muted); cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: all 0.2s; z-index: 50; }
+.sidebar__close:hover { background: var(--surface); color: var(--accent); }
+@media (max-width: 880px) { .sidebar__close { display: flex; } }
+
+.sidebar__nav { display: flex; flex-direction: column; gap: 0.15rem; padding: 0 0.75rem; }
+.sidebar__link { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); color: var(--text-muted); text-decoration: none; font-family: var(--font-display); font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; overflow: hidden; }
 .sidebar__link:hover { background: var(--surface); color: var(--text); }
 .sidebar__link.is-active { background: var(--accent-soft); color: var(--accent); }
-.sidebar__link .material-symbols-outlined { font-size: 1.2rem; }
-.sidebar__section { padding: 1rem 1.5rem 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-faint); }
+.sidebar__link .material-symbols-outlined { font-size: 1.2rem; flex-shrink: 0; }
+.sidebar__link-text { transition: opacity 0.15s; }
+
+.sidebar__section { padding: 1rem 1.5rem 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-faint); transition: opacity 0.15s; white-space: nowrap; overflow: hidden; }
 .sidebar__footer { margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
-.sidebar__avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; }
-.sidebar__user { flex: 1; }
-.sidebar__email { font-size: 0.78rem; font-weight: 600; }
+.sidebar__avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; flex-shrink: 0; }
+.sidebar__user { flex: 1; overflow: hidden; transition: opacity 0.15s; }
+.sidebar__email { font-size: 0.78rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar__role { font-size: 0.7rem; color: var(--text-muted); }
-.sidebar__logout { color: var(--text-muted); cursor: pointer; transition: color 0.2s; background: none; border: none; padding: 0.3rem; }
+.sidebar__logout { color: var(--text-muted); cursor: pointer; transition: color 0.2s; background: none; border: none; padding: 0.3rem; flex-shrink: 0; }
 .sidebar__logout:hover { color: var(--danger); }
+
+/* Collapsed state - icons only */
+.app.is-collapsed .sidebar__name,
+.app.is-collapsed .sidebar__link-text,
+.app.is-collapsed .sidebar__section,
+.app.is-collapsed .sidebar__user { opacity: 0; pointer-events: none; }
+.app.is-collapsed .sidebar__brand { padding: 0; justify-content: center; }
+.app.is-collapsed .sidebar__nav { padding: 0 0.5rem; }
+.app.is-collapsed .sidebar__link { justify-content: center; padding: 0.7rem 0; }
+.app.is-collapsed .sidebar__footer { padding: 1rem 0.5rem; justify-content: center; }
+.app.is-collapsed .sidebar__section { padding: 0.5rem 0; height: 0.6rem; }
+
+/* Tooltips when collapsed (desktop) */
+@media (min-width: 881px) {
+  .app.is-collapsed .sidebar__link { position: relative; }
+  .app.is-collapsed .sidebar__link::after {
+    content: attr(data-label);
+    position: absolute; left: calc(100% + 0.5rem); top: 50%; transform: translateY(-50%);
+    background: var(--surface); color: var(--text); padding: 0.4rem 0.75rem;
+    border-radius: 6px; font-size: 0.78rem; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 100;
+    border: 1px solid var(--border-2);
+  }
+  .app.is-collapsed .sidebar__link:hover::after { opacity: 1; }
+}
+
+/* Mobile : drawer */
+@media (max-width: 880px) {
+  .app { grid-template-columns: 1fr; }
+  .app.is-collapsed { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 17rem; max-width: 85vw; z-index: 100; transform: translateX(-100%); }
+  .sidebar.is-open { transform: translateX(0); }
+}
 
 /* Main */
 .main { padding: 2rem 2.5rem; overflow-x: hidden; }
@@ -188,31 +240,38 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 </style>
 </head>
 <body>
-<div class="app">
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<div class="app" id="app">
   <aside class="sidebar" id="sidebar">
+    <button type="button" class="sidebar__toggle" id="sidebarToggle" aria-label="Reduire / agrandir le menu">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button type="button" class="sidebar__close" id="sidebarClose" aria-label="Fermer le menu">
+      <span class="material-symbols-outlined">close</span>
+    </button>
     <div class="sidebar__brand">
       <div class="sidebar__logo">P</div>
       <div class="sidebar__name">Pirabel Labs</div>
     </div>
     <div class="sidebar__section">Pilotage</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link is-active" data-view="dashboard"><span class="material-symbols-outlined">dashboard</span> Tableau de bord</a>
-      <a class="sidebar__link" data-view="leads"><span class="material-symbols-outlined">person_search</span> Prospects (CRM)</a>
-      <a class="sidebar__link" data-view="clients"><span class="material-symbols-outlined">verified_user</span> Clients</a>
-      <a class="sidebar__link" data-view="quotes"><span class="material-symbols-outlined">request_quote</span> Devis</a>
-      <a class="sidebar__link" data-view="reviews"><span class="material-symbols-outlined">reviews</span> Avis clients</a>
-      <a class="sidebar__link" data-view="livres-blancs"><span class="material-symbols-outlined">menu_book</span> Livres blancs</a>
-      <a class="sidebar__link" data-view="bulk-email"><span class="material-symbols-outlined">campaign</span> Envoi email masse</a>
-      <a class="sidebar__link" data-view="analytics"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+      <a class="sidebar__link is-active" data-view="dashboard" data-label="Tableau de bord"><span class="material-symbols-outlined">dashboard</span><span class="sidebar__link-text">Tableau de bord</span></a>
+      <a class="sidebar__link" data-view="leads" data-label="Prospects (CRM)"><span class="material-symbols-outlined">person_search</span><span class="sidebar__link-text">Prospects (CRM)</span></a>
+      <a class="sidebar__link" data-view="clients" data-label="Clients"><span class="material-symbols-outlined">verified_user</span><span class="sidebar__link-text">Clients</span></a>
+      <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
+      <a class="sidebar__link" data-view="reviews" data-label="Avis clients"><span class="material-symbols-outlined">reviews</span><span class="sidebar__link-text">Avis clients</span></a>
+      <a class="sidebar__link" data-view="livres-blancs" data-label="Livres blancs"><span class="material-symbols-outlined">menu_book</span><span class="sidebar__link-text">Livres blancs</span></a>
+      <a class="sidebar__link" data-view="bulk-email" data-label="Envoi email masse"><span class="material-symbols-outlined">campaign</span><span class="sidebar__link-text">Envoi email masse</span></a>
+      <a class="sidebar__link" data-view="analytics" data-label="Analytics"><span class="material-symbols-outlined">analytics</span><span class="sidebar__link-text">Analytics</span></a>
     </nav>
     <div class="sidebar__section">Contenu</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link" data-view="cases"><span class="material-symbols-outlined">workspaces</span> Cas clients</a>
-      <a class="sidebar__link" data-view="gallery"><span class="material-symbols-outlined">photo_library</span> Galerie images</a>
+      <a class="sidebar__link" data-view="cases" data-label="Cas clients"><span class="material-symbols-outlined">workspaces</span><span class="sidebar__link-text">Cas clients</span></a>
+      <a class="sidebar__link" data-view="gallery" data-label="Galerie images"><span class="material-symbols-outlined">photo_library</span><span class="sidebar__link-text">Galerie images</span></a>
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link" data-view="settings"><span class="material-symbols-outlined">settings</span> Parametres</a>
+      <a class="sidebar__link" data-view="settings" data-label="Parametres"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Parametres</span></a>
     </nav>
     <div class="sidebar__footer">
       <div class="sidebar__avatar" id="userAvatar">P</div>
@@ -1287,11 +1346,63 @@ async function deleteDetail() {
   } catch(e) { toast('Erreur suppression', 'error'); }
 }
 
+// ============ Sidebar collapse / open / backdrop ============
+function isMobile() { return window.innerWidth < 881; }
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('is-open');
+  document.getElementById('sidebarBackdrop').classList.add('is-show');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('is-open');
+  document.getElementById('sidebarBackdrop').classList.remove('is-show');
+  document.body.style.overflow = '';
+}
+function toggleCollapse() {
+  var app = document.getElementById('app');
+  var collapsed = app.classList.toggle('is-collapsed');
+  try { localStorage.setItem('pirabel-admin-sidebar-collapsed', collapsed ? '1' : '0'); } catch(e){}
+}
+
 // ============ Init ============
 async function init() {
-  document.querySelectorAll('.sidebar__link').forEach(function(l){ l.addEventListener('click', function(){ setView(l.dataset.view); document.getElementById('sidebar').classList.remove('is-open'); }); });
+  // Restaure etat collapse depuis localStorage (desktop uniquement)
+  try {
+    if (!isMobile() && localStorage.getItem('pirabel-admin-sidebar-collapsed') === '1') {
+      document.getElementById('app').classList.add('is-collapsed');
+    }
+  } catch(e){}
+
+  document.querySelectorAll('.sidebar__link').forEach(function(l){
+    l.addEventListener('click', function(){
+      setView(l.dataset.view);
+      if (isMobile()) closeSidebar();
+    });
+  });
   document.querySelectorAll('[data-goto]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setView(a.dataset.goto); }); });
-  document.getElementById('burgerBtn').addEventListener('click', function(){ document.getElementById('sidebar').classList.toggle('is-open'); });
+
+  // Burger : on mobile = open drawer
+  document.getElementById('burgerBtn').addEventListener('click', function(){
+    if (isMobile()) openSidebar();
+    else toggleCollapse();
+  });
+
+  // Toggle desktop (chevron sur cote sidebar)
+  var toggle = document.getElementById('sidebarToggle');
+  if (toggle) toggle.addEventListener('click', toggleCollapse);
+
+  // Close mobile (X dans sidebar)
+  var closeBtn = document.getElementById('sidebarClose');
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+
+  // Backdrop click ferme sidebar mobile
+  var backdrop = document.getElementById('sidebarBackdrop');
+  if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+  // ESC ferme sidebar mobile
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && isMobile()) closeSidebar();
+  });
   document.getElementById('refreshBtn').addEventListener('click', function(){ loadStats(); loadLeads(); toast('Actualise', 'success'); });
   document.getElementById('logoutBtn').addEventListener('click', logout);
   document.getElementById('logoutBtn2').addEventListener('click', logout);

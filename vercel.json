@@ -30,9 +30,11 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/admin/(.*)", "destination": "/api/index.js" },
-    { "source": "/pirabel-admin-7x9k2m", "destination": "/api/index.js" }
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/admin/(.*)", "destination": "/api" },
+    { "source": "/devis/(.*)", "destination": "/api" },
+    { "source": "/avis/(.*)", "destination": "/api" },
+    { "source": "/pirabel-admin-7x9k2m", "destination": "/api" }
   ],
   "redirects": [
     { "source": "/realisations/:slug*", "destination": "/realisations", "permanent": false },

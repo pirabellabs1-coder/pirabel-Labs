@@ -623,9 +623,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="setting-row"><div><div class="setting-row__label">Derniere connexion</div><div class="setting-row__sub" id="settingsLastLogin">Maintenant</div></div></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
+        <div class="card__header"><div><div class="card__title">Diagnostic email (Resend)</div><div class="card__sub">Verifiez si l'envoi d'emails fonctionne</div></div></div>
+        <div id="emailStatus" style="font-size:0.85rem;color:var(--text-muted);margin:1rem 0;line-height:1.6;">Cliquez sur "Verifier la config" pour diagnostiquer.</div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn--ghost btn--sm" id="emailCheckBtn"><span class="material-symbols-outlined">fact_check</span> Verifier la config</button>
+          <input type="email" id="emailTestTo" placeholder="votre@email.com" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.5rem 0.8rem;border-radius:8px;font-size:0.85rem;flex:1;min-width:12rem;">
+          <button class="btn btn--sm" id="emailTestBtn"><span class="material-symbols-outlined">send</span> Envoyer un test</button>
+        </div>
+        <div id="emailTestResult" style="margin-top:1rem;font-size:0.85rem;line-height:1.6;"></div>
+      </div>
+      <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Notifications email</div><div class="card__sub">Sur quelles actions recevoir un mail</div></div></div>
-        <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--won">Actif</span></div>
-        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (a venir)</div></div><span class="badge badge--new">Bientot</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (a venir)</div></div><span class="badge badge--nouveau">Bientot</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Securite</div><div class="card__sub">Acces et session</div></div></div>
@@ -1601,6 +1611,32 @@ async function init() {
   if (rvRefresh) rvRefresh.addEventListener('click', loadReviews);
   var galUpload = document.getElementById('galUpload');
   if (galUpload) galUpload.addEventListener('change', function(e) { uploadFiles(e.target.files); e.target.value = ''; });
+
+  // Diagnostic email
+  var emailCheckBtn = document.getElementById('emailCheckBtn');
+  if (emailCheckBtn) emailCheckBtn.addEventListener('click', async function() {
+    var box = document.getElementById('emailStatus');
+    box.textContent = 'Verification...';
+    try {
+      var d = await api('/api/admin/email-status');
+      box.innerHTML = (d.resendKeyConfigured ? '<span style="color:var(--success);">&#10003; Cle Resend presente</span> (' + escape(d.resendKeyPreview) + ')' : '<span style="color:var(--danger);">&#10007; RESEND_API_KEY MANQUANTE</span>') +
+        '<br>Expediteur (FROM_EMAIL) : <strong>' + escape(d.fromEmail) + '</strong>' +
+        '<br>Notifications admin (CONTACT_EMAIL) : <strong>' + escape(d.contactEmail) + '</strong>' +
+        '<br><span style="color:var(--text-muted);">' + escape(d.note) + '</span>';
+    } catch(e) { box.innerHTML = '<span style="color:var(--danger);">Erreur : ' + escape(e.message) + '</span>'; }
+  });
+  var emailTestBtn = document.getElementById('emailTestBtn');
+  if (emailTestBtn) emailTestBtn.addEventListener('click', async function() {
+    var to = document.getElementById('emailTestTo').value.trim();
+    var box = document.getElementById('emailTestResult');
+    if (!to) { box.innerHTML = '<span style="color:var(--danger);">Entrez une adresse email.</span>'; return; }
+    box.textContent = 'Envoi du test...';
+    try {
+      var d = await api('/api/admin/test-email', { method: 'POST', body: JSON.stringify({ to: to }) });
+      if (d.success) box.innerHTML = '<span style="color:var(--success);">&#10003; ' + escape(d.message) + '</span><br><span style="color:var(--text-muted);">Expediteur : ' + escape(d.from) + ' &middot; ID Resend : ' + escape(d.resendId || '-') + '</span>';
+      else box.innerHTML = '<span style="color:var(--danger);">&#10007; Echec (statut ' + d.resendStatus + ') : ' + escape(d.resendError) + '</span><br><span style="color:var(--warning);">' + escape(d.hint || '') + '</span>';
+    } catch(e) { box.innerHTML = '<span style="color:var(--danger);">Erreur : ' + escape(e.message) + '</span>'; }
+  });
 
   await loadMe();
   await Promise.all([loadStats(), loadLeads()]);

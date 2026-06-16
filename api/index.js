@@ -1321,6 +1321,71 @@ app.get('/api/admin/stats-extended', auth, adminOnly, async (req, res) => {
   }
 });
 
+// ========================================================================
+// === DIAGNOSTIC EMAIL (admin) ===
+// ========================================================================
+// GET : etat de la config email (sans divulguer le secret)
+app.get('/api/admin/email-status', auth, adminOnly, (req, res) => {
+  const key = (process.env.RESEND_API_KEY || '').trim();
+  res.json({
+    resendKeyConfigured: !!key,
+    resendKeyPreview: key ? key.slice(0, 6) + '...' : null,
+    fromEmail: (process.env.FROM_EMAIL || '').trim() || 'contact@pirabellabs.com (defaut)',
+    contactEmail: (process.env.CONTACT_EMAIL || '').trim() || 'contact@pirabellabs.com (defaut)',
+    adminEmail: (process.env.ADMIN_EMAIL || '').trim() || null,
+    note: !key ? 'RESEND_API_KEY manquante : aucun email ne peut partir. Ajoutez-la dans Vercel > Settings > Environment Variables.' : 'Cle presente. Si les emails ne partent pas, verifiez que FROM_EMAIL est sur un domaine verifie chez Resend.'
+  });
+});
+
+// POST : envoie un email de test et renvoie la reponse REELLE de Resend (diagnostic)
+app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const to = sanitizeEmail(req.body.to) || (req.user && req.user.email);
+    if (!isValidEmail(to)) return res.status(400).json({ error: 'Adresse de test invalide.' });
+
+    const key = (process.env.RESEND_API_KEY || '').trim();
+    if (!key) {
+      return res.status(503).json({ error: 'RESEND_API_KEY non configuree sur Vercel. Aucun email ne peut partir tant qu\'elle n\'est pas ajoutee.' });
+    }
+
+    const from = '"Pirabel Labs" <' + ((process.env.FROM_EMAIL || '').trim() || 'contact@pirabellabs.com') + '>';
+    const html = masterTemplate({
+      title: 'Test email Pirabel Labs',
+      body: '<p>Ceci est un email de test envoye depuis le dashboard admin a ' + new Date().toISOString() + '.</p><p>Si vous recevez ce message, la configuration Resend fonctionne.</p>',
+    });
+
+    let resp, body;
+    try {
+      resp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from, to: [to], subject: 'Test email - Pirabel Labs', html }),
+      });
+      body = await resp.json().catch(() => ({}));
+    } catch (e) {
+      return res.status(502).json({ error: 'Echec reseau vers Resend : ' + e.message });
+    }
+
+    if (!resp.ok) {
+      return res.status(200).json({
+        success: false,
+        resendStatus: resp.status,
+        resendError: (body && (body.message || body.name)) || 'Erreur Resend inconnue',
+        from,
+        to,
+        hint: resp.status === 403 || resp.status === 422
+          ? 'Domaine probablement non verifie OU FROM_EMAIL hors domaine verifie. Verifiez le domaine de FROM_EMAIL sur resend.com/domains.'
+          : 'Verifiez la cle API et le domaine sur resend.com.'
+      });
+    }
+
+    res.json({ success: true, message: 'Email de test envoye a ' + to + '. Verifiez la boite (et les spams).', resendId: body.id, from });
+  } catch (err) {
+    console.error('[test-email]', err.message);
+    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+  }
+});
+
 // === ERROR HANDLER ===
 app.use((err, req, res, next) => {
   console.error('[unhandled]', err.message);

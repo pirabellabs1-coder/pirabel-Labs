@@ -198,6 +198,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <nav class="sidebar__nav">
       <a class="sidebar__link is-active" data-view="dashboard"><span class="material-symbols-outlined">dashboard</span> Tableau de bord</a>
       <a class="sidebar__link" data-view="leads"><span class="material-symbols-outlined">person_search</span> Leads (CRM)</a>
+      <a class="sidebar__link" data-view="livres-blancs"><span class="material-symbols-outlined">menu_book</span> Livres blancs</a>
+      <a class="sidebar__link" data-view="bulk-email"><span class="material-symbols-outlined">campaign</span> Envoi email masse</a>
       <a class="sidebar__link" data-view="analytics"><span class="material-symbols-outlined">analytics</span> Analytics</a>
     </nav>
     <div class="sidebar__section">Contenu</div>
@@ -348,6 +350,92 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
     </div>
 
+    <!-- LIVRES BLANCS VIEW -->
+    <div class="view" data-view="livres-blancs">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Livres blancs téléchargés</h1><div class="topbar__sub">Tous les leads ayant téléchargé un de vos livres blancs.</div></div>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost btn--sm" id="lbRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+          <button class="btn btn--sm" id="lbExport"><span class="material-symbols-outlined">download</span> Exporter CSV</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="lbKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div class="card">
+        <div class="card__header">
+          <div><div class="card__title">Téléchargements (500 derniers)</div><div class="card__sub">Filtrer par livre blanc :</div></div>
+          <select id="lbFilter" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.85rem;border-radius:8px;font-family:var(--font-display);font-weight:600;font-size:0.82rem;cursor:pointer;">
+            <option value="">Tous les livres blancs</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);"><input type="checkbox" id="lbSelectAll"></th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Date</th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Nom</th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Email</th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Entreprise</th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Livre blanc</th><th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Opt-in</th></tr></thead>
+            <tbody id="lbTbody"><tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.25rem;display:none;" id="lbBulkActions">
+        <div class="card__header"><div><div class="card__title">Action sur la sélection</div><div class="card__sub" id="lbSelectedCount">0 leads sélectionnés</div></div></div>
+        <button class="btn" id="lbBulkEmail" style="margin-top:1rem;"><span class="material-symbols-outlined">mail</span> Envoyer email aux sélectionnés</button>
+      </div>
+    </div>
+
+    <!-- BULK EMAIL VIEW -->
+    <div class="view" data-view="bulk-email">
+      <div class="topbar" style="margin-bottom:1.5rem;">
+        <div><h1>Envoi email en masse</h1><div class="topbar__sub">Newsletter / annonce / relance vers vos leads (uniquement opt-in newsletter).</div></div>
+      </div>
+      <div class="card">
+        <div class="card__header"><div><div class="card__title">Étape 1 : sélection des destinataires</div><div class="card__sub">Filtrer pour cibler précisément.</div></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Type de lead</label>
+            <select id="bulkType" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.85rem;border-radius:8px;">
+              <option value="">Tous</option>
+              <option value="contact">Contact (formulaire)</option>
+              <option value="livre-blanc">Livre blanc téléchargé</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Livre blanc</label>
+            <select id="bulkLivreBlanc" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.85rem;border-radius:8px;">
+              <option value="">Tous</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Statut</label>
+            <select id="bulkStatus" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.85rem;border-radius:8px;">
+              <option value="">Tous</option>
+              <option value="nouveau">Nouveau</option>
+              <option value="lu">Lu</option>
+              <option value="newsletter_ok">Newsletter OK</option>
+              <option value="converti">Converti</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="bulkPreview" style="margin-top:1rem;"><span class="material-symbols-outlined">preview</span> Voir les destinataires</button>
+        <div id="bulkPreviewResult" style="margin-top:1rem;color:var(--text-muted);font-size:0.88rem;"></div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card__header"><div><div class="card__title">Étape 2 : composer le message</div><div class="card__sub">Variables disponibles : <code>{{firstName}}</code>, <code>{{name}}</code>, <code>{{company}}</code></div></div></div>
+        <div style="margin-top:1rem;">
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Sujet de l'email</label>
+          <input type="text" id="bulkSubject" placeholder="Nouveau livre blanc Pirabel Labs disponible" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 1rem;border-radius:8px;font-size:0.92rem;">
+        </div>
+        <div style="margin-top:1rem;">
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Corps de l'email (HTML autorisé)</label>
+          <textarea id="bulkBody" rows="10" placeholder="<p>Bonjour {{firstName}},</p><p>Nous venons de publier...</p>" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 1rem;border-radius:8px;font-size:0.9rem;font-family:monospace;resize:vertical;"></textarea>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card__header"><div><div class="card__title">Étape 3 : envoi</div><div class="card__sub">L'envoi peut prendre 1-2 minutes selon le nombre de destinataires.</div></div></div>
+        <button class="btn" id="bulkSend" style="margin-top:1rem;background:var(--accent);"><span class="material-symbols-outlined">send</span> Envoyer maintenant</button>
+        <div id="bulkResult" style="margin-top:1rem;font-size:0.88rem;"></div>
+      </div>
+    </div>
+
     <!-- SETTINGS VIEW -->
     <div class="view" data-view="settings">
       <div class="card">
@@ -447,13 +535,128 @@ function statusBadge(status) { return '<span class="badge badge--' + status + '"
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Leads CRM', 'Gestion des contacts entrants'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], settings: ['Parametres', 'Compte et notifications'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Leads CRM', 'Gestion des contacts entrants'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], settings: ['Parametres', 'Compte et notifications'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
   if (view === 'analytics' && STATE.stats) setTimeout(renderAnalyticsCharts, 50);
   if (view === 'leads' && !STATE.leads.length) loadLeads();
+  if (view === 'livres-blancs') loadLivresBlancs();
+  if (view === 'bulk-email') initBulkEmail();
   window.location.hash = view;
+}
+
+// ============ Livres blancs ============
+async function loadLivresBlancs() {
+  try {
+    const data = await api('/api/admin/leads?type=livre-blanc');
+    const leads = data.leads || [];
+    const byLivreBlanc = data.byLivreBlanc || [];
+
+    // KPIs
+    const kpisEl = document.getElementById('lbKpis');
+    const total = leads.length;
+    const optIn = leads.filter(l => l.newsletterOptIn).length;
+    const last7 = leads.filter(l => (Date.now() - new Date(l.createdAt).getTime()) < 7 * 86400000).length;
+    kpisEl.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">menu_book</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Téléchargements total</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">mail</span></div></div><div class="kpi__value">' + optIn + '</div><div class="kpi__label">Opt-in newsletter</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + last7 + '</div><div class="kpi__label">7 derniers jours</div></div>';
+
+    // Filter dropdown
+    const filterEl = document.getElementById('lbFilter');
+    if (filterEl && byLivreBlanc.length) {
+      const currentValue = filterEl.value;
+      filterEl.innerHTML = '<option value="">Tous les livres blancs (' + total + ')</option>' +
+        byLivreBlanc.map(b => '<option value="' + escape(b._id) + '">' + escape(b.title || b._id) + ' (' + b.count + ')</option>').join('');
+      filterEl.value = currentValue;
+    }
+
+    // Table
+    const tbody = document.getElementById('lbTbody');
+    const filterSlug = filterEl ? filterEl.value : '';
+    const filtered = filterSlug ? leads.filter(l => l.livreBlancSlug === filterSlug) : leads;
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun téléchargement.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map(l => '<tr style="border-bottom:1px solid var(--border);">' +
+      '<td style="padding:0.85rem 0.5rem;"><input type="checkbox" class="lb-checkbox" value="' + l._id + '"></td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(l.createdAt).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:600;">' + escape(l.name) + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;"><a href="mailto:' + escape(l.email) + '" style="color:var(--accent);">' + escape(l.email) + '</a></td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(l.company || '-') + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;">' + escape(l.livreBlancTitle || l.livreBlancSlug) + '</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;">' + (l.newsletterOptIn ? '<span style="color:var(--success);">✓ Oui</span>' : '<span style="color:var(--text-faint);">Non</span>') + '</td>' +
+      '</tr>').join('');
+
+    // Bind checkboxes
+    document.querySelectorAll('.lb-checkbox').forEach(cb => {
+      cb.addEventListener('change', updateLbSelection);
+    });
+  } catch(e) { console.error(e); toast('Erreur chargement livres blancs', 'error'); }
+}
+
+function updateLbSelection() {
+  const checked = document.querySelectorAll('.lb-checkbox:checked');
+  const bulkBox = document.getElementById('lbBulkActions');
+  const countEl = document.getElementById('lbSelectedCount');
+  if (checked.length > 0) {
+    bulkBox.style.display = 'block';
+    countEl.textContent = checked.length + ' lead(s) sélectionné(s)';
+  } else {
+    bulkBox.style.display = 'none';
+  }
+}
+
+// ============ Bulk email ============
+async function initBulkEmail() {
+  // Populate livre blanc options
+  try {
+    const data = await api('/api/admin/leads?type=livre-blanc');
+    const byLivreBlanc = data.byLivreBlanc || [];
+    const sel = document.getElementById('bulkLivreBlanc');
+    if (sel) {
+      sel.innerHTML = '<option value="">Tous</option>' +
+        byLivreBlanc.map(b => '<option value="' + escape(b._id) + '">' + escape(b.title || b._id) + ' (' + b.count + ')</option>').join('');
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function bulkPreview() {
+  const params = new URLSearchParams();
+  const type = document.getElementById('bulkType').value;
+  const lb = document.getElementById('bulkLivreBlanc').value;
+  const status = document.getElementById('bulkStatus').value;
+  if (type) params.set('type', type);
+  if (lb) params.set('livreBlanc', lb);
+  if (status) params.set('status', status);
+  try {
+    const data = await api('/api/admin/leads?' + params);
+    const leads = (data.leads || []).filter(l => l.newsletterOptIn);
+    document.getElementById('bulkPreviewResult').innerHTML = '<strong style="color:var(--success);">' + leads.length + ' destinataire(s) opt-in</strong> trouvé(s) avec ces filtres. ' + (leads.length > 0 ? 'Vous pouvez composer et envoyer l\'email.' : 'Affinez les filtres pour cibler.');
+    window._bulkLeadIds = leads.map(l => l._id);
+  } catch(e) { console.error(e); }
+}
+
+async function bulkSend() {
+  const subject = document.getElementById('bulkSubject').value.trim();
+  const bodyHtml = document.getElementById('bulkBody').value.trim();
+  const ids = window._bulkLeadIds || [];
+  const resultEl = document.getElementById('bulkResult');
+
+  if (!ids.length) { resultEl.innerHTML = '<span style="color:var(--danger);">Cliquez d\'abord sur "Voir les destinataires" pour sélectionner.</span>'; return; }
+  if (!subject || subject.length < 3) { resultEl.innerHTML = '<span style="color:var(--danger);">Sujet requis (3 caractères min).</span>'; return; }
+  if (!bodyHtml || bodyHtml.length < 20) { resultEl.innerHTML = '<span style="color:var(--danger);">Corps email requis (20 caractères min).</span>'; return; }
+
+  if (!confirm('Envoyer cet email à ' + ids.length + ' destinataire(s) ?')) return;
+
+  resultEl.innerHTML = '<span style="color:var(--info);">Envoi en cours...</span>';
+  try {
+    const data = await api('/api/admin/leads/bulk-email', { method: 'POST', body: JSON.stringify({ ids, subject, bodyHtml, onlyOptIn: true }) });
+    resultEl.innerHTML = '<span style="color:var(--success);">✓ ' + data.message + '</span>';
+  } catch(e) {
+    resultEl.innerHTML = '<span style="color:var(--danger);">Erreur : ' + (e.message || 'inconnue') + '</span>';
+  }
 }
 
 // ============ Data loading ============
@@ -771,6 +974,55 @@ async function init() {
   document.getElementById('leadsSearch').addEventListener('input', function(e){ STATE.search = e.target.value; renderLeadsTable(); });
   document.getElementById('leadsStatusFilter').addEventListener('change', function(e){ STATE.filterStatus = e.target.value; renderLeadsTable(); });
   document.getElementById('leadsServiceFilter').addEventListener('change', function(e){ STATE.filterService = e.target.value; renderLeadsTable(); });
+
+  // Livres blancs handlers
+  const lbRefresh = document.getElementById('lbRefresh');
+  const lbFilter = document.getElementById('lbFilter');
+  const lbSelectAll = document.getElementById('lbSelectAll');
+  const lbBulkEmail = document.getElementById('lbBulkEmail');
+  const lbExport = document.getElementById('lbExport');
+  if (lbRefresh) lbRefresh.addEventListener('click', loadLivresBlancs);
+  if (lbFilter) lbFilter.addEventListener('change', loadLivresBlancs);
+  if (lbSelectAll) lbSelectAll.addEventListener('change', function(e) {
+    document.querySelectorAll('.lb-checkbox').forEach(cb => cb.checked = e.target.checked);
+    updateLbSelection();
+  });
+  if (lbBulkEmail) lbBulkEmail.addEventListener('click', function() {
+    const ids = [...document.querySelectorAll('.lb-checkbox:checked')].map(cb => cb.value);
+    window._bulkLeadIds = ids;
+    setView('bulk-email');
+    setTimeout(() => {
+      document.getElementById('bulkPreviewResult').innerHTML = '<strong style="color:var(--success);">' + ids.length + ' destinataire(s) pré-sélectionné(s) depuis Livres blancs.</strong>';
+    }, 100);
+  });
+  if (lbExport) lbExport.addEventListener('click', async function() {
+    try {
+      const data = await api('/api/admin/leads?type=livre-blanc');
+      const leads = data.leads || [];
+      const csv = 'Date,Nom,Email,Entreprise,Telephone,Livre blanc,Opt-in newsletter\n' +
+        leads.map(l => [
+          new Date(l.createdAt).toISOString(),
+          '"' + (l.name || '').replace(/"/g,'""') + '"',
+          l.email || '',
+          '"' + (l.company || '').replace(/"/g,'""') + '"',
+          l.phone || '',
+          '"' + (l.livreBlancTitle || l.livreBlancSlug || '').replace(/"/g,'""') + '"',
+          l.newsletterOptIn ? 'oui' : 'non'
+        ].join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'livres-blancs-leads-' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+      toast('Export CSV téléchargé', 'success');
+    } catch(e) { toast('Erreur export', 'error'); }
+  });
+
+  // Bulk email handlers
+  const bulkPreviewBtn = document.getElementById('bulkPreview');
+  const bulkSendBtn = document.getElementById('bulkSend');
+  if (bulkPreviewBtn) bulkPreviewBtn.addEventListener('click', bulkPreview);
+  if (bulkSendBtn) bulkSendBtn.addEventListener('click', bulkSend);
 
   await loadMe();
   await Promise.all([loadStats(), loadLeads()]);

@@ -48,6 +48,31 @@
 .lb-band h2 em { color: var(--accent); font-style: normal; }
 .lb-band p { color: var(--text-muted); font-size: 1rem; line-height: 1.65; max-width: 40rem; margin-bottom: 2rem; }
 
+/* === MODAL FORM === */
+.lb-modal { position: fixed; inset: 0; background: rgba(20,19,19,0.85); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.lb-modal.is-open { display: flex; }
+.lb-modal__inner { background: var(--bg); border: 1px solid var(--border); border-radius: 22px; max-width: 30rem; width: 100%; padding: 2rem 1.75rem; position: relative; max-height: 90vh; overflow-y: auto; }
+.lb-modal__close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.5rem; display: flex; }
+.lb-modal__close:hover { color: var(--accent); }
+.lb-modal__eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.6rem; }
+.lb-modal__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.3rem; line-height: 1.25; color: var(--text); margin-bottom: 0.4rem; }
+.lb-modal__sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.5rem; }
+.lb-form { display: flex; flex-direction: column; gap: 1rem; }
+.lb-form__row { display: flex; flex-direction: column; gap: 0.4rem; }
+.lb-form label { font-family: var(--font-display); font-weight: 600; font-size: 0.82rem; color: var(--text); }
+.lb-form label span { color: var(--accent); }
+.lb-form input, .lb-form textarea { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; font-family: var(--font-body); font-size: 0.92rem; color: var(--text); transition: border-color 0.2s; }
+.lb-form input:focus, .lb-form textarea:focus { outline: none; border-color: var(--accent); }
+.lb-form__checkbox { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; cursor: pointer; }
+.lb-form__checkbox input { flex-shrink: 0; margin-top: 0.15rem; }
+.lb-form__submit { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.95rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 10px; font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; cursor: pointer; transition: all 0.2s; }
+.lb-form__submit:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.95; }
+.lb-form__submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.lb-form__msg { padding: 0.85rem 1rem; border-radius: 10px; font-size: 0.88rem; line-height: 1.5; display: none; }
+.lb-form__msg.is-show { display: block; }
+.lb-form__msg.is-success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+.lb-form__msg.is-error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+
 @media (max-width: 720px) { .lb-hero h1 { font-size: 1.9rem; } }
 </style>
 <script type="application/ld+json">
@@ -125,7 +150,7 @@
   <section>
     <div class="lb-grid">
 
-      <a href="/livre-blanc-seo-pme-francophones-2026" class="lb-card">
+      <button type="button" class="lb-card" data-slug="seo-pme-francophones-2026" data-title="Le guide complet du SEO pour PME francophones en 2026" style="text-align:left;border:1px solid var(--border);cursor:pointer;font:inherit;">
         <div class="lb-card__cover">
           <span class="lb-card__pages">62 pages</span>
           <span class="material-symbols-outlined lb-card__icon">search_insights</span>
@@ -146,9 +171,9 @@
           </div>
           <span class="lb-card__cta">Télécharger gratuitement <span class="material-symbols-outlined">download</span></span>
         </div>
-      </a>
+      </button>
 
-      <a href="/livre-blanc-ia-pme-cas-usage-roi" class="lb-card">
+      <button type="button" class="lb-card" data-slug="ia-pme-cas-usage-roi" data-title="Integrer l'IA dans votre PME : cas d'usage et ROI mesurables" style="text-align:left;border:1px solid var(--border);cursor:pointer;font:inherit;">
         <div class="lb-card__cover">
           <span class="lb-card__pages">78 pages</span>
           <span class="material-symbols-outlined lb-card__icon">psychology</span>
@@ -169,9 +194,9 @@
           </div>
           <span class="lb-card__cta">Télécharger gratuitement <span class="material-symbols-outlined">download</span></span>
         </div>
-      </a>
+      </button>
 
-      <a href="/livre-blanc-tunnels-vente-cro-3x-conversion" class="lb-card">
+      <button type="button" class="lb-card" data-slug="tunnels-vente-cro-3x-conversion" data-title="Tunnels de vente : passer de 1% a 5% de conversion en 90 jours" style="text-align:left;border:1px solid var(--border);cursor:pointer;font:inherit;">
         <div class="lb-card__cover">
           <span class="lb-card__pages">54 pages</span>
           <span class="material-symbols-outlined lb-card__icon">conversion_path</span>
@@ -192,9 +217,9 @@
           </div>
           <span class="lb-card__cta">Télécharger gratuitement <span class="material-symbols-outlined">download</span></span>
         </div>
-      </a>
+      </button>
 
-      <a href="/livre-blanc-ecommerce-afrique-paiement-mobile-money" class="lb-card">
+      <button type="button" class="lb-card" data-slug="ecommerce-afrique-paiement-mobile-money" data-title="E-commerce en Afrique francophone : Mobile Money, logistique, conversion" style="text-align:left;border:1px solid var(--border);cursor:pointer;font:inherit;">
         <div class="lb-card__cover">
           <span class="lb-card__pages">68 pages</span>
           <span class="material-symbols-outlined lb-card__icon">shopping_cart</span>
@@ -215,9 +240,9 @@
           </div>
           <span class="lb-card__cta">Télécharger gratuitement <span class="material-symbols-outlined">download</span></span>
         </div>
-      </a>
+      </button>
 
-      <a href="/livre-blanc-refonte-site-checklist-complete" class="lb-card">
+      <button type="button" class="lb-card" data-slug="refonte-site-checklist-complete" data-title="Refonte de site web : checklist 60 points pour eviter les pieges" style="text-align:left;border:1px solid var(--border);cursor:pointer;font:inherit;">
         <div class="lb-card__cover">
           <span class="lb-card__pages">48 pages</span>
           <span class="material-symbols-outlined lb-card__icon">code</span>
@@ -238,7 +263,7 @@
           </div>
           <span class="lb-card__cta">Télécharger gratuitement <span class="material-symbols-outlined">download</span></span>
         </div>
-      </a>
+      </button>
 
     </div>
   </section>
@@ -251,6 +276,47 @@
       <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
     </div>
   </section>
+
+  <!-- === MODAL TÉLÉCHARGEMENT LIVRE BLANC === -->
+  <div id="lbModal" class="lb-modal" role="dialog" aria-modal="true" aria-labelledby="lbModalTitle">
+    <div class="lb-modal__inner">
+      <button type="button" class="lb-modal__close" id="lbModalClose" aria-label="Fermer">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="lb-modal__eyebrow">Téléchargement gratuit</div>
+      <h3 class="lb-modal__title" id="lbModalTitle">Recevez votre livre blanc par email</h3>
+      <p class="lb-modal__sub">Le PDF arrive dans votre boîte mail en moins de 60 secondes. Nous ne spammons jamais : vous gardez le contrôle total.</p>
+      <form class="lb-form" id="lbForm">
+        <input type="hidden" name="slug" id="lbSlug" value="">
+        <input type="text" name="website_url" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+        <div class="lb-form__row">
+          <label for="lbName">Nom complet <span>*</span></label>
+          <input type="text" id="lbName" name="name" required minlength="2" maxlength="120" placeholder="Lissanon Gildas">
+        </div>
+        <div class="lb-form__row">
+          <label for="lbEmail">Email professionnel <span>*</span></label>
+          <input type="email" id="lbEmail" name="email" required maxlength="200" placeholder="vous@entreprise.com">
+        </div>
+        <div class="lb-form__row">
+          <label for="lbCompany">Entreprise</label>
+          <input type="text" id="lbCompany" name="company" maxlength="120" placeholder="Pirabel Labs (optionnel)">
+        </div>
+        <div class="lb-form__row">
+          <label for="lbPhone">Téléphone / WhatsApp</label>
+          <input type="tel" id="lbPhone" name="phone" maxlength="30" placeholder="+229 90 00 00 00 (optionnel)">
+        </div>
+        <label class="lb-form__checkbox">
+          <input type="checkbox" id="lbNewsletter" name="newsletter" checked>
+          <span>Recevoir de temps en temps des conseils marketing exclusifs (1-2 emails/mois max, désinscription en 1 clic).</span>
+        </label>
+        <div class="lb-form__msg" id="lbMsg"></div>
+        <button type="submit" class="lb-form__submit" id="lbSubmit">
+          <span class="material-symbols-outlined">download</span>
+          <span class="lb-submit-text">Recevoir le livre blanc</span>
+        </button>
+      </form>
+    </div>
+  </div>
 
 </main>
 
@@ -303,6 +369,7 @@
 
 <script>
 (function(){
+  // === Nav burger ===
   var burger = document.getElementById('navBurger');
   var menu = document.getElementById('navMenu');
   if (burger && menu) {
@@ -328,6 +395,96 @@
           if (item) item.classList.toggle('is-active');
         }
       });
+    });
+  }
+
+  // === Modal livre blanc ===
+  var modal = document.getElementById('lbModal');
+  var modalClose = document.getElementById('lbModalClose');
+  var modalTitle = document.getElementById('lbModalTitle');
+  var slugInput = document.getElementById('lbSlug');
+  var form = document.getElementById('lbForm');
+  var msg = document.getElementById('lbMsg');
+  var submit = document.getElementById('lbSubmit');
+  var submitText = submit ? submit.querySelector('.lb-submit-text') : null;
+
+  function openModal(slug, title){
+    if (!modal) return;
+    slugInput.value = slug;
+    modalTitle.textContent = title || 'Recevez votre livre blanc par email';
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function(){ document.getElementById('lbName').focus(); }, 100);
+  }
+  function closeModal(){
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+    msg.className = 'lb-form__msg';
+    msg.textContent = '';
+    form.reset();
+  }
+
+  // Bind clicks on lb-card buttons
+  document.querySelectorAll('.lb-card[data-slug]').forEach(function(card){
+    card.addEventListener('click', function(e){
+      e.preventDefault();
+      var slug = card.getAttribute('data-slug');
+      var title = card.getAttribute('data-title');
+      openModal(slug, title);
+    });
+  });
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modal) {
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) closeModal();
+  });
+
+  // Form submission
+  if (form) {
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      msg.className = 'lb-form__msg';
+      submit.disabled = true;
+      if (submitText) submitText.textContent = 'Envoi en cours...';
+
+      var data = {
+        slug: slugInput.value,
+        name: document.getElementById('lbName').value.trim(),
+        email: document.getElementById('lbEmail').value.trim(),
+        company: document.getElementById('lbCompany').value.trim(),
+        phone: document.getElementById('lbPhone').value.trim(),
+        newsletter: document.getElementById('lbNewsletter').checked,
+        website_url: form.website_url.value
+      };
+
+      try {
+        var r = await fetch('/api/livre-blanc/request', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        var json = await r.json();
+        if (r.ok && json.success) {
+          msg.className = 'lb-form__msg is-show is-success';
+          msg.innerHTML = '<strong>Email envoyé !</strong> Votre livre blanc arrive dans votre boîte mail. Pensez à vérifier les indésirables si besoin.';
+          if (submitText) submitText.textContent = 'Email envoyé ✓';
+          setTimeout(closeModal, 4000);
+        } else {
+          msg.className = 'lb-form__msg is-show is-error';
+          msg.textContent = json.error || 'Erreur, réessayez ou écrivez-nous directement.';
+          submit.disabled = false;
+          if (submitText) submitText.textContent = 'Recevoir le livre blanc';
+        }
+      } catch (err) {
+        msg.className = 'lb-form__msg is-show is-error';
+        msg.textContent = 'Erreur réseau. Réessayez ou écrivez à contact@pirabellabs.com';
+        submit.disabled = false;
+        if (submitText) submitText.textContent = 'Recevoir le livre blanc';
+      }
     });
   }
 })();

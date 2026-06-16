@@ -195,6 +195,126 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
   }
 });
 
+// === PUBLIC : Demande de livre blanc ===
+const livreBlancLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 10,
+  message: 'Trop de demandes. Reessayez dans 15 minutes.',
+  keyPrefix: 'livre-blanc',
+});
+
+const LIVRES_BLANCS = {
+  'seo-pme-francophones-2026': {
+    title: 'Le guide complet du SEO pour PME francophones en 2026',
+    pages: 62,
+    pdfUrl: '/downloads/livre-blanc-seo-pme-francophones-2026.pdf',
+    description: 'Methodologie complete SEO : audit technique 60 points, recherche mots-cles, contenu E-E-A-T, netlinking white-hat.'
+  },
+  'ia-pme-cas-usage-roi': {
+    title: "Integrer l'IA dans votre PME : cas d'usage et ROI mesurables",
+    pages: 78,
+    pdfUrl: '/downloads/livre-blanc-ia-pme-cas-usage-roi.pdf',
+    description: "20 cas d'usage IA concrets pour PME : chatbots WhatsApp, agents IA, automatisation, RAG."
+  },
+  'tunnels-vente-cro-3x-conversion': {
+    title: 'Tunnels de vente : passer de 1% a 5% de conversion en 90 jours',
+    pages: 54,
+    pdfUrl: '/downloads/livre-blanc-tunnels-vente-cro-3x-conversion.pdf',
+    description: 'Methodologie CRO complete : audit comportement, conception landing pages, A/B testing, paiements optimises.'
+  },
+  'ecommerce-afrique-paiement-mobile-money': {
+    title: 'E-commerce en Afrique francophone : Mobile Money, logistique, conversion',
+    pages: 68,
+    pdfUrl: '/downloads/livre-blanc-ecommerce-afrique-paiement-mobile-money.pdf',
+    description: 'Guide complet pour lancer ou scaler un e-commerce en Afrique francophone.'
+  },
+  'refonte-site-checklist-complete': {
+    title: 'Refonte de site web : checklist 60 points pour eviter les pieges',
+    pages: 48,
+    pdfUrl: '/downloads/livre-blanc-refonte-site-checklist-complete.pdf',
+    description: 'Checklist 60 points couvrant tous les pieges techniques, SEO, UX, business a eviter.'
+  }
+};
+
+app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name, 120);
+    const email = sanitizeEmail(req.body.email);
+    const company = sanitize(req.body.company || '', 120);
+    const phone = sanitize(req.body.phone || '', 30);
+    const slug = sanitize(req.body.slug || '', 100);
+    const newsletterOptIn = req.body.newsletter !== false; // default true
+
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
+    if (!LIVRES_BLANCS[slug]) return res.status(400).json({ error: 'Livre blanc inconnu.' });
+
+    const lb = LIVRES_BLANCS[slug];
+
+    const ipHash = crypto.createHash('sha256')
+      .update((req.ip || '') + (process.env.JWT_SECRET || ''))
+      .digest('hex').slice(0, 32);
+
+    const lead = await Lead.create({
+      type: 'livre-blanc',
+      livreBlancSlug: slug,
+      livreBlancTitle: lb.title,
+      name, email, phone, company,
+      service: 'livre-blanc',
+      message: `Telechargement livre blanc : ${lb.title}`,
+      newsletterOptIn,
+      source: 'site_livre_blanc',
+      userAgent: (req.headers['user-agent'] || '').slice(0, 500),
+      ipHash,
+    });
+
+    const pdfFullUrl = 'https://www.pirabellabs.com' + lb.pdfUrl;
+
+    // Email admin
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      '[Pirabel Labs] Nouveau telechargement livre blanc - ' + lb.title,
+      newOrderEmail({ name, email, phone, company, service: 'Livre blanc : ' + lb.title, message: `Lead : ${name} <${email}>\nLivre blanc telecharge : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}` }),
+      { replyTo: email }
+    ).catch(e => console.error('[livre-blanc] admin email error:', e.message));
+
+    // Email client avec lien de telechargement
+    const downloadHtml = masterTemplate({
+      headerType: 'hero',
+      preheader: 'Votre livre blanc est pret a telecharger',
+      title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
+      subtitle: 'Voici votre livre blanc Pirabel Labs',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d&apos;avoir telecharge notre livre blanc :</p>' +
+        '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Livre blanc &middot; ' + lb.pages + ' pages</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:12px;">' + escapeHtml(lb.title) + '</div>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">' + escapeHtml(lb.description) + '</p>' +
+        '</div>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le telecharger en cliquant sur le bouton ci-dessous. Conservez cet email pour y revenir plus tard si besoin.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Si vous avez des questions apres lecture, ecrivez-nous directement : <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/16139273067" style="color:#FF5500;">+1 (613) 927-3067</a>.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong></p>',
+      cta: 'Telecharger le PDF',
+      ctaUrl: pdfFullUrl,
+      ctaSecondary: 'Voir tous nos livres blancs',
+      ctaSecondaryUrl: 'https://www.pirabellabs.com/livres-blancs',
+    });
+
+    sendEmail(
+      email,
+      'Votre livre blanc : ' + lb.title,
+      downloadHtml
+    ).catch(e => console.error('[livre-blanc] client email error:', e.message));
+
+    res.json({
+      success: true,
+      message: 'Livre blanc envoye par email !',
+      pdfUrl: lb.pdfUrl
+    });
+  } catch (err) {
+    console.error('[livre-blanc] error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com' });
+  }
+});
+
 // === ADMIN AUTH ===
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, max: 10,
@@ -248,13 +368,89 @@ app.get('/api/admin/me', auth, adminOnly, (req, res) => {
 app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
   try {
     const status = sanitize(req.query.status || '', 30);
+    const type = sanitize(req.query.type || '', 30);
+    const livreBlanc = sanitize(req.query.livreBlanc || '', 100);
     const q = {};
-    if (['nouveau', 'lu', 'en_cours', 'converti', 'perdu'].includes(status)) q.status = status;
+    if (['nouveau', 'lu', 'en_cours', 'converti', 'perdu', 'newsletter_ok'].includes(status)) q.status = status;
+    if (['contact', 'livre-blanc'].includes(type)) q.type = type;
+    if (livreBlanc) q.livreBlancSlug = livreBlanc;
     const leads = await Lead.find(q).sort({ createdAt: -1 }).limit(500);
     const stats = await Lead.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
-    res.json({ leads, stats });
+    const byType = await Lead.aggregate([{ $group: { _id: '$type', count: { $sum: 1 } } }]);
+    const byLivreBlanc = await Lead.aggregate([
+      { $match: { type: 'livre-blanc' } },
+      { $group: { _id: '$livreBlancSlug', count: { $sum: 1 }, title: { $first: '$livreBlancTitle' } } },
+      { $sort: { count: -1 } }
+    ]);
+    res.json({ leads, stats, byType, byLivreBlanc });
   } catch (err) {
     console.error('[leads] list error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// Bulk email aux leads (newsletter / relance / annonce)
+const bulkEmailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 10,
+  message: 'Trop d\'envois bulk. Reessayez dans 1 heure.',
+  keyPrefix: 'bulk-email',
+});
+
+app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limitBody(50), async (req, res) => {
+  try {
+    const ids = Array.isArray(req.body.ids) ? req.body.ids.filter(id => /^[a-f0-9]{24}$/i.test(id)) : [];
+    const subject = sanitize(req.body.subject || '', 200);
+    const bodyHtml = String(req.body.bodyHtml || '').slice(0, 50000);
+    const onlyOptIn = req.body.onlyOptIn !== false;
+
+    if (!ids.length) return res.status(400).json({ error: 'Aucun lead selectionne.' });
+    if (!subject || subject.length < 3) return res.status(400).json({ error: 'Sujet requis (3 caracteres min).' });
+    if (!bodyHtml || bodyHtml.length < 20) return res.status(400).json({ error: 'Corps email requis (20 caracteres min).' });
+
+    const query = { _id: { $in: ids } };
+    if (onlyOptIn) query.newsletterOptIn = true;
+
+    const leads = await Lead.find(query);
+    if (!leads.length) return res.status(404).json({ error: 'Aucun lead valide trouve (opt-in ?).' });
+
+    let sent = 0, failed = 0;
+    const errors = [];
+
+    // Send sequentially to avoid Resend rate limits (1 email = ~150ms minimum)
+    for (const lead of leads) {
+      const personalizedHtml = bodyHtml
+        .replace(/\{\{name\}\}/g, escapeHtml(lead.name))
+        .replace(/\{\{firstName\}\}/g, escapeHtml(lead.name.split(' ')[0]))
+        .replace(/\{\{company\}\}/g, escapeHtml(lead.company || ''));
+
+      const fullEmail = masterTemplate({
+        headerType: 'hero',
+        title: 'Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',',
+        body: personalizedHtml +
+          '<p style="margin-top:32px;font-size:12px;color:rgba(229,226,225,0.4);line-height:1.5;">Vous recevez cet email car vous avez interagi avec Pirabel Labs. Pour vous desinscrire, repondez avec "DESABONNEMENT".</p>',
+        cta: 'Visiter pirabellabs.com',
+        ctaUrl: 'https://www.pirabellabs.com',
+      });
+
+      try {
+        await sendEmail(lead.email, subject, fullEmail);
+        lead.lastEmailSentAt = new Date();
+        lead.emailsSentCount = (lead.emailsSentCount || 0) + 1;
+        await lead.save();
+        sent++;
+      } catch (e) {
+        failed++;
+        errors.push({ leadId: lead._id, error: e.message });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `${sent} email(s) envoye(s), ${failed} echec(s) sur ${leads.length} leads.`,
+      sent, failed, errors
+    });
+  } catch (err) {
+    console.error('[bulk-email] error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
   }
 });

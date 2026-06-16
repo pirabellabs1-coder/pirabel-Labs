@@ -83,12 +83,20 @@ async function bootstrapAdmin() {
     console.warn('[bootstrap] INITIAL_ADMIN_PASSWORD too short (need 8+ chars), skipping');
     return;
   }
-  const count = await User.countDocuments({ role: 'admin' });
-  if (count > 0) return; // admin already exists
   const name = (process.env.INITIAL_ADMIN_NAME || 'Admin').trim();
+  const forceReset = (process.env.ADMIN_FORCE_RESET || '').trim().toLowerCase() === 'true';
+  const count = await User.countDocuments({ role: 'admin' });
+
+  if (count > 0) {
+    if (!forceReset) return; // admin existe deja, pas de reset demande
+    // RESET demande : on remet l'admin a zero avec les identifiants fournis
+    await User.deleteMany({ role: 'admin' });
+    console.log('[bootstrap] ADMIN_FORCE_RESET=true -> anciens admins supprimes');
+  }
+
   const user = new User({ name, email, password, role: 'admin', isActive: true });
   await user.save();
-  console.log(`[bootstrap] admin created: ${email} (id: ${user._id})`);
+  console.log(`[bootstrap] admin ${forceReset ? 'reinitialise' : 'cree'}: ${email} (id: ${user._id})`);
 }
 app.use(async (req, res, next) => {
   try {

@@ -40,6 +40,26 @@ th.r, td.r { text-align:right; }
 .btn--ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
 .btn--ghost:hover { border-color:var(--accent); color:var(--accent); opacity:1; }
 .btn--danger { background:var(--danger); }
+.btn--wa { background:#25D366; }
+.btn--wa:hover { background:#1ebe5d; opacity:1; }
+.btn--accent { background:var(--accent); color:#fff; }
+
+/* Print styles for PDF generation */
+@media print {
+  body { background:#fff !important; color:#000 !important; padding:1rem !important; }
+  .header, .card { background:#fff !important; border:1px solid #ddd !important; box-shadow:none !important; color:#000 !important; }
+  .actions, .no-print, .btn { display:none !important; }
+  .title, h1, h3 { color:#000 !important; }
+  .ref, .status-badge.accepte { color:#FF5500 !important; }
+  .meta, .intro, .terms, .totals .row { color:#333 !important; }
+  .meta strong, .totals .row.total { color:#000 !important; }
+  table { color:#000 !important; }
+  th { background:#f5f5f5 !important; color:#666 !important; }
+  td { color:#000 !important; border-bottom:1px solid #eee !important; }
+  .logo { background:#FF5500 !important; }
+  .brand { color:#000 !important; }
+  .brand small { color:#666 !important; }
+}
 .status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
 .status-badge.envoye { background:rgba(96,165,250,0.15); color:#60a5fa; }
 .status-badge.consulte { background:rgba(251,191,36,0.15); color:#fbbf24; }
@@ -100,13 +120,16 @@ function renderQuote(q) {
 
   const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoye', consulte: 'Consulte', accepte: 'Accepte', refuse: 'Refuse', expire: 'Expire' };
 
-  let actionsHtml = '';
+  // Bouton PDF + WhatsApp toujours disponibles
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Telecharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+
+  let actionsHtml = utilsBar;
   if (q.status === 'accepte') {
-    actionsHtml = '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Devis accepte</strong>Vous avez accepte ce devis. Nous vous contactons sous 24h pour planifier le kick-off.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Devis accepte</strong>Vous avez accepte ce devis. Nous vous contactons sous 24h pour planifier le kick-off.</div></div>';
   } else if (q.status === 'refuse') {
-    actionsHtml = '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refuse</strong>Vous avez refuse ce devis. Si vous changez d\'avis, contactez-nous directement.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refuse</strong>Vous avez refuse ce devis. Si vous changez d\'avis, contactez-nous directement.</div></div>';
   } else {
-    actionsHtml = '<div class="actions"><div class="info"><strong>Donner votre reponse</strong>Vous pouvez accepter pour demarrer le projet, ou refuser. Pour une question avant decision, ecrivez-nous a contact@pirabellabs.com.</div><button class="btn" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter ce devis</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
+    actionsHtml += '<div class="actions no-print"><div class="info"><strong>Donner votre reponse</strong>Acceptez pour demarrer le projet, demandez des ajustements pour modifier, ou refusez.</div><button class="btn btn--accent" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter</button><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander ajustements</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
   }
 
   content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(q.reference) + '</div><h1 class="title">' + escapeHtml(q.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(q.clientName) + (q.clientCompany ? ' &middot; ' + escapeHtml(q.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(q.issuedAt) + '</div><div><strong>Valide jusqu\'au :</strong> ' + formatDate(q.validUntil) + '</div><div><span class="status-badge ' + q.status + '">' + (statusLabels[q.status] || q.status) + '</span></div></div>' +
@@ -139,6 +162,19 @@ async function refuseQuote() {
     const r = await fetch('/api/quotes/' + token + '/refuse', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ reason: reason || '' }) });
     const data = await r.json();
     if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; setTimeout(loadQuote, 1500); }
+    else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+}
+
+async function adjustQuote() {
+  const message = prompt('Quels ajustements souhaitez-vous demander ? Soyez precis (lignes a modifier, ajouter, retirer, ou questions).');
+  if (!message || message.trim().length < 10) { alert('Merci de detailler votre demande (10 caracteres min).'); return; }
+  const msg = document.getElementById('msg');
+  msg.className = 'msg'; msg.textContent = '';
+  try {
+    const r = await fetch('/api/quotes/' + token + '/adjust', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ message: message.trim() }) });
+    const data = await r.json();
+    if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; }
     else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
   } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
 }

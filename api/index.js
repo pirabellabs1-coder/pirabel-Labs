@@ -1187,6 +1187,68 @@ app.get('/avis/:token', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'app', 'views', 'public-avis.html'));
 });
 
+// === ADMIN : create lead manually (nouveau client) ===
+app.post('/api/admin/leads-create', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name || '', 120);
+    const email = sanitizeEmail(req.body.email);
+    const phone = sanitize(req.body.phone || '', 30);
+    const company = sanitize(req.body.company || '', 120);
+    const stage = ['prospect', 'qualifie', 'client', 'inactif'].includes(req.body.stage) ? req.body.stage : 'prospect';
+    const status = ['nouveau', 'lu', 'en_cours', 'converti', 'perdu'].includes(req.body.status) ? req.body.status : 'nouveau';
+
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
+
+    const existing = await Lead.findOne({ email });
+    if (existing) return res.status(409).json({ error: 'Un lead avec cet email existe deja.', existing });
+
+    const lead = await Lead.create({
+      type: 'contact', stage, status,
+      name, email, phone, company,
+      service: '', message: 'Cree manuellement depuis le dashboard admin',
+      source: 'admin_manual',
+      clientData: stage === 'client' ? { becameClientAt: new Date() } : undefined,
+      newsletterOptIn: false
+    });
+    res.json({ success: true, lead });
+  } catch (err) {
+    console.error('[leads-create] error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+  }
+});
+
+// === PUBLIC : demander ajustements sur devis ===
+app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
+  try {
+    const quote = await Quote.findOne({ publicToken: req.params.token });
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (quote.status === 'accepte' || quote.status === 'refuse') {
+      return res.status(403).json({ error: 'Devis deja accepte ou refuse.' });
+    }
+    const message = sanitize(req.body.message || '', 2000);
+    if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
+
+    quote.internalNotes = (quote.internalNotes || '') + '\n[Ajustement demande ' + new Date().toISOString() + '] ' + message;
+    await quote.save();
+
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Pirabel Labs] Ajustement demande - Devis ${quote.reference}`,
+      masterTemplate({
+        title: 'Demande d\'ajustement client',
+        body: `<p>Le client <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}) demande des ajustements sur le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}).</p><p><strong>Message :</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(message)}</blockquote><p>Modifiez le devis dans le dashboard et renvoyez une version corrigee.</p>`,
+        cta: 'Ouvrir le dashboard',
+        ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
+      })
+    ).catch(() => {});
+
+    res.json({ success: true, message: 'Demande envoyee. Nous revenons vers vous sous 48h.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
 // ========================================================================
 // === EXTENDED LEAD STAGE UPDATE ===
 // ========================================================================

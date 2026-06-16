@@ -33,11 +33,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .sidebar-backdrop.is-show { display: block; opacity: 1; }
 
 /* Sidebar */
-.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1.5rem 0 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; transition: width 0.25s ease, transform 0.25s ease; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1rem 0 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; transition: width 0.25s ease, transform 0.25s ease; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 .sidebar::-webkit-scrollbar { width: 6px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; }
 .sidebar::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.sidebar__brand { margin-bottom: 1rem !important; min-height: 2rem !important; }
+.sidebar__link { padding: 0.55rem 0.85rem !important; font-size: 0.84rem !important; }
+.sidebar__section { padding: 0.7rem 1.5rem 0.3rem !important; font-size: 0.62rem !important; }
+.sidebar__footer { padding: 0.85rem 1.25rem !important; }
 .sidebar__brand { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.5rem; margin-bottom: 1.5rem; min-height: 2.25rem; }
 .sidebar__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
 .sidebar__name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s; }
@@ -499,8 +503,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- CLIENTS VIEW -->
     <div class="view" data-view="clients">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-bottom:1.5rem;">
         <button class="btn btn--ghost btn--sm" id="clRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+        <button class="btn btn--sm" id="clNew"><span class="material-symbols-outlined">person_add</span> Nouveau client</button>
       </div>
       <div class="kpi-grid" id="clKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
       <div class="card">
@@ -812,10 +817,12 @@ async function loadQuotes() {
         '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(q.title) + '</td>' +
         '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;">' + q.total.toLocaleString('fr-FR') + ' ' + q.currency + '</td>' +
         '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span></td>' +
-        '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;">' +
-          (q.status === 'brouillon' ? '<button onclick="sendQuote(\'' + q._id + '\')" class="btn btn--sm"><span class="material-symbols-outlined">send</span></button>' : '') +
-          '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">visibility</span></a>' +
-          (q.status === 'brouillon' ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span></button>' : '') +
+        '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
+          (q.status === 'brouillon' ? '<button onclick="sendQuote(\'' + q._id + '\')" class="btn btn--sm" title="Envoyer par email"><span class="material-symbols-outlined">mail</span></button>' : '') +
+          '<button onclick="sendQuoteWhatsApp(\'' + q._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' +
+          '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir le devis publique"><span class="material-symbols-outlined">visibility</span></a>' +
+          '<button onclick="copyQuoteLink(\'' + escape(q.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
+          (q.status === 'brouillon' ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
         '</td>' +
         '</tr>';
     }).join('');
@@ -833,6 +840,12 @@ async function sendQuote(id) {
     toast('Devis envoye au client', 'success');
     loadQuotes();
   } catch(e) { toast('Erreur envoi', 'error'); }
+}
+
+async function copyQuoteLink(token) {
+  const url = window.location.origin + '/devis/' + token;
+  try { await navigator.clipboard.writeText(url); toast('Lien copie : ' + url, 'success'); }
+  catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
 }
 
 async function deleteQuote(id) {
@@ -1551,6 +1564,324 @@ async function logout() {
 }
 
 init();
+</script>
+
+<!-- ============= MODAL : NOUVEAU DEVIS ============= -->
+<div id="quoteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
+  <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:46rem;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouveau devis</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Creer un devis</div>
+      </div>
+      <button type="button" id="qmClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div style="padding:1.5rem 2rem;">
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Client <span style="color:var(--accent);">*</span></label>
+        <div style="display:flex;gap:0.5rem;">
+          <select id="qmClient" style="flex:1;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+            <option value="">-- Selectionnez un prospect/client --</option>
+          </select>
+          <button type="button" id="qmNewClient" class="btn btn--ghost btn--sm" title="Ajouter un nouveau client"><span class="material-symbols-outlined">person_add</span></button>
+        </div>
+        <div id="qmClientInfo" style="margin-top:0.5rem;font-size:0.78rem;color:var(--text-muted);"></div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Titre du devis <span style="color:var(--accent);">*</span></label>
+        <input type="text" id="qmTitle" maxlength="200" placeholder="ex : Creation site web vitrine + SEO 6 mois" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
+        <textarea id="qmIntro" rows="2" maxlength="2000" placeholder="Comme convenu apres notre echange du..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Lignes du devis <span style="color:var(--accent);">*</span></label>
+        <div id="qmItems"></div>
+        <button type="button" id="qmAddItem" class="btn btn--ghost btn--sm" style="margin-top:0.5rem;"><span class="material-symbols-outlined">add</span> Ajouter une ligne</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">TVA (%)</label>
+          <input type="number" id="qmTva" value="0" min="0" max="100" step="0.5" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Devise</label>
+          <select id="qmCurrency" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+            <option value="XOF">FCFA (XOF)</option>
+            <option value="XAF">FCFA (XAF)</option>
+            <option value="MAD">MAD</option>
+            <option value="TND">TND</option>
+            <option value="CHF">CHF</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Validite (jours)</label>
+          <input type="number" id="qmValid" value="30" min="1" max="365" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Conditions / mentions (optionnel)</label>
+        <textarea id="qmTerms" rows="3" maxlength="5000" placeholder="30% acompte au lancement, 40% mi-projet, 30% livraison. Devis valable 30 jours..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <div id="qmTotals" style="background:var(--surface);padding:1rem 1.25rem;border-radius:10px;margin-bottom:1rem;font-size:0.88rem;color:var(--text-muted);"></div>
+      <div id="qmMsg" style="margin-bottom:1rem;"></div>
+      <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
+        <button type="button" id="qmCancel" class="btn btn--ghost btn--sm">Annuler</button>
+        <button type="button" id="qmSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer brouillon</button>
+        <button type="button" id="qmSend" class="btn"><span class="material-symbols-outlined">send</span> Creer et envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= MODAL : NOUVEAU CLIENT ============= -->
+<div id="clientModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:32rem;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouveau contact</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;" id="cmTitle">Ajouter un client</div>
+      </div>
+      <button type="button" id="cmClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div style="padding:1.5rem 2rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Nom complet <span style="color:var(--accent);">*</span></label>
+          <input type="text" id="cmName" required style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Email <span style="color:var(--accent);">*</span></label>
+          <input type="email" id="cmEmail" required style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Telephone / WhatsApp</label>
+          <input type="tel" id="cmPhone" placeholder="+229 90 00 00 00" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Entreprise</label>
+          <input type="text" id="cmCompany" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Stade</label>
+        <select id="cmStage" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+          <option value="prospect">Prospect</option>
+          <option value="qualifie">Qualifie</option>
+          <option value="client">Client (direct)</option>
+        </select>
+      </div>
+      <div id="cmMsg" style="margin-bottom:1rem;"></div>
+      <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
+        <button type="button" id="cmCancel" class="btn btn--ghost btn--sm">Annuler</button>
+        <button type="button" id="cmSave" class="btn"><span class="material-symbols-outlined">save</span> Creer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============= QUOTE MODAL LOGIC =============
+function showQuoteModal(preLeadId) {
+  loadLeadsIntoSelector(preLeadId);
+  document.getElementById('qmTitle').value = '';
+  document.getElementById('qmIntro').value = '';
+  document.getElementById('qmTerms').value = '30% acompte au lancement, 40% a la validation des maquettes, 30% a la livraison. Devis valable 30 jours.';
+  document.getElementById('qmTva').value = 0;
+  document.getElementById('qmCurrency').value = 'EUR';
+  document.getElementById('qmValid').value = 30;
+  document.getElementById('qmItems').innerHTML = '';
+  addQuoteLine();
+  updateQuoteTotals();
+  document.getElementById('qmMsg').innerHTML = '';
+  document.getElementById('quoteModal').style.display = 'flex';
+}
+
+function hideQuoteModal() { document.getElementById('quoteModal').style.display = 'none'; }
+
+async function loadLeadsIntoSelector(preSelectedId) {
+  const sel = document.getElementById('qmClient');
+  sel.innerHTML = '<option value="">Chargement...</option>';
+  try {
+    const data = await api('/api/admin/leads');
+    const leads = (data.leads || data).filter(l => l.email);
+    sel.innerHTML = '<option value="">-- Selectionnez --</option>' +
+      leads.map(l => '<option value="' + l._id + '" data-name="' + escape(l.name) + '" data-email="' + escape(l.email) + '" data-phone="' + escape(l.phone||'') + '" data-company="' + escape(l.company||'') + '" data-stage="' + escape(l.stage||'prospect') + '">' + escape(l.name) + ' &middot; ' + escape(l.email) + (l.company ? ' (' + escape(l.company) + ')' : '') + '</option>').join('');
+    if (preSelectedId) sel.value = preSelectedId;
+    sel.dispatchEvent(new Event('change'));
+  } catch(e) { sel.innerHTML = '<option value="">Erreur chargement</option>'; }
+}
+
+function addQuoteLine(desc, qty, price) {
+  const container = document.getElementById('qmItems');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 4rem 7rem 2rem;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
+  row.innerHTML = '<input type="text" placeholder="Description de la prestation" value="' + (desc||'') + '" class="qm-line-desc" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;">' +
+    '<input type="number" min="0" step="1" value="' + (qty||1) + '" class="qm-line-qty" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<input type="number" min="0" step="0.01" placeholder="Prix" value="' + (price||0) + '" class="qm-line-price" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<button type="button" class="qm-line-del" style="background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:6px;cursor:pointer;height:2rem;width:2rem;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:1rem;">delete</span></button>';
+  container.appendChild(row);
+  row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateQuoteTotals));
+  row.querySelector('.qm-line-del').addEventListener('click', () => { row.remove(); updateQuoteTotals(); });
+  updateQuoteTotals();
+}
+
+function updateQuoteTotals() {
+  const cur = document.getElementById('qmCurrency').value;
+  const tva = parseFloat(document.getElementById('qmTva').value) || 0;
+  let subtotal = 0;
+  document.querySelectorAll('#qmItems > div').forEach(row => {
+    const q = parseFloat(row.querySelector('.qm-line-qty').value) || 0;
+    const p = parseFloat(row.querySelector('.qm-line-price').value) || 0;
+    subtotal += q * p;
+  });
+  const taxAmt = subtotal * tva / 100;
+  const total = subtotal + taxAmt;
+  document.getElementById('qmTotals').innerHTML =
+    '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Sous-total</span><span>' + subtotal.toFixed(2) + ' ' + cur + '</span></div>' +
+    (tva > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>TVA ' + tva + '%</span><span>' + taxAmt.toFixed(2) + ' ' + cur + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;border-top:1px solid var(--border);margin-top:0.5rem;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--accent);"><span>Total</span><span>' + total.toFixed(2) + ' ' + cur + '</span></div>';
+}
+
+function collectQuoteData() {
+  const leadId = document.getElementById('qmClient').value;
+  const title = document.getElementById('qmTitle').value.trim();
+  const items = [...document.querySelectorAll('#qmItems > div')].map(row => ({
+    description: row.querySelector('.qm-line-desc').value.trim(),
+    quantity: parseFloat(row.querySelector('.qm-line-qty').value) || 0,
+    unitPrice: parseFloat(row.querySelector('.qm-line-price').value) || 0
+  })).filter(i => i.description && i.quantity > 0 && i.unitPrice >= 0);
+  return {
+    leadId, title, items,
+    introduction: document.getElementById('qmIntro').value.trim(),
+    terms: document.getElementById('qmTerms').value.trim(),
+    taxRate: parseFloat(document.getElementById('qmTva').value) || 0,
+    currency: document.getElementById('qmCurrency').value,
+    validDays: parseInt(document.getElementById('qmValid').value) || 30
+  };
+}
+
+async function saveQuote(sendAfter) {
+  const data = collectQuoteData();
+  const msg = document.getElementById('qmMsg');
+  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Selectionnez un client.</div>'; return; }
+  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caracteres min).</div>'; return; }
+  if (!data.items.length) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Au moins une ligne valide requise.</div>'; return; }
+  msg.innerHTML = '<div style="color:var(--info);">Enregistrement...</div>';
+  try {
+    const quote = await api('/api/admin/quotes', { method: 'POST', body: JSON.stringify(data) });
+    if (sendAfter) {
+      await api('/api/admin/quotes/' + quote.quote._id + '/send', { method: 'POST', body: '{}' });
+      const publicUrl = window.location.origin + '/devis/' + quote.quote.publicToken;
+      showLinkModal('Devis envoye !', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier ou l\'envoyer via WhatsApp.', publicUrl);
+    } else {
+      toast('Devis enregistre en brouillon', 'success');
+    }
+    hideQuoteModal();
+    if (typeof loadQuotes === 'function') loadQuotes();
+  } catch(e) {
+    msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Erreur : ' + (e.message || 'API') + '</div>';
+  }
+}
+
+// ============= CLIENT MODAL LOGIC =============
+function showClientModal(returnToQuote) {
+  document.getElementById('cmName').value = '';
+  document.getElementById('cmEmail').value = '';
+  document.getElementById('cmPhone').value = '';
+  document.getElementById('cmCompany').value = '';
+  document.getElementById('cmStage').value = returnToQuote ? 'prospect' : 'client';
+  document.getElementById('cmMsg').innerHTML = '';
+  document.getElementById('cmTitle').textContent = returnToQuote ? 'Ajouter un client (pour le devis)' : 'Ajouter un client';
+  document.getElementById('clientModal').style.display = 'flex';
+  document.getElementById('clientModal').dataset.returnTo = returnToQuote ? 'quote' : 'list';
+}
+
+function hideClientModal() { document.getElementById('clientModal').style.display = 'none'; }
+
+async function saveClient() {
+  const name = document.getElementById('cmName').value.trim();
+  const email = document.getElementById('cmEmail').value.trim();
+  const phone = document.getElementById('cmPhone').value.trim();
+  const company = document.getElementById('cmCompany').value.trim();
+  const stage = document.getElementById('cmStage').value;
+  const msg = document.getElementById('cmMsg');
+  if (!name || name.length < 2) { msg.innerHTML = '<div style="color:var(--danger);font-size:0.85rem;">Nom requis.</div>'; return; }
+  if (!email || !email.includes('@')) { msg.innerHTML = '<div style="color:var(--danger);font-size:0.85rem;">Email invalide.</div>'; return; }
+  msg.innerHTML = '<div style="color:var(--info);">Creation...</div>';
+  try {
+    // Cree un Lead via endpoint admin (utilise POST direct sur /api/admin/leads-create)
+    const data = await api('/api/admin/leads-create', { method: 'POST', body: JSON.stringify({ name, email, phone, company, stage, status: stage === 'client' ? 'converti' : 'nouveau' }) });
+    toast('Client cree', 'success');
+    const isQuote = document.getElementById('clientModal').dataset.returnTo === 'quote';
+    hideClientModal();
+    if (isQuote) {
+      // Re-load selector with new client selected
+      loadLeadsIntoSelector(data.lead._id);
+    } else {
+      if (typeof loadClients === 'function') loadClients();
+    }
+  } catch(e) {
+    msg.innerHTML = '<div style="color:var(--danger);font-size:0.85rem;">Erreur : ' + (e.message || 'API') + '</div>';
+  }
+}
+
+// Bind modals
+document.addEventListener('DOMContentLoaded', function() {
+  // Quote modal
+  document.getElementById('qmClose')?.addEventListener('click', hideQuoteModal);
+  document.getElementById('qmCancel')?.addEventListener('click', hideQuoteModal);
+  document.getElementById('qmAddItem')?.addEventListener('click', () => addQuoteLine());
+  document.getElementById('qmTva')?.addEventListener('input', updateQuoteTotals);
+  document.getElementById('qmCurrency')?.addEventListener('change', updateQuoteTotals);
+  document.getElementById('qmSave')?.addEventListener('click', () => saveQuote(false));
+  document.getElementById('qmSend')?.addEventListener('click', () => saveQuote(true));
+  document.getElementById('qmNewClient')?.addEventListener('click', () => showClientModal(true));
+  document.getElementById('qmClient')?.addEventListener('change', function() {
+    const opt = this.selectedOptions[0];
+    const info = document.getElementById('qmClientInfo');
+    if (opt && opt.value) {
+      const phone = opt.dataset.phone;
+      info.innerHTML = 'Email : <strong>' + opt.dataset.email + '</strong>' + (phone ? ' &middot; Tel : <strong>' + phone + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + opt.dataset.company : '');
+    } else info.innerHTML = '';
+  });
+  document.querySelector('#quoteModal').addEventListener('click', e => { if (e.target.id === 'quoteModal') hideQuoteModal(); });
+
+  // Client modal
+  document.getElementById('cmClose')?.addEventListener('click', hideClientModal);
+  document.getElementById('cmCancel')?.addEventListener('click', hideClientModal);
+  document.getElementById('cmSave')?.addEventListener('click', saveClient);
+  document.querySelector('#clientModal').addEventListener('click', e => { if (e.target.id === 'clientModal') hideClientModal(); });
+
+  // Bouton Nouveau client sur page Clients
+  document.getElementById('clNew')?.addEventListener('click', () => showClientModal(false));
+});
+
+// Remplace les fonctions prompt() existantes
+window.openNewQuoteModal = function(preLeadId) { showQuoteModal(preLeadId); };
+
+// ============= ACTIONS QUOTE : WhatsApp send =============
+window.sendQuoteWhatsApp = async function(quoteId) {
+  try {
+    const q = await api('/api/admin/quotes/' + quoteId);
+    const lead = await api('/api/admin/leads/' + q.leadId);
+    if (!lead.phone) { toast('Pas de telephone pour ce client', 'error'); return; }
+    const phone = lead.phone.replace(/[^0-9]/g, '');
+    const url = window.location.origin + '/devis/' + q.publicToken;
+    const msg = 'Bonjour ' + lead.name.split(' ')[0] + ', voici votre devis Pirabel Labs - ' + q.reference + ' (' + q.title + ') : ' + url;
+    const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    window.open(waUrl, '_blank');
+    // Marquer comme envoye si pas encore fait
+    if (q.status === 'brouillon') {
+      await api('/api/admin/quotes/' + quoteId + '/send', { method: 'POST', body: '{}' });
+      if (typeof loadQuotes === 'function') loadQuotes();
+    }
+  } catch(e) { toast('Erreur : ' + (e.message || 'API'), 'error'); }
+};
 </script>
 </body>
 </html>

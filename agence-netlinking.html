@@ -790,140 +790,293 @@
   </section>
 
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Notre expertise netlinking</span>
-    <h2 class="alt-h2">Backlinks <em>de qualité</em>, pas du spam de masse.</h2>
-    <p class="alt-lead">Le netlinking reste le facteur #1 du SEO en 2026. Mais Google pénalise sévèrement les liens artificiels. Notre approche : peu de liens, mais des liens premium thématiques sur des sites à fort DR.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80" alt="Backlinks DR 40+ uniquement - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence netlinking</em> ?</h2>
+        <p>Une agence netlinking est spécialisée dans l'<strong>obtention de backlinks de qualité</strong> vers votre site, le facteur #1 du SEO en 2026. Les backlinks (liens entrants depuis d'autres sites) sont le signal principal d'autorité pour Google.</p>
+        <p>Chez Pirabel Labs, notre approche netlinking est <strong>100% white-hat</strong> : zéro PBN (Private Blog Network), zéro fermes de liens, zéro spam. Backlinks DR 40+ uniquement, thématiques pertinentes, anchors variés.</p>
+        <p>Notre conviction : <strong>peu de liens mais des liens premium</strong> qui durent. Google pénalise sévèrement les profils de liens artificiels. Notre méthode protège votre site sur le long terme.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Backlinks DR 40+ uniquement</h3>
-        <p class="alt-row__desc">Nous travaillons exclusivement avec des sites premium (DR 40+) dans votre thématique. Pas de PBN, pas de fermes de liens, pas de risque de penalité.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>DR moyen 50+ garanti</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Sites thematiques pertinents</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Approche white-hat 100%</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence netlinking</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Anchor texts variés et naturels</h3>
-        <p class="alt-row__desc">Profil de liens naturel : 40% brand, 30% URL nue, 20% partiel, 10% exact match. Pour passer sous le radar des algos Google.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Profil ancres naturel</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>40% brand mentions</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Variations stratégiques</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=900&q=80" alt="Anchor texts variés et naturels - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80" alt="Reporting mensuel transparent - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Reporting mensuel transparent</h3>
-        <p class="alt-row__desc">Liste complète des liens obtenus, DR, traffic estimé, positions impactées. Pas de fausses promesses, des résultats mesurables.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Reporting Looker Studio</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>DR et positions tracking</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>ROI net mesuré</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/seo" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
-        <div class="rel-card__title">SEO & référencement</div>
-        <div class="rel-card__desc">Service SEO complet</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/audit-seo" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">analytics</span></div>
-        <div class="rel-card__title">Audit SEO gratuit</div>
-        <div class="rel-card__desc">Diagnostic gratuit</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/creation-site-web" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">code</span></div>
-        <div class="rel-card__title">Création de site web</div>
-        <div class="rel-card__desc">Site optimisé SEO</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/fiche-google-business" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">location_on</span></div>
-        <div class="rel-card__title">Google Business Profile</div>
-        <div class="rel-card__desc">SEO local</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/community-management" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">forum</span></div>
-        <div class="rel-card__title">Community management</div>
-        <div class="rel-card__desc">Présence sociale</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/blog" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">article</span></div>
-        <div class="rel-card__title">Blog Pirabel Labs</div>
-        <div class="rel-card__desc">Conseils SEO actuels</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi nous</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi nous confier votre <em>netlinking</em> ?</h2>
+      <p class="ns-lead ns-lead--center">Le netlinking mal fait peut pénaliser votre site. Voici les 6 garanties de notre approche.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Backlinks DR 40+ uniquement</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">DR 40+</div>
+          <p class="ns-acc__desc">Domain Rating moyen 50+ garanti. Pas de DR <30, pas de PBN, pas de fermes. Seulement sites premium thématiques.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Profil ancres naturel</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">40/30/20/10</div>
+          <p class="ns-acc__desc">40% brand mentions, 30% URL nue, 20% partiel, 10% exact match. Profil de liens naturel qui passe sous le radar de Google.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Thématiques 100% pertinentes</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">100%</div>
+          <p class="ns-acc__desc">Backlinks depuis sites de votre thématique (B2B, e-commerce, tech, santé selon votre secteur). Pas de spam généraliste.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Trafic réel des sites linkers</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Traffic+</div>
+          <p class="ns-acc__desc">Sites avec trafic organique réel (1K+ visiteurs/mois Ahrefs). Liens 'vivants' qui apportent referral traffic en bonus du SEO.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Méthode 100% white-hat</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Safe</div>
+          <p class="ns-acc__desc">Pas de PBN, pas d'achats massifs, pas de techniques risquées. Conformité Google Search Quality Guidelines. Zero risque pénalité.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Reporting mensuel transparent</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Live</div>
+          <p class="ns-acc__desc">Liste complète des liens obtenus, DR, traffic estimé, positions impactées. Dashboard Looker Studio live. ROI mesuré.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> netlinking en 4 étapes." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> netlinking en 4 étapes.</h2>
+        <p><strong>Audit profil de liens existant</strong> : analyse Ahrefs/Majestic de votre profil actuel, identification des liens toxiques (à désavouer), benchmark des concurrents top 3.</p>
+        <p>Stratégie netlinking sur mesure : <strong>quels mots-clés pousser, quel volume mensuel</strong> (5-30 liens/mois selon ambition), quelles thématiques cibler, quel budget allouer.</p>
+        <p>Acquisition mensuelle de backlinks via 4 méthodes : guest blogging premium, broken link building, skyscraper content, partenariats éditoriaux. Suivi position + trafic mensuel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> netlinking</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte le netlinking ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Forfait mensuel : 1 500 à 6 000 EUR/mois selon ambition. Inclut 5-30 backlinks DR 40+/mois. Setup initial (audit + stratégie) : 1 500 EUR one-shot.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps avant de voir des résultats ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Premiers signaux à 8-12 semaines (Google détecte et indexe les liens). Résultats positions à 6 mois. Effets consolidés à 12 mois.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Qu'est-ce que le DR (Domain Rating) ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Métrique Ahrefs qui évalue l'autorité d'un domaine sur 100. DR 40+ = autorité solide. DR 60+ = très bonne autorité. Nous ciblons DR 40-80 selon votre marché.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Risque-t-on une pénalité Google ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Avec notre méthode 100% white-hat : risque quasi-nul. Pas de PBN, pas de fermes, pas d'achats massifs. Backlinks éditoriaux naturels.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Que faire des liens toxiques existants ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Audit gratuit identifie les liens toxiques. Désaveu via Google Search Console (Disavow Tool). Recovery typique en 2-6 mois.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quelle ancre dois-je choisir ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Nous gérons. Profil naturel : 40% brand, 30% URL nue, 20% partiel, 10% exact match. Surveillance continue pour éviter sur-optimisation.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Travaillez-vous tous les pays/langues ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. FR (Google.fr, Google.ca, Google.be, Google.ch, Google.ma, Google.tn), EN (Google.com, Google.co.uk), AR. Réseau de partenaires par marché.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Garantissez-vous le nombre de liens par mois ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui contractuellement. 5/10/15/20/30 liens/mois selon votre forfait. Qualité prime sur quantité : si pas de bon site trouvé un mois, on reporte au suivant.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/seo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+        <div class="ns-rel-card__title">SEO & référencement</div>
+        <div class="ns-rel-card__desc">Service SEO complet</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/audit-seo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">analytics</span></div>
+        <div class="ns-rel-card__title">Audit SEO gratuit</div>
+        <div class="ns-rel-card__desc">Diagnostic gratuit</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/creation-site-web" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="ns-rel-card__title">Création de site web</div>
+        <div class="ns-rel-card__desc">Site optimisé SEO</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/fiche-google-business" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">location_on</span></div>
+        <div class="ns-rel-card__title">Google Business Profile</div>
+        <div class="ns-rel-card__desc">SEO local</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/community-management" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="ns-rel-card__title">Community management</div>
+        <div class="ns-rel-card__desc">Présence sociale</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/blog" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">article</span></div>
+        <div class="ns-rel-card__title">Blog Pirabel Labs</div>
+        <div class="ns-rel-card__desc">Conseils SEO actuels</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 

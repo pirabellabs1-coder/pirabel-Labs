@@ -746,140 +746,293 @@
   </section>
 
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Site vitrine professionnel</span>
-    <h2 class="alt-h2">Votre site vitrine, <em>votre meilleure carte de visite</em>.</h2>
-    <p class="alt-lead">Le site vitrine est souvent le premier contact entre votre marque et vos prospects. Il doit incarner votre professionnalisme, être rapide, mobile-first, et SEO-ready.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&w=900&q=80" alt="Design qui marque l'esprit - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence site vitrine</em> ?</h2>
+        <p>Une agence site vitrine conçoit des <strong>sites professionnels qui présentent votre activité</strong> et convertissent les visiteurs en prospects qualifiés. Le site vitrine est souvent le premier contact entre votre marque et vos futurs clients.</p>
+        <p>Chez Pirabel Labs, nos designers et développeurs maîtrisent <strong>WordPress, Webflow et Next.js</strong> pour livrer des sites vitrines premium adaptés à votre secteur : services BtoB, cabinets, professions libérales, e-commerce naissants.</p>
+        <p>Notre conviction : un bon site vitrine doit donner envie de vous contacter dès les <strong>5 premières secondes</strong>. Identité visuelle forte, performance Core Web Vitals 95+, SEO local intégré, formulaires intelligents qui convertissent.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Design qui marque l'esprit</h3>
-        <p class="alt-row__desc">Identité visuelle forte, typographies premium, animations subtiles. Votre site doit donner envie de vous contacter dès les 5 premières secondes.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Charte graphique sur mesure</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Photos professionnelles incluses</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Animations subtiles et fluides</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence site vitrine</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">SEO local et national</h3>
-        <p class="alt-row__desc">Optimisation pour vos mots-clés business, schéma.org LocalBusiness, intégration Google Business Profile. Apparaitre quand vos clients cherchent.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Schema.org structured data</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Optimisation pack local Google</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Méta tags optimisés H1-H6</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80" alt="SEO local et national - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b8?auto=format&fit=crop&w=900&q=80" alt="Prise de RDV et conversion - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Prise de RDV et conversion</h3>
-        <p class="alt-row__desc">Formulaire de contact intelligent, calendrier de RDV en ligne (Calendly intégré), WhatsApp click-to-chat. Convertir les visiteurs en leads.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Calendly intégré natif</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Formulaire smart conditionnel</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>WhatsApp click-to-chat</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/agence-webflow" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">web</span></div>
-        <div class="rel-card__title">Agence Webflow</div>
-        <div class="rel-card__desc">Premium no-code</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-elementor" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">dashboard_customize</span></div>
-        <div class="rel-card__title">Agence Elementor</div>
-        <div class="rel-card__desc">Builder WordPress</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/creation-site-web" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">code</span></div>
-        <div class="rel-card__title">Création de site web</div>
-        <div class="rel-card__desc">Tous types</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/seo" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
-        <div class="rel-card__title">SEO & référencement</div>
-        <div class="rel-card__desc">Trafic organique</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/fiche-google-business" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">location_on</span></div>
-        <div class="rel-card__title">Google Business Profile</div>
-        <div class="rel-card__desc">Pack local</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/community-management" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">forum</span></div>
-        <div class="rel-card__title">Community management</div>
-        <div class="rel-card__desc">Présence sociale</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi nous</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi nous confier votre <em>site vitrine</em> ?</h2>
+      <p class="ns-lead ns-lead--center">6 raisons concrètes qui font la différence entre une plaquette digitale et un site qui génère des leads.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Identité visuelle qui marque</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">5 sec</div>
+          <p class="ns-acc__desc">Typographies premium, charte couleurs cohérente, animations subtiles. Votre site doit donner envie de vous contacter dès les 5 premières secondes.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Performance Core Web Vitals 95+</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">< 2s</div>
+          <p class="ns-acc__desc">Lighthouse 95+ garanti. FCP < 1.5s, LCP < 2.5s. Google vous récompense au ranking, vos visiteurs ne partent pas.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">SEO local et national optimisé</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Top 3</div>
+          <p class="ns-acc__desc">Schema.org LocalBusiness, Google Business Profile lié, mots-clés locaux. Apparaître quand vos clients cherchent près de chez vous.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Formulaires intelligents qui convertissent</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">+40%</div>
+          <p class="ns-acc__desc">Formulaire smart conditionnel, calendrier RDV Calendly intégré, WhatsApp click-to-chat. Conversion typique +20-40% vs formulaire basique.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Mobile-first vraiment optimisé</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">100%</div>
+          <p class="ns-acc__desc">70% du trafic est mobile. Notre design est pensé mobile-first, testé sur iPhone et Android avant validation.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Autonomie post-livraison garantie</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">100%</div>
+          <p class="ns-acc__desc">Vos équipes éditent contenu, ajoutent articles, créent nouvelles pages. Formation incluse, documentation Notion. Vous restez autonome.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> site vitrine en 5 étapes." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> site vitrine en 5 étapes.</h2>
+        <p><strong>Étape 1 (Découverte)</strong> : appel 30 min pour comprendre votre business, votre cible, vos objectifs. Audit de l'existant (site actuel, concurrents, SEO local).</p>
+        <p><strong>Étapes 2-3 (Design + Dev)</strong> : maquettes Figma validées en 2 cycles de revision. Développement WordPress, Webflow ou Next.js en sprints hebdomadaires avec démos live.</p>
+        <p><strong>Étapes 4-5 (Lancement + formation)</strong> : tests cross-device, optimisations performances, mise en ligne progressive, formation équipe 1h, garantie 30 jours, suivi gratuit le premier mois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> site vitrine</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte un site vitrine professionnel ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">5-10 pages : 2 000 à 5 000 EUR. 10-20 pages : 4 000 à 8 000 EUR. Site corporate avec blog/portfolio : 6 000 à 12 000 EUR. Devis ferme sous 48h.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour livrer ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Site vitrine simple (5-10 pages) : 3 à 5 semaines. Site corporate (15-20 pages) : 5 à 8 semaines. Sprints hebdomadaires avec démos live.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Inclus-vous les textes et photos ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Textes : rédaction SEO en option (300-800 EUR/page). Photos : banque d'images premium incluse (Unsplash+, Pexels Pro). Photos personnalisées : sur devis avec photographe.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quel CMS choisir : WordPress, Webflow, Next.js ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">WordPress pour autonomie max + blog. Webflow pour design premium. Next.js pour sur-mesure. Nous conseillons en 30 min selon votre cas.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Le site est-il responsive mobile ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, mobile-first natif. Testé sur iPhone, Android, tablette, desktop avant livraison. 70% du trafic étant mobile, c'est notre priorité absolue.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Intégrez-vous un blog ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui sans surcoût pour WordPress. Pour Webflow/Next.js : module blog inclus dans le devis si demandé.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Faites-vous la maintenance après ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Forfait maintenance optionnel : 200-800 EUR/mois selon scope. Inclut mises à jour, sécurité, sauvegardes, modifications mineures, monitoring.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Acceptez-vous le paiement échelonné ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. 30% acompte, 40% à la validation des maquettes, 30% à la livraison. Virement SEPA, Mobile Money, Stripe.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-webflow" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">web</span></div>
+        <div class="ns-rel-card__title">Agence Webflow</div>
+        <div class="ns-rel-card__desc">Premium no-code</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-elementor" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">dashboard_customize</span></div>
+        <div class="ns-rel-card__title">Agence Elementor</div>
+        <div class="ns-rel-card__desc">Builder WordPress</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/creation-site-web" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">code</span></div>
+        <div class="ns-rel-card__title">Création de site web</div>
+        <div class="ns-rel-card__desc">Tous types</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/seo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+        <div class="ns-rel-card__title">SEO & référencement</div>
+        <div class="ns-rel-card__desc">Trafic organique</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/fiche-google-business" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">location_on</span></div>
+        <div class="ns-rel-card__title">Google Business Profile</div>
+        <div class="ns-rel-card__desc">Pack local</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/community-management" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="ns-rel-card__title">Community management</div>
+        <div class="ns-rel-card__desc">Présence sociale</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 

@@ -456,140 +456,293 @@
     </div>
   </section>
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Pourquoi Brevo</span>
-    <h2 class="alt-h2">Brevo (ex-Sendinblue), l'<em>email marketing français</em> qui scale.</h2>
-    <p class="alt-lead">Brevo (anciennement Sendinblue) est leader européen de l'email marketing. Plateforme française, RGPD natif, prix accessibles, fonctionnalités équivalentes à Mailchimp à coût réduit.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=900&q=80" alt="Email + SMS + WhatsApp - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence Brevo</em> ?</h2>
+        <p>Une agence Brevo est spécialisée dans le déploiement de <strong>Brevo (anciennement Sendinblue)</strong>, leader européen de l'email marketing et marketing automation. Société française, plus de 500 000 entreprises clientes.</p>
+        <p>Chez Pirabel Labs, nous utilisons Brevo pour les <strong>PME francophones</strong> qui veulent un outil tout-en-un email + SMS + WhatsApp + automation, à un prix accessible et conformité RGPD native.</p>
+        <p>Brevo brille par son <strong>excellent rapport qualité/prix</strong> : plan gratuit généreux (300 emails/jour, contacts illimités), plans payants 50-70% moins chers que HubSpot/Mailchimp pour fonctionnalités équivalentes.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Email + SMS + WhatsApp</h3>
-        <p class="alt-row__desc">Envoyez emails marketing, transactionnels, SMS et WhatsApp Business depuis une seule plateforme. Multi-canal sans connecter 5 outils.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Email transactionnel natif</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>SMS marketing intégré</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>WhatsApp Business API</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence Brevo</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Automation et scénarios visuels</h3>
-        <p class="alt-row__desc">Workflows comportementaux (abandon panier, anniversaire, réengagement), scoring leads, segmentation dynamique. Tout visuel.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Workflows visuels avancés</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Scoring leads intégré</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Segmentation conditionnelle</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=900&q=80" alt="Automation et scénarios visuels - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=900&q=80" alt="Conformité RGPD et hébergement EU - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Conformité RGPD et hébergement EU</h3>
-        <p class="alt-row__desc">Société française, hébergement européen, conformité RGPD totale. Pas de transfert de données aux USA, pas de Schrems II.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Hébergement 100% Europe</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>RGPD compliance native</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>DPA fourni signé</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/agence-hubspot" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">hub</span></div>
-        <div class="rel-card__title">Agence HubSpot</div>
-        <div class="rel-card__desc">CRM tout-en-un</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/email-marketing-crm" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">send</span></div>
-        <div class="rel-card__title">Email marketing CRM</div>
-        <div class="rel-card__desc">Service complet</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/automatisation-marketing" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Automatisation marketing</div>
-        <div class="rel-card__desc">Make, n8n</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-make" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
-        <div class="rel-card__title">Agence Make</div>
-        <div class="rel-card__desc">Intégrations Brevo</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/tunnels-de-vente" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">conversion_path</span></div>
-        <div class="rel-card__title">Tunnels de vente</div>
-        <div class="rel-card__desc">Landing pages</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-ia" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
-        <div class="rel-card__title">Agence IA</div>
-        <div class="rel-card__desc">Personnalisation IA emails</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi Brevo</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi choisir <em>Brevo</em> ?</h2>
+      <p class="ns-lead ns-lead--center">Brevo s'est imposé comme l'alternative européenne sérieuse à Mailchimp et HubSpot. 6 raisons concrètes.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Email transactionnel + marketing</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">All-in</div>
+          <p class="ns-acc__desc">Emails marketing (newsletters, campagnes) + emails transactionnels (commandes, OTP, alertes). Une seule plateforme, API puissante.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">SMS marketing + WhatsApp Business</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Multi</div>
+          <p class="ns-acc__desc">Envoyez emails + SMS + WhatsApp depuis une seule plateforme. Multi-canal sans connecter 5 outils tiers.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">RGPD compliance native</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">🇪🇺</div>
+          <p class="ns-acc__desc">Société française, hébergement EU, DPA fourni, conformité RGPD totale. Pas de transfert hors UE, pas de Schrems II.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Tarif accessible</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">-60%</div>
+          <p class="ns-acc__desc">Plan gratuit : 300 emails/jour, contacts illimités. Plans payants 50-70% moins chers que HubSpot/Mailchimp pour features équivalentes.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Automation visuelle puissante</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Pro</div>
+          <p class="ns-acc__desc">Workflows visuels avancés (welcome, panier abandonné, anniversaire, réengagement), scoring leads, segmentation dynamique. Niveau pro.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">CRM intégré gratuit</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">CRM</div>
+          <p class="ns-acc__desc">Pipeline deals, contacts illimités, suivi appels/emails, propriétés custom. CRM léger inclus, idéal PME jusqu'à 100 personnes.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> Brevo orientée délivrabilité." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> Brevo orientée délivrabilité.</h2>
+        <p><strong>Setup compte + délivrabilité d'abord</strong> : configuration SPF, DKIM, DMARC sur votre domaine, warm-up IP dédiée, listes saines. Pas de spam, taux délivrabilité 95%+ garanti.</p>
+        <p>Templates emails responsive design Figma. <strong>A/B testing systématique</strong> sur subject lines, CTAs, contenus. Workflows automation visualisés et documentés.</p>
+        <p>Formation équipe sur création campagnes, segmentation, automation. Reporting mensuel : ouvertures, clics, conversions. Optimisations continues post-launch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> sur Brevo</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte Brevo ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Free : 300 emails/jour, contacts illimités. Starter : 25 EUR/mois (20K emails). Business : 65 EUR/mois (20K emails + automation). Enterprise : sur devis. La plupart de nos clients sur Starter ou Business.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Notre setup Brevo coûte combien ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Setup Free + templates : 800-2 000 EUR. Setup Business avec automations + segmentation : 2 500-6 000 EUR. Migration depuis Mailchimp/HubSpot : sur devis.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Brevo vs Mailchimp, lequel ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Brevo : moins cher, RGPD natif, SMS+WhatsApp inclus, CRM léger. Mailchimp : interface plus polie, intégrations US plus larges. Brevo gagne pour francophones.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Brevo vs HubSpot, lequel ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Brevo : email marketing pur + automation simple. HubSpot : CRM 360° + sales + service. Brevo si focus marketing, HubSpot si besoin sales/service hub.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Brevo est-il vraiment RGPD compliant ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, totalement. Société française, hébergement EU (Paris), DPA signé, gestion consentements native, registre traitements automatique. Pas mieux côté RGPD.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Faites-vous la délivrabilité email ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, c'est crucial. Setup SPF/DKIM/DMARC, warm-up IP dédiée (50 EUR/mois en plus), nettoyage listes, monitoring bounce/spam. Délivrabilité 95%+ garantie.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour déployer Brevo ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Setup Free + 3 templates : 1-2 semaines. Setup Business avec 5 automations : 3-6 semaines. Migration depuis autre tool : 4-8 semaines selon volume.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Intégrez-vous Brevo avec mon site ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui systématiquement. Formulaires Brevo embed, popups, tracking conversions, sync contacts/abonnés bidirectionnel. WordPress, Webflow, Shopify, custom.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-hubspot" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">hub</span></div>
+        <div class="ns-rel-card__title">Agence HubSpot</div>
+        <div class="ns-rel-card__desc">CRM tout-en-un</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/email-marketing-crm" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">send</span></div>
+        <div class="ns-rel-card__title">Email marketing CRM</div>
+        <div class="ns-rel-card__desc">Service complet</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Automatisation marketing</div>
+        <div class="ns-rel-card__desc">Make, n8n</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-make" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+        <div class="ns-rel-card__title">Agence Make</div>
+        <div class="ns-rel-card__desc">Intégrations Brevo</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/tunnels-de-vente" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+        <div class="ns-rel-card__title">Tunnels de vente</div>
+        <div class="ns-rel-card__desc">Landing pages</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-ia" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
+        <div class="ns-rel-card__title">Agence IA</div>
+        <div class="ns-rel-card__desc">Personnalisation IA emails</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 <footer class="footer">

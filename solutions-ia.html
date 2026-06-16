@@ -426,140 +426,293 @@
   </section>
 
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Notre expertise IA avancée</span>
-    <h2 class="alt-h2">L'IA <em>industrialisée</em>, au-delà des chatbots.</h2>
-    <p class="alt-lead">Chatbots et agents IA sont le premier niveau. Les entreprises serieuses vont plus loin : RAG sur leur base de connaissances, fine-tuning de modèles sur leurs données, agents autonomes orchestrant des tâches complexes.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80" alt="RAG sur votre base de connaissances - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence solutions IA</em> ?</h2>
+        <p>Une agence solutions IA conçoit et déploie des <strong>solutions d'intelligence artificielle sur mesure</strong> pour entreprises : RAG sur base de connaissances, fine-tuning de modèles, agents autonomes multi-step, modèles prédictifs ML.</p>
+        <p>Chez Pirabel Labs, nous accompagnons les <strong>PME ambitieuses et grands comptes francophones</strong> qui veulent industrialiser l'IA dans leurs opérations. Au-delà des chatbots, vraie intégration métier.</p>
+        <p>Notre conviction : les chatbots sont le <strong>premier niveau de l'IA</strong>. Les entreprises sérieuses vont plus loin : pipelines RAG, agents autonomes, modèles prédictifs. Vraie transformation, pas juste un wrapper ChatGPT.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">RAG sur votre base de connaissances</h3>
-        <p class="alt-row__desc">Agents IA qui répondent à partir de vos documents internes (wikis, docs, code, FAQs). Vector DB Pinecone/Weaviate, embeddings OpenAI/Claude, hybrid search.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Vector DB Pinecone/Weaviate</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Embeddings OpenAI/Claude</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Hybrid search relevance</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence solutions IA</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Fine-tuning de LLMs sur vos données</h3>
-        <p class="alt-row__desc">Adaptation d'un modèle (Llama, Mistral, GPT) à votre domaine métier. Performance supérieure aux modèles génériques, coût d'inférence réduit.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Fine-tuning Llama 3, Mistral</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Optimisation prompts</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Coût d'inférence divisé par 3-5</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80" alt="Fine-tuning de LLMs sur vos données - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=900&q=80" alt="Agents autonomes multi-step - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Agents autonomes multi-step</h3>
-        <p class="alt-row__desc">Agents qui orchestrent des tâches complexes : recherche web, analyse, redaction, validation, action. LangChain, CrewAI, AutoGPT en production.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>LangChain + CrewAI</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Multi-step reasoning</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Tool use orchestration</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/agence-ia" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Agence IA</div>
-        <div class="rel-card__desc">Service IA complet</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/creation-saas" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
-        <div class="rel-card__title">Création SaaS</div>
-        <div class="rel-card__desc">Intégrer IA dans SaaS</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/automatisation-marketing" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
-        <div class="rel-card__title">Automatisation</div>
-        <div class="rel-card__desc">Workflows IA</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agents-ia-chatbots" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Agents IA & chatbots</div>
-        <div class="rel-card__desc">Bots IA WhatsApp</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-make" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
-        <div class="rel-card__title">Agence Make</div>
-        <div class="rel-card__desc">Make + OpenAI</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-n8n" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">account_tree</span></div>
-        <div class="rel-card__title">Agence n8n</div>
-        <div class="rel-card__desc">n8n + IA</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi solutions IA avancées</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi des <em>solutions IA</em> sur mesure ?</h2>
+      <p class="ns-lead ns-lead--center">Au-delà des chatbots, l'IA avancée crée des avantages concurrentiels durables. 6 raisons stratégiques.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Avantage concurrentiel durable</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Moat</div>
+          <p class="ns-acc__desc">Une IA bien intégrée dans vos processus métier devient un 'moat' (douve concurrentielle) que vos concurrents ne peuvent pas copier en quelques mois.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Productivité x3 à x10</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">x5</div>
+          <p class="ns-acc__desc">Sur les tâches de connaissance (juridique, RH, sales, R&D), une bonne intégration IA multiplie la productivité par 3 à 10.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Décisions data-driven</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Insights</div>
+          <p class="ns-acc__desc">Modèles prédictifs (churn, LTV, ventes) qui transforment vos décisions instinctives en décisions data-driven mesurables.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Réduction erreurs humaines</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">-80%</div>
+          <p class="ns-acc__desc">L'IA réduit les erreurs sur tâches répétitives (saisie, classification, conformité) de 50 à 90%. Qualité opérationnelle améliorée.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">RAG sur vos documents internes</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Knowledge</div>
+          <p class="ns-acc__desc">Agents IA qui répondent à partir de votre base de connaissances (wikis, docs, code, FAQs). Vector DB Pinecone/Weaviate, embeddings premium.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Fine-tuning sur vos données</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Custom</div>
+          <p class="ns-acc__desc">Adaptation modèle (Llama, Mistral, GPT) à votre domaine métier. Performance supérieure aux modèles génériques, coût inférence réduit.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> solutions IA rigoureuse." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> solutions IA rigoureuse.</h2>
+        <p><strong>Audit IA + cartographie processus</strong> : quelles tâches automatisables, quel ROI potentiel, quelles données disponibles, quelles contraintes (souveraineté, RGPD, performance). Roadmap 12 mois priorisée.</p>
+        <p>POC rapide (4-6 semaines) sur le 1er cas d'usage prioritaire pour <strong>valider sur du réel</strong>, pas une démo. Mesure ROI précise. Validation feedback utilisateurs cibles.</p>
+        <p>Industrialisation 2-4 mois : MLOps, monitoring (Langfuse, Helicone), sécurité, conformité, formation équipe. Maintenance continue : optimisations modèles, nouveaux cas d'usage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> solutions IA</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quelle différence entre IA générative et ML classique ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">IA générative (ChatGPT, Claude) = générer du texte/image/code à partir de prompts. ML classique = prédire/classifier sur données structurées. Souvent on combine les deux.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte une solution IA sur mesure ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">POC IA (4-6 semaines) : 8 000 à 15 000 EUR. Solution IA en production (industrialisation 2-4 mois) : 25 000 à 60 000 EUR. Plateforme IA complète : sur devis (à partir de 50K EUR).</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Mes données sont-elles vraiment sécurisées ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. APIs entreprise (OpenAI, Anthropic) garantissent zéro retention. Pour sensible : déploiement open source on-premise (Llama, Mistral, Mixtral). NDA systématique.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour un POC IA ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">POC simple : 4-6 semaines. POC complexe (RAG sur 1000+ docs, fine-tuning) : 8-12 semaines. POC = validation réelle, pas une démo brillante.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Faites-vous du fine-tuning de modèles ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Fine-tuning Llama 3, Mistral, Mixtral, Gemma sur vos données. Aussi fine-tuning OpenAI (GPT-3.5, GPT-4 turbo). Évaluation cas par cas.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Pouvez-vous déployer on-premise (souveraineté) ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Pour contraintes RGPD strictes, santé, défense : déploiement on-premise (Llama, Mistral). Pas de transfert hors EU, données 100% chez vous.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quel ROI typique d'un projet IA ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Automatisation tâches métier : ROI 3-12 mois. Modèles prédictifs (churn, LTV) : 6-18 mois. Toujours mesurable et chiffré dans nos contrats.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quel niveau d'expertise technique chez nous ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Aucun requis pour démarrer. Nous gérons tout. Formation progressive de votre équipe en parallèle. Documentation complète remise.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-ia" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Agence IA</div>
+        <div class="ns-rel-card__desc">Service IA complet</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/creation-saas" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="ns-rel-card__title">Création SaaS</div>
+        <div class="ns-rel-card__desc">Intégrer IA dans SaaS</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+        <div class="ns-rel-card__title">Automatisation</div>
+        <div class="ns-rel-card__desc">Workflows IA</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agents-ia-chatbots" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Agents IA & chatbots</div>
+        <div class="ns-rel-card__desc">Bots IA WhatsApp</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-make" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+        <div class="ns-rel-card__title">Agence Make</div>
+        <div class="ns-rel-card__desc">Make + OpenAI</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-n8n" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">account_tree</span></div>
+        <div class="ns-rel-card__title">Agence n8n</div>
+        <div class="ns-rel-card__desc">n8n + IA</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 

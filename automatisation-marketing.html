@@ -1384,140 +1384,293 @@
   </section>
 
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Notre expertise automatisation</span>
-    <h2 class="alt-h2">Workflows qui <em>libèrent 15h/semaine</em> sans embaucher.</h2>
-    <p class="alt-lead">Vos équipes perdent 15 à 20 heures par semaine sur des tâches répétitives : suivi leads, relances, reporting, mises à jour CRM. Nous automatisons tout, libérons leur temps pour la vente et le service.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Cartographie de vos process actuels - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence automatisation marketing</em> ?</h2>
+        <p>Une agence automatisation marketing déploie des <strong>workflows automatiques</strong> qui libèrent vos équipes des tâches répétitives : suivi leads, relances, reporting, mise à jour CRM, sync paiements, notifications WhatsApp.</p>
+        <p>Chez Pirabel Labs, nous combinons les meilleurs outils du marché : <strong>Make</strong> et <strong>n8n</strong> pour les workflows, <strong>HubSpot</strong> et <strong>Brevo</strong> pour CRM/email, <strong>OpenAI</strong> et <strong>Claude</strong> pour l'IA.</p>
+        <p>Notre conviction : une PME de 10-30 personnes perd <strong>15 à 30 heures/semaine</strong> sur des tâches répétitives. Notre méthode libère 80% de ce temps perdu pour des activités à plus forte valeur ajoutée.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Cartographie de vos process actuels</h3>
-        <p class="alt-row__desc">Audit complet : trafic, leads, suivi, relance, vente, retention. Identification des fuites et des automatisations à fort ROI.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Audit 360 vos process</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Identification fuites ROI</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Plan d'action priorisé</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence automatisation marketing</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Workflows Make + n8n + IA intégrés</h3>
-        <p class="alt-row__desc">Make pour le SaaS, n8n pour le self-hosted, OpenAI/Claude pour l'intelligence. Combo puissant pour automatiser même les tâches complexes.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Make + n8n + OpenAI/Claude</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Workflows visuels</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Monitoring + retry auto</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80" alt="Workflows Make + n8n + IA intégrés - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1535378620166-273708d44e4c?auto=format&fit=crop&w=900&q=80" alt="Intégration CRM, paiement, social, email - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Intégration CRM, paiement, social, email</h3>
-        <p class="alt-row__desc">HubSpot, Brevo, Pipedrive, Notion, Stripe, Mobile Money, WhatsApp, Instagram. Tous vos outils connectés.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>50+ intégrations natives</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>WhatsApp + Mobile Money</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Webhooks pour APIs custom</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/agence-make" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
-        <div class="rel-card__title">Agence Make</div>
-        <div class="rel-card__desc">Intégrations no-code</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-n8n" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">account_tree</span></div>
-        <div class="rel-card__title">Agence n8n</div>
-        <div class="rel-card__desc">Self-hosted open source</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agents-ia-chatbots" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Agents IA & chatbots</div>
-        <div class="rel-card__desc">Bots IA WhatsApp</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-ia" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
-        <div class="rel-card__title">Agence IA</div>
-        <div class="rel-card__desc">Solutions IA complètes</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-hubspot" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">hub</span></div>
-        <div class="rel-card__title">Agence HubSpot</div>
-        <div class="rel-card__desc">CRM tout-en-un</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-brevo" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">mail</span></div>
-        <div class="rel-card__title">Agence Brevo</div>
-        <div class="rel-card__desc">Email marketing</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi automatiser</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi automatiser votre <em>marketing</em> ?</h2>
+      <p class="ns-lead ns-lead--center">L'automatisation marketing est devenue un standard concurrentiel en 2026. Voici les 6 raisons business.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Gain de temps massif</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">15h/sem</div>
+          <p class="ns-acc__desc">Économie moyenne de 15h par semaine sur les tâches automatisables. Soit ~75h/mois de temps libéré pour la croissance.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Conversion lead-client x2-x3</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">x3</div>
+          <p class="ns-acc__desc">Les sequences automatiques (welcome, nurturing, relance) multiplient les taux de conversion par 2-3. Pas de prospects oubliés.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Agents IA 24/7</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">24/7</div>
+          <p class="ns-acc__desc">Chatbots WhatsApp et email qui qualifient les leads, prennent les RDV, répondent FAQ. Réactivité sans embaucher.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Reporting automatique mensuel</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Auto</div>
+          <p class="ns-acc__desc">Dashboards Looker Studio mis à jour en temps réel, rapports hebdomadaires envoyés auto par email. Plus d'export manuel.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Intégration Mobile Money native</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">MTN+Orange</div>
+          <p class="ns-acc__desc">Confirmations paiement Mobile Money → email + WhatsApp client + alerte admin. Workflow propre Afrique.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Scoring leads intelligent</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Score</div>
+          <p class="ns-acc__desc">Scoring multi-critères (visites site, emails ouverts, formulaires) qui priorise les leads chauds pour vos commerciaux.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> automatisation en 5 étapes." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> automatisation en 5 étapes.</h2>
+        <p><strong>Cartographie de vos processus actuels</strong> : trafic, leads, suivi, relances, ventes, retention. Identification précise des fuites de temps et opportunités d'automatisation à fort ROI.</p>
+        <p>Conception des workflows : <strong>Make</strong> pour SaaS, <strong>n8n</strong> pour self-hosted, <strong>OpenAI/Claude</strong> pour l'IA. Documentation visuelle des branches conditionnelles.</p>
+        <p>Mise en production progressive avec monitoring continu (alertes Slack/email en cas d'échec). Formation équipe Make/n8n en 2h hands-on. Support post-livraison forfait optionnel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> automatisation</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte l'automatisation marketing ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Workflow simple : 800 à 2 500 EUR/workflow one-shot. Forfait mensuel 5-10 workflows + maintenance : 1 500 à 5 000 EUR/mois. Audit gratuit en amont.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quels outils utilisez-vous ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Make et n8n principalement. CRM : HubSpot, Brevo, Pipedrive. IA : OpenAI, Claude, Gemini. Paiement : Stripe, FedaPay, CinetPay. Tout intégré via API.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour automatiser un process ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Workflow simple (3-5 étapes) : 1 semaine. Workflow complexe (CRM, IA, paiements) : 3-6 semaines. Audit + roadmap 5 workflows : 1-2 semaines.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quel ROI puis-je attendre ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Gain 15h/semaine pour PME 10-30 personnes (75h/mois libérées). Conversion lead-client x2-x3 typique. ROI projet 3-6 mois.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Et si le workflow casse ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Monitoring continu (alertes Slack, email). Intervention sous 4h ouvrées pour clients sous contrat maintenance. Retry auto configurable, fallback strategies.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Intégrez-vous Mobile Money ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Workflows confirmation paiement MTN MoMo / Orange Money / Wave / Moov Money → email + WhatsApp client + Slack admin. Solid Afrique.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Faites-vous des chatbots WhatsApp ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui via WhatsApp Business API + OpenAI/Claude. Bots qui qualifient leads, prennent RDV, répondent FAQ, escalade vers humain. Voir <a href='/agents-ia-chatbots'>Agents IA</a>.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Mon équipe peut-elle modifier les workflows après ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui, formation Make/n8n inclus (2h hands-on). Documentation Notion complète. Vous restez autonome ou nous gérons en mensuel selon votre choix.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-make" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+        <div class="ns-rel-card__title">Agence Make</div>
+        <div class="ns-rel-card__desc">Intégrations no-code</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-n8n" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">account_tree</span></div>
+        <div class="ns-rel-card__title">Agence n8n</div>
+        <div class="ns-rel-card__desc">Self-hosted open source</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agents-ia-chatbots" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Agents IA & chatbots</div>
+        <div class="ns-rel-card__desc">Bots IA WhatsApp</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-ia" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
+        <div class="ns-rel-card__title">Agence IA</div>
+        <div class="ns-rel-card__desc">Solutions IA complètes</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-hubspot" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">hub</span></div>
+        <div class="ns-rel-card__title">Agence HubSpot</div>
+        <div class="ns-rel-card__desc">CRM tout-en-un</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-brevo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">mail</span></div>
+        <div class="ns-rel-card__title">Agence Brevo</div>
+        <div class="ns-rel-card__desc">Email marketing</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 

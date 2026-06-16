@@ -435,140 +435,293 @@
     </div>
   </section>
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Pourquoi n8n</span>
-    <h2 class="alt-h2">n8n, l'automation <em>open source et self-hosted</em>.</h2>
-    <p class="alt-lead">n8n est l'alternative open source à Make et Zapier. Auto-hébergeable, sans limite d'opérations, code modifiable. Pour les entreprises qui veulent garder le contrôle de leurs workflows et données.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Self-hosted ou cloud, vous choisissez - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence n8n</em> ?</h2>
+        <p>Une agence n8n est une équipe spécialisée dans l'automatisation de workflows avec <strong>n8n</strong>, l'alternative open source à Make et Zapier. Auto-hébergeable (Docker, Kubernetes), sans limite d'opérations, code modifiable.</p>
+        <p>Chez Pirabel Labs, nous déployons n8n pour les entreprises qui veulent <strong>garder le contrôle total de leurs workflows et données</strong>. Idéal pour la souveraineté, les volumes massifs, ou les cas RGPD sensibles.</p>
+        <p>n8n combine la puissance visuelle de Make avec la flexibilité du code (nodes JavaScript custom). Pour les équipes techniques qui veulent <strong>automatiser sans plafond de coûts</strong>.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Self-hosted ou cloud, vous choisissez</h3>
-        <p class="alt-row__desc">n8n peut tourner sur votre propre serveur (Docker, Kubernetes) ou sur le cloud n8n. Données entièrement chez vous si souveraineté nécessaire.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Self-hosted (Docker, K8s)</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Cloud n8n disponible</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Souveraineté des données</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence n8n</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Sans limite d'opérations</h3>
-        <p class="alt-row__desc">Contrairement à Make/Zapier qui facturent à l'opération, n8n self-hosted n'a aucune limite. Idéal pour les workflows haut volume.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Aucune limite ops self-hosted</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Coût fixe prévisible</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Scaling illimité</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80" alt="Sans limite d'opérations - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1535378620166-273708d44e4c?auto=format&fit=crop&w=900&q=80" alt="Personnalisation totale du code - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Personnalisation totale du code</h3>
-        <p class="alt-row__desc">Code source ouvert, nodes personnalisés en JavaScript, intégrations sur mesure. Pour les besoins très spécifiques.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Code 100% open source</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Custom nodes JS</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Intégrations sur mesure</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/agence-make" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
-        <div class="rel-card__title">Agence Make</div>
-        <div class="rel-card__desc">Alternative SaaS</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/automatisation-marketing" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Automatisation marketing</div>
-        <div class="rel-card__desc">Service complet</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agents-ia-chatbots" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Agents IA & chatbots</div>
-        <div class="rel-card__desc">Bots IA</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-ia" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
-        <div class="rel-card__title">Agence IA</div>
-        <div class="rel-card__desc">Solutions IA</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/agence-brevo" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">mail</span></div>
-        <div class="rel-card__title">Agence Brevo</div>
-        <div class="rel-card__desc">Email marketing</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/creation-saas" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
-        <div class="rel-card__title">Création SaaS</div>
-        <div class="rel-card__desc">MVP SaaS</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi n8n</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi choisir <em>n8n</em> ?</h2>
+      <p class="ns-lead ns-lead--center">n8n s'est imposé comme l'alternative sérieuse à Make pour les cas où souveraineté et volumes comptent.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Self-hosted ou cloud, vous choisissez</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">100%</div>
+          <p class="ns-acc__desc">n8n tourne sur votre serveur (Docker, Kubernetes) ou sur le cloud n8n. Données entièrement chez vous si souveraineté nécessaire.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Sans limite d'opérations self-hosted</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Illimité</div>
+          <p class="ns-acc__desc">Contrairement à Make/Zapier qui facturent à l'opération, n8n self-hosted n'a aucune limite. Idéal workflows haut volume.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Code 100% open source modifiable</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">MIT</div>
+          <p class="ns-acc__desc">Code source ouvert (license Sustainable Use). Nodes personnalisés en JavaScript, intégrations sur mesure. Pour besoins très spécifiques.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Coût fixe prévisible</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">VPS</div>
+          <p class="ns-acc__desc">Hébergement n8n sur VPS 5-20€/mois. Pas de surprise tarifaire vs Make/Zapier qui scalent avec votre volume.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Nodes IA natifs et avancés</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">OpenAI</div>
+          <p class="ns-acc__desc">Modules OpenAI, LangChain, vector DB, RAG. Workflows IA complexes (agents autonomes multi-step) plus faciles qu'avec Make.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Communauté tech active</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">60K+</div>
+          <p class="ns-acc__desc">60K+ stars GitHub, communauté Discord active, nouveaux nodes ajoutés chaque semaine. Documentation riche.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> n8n pour la production." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> n8n pour la production.</h2>
+        <p><strong>Audit de votre infrastructure</strong> : serveur disponible ou cloud n8n, volumétrie attendue, criticité workflows. Choix architecture (single instance ou queue mode pour scale).</p>
+        <p>Nos workflows n8n sont conçus pour la <strong>production critique</strong> : gestion d'erreurs systématique, retry configurable, monitoring (Prometheus + Grafana), alertes Slack/email proactives.</p>
+        <p>Documentation Notion complète, formation équipe sur édition workflows + ajout nouveaux scenarios. Vous gardez la maîtrise et l'autonomie. Support post-livraison sur forfait mensuel optionnel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> sur n8n</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">n8n vs Make, lequel choisir ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Make pour démarrage rapide, intégrations exotiques, équipes non-tech. n8n pour volume élevé, souveraineté, équipes techniques, IA avancée. n8n gagne sur le long terme pour 60% des cas.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte n8n ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">n8n self-hosted : gratuit (license Sustainable Use). Hébergement VPS 5-20€/mois. n8n cloud : 20$/mois (5 workflows actifs). Notre setup n8n self-hosted : 1 500-3 500 EUR one-shot.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Faut-il être technique pour utiliser n8n ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Pour l'utiliser : non, builder visuel intuitif. Pour l'installer self-hosted : oui, ou nous le faisons pour vous. Pour des nodes JS custom : oui, expertise dev requise.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quelle uptime peut-on attendre ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Self-hosted dépend de votre infra (uptime VPS). Avec setup standard : 99.5%+. n8n cloud : 99.9% officielle. Nous monitorons en continu si vous nous le confiez.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Mes données passent-elles par n8n cloud ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Si vous choisissez n8n cloud : oui (hébergement EU). Si self-hosted : non, tout reste chez vous. Idéal pour cas RGPD ultra-sensibles.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quels cas d'usage typiques ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Workflows IA complexes (RAG, agents), automatisations volumétriques (10K+ ops/jour), intégrations APIs custom, ETL data pipelines. Cas où Make devient trop cher ou limité.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps pour automatiser un workflow n8n ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Workflow simple (3-5 nodes) : 1-3 jours. Workflow complexe (10+ nodes, branches, custom JS) : 1-3 semaines. Setup initial n8n self-hosted : 3-5 jours.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Pouvez-vous migrer mes workflows Make/Zapier vers n8n ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Audit gratuit de vos workflows existants, estimation gain de coût, migration progressive. ROI typique de la migration : 3-6 mois selon volume.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/agence-make" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+        <div class="ns-rel-card__title">Agence Make</div>
+        <div class="ns-rel-card__desc">Alternative SaaS</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Automatisation marketing</div>
+        <div class="ns-rel-card__desc">Service complet</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agents-ia-chatbots" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Agents IA & chatbots</div>
+        <div class="ns-rel-card__desc">Bots IA</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-ia" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">psychology</span></div>
+        <div class="ns-rel-card__title">Agence IA</div>
+        <div class="ns-rel-card__desc">Solutions IA</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/agence-brevo" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">mail</span></div>
+        <div class="ns-rel-card__title">Agence Brevo</div>
+        <div class="ns-rel-card__desc">Email marketing</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/creation-saas" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="ns-rel-card__title">Création SaaS</div>
+        <div class="ns-rel-card__desc">MVP SaaS</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 <footer class="footer">

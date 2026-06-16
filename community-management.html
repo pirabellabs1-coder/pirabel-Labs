@@ -1379,140 +1379,293 @@
   </section>
 
 
-<!-- ============= 2-COL IMAGE+TEXT SECTIONS (auto-added) ============= -->
-<section class="alt-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);background:var(--bg-2);border-top:1px solid var(--border);">
-  <style>
-    .alt-section .alt-section__head { max-width: 50rem; margin: 0 0 3.5rem; }
-    .alt-section .alt-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .alt-section .alt-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; max-width: 44rem; }
-    .alt-section .alt-h2 em { color: var(--accent); font-style: normal; }
-    .alt-section .alt-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin-top: 1rem; text-align: left; }
-    .alt-section .alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 4rem; max-width: 78rem; }
-    .alt-section .alt-row:last-child { margin-bottom: 0; }
-    .alt-section .alt-row__img { aspect-ratio: 4/3; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); }
-    .alt-section .alt-row__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
-    .alt-section .alt-row:hover .alt-row__img img { transform: scale(1.04); }
-    .alt-section .alt-row__title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text); text-align: left; }
-    .alt-section .alt-row__desc { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.25rem; text-align: left; }
-    .alt-section .alt-row__bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-    .alt-section .alt-row__bullets li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; color: var(--text); line-height: 1.55; }
-    .alt-section .alt-row__bullets li .material-symbols-outlined { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; margin-top: 0.1rem; }
-    @media (max-width: 880px) {
-      .alt-section .alt-row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-      .alt-section .alt-row--rev .alt-row__img { order: -1; }
-    }
-  </style>
-  <div class="alt-section__head">
-    <span class="alt-eyebrow">Notre approche social</span>
-    <h2 class="alt-h2">Réseaux sociaux qui <em>convertissent</em>, pas juste qui likent.</h2>
-    <p class="alt-lead">Beaucoup d'agences font de l'animation. Nous faisons du social qui ramène des clients. Stratégie éditoriale documentée, contenu qui transforme l'audience en pipeline, publicités optimisées CRO.</p>
-  </div>
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=900&q=80" alt="Stratégie éditoriale documentée - Pirabel Labs" loading="lazy">
+<style>
+/* ============= NOIISE-STYLE SECTIONS ============= */
+.ns-section { padding: clamp(3.5rem, 7vw, 6rem) var(--px-page); }
+.ns-section--a { background: var(--bg); }
+.ns-section--b { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--c { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-section--d { background: var(--bg-2); border-top: 1px solid var(--border); }
+.ns-section--e { background: var(--bg); border-top: 1px solid var(--border); }
+.ns-container { max-width: 78rem; margin: 0 auto; }
+
+.ns-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 1rem; }
+.ns-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.85rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); text-align: left; margin: 0 0 1.5rem; }
+.ns-h2 em { color: var(--accent); font-style: normal; }
+.ns-h2--center { text-align: center; max-width: 44rem; margin-left: auto; margin-right: auto; }
+.ns-lead { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 50rem; }
+.ns-lead--center { text-align: center; margin-left: auto; margin-right: auto; }
+.ns-head { margin-bottom: 3.5rem; }
+
+.ns-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.ns-split__text p { font-size: 1.02rem; color: var(--text-muted); line-height: 1.75; margin: 0 0 1.1rem; }
+.ns-split__text p:last-child { margin-bottom: 0; }
+.ns-split__text p strong { color: var(--text); font-weight: 600; }
+.ns-split__media { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+.ns-split__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+.ns-split:hover .ns-split__media img { transform: scale(1.04); }
+
+.ns-acc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ns-acc { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; transition: all 0.2s; }
+.ns-acc[open] { border-color: var(--accent); }
+.ns-acc__sum { list-style: none; cursor: pointer; padding: 1.4rem 1.6rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.ns-acc__sum::-webkit-details-marker { display: none; }
+.ns-acc__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); line-height: 1.3; }
+.ns-acc__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-acc[open] .ns-acc__chev { transform: rotate(180deg); }
+.ns-acc__body { padding: 0 1.6rem 1.6rem; }
+.ns-acc__stat { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.ns-acc__desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.65; margin: 0; }
+
+.ns-faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.25rem; }
+.ns-faq { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.ns-faq[open] { border-color: var(--accent); }
+.ns-faq__sum { list-style: none; cursor: pointer; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+.ns-faq__sum::-webkit-details-marker { display: none; }
+.ns-faq__q { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.35; }
+.ns-faq__chev { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
+.ns-faq[open] .ns-faq__chev { transform: rotate(180deg); }
+.ns-faq__a { padding: 0 1.4rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.ns-faq__a a { color: var(--accent); }
+
+.ns-rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.ns-rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
+.ns-rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.ns-rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
+.ns-rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+.ns-rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+.ns-rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
+.ns-rel-card__cta .material-symbols-outlined { font-size: 1rem; }
+
+@media (max-width: 880px) {
+  .ns-split { grid-template-columns: 1fr; gap: 2rem; }
+  .ns-split--rev .ns-split__media { order: -1; }
+  .ns-acc-grid, .ns-faq-grid { grid-template-columns: 1fr; }
+  .ns-h2 { font-size: 1.7rem; }
+}
+</style>
+<!-- ============= NOIISE-STYLE BLOCK (auto-injected) ============= -->
+<!-- === NOIISE-STYLE SECTION A: Editorial 2-col === -->
+<section class="ns-section ns-section--a">
+  <div class="ns-container">
+    <div class="ns-split">
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Définition</span>
+        <h2 class="ns-h2">Qu'est-ce qu'une <em>agence community management</em> ?</h2>
+        <p>Une agence community management gère et anime la <strong>présence sociale</strong> de votre marque sur Instagram, TikTok, Facebook, LinkedIn, YouTube. Stratégie éditoriale, création contenu, animation, publicité, reporting.</p>
+        <p>Chez Pirabel Labs, nous différencions <strong>l'animation</strong> (faire des posts) de la <strong>stratégie sociale</strong> (ramener des clients). Notre approche : contenu qui ramène des leads, pas juste qui likent.</p>
+        <p>Notre conviction : 80% des comptes pro sur les réseaux sociaux <strong>perdent du temps et de l'argent</strong>. Pas de stratégie, pas de KPIs, pas de ROI. Nous structurons votre présence pour qu'elle rapporte vraiment.</p>
       </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Stratégie éditoriale documentée</h3>
-        <p class="alt-row__desc">Audit + benchmark concurrents, personas, ton de marque, formats, fréquence, hashtags, KPIs. Document partagé en interne, base pérenne.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Audit + benchmark concurrents</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Personas + tons documentés</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Calendrier éditorial mensuel</span></li>
-        </ul>
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=900&q=80" alt="Qu'est-ce qu'une <em>agence community management</em> ?" loading="lazy" />
       </div>
     </div>
-
-    <div class="alt-row alt-row--rev">
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Création de contenu qui scrolle stop</h3>
-        <p class="alt-row__desc">Visuels Figma sur mesure, vidéos verticales CapCut, captions optimisées hook + value + CTA. Format pensé pour chaque plateforme.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>12 à 20 posts par mois</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Reels + Stories + vidéos</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Captions optimisées CRO</span></li>
-        </ul>
-      </div>
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=900&q=80" alt="Création de contenu qui scrolle stop - Pirabel Labs" loading="lazy">
-      </div>
-    </div>
-
-    <div class="alt-row">
-      <div class="alt-row__img">
-        <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=900&q=80" alt="Publicités Meta + TikTok Ads pilotées - Pirabel Labs" loading="lazy">
-      </div>
-      <div class="alt-row__txt">
-        <h3 class="alt-row__title">Publicités Meta + TikTok Ads pilotées</h3>
-        <p class="alt-row__desc">Campagnes optimisées audiences, créas A/B testées, retargeting. ROAS moyen 3x à 6x sur nos clients.</p>
-        <ul class="alt-row__bullets">
-          <li><span class="material-symbols-outlined">check_circle</span> <span>Meta Ads + TikTok Ads</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>A/B testing systématique</span></li>
-          <li><span class="material-symbols-outlined">check_circle</span> <span>ROAS 3x à 6x typique</span></li>
-        </ul>
-      </div>
-    </div>
-</section>
-
-<!-- ============= RELATED SERVICES ============= -->
-<section class="rel-section" style="padding:clamp(3rem,6vw,5rem) var(--px-page);">
-  <style>
-    .rel-section .rel-head { max-width: 50rem; margin: 0 0 2.5rem; }
-    .rel-section .rel-eyebrow { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 0.85rem; }
-    .rel-section .rel-h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; color: var(--text); text-align: left; }
-    .rel-section .rel-h2 em { color: var(--accent); font-style: normal; }
-    .rel-section .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; max-width: 78rem; }
-    .rel-section .rel-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.2s; }
-    .rel-section .rel-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .rel-section .rel-card__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .rel-section .rel-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
-    .rel-section .rel-card__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
-    .rel-section .rel-card__cta { font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.5rem; }
-    .rel-section .rel-card__cta .material-symbols-outlined { font-size: 1rem; }
-  </style>
-  <div class="rel-head">
-    <span class="rel-eyebrow">Aussi a voir</span>
-    <h2 class="rel-h2">Services <em>complementaires</em></h2>
-  </div>
-  <div class="rel-grid">
-      <a href="/community-instagram" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">photo_camera</span></div>
-        <div class="rel-card__title">Agence Instagram</div>
-        <div class="rel-card__desc">Spécialisation Instagram</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/community-tiktok" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">music_video</span></div>
-        <div class="rel-card__title">Agence TikTok</div>
-        <div class="rel-card__desc">Spécialisation TikTok</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/community-linkedin" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">work</span></div>
-        <div class="rel-card__title">Agence LinkedIn</div>
-        <div class="rel-card__desc">BtoB et thought leadership</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/montage-video" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">movie</span></div>
-        <div class="rel-card__title">Montage vidéo</div>
-        <div class="rel-card__desc">Reels + YouTube</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/tunnels-de-vente" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">conversion_path</span></div>
-        <div class="rel-card__title">Tunnels de vente</div>
-        <div class="rel-card__desc">Conversion CRO</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/automatisation-marketing" class="rel-card">
-        <div class="rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="rel-card__title">Automatisation</div>
-        <div class="rel-card__desc">Workflows DMs et leads</div>
-        <div class="rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
   </div>
 </section>
-
+<!-- === NOIISE-STYLE SECTION B: Accordion grid === -->
+<section class="ns-section ns-section--b">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Pourquoi nous</span>
+      <h2 class="ns-h2 ns-h2--center">Pourquoi nous confier votre <em>social</em> ?</h2>
+      <p class="ns-lead ns-lead--center">6 raisons qui différencient une vraie stratégie sociale d'une simple animation de comptes.</p>
+    </div>
+    <div class="ns-acc-grid">
+      <details class="ns-acc" open>
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Stratégie éditoriale documentée</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">PDF</div>
+          <p class="ns-acc__desc">Personas, tons, formats, fréquence, hashtags, KPIs. Document partagé en interne, base pérenne pour vos équipes futures.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Contenu qui scrolle stop</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">12-20</div>
+          <p class="ns-acc__desc">Visuels Figma sur mesure, vidéos verticales CapCut, captions optimisées hook + value + CTA. 12-20 posts/mois selon forfait.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Publicités Meta + TikTok Ads</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">ROAS 3-6x</div>
+          <p class="ns-acc__desc">Campagnes optimisées audiences, créas A/B testées, retargeting. ROAS moyen 3x à 6x sur nos clients e-commerce.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Réponses DM et community 7j/7</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat"><2h</div>
+          <p class="ns-acc__desc">Modération, réponses DM, qualification leads sociaux. Délai réponse moyen : <2h en jours ouvrés.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Reporting mensuel KPIs</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">Live</div>
+          <p class="ns-acc__desc">Croissance, engagement, leads, ventes attribuées. Dashboard Looker Studio. Recommandations actionnables pour le mois suivant.</p>
+        </div>
+      </details>
+      <details class="ns-acc">
+        <summary class="ns-acc__sum">
+          <span class="ns-acc__title">Multi-plateforme spécialisée</span>
+          <span class="material-symbols-outlined ns-acc__chev">expand_more</span>
+        </summary>
+        <div class="ns-acc__body">
+          <div class="ns-acc__stat">5</div>
+          <p class="ns-acc__desc">Instagram, TikTok, Facebook, LinkedIn, YouTube. Expertise par réseau, pas du copier-coller cross-platform.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->
+<section class="ns-section ns-section--c">
+  <div class="ns-container">
+    <div class="ns-split ns-split--rev">
+      <div class="ns-split__media">
+        <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=900&q=80" alt="Notre <em>méthode</em> social en 5 étapes." loading="lazy" />
+      </div>
+      <div class="ns-split__text">
+        <span class="ns-eyebrow">Notre méthode</span>
+        <h2 class="ns-h2">Notre <em>méthode</em> social en 5 étapes.</h2>
+        <p><strong>Audit + benchmark concurrents</strong> : état des lieux complet de vos comptes existants, analyse de 3-5 concurrents directs, identification des best practices de votre secteur.</p>
+        <p>Stratégie éditoriale documentée : <strong>personas, tons, formats, fréquence, hashtags, KPIs</strong>. Document partagé en interne, base pérenne pour vos équipes futures.</p>
+        <p>Production contenu (12-20 posts/mois selon forfait) + animation quotidienne + publicités Meta/TikTok Ads optimisées. Reporting mensuel chiffré avec ajustements continus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION D: FAQ 2-col === -->
+<section class="ns-section ns-section--d">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">FAQ</span>
+      <h2 class="ns-h2 ns-h2--center">Questions <em>fréquentes</em> community management</h2>
+    </div>
+    <div class="ns-faq-grid">
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien coûte le community management ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Forfait mensuel : 800 à 4 000 EUR/mois selon nombre de réseaux et volume de posts. Inclut stratégie + création contenu + animation + ads (hors budget media).</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Sur quels réseaux travaillez-vous ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Instagram, TikTok, Facebook, LinkedIn, YouTube principalement. X (ex-Twitter), Pinterest, Threads sur demande. Expertise par réseau, pas du copier-coller.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de posts par mois inclus ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">12 à 20 posts/mois selon forfait. Stories quotidiennes inclus. Reels et vidéos courtes (3-8/mois) inclus selon forfait.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Gérez-vous les pubs Meta Ads et TikTok Ads ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui systématiquement. Audiences personnalisées, créas A/B testées, retargeting, lookalike. ROAS moyen 3-6x. Budget media à votre charge en plus du forfait.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Combien de temps avant de voir des résultats ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Premiers résultats à 60 jours (engagement, abonnés qualifiés). Croissance solide à 6 mois. Génération leads réguliers à 3-6 mois.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Travaillez-vous avec influenceurs ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Identification, prise de contact, négociation tarifs, suivi campagne, ROI. Forfait influenceurs en sus du budget mensuel.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Quel ROI puis-je attendre ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Variable selon secteur. Typique : x2-x5 abonnés à 6 mois, ROAS 3-6x sur ads, +20-50% trafic site venant du social.</div>
+      </details>
+      <details class="ns-faq">
+        <summary class="ns-faq__sum">
+          <span class="ns-faq__q">Pouvez-vous nous accompagner pour TikTok ?</span>
+          <span class="material-symbols-outlined ns-faq__chev">expand_more</span>
+        </summary>
+        <div class="ns-faq__a">Oui. Notre équipe maîtrise TikTok organic + TikTok Ads. Stratégie native plateforme, pas du repost Insta. Voir page <a href='/community-tiktok'>Agence TikTok</a>.</div>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- === NOIISE-STYLE SECTION E: Related services === -->
+<section class="ns-section ns-section--e">
+  <div class="ns-container">
+    <div class="ns-head">
+      <span class="ns-eyebrow">Aussi à voir</span>
+      <h2 class="ns-h2">Services <em>complémentaires</em></h2>
+    </div>
+    <div class="ns-rel-grid">
+      <a href="/community-instagram" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">photo_camera</span></div>
+        <div class="ns-rel-card__title">Agence Instagram</div>
+        <div class="ns-rel-card__desc">Spécialisation Instagram</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/community-tiktok" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">music_video</span></div>
+        <div class="ns-rel-card__title">Agence TikTok</div>
+        <div class="ns-rel-card__desc">Spécialisation TikTok</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/community-linkedin" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">work</span></div>
+        <div class="ns-rel-card__title">Agence LinkedIn</div>
+        <div class="ns-rel-card__desc">BtoB</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/montage-video" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">movie</span></div>
+        <div class="ns-rel-card__title">Montage vidéo</div>
+        <div class="ns-rel-card__desc">Reels + YouTube</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/tunnels-de-vente" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+        <div class="ns-rel-card__title">Tunnels de vente</div>
+        <div class="ns-rel-card__desc">Conversion</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+      <a href="/automatisation-marketing" class="ns-rel-card">
+        <div class="ns-rel-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="ns-rel-card__title">Automatisation</div>
+        <div class="ns-rel-card__desc">DM auto</div>
+        <div class="ns-rel-card__cta">Voir <span class="material-symbols-outlined">arrow_forward</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ============= END NOIISE-STYLE BLOCK ============= -->
 
 </main>
 

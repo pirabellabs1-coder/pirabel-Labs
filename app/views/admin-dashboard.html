@@ -47,15 +47,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .sidebar__name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s; }
 
 /* Toggle button (desktop) */
-.sidebar__toggle { display: none; position: absolute; top: 1.5rem; right: -0.85rem; width: 1.7rem; height: 1.7rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 50%; color: var(--text); cursor: pointer; align-items: center; justify-content: center; transition: all 0.2s; z-index: 50; }
+.sidebar__toggle { display: none; flex-shrink: 0; width: 1.85rem; height: 1.85rem; background: var(--surface); border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); cursor: pointer; align-items: center; justify-content: center; transition: all 0.2s; }
 .sidebar__toggle:hover { border-color: var(--accent); color: var(--accent); }
-.sidebar__toggle .material-symbols-outlined { font-size: 1.1rem; transition: transform 0.25s; }
+.sidebar__toggle .material-symbols-outlined { font-size: 1.15rem; transition: transform 0.25s; }
 .app.is-collapsed .sidebar__toggle .material-symbols-outlined { transform: rotate(180deg); }
-@media (min-width: 881px) { .sidebar__toggle { display: flex; } }
+@media (min-width: 881px) { .sidebar__toggle { display: flex; margin-left: auto; } }
 
-/* Close button (mobile only, in sidebar) */
-.sidebar__close { display: none; position: absolute; top: 1.2rem; right: 1rem; background: none; border: 0; color: var(--text-muted); cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: all 0.2s; z-index: 50; }
-.sidebar__close:hover { background: var(--surface); color: var(--accent); }
+/* Close button (mobile only, in brand row) */
+.sidebar__close { display: none; flex-shrink: 0; margin-left: auto; background: var(--surface); border: 1px solid var(--border-2); color: var(--text-muted); cursor: pointer; padding: 0.45rem; border-radius: 8px; transition: all 0.2s; align-items: center; justify-content: center; }
+.sidebar__close:hover { background: var(--bg); color: var(--accent); }
 @media (max-width: 880px) { .sidebar__close { display: flex; } }
 
 .sidebar__nav { display: flex; flex-direction: column; gap: 0.15rem; padding: 0 0.75rem; }
@@ -75,15 +75,17 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .sidebar__logout:hover { color: var(--danger); }
 
 /* Collapsed state - icons only */
-.app.is-collapsed .sidebar__name,
 .app.is-collapsed .sidebar__link-text,
-.app.is-collapsed .sidebar__section,
 .app.is-collapsed .sidebar__user { opacity: 0; pointer-events: none; }
-.app.is-collapsed .sidebar__brand { padding: 0; justify-content: center; }
+/* En mode reduit : on masque completement (display:none) ce qui prendrait de la place */
+.app.is-collapsed .sidebar__name,
+.app.is-collapsed .sidebar__section { display: none; }
+.app.is-collapsed .sidebar__brand { padding: 0; justify-content: center; gap: 0; }
+.app.is-collapsed .sidebar__toggle { margin-left: 0; }
+.app.is-collapsed .sidebar__logo { display: none; } /* le toggle remplace le logo en mode reduit */
 .app.is-collapsed .sidebar__nav { padding: 0 0.5rem; }
 .app.is-collapsed .sidebar__link { justify-content: center; padding: 0.7rem 0; }
 .app.is-collapsed .sidebar__footer { padding: 1rem 0.5rem; justify-content: center; }
-.app.is-collapsed .sidebar__section { padding: 0.5rem 0; height: 0.6rem; }
 
 /* Tooltips when collapsed (desktop) */
 @media (min-width: 881px) {
@@ -252,15 +254,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app" id="app">
   <aside class="sidebar" id="sidebar">
-    <button type="button" class="sidebar__toggle" id="sidebarToggle" aria-label="Reduire / agrandir le menu">
-      <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <button type="button" class="sidebar__close" id="sidebarClose" aria-label="Fermer le menu">
-      <span class="material-symbols-outlined">close</span>
-    </button>
     <div class="sidebar__brand">
       <div class="sidebar__logo">P</div>
       <div class="sidebar__name">Pirabel Labs</div>
+      <button type="button" class="sidebar__toggle" id="sidebarToggle" aria-label="Reduire / agrandir le menu" title="Reduire / agrandir">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button type="button" class="sidebar__close" id="sidebarClose" aria-label="Fermer le menu" title="Fermer">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
     <div class="sidebar__section">Pilotage</div>
     <nav class="sidebar__nav">
@@ -869,30 +871,13 @@ async function deleteQuote(id) {
   } catch(e) { toast('Erreur suppression', 'error'); }
 }
 
+// Ouvre le modal devis complet (defini plus bas, scope global). Remplace l'ancien prompt().
 function openNewQuoteModal(preLeadId) {
-  // Simple prompt-based pour MVP (peut etre remplace par modal complet)
-  const leadId = preLeadId || prompt('ID du prospect (visible dans Prospects CRM) :');
-  if (!leadId) return;
-  const title = prompt('Titre du devis (ex : Creation site web vitrine) :');
-  if (!title) return;
-  const desc1 = prompt('Description ligne 1 :');
-  const qty1 = parseFloat(prompt('Quantite ligne 1 :', '1'));
-  const price1 = parseFloat(prompt('Prix unitaire ligne 1 (EUR) :'));
-  if (!desc1 || isNaN(qty1) || isNaN(price1)) return;
-  const taxRate = parseFloat(prompt('Taux TVA % (0 si pas de TVA) :', '0')) || 0;
-  const items = [{ description: desc1, quantity: qty1, unitPrice: price1 }];
-
-  // Ligne 2 optionnelle
-  if (confirm('Ajouter une 2eme ligne ?')) {
-    const d2 = prompt('Description ligne 2 :');
-    const q2 = parseFloat(prompt('Quantite ligne 2 :', '1'));
-    const p2 = parseFloat(prompt('Prix unitaire ligne 2 (EUR) :'));
-    if (d2 && !isNaN(q2) && !isNaN(p2)) items.push({ description: d2, quantity: q2, unitPrice: p2 });
+  if (typeof showQuoteModal === 'function') {
+    showQuoteModal(typeof preLeadId === 'string' ? preLeadId : undefined);
+  } else {
+    toast('Modal devis indisponible, rechargez la page', 'error');
   }
-
-  api('/api/admin/quotes', { method: 'POST', body: JSON.stringify({ leadId, title, items, taxRate, currency: 'EUR' }) })
-    .then(() => { toast('Devis cree (brouillon)', 'success'); loadQuotes(); })
-    .catch(e => toast('Erreur creation : ' + (e.message || ''), 'error'));
 }
 
 // ============ REVIEWS ============

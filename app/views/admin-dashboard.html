@@ -33,7 +33,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .sidebar-backdrop.is-show { display: block; opacity: 1; }
 
 /* Sidebar */
-.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1.5rem 0 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; transition: width 0.25s ease, transform 0.25s ease; overflow: hidden; }
+.sidebar { background: var(--bg-2); border-right: 1px solid var(--border); padding: 1.5rem 0 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; transition: width 0.25s ease, transform 0.25s ease; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; }
+.sidebar::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .sidebar__brand { display: flex; align-items: center; gap: 0.6rem; padding: 0 1.5rem; margin-bottom: 1.5rem; min-height: 2.25rem; }
 .sidebar__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
 .sidebar__name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s; }
@@ -415,12 +419,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- LIVRES BLANCS VIEW -->
     <div class="view" data-view="livres-blancs">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Livres blancs téléchargés</h1><div class="topbar__sub">Tous les leads ayant téléchargé un de vos livres blancs.</div></div>
-        <div class="topbar__actions">
-          <button class="btn btn--ghost btn--sm" id="lbRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
-          <button class="btn btn--sm" id="lbExport"><span class="material-symbols-outlined">download</span> Exporter CSV</button>
-        </div>
+      <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-bottom:1.5rem;">
+        <button class="btn btn--ghost btn--sm" id="lbRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+        <button class="btn btn--sm" id="lbExport"><span class="material-symbols-outlined">download</span> Exporter CSV</button>
       </div>
       <div class="kpi-grid" id="lbKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
       <div class="card">
@@ -445,9 +446,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- BULK EMAIL VIEW -->
     <div class="view" data-view="bulk-email">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Envoi email en masse</h1><div class="topbar__sub">Newsletter / annonce / relance vers vos leads (uniquement opt-in newsletter).</div></div>
-      </div>
       <div class="card">
         <div class="card__header"><div><div class="card__title">Étape 1 : sélection des destinataires</div><div class="card__sub">Filtrer pour cibler précisément.</div></div></div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
@@ -501,8 +499,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- CLIENTS VIEW -->
     <div class="view" data-view="clients">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Clients</h1><div class="topbar__sub">Prospects ayant accepté un devis (devenus clients).</div></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
         <button class="btn btn--ghost btn--sm" id="clRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
       </div>
       <div class="kpi-grid" id="clKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
@@ -527,12 +524,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- QUOTES VIEW -->
     <div class="view" data-view="quotes">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Devis</h1><div class="topbar__sub">Gérer et suivre vos devis envoyés aux prospects.</div></div>
-        <div class="topbar__actions">
-          <button class="btn btn--ghost btn--sm" id="qRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
-          <button class="btn btn--sm" id="qNew"><span class="material-symbols-outlined">add</span> Nouveau devis</button>
-        </div>
+      <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-bottom:1.5rem;">
+        <button class="btn btn--ghost btn--sm" id="qRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+        <button class="btn btn--sm" id="qNew"><span class="material-symbols-outlined">add</span> Nouveau devis</button>
       </div>
       <div class="kpi-grid" id="qKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
       <div class="card">
@@ -556,8 +550,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- REVIEWS VIEW -->
     <div class="view" data-view="reviews">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Avis clients</h1><div class="topbar__sub">Demandes envoyées, avis reçus, modération avant publication.</div></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
         <button class="btn btn--ghost btn--sm" id="rvRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
       </div>
       <div class="kpi-grid" id="rvKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
@@ -571,12 +564,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- GALLERY VIEW -->
     <div class="view" data-view="gallery">
-      <div class="topbar" style="margin-bottom:1.5rem;">
-        <div><h1>Galerie images</h1><div class="topbar__sub">Uploadez vos images, organisez par dossier, copiez les URLs.</div></div>
-        <div class="topbar__actions">
-          <label for="galUpload" class="btn btn--sm" style="cursor:pointer;"><span class="material-symbols-outlined">cloud_upload</span> Uploader image(s)</label>
-          <input type="file" id="galUpload" multiple accept="image/*" style="display:none;">
-        </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
+        <label for="galUpload" class="btn btn--sm" style="cursor:pointer;"><span class="material-symbols-outlined">cloud_upload</span> Uploader image(s)</label>
+        <input type="file" id="galUpload" multiple accept="image/*" style="display:none;">
       </div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;" id="galFolders"></div>
       <div id="galGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:1rem;">
@@ -698,8 +688,54 @@ function setView(view) {
   window.location.hash = view;
 }
 
+// ============ Helpers : etats erreur/loading + modal lien copiable ============
+function errorState(tbodyId, colspan, msg) {
+  const el = document.getElementById(tbodyId);
+  if (el) el.innerHTML = '<tr><td colspan="' + colspan + '" style="padding:2rem;text-align:center;color:var(--danger);"><span class="material-symbols-outlined" style="vertical-align:middle;">error</span> ' + msg + '</td></tr>';
+}
+function emptyState(containerId, msg, html) {
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = html || '<div style="padding:2rem;text-align:center;color:var(--text-muted);">' + msg + '</div>';
+}
+function showLinkModal(title, body, url) {
+  // Modal simple pour afficher + copier un lien
+  let modal = document.getElementById('linkModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'linkModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    modal.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:2rem;max-width:32rem;width:100%;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">' +
+      '<div><div id="lmTitle" style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;"></div>' +
+      '<p id="lmBody" style="font-size:0.88rem;color:var(--text-muted);line-height:1.55;"></p></div>' +
+      '<button id="lmClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>' +
+      '</div>' +
+      '<div style="display:flex;gap:0.5rem;align-items:stretch;margin-top:1rem;">' +
+      '<input id="lmInput" readonly style="flex:1;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.9rem;border-radius:8px;font-family:monospace;font-size:0.78rem;">' +
+      '<button id="lmCopy" class="btn btn--sm"><span class="material-symbols-outlined">content_copy</span> Copier</button>' +
+      '</div>' +
+      '<div style="display:flex;gap:0.5rem;margin-top:0.85rem;">' +
+      '<a id="lmOpen" class="btn btn--ghost btn--sm" target="_blank" rel="noopener" style="flex:1;justify-content:center;"><span class="material-symbols-outlined">open_in_new</span> Ouvrir le lien</a>' +
+      '<a id="lmWa" class="btn btn--ghost btn--sm" target="_blank" rel="noopener" style="flex:1;justify-content:center;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>' +
+      '</div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.getElementById('lmClose').addEventListener('click', () => modal.remove());
+    document.getElementById('lmCopy').addEventListener('click', async () => {
+      const v = document.getElementById('lmInput').value;
+      try { await navigator.clipboard.writeText(v); toast('Lien copie', 'success'); } catch(e) { toast('Copie manuelle requise', 'error'); }
+    });
+  }
+  document.getElementById('lmTitle').textContent = title;
+  document.getElementById('lmBody').textContent = body;
+  document.getElementById('lmInput').value = url;
+  document.getElementById('lmOpen').href = url;
+  document.getElementById('lmWa').href = 'https://wa.me/?text=' + encodeURIComponent(url);
+}
+
 // ============ CLIENTS ============
 async function loadClients() {
+  document.getElementById('clTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);"><span class="material-symbols-outlined" style="vertical-align:middle;animation:spin 1s linear infinite;">progress_activity</span> Chargement...</td></tr>';
   try {
     const data = await api('/api/admin/leads?status=converti');
     let clients = (data.leads || []).filter(l => l.stage === 'client' || l.status === 'converti');
@@ -720,21 +756,35 @@ async function loadClients() {
       '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(c.company || '-') + '</td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--success);">' + (c.clientData?.totalContractValue || 0).toLocaleString('fr-FR') + ' &euro;</td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;">' + (c.clientData?.quotesCount || 0) + '</td>' +
-      '<td style="padding:0.85rem 0.5rem;"><button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">reviews</span> Demander avis</button></td>' +
+      '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
+        '<button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Envoyer email de demande"><span class="material-symbols-outlined">mail</span></button>' +
+        '<button onclick="newQuoteFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Creer un devis"><span class="material-symbols-outlined">request_quote</span></button>' +
+      '</td>' +
       '</tr>').join('');
-  } catch(e) { console.error(e); toast('Erreur chargement clients', 'error'); }
+  } catch(e) {
+    console.error(e);
+    errorState('clTbody', 7, 'Erreur chargement clients : ' + (e.message || 'verifiez votre connexion'));
+    toast('Erreur chargement clients', 'error');
+  }
 }
 
 async function requestReview(leadId) {
   if (!confirm('Envoyer un email de demande d\'avis a ce client ?')) return;
   try {
     const data = await api('/api/admin/reviews/request', { method: 'POST', body: JSON.stringify({ leadId }) });
-    toast('Demande d\'avis envoyee', 'success');
-  } catch(e) { toast('Erreur envoi demande', 'error'); }
+    // Affiche modal avec lien copiable
+    showLinkModal('Demande d\'avis envoyee', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier pour l\'envoyer manuellement (WhatsApp, SMS, etc).', data.publicUrl);
+  } catch(e) { toast('Erreur envoi : ' + (e.message || ''), 'error'); }
+}
+
+function newQuoteFor(leadId) {
+  setView('quotes');
+  setTimeout(() => { openNewQuoteModal(leadId); }, 200);
 }
 
 // ============ QUOTES ============
 async function loadQuotes() {
+  document.getElementById('qTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr>';
   try {
     const data = await api('/api/admin/quotes');
     const quotes = data.quotes || [];
@@ -769,7 +819,11 @@ async function loadQuotes() {
         '</td>' +
         '</tr>';
     }).join('');
-  } catch(e) { console.error(e); toast('Erreur chargement devis', 'error'); }
+  } catch(e) {
+    console.error(e);
+    errorState('qTbody', 7, 'Erreur chargement devis : ' + (e.message || 'API indisponible'));
+    toast('Erreur chargement devis', 'error');
+  }
 }
 
 async function sendQuote(id) {
@@ -790,9 +844,9 @@ async function deleteQuote(id) {
   } catch(e) { toast('Erreur suppression', 'error'); }
 }
 
-function openNewQuoteModal() {
+function openNewQuoteModal(preLeadId) {
   // Simple prompt-based pour MVP (peut etre remplace par modal complet)
-  const leadId = prompt('ID du prospect (visible dans Prospects CRM) :');
+  const leadId = preLeadId || prompt('ID du prospect (visible dans Prospects CRM) :');
   if (!leadId) return;
   const title = prompt('Titre du devis (ex : Creation site web vitrine) :');
   if (!title) return;
@@ -818,6 +872,7 @@ function openNewQuoteModal() {
 
 // ============ REVIEWS ============
 async function loadReviews() {
+  document.getElementById('rvList').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</div>';
   try {
     const data = await api('/api/admin/reviews');
     const reviews = data.reviews || [];
@@ -848,7 +903,11 @@ async function loadReviews() {
         '<button onclick="deleteReview(\'' + r._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span></button>' +
         '</div></div>';
     }).join('');
-  } catch(e) { console.error(e); toast('Erreur chargement avis', 'error'); }
+  } catch(e) {
+    console.error(e);
+    emptyState('rvList', null, '<div style="padding:2rem;text-align:center;color:var(--danger);"><span class="material-symbols-outlined" style="vertical-align:middle;">error</span> Erreur chargement avis : ' + (e.message || 'API indisponible') + '</div>');
+    toast('Erreur chargement avis', 'error');
+  }
 }
 
 async function togglePublishReview(id, publish) {
@@ -867,6 +926,7 @@ async function deleteReview(id) {
 
 // ============ GALLERY ============
 async function loadGallery(folder) {
+  document.getElementById('galGrid').innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</div>';
   try {
     const url = folder ? '/api/admin/media?folder=' + folder : '/api/admin/media';
     const data = await api(url);
@@ -890,7 +950,11 @@ async function loadGallery(folder) {
       '<button onclick="copyMediaUrl(\'' + m._id + '\')" class="btn btn--ghost btn--sm" style="flex:1;font-size:0.7rem;padding:0.4rem 0.5rem;"><span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span> URL</button>' +
       '<button onclick="deleteMedia(\'' + m._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);padding:0.4rem 0.5rem;"><span class="material-symbols-outlined" style="font-size:0.95rem;">delete</span></button>' +
       '</div></div></div>').join('');
-  } catch(e) { console.error(e); toast('Erreur chargement galerie', 'error'); }
+  } catch(e) {
+    console.error(e);
+    document.getElementById('galGrid').innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--danger);"><span class="material-symbols-outlined" style="vertical-align:middle;">error</span> Erreur chargement galerie : ' + (e.message || 'API indisponible') + '</div>';
+    toast('Erreur chargement galerie', 'error');
+  }
 }
 
 async function viewMedia(id) {

@@ -704,7 +704,7 @@ module.exports = {
   notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
   sendAppointmentConfirmation,
   sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,
-  emailTemplate, masterTemplate,
+  emailTemplate, masterTemplate, newOrderEmail,
   prospectionEmail, newsletterEmail, welcomeEmail,
   applicationStatusEmail, applicationConfirmationEmail, newApplicationAdminEmail,
   STATUS_MESSAGES

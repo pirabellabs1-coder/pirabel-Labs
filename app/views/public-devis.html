@@ -91,7 +91,7 @@ th.r, td.r { text-align:right; }
 </div>
 
 <script>
-const token = window.location.pathname.split('/').pop();
+const token = (function(){ var p = window.location.pathname.split('/').filter(Boolean); return p[p.length - 1] || ''; })();
 const loading = document.getElementById('loading');
 const content = document.getElementById('content');
 const errorBlock = document.getElementById('errorBlock');

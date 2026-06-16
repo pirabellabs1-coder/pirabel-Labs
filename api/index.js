@@ -518,7 +518,7 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
       ]),
     ]);
 
-    const converted = await Lead.countDocuments({ status: 'won' });
+    const converted = await Lead.countDocuments({ $or: [{ status: 'converti' }, { stage: 'client' }] });
     const conversionRate = total ? Math.round((converted / total) * 100 * 10) / 10 : 0;
 
     res.json({

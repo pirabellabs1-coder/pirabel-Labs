@@ -402,8 +402,8 @@
             <div class="form-section-title"><span class="form-section-title__num">1</span> Votre demande</div>
             <div class="form-row">
               <div class="form-field">
-                <label for="type" class="form-field__label">Type de demande <span class="required">*</span></label>
-                <select id="type" name="type" class="form-field__select" required>
+                <label for="type" class="form-field__label">Type de demande</label>
+                <select id="type" name="type" class="form-field__select">
                   <option value="" disabled selected>Choisir un type de demande</option>
                   <option value="devis">Demande de devis</option>
                   <option value="audit">Audit gratuit</option>
@@ -453,8 +453,8 @@
                 <input type="email" id="email" name="email" class="form-field__input" placeholder="vous@entreprise.com" required autocomplete="email">
               </div>
               <div class="form-field">
-                <label for="telephone" class="form-field__label">Téléphone <span class="required">*</span></label>
-                <input type="tel" id="telephone" name="telephone" class="form-field__input" placeholder="+229 90 00 00 00" required autocomplete="tel" pattern="[\+0-9\s\-\(\)\.]{7,}">
+                <label for="telephone" class="form-field__label">Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" class="form-field__input" placeholder="+229 90 00 00 00" autocomplete="tel">
                 <span class="form-field__hint">Indicatif pays inclus pour un rappel rapide.</span>
               </div>
             </div>
@@ -476,8 +476,8 @@
             <div class="form-section-title"><span class="form-section-title__num">3</span> Budget &amp; delai</div>
             <div class="form-row">
               <div class="form-field">
-                <label for="budget" class="form-field__label">Budget estimé (EUR HT) <span class="required">*</span></label>
-                <select id="budget" name="budget" class="form-field__select" required>
+                <label for="budget" class="form-field__label">Budget estimé (EUR HT)</label>
+                <select id="budget" name="budget" class="form-field__select">
                   <option value="" disabled selected>Choisir une fourchette de budget</option>
                   <option value="&lt;3000">Moins de 3 000 EUR</option>
                   <option value="3000-6000">3 000 à 6 000 EUR</option>
@@ -488,8 +488,8 @@
                 <span class="form-field__hint">Une fourchette honnete nous aide à calibrer la proposition.</span>
               </div>
               <div class="form-field">
-                <label for="delai" class="form-field__label">Delai souhaite <span class="required">*</span></label>
-                <select id="delai" name="delai" class="form-field__select" required>
+                <label for="delai" class="form-field__label">Delai souhaite</label>
+                <select id="delai" name="delai" class="form-field__select">
                   <option value="" disabled selected>Choisir un delai</option>
                   <option value="urgent">Urgent &middot; moins d'1 mois</option>
                   <option value="standard">Standard &middot; 1 à 3 mois</option>
@@ -726,20 +726,32 @@
 
 <script>
 (function(){
-  // Burger menu
+  // Burger menu (nav-mega : navMenu + is-open + tap-to-expand)
   var burger = document.getElementById('navBurger');
-  var links = document.getElementById('navLinks');
-  if (burger && links) {
+  var menu = document.getElementById('navMenu');
+  if (burger && menu) {
     burger.addEventListener('click', function(){
-      var open = links.classList.toggle('open');
-      burger.classList.toggle('open', open);
+      var open = menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open', open);
       burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
     });
-    links.addEventListener('click', function(e){
-      if (e.target.tagName === 'A' && window.innerWidth < 980) {
-        links.classList.remove('open');
-        burger.classList.remove('open');
-      }
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click', function(e){
+        if (window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if (item) item.classList.toggle('is-active');
+        }
+      });
     });
   }
 
@@ -800,15 +812,6 @@
   if (form) {
     form.addEventListener('submit', async function(e){
       e.preventDefault();
-      if (!form.checkValidity()) {
-        var first = form.querySelector(':invalid');
-        if (first) {
-          first.focus();
-          var top = first.getBoundingClientRect().top + window.scrollY - 120;
-          window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-        return;
-      }
 
       var submitBtn = form.querySelector('button[type="submit"]');
       var btnText = submitBtn ? submitBtn.innerHTML : '';
@@ -817,7 +820,28 @@
         msgBox = document.createElement('div');
         msgBox.id = 'contactFormMsg';
         msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: none;';
-        form.insertBefore(msgBox, submitBtn);
+        // Insere le message juste avant le bloc du bouton (le bouton n'est PAS enfant direct du form)
+        var anchor = submitBtn && submitBtn.closest('.form-submit-row') ? submitBtn.closest('.form-submit-row') : submitBtn;
+        if (anchor && anchor.parentNode) {
+          anchor.parentNode.insertBefore(msgBox, anchor);
+        } else {
+          form.appendChild(msgBox);
+        }
+      }
+
+      // Validation avec feedback EXPLICITE (plus de blocage silencieux)
+      if (!form.checkValidity()) {
+        var first = form.querySelector(':invalid');
+        var labelEl = first ? form.querySelector('label[for="' + first.id + '"]') : null;
+        var fieldName = labelEl ? labelEl.textContent.replace('*','').trim() : 'un champ obligatoire';
+        msgBox.style.cssText = 'margin: 1rem 0; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.92rem; line-height: 1.5; display: block; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.4); color: #fbbf24;';
+        msgBox.innerHTML = '<strong>Champ manquant.</strong> Merci de remplir : <strong>' + fieldName + '</strong>' + (first && first.id === 'rgpd' ? ' (cochez la case de consentement)' : '') + '.';
+        if (first) {
+          first.focus();
+          var topv = first.getBoundingClientRect().top + window.scrollY - 120;
+          window.scrollTo({ top: topv, behavior: 'smooth' });
+        }
+        return;
       }
 
       // Payload : map les champs du form aux champs attendus par l'API

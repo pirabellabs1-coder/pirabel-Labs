@@ -199,7 +199,7 @@ function newOrderEmail(order) {
       ${order.message ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;"><strong style="color:#e5e2e1;">Message :</strong><br>${order.message}</p></div>` : ''}
     `,
     cta: 'Voir dans l\'admin',
-    ctaUrl: `${SITE()}/orders`,
+    ctaUrl: `${SITE()}/admin/dashboard`,
     ctaSecondary: 'R\u00e9pondre directement',
     ctaSecondaryUrl: `mailto:${order.email}?subject=Re: Votre demande Pirabel Labs`
   });

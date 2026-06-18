@@ -548,6 +548,54 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
   }
 });
 
+// === REPONDRE / ECRIRE A UN CLIENT OU PROSPECT (envoi email individuel) ===
+app.post('/api/admin/send-email', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const leadId = sanitize(req.body && req.body.leadId || '', 30);
+    let to = sanitizeEmail(req.body && req.body.to || '');
+    const subject = sanitize(req.body && req.body.subject || '', 200);
+    const message = String(req.body && req.body.message || '').slice(0, 20000);
+
+    let lead = null;
+    if (leadId && /^[a-f0-9]{24}$/i.test(leadId)) {
+      lead = await Lead.findById(leadId);
+      if (lead && !to) to = (lead.email || '').toLowerCase();
+    }
+    if (!isValidEmail(to)) return res.status(400).json({ error: 'Adresse email du destinataire invalide.' });
+    if (!subject || subject.length < 2) return res.status(400).json({ error: 'Sujet requis.' });
+    if (!message || message.trim().length < 2) return res.status(400).json({ error: 'Message requis.' });
+
+    // Texte libre -> HTML (paragraphes + retours ligne), echappe
+    const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
+    const bodyHtml = '<p style="' + para + '">' +
+      escapeHtml(message).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') +
+      '</p>';
+    const greeting = (lead && lead.name) ? ('Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',') : 'Bonjour,';
+    const html = masterTemplate({
+      headerType: 'hero',
+      preheader: subject,
+      title: greeting,
+      body: bodyHtml,
+      cta: 'Visiter pirabellabs.com',
+      ctaUrl: 'https://www.pirabellabs.com',
+    });
+
+    const ok = await sendEmail(to, subject, html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
+    if (!ok) return res.status(502).json({ error: "Envoi refuse. Verifiez que le domaine pirabellabs.com est verifie sur Resend (resend.com/domains)." });
+
+    if (lead) {
+      lead.lastEmailSentAt = new Date();
+      lead.emailsSentCount = (lead.emailsSentCount || 0) + 1;
+      if (lead.status === 'nouveau') lead.status = 'lu';
+      await lead.save();
+    }
+    res.json({ success: true, message: 'Email envoye a ' + to });
+  } catch (err) {
+    console.error('[send-email]', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
 // === TRAFFIC TRACKING (public, léger) ===
 const trackLimiter = rateLimit({ windowMs: 60 * 1000, max: 120, message: 'rate', keyPrefix: 'track' });
 function todayUTC() { return new Date().toISOString().slice(0, 10); }

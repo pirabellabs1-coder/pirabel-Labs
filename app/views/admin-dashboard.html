@@ -334,6 +334,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
       <div class="topbar__actions">
         <a href="/" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">open_in_new</span> Voir le site</a>
+        <button class="btn btn--sm" onclick="openCompose()"><span class="material-symbols-outlined">edit</span> Écrire un email</button>
         <button class="btn btn--sm" id="refreshBtn"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
       </div>
     </div>
@@ -771,6 +772,64 @@ function emptyState(containerId, msg, html) {
   const el = document.getElementById(containerId);
   if (el) el.innerHTML = html || '<div style="padding:2rem;text-align:center;color:var(--text-muted);">' + msg + '</div>';
 }
+// ============ COMPOSER : repondre / ecrire un email a un client ou prospect ============
+function openCompose(prefill) {
+  prefill = prefill || {};
+  var old = document.getElementById('composeModal');
+  if (old) old.remove();
+  var modal = document.createElement('div');
+  modal.id = 'composeModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;max-width:36rem;width:100%;max-height:92vh;overflow:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (prefill.leadId ? 'Repondre par email' : 'Ecrire un email') + '</div>' +
+      '<button id="cmClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>' +
+    '</div>' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Destinataire (email)</label>' +
+    '<input id="cmTo" type="email" placeholder="client@exemple.com" value="' + escape(prefill.email || '') + '" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.85rem;">' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Sujet</label>' +
+    '<input id="cmSubject" type="text" placeholder="Votre demande chez Pirabel Labs" value="' + escape(prefill.subject || '') + '" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.85rem;">' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Message</label>' +
+    '<textarea id="cmMessage" rows="8" placeholder="Bonjour,&#10;&#10;Merci pour votre message..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.4rem;font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>' +
+    '<p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;">Le message part dans un joli template Pirabel Labs. Les reponses du client arrivent sur ta boite contact@pirabellabs.com.</p>' +
+    '<div style="display:flex;gap:0.5rem;justify-content:flex-end;">' +
+      '<button id="cmCancel" class="btn btn--ghost btn--sm">Annuler</button>' +
+      '<button id="cmSend" class="btn btn--sm"><span class="material-symbols-outlined">send</span> Envoyer</button>' +
+    '</div></div>';
+  document.body.appendChild(modal);
+  if (prefill.leadId) modal.dataset.leadId = prefill.leadId;
+  if (prefill.message) document.getElementById('cmMessage').value = prefill.message;
+  function close() { modal.remove(); }
+  modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
+  document.getElementById('cmClose').addEventListener('click', close);
+  document.getElementById('cmCancel').addEventListener('click', close);
+  document.getElementById('cmSend').addEventListener('click', async function() {
+    var to = document.getElementById('cmTo').value.trim();
+    var subject = document.getElementById('cmSubject').value.trim();
+    var message = document.getElementById('cmMessage').value.trim();
+    if (!to || !subject || !message) { toast('Destinataire, sujet et message requis', 'error'); return; }
+    var btn = document.getElementById('cmSend');
+    btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> Envoi...';
+    try {
+      var payload = { to: to, subject: subject, message: message };
+      if (modal.dataset.leadId) payload.leadId = modal.dataset.leadId;
+      var r = await api('/api/admin/send-email', { method: 'POST', body: payload });
+      toast(r.message || 'Email envoye !', 'success');
+      close();
+      if (modal.dataset.leadId) { loadLeads(); }
+    } catch(e) {
+      toast(e.message || "Echec de l'envoi", 'error');
+      btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined">send</span> Envoyer';
+    }
+  });
+}
+window.openCompose = openCompose;
+window.openComposeForCurrentLead = function() {
+  var l = STATE.currentLead;
+  if (!l) return;
+  openCompose({ email: l.email, leadId: l._id, name: l.name, subject: 'Votre demande chez Pirabel Labs' });
+};
+
 function showLinkModal(title, body, url) {
   // Modal simple pour afficher + copier un lien
   let modal = document.getElementById('linkModal');
@@ -1490,7 +1549,8 @@ function openDetail(id) {
       '<select class="detail__select" id="detailStatus">' +
         Object.keys(STATUS_LABELS).map(function(k){ return '<option value="' + k + '"' + (lead.status === k ? ' selected' : '') + '>' + STATUS_LABELS[k] + '</option>'; }).join('') +
       '</select></div>' +
-    '<div class="detail__field"><div class="detail__label">Notes internes</div><textarea class="detail__textarea" id="detailNotes" placeholder="Notes...">' + escape(lead.internalNotes || '') + '</textarea></div>';
+    '<div class="detail__field"><div class="detail__label">Notes internes</div><textarea class="detail__textarea" id="detailNotes" placeholder="Notes...">' + escape(lead.internalNotes || '') + '</textarea></div>' +
+    '<button class="btn btn--sm" style="margin-top:1rem;width:100%;justify-content:center;" onclick="openComposeForCurrentLead()"><span class="material-symbols-outlined">reply</span> Répondre par email</button>';
   document.getElementById('detail').classList.add('is-open');
 }
 

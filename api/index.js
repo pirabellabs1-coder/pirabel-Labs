@@ -26,7 +26,7 @@ const crypto = require('crypto');
 const connectDB = require('../app/config/db');
 const { sendEmail, masterTemplate, newOrderEmail } = require('../app/config/email');
 const {
-  rateLimit, sanitize, sanitizeEmail, honeypotCheck, limitBody,
+  rateLimit, sanitize, sanitizeSoft, sanitizeEmail, honeypotCheck, limitBody,
   isValidEmail, securityHeaders, globalSanitize,
 } = require('../app/middleware/security');
 const { auth, adminOnly } = require('../app/middleware/auth');
@@ -36,6 +36,7 @@ const Media = require('../app/models/Media');
 const Quote = require('../app/models/Quote');
 const Review = require('../app/models/Review');
 const TrafficStat = require('../app/models/TrafficStat');
+const Article = require('../app/models/Article');
 
 const app = express();
 
@@ -645,6 +646,214 @@ app.get('/api/admin/traffic', auth, adminOnly, async (req, res) => {
     console.error('[traffic]', err.message);
     res.status(500).json({ error: 'Erreur trafic.' });
   }
+});
+
+// ========================================================================
+// === BLOG / CMS : articles geres depuis le dashboard, rendus sur le site ===
+// ========================================================================
+function slugify(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+}
+async function uniqueSlug(base, excludeId) {
+  let slug = slugify(base) || ('article-' + Date.now().toString(36));
+  let n = 1;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const existing = await Article.findOne({ slug });
+    if (!existing || (excludeId && String(existing._id) === String(excludeId))) return slug;
+    n++; slug = slugify(base).slice(0, 76) + '-' + n;
+  }
+}
+const SITE = () => (process.env.SITE_URL || 'https://www.pirabellabs.com').replace(/\/$/, '');
+
+// Coquille HTML a la charte Pirabel Labs (reutilise /css/global.css)
+function blogShell(headExtra, bodyHtml) {
+  return '<!doctype html><html lang="fr"><head>' +
+    '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<link rel="icon" type="image/png" href="/img/favicon.png">' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">' +
+    '<link rel="stylesheet" href="/css/global.css">' + (headExtra || '') +
+    '<style>' +
+    '.bx-top{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1.25rem,4vw,3rem);border-bottom:1px solid rgba(229,226,225,0.1);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);z-index:20;}' +
+    '.bx-top a.bx-logo{font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:1.15rem;color:#e5e2e1;text-decoration:none;letter-spacing:-.02em;}' +
+    '.bx-top a.bx-logo span{color:#FF5500;}' +
+    '.bx-top nav a{margin-left:1.4rem;font-size:.9rem;font-weight:600;color:rgba(229,226,225,0.65);text-decoration:none;}' +
+    '.bx-top nav a:hover{color:#FF5500;}' +
+    '.bx-wrap{max-width:74rem;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem) 4rem;}' +
+    '.bx-hero{text-align:center;max-width:48rem;margin:0 auto 3rem;}' +
+    '.bx-hero h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.4rem);line-height:1.06;letter-spacing:-.035em;margin:0 0 1rem;color:#fff;}' +
+    '.bx-hero p{color:rgba(229,226,225,0.65);font-size:1.05rem;line-height:1.6;}' +
+    '.bx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:1.5rem;}' +
+    '.bx-card{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:14px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .2s,border-color .2s;}' +
+    '.bx-card:hover{transform:translateY(-4px);border-color:#FF5500;}' +
+    '.bx-card__img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:linear-gradient(135deg,rgba(255,85,0,0.2),rgba(14,14,14,1));}' +
+    '.bx-card__b{padding:1.1rem 1.2rem 1.4rem;}' +
+    '.bx-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}' +
+    '.bx-card h2{font-family:"Space Grotesk",sans-serif;font-size:1.15rem;margin:.5rem 0;line-height:1.25;color:#fff;}' +
+    '.bx-card p{color:rgba(229,226,225,0.6);font-size:.9rem;line-height:1.5;margin:0;}' +
+    '.bx-article{max-width:46rem;margin:0 auto;}' +
+    '.bx-article .bx-cat{display:inline-block;margin-bottom:.6rem;}' +
+    '.bx-article h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:.3rem 0 1rem;color:#fff;}' +
+    '.bx-meta{color:rgba(229,226,225,0.4);font-size:.85rem;margin-bottom:1.6rem;}' +
+    '.bx-heroimg{width:100%;border-radius:16px;margin:0 0 2rem;display:block;}' +
+    '.bx-content{font-size:1.05rem;line-height:1.8;color:rgba(229,226,225,0.9);}' +
+    '.bx-content h2{font-family:"Space Grotesk",sans-serif;color:#fff;font-size:1.55rem;margin:2.2rem 0 .8rem;}' +
+    '.bx-content h3{font-family:"Space Grotesk",sans-serif;color:#fff;font-size:1.25rem;margin:1.6rem 0 .5rem;}' +
+    '.bx-content p{margin:0 0 1.1rem;}.bx-content img{max-width:100%;border-radius:12px;margin:1rem 0;}' +
+    '.bx-content a{color:#FF5500;}.bx-content ul,.bx-content ol{padding-left:1.3rem;margin:0 0 1.1rem;}.bx-content li{margin:.3rem 0;}' +
+    '.bx-back{display:inline-flex;align-items:center;gap:.4rem;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.9rem;margin-bottom:1.5rem;}' +
+    '.bx-cta{margin-top:3rem;text-align:center;background:#161616;border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:2rem;}' +
+    '.bx-cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.9rem 2rem;border-radius:999px;text-decoration:none;margin-top:1rem;}' +
+    '.bx-foot{text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(229,226,225,0.1);color:rgba(229,226,225,0.5);font-size:.85rem;}.bx-foot a{color:#FF5500;text-decoration:none;}' +
+    '.bx-empty{text-align:center;color:rgba(229,226,225,0.5);padding:4rem 1rem;}' +
+    '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
+    '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +
+    '<nav><a href="/blog">Blog</a><a href="/services">Services</a><a href="/contact">Contact</a></nav></header>' +
+    bodyHtml +
+    '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
+    '<script defer src="/js/track.js"></script></body></html>';
+}
+function fmtFr(d) {
+  try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; }
+}
+
+// --- ADMIN CRUD ---
+app.get('/api/admin/articles', auth, adminOnly, async (req, res) => {
+  try {
+    const list = await Article.find({}).select('title slug status category author featuredImage publishedAt updatedAt views').sort({ updatedAt: -1 }).lean();
+    res.json({ articles: list });
+  } catch (e) { res.status(500).json({ error: 'Erreur chargement articles.' }); }
+});
+app.get('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const a = await Article.findById(req.params.id).lean();
+    if (!a) return res.status(404).json({ error: 'Article introuvable.' });
+    res.json({ article: a });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+async function applyArticleBody(body, doc) {
+  if (body.title != null) doc.title = sanitize(body.title, 200);
+  if (body.excerpt != null) doc.excerpt = sanitize(body.excerpt, 500);
+  if (body.content != null) doc.content = sanitizeSoft(body.content, 100000); // garde le HTML, retire <script>
+  if (body.featuredImage != null) doc.featuredImage = sanitize(body.featuredImage, 2000);
+  if (body.imageAlt != null) doc.imageAlt = sanitize(body.imageAlt, 200);
+  if (body.category != null) doc.category = sanitize(body.category, 60) || 'Marketing';
+  if (body.author != null) doc.author = sanitize(body.author, 80) || 'Pirabel Labs';
+  if (body.seoTitle != null) doc.seoTitle = sanitize(body.seoTitle, 200);
+  if (body.metaDescription != null) doc.metaDescription = sanitize(body.metaDescription, 320);
+  if (body.status != null && ['brouillon', 'publie'].includes(body.status)) doc.status = body.status;
+}
+app.post('/api/admin/articles', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const title = sanitize(req.body.title || '', 200);
+    if (!title || title.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+    const doc = new Article({ title });
+    await applyArticleBody(req.body, doc);
+    doc.slug = await uniqueSlug(req.body.slug || title);
+    await doc.save();
+    res.json({ success: true, article: doc });
+  } catch (e) { console.error('[articles.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+});
+app.patch('/api/admin/articles/:id', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const doc = await Article.findById(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Article introuvable.' });
+    await applyArticleBody(req.body, doc);
+    if (req.body.slug && slugify(req.body.slug) !== doc.slug) doc.slug = await uniqueSlug(req.body.slug, doc._id);
+    await doc.save();
+    res.json({ success: true, article: doc });
+  } catch (e) { console.error('[articles.update]', e.message); res.status(500).json({ error: 'Erreur mise a jour.' }); }
+});
+app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
+  try { await Article.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+
+// --- PUBLIC : liste du blog ---
+app.get('/blog', async (req, res) => {
+  try {
+    const arts = await Article.find({ status: 'publie' }).sort({ publishedAt: -1 }).limit(60).lean();
+    const cards = arts.length ? arts.map(a => {
+      const img = a.featuredImage
+        ? '<img class="bx-card__img" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" loading="lazy">'
+        : '<div class="bx-card__img"></div>';
+      return '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + img +
+        '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
+        '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p></div></a>';
+    }).join('') : '<div class="bx-empty">Aucun article publié pour le moment.</div>';
+    const head = '<title>Blog Pirabel Labs — Marketing digital, SEO, sites web</title>' +
+      '<meta name="description" content="Conseils marketing digital, SEO, sites web et stratégie pour PME francophones — par Pirabel Labs.">' +
+      '<link rel="canonical" href="' + SITE() + '/blog">' +
+      '<meta property="og:title" content="Blog Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/blog">';
+    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Le Blog Pirabel Labs</h1>' +
+      '<p>Conseils marketing digital, SEO, sites web et stratégie pour PME francophones.</p></div>' +
+      '<div class="bx-grid">' + cards + '</div></main>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+  } catch (e) { console.error('[blog]', e.message); res.status(500).send('Erreur'); }
+});
+
+// --- PUBLIC : article ---
+app.get('/blog/:slug', async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
+    const a = await Article.findOne({ slug, status: 'publie' }).lean();
+    if (!a) return res.status(404).send(blogShell('<title>Article introuvable</title>',
+      '<main class="bx-wrap"><div class="bx-empty"><h1 style="color:#fff;">404</h1><p>Cet article n\'existe pas ou n\'est plus publié.</p><a class="bx-back" href="/blog">&larr; Retour au blog</a></div></main>'));
+    Article.updateOne({ _id: a._id }, { $inc: { views: 1 } }).catch(() => {});
+    const metaTitle = escapeHtml(a.seoTitle || a.title);
+    const metaDesc = escapeHtml(a.metaDescription || a.excerpt || '');
+    const url = SITE() + '/blog/' + encodeURIComponent(a.slug);
+    const ogImg = a.featuredImage ? (a.featuredImage.startsWith('http') ? a.featuredImage : SITE() + a.featuredImage) : (SITE() + '/img/og-blog.jpg');
+    const head = '<title>' + metaTitle + '</title>' +
+      '<meta name="description" content="' + metaDesc + '">' +
+      '<link rel="canonical" href="' + url + '">' +
+      '<meta name="author" content="' + escapeHtml(a.author || 'Pirabel Labs') + '">' +
+      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '">' +
+      '<meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '">' +
+      '<meta name="twitter:card" content="summary_large_image">' +
+      '<script type="application/ld+json">' + JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title,
+        description: a.metaDescription || a.excerpt || '', image: ogImg, datePublished: a.publishedAt,
+        dateModified: a.updatedAt, author: { '@type': 'Organization', name: a.author || 'Pirabel Labs' },
+        publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
+      }) + '</script>';
+    const hero = a.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">' : '';
+    const body = '<main class="bx-wrap"><article class="bx-article">' +
+      '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
+      '<span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
+      '<h1>' + escapeHtml(a.title) + '</h1>' +
+      '<div class="bx-meta">Par ' + escapeHtml(a.author || 'Pirabel Labs') + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + '</div>' +
+      hero +
+      '<div class="bx-content">' + (a.content || '<p>' + escapeHtml(a.excerpt || '') + '</p>') + '</div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
+      '<a href="/contact">Parler à un cofondateur</a></div>' +
+      '</article></main>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+  } catch (e) { console.error('[blog.slug]', e.message); res.status(500).send('Erreur'); }
+});
+
+// --- SITEMAP dynamique (pages reelles + articles publies) ---
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const root = path.join(__dirname, '..');
+    let pages = [];
+    try {
+      pages = fs.readdirSync(root).filter(f => f.endsWith('.html') && !['404.html'].includes(f))
+        .map(f => f === 'index.html' ? '/' : '/' + f.replace(/\.html$/, ''));
+    } catch (e) {}
+    const arts = await Article.find({ status: 'publie' }).select('slug updatedAt').lean();
+    const urls = [];
+    urls.push({ loc: SITE() + '/blog', lastmod: new Date().toISOString().slice(0, 10) });
+    pages.forEach(p => urls.push({ loc: SITE() + p, lastmod: null }));
+    arts.forEach(a => urls.push({ loc: SITE() + '/blog/' + a.slug, lastmod: new Date(a.updatedAt).toISOString().slice(0, 10) }));
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      urls.map(u => '  <url><loc>' + u.loc + '</loc>' + (u.lastmod ? '<lastmod>' + u.lastmod + '</lastmod>' : '') + '</url>').join('\n') +
+      '\n</urlset>';
+    res.set('Content-Type', 'application/xml; charset=utf-8').send(xml);
+  } catch (e) { res.status(500).send('Erreur sitemap'); }
 });
 
 // === HEALTH ===

@@ -34,7 +34,10 @@
     { "source": "/admin/(.*)", "destination": "/api" },
     { "source": "/devis/(.*)", "destination": "/api" },
     { "source": "/avis/(.*)", "destination": "/api" },
-    { "source": "/pirabel-admin-7x9k2m", "destination": "/api" }
+    { "source": "/pirabel-admin-7x9k2m", "destination": "/api" },
+    { "source": "/blog", "destination": "/api" },
+    { "source": "/blog/(.*)", "destination": "/api" },
+    { "source": "/sitemap.xml", "destination": "/api" }
   ],
   "redirects": [
     { "source": "/realisations/:slug*", "destination": "/realisations", "permanent": false },

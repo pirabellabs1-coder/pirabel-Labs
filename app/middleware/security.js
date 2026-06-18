@@ -114,6 +114,8 @@ function limitBody(maxFields = 20) {
 // --- GLOBAL RECURSIVE SANITIZATION ---
 // Whitelist : routes admin (articles, templates) bypass car contenu riche legitime.
 const SKIP_GLOBAL_SANITIZE = [
+  '/api/admin/articles',   // contenu HTML enrichi (sanitize cible appliquee dans la route)
+  '/api/admin/send-email', // message libre
   '/api/articles',         // markdown editorial
   '/api/email-templates',  // HTML templates
   '/api/case-studies',     // markdown

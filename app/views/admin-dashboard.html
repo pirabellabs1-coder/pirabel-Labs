@@ -303,6 +303,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
       <a class="sidebar__link" data-view="reviews" data-label="Avis clients"><span class="material-symbols-outlined">reviews</span><span class="sidebar__link-text">Avis clients</span></a>
       <a class="sidebar__link" data-view="livres-blancs" data-label="Livres blancs"><span class="material-symbols-outlined">menu_book</span><span class="sidebar__link-text">Livres blancs</span></a>
+      <a class="sidebar__link" data-view="blog" data-label="Blog"><span class="material-symbols-outlined">article</span><span class="sidebar__link-text">Blog</span></a>
       <a class="sidebar__link" data-view="bulk-email" data-label="Envoi email masse"><span class="material-symbols-outlined">campaign</span><span class="sidebar__link-text">Envoi email masse</span></a>
       <a class="sidebar__link" data-view="analytics" data-label="Analytics"><span class="material-symbols-outlined">analytics</span><span class="sidebar__link-text">Analytics</span></a>
     </nav>
@@ -445,6 +446,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </div>
 
     <!-- CASES VIEW -->
+    <!-- BLOG VIEW -->
+    <div class="view" data-view="blog">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Articles de blog</div><div class="card__sub">Ce qui est publié ici apparaît directement sur /blog du site</div></div>
+        <button class="btn btn--sm" onclick="openArticleEditor()"><span class="material-symbols-outlined">add</span> Nouvel article</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Vues</th><th>Modifié</th><th></th></tr></thead>
+          <tbody id="blogTableBody"><tr><td colspan="6" class="empty">Chargement...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="view" data-view="cases">
       <div class="case-grid">
         <div class="case-card">
@@ -755,6 +770,7 @@ function setView(view) {
   if (view === 'analytics' && STATE.stats) setTimeout(renderAnalyticsCharts, 50);
   if (view === 'leads' && !STATE.leads.length) loadLeads();
   if (view === 'livres-blancs') loadLivresBlancs();
+  if (view === 'blog') loadBlog();
   if (view === 'bulk-email') initBulkEmail();
   if (view === 'clients') loadClients();
   if (view === 'quotes') loadQuotes();
@@ -829,6 +845,115 @@ window.openComposeForCurrentLead = function() {
   if (!l) return;
   openCompose({ email: l.email, leadId: l._id, name: l.name, subject: 'Votre demande chez Pirabel Labs' });
 };
+
+// ============ BLOG / CMS ============
+async function loadBlog() {
+  var tbody = document.getElementById('blogTableBody');
+  if (!tbody) return;
+  try {
+    var data = await api('/api/admin/articles');
+    var arts = data.articles || [];
+    if (!arts.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty"><span class="material-symbols-outlined">article</span><p>Aucun article. Cliquez « Nouvel article ».</p></td></tr>'; return; }
+    tbody.innerHTML = arts.map(function(a){
+      var badge = a.status === 'publie'
+        ? '<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Publié</span>'
+        : '<span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Brouillon</span>';
+      return '<tr>' +
+        '<td><strong>' + escape(a.title) + '</strong><br><span style="font-size:.72rem;color:var(--text-muted);">/blog/' + escape(a.slug) + '</span></td>' +
+        '<td>' + escape(a.category || '--') + '</td>' +
+        '<td>' + badge + '</td>' +
+        '<td>' + (a.views || 0) + '</td>' +
+        '<td style="font-size:.8rem;">' + fmtDate(a.updatedAt) + '</td>' +
+        '<td style="text-align:right;white-space:nowrap;">' +
+          (a.status === 'publie' ? '<a href="/blog/' + escape(a.slug) + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="Voir sur le site"><span class="material-symbols-outlined">open_in_new</span></a> ' : '') +
+          '<button class="btn btn--ghost btn--sm" onclick="openArticleEditor(\'' + a._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
+          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteArticle(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+        '</td></tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Erreur de chargement</td></tr>'; }
+}
+
+async function openArticleEditor(id) {
+  var art = { title:'', slug:'', category:'Marketing', excerpt:'', content:'', featuredImage:'', imageAlt:'', seoTitle:'', metaDescription:'', status:'brouillon' };
+  if (id) { try { var d = await api('/api/admin/articles/' + id); art = d.article; } catch(e) { toast('Article introuvable', 'error'); return; } }
+  var old = document.getElementById('artModal'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'artModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.9rem;';
+  function f(label, inner){ return '<label style="display:block;font-size:0.76rem;font-weight:600;margin:0.9rem 0 0.3rem;color:var(--text-muted);">' + label + '</label>' + inner; }
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:44rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (id ? 'Modifier l\'article' : 'Nouvel article') + '</div>' +
+      '<button id="amClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    f('Titre', '<input id="amTitle" style="' + inp + '" value="' + escape(art.title) + '">') +
+    f('Catégorie', '<input id="amCat" style="' + inp + '" value="' + escape(art.category || '') + '">') +
+    f('Extrait (chapô — résumé court)', '<textarea id="amExcerpt" rows="2" style="' + inp + 'resize:vertical;">' + escape(art.excerpt || '') + '</textarea>') +
+    f('Image à la une', '<div style="display:flex;gap:.5rem;align-items:center;"><input id="amImg" placeholder="URL, ou téléversez →" style="' + inp + '" value="' + escape(art.featuredImage || '') + '"><button class="btn btn--ghost btn--sm" id="amUpload" type="button"><span class="material-symbols-outlined">upload</span></button><input type="file" id="amFile" accept="image/*" style="display:none;"></div><div id="amImgPrev" style="margin-top:.5rem;">' + (art.featuredImage ? '<img src="' + escape(art.featuredImage) + '" style="max-height:90px;border-radius:8px;">' : '') + '</div>') +
+    f('Texte alternatif de l\'image', '<input id="amAlt" style="' + inp + '" value="' + escape(art.imageAlt || '') + '">') +
+    f('Contenu (HTML : &lt;h2&gt; &lt;p&gt; &lt;ul&gt;&lt;li&gt; &lt;a&gt; &lt;img&gt; …)', '<textarea id="amContent" rows="12" style="' + inp + 'font-family:monospace;font-size:0.82rem;resize:vertical;">' + escape(art.content || '') + '</textarea>') +
+    '<div style="border-top:1px solid var(--border);margin:1.2rem 0 0.2rem;padding-top:0.6rem;font-size:0.8rem;color:var(--accent);font-weight:800;letter-spacing:.05em;">RÉFÉRENCEMENT (SEO)</div>' +
+    f('Titre SEO (balise titre Google)', '<input id="amSeoTitle" style="' + inp + '" placeholder="Par défaut : le titre de l\'article" value="' + escape(art.seoTitle || '') + '"> <span id="amSeoTitleLen" style="font-size:.7rem;color:var(--text-muted);"></span>') +
+    f('Meta description', '<textarea id="amMeta" rows="2" style="' + inp + 'resize:vertical;" placeholder="Idéal : 150-160 caractères">' + escape(art.metaDescription || '') + '</textarea> <span id="amMetaLen" style="font-size:.7rem;color:var(--text-muted);"></span>') +
+    f('Slug (adresse de la page)', '<input id="amSlug" style="' + inp + '" placeholder="auto depuis le titre" value="' + escape(art.slug || '') + '">') +
+    f('Statut', '<select id="amStatus" style="' + inp + '"><option value="brouillon"' + (art.status!=='publie'?' selected':'') + '>Brouillon (non visible)</option><option value="publie"' + (art.status==='publie'?' selected':'') + '>Publié (visible sur le site)</option></select>') +
+    '<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.3rem;">' +
+      '<button class="btn btn--ghost btn--sm" id="amCancel">Annuler</button>' +
+      '<button class="btn btn--sm" id="amSave"><span class="material-symbols-outlined">save</span> Enregistrer</button>' +
+    '</div></div>';
+  document.body.appendChild(m);
+  if (id) m.dataset.id = id;
+  function close(){ m.remove(); }
+  m.addEventListener('click', function(e){ if (e.target === m) close(); });
+  document.getElementById('amClose').addEventListener('click', close);
+  document.getElementById('amCancel').addEventListener('click', close);
+  function upd(){ var st=(document.getElementById('amSeoTitle').value||document.getElementById('amTitle').value); document.getElementById('amSeoTitleLen').textContent=st.length+' car.'; document.getElementById('amMetaLen').textContent=document.getElementById('amMeta').value.length+' car.'; }
+  ['amSeoTitle','amMeta','amTitle'].forEach(function(idd){ document.getElementById(idd).addEventListener('input', upd); }); upd();
+  document.getElementById('amUpload').addEventListener('click', function(){ document.getElementById('amFile').click(); });
+  document.getElementById('amFile').addEventListener('change', function(e){
+    var file = e.target.files[0]; if (!file) return;
+    if (file.size > 2*1024*1024) { toast('Image trop lourde (max 2 Mo)', 'error'); return; }
+    var rd = new FileReader();
+    rd.onload = async function(){
+      try {
+        var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('amAlt').value, folder:'blog' } });
+        var url = '/api/admin/media/' + up.media._id;
+        document.getElementById('amImg').value = url;
+        document.getElementById('amImgPrev').innerHTML = '<img src="' + url + '" style="max-height:90px;border-radius:8px;">';
+        toast('Image téléversée', 'success');
+      } catch(err){ toast(err.message || 'Échec upload', 'error'); }
+    };
+    rd.readAsDataURL(file);
+  });
+  document.getElementById('amSave').addEventListener('click', async function(){
+    var payload = {
+      title: document.getElementById('amTitle').value.trim(),
+      category: document.getElementById('amCat').value.trim(),
+      excerpt: document.getElementById('amExcerpt').value,
+      featuredImage: document.getElementById('amImg').value.trim(),
+      imageAlt: document.getElementById('amAlt').value.trim(),
+      content: document.getElementById('amContent').value,
+      seoTitle: document.getElementById('amSeoTitle').value.trim(),
+      metaDescription: document.getElementById('amMeta').value.trim(),
+      slug: document.getElementById('amSlug').value.trim(),
+      status: document.getElementById('amStatus').value
+    };
+    if (!payload.title || payload.title.length < 3) { toast('Titre requis (3 caractères min)', 'error'); return; }
+    var btn = document.getElementById('amSave'); btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> ...';
+    try {
+      if (m.dataset.id) await api('/api/admin/articles/' + m.dataset.id, { method:'PATCH', body: payload });
+      else await api('/api/admin/articles', { method:'POST', body: payload });
+      toast('Article enregistré ✓', 'success'); close(); loadBlog();
+    } catch(err){ toast(err.message || 'Erreur', 'error'); btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">save</span> Enregistrer'; }
+  });
+}
+window.openArticleEditor = openArticleEditor;
+
+async function deleteArticle(id) {
+  if (!confirm('Supprimer cet article définitivement ?')) return;
+  try { await api('/api/admin/articles/' + id, { method:'DELETE' }); toast('Article supprimé', 'success'); loadBlog(); }
+  catch(e){ toast('Erreur suppression', 'error'); }
+}
+window.deleteArticle = deleteArticle;
 
 function showLinkModal(title, body, url) {
   // Modal simple pour afficher + copier un lien

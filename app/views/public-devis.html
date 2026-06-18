@@ -44,7 +44,7 @@ th.r, td.r { text-align:right; }
 .btn--wa:hover { background:#1ebe5d; opacity:1; }
 .btn--accent { background:var(--accent); color:#fff; }
 
-/* Print styles for PDF generation */
+/* Print styles for PDF génération */
 @media print {
   body { background:#fff !important; color:#000 !important; padding:1rem !important; }
   .header, .card { background:#fff !important; border:1px solid #ddd !important; box-shadow:none !important; color:#000 !important; }
@@ -121,7 +121,7 @@ function renderQuote(q) {
   const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoye', consulte: 'Consulte', accepte: 'Accepte', refuse: 'Refuse', expire: 'Expire' };
 
   // Bouton PDF + WhatsApp toujours disponibles
-  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Telecharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
 
   let actionsHtml = utilsBar;
   if (q.status === 'accepte') {
@@ -129,7 +129,7 @@ function renderQuote(q) {
   } else if (q.status === 'refuse') {
     actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refuse</strong>Vous avez refuse ce devis. Si vous changez d\'avis, contactez-nous directement.</div></div>';
   } else {
-    actionsHtml += '<div class="actions no-print"><div class="info"><strong>Donner votre reponse</strong>Acceptez pour demarrer le projet, demandez des ajustements pour modifier, ou refusez.</div><button class="btn btn--accent" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter</button><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander ajustements</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
+    actionsHtml += '<div class="actions no-print"><div class="info"><strong>Donner votre réponse</strong>Acceptez pour demarrer le projet, demandez des ajustements pour modifier, ou refusez.</div><button class="btn btn--accent" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter</button><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander ajustements</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
   }
 
   content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(q.reference) + '</div><h1 class="title">' + escapeHtml(q.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(q.clientName) + (q.clientCompany ? ' &middot; ' + escapeHtml(q.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(q.issuedAt) + '</div><div><strong>Valide jusqu\'au :</strong> ' + formatDate(q.validUntil) + '</div><div><span class="status-badge ' + q.status + '">' + (statusLabels[q.status] || q.status) + '</span></div></div>' +
@@ -151,7 +151,7 @@ async function acceptQuote() {
     const data = await r.json();
     if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; setTimeout(loadQuote, 1500); }
     else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
-  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur réseau.'; }
 }
 
 async function refuseQuote() {
@@ -163,12 +163,12 @@ async function refuseQuote() {
     const data = await r.json();
     if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; setTimeout(loadQuote, 1500); }
     else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
-  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur réseau.'; }
 }
 
 async function adjustQuote() {
   const message = prompt('Quels ajustements souhaitez-vous demander ? Soyez precis (lignes a modifier, ajouter, retirer, ou questions).');
-  if (!message || message.trim().length < 10) { alert('Merci de detailler votre demande (10 caracteres min).'); return; }
+  if (!message || message.trim().length < 10) { alert('Merci de detailler votre demande (10 caractères min).'); return; }
   const msg = document.getElementById('msg');
   msg.className = 'msg'; msg.textContent = '';
   try {
@@ -176,7 +176,7 @@ async function adjustQuote() {
     const data = await r.json();
     if (data.success) { msg.className = 'msg success show'; msg.textContent = data.message; }
     else { msg.className = 'msg error show'; msg.textContent = data.error || 'Erreur.'; }
-  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.'; }
+  } catch(e) { msg.className = 'msg error show'; msg.textContent = 'Erreur réseau.'; }
 }
 
 loadQuote();

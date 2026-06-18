@@ -314,7 +314,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link" data-view="settings" data-label="Parametres"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Parametres</span></a>
+      <a class="sidebar__link" data-view="settings" data-label="Paramètres"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Paramètres</span></a>
     </nav>
     <div class="sidebar__footer">
       <div class="sidebar__avatar" id="userAvatar">P</div>
@@ -413,7 +413,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
       <div class="table-wrap">
         <table class="table">
-          <thead><tr><th>Nom</th><th>Email</th><th>Telephone</th><th>Entreprise</th><th>Service</th><th>Statut</th><th>Date</th></tr></thead>
+          <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Entreprise</th><th>Service</th><th>Statut</th><th>Date</th></tr></thead>
           <tbody id="leadsTableBody"><tr><td colspan="7" class="empty">Chargement...</td></tr></tbody>
         </table>
       </div>
@@ -422,7 +422,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <!-- ANALYTICS VIEW -->
     <div class="view" data-view="analytics">
       <div class="kpi-grid">
-        <div class="mini-chart"><div class="mini-chart__head"><div><div class="mini-chart__title">Cette semaine</div><div class="mini-chart__sub">vs semaine derniere</div></div><div class="mini-chart__value" id="aWeek">--</div></div></div>
+        <div class="mini-chart"><div class="mini-chart__head"><div><div class="mini-chart__title">Cette semaine</div><div class="mini-chart__sub">vs semaine dernière</div></div><div class="mini-chart__value" id="aWeek">--</div></div></div>
         <div class="mini-chart"><div class="mini-chart__head"><div><div class="mini-chart__title">Ce mois</div><div class="mini-chart__sub">vs mois dernier</div></div><div class="mini-chart__value" id="aMonth">--</div></div></div>
         <div class="mini-chart"><div class="mini-chart__head"><div><div class="mini-chart__title">Conversion</div><div class="mini-chart__sub">Lead -&gt; Client</div></div><div class="mini-chart__value" id="aConv">--</div></div></div>
         <div class="mini-chart"><div class="mini-chart__head"><div><div class="mini-chart__title">Avg / mois</div><div class="mini-chart__sub">Sur 12 mois</div></div><div class="mini-chart__value" id="aAvg">--</div></div></div>
@@ -638,13 +638,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="card__header"><div><div class="card__title">Compte administrateur</div><div class="card__sub">Vos informations</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Email</div><div class="setting-row__sub" id="settingsEmail">--</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Role</div><div class="setting-row__sub">Administrateur</div></div></div>
-        <div class="setting-row"><div><div class="setting-row__label">Derniere connexion</div><div class="setting-row__sub" id="settingsLastLogin">Maintenant</div></div></div>
+        <div class="setting-row"><div><div class="setting-row__label">Dernière connexion</div><div class="setting-row__sub" id="settingsLastLogin">Maintenant</div></div></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
-        <div class="card__header"><div><div class="card__title">Diagnostic email (Resend)</div><div class="card__sub">Verifiez si l'envoi d'emails fonctionne</div></div></div>
-        <div id="emailStatus" style="font-size:0.85rem;color:var(--text-muted);margin:1rem 0;line-height:1.6;">Cliquez sur "Verifier la config" pour diagnostiquer.</div>
+        <div class="card__header"><div><div class="card__title">Diagnostic email (Resend)</div><div class="card__sub">Vérifiez si l'envoi d'emails fonctionne</div></div></div>
+        <div id="emailStatus" style="font-size:0.85rem;color:var(--text-muted);margin:1rem 0;line-height:1.6;">Cliquez sur "Vérifier la config" pour diagnostiquer.</div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
-          <button class="btn btn--ghost btn--sm" id="emailCheckBtn"><span class="material-symbols-outlined">fact_check</span> Verifier la config</button>
+          <button class="btn btn--ghost btn--sm" id="emailCheckBtn"><span class="material-symbols-outlined">fact_check</span> Vérifier la config</button>
           <input type="email" id="emailTestTo" placeholder="votre@email.com" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.5rem 0.8rem;border-radius:8px;font-size:0.85rem;flex:1;min-width:12rem;">
           <button class="btn btn--sm" id="emailTestBtn"><span class="material-symbols-outlined">send</span> Envoyer un test</button>
         </div>
@@ -656,7 +656,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (a venir)</div></div><span class="badge badge--nouveau">Bientot</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
-        <div class="card__header"><div><div class="card__title">Securite</div><div class="card__sub">Acces et session</div></div></div>
+        <div class="card__header"><div><div class="card__title">Sécurité</div><div class="card__sub">Accès et session</div></div></div>
         <div class="setting-row">
           <div><div class="setting-row__label">Se deconnecter</div><div class="setting-row__sub">Termine votre session admin</div></div>
           <button class="btn btn--ghost btn--sm" id="logoutBtn2"><span class="material-symbols-outlined">logout</span> Deconnexion</button>
@@ -679,7 +679,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   </div>
 </aside>
 
-<div class="toast" id="toast"><span class="material-symbols-outlined toast__icon">check_circle</span><span id="toastMsg">Enregistre</span></div>
+<div class="toast" id="toast"><span class="material-symbols-outlined toast__icon">check_circle</span><span id="toastMsg">Enregistré</span></div>
 
 <script>
 // ============================================================
@@ -721,7 +721,7 @@ async function api(path, opts) {
   if (res.status === 401) { window.location.href = '/' + (window.ADMIN_PATH || 'pirabel-admin-7x9k2m'); throw new Error('Session expiree, reconnectez-vous.'); }
   const text = await res.text();
   let data = {};
-  try { data = text ? JSON.parse(text) : {}; } catch (e) { /* reponse non-JSON */ }
+  try { data = text ? JSON.parse(text) : {}; } catch (e) { /* réponse non-JSON */ }
   if (!res.ok) {
     throw new Error(data.error || ('Erreur ' + res.status + (res.statusText ? ' ' + res.statusText : '') + ' sur ' + path));
   }
@@ -751,7 +751,7 @@ function statusBadge(status) { return '<span class="badge badge--' + status + '"
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Creer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyees + moderation'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Parametres', 'Compte et notifications'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -777,7 +777,7 @@ function emptyState(containerId, msg, html) {
   const el = document.getElementById(containerId);
   if (el) el.innerHTML = html || '<div style="padding:2rem;text-align:center;color:var(--text-muted);">' + msg + '</div>';
 }
-// ============ COMPOSER : repondre / ecrire un email a un client ou prospect ============
+// ============ COMPOSER : répondre / ecrire un email a un client ou prospect ============
 function openCompose(prefill) {
   prefill = prefill || {};
   var old = document.getElementById('composeModal');
@@ -787,7 +787,7 @@ function openCompose(prefill) {
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
   modal.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;max-width:36rem;width:100%;max-height:92vh;overflow:auto;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">' +
-      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (prefill.leadId ? 'Repondre par email' : 'Ecrire un email') + '</div>' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (prefill.leadId ? 'Répondre par email' : 'Ecrire un email') + '</div>' +
       '<button id="cmClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>' +
     '</div>' +
     '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Destinataire (email)</label>' +
@@ -796,7 +796,7 @@ function openCompose(prefill) {
     '<input id="cmSubject" type="text" placeholder="Votre demande chez Pirabel Labs" value="' + escape(prefill.subject || '') + '" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.85rem;">' +
     '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Message</label>' +
     '<textarea id="cmMessage" rows="8" placeholder="Bonjour,&#10;&#10;Merci pour votre message..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.4rem;font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>' +
-    '<p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;">Le message part dans un joli template Pirabel Labs. Les reponses du client arrivent sur ta boite contact@pirabellabs.com.</p>' +
+    '<p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;">Le message part dans un joli template Pirabel Labs. Les réponses du client arrivent sur ta boite contact@pirabellabs.com.</p>' +
     '<div style="display:flex;gap:0.5rem;justify-content:flex-end;">' +
       '<button id="cmCancel" class="btn btn--ghost btn--sm">Annuler</button>' +
       '<button id="cmSend" class="btn btn--sm"><span class="material-symbols-outlined">send</span> Envoyer</button>' +
@@ -1101,12 +1101,12 @@ async function loadClients() {
       '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;">' + (c.clientData?.quotesCount || 0) + '</td>' +
       '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
         '<button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Envoyer email de demande"><span class="material-symbols-outlined">mail</span></button>' +
-        '<button onclick="newQuoteFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Creer un devis"><span class="material-symbols-outlined">request_quote</span></button>' +
+        '<button onclick="newQuoteFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Créer un devis"><span class="material-symbols-outlined">request_quote</span></button>' +
       '</td>' +
       '</tr>').join('');
   } catch(e) {
     console.error(e);
-    errorState('clTbody', 7, 'Erreur chargement clients : ' + (e.message || 'verifiez votre connexion'));
+    errorState('clTbody', 7, 'Erreur chargement clients : ' + (e.message || 'vérifiez votre connexion'));
     toast('Erreur chargement clients', 'error');
   }
 }
@@ -1116,7 +1116,7 @@ async function requestReview(leadId) {
   try {
     const data = await api('/api/admin/reviews/request', { method: 'POST', body: JSON.stringify({ leadId }) });
     // Affiche modal avec lien copiable
-    showLinkModal('Demande d\'avis envoyee', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier pour l\'envoyer manuellement (WhatsApp, SMS, etc).', data.publicUrl);
+    showLinkModal('Demande d\'avis envoyée', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier pour l\'envoyer manuellement (WhatsApp, SMS, etc).', data.publicUrl);
   } catch(e) { toast('Erreur envoi : ' + (e.message || ''), 'error'); }
 }
 
@@ -1190,7 +1190,7 @@ async function deleteQuote(id) {
   if (!confirm('Supprimer ce devis ?')) return;
   try {
     await api('/api/admin/quotes/' + id, { method: 'DELETE' });
-    toast('Devis supprime', 'success');
+    toast('Devis supprimé', 'success');
     loadQuotes();
   } catch(e) { toast('Erreur suppression', 'error'); }
 }
@@ -1216,12 +1216,12 @@ async function loadReviews() {
     const requestSent = reviews.filter(r => !r.submittedAt).length;
     kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">reviews</span></div></div><div class="kpi__value">' + reviews.length + '</div><div class="kpi__label">Total avis</div></div>' +
       '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule_send</span></div></div><div class="kpi__value">' + requestSent + '</div><div class="kpi__label">Demandes en attente</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + pending + '</div><div class="kpi__label">A moderer</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + pending + '</div><div class="kpi__label">A modérer</div></div>' +
       '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + published + '</div><div class="kpi__label">Publies sur site</div></div>';
 
     const list = document.getElementById('rvList');
     const submitted = reviews.filter(r => r.submittedAt);
-    if (!submitted.length) { list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun avis recu. Demandez-en depuis la page Clients.</div>'; return; }
+    if (!submitted.length) { list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun avis reçu. Demandez-en depuis la page Clients.</div>'; return; }
 
     list.innerHTML = submitted.map(r => {
       const stars = '&#9733;'.repeat(r.rating) + '<span style="color:rgba(229,226,225,0.2);">' + '&#9733;'.repeat(5 - r.rating) + '</span>';
@@ -1254,7 +1254,7 @@ async function togglePublishReview(id, publish) {
 
 async function deleteReview(id) {
   if (!confirm('Supprimer cet avis ?')) return;
-  try { await api('/api/admin/reviews/' + id, { method: 'DELETE' }); toast('Avis supprime', 'success'); loadReviews(); }
+  try { await api('/api/admin/reviews/' + id, { method: 'DELETE' }); toast('Avis supprimé', 'success'); loadReviews(); }
   catch(e) { toast('Erreur', 'error'); }
 }
 
@@ -1343,7 +1343,7 @@ async function copyMediaUrl(id) {
 
 async function deleteMedia(id) {
   if (!confirm('Supprimer cette image ?')) return;
-  try { await api('/api/admin/media/' + id, { method: 'DELETE' }); toast('Image supprimee', 'success'); loadGallery(); }
+  try { await api('/api/admin/media/' + id, { method: 'DELETE' }); toast('Image supprimée', 'success'); loadGallery(); }
   catch(e) { toast('Erreur', 'error'); }
 }
 
@@ -1513,7 +1513,7 @@ async function loadTraffic() {
     const visitors = series.map(function(d){ return d.uniqueVisitors; });
     const ctx = document.getElementById('chartTraffic');
     const allZero = views.every(function(v){ return v === 0; }) && visitors.every(function(v){ return v === 0; });
-    if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite encore — les donnees apparaissent des que le site recoit du trafic')) {
+    if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite encore — les données apparaissent des que le site recoit du trafic')) {
       charts.traffic = new Chart(ctx, {
         type: 'line',
         data: { labels: labels, datasets: [
@@ -1600,8 +1600,8 @@ function populateServiceFilter() {
 let charts = {};
 function destroyChart(name) { if (charts[name]) { charts[name].destroy(); delete charts[name]; } }
 
-// Etat vide propre : si pas de donnees, masque le canvas et affiche un message centre.
-// Retourne true si VIDE (le rendu du chart doit alors etre saute).
+// Etat vide propre : si pas de données, masque le canvas et affiche un message centre.
+// Retourne true si VIDE (le rendu du chart doit alors être saute).
 function chartEmpty(canvasId, isEmpty, msg) {
   var canvas = document.getElementById(canvasId);
   if (!canvas) return true;
@@ -1612,7 +1612,7 @@ function chartEmpty(canvasId, isEmpty, msg) {
     if (!existing && wrap) {
       var el = document.createElement('div');
       el.className = 'chart-empty';
-      el.innerHTML = '<span class="material-symbols-outlined">bar_chart</span><span>' + (msg || 'Aucune donnee pour le moment') + '</span>';
+      el.innerHTML = '<span class="material-symbols-outlined">bar_chart</span><span>' + (msg || 'Aucune donnée pour le moment') + '</span>';
       wrap.appendChild(el);
     }
     return true;
@@ -1783,7 +1783,7 @@ function openDetail(id) {
   const body = document.getElementById('detailBody');
   body.innerHTML = '' +
     '<div class="detail__field"><div class="detail__label">Email</div><div class="detail__value"><a href="mailto:' + escape(lead.email) + '">' + escape(lead.email) + '</a></div></div>' +
-    (lead.phone ? '<div class="detail__field"><div class="detail__label">Telephone</div><div class="detail__value"><a href="tel:' + escape(lead.phone) + '">' + escape(lead.phone) + '</a></div></div>' : '') +
+    (lead.phone ? '<div class="detail__field"><div class="detail__label">Téléphone</div><div class="detail__value"><a href="tel:' + escape(lead.phone) + '">' + escape(lead.phone) + '</a></div></div>' : '') +
     (lead.company ? '<div class="detail__field"><div class="detail__label">Entreprise</div><div class="detail__value">' + escape(lead.company) + '</div></div>' : '') +
     '<div class="detail__field"><div class="detail__label">Service demande</div><div class="detail__value">' + escape(lead.service || '--') + '</div></div>' +
     '<div class="detail__field"><div class="detail__label">Source</div><div class="detail__value">' + escape(lead.source || 'direct') + '</div></div>' +
@@ -1827,7 +1827,7 @@ async function deleteDetail() {
     STATE.leads = STATE.leads.filter(function(l){ return l._id !== STATE.currentLead._id; });
     renderLeadsTable();
     renderRecentLeads();
-    toast('Lead supprime', 'success');
+    toast('Lead supprimé', 'success');
     closeDetail();
     loadStats();
   } catch(e) { toast('Erreur suppression', 'error'); }
@@ -1924,7 +1924,7 @@ async function init() {
     try {
       const data = await api('/api/admin/leads?type=livre-blanc');
       const leads = data.leads || [];
-      const csv = 'Date,Nom,Email,Entreprise,Telephone,Livre blanc,Opt-in newsletter\n' +
+      const csv = 'Date,Nom,Email,Entreprise,Téléphone,Livre blanc,Opt-in newsletter\n' +
         leads.map(l => [
           new Date(l.createdAt).toISOString(),
           '"' + (l.name || '').replace(/"/g,'""') + '"',
@@ -1965,7 +1965,7 @@ async function init() {
   var emailCheckBtn = document.getElementById('emailCheckBtn');
   if (emailCheckBtn) emailCheckBtn.addEventListener('click', async function() {
     var box = document.getElementById('emailStatus');
-    box.textContent = 'Verification...';
+    box.textContent = 'Vérification...';
     try {
       var d = await api('/api/admin/email-status');
       box.innerHTML = (d.resendKeyConfigured ? '<span style="color:var(--success);">&#10003; Cle Resend presente</span> (' + escape(d.resendKeyPreview) + ')' : '<span style="color:var(--danger);">&#10007; RESEND_API_KEY MANQUANTE</span>') +
@@ -2009,7 +2009,7 @@ init();
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
       <div>
         <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouveau devis</div>
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Creer un devis</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer un devis</div>
       </div>
       <button type="button" id="qmClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
     </div>
@@ -2018,7 +2018,7 @@ init();
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Client <span style="color:var(--accent);">*</span></label>
         <div style="display:flex;gap:0.5rem;">
           <select id="qmClient" style="flex:1;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
-            <option value="">-- Selectionnez un prospect/client --</option>
+            <option value="">-- Sélectionnez un prospect/client --</option>
           </select>
           <button type="button" id="qmNewClient" class="btn btn--ghost btn--sm" title="Ajouter un nouveau client"><span class="material-symbols-outlined">person_add</span></button>
         </div>
@@ -2026,11 +2026,11 @@ init();
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Titre du devis <span style="color:var(--accent);">*</span></label>
-        <input type="text" id="qmTitle" maxlength="200" placeholder="ex : Creation site web vitrine + SEO 6 mois" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
+        <input type="text" id="qmTitle" maxlength="200" placeholder="ex : Création site web vitrine + SEO 6 mois" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
-        <textarea id="qmIntro" rows="2" maxlength="2000" placeholder="Comme convenu apres notre echange du..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="qmIntro" rows="2" maxlength="2000" placeholder="Comme convenu après notre echange du..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Lignes du devis <span style="color:var(--accent);">*</span></label>
@@ -2069,7 +2069,7 @@ init();
       <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
         <button type="button" id="qmCancel" class="btn btn--ghost btn--sm">Annuler</button>
         <button type="button" id="qmSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer brouillon</button>
-        <button type="button" id="qmSend" class="btn"><span class="material-symbols-outlined">send</span> Creer et envoyer</button>
+        <button type="button" id="qmSend" class="btn"><span class="material-symbols-outlined">send</span> Créer et envoyer</button>
       </div>
     </div>
   </div>
@@ -2096,7 +2096,7 @@ init();
           <input type="email" id="cmEmail" required style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
         </div>
         <div>
-          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Telephone / WhatsApp</label>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Téléphone / WhatsApp</label>
           <input type="tel" id="cmPhone" placeholder="+229 90 00 00 00" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
         </div>
         <div>
@@ -2115,7 +2115,7 @@ init();
       <div id="cmMsg" style="margin-bottom:1rem;"></div>
       <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
         <button type="button" id="cmCancel" class="btn btn--ghost btn--sm">Annuler</button>
-        <button type="button" id="cmSave" class="btn"><span class="material-symbols-outlined">save</span> Creer</button>
+        <button type="button" id="cmSave" class="btn"><span class="material-symbols-outlined">save</span> Créer</button>
       </div>
     </div>
   </div>
@@ -2146,7 +2146,7 @@ async function loadLeadsIntoSelector(preSelectedId) {
   try {
     const data = await api('/api/admin/leads');
     const leads = (data.leads || data).filter(l => l.email);
-    sel.innerHTML = '<option value="">-- Selectionnez --</option>' +
+    sel.innerHTML = '<option value="">-- Sélectionnez --</option>' +
       leads.map(l => '<option value="' + l._id + '" data-name="' + escape(l.name) + '" data-email="' + escape(l.email) + '" data-phone="' + escape(l.phone||'') + '" data-company="' + escape(l.company||'') + '" data-stage="' + escape(l.stage||'prospect') + '">' + escape(l.name) + ' &middot; ' + escape(l.email) + (l.company ? ' (' + escape(l.company) + ')' : '') + '</option>').join('');
     if (preSelectedId) sel.value = preSelectedId;
     sel.dispatchEvent(new Event('change'));
@@ -2205,8 +2205,8 @@ function collectQuoteData() {
 async function saveQuote(sendAfter) {
   const data = collectQuoteData();
   const msg = document.getElementById('qmMsg');
-  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Selectionnez un client.</div>'; return; }
-  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caracteres min).</div>'; return; }
+  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Sélectionnez un client.</div>'; return; }
+  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caractères min).</div>'; return; }
   if (!data.items.length) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Au moins une ligne valide requise.</div>'; return; }
   msg.innerHTML = '<div style="color:var(--info);">Enregistrement...</div>';
   try {
@@ -2216,7 +2216,7 @@ async function saveQuote(sendAfter) {
       const publicUrl = window.location.origin + '/devis/' + quote.quote.publicToken;
       showLinkModal('Devis envoye !', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier ou l\'envoyer via WhatsApp.', publicUrl);
     } else {
-      toast('Devis enregistre en brouillon', 'success');
+      toast('Devis enregistré en brouillon', 'success');
     }
     hideQuoteModal();
     if (typeof loadQuotes === 'function') loadQuotes();
@@ -2249,11 +2249,11 @@ async function saveClient() {
   const msg = document.getElementById('cmMsg');
   if (!name || name.length < 2) { msg.innerHTML = '<div style="color:var(--danger);font-size:0.85rem;">Nom requis.</div>'; return; }
   if (!email || !email.includes('@')) { msg.innerHTML = '<div style="color:var(--danger);font-size:0.85rem;">Email invalide.</div>'; return; }
-  msg.innerHTML = '<div style="color:var(--info);">Creation...</div>';
+  msg.innerHTML = '<div style="color:var(--info);">Création...</div>';
   try {
-    // Cree un Lead via endpoint admin (utilise POST direct sur /api/admin/leads-create)
+    // Créé un Lead via endpoint admin (utilise POST direct sur /api/admin/leads-create)
     const data = await api('/api/admin/leads-create', { method: 'POST', body: JSON.stringify({ name, email, phone, company, stage, status: stage === 'client' ? 'converti' : 'nouveau' }) });
-    toast('Client cree', 'success');
+    toast('Client créé', 'success');
     const isQuote = document.getElementById('clientModal').dataset.returnTo === 'quote';
     hideClientModal();
     if (isQuote) {
@@ -2306,7 +2306,7 @@ window.sendQuoteWhatsApp = async function(quoteId) {
   try {
     const q = await api('/api/admin/quotes/' + quoteId);
     const lead = await api('/api/admin/leads/' + q.leadId);
-    if (!lead.phone) { toast('Pas de telephone pour ce client', 'error'); return; }
+    if (!lead.phone) { toast('Pas de téléphone pour ce client', 'error'); return; }
     const phone = lead.phone.replace(/[^0-9]/g, '');
     const url = window.location.origin + '/devis/' + q.publicToken;
     const msg = 'Bonjour ' + lead.name.split(' ')[0] + ', voici votre devis Pirabel Labs - ' + q.reference + ' (' + q.title + ') : ' + url;

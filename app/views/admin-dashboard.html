@@ -436,7 +436,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
       <div class="grid-2">
         <div class="card"><div class="card__header"><div><div class="card__title">Services demandes</div><div class="card__sub">Top 10</div></div></div><div class="card__chart card__chart--lg"><canvas id="chartServices"></canvas></div></div>
-        <div class="card"><div class="card__header"><div><div class="card__title">Sources d'acquisition</div><div class="card__sub">D'ou viennent vos leads</div></div></div><div class="card__chart card__chart--lg"><canvas id="chartSources"></canvas></div></div>
+        <div class="card"><div class="card__header"><div><div class="card__title">Sources d'acquisition</div><div class="card__sub">D'où viennent vos leads</div></div></div><div class="card__chart card__chart--lg"><canvas id="chartSources"></canvas></div></div>
       </div>
 
       <div class="grid-2 grid-2--equal">
@@ -653,7 +653,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Notifications email</div><div class="card__sub">Sur quelles actions recevoir un mail</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
-        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (à venir)</div></div><span class="badge badge--nouveau">Bientot</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (à venir)</div></div><span class="badge badge--nouveau">Bientôt</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Sécurité</div><div class="card__sub">Accès et session</div></div></div>
@@ -768,7 +768,7 @@ function setView(view) {
   window.location.hash = view;
 }
 
-// ============ Helpers : etats erreur/loading + modal lien copiable ============
+// ============ Helpers : états erreur/loading + modal lien copiable ============
 function errorState(tbodyId, colspan, msg) {
   const el = document.getElementById(tbodyId);
   if (el) el.innerHTML = '<tr><td colspan="' + colspan + '" style="padding:2rem;text-align:center;color:var(--danger);"><span class="material-symbols-outlined" style="vertical-align:middle;">error</span> ' + msg + '</td></tr>';
@@ -1600,7 +1600,7 @@ function populateServiceFilter() {
 let charts = {};
 function destroyChart(name) { if (charts[name]) { charts[name].destroy(); delete charts[name]; } }
 
-// Etat vide propre : si pas de données, masque le canvas et affiche un message centre.
+// État vide propre : si pas de données, masque le canvas et affiche un message centre.
 // Retourne true si VIDE (le rendu du chart doit alors être saute).
 function chartEmpty(canvasId, isEmpty, msg) {
   var canvas = document.getElementById(canvasId);
@@ -1635,7 +1635,7 @@ function renderDashboardCharts() {
   if (!s) return;
   // Leads over time (line chart)
   destroyChart('leadsOverTime');
-  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Aout','Sep','Oct','Nov','Dec'];
+  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
   const labels = []; const values = [];
   const monthMap = {};
   (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
@@ -1681,7 +1681,7 @@ function renderAnalyticsCharts() {
 
   // Trend (line area)
   destroyChart('trend');
-  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Aout','Sep','Oct','Nov','Dec'];
+  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
   const labels = []; const values = [];
   const monthMap = {};
   (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
@@ -1853,7 +1853,7 @@ function toggleCollapse() {
 
 // ============ Init ============
 async function init() {
-  // Restaure etat collapse depuis localStorage (desktop uniquement)
+  // Restaure état collapse depuis localStorage (desktop uniquement)
   try {
     if (!isMobile() && localStorage.getItem('pirabel-admin-sidebar-collapsed') === '1') {
       document.getElementById('app').classList.add('is-collapsed');

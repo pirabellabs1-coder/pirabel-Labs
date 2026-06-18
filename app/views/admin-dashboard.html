@@ -845,6 +845,11 @@ window.openComposeForCurrentLead = function() {
   if (!l) return;
   openCompose({ email: l.email, leadId: l._id, name: l.name, subject: 'Votre demande chez Pirabel Labs' });
 };
+window.requestReviewForCurrentLead = function() {
+  var l = STATE.currentLead;
+  if (!l) return;
+  requestReview(l._id);
+};
 
 // ============ BLOG / CMS ============
 async function loadBlog() {
@@ -1675,7 +1680,10 @@ function openDetail(id) {
         Object.keys(STATUS_LABELS).map(function(k){ return '<option value="' + k + '"' + (lead.status === k ? ' selected' : '') + '>' + STATUS_LABELS[k] + '</option>'; }).join('') +
       '</select></div>' +
     '<div class="detail__field"><div class="detail__label">Notes internes</div><textarea class="detail__textarea" id="detailNotes" placeholder="Notes...">' + escape(lead.internalNotes || '') + '</textarea></div>' +
-    '<button class="btn btn--sm" style="margin-top:1rem;width:100%;justify-content:center;" onclick="openComposeForCurrentLead()"><span class="material-symbols-outlined">reply</span> Répondre par email</button>';
+    '<div style="display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap;">' +
+      '<button class="btn btn--sm" style="flex:1;min-width:9rem;justify-content:center;" onclick="openComposeForCurrentLead()"><span class="material-symbols-outlined">reply</span> Répondre par email</button>' +
+      '<button class="btn btn--ghost btn--sm" style="flex:1;min-width:9rem;justify-content:center;" onclick="requestReviewForCurrentLead()"><span class="material-symbols-outlined">star</span> Demander un avis</button>' +
+    '</div>';
   document.getElementById('detail').classList.add('is-open');
 }
 

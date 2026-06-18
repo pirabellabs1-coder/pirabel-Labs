@@ -707,6 +707,14 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-cta{margin-top:3rem;text-align:center;background:#161616;border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:2rem;}' +
     '.bx-cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.9rem 2rem;border-radius:999px;text-decoration:none;margin-top:1rem;}' +
     '.bx-foot{text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(229,226,225,0.1);color:rgba(229,226,225,0.5);font-size:.85rem;}.bx-foot a{color:#FF5500;text-decoration:none;}' +
+    '.art-pullquote{border-left:3px solid #FF5500;background:rgba(255,85,0,0.05);padding:1.2rem 1.4rem;margin:1.8rem 0;display:flex;gap:1rem;align-items:flex-start;border-radius:0 10px 10px 0;}' +
+    '.art-pullquote__icon{color:#FF5500;font-size:1.8rem;flex-shrink:0;}.art-pullquote__text{font-style:italic;color:#fff;font-size:1.1rem;line-height:1.6;}' +
+    '.art-stat-box{display:flex;gap:1.2rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1.4rem;margin:1.8rem 0;}' +
+    '.art-stat-box__num{font-family:"Montserrat",sans-serif;font-weight:900;font-size:2.4rem;color:#FF5500;line-height:1;flex-shrink:0;}' +
+    '.art-stat-box__label{color:#fff;font-weight:700;margin-bottom:.3rem;}.art-stat-box__desc{color:rgba(229,226,225,0.6);font-size:.92rem;line-height:1.5;}' +
+    '.art-author{display:flex;gap:1rem;align-items:flex-start;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1.4rem;margin:2.5rem 0 0;}' +
+    '.art-author__avatar{width:54px;height:54px;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:1.2rem;flex-shrink:0;}' +
+    '.art-author__label{font-size:.72rem;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:.1em;}.art-author__name{font-family:"Space Grotesk",sans-serif;font-weight:700;color:#fff;font-size:1.05rem;}.art-author__role{color:#FF5500;font-size:.85rem;margin-bottom:.4rem;}.art-author__bio{color:rgba(229,226,225,0.6);font-size:.88rem;line-height:1.5;margin:0;}' +
     '.bx-empty{text-align:center;color:rgba(229,226,225,0.5);padding:4rem 1rem;}' +
     '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
     '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +

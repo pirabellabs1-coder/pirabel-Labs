@@ -37,11 +37,12 @@
     { "source": "/pirabel-admin-7x9k2m", "destination": "/api" },
     { "source": "/blog", "destination": "/api" },
     { "source": "/blog/(.*)", "destination": "/api" },
+    { "source": "/realisations", "destination": "/api" },
+    { "source": "/realisations/(.*)", "destination": "/api" },
     { "source": "/sitemap.xml", "destination": "/api" }
   ],
   "redirects": [
     { "source": "/article-:slug", "destination": "/blog/:slug", "permanent": true },
-    { "source": "/realisations/:slug*", "destination": "/realisations", "permanent": false },
     { "source": "/creation-application", "destination": "/creation-application-web", "permanent": true },
     { "source": "/automatisation", "destination": "/automatisation-marketing", "permanent": true },
     { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },

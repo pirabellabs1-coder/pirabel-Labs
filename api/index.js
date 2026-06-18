@@ -37,6 +37,7 @@ const Quote = require('../app/models/Quote');
 const Review = require('../app/models/Review');
 const TrafficStat = require('../app/models/TrafficStat');
 const Article = require('../app/models/Article');
+const CaseStudy = require('../app/models/CaseStudy');
 
 const app = express();
 
@@ -842,6 +843,118 @@ app.get('/blog/:slug', async (req, res) => {
   } catch (e) { console.error('[blog.slug]', e.message); res.status(500).send('Erreur'); }
 });
 
+// ========================================================================
+// === ETUDES DE CAS / REALISATIONS ===
+// ========================================================================
+async function uniqueCaseSlug(base, excludeId) {
+  let slug = slugify(base) || ('cas-' + Date.now().toString(36));
+  let n = 1;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const ex = await CaseStudy.findOne({ slug });
+    if (!ex || (excludeId && String(ex._id) === String(excludeId))) return slug;
+    n++; slug = slugify(base).slice(0, 76) + '-' + n;
+  }
+}
+async function applyCaseBody(body, doc) {
+  if (body.title != null) doc.title = sanitize(body.title, 200);
+  if (body.sector != null) doc.sector = sanitize(body.sector, 100);
+  if (body.location != null) doc.location = sanitize(body.location, 100);
+  if (body.excerpt != null) doc.excerpt = sanitize(body.excerpt, 500);
+  if (body.content != null) doc.content = sanitizeSoft(body.content, 100000);
+  if (body.featuredImage != null) doc.featuredImage = sanitize(body.featuredImage, 2000);
+  if (body.imageAlt != null) doc.imageAlt = sanitize(body.imageAlt, 200);
+  if (body.metric1Value != null) doc.metric1Value = sanitize(body.metric1Value, 40);
+  if (body.metric1Label != null) doc.metric1Label = sanitize(body.metric1Label, 60);
+  if (body.metric2Value != null) doc.metric2Value = sanitize(body.metric2Value, 40);
+  if (body.metric2Label != null) doc.metric2Label = sanitize(body.metric2Label, 60);
+  if (body.seoTitle != null) doc.seoTitle = sanitize(body.seoTitle, 200);
+  if (body.metaDescription != null) doc.metaDescription = sanitize(body.metaDescription, 320);
+  if (body.status != null && ['brouillon', 'publie'].includes(body.status)) doc.status = body.status;
+}
+app.get('/api/admin/case-studies', auth, adminOnly, async (req, res) => {
+  try { const list = await CaseStudy.find({}).select('title slug sector location status featuredImage updatedAt').sort({ updatedAt: -1 }).lean(); res.json({ cases: list }); }
+  catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+app.get('/api/admin/case-studies/:id', auth, adminOnly, async (req, res) => {
+  try { const c = await CaseStudy.findById(req.params.id).lean(); if (!c) return res.status(404).json({ error: 'Introuvable.' }); res.json({ caseStudy: c }); }
+  catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+app.post('/api/admin/case-studies', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const title = sanitize(req.body.title || '', 200);
+    if (!title || title.length < 3) return res.status(400).json({ error: 'Titre requis.' });
+    const doc = new CaseStudy({ title });
+    await applyCaseBody(req.body, doc);
+    doc.slug = await uniqueCaseSlug(req.body.slug || title);
+    await doc.save();
+    res.json({ success: true, caseStudy: doc });
+  } catch (e) { console.error('[cases.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+});
+app.patch('/api/admin/case-studies/:id', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const doc = await CaseStudy.findById(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Introuvable.' });
+    await applyCaseBody(req.body, doc);
+    if (req.body.slug && slugify(req.body.slug) !== doc.slug) doc.slug = await uniqueCaseSlug(req.body.slug, doc._id);
+    await doc.save();
+    res.json({ success: true, caseStudy: doc });
+  } catch (e) { console.error('[cases.update]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+app.delete('/api/admin/case-studies/:id', auth, adminOnly, async (req, res) => {
+  try { await CaseStudy.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.get('/realisations', async (req, res) => {
+  try {
+    const cs = await CaseStudy.find({ status: 'publie' }).sort({ publishedAt: -1 }).limit(60).lean();
+    const cards = cs.length ? cs.map(c => {
+      const img = c.featuredImage ? '<img class="bx-card__img" src="' + escapeHtml(c.featuredImage) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy">' : '<div class="bx-card__img"></div>';
+      const mk = (v, l) => v ? '<div><strong style="color:#FF5500;font-size:1.1rem;">' + escapeHtml(v) + '</strong> <span style="color:rgba(229,226,225,0.55);font-size:.8rem;">' + escapeHtml(l) + '</span></div>' : '';
+      const metrics = (c.metric1Value || c.metric2Value) ? '<div style="display:flex;gap:1.2rem;margin-top:.7rem;">' + mk(c.metric1Value, c.metric1Label) + mk(c.metric2Value, c.metric2Label) + '</div>' : '';
+      const sub = [c.sector, c.location].filter(Boolean).join(' · ');
+      return '<a class="bx-card" href="/realisations/' + escapeHtml(c.slug) + '">' + img +
+        '<div class="bx-card__b">' + (sub ? '<span class="bx-cat">' + escapeHtml(sub) + '</span>' : '') +
+        '<h2>' + escapeHtml(c.title) + '</h2><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics + '</div></a>';
+    }).join('') : '<div class="bx-empty">Études de cas à venir.</div>';
+    const head = '<title>Réalisations & études de cas — Pirabel Labs</title>' +
+      '<meta name="description" content="Nos réalisations : sites web, SEO, e-commerce, automatisation — résultats concrets pour des PME francophones.">' +
+      '<link rel="canonical" href="' + SITE() + '/realisations">' +
+      '<meta property="og:title" content="Réalisations — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/realisations">';
+    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Nos réalisations</h1><p>Des résultats concrets pour des PME francophones — web, SEO, e-commerce, automatisation.</p></div><div class="bx-grid">' + cards + '</div></main>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+  } catch (e) { console.error('[realisations]', e.message); res.status(500).send('Erreur'); }
+});
+app.get('/realisations/:slug', async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
+    const c = await CaseStudy.findOne({ slug, status: 'publie' }).lean();
+    if (!c) return res.status(404).send(blogShell('<title>Réalisation introuvable</title>', '<main class="bx-wrap"><div class="bx-empty"><h1 style="color:#fff;">404</h1><p>Cette réalisation n\'existe pas.</p><a class="bx-back" href="/realisations">&larr; Toutes les réalisations</a></div></main>'));
+    const metaTitle = escapeHtml(c.seoTitle || c.title);
+    const metaDesc = escapeHtml(c.metaDescription || c.excerpt || '');
+    const url = SITE() + '/realisations/' + encodeURIComponent(c.slug);
+    const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + c.featuredImage) : (SITE() + '/img/og-blog.jpg');
+    const sub = [c.sector, c.location].filter(Boolean).join(' · ');
+    const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
+      '<link rel="canonical" href="' + url + '">' +
+      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">';
+    const hero = c.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(c.featuredImage) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : '';
+    const mb = (v, l) => v ? '<div class="art-stat-box" style="margin:0;flex:1;min-width:12rem;"><div class="art-stat-box__num">' + escapeHtml(v) + '</div><div><div class="art-stat-box__label">' + escapeHtml(l) + '</div></div></div>' : '';
+    const metrics = (c.metric1Value || c.metric2Value) ? '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 2rem;">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
+    const body = '<main class="bx-wrap"><article class="bx-article">' +
+      '<a class="bx-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
+      (sub ? '<span class="bx-cat">' + escapeHtml(sub) + '</span>' : '') +
+      '<h1>' + escapeHtml(c.title) + '</h1>' +
+      (c.excerpt ? '<div class="bx-meta">' + escapeHtml(c.excerpt) + '</div>' : '') +
+      hero + metrics +
+      '<div class="bx-content">' + (c.content || '') + '</div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler à un cofondateur</a></div>' +
+      '</article></main>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+  } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
+});
+
 // --- SITEMAP dynamique (pages reelles + articles publies) ---
 app.get('/sitemap.xml', async (req, res) => {
   try {
@@ -857,6 +970,9 @@ app.get('/sitemap.xml', async (req, res) => {
     urls.push({ loc: SITE() + '/blog', lastmod: new Date().toISOString().slice(0, 10) });
     pages.forEach(p => urls.push({ loc: SITE() + p, lastmod: null }));
     arts.forEach(a => urls.push({ loc: SITE() + '/blog/' + a.slug, lastmod: new Date(a.updatedAt).toISOString().slice(0, 10) }));
+    const cases = await CaseStudy.find({ status: 'publie' }).select('slug updatedAt').lean();
+    urls.push({ loc: SITE() + '/realisations', lastmod: new Date().toISOString().slice(0, 10) });
+    cases.forEach(c => urls.push({ loc: SITE() + '/realisations/' + c.slug, lastmod: new Date(c.updatedAt).toISOString().slice(0, 10) }));
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
       urls.map(u => '  <url><loc>' + u.loc + '</loc>' + (u.lastmod ? '<lastmod>' + u.lastmod + '</lastmod>' : '') + '</url>').join('\n') +
       '\n</urlset>';

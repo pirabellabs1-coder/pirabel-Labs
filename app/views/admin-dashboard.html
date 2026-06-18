@@ -461,28 +461,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </div>
 
     <div class="view" data-view="cases">
-      <div class="case-grid">
-        <div class="case-card">
-          <div class="case-card__cover"><span class="material-symbols-outlined">web</span></div>
-          <div class="case-card__title">Cabinet conseil &middot; Cotonou</div>
-          <div class="case-card__desc">Site WordPress + Elementor + HubSpot CRM. +187% leads sur 3 mois.</div>
-          <div class="case-card__metrics"><div class="case-card__metric"><strong>+187%</strong> leads</div><div class="case-card__metric"><strong>98</strong> Lighthouse</div></div>
-        </div>
-        <div class="case-card">
-          <div class="case-card__cover"><span class="material-symbols-outlined">shopping_cart</span></div>
-          <div class="case-card__title">Boutique mode &middot; Cotonou</div>
-          <div class="case-card__desc">E-commerce WooCommerce avec Mobile Money + Meta Ads. CA x3.2 en 6 mois.</div>
-          <div class="case-card__metrics"><div class="case-card__metric"><strong>x3.2</strong> CA</div><div class="case-card__metric"><strong>2.1%</strong> conv</div></div>
-        </div>
-        <div class="case-card">
-          <div class="case-card__cover"><span class="material-symbols-outlined">terminal</span></div>
-          <div class="case-card__title">SaaS gestion clinique &middot; Abidjan</div>
-          <div class="case-card__desc">Plateforme Next.js + Supabase. Multi-roles, RDV, dossiers, facturation.</div>
-          <div class="case-card__metrics"><div class="case-card__metric"><strong>12 sem</strong> livraison</div><div class="case-card__metric"><strong>4</strong> cliniques</div></div>
-        </div>
-        <div class="case-card" style="border-style:dashed;opacity:0.6;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;">
-          <div><span class="material-symbols-outlined" style="font-size:2rem;color:var(--accent);">add</span><div class="case-card__title" style="margin-top:0.85rem;">Ajouter un cas client</div><div class="case-card__desc" style="margin-bottom:0;">Bientot disponible</div></div>
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Études de cas / Réalisations</div><div class="card__sub">Publié ici = visible directement sur /realisations du site</div></div>
+        <button class="btn btn--sm" onclick="openCaseEditor()"><span class="material-symbols-outlined">add</span> Nouveau cas client</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Titre</th><th>Secteur · Ville</th><th>Statut</th><th>Modifié</th><th></th></tr></thead>
+          <tbody id="casesTableBody"><tr><td colspan="5" class="empty">Chargement...</td></tr></tbody>
+        </table>
       </div>
     </div>
 
@@ -771,6 +758,7 @@ function setView(view) {
   if (view === 'leads' && !STATE.leads.length) loadLeads();
   if (view === 'livres-blancs') loadLivresBlancs();
   if (view === 'blog') loadBlog();
+  if (view === 'cases') loadCases();
   if (view === 'bulk-email') initBulkEmail();
   if (view === 'clients') loadClients();
   if (view === 'quotes') loadQuotes();
@@ -959,6 +947,97 @@ async function deleteArticle(id) {
   catch(e){ toast('Erreur suppression', 'error'); }
 }
 window.deleteArticle = deleteArticle;
+
+// ============ ETUDES DE CAS ============
+async function loadCases() {
+  var tbody = document.getElementById('casesTableBody');
+  if (!tbody) return;
+  try {
+    var data = await api('/api/admin/case-studies');
+    var cs = data.cases || [];
+    if (!cs.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty"><span class="material-symbols-outlined">workspaces</span><p>Aucune étude de cas. Cliquez « Nouveau cas client ».</p></td></tr>'; return; }
+    tbody.innerHTML = cs.map(function(c){
+      var badge = c.status === 'publie'
+        ? '<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Publié</span>'
+        : '<span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Brouillon</span>';
+      var sub = [c.sector, c.location].filter(Boolean).join(' · ');
+      return '<tr><td><strong>' + escape(c.title) + '</strong><br><span style="font-size:.72rem;color:var(--text-muted);">/realisations/' + escape(c.slug) + '</span></td>' +
+        '<td>' + escape(sub || '--') + '</td><td>' + badge + '</td><td style="font-size:.8rem;">' + fmtDate(c.updatedAt) + '</td>' +
+        '<td style="text-align:right;white-space:nowrap;">' +
+          (c.status === 'publie' ? '<a href="/realisations/' + escape(c.slug) + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="Voir"><span class="material-symbols-outlined">open_in_new</span></a> ' : '') +
+          '<button class="btn btn--ghost btn--sm" onclick="openCaseEditor(\'' + c._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
+          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteCase(\'' + c._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button></td></tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Erreur de chargement</td></tr>'; }
+}
+async function openCaseEditor(id) {
+  var c = { title:'', slug:'', sector:'', location:'', excerpt:'', content:'', featuredImage:'', imageAlt:'', metric1Value:'', metric1Label:'', metric2Value:'', metric2Label:'', seoTitle:'', metaDescription:'', status:'brouillon' };
+  if (id) { try { var d = await api('/api/admin/case-studies/' + id); c = d.caseStudy; } catch(e) { toast('Introuvable', 'error'); return; } }
+  var old = document.getElementById('caseModal'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'caseModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.9rem;';
+  function f(label, inner){ return '<label style="display:block;font-size:0.76rem;font-weight:600;margin:0.9rem 0 0.3rem;color:var(--text-muted);">' + label + '</label>' + inner; }
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:44rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (id ? 'Modifier le cas' : 'Nouveau cas client') + '</div><button id="caClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    f('Titre', '<input id="caTitle" style="' + inp + '" value="' + escape(c.title) + '">') +
+    '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Secteur', '<input id="caSector" style="' + inp + '" placeholder="ex : Cabinet conseil" value="' + escape(c.sector || '') + '">') + '</div><div style="flex:1;">' + f('Ville', '<input id="caLoc" style="' + inp + '" placeholder="ex : Cotonou" value="' + escape(c.location || '') + '">') + '</div></div>' +
+    f('Description courte (carte)', '<textarea id="caExcerpt" rows="2" style="' + inp + 'resize:vertical;">' + escape(c.excerpt || '') + '</textarea>') +
+    f('Image à la une', '<div style="display:flex;gap:.5rem;align-items:center;"><input id="caImg" placeholder="URL, ou téléversez →" style="' + inp + '" value="' + escape(c.featuredImage || '') + '"><button class="btn btn--ghost btn--sm" id="caUpload" type="button"><span class="material-symbols-outlined">upload</span></button><input type="file" id="caFile" accept="image/*" style="display:none;"></div><div id="caImgPrev" style="margin-top:.5rem;">' + (c.featuredImage ? '<img src="' + escape(c.featuredImage) + '" style="max-height:90px;border-radius:8px;">' : '') + '</div>') +
+    '<div style="border-top:1px solid var(--border);margin:1rem 0 0.2rem;padding-top:0.5rem;font-size:0.8rem;color:var(--accent);font-weight:800;">RÉSULTATS (2 chiffres clés)</div>' +
+    '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 1', '<input id="caM1V" style="' + inp + '" placeholder="+187%" value="' + escape(c.metric1Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 1', '<input id="caM1L" style="' + inp + '" placeholder="leads en 3 mois" value="' + escape(c.metric1Label || '') + '">') + '</div></div>' +
+    '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 2', '<input id="caM2V" style="' + inp + '" placeholder="x3.2" value="' + escape(c.metric2Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 2', '<input id="caM2L" style="' + inp + '" placeholder="chiffre d affaires" value="' + escape(c.metric2Label || '') + '">') + '</div></div>' +
+    f('Contenu détaillé (HTML)', '<textarea id="caContent" rows="9" style="' + inp + 'font-family:monospace;font-size:0.82rem;resize:vertical;">' + escape(c.content || '') + '</textarea>') +
+    '<div style="border-top:1px solid var(--border);margin:1rem 0 0.2rem;padding-top:0.5rem;font-size:0.8rem;color:var(--accent);font-weight:800;">SEO</div>' +
+    f('Titre SEO', '<input id="caSeoTitle" style="' + inp + '" placeholder="Par défaut : le titre" value="' + escape(c.seoTitle || '') + '">') +
+    f('Meta description', '<textarea id="caMeta" rows="2" style="' + inp + 'resize:vertical;">' + escape(c.metaDescription || '') + '</textarea>') +
+    f('Slug (URL)', '<input id="caSlug" style="' + inp + '" placeholder="auto" value="' + escape(c.slug || '') + '">') +
+    f('Statut', '<select id="caStatus" style="' + inp + '"><option value="brouillon"' + (c.status!=='publie'?' selected':'') + '>Brouillon</option><option value="publie"' + (c.status==='publie'?' selected':'') + '>Publié (visible sur le site)</option></select>') +
+    '<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.3rem;"><button class="btn btn--ghost btn--sm" id="caCancel">Annuler</button><button class="btn btn--sm" id="caSave"><span class="material-symbols-outlined">save</span> Enregistrer</button></div></div>';
+  document.body.appendChild(m);
+  if (id) m.dataset.id = id;
+  function close(){ m.remove(); }
+  m.addEventListener('click', function(e){ if (e.target === m) close(); });
+  document.getElementById('caClose').addEventListener('click', close);
+  document.getElementById('caCancel').addEventListener('click', close);
+  document.getElementById('caUpload').addEventListener('click', function(){ document.getElementById('caFile').click(); });
+  document.getElementById('caFile').addEventListener('change', function(e){
+    var file = e.target.files[0]; if (!file) return;
+    if (file.size > 2*1024*1024) { toast('Image trop lourde (max 2 Mo)', 'error'); return; }
+    var rd = new FileReader();
+    rd.onload = async function(){
+      try { var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('caTitle').value, folder:'realisations' } });
+        var url = '/api/admin/media/' + up.media._id; document.getElementById('caImg').value = url;
+        document.getElementById('caImgPrev').innerHTML = '<img src="' + url + '" style="max-height:90px;border-radius:8px;">'; toast('Image téléversée', 'success');
+      } catch(err){ toast(err.message || 'Échec upload', 'error'); }
+    };
+    rd.readAsDataURL(file);
+  });
+  document.getElementById('caSave').addEventListener('click', async function(){
+    var payload = {
+      title: document.getElementById('caTitle').value.trim(), sector: document.getElementById('caSector').value.trim(), location: document.getElementById('caLoc').value.trim(),
+      excerpt: document.getElementById('caExcerpt').value, featuredImage: document.getElementById('caImg').value.trim(),
+      metric1Value: document.getElementById('caM1V').value.trim(), metric1Label: document.getElementById('caM1L').value.trim(),
+      metric2Value: document.getElementById('caM2V').value.trim(), metric2Label: document.getElementById('caM2L').value.trim(),
+      content: document.getElementById('caContent').value, seoTitle: document.getElementById('caSeoTitle').value.trim(),
+      metaDescription: document.getElementById('caMeta').value.trim(), slug: document.getElementById('caSlug').value.trim(), status: document.getElementById('caStatus').value
+    };
+    if (!payload.title || payload.title.length < 3) { toast('Titre requis (3 caractères min)', 'error'); return; }
+    var btn = document.getElementById('caSave'); btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> ...';
+    try {
+      if (m.dataset.id) await api('/api/admin/case-studies/' + m.dataset.id, { method:'PATCH', body: payload });
+      else await api('/api/admin/case-studies', { method:'POST', body: payload });
+      toast('Cas enregistré ✓', 'success'); close(); loadCases();
+    } catch(err){ toast(err.message || 'Erreur', 'error'); btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">save</span> Enregistrer'; }
+  });
+}
+window.openCaseEditor = openCaseEditor;
+async function deleteCase(id) {
+  if (!confirm('Supprimer cette étude de cas définitivement ?')) return;
+  try { await api('/api/admin/case-studies/' + id, { method:'DELETE' }); toast('Supprimé', 'success'); loadCases(); }
+  catch(e){ toast('Erreur suppression', 'error'); }
+}
+window.deleteCase = deleteCase;
 
 function showLinkModal(title, body, url) {
   // Modal simple pour afficher + copier un lien

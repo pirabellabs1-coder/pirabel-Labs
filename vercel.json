@@ -39,6 +39,7 @@
     { "source": "/blog/(.*)", "destination": "/api" },
     { "source": "/realisations", "destination": "/api" },
     { "source": "/realisations/(.*)", "destination": "/api" },
+    { "source": "/temoignages", "destination": "/api" },
     { "source": "/sitemap.xml", "destination": "/api" }
   ],
   "redirects": [

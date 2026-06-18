@@ -719,7 +719,7 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-empty{text-align:center;color:rgba(229,226,225,0.5);padding:4rem 1rem;}' +
     '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
     '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +
-    '<nav><a href="/blog">Blog</a><a href="/services">Services</a><a href="/contact">Contact</a></nav></header>' +
+    '<nav><a href="/blog">Blog</a><a href="/realisations">Réalisations</a><a href="/temoignages">Avis</a><a href="/contact">Contact</a></nav></header>' +
     bodyHtml +
     '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
     '<script defer src="/js/track.js"></script></body></html>';
@@ -955,6 +955,56 @@ app.get('/realisations/:slug', async (req, res) => {
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
 });
 
+// --- AVIS : generer un lien de demande (sans passer par une fiche) ---
+app.post('/api/admin/reviews/create-link', auth, adminOnly, limitBody(6), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name || '', 120);
+    const email = sanitizeEmail(req.body.email || '');
+    const serviceUsed = sanitize(req.body.serviceUsed || '', 100);
+    const wantMail = req.body.sendEmail !== false;
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom du client requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Email du client invalide.' });
+    const review = await Review.create({
+      clientName: name, clientEmail: email, rating: 5,
+      comment: 'En attente de la soumission de l avis par le client.',
+      serviceUsed, status: 'en_attente', requestToken: generateToken(), source: 'admin_request',
+    });
+    const publicUrl = SITE() + '/avis/' + review.requestToken;
+    if (wantMail) {
+      const html = masterTemplate({
+        headerType: 'hero', preheader: 'Votre avis en 2 minutes',
+        title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
+        body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci pour votre confiance&nbsp;! Pourriez-vous partager votre avis sur notre collaboration&nbsp;? Cela prend 2 minutes et nous aide beaucoup.</p>',
+        cta: 'Donner mon avis', ctaUrl: publicUrl,
+      });
+      sendEmail(email, 'Votre avis sur Pirabel Labs (2 min)', html).catch(() => {});
+    }
+    res.json({ success: true, publicUrl, emailSent: wantMail });
+  } catch (e) { console.error('[reviews.create-link]', e.message); res.status(500).json({ error: 'Erreur creation du lien.' }); }
+});
+
+// --- PUBLIC : page temoignages (avis publies, apres moderation) ---
+app.get('/temoignages', async (req, res) => {
+  try {
+    const reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
+    const cards = reviews.length ? reviews.map(r => {
+      const stars = '&#9733;'.repeat(Math.max(1, Math.min(5, r.rating || 5))) + '<span style="color:rgba(229,226,225,0.2);">' + '&#9733;'.repeat(5 - Math.max(1, Math.min(5, r.rating || 5))) + '</span>';
+      const sub = [r.clientRole, r.clientCompany, r.clientCity].filter(Boolean).join(' · ');
+      return '<div class="bx-card" style="cursor:default;"><div class="bx-card__b">' +
+        '<div style="color:#FF5500;font-size:1.15rem;margin-bottom:.6rem;">' + stars + '</div>' +
+        '<p style="color:#e5e2e1;font-style:italic;line-height:1.6;margin:0 0 1rem;">&laquo;&nbsp;' + escapeHtml(r.comment) + '&nbsp;&raquo;</p>' +
+        '<div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;">' + escapeHtml(r.clientName) + '</div>' +
+        (sub || r.serviceUsed ? '<div style="color:rgba(229,226,225,0.5);font-size:.82rem;">' + escapeHtml(sub) + (r.serviceUsed ? (sub ? ' — ' : '') + escapeHtml(r.serviceUsed) : '') + '</div>' : '') +
+        '</div></div>';
+    }).join('') : '<div class="bx-empty">Les premiers avis clients arrivent bientôt.</div>';
+    const head = '<title>Avis clients — Pirabel Labs</title>' +
+      '<meta name="description" content="Ce que disent nos clients : avis vérifiés sur les services de Pirabel Labs.">' +
+      '<link rel="canonical" href="' + SITE() + '/temoignages"><meta property="og:title" content="Avis clients — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/temoignages">';
+    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Ils nous font confiance</h1><p>Les avis de nos clients sur leur collaboration avec Pirabel Labs.</p></div><div class="bx-grid">' + cards + '</div></main>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+  } catch (e) { console.error('[temoignages]', e.message); res.status(500).send('Erreur'); }
+});
+
 // --- SITEMAP dynamique (pages reelles + articles publies) ---
 app.get('/sitemap.xml', async (req, res) => {
   try {
@@ -973,6 +1023,7 @@ app.get('/sitemap.xml', async (req, res) => {
     const cases = await CaseStudy.find({ status: 'publie' }).select('slug updatedAt').lean();
     urls.push({ loc: SITE() + '/realisations', lastmod: new Date().toISOString().slice(0, 10) });
     cases.forEach(c => urls.push({ loc: SITE() + '/realisations/' + c.slug, lastmod: new Date(c.updatedAt).toISOString().slice(0, 10) }));
+    urls.push({ loc: SITE() + '/temoignages', lastmod: new Date().toISOString().slice(0, 10) });
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
       urls.map(u => '  <url><loc>' + u.loc + '</loc>' + (u.lastmod ? '<lastmod>' + u.lastmod + '</lastmod>' : '') + '</url>').join('\n') +
       '\n</urlset>';

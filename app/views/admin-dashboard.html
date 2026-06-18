@@ -607,7 +607,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- REVIEWS VIEW -->
     <div class="view" data-view="reviews">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+        <button class="btn btn--sm" onclick="openReviewLink()"><span class="material-symbols-outlined">add_link</span> Demander un avis (créer le lien)</button>
         <button class="btn btn--ghost btn--sm" id="rvRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
       </div>
       <div class="kpi-grid" id="rvKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
@@ -1256,6 +1257,40 @@ async function deleteReview(id) {
   try { await api('/api/admin/reviews/' + id, { method: 'DELETE' }); toast('Avis supprime', 'success'); loadReviews(); }
   catch(e) { toast('Erreur', 'error'); }
 }
+
+function openReviewLink() {
+  var old = document.getElementById('rvLinkModal'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'rvLinkModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.85rem;';
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;max-width:32rem;width:100%;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Demander un avis client</div><button id="rlClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Nom du client</label><input id="rlName" style="' + inp + '" placeholder="Ex : Awa Diallo">' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Email du client</label><input id="rlEmail" type="email" style="' + inp + '" placeholder="client@exemple.com">' +
+    '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Service concerné (optionnel)</label><input id="rlService" style="' + inp + '" placeholder="Ex : Création site web">' +
+    '<label style="display:flex;align-items:center;gap:.5rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;"><input type="checkbox" id="rlSendEmail" checked> Envoyer aussi le lien par email au client</label>' +
+    '<div style="display:flex;gap:.5rem;justify-content:flex-end;"><button class="btn btn--ghost btn--sm" id="rlCancel">Annuler</button><button class="btn btn--sm" id="rlGo"><span class="material-symbols-outlined">add_link</span> Créer le lien</button></div></div>';
+  document.body.appendChild(m);
+  function close(){ m.remove(); }
+  m.addEventListener('click', function(e){ if (e.target === m) close(); });
+  document.getElementById('rlClose').addEventListener('click', close);
+  document.getElementById('rlCancel').addEventListener('click', close);
+  document.getElementById('rlGo').addEventListener('click', async function(){
+    var name = document.getElementById('rlName').value.trim();
+    var email = document.getElementById('rlEmail').value.trim();
+    var service = document.getElementById('rlService').value.trim();
+    var sendEmail = document.getElementById('rlSendEmail').checked;
+    if (!name || !email) { toast('Nom et email requis', 'error'); return; }
+    var btn = document.getElementById('rlGo'); btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> ...';
+    try {
+      var r = await api('/api/admin/reviews/create-link', { method:'POST', body:{ name: name, email: email, serviceUsed: service, sendEmail: sendEmail } });
+      close();
+      showLinkModal('Lien d\'avis créé', (sendEmail ? 'Le lien a été envoyé par email à ' + email + '. ' : '') + 'Copie-le aussi pour l\'envoyer (WhatsApp, SMS…). Quand le client aura répondu, valide l\'avis ici (« Publier sur site ») pour qu\'il apparaisse sur /temoignages.', r.publicUrl);
+      loadReviews();
+    } catch(err){ toast(err.message || 'Erreur', 'error'); btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">add_link</span> Créer le lien'; }
+  });
+}
+window.openReviewLink = openReviewLink;
 
 // ============ GALLERY ============
 async function loadGallery(folder) {

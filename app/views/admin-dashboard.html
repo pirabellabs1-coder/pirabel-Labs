@@ -314,7 +314,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link" data-view="settings" data-label="Paramètres"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Paramètres</span></a>
+      <a class="sidebar__link" data-view="settings" data-label="Paramètrès"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Paramètrès</span></a>
     </nav>
     <div class="sidebar__footer">
       <div class="sidebar__avatar" id="userAvatar">P</div>
@@ -367,7 +367,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div class="grid-2">
         <div class="card">
           <div class="card__header">
-            <div><div class="card__title">Evolution des leads</div><div class="card__sub">12 derniers mois</div></div>
+            <div><div class="card__title">Évolution des leads</div><div class="card__sub">12 derniers mois</div></div>
           </div>
           <div class="card__chart"><canvas id="chartLeadsOverTime"></canvas></div>
         </div>
@@ -653,7 +653,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Notifications email</div><div class="card__sub">Sur quelles actions recevoir un mail</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
-        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (a venir)</div></div><span class="badge badge--nouveau">Bientot</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (à venir)</div></div><span class="badge badge--nouveau">Bientot</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Sécurité</div><div class="card__sub">Accès et session</div></div></div>
@@ -702,7 +702,7 @@ const CHART_COLORS = {
   text: 'rgba(229,226,225,0.9)', textMuted: 'rgba(229,226,225,0.45)', grid: 'rgba(229,226,225,0.08)',
 };
 
-// Statuts en FRANCAIS (aligne sur l'enum du modele Lead : nouveau, lu, en_cours, converti, perdu, newsletter_ok)
+// Statuts en FRANCAIS (aligne sur l'enum du modèle Lead : nouveau, lu, en_cours, converti, perdu, newsletter_ok)
 const STATUS_LABELS = { nouveau: 'Nouveau', lu: 'Lu', en_cours: 'En cours', converti: 'Converti', perdu: 'Perdu', newsletter_ok: 'Newsletter OK' };
 const STATUS_COLORS = { nouveau: CHART_COLORS.info, lu: CHART_COLORS.warning, en_cours: CHART_COLORS.primary, converti: CHART_COLORS.success, perdu: CHART_COLORS.danger, newsletter_ok: '#c084fc' };
 
@@ -751,7 +751,7 @@ function statusBadge(status) { return '<span class="badge badge--' + status + '"
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs cles + repartitions'], cases: ['Cas clients', 'Gerer les realisations affichees'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètrès', 'Compte et notifications'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -1007,7 +1007,7 @@ async function openCaseEditor(id) {
     if (file.size > 2*1024*1024) { toast('Image trop lourde (max 2 Mo)', 'error'); return; }
     var rd = new FileReader();
     rd.onload = async function(){
-      try { var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('caTitle').value, folder:'realisations' } });
+      try { var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('caTitle').value, folder:'réalisations' } });
         var url = '/api/admin/media/' + up.media._id; document.getElementById('caImg').value = url;
         document.getElementById('caImgPrev').innerHTML = '<img src="' + url + '" style="max-height:90px;border-radius:8px;">'; toast('Image téléversée', 'success');
       } catch(err){ toast(err.message || 'Échec upload', 'error'); }
@@ -1348,7 +1348,7 @@ async function deleteMedia(id) {
 }
 
 function uploadFiles(files) {
-  const folder = prompt('Dossier ? (general, realisations, blog, team, logos, icones, autres)', 'general');
+  const folder = prompt('Dossier ? (general, réalisations, blog, team, logos, icones, autres)', 'general');
   if (!folder) return;
   Array.from(files).forEach(file => {
     if (file.size > 2 * 1024 * 1024) { toast(file.name + ' trop gros (2MB max)', 'error'); return; }
@@ -1813,7 +1813,7 @@ async function saveDetail() {
     STATE.currentLead.internalNotes = internalNotes;
     renderLeadsTable();
     renderRecentLeads();
-    toast('Lead mis a jour', 'success');
+    toast('Lead mis à jour', 'success');
     closeDetail();
     loadStats();
   } catch(e) { toast('Erreur sauvegarde', 'error'); }
@@ -1968,7 +1968,7 @@ async function init() {
     box.textContent = 'Vérification...';
     try {
       var d = await api('/api/admin/email-status');
-      box.innerHTML = (d.resendKeyConfigured ? '<span style="color:var(--success);">&#10003; Cle Resend presente</span> (' + escape(d.resendKeyPreview) + ')' : '<span style="color:var(--danger);">&#10007; RESEND_API_KEY MANQUANTE</span>') +
+      box.innerHTML = (d.resendKeyConfigured ? '<span style="color:var(--success);">&#10003; Clé Resend presente</span> (' + escape(d.resendKeyPreview) + ')' : '<span style="color:var(--danger);">&#10007; RESEND_API_KEY MANQUANTE</span>') +
         '<br>Expediteur (FROM_EMAIL) : <strong>' + escape(d.fromEmail) + '</strong>' +
         '<br>Notifications admin (CONTACT_EMAIL) : <strong>' + escape(d.contactEmail) + '</strong>' +
         '<br><span style="color:var(--text-muted);">' + escape(d.note) + '</span>';

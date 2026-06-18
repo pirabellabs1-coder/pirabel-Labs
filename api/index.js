@@ -35,6 +35,7 @@ const Lead = require('../app/models/Lead');
 const Media = require('../app/models/Media');
 const Quote = require('../app/models/Quote');
 const Review = require('../app/models/Review');
+const TrafficStat = require('../app/models/TrafficStat');
 
 const app = express();
 
@@ -544,6 +545,57 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
   } catch (err) {
     console.error('[stats]', err.message);
     res.status(500).json({ error: 'Erreur stats.' });
+  }
+});
+
+// === TRAFFIC TRACKING (public, léger) ===
+const trackLimiter = rateLimit({ windowMs: 60 * 1000, max: 120, message: 'rate', keyPrefix: 'track' });
+function todayUTC() { return new Date().toISOString().slice(0, 10); }
+
+app.post('/api/track', trackLimiter, limitBody(5), async (req, res) => {
+  try {
+    const type = sanitize(req.body && req.body.type || '', 20);
+    const vid = sanitize(req.body && req.body.vid || '', 40);
+    const day = todayUTC();
+    if (type === 'pageview') {
+      const update = { $inc: { pageviews: 1 } };
+      if (vid) update.$addToSet = { visitors: vid };
+      await TrafficStat.updateOne({ day }, update, { upsert: true });
+    } else if (type === 'whatsapp') {
+      await TrafficStat.updateOne({ day }, { $inc: { whatsappClicks: 1 } }, { upsert: true });
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    // Ne jamais casser le tracking côté client
+    res.json({ ok: false });
+  }
+});
+
+app.get('/api/admin/traffic', auth, adminOnly, async (req, res) => {
+  try {
+    const now = new Date();
+    const days = [];
+    for (let i = 29; i >= 0; i--) days.push(new Date(now.getTime() - i * 86400000).toISOString().slice(0, 10));
+    const stats = await TrafficStat.find({ day: { $in: days } }).lean();
+    const map = {};
+    stats.forEach(s => { map[s.day] = s; });
+    const series = days.map(day => {
+      const s = map[day] || {};
+      return { day, pageviews: s.pageviews || 0, uniqueVisitors: (s.visitors || []).length, whatsappClicks: s.whatsappClicks || 0 };
+    });
+    const sum = (arr, k) => arr.reduce((a, x) => a + x[k], 0);
+    const last7 = series.slice(-7);
+    const tStr = todayUTC();
+    const t = map[tStr] || {};
+    res.json({
+      today: { pageviews: t.pageviews || 0, uniqueVisitors: (t.visitors || []).length, whatsappClicks: t.whatsappClicks || 0 },
+      last7: { pageviews: sum(last7, 'pageviews'), uniqueVisitors: sum(last7, 'uniqueVisitors'), whatsappClicks: sum(last7, 'whatsappClicks') },
+      last30: { pageviews: sum(series, 'pageviews'), uniqueVisitors: sum(series, 'uniqueVisitors'), whatsappClicks: sum(series, 'whatsappClicks') },
+      series,
+    });
+  } catch (err) {
+    console.error('[traffic]', err.message);
+    res.status(500).json({ error: 'Erreur trafic.' });
   }
 });
 

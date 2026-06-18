@@ -348,6 +348,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--danger"><span class="material-symbols-outlined">percent</span></div></div><div class="kpi__value" id="kpiConvRate">--</div><div class="kpi__label">Taux conversion</div></div>
       </div>
 
+      <!-- TRAFIC DU SITE -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="card__header">
+          <div><div class="card__title">Trafic du site</div><div class="card__sub">Visiteurs, pages vues & clics WhatsApp — 30 derniers jours</div></div>
+        </div>
+        <div class="kpi-grid" style="margin-bottom:1.25rem;">
+          <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">group</span></div></div><div class="kpi__value" id="trafVisitors">--</div><div class="kpi__label">Visiteurs (30j)</div></div>
+          <div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">visibility</span></div></div><div class="kpi__value" id="trafViews">--</div><div class="kpi__label">Pages vues (30j)</div></div>
+          <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">chat</span></div></div><div class="kpi__value" id="trafWa">--</div><div class="kpi__label">Clics WhatsApp (30j)</div></div>
+          <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">today</span></div></div><div class="kpi__value" id="trafToday">--</div><div class="kpi__label">Visiteurs aujourd'hui</div></div>
+        </div>
+        <div class="card__chart"><canvas id="chartTraffic"></canvas></div>
+      </div>
+
       <div class="grid-2">
         <div class="card">
           <div class="card__header">
@@ -1178,7 +1192,35 @@ async function loadStats() {
     renderKpis();
     renderDashboardCharts();
     renderAnalyticsMini();
+    loadTraffic();
   } catch(e) { console.error(e); toast('Erreur chargement stats', 'error'); }
+}
+
+async function loadTraffic() {
+  try {
+    const t = await api('/api/admin/traffic');
+    document.getElementById('trafVisitors').textContent = t.last30.uniqueVisitors;
+    document.getElementById('trafViews').textContent = t.last30.pageviews;
+    document.getElementById('trafWa').textContent = t.last30.whatsappClicks;
+    document.getElementById('trafToday').textContent = t.today.uniqueVisitors;
+    destroyChart('traffic');
+    const series = t.series || [];
+    const labels = series.map(function(d){ var p = d.day.split('-'); return p[2] + '/' + p[1]; });
+    const views = series.map(function(d){ return d.pageviews; });
+    const visitors = series.map(function(d){ return d.uniqueVisitors; });
+    const ctx = document.getElementById('chartTraffic');
+    const allZero = views.every(function(v){ return v === 0; }) && visitors.every(function(v){ return v === 0; });
+    if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite encore — les donnees apparaissent des que le site recoit du trafic')) {
+      charts.traffic = new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: [
+          { label: 'Pages vues', data: views, borderColor: CHART_COLORS.primary, backgroundColor: CHART_COLORS.primaryGradient, fill: true, tension: 0.35, pointRadius: 2, pointHoverRadius: 5 },
+          { label: 'Visiteurs', data: visitors, borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.12)', fill: true, tension: 0.35, pointRadius: 2, pointHoverRadius: 5 }
+        ] },
+        options: chartDefaults()
+      });
+    }
+  } catch(e) { console.error('traffic', e); }
 }
 
 async function loadLeads() {

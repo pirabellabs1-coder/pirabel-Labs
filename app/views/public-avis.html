@@ -53,12 +53,12 @@ h1 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.75rem; li
   <div id="loading" class="loading">Chargement...</div>
   <div id="errorBlock" class="card" style="display:none;text-align:center;">
     <h1>Lien invalide</h1>
-    <p class="sub">Ce lien n'est plus valide ou a deja ete utilise. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
+    <p class="sub">Ce lien n'est plus valide ou a déjà été utilisé. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
   </div>
   <div id="formBlock" class="card" style="display:none;">
     <div class="eyebrow">Avis client</div>
-    <h1>Quelle note donneriez-vous a <span id="brandLabel" style="color:var(--accent);">Pirabel Labs</span> ?</h1>
-    <p class="sub" id="introText">Votre retour honnete nous aide enormement a progresser et rassure nos prochains clients qui hesitent. Merci d'avance pour les 2 minutes que vous nous accordez.</p>
+    <h1>Quelle note donneriez-vous à <span id="brandLabel" style="color:var(--accent);">Pirabel Labs</span> ?</h1>
+    <p class="sub" id="introText">Votre retour honnête nous aide énormément à progresser et rassure nos prochains clients qui hésitent. Merci d'avance pour les 2 minutes que vous nous accordez.</p>
 
     <div class="stars" id="stars">
       <span class="star" data-rating="1">&#9733;</span>
@@ -71,10 +71,10 @@ h1 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.75rem; li
     <form id="reviewForm">
       <div class="field">
         <label for="comment">Votre avis <span>*</span></label>
-        <textarea id="comment" name="comment" rows="5" required minlength="30" maxlength="2000" placeholder="Qu'est-ce qui a fonctionne ? Qu'est-ce qui pourrait etre ameliore ? Recommanderiez-vous Pirabel Labs ?"></textarea>
+        <textarea id="comment" name="comment" rows="5" required minlength="30" maxlength="2000" placeholder="Qu'est-ce qui a fonctionné ? Qu'est-ce qui pourrait être amélioré ? Recommanderiez-vous Pirabel Labs ?"></textarea>
       </div>
       <div class="field">
-        <label for="role">Votre role / poste</label>
+        <label for="role">Votre rôle / poste</label>
         <input type="text" id="role" name="role" maxlength="100" placeholder="ex : Directrice marketing, CEO, Responsable e-commerce">
       </div>
       <div class="field">
@@ -94,7 +94,7 @@ h1 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.75rem; li
   <div id="thanksBlock" class="card thanks" style="display:none;">
     <div class="check">&#10003;</div>
     <h1>Merci !</h1>
-    <p class="sub">Votre avis a bien ete enregistre. Apres moderation rapide, il pourra apparaitre sur notre site. Belle journee !</p>
+    <p class="sub">Votre avis a bien été enregistré. Après modération rapide, il pourra apparaître sur notre site. Belle journée !</p>
   </div>
 </div>
 
@@ -125,7 +125,7 @@ async function loadReviewInfo() {
     loading.style.display = 'none';
     if (data.alreadySubmitted) { thanksBlock.style.display = 'block'; return; }
     formBlock.style.display = 'block';
-    document.getElementById('introText').textContent = 'Bonjour ' + data.clientName.split(' ')[0] + ', votre retour honnete nous aide enormement a progresser et rassure nos prochains clients. Merci d\'avance pour les 2 minutes que vous nous accordez.';
+    document.getElementById('introText').textContent = 'Bonjour ' + data.clientName.split(' ')[0] + ', votre retour honnête nous aide énormément à progresser et rassure nos prochains clients. Merci d\'avance pour les 2 minutes que vous nous accordez.';
   } catch (e) {
     loading.style.display = 'none';
     errorBlock.style.display = 'block';
@@ -135,9 +135,9 @@ async function loadReviewInfo() {
 document.getElementById('reviewForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   msg.className = 'msg';
-  if (!rating) { msg.className = 'msg error show'; msg.textContent = 'Cliquez sur les etoiles pour donner une note.'; return; }
+  if (!rating) { msg.className = 'msg error show'; msg.textContent = 'Cliquez sur les étoiles pour donner une note.'; return; }
   const comment = document.getElementById('comment').value.trim();
-  if (comment.length < 30) { msg.className = 'msg error show'; msg.textContent = 'Commentaire trop court (30 caracteres min).'; return; }
+  if (comment.length < 30) { msg.className = 'msg error show'; msg.textContent = 'Commentaire trop court (30 caractères min).'; return; }
 
   submitBtn.disabled = true;
   submitText.textContent = 'Envoi...';
@@ -162,7 +162,7 @@ document.getElementById('reviewForm').addEventListener('submit', async function(
       submitBtn.disabled = false; submitText.textContent = 'Envoyer mon avis';
     }
   } catch (e) {
-    msg.className = 'msg error show'; msg.textContent = 'Erreur reseau.';
+    msg.className = 'msg error show'; msg.textContent = 'Erreur réseau.';
     submitBtn.disabled = false; submitText.textContent = 'Envoyer mon avis';
   }
 });

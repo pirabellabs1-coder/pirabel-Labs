@@ -1545,10 +1545,10 @@ app.post('/api/admin/reviews/request', auth, adminOnly, limitBody(5), async (req
       headerType: 'hero',
       preheader: 'Quelques minutes pour partager votre experience',
       title: 'Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',',
-      subtitle: 'Votre avis compte enormement',
-      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Apres notre collaboration, nous aimerions beaucoup avoir votre retour honnete sur notre travail.</p>' +
-        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Cela nous prend <strong style="color:#e5e2e1;">2 minutes</strong> et nous aide enormement a progresser et a rassurer les prochains clients qui hesitent.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Merci infiniment,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong></p>',
+      subtitle: 'Votre avis compte énormément',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Après notre collaboration, nous aimerions beaucoup avoir votre retour honnête sur notre travail.</p>' +
+        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Cela nous prend <strong style="color:#e5e2e1;">2 minutes</strong> et nous aide énormément à progresser et à rassurer les prochains clients qui hésitent.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Merci infiniment,<br><strong style="color:#e5e2e1;">L&apos;équipe Pirabel Labs</strong></p>',
       cta: 'Laisser mon avis (2 min)',
       ctaUrl: publicUrl
     });

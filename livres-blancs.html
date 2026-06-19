@@ -539,10 +539,10 @@
         var json = await r.json();
         if (r.ok && json.success) {
           msg.className = 'lb-form__msg is-show is-success';
-          msg.innerHTML = '<strong>C\'est prêt !</strong> Votre téléchargement démarre, et une copie part par e-mail (vérifiez les indésirables si besoin).';
+          msg.innerHTML = '<strong>C\'est prêt !</strong> Votre téléchargement va démarrer. S\'il ne démarre pas, <a href="'+(json.pdfUrl||'#')+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-weight:700;">cliquez ici pour télécharger le PDF</a>. Une copie part aussi par e-mail (pensez à vérifier les spams).';
           if (submitText) submitText.textContent = 'Téléchargé ✓';
           if (json.pdfUrl) { var a=document.createElement('a'); a.href=json.pdfUrl; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
-          setTimeout(closeModal, 4500);
+          setTimeout(closeModal, 12000);
         } else {
           msg.className = 'lb-form__msg is-show is-error';
           msg.textContent = json.error || 'Erreur, réessayez ou écrivez-nous directement.';

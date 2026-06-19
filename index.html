@@ -39,7 +39,7 @@
 .h-hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; max-width: 78rem; margin: 0 auto; }
 /* === HERO premium type Linear/Framer/Stripe === */
 .h-hero--framed { position: relative; padding: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 8vw, 6rem) clamp(3rem, 6vw, 5rem); overflow: hidden; background: #050505; }
-.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(229,226,225,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(229,226,225,0.025) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 40% 50%, #000 35%, transparent 80%); pointer-events: none; z-index: 0; }
+.h-hero--framed::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,107,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,0,0.05) 1px, transparent 1px); background-size: 54px 54px; mask-image: radial-gradient(ellipse 80% 74% at 50% 42%, #000 26%, transparent 84%); -webkit-mask-image: radial-gradient(ellipse 80% 74% at 50% 42%, #000 26%, transparent 84%); pointer-events: none; z-index: 0; }
 .h-hero--framed::after { content: ''; position: absolute; top: 30%; left: 30%; width: 38rem; height: 38rem; background: radial-gradient(circle, rgba(255,107,0,0.18) 0%, rgba(255,107,0,0.05) 30%, transparent 65%); filter: blur(60px); pointer-events: none; z-index: 0; transform: translate(-50%, -50%); }
 .hero-frame { position: relative; width: 100%; max-width: 88rem; margin: 0 auto; padding: 0; }
 .hero-frame__glow { position: absolute; pointer-events: none; z-index: 0; }
@@ -70,6 +70,12 @@
 .h-hero__p--framed strong { color: #F5F4F1; font-weight: 700; }
 @media (max-width: 600px) { .h-hero__h1--framed { font-size: 1.7rem; line-height: 1.2; margin-bottom: 1.15rem; } .h-hero__p--framed { font-size: 0.9rem; line-height: 1.55; margin-bottom: 1.7rem; } }
 @media (max-width: 380px) { .h-hero__h1--framed { font-size: 1.5rem; } .h-hero__p--framed { font-size: 0.86rem; } }
+.hero-stats { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; margin: 2.4rem auto 0; padding: 0; max-width: 58rem; }
+.hero-stats li { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; color: rgba(245,244,241,0.82); background: rgba(20,19,19,0.55); border: 1px solid rgba(245,244,241,0.1); padding: 0.55rem 1.05rem; border-radius: 999px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: border-color .2s, transform .2s; }
+.hero-stats li:hover { border-color: rgba(255,107,0,0.45); transform: translateY(-2px); }
+.hero-stats li .material-symbols-outlined { font-size: 1.15rem; color: #FF6B00; }
+.hero-stats li strong { color: #fff; font-weight: 800; }
+@media (max-width: 600px) { .hero-stats { gap: 0.5rem; margin-top: 1.8rem; } .hero-stats li { font-size: 0.78rem; padding: 0.45rem 0.85rem; } .hero-stats li .material-symbols-outlined { font-size: 1rem; } }
 .hero-icon-inline { display: none; }
 
 /* Badge eyebrow premium */
@@ -744,6 +750,12 @@
           <a href="/contact" class="btn btn--primary btn--lg">Obtenir un devis gratuit <span class="material-symbols-outlined">arrow_forward</span></a>
           <a href="/realisations" class="btn btn--ghost btn--lg">Découvrir nos réalisations <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
+        <ul class="hero-stats">
+          <li><span class="material-symbols-outlined">workspace_premium</span><span><strong>150+</strong> projets livrés</span></li>
+          <li><span class="material-symbols-outlined">trending_up</span><span><strong>+187&nbsp;%</strong> de leads en moyenne</span></li>
+          <li><span class="material-symbols-outlined">schedule</span><span>Réponse sous <strong>24&nbsp;h</strong></span></li>
+          <li><span class="material-symbols-outlined">hub</span><span>SEO &middot; IA &middot; Web</span></li>
+        </ul>
       </div>
     </div>
   </section>

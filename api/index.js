@@ -719,15 +719,71 @@ function blogShell(headExtra, bodyHtml) {
     '.art-author__avatar{width:54px;height:54px;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:1.2rem;flex-shrink:0;}' +
     '.art-author__label{font-size:.72rem;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:.1em;}.art-author__name{font-family:"Space Grotesk",sans-serif;font-weight:700;color:#fff;font-size:1.05rem;}.art-author__role{color:#FF5500;font-size:.85rem;margin-bottom:.4rem;}.art-author__bio{color:rgba(229,226,225,0.6);font-size:.88rem;line-height:1.5;margin:0;}' +
     '.bx-empty{text-align:center;color:rgba(229,226,225,0.5);padding:4rem 1rem;}' +
+    // --- menu mobile (hamburger via case à cocher, sans JS) ---
+    '.bx-navtoggle{position:absolute;left:-9999px;opacity:0;}' +
+    '.bx-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;margin-left:auto;}' +
+    '.bx-burger span{display:block;width:24px;height:2px;background:#e5e2e1;border-radius:2px;}' +
+    // --- conteneur d\'image des cartes (img réelle OU svg) ---
+    '.bx-card__img img,.bx-card__img svg{width:100%;height:100%;object-fit:cover;display:block;}' +
+    // --- barre filtres + recherche ---
+    '.bx-toolbar{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin:0 0 1.8rem;}' +
+    '.bx-filters{display:flex;flex-wrap:wrap;gap:.5rem;}' +
+    '.bx-filters a{font-size:.8rem;font-weight:600;color:rgba(229,226,225,0.7);background:#161616;border:1px solid rgba(229,226,225,0.12);padding:.42rem .9rem;border-radius:999px;text-decoration:none;white-space:nowrap;transition:.15s;}' +
+    '.bx-filters a:hover{border-color:#FF5500;color:#fff;}.bx-filters a.is-active{background:#FF5500;color:#190800;border-color:#FF5500;}' +
+    '.bx-search{display:flex;gap:.4rem;flex-shrink:0;}' +
+    '.bx-search input{background:#161616;border:1px solid rgba(229,226,225,0.15);border-radius:999px;padding:.5rem 1rem;color:#fff;font-family:inherit;font-size:.85rem;min-width:11rem;}' +
+    '.bx-search input:focus{outline:none;border-color:#FF5500;}' +
+    '.bx-search button{background:#FF5500;color:#190800;border:none;border-radius:999px;width:2.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}' +
+    '.bx-search button .material-symbols-outlined{font-size:1.2rem;}' +
+    // --- article vedette (le plus lu) ---
+    '.bx-feat{display:grid;grid-template-columns:1.1fr 1fr;gap:0;background:#161616;border:1px solid rgba(229,226,225,0.12);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;margin:0 0 2.6rem;transition:border-color .2s;}' +
+    '.bx-feat:hover{border-color:#FF5500;}' +
+    '.bx-feat__img{position:relative;min-height:280px;overflow:hidden;background:linear-gradient(135deg,rgba(255,85,0,0.2),#0e0e0e);}' +
+    '.bx-feat__img img,.bx-feat__img svg{width:100%;height:100%;object-fit:cover;display:block;}' +
+    '.bx-feat__b{padding:clamp(1.4rem,3vw,2.4rem);display:flex;flex-direction:column;justify-content:center;}' +
+    '.bx-feat__star{display:inline-flex;align-items:center;gap:.35rem;color:#FF5500;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}' +
+    '.bx-feat__star .material-symbols-outlined{font-size:1rem;}' +
+    '.bx-feat h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(1.4rem,2.8vw,2.05rem);line-height:1.13;color:#fff;margin:.2rem 0 .7rem;}' +
+    '.bx-feat p{color:rgba(229,226,225,0.65);font-size:.98rem;line-height:1.6;margin:0 0 1rem;}' +
+    '.bx-feat__more{display:inline-flex;align-items:center;gap:.4rem;color:#FF5500;font-weight:700;font-size:.9rem;}' +
+    '.bx-feat__more .material-symbols-outlined{font-size:1.1rem;}' +
+    // --- compteur de vues ---
+    '.bx-views{display:inline-flex;align-items:center;gap:.3rem;color:rgba(229,226,225,0.45);font-size:.78rem;}' +
+    '.bx-views .material-symbols-outlined{font-size:1rem;}' +
+    '.bx-card__meta{display:flex;justify-content:flex-end;align-items:center;margin-top:.8rem;}' +
+    // --- pagination ---
+    '.bx-pager{display:flex;justify-content:center;align-items:center;gap:.4rem;flex-wrap:wrap;margin:3rem 0 0;}' +
+    '.bx-pager a,.bx-pager span{min-width:2.4rem;height:2.4rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .7rem;border-radius:10px;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid rgba(229,226,225,0.14);color:rgba(229,226,225,0.75);}' +
+    '.bx-pager a:hover{border-color:#FF5500;color:#fff;}.bx-pager .is-active{background:#FF5500;color:#190800;border-color:#FF5500;}.bx-pager .is-disabled{opacity:.35;}' +
+    // --- articles similaires ---
+    '.bx-related{margin-top:3.5rem;}.bx-related h2{font-size:1.4rem;color:#fff;margin:0 0 1.2rem;}' +
+    '.bx-related__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1.1rem;}' +
+    // --- responsive ---
+    '@media(max-width:760px){.bx-burger{display:flex;}.bx-top{flex-wrap:wrap;}.bx-top .bx-nav{display:none;flex-basis:100%;flex-direction:column;margin-top:.4rem;}.bx-top .bx-nav a{margin:0;padding:.75rem .2rem;border-top:1px solid rgba(229,226,225,0.08);font-size:.95rem;}.bx-navtoggle:checked~.bx-nav{display:flex;}.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:190px;}.bx-search{flex:1;}.bx-search input{min-width:0;width:100%;flex:1;}}' +
+    '@media(max-width:600px){.bx-content{font-size:1rem;line-height:1.72;}.bx-content h2{font-size:1.28rem;}.bx-content h3{font-size:1.08rem;}.bx-article h1{font-size:1.55rem;line-height:1.18;}.bx-hero h1{font-size:1.85rem;}.bx-hero p{font-size:.95rem;}.art-pullquote{padding:1rem 1.1rem;}.art-pullquote__text{font-size:1rem;}.art-stat-box{flex-direction:column;align-items:flex-start;gap:.6rem;padding:1.1rem;}.art-stat-box__num{font-size:2rem;}.bx-content ul,.bx-content ol{padding-left:1.1rem;}}' +
     '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
     '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +
-    '<nav><a href="/blog">Blog</a><a href="/realisations">Réalisations</a><a href="/temoignages">Avis</a><a href="/contact">Contact</a></nav></header>' +
+    '<input type="checkbox" id="bxnav" class="bx-navtoggle" aria-hidden="true">' +
+    '<label for="bxnav" class="bx-burger" aria-label="Ouvrir le menu"><span></span><span></span><span></span></label>' +
+    '<nav class="bx-nav"><a href="/blog">Blog</a><a href="/realisations">Réalisations</a><a href="/temoignages">Avis</a><a href="/contact">Contact</a></nav></header>' +
     bodyHtml +
     '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
     '<script defer src="/js/track.js"></script></body></html>';
 }
 function fmtFr(d) {
   try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; }
+}
+function fmtViews(n) { n = n || 0; return n >= 1000 ? (Math.round(n / 100) / 10) + 'k' : String(n); }
+// Couverture SVG générée (16/9) — repli quand aucune image réelle n'est définie.
+function coverSvg(title, cat) {
+  const c = escapeHtml(String(cat || 'Blog').toUpperCase());
+  return '<svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(title || '') + '">' +
+    '<defs><linearGradient id="bxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5500" stop-opacity="0.28"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs>' +
+    '<rect width="1200" height="675" fill="#141313"/><rect width="1200" height="675" fill="url(#bxg)"/>' +
+    '<g fill="none" stroke="#FF5500" stroke-opacity="0.4" stroke-width="3"><circle cx="1010" cy="170" r="120"/><circle cx="1130" cy="430" r="58"/><path d="M60 520 q170 -130 330 0 t330 0"/></g>' +
+    '<text x="80" y="300" fill="#FF5500" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="32" letter-spacing="5">' + c + '</text>' +
+    '<text x="76" y="398" fill="#ffffff" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="70">Pirabel Labs</text>' +
+    '<text x="80" y="455" fill="rgba(229,226,225,0.6)" font-family="Inter,Arial,sans-serif" font-size="27">Marketing digital &#183; IA &#183; Web</text></svg>';
 }
 
 // --- ADMIN CRUD ---
@@ -785,22 +841,69 @@ app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
 // --- PUBLIC : liste du blog ---
 app.get('/blog', async (req, res) => {
   try {
-    const arts = await Article.find({ status: 'publie' }).sort({ publishedAt: -1 }).limit(60).lean();
-    const cards = arts.length ? arts.map(a => {
-      const img = a.featuredImage
-        ? '<img class="bx-card__img" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" loading="lazy">'
-        : '<div class="bx-card__img"></div>';
-      return '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + img +
-        '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
-        '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p></div></a>';
-    }).join('') : '<div class="bx-empty">Aucun article publié pour le moment.</div>';
-    const head = '<title>Blog Pirabel Labs — Marketing digital, SEO, sites web</title>' +
+    const PAGE = 9;
+    const esc = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const cat = String(req.query.cat || '').trim().slice(0, 60);
+    const q = String(req.query.q || '').trim().slice(0, 80);
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const isFiltered = !!(cat || q);
+    const baseFilter = { status: 'publie' };
+    if (cat) baseFilter.category = new RegExp('^' + esc(cat) + '$', 'i');
+    if (q) { const rx = new RegExp(esc(q), 'i'); baseFilter.$or = [{ title: rx }, { excerpt: rx }, { category: rx }]; }
+    // catégories pour les filtres (dédupliquées, insensibles à la casse)
+    const rawCats = await Article.distinct('category', { status: 'publie' });
+    const seen = {}; const cats = [];
+    rawCats.filter(Boolean).sort((a, b) => a.localeCompare(b, 'fr')).forEach(c => { const k = c.toLowerCase(); if (!seen[k]) { seen[k] = 1; cats.push(c); } });
+    // article vedette = le plus lu (page 1 sans filtre uniquement)
+    let featured = null, excludeId = null;
+    if (!isFiltered) {
+      featured = await Article.findOne({ status: 'publie' }).sort({ views: -1, publishedAt: -1 }).lean();
+      if (featured) excludeId = featured._id;
+    }
+    const listFilter = Object.assign({}, baseFilter);
+    if (excludeId) listFilter._id = { $ne: excludeId };
+    const total = await Article.countDocuments(listFilter);
+    const totalPages = Math.max(1, Math.ceil(total / PAGE));
+    const safePage = Math.min(page, totalPages);
+    const arts = await Article.find(listFilter).sort({ publishedAt: -1 }).skip((safePage - 1) * PAGE).limit(PAGE).lean();
+    const cardImg = a => '<div class="bx-card__img">' + (a.featuredImage ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" loading="lazy">' : coverSvg(a.title, a.category)) + '</div>';
+    const card = a => '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + cardImg(a) +
+      '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
+      '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p>' +
+      '<div class="bx-card__meta"><span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div></div></a>';
+    const cards = arts.length ? arts.map(card).join('') : '<div class="bx-empty">Aucun article ne correspond à votre recherche.</div>';
+    // vedette
+    const featHtml = (featured && safePage === 1) ?
+      '<a class="bx-feat" href="/blog/' + escapeHtml(featured.slug) + '"><div class="bx-feat__img">' +
+        (featured.featuredImage ? '<img src="' + escapeHtml(featured.featuredImage) + '" alt="' + escapeHtml(featured.imageAlt || featured.title) + '">' : coverSvg(featured.title, featured.category)) +
+        '</div><div class="bx-feat__b"><span class="bx-feat__star"><span class="material-symbols-outlined">local_fire_department</span>Article le plus lu</span>' +
+        '<h2>' + escapeHtml(featured.title) + '</h2><p>' + escapeHtml(featured.excerpt || '') + '</p>' +
+        '<span class="bx-feat__more">Lire l\'article <span class="material-symbols-outlined">arrow_forward</span></span></div></a>' : '';
+    // filtres + recherche
+    const pills = '<div class="bx-filters"><a href="/blog"' + (!cat ? ' class="is-active"' : '') + '>Tous</a>' +
+      cats.map(c => '<a href="/blog?cat=' + encodeURIComponent(c) + '"' + (cat && cat.toLowerCase() === c.toLowerCase() ? ' class="is-active"' : '') + '>' + escapeHtml(c) + '</a>').join('') + '</div>';
+    const search = '<form class="bx-search" action="/blog" method="get">' + (cat ? '<input type="hidden" name="cat" value="' + escapeHtml(cat) + '">' : '') +
+      '<input type="search" name="q" value="' + escapeHtml(q) + '" placeholder="Rechercher un article…" aria-label="Rechercher"><button type="submit" aria-label="Rechercher"><span class="material-symbols-outlined">search</span></button></form>';
+    const toolbar = '<div class="bx-toolbar">' + pills + search + '</div>';
+    const note = isFiltered ? '<p style="text-align:center;color:rgba(229,226,225,0.5);font-size:.9rem;margin:-.4rem 0 1.6rem;">' + total + ' article' + (total > 1 ? 's' : '') + (cat ? ' dans « ' + escapeHtml(cat) + ' »' : '') + (q ? ' pour « ' + escapeHtml(q) + ' »' : '') + ' &middot; <a href="/blog" style="color:#FF5500;">tout afficher</a></p>' : '';
+    // pagination (préserve cat + q)
+    const qs = p => { const a = []; if (cat) a.push('cat=' + encodeURIComponent(cat)); if (q) a.push('q=' + encodeURIComponent(q)); if (p > 1) a.push('page=' + p); return a.length ? ('?' + a.join('&')) : ''; };
+    let pager = '';
+    if (totalPages > 1) {
+      let nums = '';
+      for (let p = 1; p <= totalPages; p++) nums += (p === safePage) ? '<span class="is-active">' + p + '</span>' : '<a href="/blog' + qs(p) + '">' + p + '</a>';
+      pager = '<nav class="bx-pager" aria-label="Pagination">' +
+        (safePage > 1 ? '<a href="/blog' + qs(safePage - 1) + '">‹ Précédent</a>' : '<span class="is-disabled">‹ Précédent</span>') + nums +
+        (safePage < totalPages ? '<a href="/blog' + qs(safePage + 1) + '">Suivant ›</a>' : '<span class="is-disabled">Suivant ›</span>') + '</nav>';
+    }
+    const canon = SITE() + '/blog' + (safePage > 1 ? '?page=' + safePage : '');
+    const head = '<title>Blog Pirabel Labs — Marketing digital, SEO, sites web' + (safePage > 1 ? ' (page ' + safePage + ')' : '') + '</title>' +
       '<meta name="description" content="Conseils marketing digital, SEO, sites web et stratégie pour PME francophones — par Pirabel Labs.">' +
-      '<link rel="canonical" href="' + SITE() + '/blog">' +
+      '<link rel="canonical" href="' + canon + '">' +
       '<meta property="og:title" content="Blog Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/blog">';
     const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Le Blog Pirabel Labs</h1>' +
       '<p>Conseils marketing digital, SEO, sites web et stratégie pour PME francophones.</p></div>' +
-      '<div class="bx-grid">' + cards + '</div></main>';
+      toolbar + note + featHtml + '<div class="bx-grid">' + cards + '</div>' + pager + '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[blog]', e.message); res.status(500).send('Erreur'); }
 });
@@ -850,7 +953,7 @@ app.get('/blog/:slug', async (req, res) => {
     // Couverture : image fournie, sinon couverture SVG générée (légère, sur-mesure)
     const cover = a.featuredImage
       ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">'
-      : '<div class="bx-cover"><svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(a.title) + '"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5500" stop-opacity="0.25"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs><rect width="1200" height="440" fill="#141313"/><rect width="1200" height="440" fill="url(#bg)"/><g fill="none" stroke="#FF5500" stroke-opacity="0.45" stroke-width="2"><circle cx="1000" cy="130" r="80"/><circle cx="1090" cy="300" r="44"/><path d="M90 350 q130 -100 260 0 t260 0"/></g><text x="80" y="160" fill="#FF5500" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="26" letter-spacing="4">' + catLabel.toUpperCase() + '</text><text x="76" y="258" fill="#ffffff" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="58">Pirabel Labs</text><text x="80" y="312" fill="rgba(229,226,225,0.65)" font-family="Inter,Arial,sans-serif" font-size="22">Blog &#183; marketing digital, IA &amp; web</text></svg></div>';
+      : '<div class="bx-cover">' + coverSvg(a.title, a.category) + '</div>';
     const authorCard = (a.content || '').includes('art-author') ? '' :
       '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Cofondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
@@ -858,17 +961,27 @@ app.get('/blog/:slug', async (req, res) => {
       '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Cofondateur, Pirabel Labs</div></div></div>' +
       '<div class="bx-side__cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
       '</aside>';
+    // Articles similaires : même catégorie en priorité, complété par les plus récents
+    const related = await Article.find({ status: 'publie', _id: { $ne: a._id }, category: a.category }).sort({ views: -1, publishedAt: -1 }).limit(3).lean();
+    if (related.length < 3) {
+      const have = related.map(r => r._id).concat(a._id);
+      const extra = await Article.find({ status: 'publie', _id: { $nin: have } }).sort({ publishedAt: -1 }).limit(3 - related.length).lean();
+      related.push(...extra);
+    }
+    const relCard = r => '<a class="bx-card" href="/blog/' + escapeHtml(r.slug) + '"><div class="bx-card__img">' + (r.featuredImage ? '<img src="' + escapeHtml(r.featuredImage) + '" alt="' + escapeHtml(r.imageAlt || r.title) + '" loading="lazy">' : coverSvg(r.title, r.category)) + '</div><div class="bx-card__b"><span class="bx-cat">' + escapeHtml(r.category || 'Marketing') + '</span><h2>' + escapeHtml(r.title) + '</h2></div></a>';
+    const relatedHtml = related.length ? '<section class="bx-related"><h2>Articles similaires</h2><div class="bx-related__grid">' + related.map(relCard).join('') + '</div></section>' : '';
     const body = '<main class="bx-wrap"><div class="bx-layout"><article class="bx-article">' +
       (a.status !== 'publie' ? '<div style="background:#fbbf24;color:#190800;padding:.6rem 1rem;border-radius:8px;margin-bottom:1.2rem;font-weight:700;">⚠ APERÇU — brouillon non publié (visible uniquement par vous, admin connecté)</div>' : '') +
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
       '<span class="bx-cat">' + catLabel + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +
-      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + '</div>' +
+      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div>' +
       cover +
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
       '<a href="/contact">Parler à un cofondateur</a></div>' +
+      relatedHtml +
       '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
       '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +
       '<form id="cmForm" class="bx-cmform"><h3>Laisser un commentaire</h3>' +

@@ -726,8 +726,9 @@ function blogShell(headExtra, bodyHtml) {
     // --- conteneur d\'image des cartes (img réelle OU svg) ---
     '.bx-card__img img,.bx-card__img svg{width:100%;height:100%;object-fit:cover;display:block;}' +
     // --- barre filtres + recherche ---
-    '.bx-toolbar{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin:0 0 1.8rem;}' +
-    '.bx-filters{display:flex;flex-wrap:wrap;gap:.5rem;}' +
+    '.bx-toolbar{display:flex;gap:1rem;align-items:center;margin:0 0 2.2rem;}' +
+    '.bx-filters{display:flex;flex-wrap:nowrap;gap:.5rem;overflow-x:auto;flex:1;min-width:0;padding:.15rem .1rem .55rem;scrollbar-width:none;-ms-overflow-style:none;}' +
+    '.bx-filters::-webkit-scrollbar{display:none;height:0;}' +
     '.bx-filters a{font-size:.8rem;font-weight:600;color:rgba(229,226,225,0.7);background:#161616;border:1px solid rgba(229,226,225,0.12);padding:.42rem .9rem;border-radius:999px;text-decoration:none;white-space:nowrap;transition:.15s;}' +
     '.bx-filters a:hover{border-color:#FF5500;color:#fff;}.bx-filters a.is-active{background:#FF5500;color:#190800;border-color:#FF5500;}' +
     '.bx-search{display:flex;gap:.4rem;flex-shrink:0;}' +
@@ -759,7 +760,7 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-related{margin-top:3.5rem;}.bx-related h2{font-size:1.4rem;color:#fff;margin:0 0 1.2rem;}' +
     '.bx-related__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1.1rem;}' +
     // --- responsive ---
-    '@media(max-width:760px){.bx-burger{display:flex;}.bx-top{flex-wrap:wrap;}.bx-top .bx-nav{display:none;flex-basis:100%;flex-direction:column;margin-top:.4rem;}.bx-top .bx-nav a{margin:0;padding:.75rem .2rem;border-top:1px solid rgba(229,226,225,0.08);font-size:.95rem;}.bx-navtoggle:checked~.bx-nav{display:flex;}.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:190px;}.bx-search{flex:1;}.bx-search input{min-width:0;width:100%;flex:1;}}' +
+    '@media(max-width:760px){.bx-burger{display:flex;}.bx-top{flex-wrap:wrap;}.bx-top .bx-nav{display:none;flex-basis:100%;flex-direction:column;margin-top:.4rem;}.bx-top .bx-nav a{margin:0;padding:.75rem .2rem;border-top:1px solid rgba(229,226,225,0.08);font-size:.95rem;}.bx-navtoggle:checked~.bx-nav{display:flex;}.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:190px;}.bx-toolbar{flex-direction:column;align-items:stretch;gap:.8rem;}.bx-search{flex:1;order:-1;}.bx-search input{min-width:0;width:100%;flex:1;}}' +
     '@media(max-width:600px){.bx-content{font-size:1rem;line-height:1.72;}.bx-content h2{font-size:1.28rem;}.bx-content h3{font-size:1.08rem;}.bx-article h1{font-size:1.55rem;line-height:1.18;}.bx-hero h1{font-size:1.85rem;}.bx-hero p{font-size:.95rem;}.art-pullquote{padding:1rem 1.1rem;}.art-pullquote__text{font-size:1rem;}.art-stat-box{flex-direction:column;align-items:flex-start;gap:.6rem;padding:1.1rem;}.art-stat-box__num{font-size:2rem;}.bx-content ul,.bx-content ol{padding-left:1.1rem;}}' +
     '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
     '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +
@@ -778,12 +779,12 @@ function fmtViews(n) { n = n || 0; return n >= 1000 ? (Math.round(n / 100) / 10)
 function coverSvg(title, cat) {
   const c = escapeHtml(String(cat || 'Blog').toUpperCase());
   return '<svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(title || '') + '">' +
-    '<defs><linearGradient id="bxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5500" stop-opacity="0.28"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs>' +
+    '<defs><linearGradient id="bxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5500" stop-opacity="0.30"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs>' +
     '<rect width="1200" height="675" fill="#141313"/><rect width="1200" height="675" fill="url(#bxg)"/>' +
-    '<g fill="none" stroke="#FF5500" stroke-opacity="0.4" stroke-width="3"><circle cx="1010" cy="170" r="120"/><circle cx="1130" cy="430" r="58"/><path d="M60 520 q170 -130 330 0 t330 0"/></g>' +
-    '<text x="80" y="300" fill="#FF5500" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="32" letter-spacing="5">' + c + '</text>' +
-    '<text x="76" y="398" fill="#ffffff" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="70">Pirabel Labs</text>' +
-    '<text x="80" y="455" fill="rgba(229,226,225,0.6)" font-family="Inter,Arial,sans-serif" font-size="27">Marketing digital &#183; IA &#183; Web</text></svg>';
+    '<g fill="none" stroke="#FF5500" stroke-opacity="0.16" stroke-width="2"><circle cx="600" cy="337" r="300"/><circle cx="600" cy="337" r="210"/><circle cx="600" cy="337" r="120"/></g>' +
+    '<text x="600" y="298" text-anchor="middle" fill="#FF5500" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="30" letter-spacing="6">' + c + '</text>' +
+    '<text x="600" y="378" text-anchor="middle" fill="#ffffff" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="68">Pirabel Labs</text>' +
+    '<text x="600" y="430" text-anchor="middle" fill="rgba(229,226,225,0.6)" font-family="Inter,Arial,sans-serif" font-size="26">Marketing digital &#183; IA &#183; Web</text></svg>';
 }
 
 // --- ADMIN CRUD ---

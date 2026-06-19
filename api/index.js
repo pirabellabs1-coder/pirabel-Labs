@@ -907,7 +907,7 @@ app.post('/api/admin/livres-blancs/seed', auth, adminOnly, async (req, res) => {
 // --- PUBLIC : livres blancs publiés (pour la page /livres-blancs) ---
 app.get('/api/livres-blancs', async (req, res) => {
   try {
-    const list = await LivreBlanc.find({ status: 'publie' }).sort({ publishedAt: -1, createdAt: -1 }).select('title slug description pages pdfUrl coverImage icon category toc').lean();
+    const list = await LivreBlanc.find({ status: 'publie' }).sort({ publishedAt: -1, createdAt: -1 }).select('title slug description pages pdfUrl coverImage icon category toc downloads').lean();
     res.json({ livresBlancs: list });
   } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });

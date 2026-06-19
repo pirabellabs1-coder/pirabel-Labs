@@ -695,7 +695,7 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}' +
     '.bx-card h2{font-family:"Space Grotesk",sans-serif;font-size:1.15rem;margin:.5rem 0;line-height:1.25;color:#fff;}' +
     '.bx-card p{color:rgba(229,226,225,0.6);font-size:.9rem;line-height:1.5;margin:0;}' +
-    '.bx-article{max-width:56rem;margin:0 auto;}' +
+    '.bx-article{max-width:none;margin:0;min-width:0;}.bx-layout{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:2.5rem;align-items:start;}.bx-side{position:sticky;top:1.5rem;display:flex;flex-direction:column;gap:1.1rem;}.bx-toc{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem 1.1rem;max-height:72vh;overflow:auto;}.bx-toc strong{display:block;color:#fff;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}.bx-toc a{display:block;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.84rem;line-height:1.3;padding:.32rem 0 .32rem .6rem;border-left:2px solid rgba(229,226,225,0.12);}.bx-toc a:hover{color:#FF5500;border-left-color:#FF5500;}.bx-side__author{display:flex;gap:.7rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem;}.bx-side__cta{background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:12px;padding:1.1rem;text-align:center;}.bx-side__cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.55rem 1.1rem;border-radius:999px;text-decoration:none;font-size:.82rem;margin-top:.6rem;}.bx-cover{margin:0 0 2rem;border-radius:16px;overflow:hidden;border:1px solid rgba(229,226,225,0.08);}.bx-cover svg{display:block;width:100%;height:auto;}@media(max-width:900px){.bx-layout{grid-template-columns:1fr;}.bx-side{display:none;}}' +
     '.bx-article .bx-cat{display:inline-block;margin-bottom:.6rem;}' +
     '.bx-article h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:.3rem 0 1rem;color:#fff;}' +
     '.bx-meta{color:rgba(229,226,225,0.4);font-size:.85rem;margin-bottom:1.6rem;}' +
@@ -833,22 +833,42 @@ app.get('/blog/:slug', async (req, res) => {
         dateModified: a.updatedAt, author: { '@type': 'Person', name: a.author || 'Lissanon Gildas' },
         publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
       }) + '</script>';
-    const hero = a.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">' : '';
     const authorName = escapeHtml(a.author || 'Lissanon Gildas');
+    const catLabel = escapeHtml(a.category || 'Marketing');
+    // Sommaire auto : injecte des id sur les H2 et collecte le sommaire
+    const toc = [];
+    const contentHtml = (a.content || ('<p>' + escapeHtml(a.excerpt || '') + '</p>')).replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi, (m, attrs, inner) => {
+      attrs = attrs || '';
+      const idm = attrs.match(/id="([^"]+)"/);
+      let id = idm ? idm[1] : '';
+      const txt = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
+      if (!id) { id = (txt.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48)) || ('s' + toc.length); attrs += ' id="' + id + '"'; }
+      toc.push({ id, txt });
+      return '<h2' + attrs + '>' + inner + '</h2>';
+    });
+    // Couverture : image fournie, sinon couverture SVG générée (légère, sur-mesure)
+    const cover = a.featuredImage
+      ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">'
+      : '<div class="bx-cover"><svg viewBox="0 0 1200 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(a.title) + '"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5500" stop-opacity="0.25"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs><rect width="1200" height="440" fill="#141313"/><rect width="1200" height="440" fill="url(#bg)"/><g fill="none" stroke="#FF5500" stroke-opacity="0.45" stroke-width="2"><circle cx="1000" cy="130" r="80"/><circle cx="1090" cy="300" r="44"/><path d="M90 350 q130 -100 260 0 t260 0"/></g><text x="80" y="160" fill="#FF5500" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="26" letter-spacing="4">' + catLabel.toUpperCase() + '</text><text x="76" y="258" fill="#ffffff" font-family="Montserrat,Arial,sans-serif" font-weight="800" font-size="58">Pirabel Labs</text><text x="80" y="312" fill="rgba(229,226,225,0.65)" font-family="Inter,Arial,sans-serif" font-size="22">Blog &#183; marketing digital, IA &amp; web</text></svg></div>';
     const authorCard = (a.content || '').includes('art-author') ? '' :
       '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Cofondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
-    const body = '<main class="bx-wrap"><article class="bx-article">' +
+    const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
+    const side = '<aside class="bx-side">' + tocHtml +
+      '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Cofondateur, Pirabel Labs</div></div></div>' +
+      '<div class="bx-side__cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
+      '</aside>';
+    const body = '<main class="bx-wrap"><div class="bx-layout"><article class="bx-article">' +
       (a.status !== 'publie' ? '<div style="background:#fbbf24;color:#190800;padding:.6rem 1rem;border-radius:8px;margin-bottom:1.2rem;font-weight:700;">⚠ APERÇU — brouillon non publié (visible uniquement par vous, admin connecté)</div>' : '') +
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
-      '<span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
+      '<span class="bx-cat">' + catLabel + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +
       '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + '</div>' +
-      hero +
-      '<div class="bx-content">' + (a.content || '<p>' + escapeHtml(a.excerpt || '') + '</p>') + '</div>' +
+      cover +
+      '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
       '<a href="/contact">Parler à un cofondateur</a></div>' +
-      '</article></main>';
+      '</article>' + side + '</div></main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[blog.slug]', e.message); res.status(500).send('Erreur'); }
 });

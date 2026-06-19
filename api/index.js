@@ -40,6 +40,7 @@ const Review = require('../app/models/Review');
 const TrafficStat = require('../app/models/TrafficStat');
 const Article = require('../app/models/Article');
 const CaseStudy = require('../app/models/CaseStudy');
+const LivreBlanc = require('../app/models/LivreBlanc');
 const Comment = require('../app/models/Comment');
 
 const app = express();
@@ -268,9 +269,11 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('website_u
 
     if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
-    if (!LIVRES_BLANCS[slug]) return res.status(400).json({ error: 'Livre blanc inconnu.' });
-
-    const lb = LIVRES_BLANCS[slug];
+    // Cherche d'abord en base (CMS), repli sur les livres blancs historiques codés.
+    let lb = await LivreBlanc.findOne({ slug, status: 'publie' }).lean();
+    if (!lb) lb = LIVRES_BLANCS[slug];
+    if (!lb) return res.status(400).json({ error: 'Livre blanc inconnu.' });
+    if (lb._id) LivreBlanc.updateOne({ _id: lb._id }, { $inc: { downloads: 1 } }).catch(() => {});
 
     const ipHash = crypto.createHash('sha256')
       .update((req.ip || '') + (process.env.JWT_SECRET || ''))
@@ -836,6 +839,77 @@ app.patch('/api/admin/articles/:id', auth, adminOnly, limitBody(20), async (req,
 app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
   try { await Article.findByIdAndDelete(req.params.id); res.json({ success: true }); }
   catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+
+// ============ CMS LIVRES BLANCS ============
+function applyLBBody(body, doc) {
+  if (body.title != null) doc.title = sanitize(body.title, 200);
+  if (body.description != null) doc.description = sanitize(body.description, 1500);
+  if (body.pages != null) doc.pages = parseInt(body.pages, 10) || 0;
+  if (body.pdfUrl != null) doc.pdfUrl = sanitize(body.pdfUrl, 2000);
+  if (body.coverImage != null) doc.coverImage = sanitize(body.coverImage, 2000);
+  if (body.icon != null) doc.icon = sanitize(body.icon, 60) || 'menu_book';
+  if (body.category != null) doc.category = sanitize(body.category, 80) || 'Guide';
+  if (Array.isArray(body.toc)) doc.toc = body.toc.map(t => sanitize(String(t), 200)).filter(Boolean).slice(0, 12);
+  if (body.status != null && ['brouillon', 'publie'].includes(body.status)) {
+    if (body.status === 'publie' && doc.status !== 'publie') doc.publishedAt = new Date();
+    doc.status = body.status;
+  }
+}
+app.get('/api/admin/livres-blancs', auth, adminOnly, async (req, res) => {
+  try { const list = await LivreBlanc.find({}).sort({ updatedAt: -1 }).lean(); res.json({ livresBlancs: list }); }
+  catch (e) { res.status(500).json({ error: 'Erreur chargement.' }); }
+});
+app.get('/api/admin/livres-blancs/:id', auth, adminOnly, async (req, res) => {
+  try { const d = await LivreBlanc.findById(req.params.id).lean(); if (!d) return res.status(404).json({ error: 'Introuvable.' }); res.json({ livreBlanc: d }); }
+  catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+app.post('/api/admin/livres-blancs', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const title = sanitize(req.body.title || '', 200);
+    if (!title || title.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+    const doc = new LivreBlanc({ title });
+    applyLBBody(req.body, doc);
+    doc.slug = await uniqueSlug(req.body.slug || title);
+    await doc.save();
+    res.json({ success: true, livreBlanc: doc });
+  } catch (e) { console.error('[lb.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+});
+app.patch('/api/admin/livres-blancs/:id', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const doc = await LivreBlanc.findById(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Introuvable.' });
+    applyLBBody(req.body, doc);
+    if (req.body.slug && slugify(req.body.slug) !== doc.slug) doc.slug = await uniqueSlug(req.body.slug, doc._id);
+    await doc.save();
+    res.json({ success: true, livreBlanc: doc });
+  } catch (e) { console.error('[lb.update]', e.message); res.status(500).json({ error: 'Erreur mise a jour.' }); }
+});
+app.delete('/api/admin/livres-blancs/:id', auth, adminOnly, async (req, res) => {
+  try { await LivreBlanc.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+// Importe une fois les livres blancs historiques en base (idempotent)
+app.post('/api/admin/livres-blancs/seed', auth, adminOnly, async (req, res) => {
+  try {
+    const icons = { 'seo-pme-francophones-2026': 'search_insights', 'ia-pme-cas-usage-roi': 'smart_toy', 'tunnels-vente-cro-3x-conversion': 'conversion_path', 'ecommerce-afrique-paiement-mobile-money': 'shopping_cart', 'refonte-site-checklist-complete': 'checklist' };
+    const cats = { 'seo-pme-francophones-2026': 'SEO', 'ia-pme-cas-usage-roi': 'Intelligence artificielle', 'tunnels-vente-cro-3x-conversion': 'Conversion', 'ecommerce-afrique-paiement-mobile-money': 'E-commerce', 'refonte-site-checklist-complete': 'Sites web' };
+    let created = 0;
+    for (const slug of Object.keys(LIVRES_BLANCS)) {
+      if (await LivreBlanc.findOne({ slug })) continue;
+      const lb = LIVRES_BLANCS[slug];
+      await LivreBlanc.create({ title: lb.title, slug, description: lb.description, pages: lb.pages, pdfUrl: lb.pdfUrl, icon: icons[slug] || 'menu_book', category: cats[slug] || 'Guide', status: 'publie', publishedAt: new Date() });
+      created++;
+    }
+    res.json({ success: true, created });
+  } catch (e) { console.error('[lb.seed]', e.message); res.status(500).json({ error: 'Erreur seed.' }); }
+});
+// --- PUBLIC : livres blancs publiés (pour la page /livres-blancs) ---
+app.get('/api/livres-blancs', async (req, res) => {
+  try {
+    const list = await LivreBlanc.find({ status: 'publie' }).sort({ publishedAt: -1, createdAt: -1 }).select('title slug description pages pdfUrl coverImage icon category toc').lean();
+    res.json({ livresBlancs: list });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });
 
 // --- PUBLIC : liste du blog ---

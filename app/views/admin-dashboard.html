@@ -488,9 +488,28 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- LIVRES BLANCS VIEW -->
     <div class="view" data-view="livres-blancs">
-      <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-bottom:1.5rem;">
-        <button class="btn btn--ghost btn--sm" id="lbRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
-        <button class="btn btn--sm" id="lbExport"><span class="material-symbols-outlined">download</span> Exporter CSV</button>
+      <!-- Gestion des livres blancs (CMS) -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Gestion des livres blancs</div><div class="card__sub">Ce qui est publié ici apparaît directement sur /livres-blancs du site</div></div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn btn--ghost btn--sm" onclick="seedLB()"><span class="material-symbols-outlined">cloud_download</span> Importer les livres blancs existants</button>
+          <button class="btn btn--sm" onclick="openLBEditor()"><span class="material-symbols-outlined">add</span> Nouveau livre blanc</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="margin-bottom:2rem;">
+        <table class="table">
+          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Téléchargements</th><th></th></tr></thead>
+          <tbody id="lbCmsTableBody"><tr><td colspan="5" class="empty">Chargement...</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- Téléchargements (leads) -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Téléchargements (leads)</div><div class="card__sub">Personnes ayant demandé un livre blanc</div></div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <button class="btn btn--ghost btn--sm" id="lbRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+          <button class="btn btn--sm" id="lbExport"><span class="material-symbols-outlined">download</span> Exporter CSV</button>
+        </div>
       </div>
       <div class="kpi-grid" id="lbKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
       <div class="card">
@@ -816,7 +835,7 @@ function setView(view) {
   document.getElementById('pageSub').textContent = t[1];
   if (view === 'analytics' && STATE.stats) setTimeout(renderAnalyticsCharts, 50);
   if (view === 'leads' && !STATE.leads.length) loadLeads();
-  if (view === 'livres-blancs') loadLivresBlancs();
+  if (view === 'livres-blancs') { loadLivresBlancsCMS(); loadLivresBlancs(); }
   if (view === 'blog') loadBlog();
   if (view === 'cases') loadCases();
   if (view === 'comments') loadComments();
@@ -1099,6 +1118,123 @@ async function deleteCase(id) {
   catch(e){ toast('Erreur suppression', 'error'); }
 }
 window.deleteCase = deleteCase;
+
+// ============ LIVRES BLANCS / CMS ============
+async function loadLivresBlancsCMS() {
+  var tbody = document.getElementById('lbCmsTableBody');
+  if (!tbody) return;
+  try {
+    var data = await api('/api/admin/livres-blancs');
+    var list = data.livresBlancs || [];
+    if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty"><span class="material-symbols-outlined">menu_book</span><p>Aucun livre blanc. Cliquez « Nouveau livre blanc » ou « Importer les livres blancs existants ».</p></td></tr>'; return; }
+    tbody.innerHTML = list.map(function(lb){
+      var badge = lb.status === 'publie'
+        ? '<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Publié</span>'
+        : '<span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Brouillon</span>';
+      var toggleLabel = lb.status === 'publie' ? 'Dépublier' : 'Publier';
+      var toggleIcon = lb.status === 'publie' ? 'visibility_off' : 'visibility';
+      return '<tr>' +
+        '<td><strong>' + escape(lb.title) + '</strong><br><span style="font-size:.72rem;color:var(--text-muted);">/livres-blancs#' + escape(lb.slug) + '</span></td>' +
+        '<td>' + escape(lb.category || '--') + '</td>' +
+        '<td>' + badge + '</td>' +
+        '<td>' + (lb.downloads || 0) + '</td>' +
+        '<td style="text-align:right;white-space:nowrap;">' +
+          '<button class="btn btn--ghost btn--sm" onclick="openLBEditor(\'' + lb._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
+          '<button class="btn btn--ghost btn--sm" onclick="toggleLBStatus(\'' + lb._id + '\',\'' + lb.status + '\')" title="' + toggleLabel + '"><span class="material-symbols-outlined">' + toggleIcon + '</span></button> ' +
+          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteLB(\'' + lb._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+        '</td></tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Erreur de chargement</td></tr>'; }
+}
+
+async function openLBEditor(id) {
+  var lb = { title:'', slug:'', description:'', pages:0, pdfUrl:'', coverImage:'', icon:'menu_book', category:'', toc:[], status:'brouillon' };
+  if (id) { try { var d = await api('/api/admin/livres-blancs/' + id); lb = d.livreBlanc; } catch(e) { toast('Livre blanc introuvable', 'error'); return; } }
+  var old = document.getElementById('lbModalAdmin'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'lbModalAdmin';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.9rem;';
+  function f(label, inner){ return '<label style="display:block;font-size:0.76rem;font-weight:600;margin:0.9rem 0 0.3rem;color:var(--text-muted);">' + label + '</label>' + inner; }
+  var tocText = Array.isArray(lb.toc) ? lb.toc.join('\n') : '';
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:44rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (id ? 'Modifier le livre blanc' : 'Nouveau livre blanc') + '</div>' +
+      '<button id="lbmClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    f('Titre', '<input id="lbmTitle" style="' + inp + '" value="' + escape(lb.title) + '">') +
+    f('Slug (adresse — auto depuis le titre si vide)', '<input id="lbmSlug" style="' + inp + '" placeholder="auto depuis le titre" value="' + escape(lb.slug || '') + '">') +
+    f('Catégorie', '<input id="lbmCat" style="' + inp + '" placeholder="ex : SEO &amp; Référencement" value="' + escape(lb.category || '') + '">') +
+    f('Description', '<textarea id="lbmDesc" rows="3" style="' + inp + 'resize:vertical;">' + escape(lb.description || '') + '</textarea>') +
+    '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Pages', '<input id="lbmPages" type="number" min="0" style="' + inp + '" value="' + escape(lb.pages || 0) + '">') + '</div><div style="flex:1;">' + f('Icône (Material Symbols)', '<input id="lbmIcon" style="' + inp + '" placeholder="menu_book" value="' + escape(lb.icon || 'menu_book') + '">') + '</div></div>' +
+    f('URL du PDF (ex : /downloads/mon-guide.pdf ou lien externe)', '<input id="lbmPdf" style="' + inp + '" placeholder="/downloads/mon-guide.pdf" value="' + escape(lb.pdfUrl || '') + '">') +
+    f('Image de couverture (URL — optionnel)', '<input id="lbmCover" style="' + inp + '" placeholder="URL (optionnel)" value="' + escape(lb.coverImage || '') + '">') +
+    f('Sommaire (une ligne par point)', '<textarea id="lbmToc" rows="6" style="' + inp + 'resize:vertical;">' + escape(tocText) + '</textarea>') +
+    f('Statut', '<select id="lbmStatus" style="' + inp + '"><option value="brouillon"' + (lb.status!=='publie'?' selected':'') + '>Brouillon (non visible)</option><option value="publie"' + (lb.status==='publie'?' selected':'') + '>Publié (visible sur le site)</option></select>') +
+    '<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.3rem;">' +
+      '<button class="btn btn--ghost btn--sm" id="lbmCancel">Annuler</button>' +
+      '<button class="btn btn--sm" id="lbmSave"><span class="material-symbols-outlined">save</span> Enregistrer</button>' +
+    '</div></div>';
+  document.body.appendChild(m);
+  if (id) m.dataset.id = id;
+  function close(){ m.remove(); }
+  m.addEventListener('click', function(e){ if (e.target === m) close(); });
+  document.getElementById('lbmClose').addEventListener('click', close);
+  document.getElementById('lbmCancel').addEventListener('click', close);
+  document.getElementById('lbmSave').addEventListener('click', saveLB);
+}
+window.openLBEditor = openLBEditor;
+
+async function saveLB() {
+  var m = document.getElementById('lbModalAdmin');
+  if (!m) return;
+  var toc = document.getElementById('lbmToc').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  var payload = {
+    title: document.getElementById('lbmTitle').value.trim(),
+    slug: document.getElementById('lbmSlug').value.trim(),
+    category: document.getElementById('lbmCat').value.trim(),
+    description: document.getElementById('lbmDesc').value.trim(),
+    pages: parseInt(document.getElementById('lbmPages').value, 10) || 0,
+    icon: document.getElementById('lbmIcon').value.trim() || 'menu_book',
+    pdfUrl: document.getElementById('lbmPdf').value.trim(),
+    coverImage: document.getElementById('lbmCover').value.trim(),
+    toc: toc,
+    status: document.getElementById('lbmStatus').value
+  };
+  if (!payload.title || payload.title.length < 3) { toast('Titre requis (3 caractères min)', 'error'); return; }
+  var btn = document.getElementById('lbmSave'); btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> ...';
+  try {
+    if (m.dataset.id) await api('/api/admin/livres-blancs/' + m.dataset.id, { method:'PATCH', body: payload });
+    else await api('/api/admin/livres-blancs', { method:'POST', body: payload });
+    toast('Livre blanc enregistré ✓', 'success'); m.remove(); loadLivresBlancsCMS();
+  } catch(err){ toast(err.message || 'Erreur', 'error'); btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">save</span> Enregistrer'; }
+}
+window.saveLB = saveLB;
+
+async function deleteLB(id) {
+  if (!confirm('Supprimer ce livre blanc définitivement ?')) return;
+  try { await api('/api/admin/livres-blancs/' + id, { method:'DELETE' }); toast('Livre blanc supprimé', 'success'); loadLivresBlancsCMS(); }
+  catch(e){ toast(e.message || 'Erreur suppression', 'error'); }
+}
+window.deleteLB = deleteLB;
+
+async function toggleLBStatus(id, current) {
+  var next = current === 'publie' ? 'brouillon' : 'publie';
+  try {
+    await api('/api/admin/livres-blancs/' + id, { method:'PATCH', body: { status: next } });
+    toast(next === 'publie' ? 'Livre blanc publié ✓' : 'Livre blanc dépublié', 'success');
+    loadLivresBlancsCMS();
+  } catch(e){ toast(e.message || 'Erreur', 'error'); }
+}
+window.toggleLBStatus = toggleLBStatus;
+
+async function seedLB() {
+  if (!confirm('Importer les 5 livres blancs historiques ? Les doublons sont ignorés.')) return;
+  try {
+    var r = await api('/api/admin/livres-blancs/seed', { method:'POST', body: {} });
+    toast((r.created || 0) + ' livre(s) blanc(s) importé(s) ✓', 'success');
+    loadLivresBlancsCMS();
+  } catch(e){ toast(e.message || 'Erreur import', 'error'); }
+}
+window.seedLB = seedLB;
 
 function showLinkModal(title, body, url) {
   // Modal simple pour afficher + copier un lien

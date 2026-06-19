@@ -859,7 +859,7 @@ async function loadBlog() {
         '<td>' + (a.views || 0) + '</td>' +
         '<td style="font-size:.8rem;">' + fmtDate(a.updatedAt) + '</td>' +
         '<td style="text-align:right;white-space:nowrap;">' +
-          (a.status === 'publie' ? '<a href="/blog/' + escape(a.slug) + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="Voir sur le site"><span class="material-symbols-outlined">open_in_new</span></a> ' : '') +
+          '<a href="/blog/' + escape(a.slug) + (a.status === 'publie' ? '' : '?preview=1') + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="' + (a.status === 'publie' ? 'Voir sur le site' : 'Aperçu du brouillon') + '"><span class="material-symbols-outlined">' + (a.status === 'publie' ? 'open_in_new' : 'visibility') + '</span></a> ' +
           '<button class="btn btn--ghost btn--sm" onclick="openArticleEditor(\'' + a._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
           '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteArticle(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
         '</td></tr>';

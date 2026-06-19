@@ -22,6 +22,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 const connectDB = require('../app/config/db');
 const { sendEmail, masterTemplate, newOrderEmail } = require('../app/config/email');
@@ -807,7 +808,11 @@ app.get('/blog', async (req, res) => {
 app.get('/blog/:slug', async (req, res) => {
   try {
     const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
-    const a = await Article.findOne({ slug, status: 'publie' }).lean();
+    // Aperçu admin : ?preview=1 + cookie JWT valide -> on rend aussi les brouillons
+    const previewAdmin = !!req.query.preview && (() => {
+      try { jwt.verify((req.cookies || {}).token || '', process.env.JWT_SECRET, { algorithms: ['HS256'], issuer: 'pirabel-labs' }); return true; } catch (e) { return false; }
+    })();
+    const a = await Article.findOne(previewAdmin ? { slug } : { slug, status: 'publie' }).lean();
     if (!a) return res.status(404).send(blogShell('<title>Article introuvable</title>',
       '<main class="bx-wrap"><div class="bx-empty"><h1 style="color:#fff;">404</h1><p>Cet article n\'existe pas ou n\'est plus publié.</p><a class="bx-back" href="/blog">&larr; Retour au blog</a></div></main>'));
     Article.updateOne({ _id: a._id }, { $inc: { views: 1 } }).catch(() => {});
@@ -833,6 +838,7 @@ app.get('/blog/:slug', async (req, res) => {
     const authorCard = (a.content || '').includes('art-author') ? '' :
       '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Cofondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
     const body = '<main class="bx-wrap"><article class="bx-article">' +
+      (a.status !== 'publie' ? '<div style="background:#fbbf24;color:#190800;padding:.6rem 1rem;border-radius:8px;margin-bottom:1.2rem;font-weight:700;">⚠ APERÇU — brouillon non publié (visible uniquement par vous, admin connecté)</div>' : '') +
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
       '<span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +

@@ -347,6 +347,12 @@ async function sendEmail(to, subject, html, opts = {}) {
     if (opts.replyTo) payload.reply_to = opts.replyTo;
     if (opts.cc) payload.cc = Array.isArray(opts.cc) ? opts.cc : [opts.cc];
     if (opts.bcc) payload.bcc = Array.isArray(opts.bcc) ? opts.bcc : [opts.bcc];
+    // Délivrabilité (exigences Gmail/Yahoo) : en-têtes de désabonnement + Reply-To par défaut
+    payload.headers = Object.assign({
+      'List-Unsubscribe': '<mailto:contact@pirabellabs.com?subject=desabonnement>, <' + SITE() + '/contact>',
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    }, opts.headers || {});
+    if (!payload.reply_to) payload.reply_to = clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
 
     // Vercel serverless: AbortController for 9s timeout
     const ctrl = new AbortController();

@@ -694,12 +694,12 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}' +
     '.bx-card h2{font-family:"Space Grotesk",sans-serif;font-size:1.15rem;margin:.5rem 0;line-height:1.25;color:#fff;}' +
     '.bx-card p{color:rgba(229,226,225,0.6);font-size:.9rem;line-height:1.5;margin:0;}' +
-    '.bx-article{max-width:46rem;margin:0 auto;}' +
+    '.bx-article{max-width:56rem;margin:0 auto;}' +
     '.bx-article .bx-cat{display:inline-block;margin-bottom:.6rem;}' +
     '.bx-article h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:.3rem 0 1rem;color:#fff;}' +
     '.bx-meta{color:rgba(229,226,225,0.4);font-size:.85rem;margin-bottom:1.6rem;}' +
     '.bx-heroimg{width:100%;border-radius:16px;margin:0 0 2rem;display:block;}' +
-    '.bx-content{font-size:1.05rem;line-height:1.8;color:rgba(229,226,225,0.9);}' +
+    '.bx-content{font-size:1.13rem;line-height:1.85;color:rgba(229,226,225,0.92);}' +
     '.bx-content h2{font-family:"Space Grotesk",sans-serif;color:#fff;font-size:1.55rem;margin:2.2rem 0 .8rem;}' +
     '.bx-content h3{font-family:"Space Grotesk",sans-serif;color:#fff;font-size:1.25rem;margin:1.6rem 0 .5rem;}' +
     '.bx-content p{margin:0 0 1.1rem;}.bx-content img{max-width:100%;border-radius:12px;margin:1rem 0;}' +
@@ -825,17 +825,21 @@ app.get('/blog/:slug', async (req, res) => {
       '<script type="application/ld+json">' + JSON.stringify({
         '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title,
         description: a.metaDescription || a.excerpt || '', image: ogImg, datePublished: a.publishedAt,
-        dateModified: a.updatedAt, author: { '@type': 'Organization', name: a.author || 'Pirabel Labs' },
+        dateModified: a.updatedAt, author: { '@type': 'Person', name: a.author || 'Lissanon Gildas' },
         publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
       }) + '</script>';
     const hero = a.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">' : '';
+    const authorName = escapeHtml(a.author || 'Lissanon Gildas');
+    const authorCard = (a.content || '').includes('art-author') ? '' :
+      '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Cofondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
     const body = '<main class="bx-wrap"><article class="bx-article">' +
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
       '<span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +
-      '<div class="bx-meta">Par ' + escapeHtml(a.author || 'Pirabel Labs') + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + '</div>' +
+      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + '</div>' +
       hero +
       '<div class="bx-content">' + (a.content || '<p>' + escapeHtml(a.excerpt || '') + '</p>') + '</div>' +
+      authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
       '<a href="/contact">Parler à un cofondateur</a></div>' +
       '</article></main>';

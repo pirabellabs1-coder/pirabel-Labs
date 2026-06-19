@@ -31,6 +31,7 @@ const {
   isValidEmail, securityHeaders, globalSanitize,
 } = require('../app/middleware/security');
 const { auth, adminOnly } = require('../app/middleware/auth');
+const siteNav = require('../app/nav'); // en-tête de site partagé (mega menu) pour blog/réalisations/témoignages
 const User = require('../app/models/User');
 const Lead = require('../app/models/Lead');
 const Media = require('../app/models/Media');
@@ -763,12 +764,10 @@ function blogShell(headExtra, bodyHtml) {
     '@media(max-width:760px){.bx-burger{display:flex;}.bx-top{flex-wrap:wrap;}.bx-top .bx-nav{display:none;flex-basis:100%;flex-direction:column;margin-top:.4rem;}.bx-top .bx-nav a{margin:0;padding:.75rem .2rem;border-top:1px solid rgba(229,226,225,0.08);font-size:.95rem;}.bx-navtoggle:checked~.bx-nav{display:flex;}.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:190px;}.bx-toolbar{flex-direction:column;align-items:stretch;gap:.8rem;}.bx-search{flex:1;order:-1;}.bx-search input{min-width:0;width:100%;flex:1;}}' +
     '@media(max-width:600px){.bx-content{font-size:1rem;line-height:1.72;}.bx-content h2{font-size:1.28rem;}.bx-content h3{font-size:1.08rem;}.bx-article h1{font-size:1.55rem;line-height:1.18;}.bx-hero h1{font-size:1.85rem;}.bx-hero p{font-size:.95rem;}.art-pullquote{padding:1rem 1.1rem;}.art-pullquote__text{font-size:1rem;}.art-stat-box{flex-direction:column;align-items:flex-start;gap:.6rem;padding:1.1rem;}.art-stat-box__num{font-size:2rem;}.bx-content ul,.bx-content ol{padding-left:1.1rem;}}' +
     '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
-    '<header class="bx-top"><a class="bx-logo" href="/">Pirabel<span>Labs</span></a>' +
-    '<input type="checkbox" id="bxnav" class="bx-navtoggle" aria-hidden="true">' +
-    '<label for="bxnav" class="bx-burger" aria-label="Ouvrir le menu"><span></span><span></span><span></span></label>' +
-    '<nav class="bx-nav"><a href="/blog">Blog</a><a href="/realisations">Réalisations</a><a href="/temoignages">Avis</a><a href="/contact">Contact</a></nav></header>' +
+    siteNav.html +
     bodyHtml +
     '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
+    siteNav.js +
     '<script defer src="/js/track.js"></script></body></html>';
 }
 function fmtFr(d) {

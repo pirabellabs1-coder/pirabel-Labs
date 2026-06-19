@@ -44,6 +44,10 @@
   ],
   "redirects": [
     { "source": "/article-:slug", "destination": "/blog/:slug", "permanent": true },
+    { "source": "/blog/webflow-vs-wordpress-comparatif-2026", "destination": "/blog/wordpress-vs-webflow-vs-nextjs-2026", "permanent": true },
+    { "source": "/blog/tiktok-entreprises-guide-marketing", "destination": "/blog/tiktok-pme-roi-strategie-contenu", "permanent": true },
+    { "source": "/blog/email-marketing-erreurs-taux-ouverture", "destination": "/blog/email-marketing-2026-rgpd-automation-pme", "permanent": true },
+    { "source": "/blog/fiche-google-business-guide-pack-local", "destination": "/blog/google-business-profile-guide-complet", "permanent": true },
     { "source": "/creation-application", "destination": "/creation-application-web", "permanent": true },
     { "source": "/automatisation", "destination": "/automatisation-marketing", "permanent": true },
     { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },

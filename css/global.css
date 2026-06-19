@@ -358,3 +358,7 @@ p { color: var(--text-muted); line-height: 1.7; }
 .inline-cta-band__text span { display: block; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
 .inline-cta-band__btns { display: inline-flex; flex-wrap: wrap; gap: 0.6rem; flex-shrink: 0; }
 @media (max-width: 640px) { .inline-cta-band__inner { padding: 1.25rem; } }
+
+/* === FIX responsive : empêche le débordement des cartes plateformes (grille) sur mobile === */
+.plat-panel.is-active > * { min-width: 0; }
+.plat-panel__intro, .plat-panel__feat li, .plat-panel__name { overflow-wrap: break-word; word-break: break-word; }

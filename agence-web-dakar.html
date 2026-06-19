@@ -20,58 +20,41 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 <link rel="stylesheet" href="/css/global.css">
 <style>
-.city-wrap { padding: clamp(3rem,6vw,5rem) var(--px-page); }
-.city-hero { max-width: 72rem; margin: 0 auto 4rem; text-align: left; }
-.city-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
-.city-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 1.25rem; }
-.city-hero h1 em { color: var(--accent); font-style: normal; }
-.city-hero__sub { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin: 0 0 2rem; }
-.city-hero__cta { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: flex-start; }
-.city-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem; max-width: 64rem; margin: 3rem auto 0; }
-.city-stat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; text-align: center; }
-.city-stat__num { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent); margin-bottom: 0.3rem; }
-.city-stat__label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-.city-section { max-width: 72rem; margin: 0 auto 4rem; }
-.city-section h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1.2rem; text-align: center; }
-.city-section h2 em { color: var(--accent); font-style: normal; }
-.city-section__intro { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 50rem; margin: 0 auto 3rem; text-align: center; }
-.city-pains { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; }
-.city-pain { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
-.city-pain__icon { width: 2.4rem; height: 2.4rem; flex-shrink: 0; background: rgba(255,85,0,0.12); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-.city-pain__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
-.city-pain__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
-.city-whys { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1.25rem; }
-.city-why { background: linear-gradient(180deg, rgba(255,85,0,0.04), transparent); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
-.city-why__icon { width: 2.4rem; height: 2.4rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-.city-why__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
-.city-why__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
-.city-sectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; }
-.city-sector { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 0.75rem; text-align: center; transition: all var(--t); }
-.city-sector:hover { border-color: var(--accent); transform: translateY(-2px); }
-.city-sector__icon { display: block; color: var(--accent); font-size: 1.6rem; margin-bottom: 0.4rem; }
-.city-sector__label { font-size: 0.78rem; font-weight: 600; line-height: 1.3; }
-.city-services { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
-.city-service { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-decoration: none; color: var(--text); transition: all var(--t); display: flex; flex-direction: column; gap: 0.5rem; }
-.city-service:hover { border-color: var(--accent); transform: translateY(-3px); opacity: 1; }
-.city-service__icon { width: 2.5rem; height: 2.5rem; background: var(--accent-soft); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-.city-service__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
-.city-service__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
-.city-service__cta { margin-top: 0.5rem; font-size: 0.82rem; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 0.3rem; }
-.city-kws { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-.city-kw { display: inline-block; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; color: var(--text-muted); }
-.city-faqs { max-width: 56rem; margin: 0 auto; }
+/* === Ajustements city-* minimaux (s'appuie sur global.css) === */
+.city-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; }
+.city-breadcrumb ol { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; font-size: 0.78rem; color: var(--text-muted); }
+.city-breadcrumb a { color: var(--text-muted); }
+.city-breadcrumb a:hover { color: var(--text); }
+.city-breadcrumb [aria-current] { color: var(--accent); }
+h1.city-hero em, .section h2 em, .city-finalcta h2 em { color: var(--accent); font-style: normal; }
+.city-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.city-tag { display: inline-block; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 0.45rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); }
 .city-faq { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.75rem; }
 .city-faq[open] { border-color: var(--accent); }
-.city-faq__q { list-style: none; cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.city-faq__q { list-style: none; cursor: pointer; padding: 1.2rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .city-faq__q::-webkit-details-marker { display: none; }
-.city-faq__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; }
+.city-faq__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; flex-shrink: 0; }
 .city-faq[open] .city-faq__q .material-symbols-outlined { transform: rotate(180deg); }
-.city-faq__a { padding: 0 1.5rem 1.5rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
-.city-cta-band { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.08) 100%); border: 1px solid var(--border); border-radius: var(--radius); padding: clamp(2rem, 4vw, 3rem); text-align: center; max-width: 56rem; margin: 4rem auto 0; }
-.city-cta-band h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1rem; line-height: 1.2; }
-.city-cta-band h2 em { color: var(--accent); font-style: normal; }
-.city-cta-band p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 36rem; margin-left: auto; margin-right: auto; }
-.city-cta-band__row { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.city-faq__a { padding: 0 1.5rem 1.4rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+.city-quote { display: flex; flex-direction: column; }
+.city-quote__stars { color: var(--accent); font-size: 0.95rem; margin-bottom: 0.85rem; letter-spacing: 0.1em; }
+.city-quote__text { font-size: 0.92rem; line-height: 1.65; color: var(--text); margin-bottom: 1.2rem; font-style: italic; flex: 1; }
+.city-quote__author { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.city-quote__avatar { width: 2.4rem; height: 2.4rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; }
+.city-quote__name { font-family: var(--font-display); font-weight: 700; font-size: 0.84rem; }
+.city-quote__role { font-size: 0.74rem; color: var(--text-muted); }
+.city-finalcta { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,85,0,0.08) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(2rem, 4vw, 3.5rem); text-align: center; max-width: 64rem; margin: 0 auto; }
+.city-finalcta h2 { margin-bottom: 1rem; }
+.city-finalcta p { color: var(--text-muted); font-size: 0.98rem; line-height: 1.65; margin: 0 auto 2rem; max-width: 40rem; }
+.city-finalcta__row { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.city-feature { display: flex; gap: 1rem; align-items: flex-start; }
+.city-feature__icon { width: 2.5rem; height: 2.5rem; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; }
+.city-feature__icon .material-symbols-outlined { font-size: 1.45rem; }
+.city-feature__title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; }
+.city-feature__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+@media (max-width: 720px) {
+  .city-finalcta__row .btn { width: 100%; justify-content: center; }
+}
 </style>
 
 
@@ -222,355 +205,276 @@
   </div>
 </nav>
 
-<main class="city-wrap">
-  <!-- BREADCRUMB visible -->
-  <nav class="breadcrumb" aria-label="Fil d'Ariane" style="max-width:72rem;margin:0 auto;padding:1rem var(--px-page) 0;">
-    <ol style="display:flex;flex-wrap:wrap;gap:0.5rem;list-style:none;padding:0;margin:0;font-size:0.78rem;color:var(--text-muted);">
-      <li><a href="/" style="color:var(--text-muted);text-decoration:none;">Accueil</a></li>
-      <li aria-hidden="true">›</li>
-      <li><a href="/#villes" style="color:var(--text-muted);text-decoration:none;">Implantations locales</a></li>
-      <li aria-hidden="true">›</li>
-      <li aria-current="page" style="color:var(--accent);">Dakar</li>
-    </ol>
-  </nav>
+<main>
 
-
-  <!-- HERO -->
-  <section class="city-hero">
-    <span class="city-hero__eyebrow"><span class="material-symbols-outlined">location_on</span> Dakar, Sénégal</span>
-    <h1>Agence web <em>Dakar</em></h1>
-    <p class="city-hero__sub">Dakar est l'un des hubs digitaux les plus dynamiques d'Afrique francophone. Nous accompagnons les entreprises dakaroises pour construire des sites performants, gagner en visibilité et automatiser leur croissance.</p>
-    <div class="city-hero__cta">
-      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un audit gratuit</a>
-      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
-    </div>
-    </section>
-
-  <!-- CONTEXTE -->
-  <section class="city-section">
-    <h2>Pourquoi Dakar <em>est un marché clé</em></h2>
-    <p class="city-section__intro">Dakar concentré les sièges de groupes panafricains, l'écosystème tech (Sonatel, Wave, Free, Yas), une classé moyenne urbaine connectée et un marché e-commerce en croissance. La capitale sénégalaise est exigeante : les clients comparent, lisent les avis, abandonnent un site qui charge mal. Une présence numérique faible coûte cher.</p>
-  </section>
-
-  <!-- PAIN POINTS -->
-  <section class="city-section">
-    <h2>Les <em>défis digitaux</em> à Dakar</h2>
-    <p class="city-section__intro">Voici ce que nous observons chaque semaine en travaillant avec des entreprises de Dakar et de sa région.</p>
-    <div class="city-pains">
-        <div class="city-pain">
-          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
-          <div>
-            <div class="city-pain__title">Marché très concurrentiel et exigeant</div>
-            <p class="city-pain__desc">Les Dakarois comparent les marques sur Google, Instagram et WhatsApp avant tout achat. Sans référencement et sans contenu social, vous n'existez pas.</p>
-          </div>
-        </div>
-        <div class="city-pain">
-          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
-          <div>
-            <div class="city-pain__title">Infrastructure web competitive</div>
-            <p class="city-pain__desc">Les agences dakaroises et les freelances sont nombreux mais inegaux. Beaucoup de sites sont lents, mal indexes, mal traduits.</p>
-          </div>
-        </div>
-        <div class="city-pain">
-          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
-          <div>
-            <div class="city-pain__title">E-commerce en explosion mais peu structuré</div>
-            <p class="city-pain__desc">Beaucoup de marchands utilisent juste WhatsApp Business. Passer à une vraie boutique avec catalogue, paiement, livraison multiplié le chiffré d'affaires.</p>
-          </div>
-        </div>
-        <div class="city-pain">
-          <span class="city-pain__icon material-symbols-outlined">warning_amber</span>
-          <div>
-            <div class="city-pain__title">Forte demande de marketing automatisé</div>
-            <p class="city-pain__desc">Les entreprises dakaroises sont matures sur les outils. Email marketing, sequences, scoring, intégrations CRM : les bons cadres veulent ces outils en place.</p>
-          </div>
-        </div>
-    </div>
-    <div style="text-align:center;margin-top:2rem;">
-      <a href="/contact" class="btn btn--ghost"><span class="material-symbols-outlined">support_agent</span> Discuter de votre situation</a>
-    </div>
-  </section>
-
-  <!-- WHY US -->
-  <section class="city-section">
-    <h2>Pourquoi nous choisir <em>à Dakar</em></h2>
-    <p class="city-section__intro">Pirabel Labs combiné connaissance fine du marché francophone et méthodologie éprouvée.</p>
-    <div class="city-whys">
-        <div class="city-why">
-          <span class="city-why__icon material-symbols-outlined">check_circle</span>
-          <div>
-            <div class="city-why__title">Équipe spécialisée Afrique francophone</div>
-            <p class="city-why__desc">Nous referencons et faisons grandir des sites au Sénégal, en Côte d'Ivoire, au Bénin, au Togo, au Mali. Nous savons ce qui fonctionne sur ces marchés.</p>
-          </div>
-        </div>
-        <div class="city-why">
-          <span class="city-why__icon material-symbols-outlined">check_circle</span>
-          <div>
-            <div class="city-why__title">Méthode SEO et conversion éprouvée</div>
-            <p class="city-why__desc">Notre méthode combiné SEO technique, contenu profond, optimisation des fiches Google Business et tunnels de vente : ca rapporte mesurablement.</p>
-          </div>
-        </div>
-        <div class="city-why">
-          <span class="city-why__icon material-symbols-outlined">check_circle</span>
-          <div>
-            <div class="city-why__title">Tarifs entre Paris et Dakar</div>
-            <p class="city-why__desc">Nous offrons une qualité parisienne sans le prix parisien, et plus de souplesse que les grosses agences dakaroises.</p>
-          </div>
-        </div>
-        <div class="city-why">
-          <span class="city-why__icon material-symbols-outlined">check_circle</span>
-          <div>
-            <div class="city-why__title">Réactivité et sérieux</div>
-            <p class="city-why__desc">Slack ou WhatsApp dédié, rapports mensuels clairs, gestion de projet transparente. Pas de zones d'ombre.</p>
-          </div>
-        </div>
-    </div>
-  </section>
-
-  <!-- SECTORS -->
-  <section class="city-section">
-    <h2>Secteurs <em>accompagnés</em></h2>
-    <p class="city-section__intro">Nos chantiers à Dakar couvrent une grande diversité d'industries.</p>
-    <div class="city-sectors">
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">account_balance</span>
-          <span class="city-sector__label">Fintech et services financiers</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">router</span>
-          <span class="city-sector__label">Telecoms et tech</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">hôtel</span>
-          <span class="city-sector__label">Hôtellerie haut de gamme</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">medical_services</span>
-          <span class="city-sector__label">Santé privee</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">school</span>
-          <span class="city-sector__label">Éducation et formation</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">styler</span>
-          <span class="city-sector__label">Mode et lifestyle</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">home_work</span>
-          <span class="city-sector__label">Immobilier et BTP</span>
-        </div>
-        <div class="city-sector">
-          <span class="city-sector__icon material-symbols-outlined">business_center</span>
-          <span class="city-sector__label">Services aux entreprises</span>
-        </div>
-    </div>
-    <div style="text-align:center;margin-top:2rem;">
-      <a href="/contact" class="btn btn--primary"><span class="material-symbols-outlined">work</span> Parlons de votre secteur</a>
-    </div>
-  </section>
-
-  <!-- SERVICES OFFERTS -->
-  <section class="city-section">
-    <h2>Nos services <em>à Dakar</em></h2>
-    <p class="city-section__intro">Choisissez le levier le plus adapté à votre situation. Si vous hésitez, demandez un audit gratuit, nous vous orientons.</p>
-    <div class="city-services">
-      <a href="/creation-site-web" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">code</span></div>
-        <div class="city-service__title">Création de site web</div>
-        <div class="city-service__desc">Sites vitrines, e-commerce, applications sur-mesuré, WordPress, Webflow, Next.js. Adaptés au marché de Dakar.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/seo" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">search_insights</span></div>
-        <div class="city-service__title">SEO et référencement</div>
-        <div class="city-service__desc">Trafic organique qualifié : audit, mots-clés, contenu, technique, backlinks. Premières pages Google pour Dakar.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/fiche-google-business" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">location_on</span></div>
-        <div class="city-service__title">Google Business Profilé</div>
-        <div class="city-service__desc">Optimisation de votre fiche, collecte d'avis, photos professionnelles. Apparaître dans le pack local Maps à Dakar.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/community-management" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">forum</span></div>
-        <div class="city-service__title">Community management</div>
-        <div class="city-service__desc">Instagram, TikTok, LinkedIn, Facebook. Contenu adapté à la culture locale de Dakar, calendrier éditorial, ads.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/tunnels-de-vente" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">conversion_path</span></div>
-        <div class="city-service__title">Tunnels de vente</div>
-        <div class="city-service__desc">Landing pages CRO, funnels e-commerce, optimisation paiement Mobile Money. Pour transformer votre trafic en CA.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/automatisation-marketing" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-        <div class="city-service__title">Automatisation marketing</div>
-        <div class="city-service__desc">Make, n8n, HubSpot, Brevo. Sequences emails, scoring, intégrations CRM, chatbots WhatsApp.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/montage-video" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">movie</span></div>
-        <div class="city-service__title">Montage vidéo</div>
-        <div class="city-service__desc">Réels Instagram, TikTok, YouTube, motion design, sous-titrage, format vertical. Production rapide et soignee.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-      <a href="/consulting-marketing" class="city-service">
-        <div class="city-service__icon"><span class="material-symbols-outlined">psychology</span></div>
-        <div class="city-service__title">Consulting marketing</div>
-        <div class="city-service__desc">Audit, stratégie, roadmap. Quand vous voulez avancer mais ne savez pas par où commencer.</div>
-        <div class="city-service__cta">Voir le service <span class="material-symbols-outlined">arrow_forward</span></div>
-      </a>
-    </div>
-  </section>
-
-  <!-- KEYWORDS / SEO LOCAL -->
-  <section class="city-section">
-    <h2>Mots-clés <em>stratégiques à Dakar</em></h2>
-    <p class="city-section__intro">Ces requêtes Google ramenent des prospects qualifiés. Nous travaillons pour positionner votre site dessus.</p>
-    <div class="city-kws"><span class="city-kw">agence web Dakar</span><span class="city-kw">création site internet Dakar</span><span class="city-kw">SEO Dakar</span><span class="city-kw">référencement Google Sénégal</span><span class="city-kw">community management Dakar</span><span class="city-kw">agence digitale Dakar</span><span class="city-kw">site e-commerce Sénégal</span><span class="city-kw">tunnel de vente Dakar</span>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="city-section" id="faq">
-    <h2>Questions <em>fréquentes</em></h2>
-    <p class="city-section__intro">Ce que les entreprises de Dakar nous demandent le plus souvent.</p>
-    <div class="city-faqs">
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Pouvez-vous travailler avec des entreprises dakaroises depuis le Bénin ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Oui. Le travail se fait intégralement à distance. Visio régulière, livrables structurés, rapports mensuels. Nous nous deplacons à Dakar pour les projets stratégiques.</div>
-        </details>
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Quels tarifs pour un site web à Dakar ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Site vitrine : 1 500 - 4 000 EUR. E-commerce : 3 500 - 12 000 EUR. SaaS : sur devis. Globalement 30-40% moins cher que les grandes agences dakaroises pour une qualité equivalente.</div>
-        </details>
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Integrez-vous Wave et Orange Money ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Oui. Nous integrons les passerelles régionales (PayDunya, FedaPay, CinetPay) qui regroupent Wave, Orange Money, Free Money, cartes bancaires.</div>
-        </details>
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Faites-vous du marketing automatisé pour le marché dakarois ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Oui. Make, n8n, Brevo, HubSpot, intégrations CRM, sequences emails, scoring. Nous avons l'expérience de ces stacks sur le marché sénégalais.</div>
-        </details>
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Combien de temps pour un projet de refonte ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Entre 6 et 12 semaines selon la complexite. Nous travaillons par sprints avec validations régulières.</div>
-        </details>
-        <details class="city-faq">
-          <summary class="city-faq__q"><span>Acceptez-vous la facturation en F CFA ?</span><span class="material-symbols-outlined">expand_more</span></summary>
-          <div class="city-faq__a">Oui. Virement bancaire UEMOA, Mobile Money, virement international. Facturation XOF ou EUR.</div>
-        </details>
-    </div>
-  </section>
-
-  
-  <!-- TRUST / E-E-A-T BLOCK -->
-  <section class="city-section">
-    <div style="max-width:64rem;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1.25rem;">
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center;">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent);margin-bottom:0.3rem;">4.9 / 5</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">47 avis clients</div>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <nav class="city-breadcrumb" aria-label="Fil d'Ariane" style="margin-bottom:var(--s-5);">
+        <ol>
+          <li><a href="/">Accueil</a></li>
+          <li aria-hidden="true">&rsaquo;</li>
+          <li><a href="/#villes">Implantations locales</a></li>
+          <li aria-hidden="true">&rsaquo;</li>
+          <li aria-current="page">Dakar</li>
+        </ol>
+      </nav>
+      <span class="badge city-eyebrow"><span class="material-symbols-outlined">location_on</span> Dakar, Sénégal</span>
+      <h1 class="city-hero" style="margin-top:var(--s-5);">Agence web &amp; marketing digital à <em>Dakar</em></h1>
+      <p class="lead">Dakar est l'un des hubs numériques les plus dynamiques d'Afrique francophone. Nous accompagnons les entreprises dakaroises pour bâtir des sites performants, gagner en visibilité sur Google et automatiser leur croissance, avec une qualité d'agence internationale et des tarifs justes.</p>
+      <div class="hero__actions">
+        <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un audit gratuit</a>
+        <a href="/realisations" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">collections</span> Voir nos réalisations</a>
       </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center;">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent);margin-bottom:0.3rem;">Depuis 2020</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Agence active</div>
-      </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center;">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent);margin-bottom:0.3rem;">+150</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Projets livrés</div>
-      </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center;">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.8rem;color:var(--accent);margin-bottom:0.3rem;">24h</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Délai de réponse</div>
+      <div class="stats mt-4">
+        <div><div class="stat__val">+150</div><div class="stat__label">Projets livrés</div></div>
+        <div><div class="stat__val">4,9 / 5</div><div class="stat__label">47 avis clients</div></div>
+        <div><div class="stat__val">2020</div><div class="stat__label">Agence active depuis</div></div>
+        <div><div class="stat__val">24&nbsp;h</div><div class="stat__label">Délai de réponse</div></div>
       </div>
     </div>
   </section>
 
-  <!-- FINAL CTA -->
-  <!-- TEMOIGNAGES CLIENTS LOCAUX -->
-  <section class="city-section">
-    <h2>Ils nous ont fait confiance <em>à Dakar</em></h2>
-    <p class="city-section__intro">3 temoignages reels de PME accompagnees par Pirabel Labs.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.25rem;max-width:70rem;margin:0 auto;">
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
-        <div style="color:var(--accent);font-size:0.95rem;margin-bottom:0.85rem;letter-spacing:0.1em;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:0.92rem;line-height:1.6;color:var(--text);margin-bottom:1.2rem;font-style:italic;">&laquo;&nbsp;Pirabel Labs a transforme notre presence digitale en 4 mois. Site refait, SEO en route, leads multiplies par 3. Une équipe serieuse, reactive, qui comprend le marche de Dakar.&nbsp;&raquo;</p>
-        <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid var(--border);">
-          <div style="width:2.25rem;height:2.25rem;background:var(--accent-soft);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">AK</div>
-          <div><div style="font-weight:700;font-size:0.82rem;">A. Koudoro</div><div style="font-size:0.72rem;color:var(--text-muted);">Directeur PME secteur fintech + telecoms + hotellerie - Dakar</div></div>
-        </div>
+  <!-- ===== LE MARCHÉ DIGITAL À DAKAR ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-5" style="max-width:48rem;margin-left:auto;margin-right:auto;">
+        <span class="eyebrow">Le marché digital à Dakar</span>
+        <h2>Une capitale <em>connectée et exigeante</em></h2>
+        <p class="lead text-center" style="margin-left:auto;margin-right:auto;">Dakar concentre les sièges de groupes panafricains, un écosystème tech de premier plan (Sonatel, Wave, Free, Yas) et une classe moyenne urbaine ultra-connectée. Les clients comparent, lisent les avis et abandonnent un site qui charge mal&nbsp;: une présence numérique faible coûte cher.</p>
       </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
-        <div style="color:var(--accent);font-size:0.95rem;margin-bottom:0.85rem;letter-spacing:0.1em;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:0.92rem;line-height:1.6;color:var(--text);margin-bottom:1.2rem;font-style:italic;">&laquo;&nbsp;Excellent travail sur notre tunnel de vente et notre community management. Taux de conversion passe de 1,2% a 4,8% en 90 jours. Reporting clair, méthode pro.&nbsp;&raquo;</p>
-        <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid var(--border);">
-          <div style="width:2.25rem;height:2.25rem;background:var(--accent-soft);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">MS</div>
-          <div><div style="font-weight:700;font-size:0.82rem;">M. Sossou</div><div style="font-size:0.72rem;color:var(--text-muted);">Fondatrice e-commerce - Dakar</div></div>
-        </div>
-      </div>
-      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
-        <div style="color:var(--accent);font-size:0.95rem;margin-bottom:0.85rem;letter-spacing:0.1em;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <p style="font-size:0.92rem;line-height:1.6;color:var(--text);margin-bottom:1.2rem;font-style:italic;">&laquo;&nbsp;Après 6 mois d&apos;accompagnement SEO, nous sommes top 3 sur nos requêtes business à Dakar. Le trafic organique est devenu notre 1er canal d&apos;acquisition.&nbsp;&raquo;</p>
-        <div style="display:flex;align-items:center;gap:0.75rem;padding-top:1rem;border-top:1px solid var(--border);">
-          <div style="width:2.25rem;height:2.25rem;background:var(--accent-soft);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">FH</div>
-          <div><div style="font-weight:700;font-size:0.82rem;">F. Houngbo</div><div style="font-size:0.72rem;color:var(--text-muted);">CMO services BtoB - Dakar</div></div>
-        </div>
+      <div class="grid grid--4">
+        <article class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">smartphone</span></div>
+          <h3 class="card__title">Le mobile d'abord</h3>
+          <p class="card__desc">L'essentiel du trafic dakarois passe par smartphone. Un site rapide, léger et pensé pour la 4G est non négociable.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">payments</span></div>
+          <h3 class="card__title">Le paiement mobile roi</h3>
+          <p class="card__desc">Wave, Orange Money et Free Money dominent les achats. Une boutique sans paiement mobile perd des ventes chaque jour.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">storefront</span></div>
+          <h3 class="card__title">L'e-commerce en plein essor</h3>
+          <p class="card__desc">Beaucoup de marchands vendent encore sur WhatsApp seul. Structurer la boutique multiplie le chiffre d'affaires.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon"><span class="material-symbols-outlined">trending_up</span></div>
+          <h3 class="card__title">Une concurrence mûre</h3>
+          <p class="card__desc">Les Dakarois cherchent sur Google et Instagram avant d'acheter. Sans SEO ni contenu social, vous restez invisible.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- TOUS NOS SERVICES A LA VILLE -->
-  <section class="city-section">
-    <h2>Tous nos services <em>à Dakar</em></h2>
-    <p class="city-section__intro">6 pages détaillées par service spécifiquement pour Dakar. Choisissez celui qui correspond a votre besoin.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;max-width:70rem;margin:0 auto;">
-      <a href="/creation-site-web-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">code</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">Création de site web</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Sites, e-commerce, applications web</span>
-      </a>
-      <a href="/seo-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">search_insights</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">SEO &amp; référencement</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Trafic organique qualifié</span>
-      </a>
-      <a href="/community-management-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">forum</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">Community management</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Instagram, TikTok, LinkedIn</span>
-      </a>
-      <a href="/tunnels-de-vente-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">conversion_path</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">Tunnels de vente</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Landing pages haute conversion</span>
-      </a>
-      <a href="/fiche-google-business-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">location_on</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">Google Business Profile</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Pack local top 3 Google</span>
-      </a>
-      <a href="/automatisation-marketing-dakar" style="display:flex;flex-direction:column;gap:0.5rem;padding:1.5rem 1.25rem;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:all 0.2s;">
-        <span class="material-symbols-outlined" style="color:var(--accent);font-size:1.5rem;">smart_toy</span>
-        <strong style="font-family:var(--font-display);font-size:0.95rem;">Automatisation marketing</strong>
-        <span style="font-size:0.78rem;color:var(--text-muted);">Make, n8n, agents IA</span>
-      </a>
+  <!-- ===== NOS SERVICES À DAKAR ===== -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="text-center mb-5" style="max-width:46rem;margin-left:auto;margin-right:auto;">
+        <span class="eyebrow">Nos services à Dakar</span>
+        <h2>Tous les leviers de <em>croissance digitale</em></h2>
+        <p class="lead text-center" style="margin-left:auto;margin-right:auto;">Choisissez le levier le plus adapté à votre situation. Vous hésitez&nbsp;? Demandez un audit gratuit, nous vous orientons sans engagement.</p>
+      </div>
+      <div class="services-grid">
+        <a href="/creation-site-web" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">code</span></div>
+          <h3 class="service-card__title">Création de site web</h3>
+          <p class="service-card__desc">Sites vitrines, e-commerce et applications sur mesure (WordPress, Webflow, Next.js), optimisés pour le mobile et la 4G de Dakar.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/seo" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">search_insights</span></div>
+          <h3 class="service-card__title">SEO &amp; référencement</h3>
+          <p class="service-card__desc">Trafic organique qualifié&nbsp;: audit, mots-clés, contenu, technique et netlinking. Premières pages Google sur vos requêtes à Dakar.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/community-management" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">forum</span></div>
+          <h3 class="service-card__title">Community management</h3>
+          <p class="service-card__desc">Instagram, TikTok, LinkedIn, Facebook. Contenu adapté à la culture locale, calendrier éditorial et publicités ciblées.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/tunnels-de-vente" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">conversion_path</span></div>
+          <h3 class="service-card__title">Tunnels de vente</h3>
+          <p class="service-card__desc">Landing pages CRO, funnels e-commerce et paiement Mobile Money (Wave, Orange Money) pour transformer votre trafic en chiffre d'affaires.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/agence-ia" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+          <h3 class="service-card__title">Agence IA &amp; chatbots</h3>
+          <p class="service-card__desc">Chatbots WhatsApp, agents IA et automatisation du service client. Des réponses instantanées 24&nbsp;h/24 pour vos prospects dakarois.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+        <a href="/automatisation-marketing" class="service-card">
+          <div class="service-card__icon"><span class="material-symbols-outlined">linked_services</span></div>
+          <h3 class="service-card__title">Automatisation marketing</h3>
+          <p class="service-card__desc">Make, n8n, HubSpot, Brevo&nbsp;: séquences d'e-mails, scoring, intégrations CRM et workflows qui font gagner du temps à vos équipes.</p>
+          <span class="service-card__link">Voir le service <span class="material-symbols-outlined">arrow_forward</span></span>
+        </a>
+      </div>
     </div>
   </section>
 
-  <section class="city-cta-band">
-    <h2>Prêt a développer votre entreprise <em>à Dakar</em> ?</h2>
-    <p>Demandez un audit gratuit de 15 minutes. Nous regardons ensemble votre site, votre SEO, votre présence sociale, vos publicites. Vous repartez avec 3 recommandations chiffrées, qu'on travaille ensemble ou pas.</p>
-    <div class="city-cta-band__row">
-      <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver l'audit gratuit</a>
-      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> Écrire sur WhatsApp</a>
-      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Envoyer un email</a>
+  <!-- ===== POURQUOI NOUS CHOISIR / MÉTHODE ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-5" style="max-width:46rem;margin-left:auto;margin-right:auto;">
+        <span class="eyebrow">Pourquoi Pirabel Labs</span>
+        <h2>Une agence qui connaît <em>le terrain francophone</em></h2>
+        <p class="lead text-center" style="margin-left:auto;margin-right:auto;">Nous combinons une connaissance fine du marché ouest-africain et une méthodologie éprouvée, sans sous-traitant caché.</p>
+      </div>
+      <div class="grid grid--2">
+        <article class="card card--hover">
+          <div class="city-feature">
+            <div class="city-feature__icon"><span class="material-symbols-outlined">public</span></div>
+            <div>
+              <h3 class="city-feature__title">Spécialistes de l'Afrique francophone</h3>
+              <p class="city-feature__desc">Nous référençons et faisons grandir des sites au Sénégal, en Côte d'Ivoire, au Bénin, au Togo et au Mali. Nous savons ce qui convertit sur ces marchés.</p>
+            </div>
+          </div>
+        </article>
+        <article class="card card--hover">
+          <div class="city-feature">
+            <div class="city-feature__icon"><span class="material-symbols-outlined">insights</span></div>
+            <div>
+              <h3 class="city-feature__title">Une méthode orientée résultats</h3>
+              <p class="city-feature__desc">SEO technique, contenu de fond, fiche Google Business et tunnels de vente&nbsp;: une approche mesurable, pilotée par les chiffres mois après mois.</p>
+            </div>
+          </div>
+        </article>
+        <article class="card card--hover">
+          <div class="city-feature">
+            <div class="city-feature__icon"><span class="material-symbols-outlined">savings</span></div>
+            <div>
+              <h3 class="city-feature__title">Le bon rapport qualité-prix</h3>
+              <p class="city-feature__desc">Une exigence de niveau international, sans le tarif des grandes structures, et plus de souplesse qu'une agence généraliste classique.</p>
+            </div>
+          </div>
+        </article>
+        <article class="card card--hover">
+          <div class="city-feature">
+            <div class="city-feature__icon"><span class="material-symbols-outlined">support_agent</span></div>
+            <div>
+              <h3 class="city-feature__title">Réactivité et transparence</h3>
+              <p class="city-feature__desc">Canal WhatsApp ou Slack dédié, rapports mensuels clairs, gestion de projet sans zone d'ombre. Vous savez toujours où en est votre projet.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="text-center mt-4">
+        <a href="/methodologie" class="btn btn--ghost"><span class="material-symbols-outlined">timeline</span> Découvrir notre méthode</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTEURS ACCOMPAGNÉS ===== -->
+  <section class="section section--tight" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="text-center mb-4" style="max-width:42rem;margin-left:auto;margin-right:auto;">
+        <span class="eyebrow">Secteurs accompagnés</span>
+        <h2>Une expertise <em>multisectorielle</em></h2>
+      </div>
+      <div class="city-tags" style="justify-content:center;">
+        <span class="city-tag">Fintech &amp; services financiers</span>
+        <span class="city-tag">Télécoms &amp; tech</span>
+        <span class="city-tag">Hôtellerie haut de gamme</span>
+        <span class="city-tag">Santé privée</span>
+        <span class="city-tag">Éducation &amp; formation</span>
+        <span class="city-tag">Mode &amp; lifestyle</span>
+        <span class="city-tag">Immobilier &amp; BTP</span>
+        <span class="city-tag">Services aux entreprises</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PREUVE SOCIALE / TÉMOIGNAGES ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-5" style="max-width:44rem;margin-left:auto;margin-right:auto;">
+        <span class="eyebrow">Ils nous font confiance</span>
+        <h2>Des résultats concrets <em>à Dakar</em></h2>
+        <p class="lead text-center" style="margin-left:auto;margin-right:auto;">Trois témoignages de PME accompagnées par Pirabel Labs au Sénégal.</p>
+      </div>
+      <div class="grid grid--3">
+        <article class="card city-quote">
+          <div class="city-quote__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="city-quote__text">&laquo;&nbsp;Pirabel Labs a transformé notre présence digitale en quatre mois. Site refait, SEO lancé, leads multipliés par trois. Une équipe sérieuse et réactive qui comprend le marché de Dakar.&nbsp;&raquo;</p>
+          <div class="city-quote__author">
+            <div class="city-quote__avatar">AK</div>
+            <div><div class="city-quote__name">A. Koudoro</div><div class="city-quote__role">Directeur, secteur fintech &mdash; Dakar</div></div>
+          </div>
+        </article>
+        <article class="card city-quote">
+          <div class="city-quote__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="city-quote__text">&laquo;&nbsp;Excellent travail sur notre tunnel de vente et notre community management. Le taux de conversion est passé de 1,2&nbsp;% à 4,8&nbsp;% en 90 jours. Reporting clair, méthode pro.&nbsp;&raquo;</p>
+          <div class="city-quote__author">
+            <div class="city-quote__avatar">MS</div>
+            <div><div class="city-quote__name">M. Sossou</div><div class="city-quote__role">Fondatrice e-commerce &mdash; Dakar</div></div>
+          </div>
+        </article>
+        <article class="card city-quote">
+          <div class="city-quote__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="city-quote__text">&laquo;&nbsp;Après six mois d'accompagnement SEO, nous sommes dans le top 3 sur nos requêtes business à Dakar. Le trafic organique est devenu notre premier canal d'acquisition.&nbsp;&raquo;</p>
+          <div class="city-quote__author">
+            <div class="city-quote__avatar">FH</div>
+            <div><div class="city-quote__name">F. Houngbo</div><div class="city-quote__role">Directeur marketing B2B &mdash; Dakar</div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ LOCALE ===== -->
+  <section class="section" id="faq" style="background:var(--bg-2);">
+    <div class="container" style="max-width:56rem;">
+      <div class="text-center mb-5">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2>Ce que les entreprises de Dakar <em>nous demandent</em></h2>
+      </div>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Pouvez-vous travailler avec des entreprises dakaroises à distance&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Oui. L'accompagnement se fait intégralement à distance&nbsp;: visioconférences régulières, livrables structurés et rapports mensuels. Nous nous déplaçons à Dakar pour les projets stratégiques qui le justifient.</div>
+      </details>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Quels sont vos tarifs pour un site web à Dakar&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Site vitrine&nbsp;: 1&nbsp;500 à 4&nbsp;000&nbsp;EUR. E-commerce&nbsp;: 3&nbsp;500 à 12&nbsp;000&nbsp;EUR. SaaS&nbsp;: sur devis. Soit généralement 30 à 40&nbsp;% de moins que les grandes structures, pour une qualité équivalente.</div>
+      </details>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Intégrez-vous Wave et Orange Money&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Oui. Nous intégrons les passerelles régionales (PayDunya, FedaPay, CinetPay) qui regroupent Wave, Orange Money, Free Money et les cartes bancaires.</div>
+      </details>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Faites-vous de l'automatisation marketing pour le marché dakarois&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Oui. Make, n8n, Brevo, HubSpot, intégrations CRM, séquences d'e-mails et scoring. Nous maîtrisons ces outils et les adaptons aux usages du marché sénégalais.</div>
+      </details>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Combien de temps pour une refonte de site&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Entre 6 et 12 semaines selon la complexité. Nous travaillons par sprints, avec des validations régulières à chaque étape.</div>
+      </details>
+      <details class="city-faq">
+        <summary class="city-faq__q"><span>Acceptez-vous la facturation en francs CFA&nbsp;?</span><span class="material-symbols-outlined">expand_more</span></summary>
+        <div class="city-faq__a">Oui. Virement bancaire UEMOA, Mobile Money ou virement international. Facturation en XOF ou en EUR, selon votre préférence.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===== BANDEAU CTA FINAL ===== -->
+  <section class="section">
+    <div class="city-finalcta">
+      <h2>Prêt à développer votre entreprise <em>à Dakar</em>&nbsp;?</h2>
+      <p>Demandez un audit gratuit de 15 minutes. Nous analysons ensemble votre site, votre SEO, votre présence sociale et vos campagnes. Vous repartez avec trois recommandations chiffrées, que l'on travaille ensemble ou non.</p>
+      <div class="city-finalcta__row">
+        <a href="/contact" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Réserver l'audit gratuit</a>
+        <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> Écrire sur WhatsApp</a>
+        <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Envoyer un e-mail</a>
+      </div>
     </div>
   </section>
 
 </main>
+
 
 <footer class="footer">
   <div class="container">

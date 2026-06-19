@@ -39,6 +39,7 @@ const Review = require('../app/models/Review');
 const TrafficStat = require('../app/models/TrafficStat');
 const Article = require('../app/models/Article');
 const CaseStudy = require('../app/models/CaseStudy');
+const Comment = require('../app/models/Comment');
 
 const app = express();
 
@@ -695,7 +696,7 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}' +
     '.bx-card h2{font-family:"Space Grotesk",sans-serif;font-size:1.15rem;margin:.5rem 0;line-height:1.25;color:#fff;}' +
     '.bx-card p{color:rgba(229,226,225,0.6);font-size:.9rem;line-height:1.5;margin:0;}' +
-    '.bx-article{max-width:none;margin:0;min-width:0;}.bx-layout{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:2.5rem;align-items:start;}.bx-side{position:sticky;top:1.5rem;display:flex;flex-direction:column;gap:1.1rem;}.bx-toc{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem 1.1rem;max-height:72vh;overflow:auto;}.bx-toc strong{display:block;color:#fff;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}.bx-toc a{display:block;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.84rem;line-height:1.3;padding:.32rem 0 .32rem .6rem;border-left:2px solid rgba(229,226,225,0.12);}.bx-toc a:hover{color:#FF5500;border-left-color:#FF5500;}.bx-side__author{display:flex;gap:.7rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem;}.bx-side__cta{background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:12px;padding:1.1rem;text-align:center;}.bx-side__cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.55rem 1.1rem;border-radius:999px;text-decoration:none;font-size:.82rem;margin-top:.6rem;}.bx-cover{margin:0 0 2rem;border-radius:16px;overflow:hidden;border:1px solid rgba(229,226,225,0.08);}.bx-cover svg{display:block;width:100%;height:auto;}@media(max-width:900px){.bx-layout{grid-template-columns:1fr;}.bx-side{display:none;}}' +
+    '.bx-article{max-width:none;margin:0;min-width:0;}.bx-layout{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:2.5rem;align-items:start;}.bx-side{position:sticky;top:1.5rem;display:flex;flex-direction:column;gap:1.1rem;}.bx-toc{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem 1.1rem;max-height:72vh;overflow:auto;}.bx-toc strong{display:block;color:#fff;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}.bx-toc a{display:block;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.84rem;line-height:1.3;padding:.32rem 0 .32rem .6rem;border-left:2px solid rgba(229,226,225,0.12);}.bx-toc a:hover{color:#FF5500;border-left-color:#FF5500;}.bx-side__author{display:flex;gap:.7rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem;}.bx-side__cta{background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:12px;padding:1.1rem;text-align:center;}.bx-side__cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.55rem 1.1rem;border-radius:999px;text-decoration:none;font-size:.82rem;margin-top:.6rem;}.bx-cover{margin:0 0 2rem;border-radius:16px;overflow:hidden;border:1px solid rgba(229,226,225,0.08);}.bx-cover svg{display:block;width:100%;height:auto;}.bx-comments{margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(229,226,225,0.12);}.bx-comments h2{font-size:1.5rem;margin-bottom:1.4rem;}.bx-cmlist{display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;}.bx-cm{background:#161616;border:1px solid rgba(229,226,225,0.08);border-radius:12px;padding:1rem 1.2rem;}.bx-cm__h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.4rem;}.bx-cm__h strong{color:#fff;font-size:.95rem;}.bx-cm__h span{color:rgba(229,226,225,0.4);font-size:.78rem;white-space:nowrap;}.bx-cm p{margin:0;color:rgba(229,226,225,0.75);font-size:.95rem;line-height:1.6;white-space:pre-wrap;}.bx-cmform{background:#141313;border:1px solid rgba(229,226,225,0.1);border-radius:14px;padding:1.5rem;}.bx-cmform h3{font-size:1.15rem;margin:0 0 .2rem;color:#fff;}.bx-cmnote{color:rgba(229,226,225,0.5);font-size:.85rem;margin:.2rem 0 1.1rem;}.bx-cmform input,.bx-cmform textarea{width:100%;background:#0e0e0e;border:1px solid rgba(229,226,225,0.15);border-radius:8px;padding:.7rem .9rem;color:#fff;font-family:inherit;font-size:.95rem;margin-bottom:.8rem;box-sizing:border-box;}.bx-cmform input:focus,.bx-cmform textarea:focus{outline:none;border-color:#FF5500;}.bx-cmform textarea{resize:vertical;}.bx-hp{position:absolute!important;left:-9999px!important;height:0!important;width:0!important;opacity:0!important;}.bx-cmmsg{font-size:.88rem;margin:.2rem 0 .6rem;}.bx-cmbtn{background:#FF5500;color:#190800;font-weight:700;border:none;border-radius:999px;padding:.7rem 1.6rem;font-size:.92rem;cursor:pointer;font-family:inherit;}.bx-cmbtn:disabled{opacity:.6;cursor:default;}@media(max-width:900px){.bx-layout{grid-template-columns:1fr;}.bx-side{display:none;}}' +
     '.bx-article .bx-cat{display:inline-block;margin-bottom:.6rem;}' +
     '.bx-article h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:.3rem 0 1rem;color:#fff;}' +
     '.bx-meta{color:rgba(229,226,225,0.4);font-size:.85rem;margin-bottom:1.6rem;}' +
@@ -868,7 +869,17 @@ app.get('/blog/:slug', async (req, res) => {
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
       '<a href="/contact">Parler à un cofondateur</a></div>' +
-      '</article>' + side + '</div></main>';
+      '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
+      '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +
+      '<form id="cmForm" class="bx-cmform"><h3>Laisser un commentaire</h3>' +
+      '<p class="bx-cmnote">Votre commentaire sera publié après modération. L\'email n\'est jamais affiché.</p>' +
+      '<input name="author" placeholder="Votre nom *" required maxlength="80">' +
+      '<input name="email" type="email" placeholder="Email (non publié, optionnel)" maxlength="200">' +
+      '<textarea name="content" rows="4" placeholder="Votre commentaire *" required maxlength="3000"></textarea>' +
+      '<input name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" class="bx-hp">' +
+      '<div id="cmMsg" class="bx-cmmsg"></div>' +
+      '<button type="submit" class="bx-cmbtn">Publier mon commentaire</button></form></section>' +
+      '</article>' + side + '</div></main><script src="/js/comments.js" defer></script>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[blog.slug]', e.message); res.status(500).send('Erreur'); }
 });
@@ -1033,6 +1044,61 @@ app.get('/temoignages', async (req, res) => {
     const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Ils nous font confiance</h1><p>Les avis de nos clients sur leur collaboration avec Pirabel Labs.</p></div><div class="bx-grid">' + cards + '</div></main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[temoignages]', e.message); res.status(500).send('Erreur'); }
+});
+
+// === COMMENTAIRES DE BLOG (publics, modérés) ===
+const commentLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 8, message: 'Trop de commentaires. Réessayez plus tard.', keyPrefix: 'comment' });
+
+app.get('/api/blog/:slug/comments', async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
+    const comments = await Comment.find({ articleSlug: slug, status: 'approuve' }).sort({ createdAt: 1 }).select('author content createdAt').limit(200).lean();
+    res.json({ comments });
+  } catch (e) { res.json({ comments: [] }); }
+});
+
+app.post('/api/blog/:slug/comments', commentLimiter, honeypotCheck('website_url'), limitBody(6), async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
+    const article = await Article.findOne({ slug, status: 'publie' }).select('title').lean();
+    if (!article) return res.status(404).json({ error: 'Article introuvable.' });
+    const author = sanitize(req.body.author || '', 80);
+    const email = sanitizeEmail(req.body.email || '');
+    const content = sanitize(req.body.content || '', 3000);
+    if (!author || author.length < 2) return res.status(400).json({ error: 'Nom requis (2 caractères minimum).' });
+    if (!content || content.trim().length < 2) return res.status(400).json({ error: 'Commentaire trop court.' });
+    const ipHash = crypto.createHash('sha256').update((req.ip || '') + (process.env.JWT_SECRET || '')).digest('hex').slice(0, 32);
+    await Comment.create({ articleSlug: slug, articleTitle: article.title, author, email, content, status: 'en_attente', ipHash });
+    sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com', '[Blog] Nouveau commentaire à modérer — ' + article.title,
+      masterTemplate({ title: 'Nouveau commentaire', subtitle: article.title, body: '<p style="font-size:15px;color:rgba(229,226,225,0.8);"><strong>' + escapeHtml(author) + '</strong> a écrit&nbsp;:</p><div style="border-left:3px solid #FF5500;padding:12px 16px;background:#0e0e0e;color:rgba(229,226,225,0.7);">' + escapeHtml(content) + '</div>', cta: "Modérer dans l'admin", ctaUrl: SITE() + '/admin/dashboard' })).catch(() => {});
+    res.json({ success: true, message: 'Merci ! Votre commentaire sera publié après modération.' });
+  } catch (e) { console.error('[comment]', e.message); res.status(500).json({ error: 'Erreur serveur.' }); }
+});
+
+app.get('/api/admin/comments', auth, adminOnly, async (req, res) => {
+  try {
+    const status = sanitize(req.query.status || '', 20);
+    const q = (status && ['en_attente', 'approuve', 'rejete'].includes(status)) ? { status } : {};
+    const comments = await Comment.find(q).sort({ createdAt: -1 }).limit(500).lean();
+    const counts = {
+      en_attente: await Comment.countDocuments({ status: 'en_attente' }),
+      approuve: await Comment.countDocuments({ status: 'approuve' }),
+      total: await Comment.countDocuments({}),
+    };
+    res.json({ comments, counts });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+app.patch('/api/admin/comments/:id', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const status = sanitize(req.body.status || '', 20);
+    if (!['en_attente', 'approuve', 'rejete'].includes(status)) return res.status(400).json({ error: 'Statut invalide.' });
+    await Comment.updateOne({ _id: req.params.id }, { status });
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+app.delete('/api/admin/comments/:id', auth, adminOnly, async (req, res) => {
+  try { await Comment.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });
 
 // --- SITEMAP dynamique (pages reelles + articles publies) ---

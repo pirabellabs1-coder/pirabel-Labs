@@ -24,7 +24,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 body::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 30% 30%, rgba(255,85,0,0.10), transparent 60%); pointer-events: none; }
 .login { width: 100%; max-width: 26rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem 2rem; position: relative; z-index: 1; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
 .login__brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2rem; }
-.login__logo { width: 2.25rem; height: 2.25rem; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.login__logo { width: 2.85rem; height: 2.85rem; object-fit: contain; }
 .login__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
 .login h1 { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
 .login__sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.75rem; }
@@ -44,7 +44,7 @@ body::before { content: ''; position: absolute; inset: 0; background: radial-gra
 <body>
 <div class="login">
   <div class="login__brand">
-    <div class="login__logo">P</div>
+    <img class="login__logo" src="/img/logo.png?v=elan" alt="Pirabel Labs">
     <div class="login__name">Pirabel Labs</div>
   </div>
   <h1>Admin</h1>

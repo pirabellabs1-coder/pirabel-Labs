@@ -4,7 +4,7 @@
 const html = `<nav class="nav-mega" id="nav">
   <div class="nav-mega__inner">
     <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
-      <img src="/img/logo.png?v=elan" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <img src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
       <span>Pirabel Labs</span>
     </a>
     <div class="nav-mega__menu" id="navMenu">

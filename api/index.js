@@ -1063,7 +1063,7 @@ app.get('/blog/:slug', async (req, res) => {
       '<input name="author" placeholder="Votre nom *" required maxlength="80">' +
       '<input name="email" type="email" placeholder="Email (non publié, optionnel)" maxlength="200">' +
       '<textarea name="content" rows="4" placeholder="Votre commentaire *" required maxlength="3000"></textarea>' +
-      '<input name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" class="bx-hp">' +
+      '<input name="cm_check_hp" tabindex="-1" autocomplete="off" readonly aria-hidden="true" class="bx-hp" style="display:none;">' +
       '<div id="cmMsg" class="bx-cmmsg"></div>' +
       '<button type="submit" class="bx-cmbtn">Publier mon commentaire</button></form></section>' +
       '</article>' + side + '</div></main><script src="/js/comments.js" defer></script>';
@@ -1244,7 +1244,7 @@ app.get('/api/blog/:slug/comments', async (req, res) => {
   } catch (e) { res.json({ comments: [] }); }
 });
 
-app.post('/api/blog/:slug/comments', commentLimiter, honeypotCheck('website_url'), limitBody(6), async (req, res) => {
+app.post('/api/blog/:slug/comments', commentLimiter, honeypotCheck('cm_check_hp'), limitBody(6), async (req, res) => {
   try {
     const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
     const article = await Article.findOne({ slug, status: 'publie' }).select('title').lean();

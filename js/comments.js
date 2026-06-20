@@ -26,7 +26,7 @@
     b.disabled = true; b.textContent = 'Envoi…';
     fetch('/api/blog/' + encodeURIComponent(slug) + '/comments', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ author: f.author.value, email: f.email.value, content: f.content.value, website_url: f.website_url.value })
+      body: JSON.stringify({ author: f.author.value, email: f.email.value, content: f.content.value, cm_check_hp: (f.cm_check_hp ? f.cm_check_hp.value : '') })
     }).then(function (r) { return r.json(); }).then(function (d) {
       if (d.success) { msg.style.color = '#4ade80'; msg.textContent = d.message; f.reset(); }
       else { msg.style.color = '#f87171'; msg.textContent = d.error || 'Une erreur est survenue.'; }

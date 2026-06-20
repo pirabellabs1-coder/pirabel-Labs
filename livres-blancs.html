@@ -284,7 +284,7 @@
       <p class="lb-modal__sub">Le PDF arrive dans votre boîte mail en moins de 60 secondes. Nous ne spammons jamais : vous gardez le contrôle total.</p>
       <form class="lb-form" id="lbForm">
         <input type="hidden" name="slug" id="lbSlug" value="">
-        <input type="text" name="website_url" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+        <input type="text" name="lb_check_hp" tabindex="-1" autocomplete="off" readonly style="display:none;" aria-hidden="true">
         <div class="lb-form__row">
           <label for="lbName">Nom complet <span>*</span></label>
           <input type="text" id="lbName" name="name" required minlength="2" maxlength="120" placeholder="Lissanon Gildas">
@@ -527,7 +527,7 @@
         company: document.getElementById('lbCompany').value.trim(),
         phone: document.getElementById('lbPhone').value.trim(),
         newsletter: document.getElementById('lbNewsletter').checked,
-        website_url: form.website_url.value
+        lb_check_hp: (form.elements['lb_check_hp'] ? form.elements['lb_check_hp'].value : '')
       };
 
       try {

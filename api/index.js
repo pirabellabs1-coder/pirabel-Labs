@@ -258,7 +258,7 @@ const LIVRES_BLANCS = {
   }
 };
 
-app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
+app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_hp'), limitBody(10), async (req, res) => {
   try {
     const name = sanitize(req.body.name, 120);
     const email = sanitizeEmail(req.body.email);

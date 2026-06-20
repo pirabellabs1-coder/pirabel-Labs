@@ -1,0 +1,86 @@
+/* ============================================================================
+   PIRABEL LABS — Tokens de design (source unique de vérité)
+   Charte graphique v1 · 2026 — Thème sombre, orange signature #FF5500.
+   Ces variables reflètent l'identité RÉELLE du site (css/global.css).
+   Règle d'or : tout composant lit ces tokens — aucun hexadécimal en dur ailleurs.
+   ============================================================================ */
+
+:root {
+  /* ——— COULEURS · Fonds (du plus sombre au plus clair) ——— */
+  --bg:          #0E0E0E; /* fond principal de page */
+  --bg-2:        #161616; /* sections alternées, fonds de blocs */
+  --surface:     #1A1A1A; /* cartes, panneaux */
+  --surface-2:   #202020; /* survol / élévation, champs de formulaire */
+
+  /* ——— COULEURS · Bordures (texte chaud à faible opacité) ——— */
+  --border:      rgba(229, 226, 225, 0.08); /* séparateurs discrets */
+  --border-2:    rgba(229, 226, 225, 0.15); /* bordures visibles, survol */
+
+  /* ——— COULEURS · Texte ——— */
+  --text:        #E5E2E1;                   /* texte principal (blanc cassé chaud) */
+  --text-bright: #F5F4F1;                   /* titres hero très lumineux */
+  --text-muted:  rgba(229, 226, 225, 0.62); /* texte secondaire, paragraphes */
+  --text-faint:  rgba(229, 226, 225, 0.40); /* légendes, mentions */
+  --on-accent:   #0E0E0E;                   /* texte sur fond orange — accessible (voir contrastes) */
+
+  /* ——— COULEURS · Accent (orange signature) ——— */
+  --accent:      #FF5500;                /* orange Pirabel — couleur signature */
+  --accent-2:    #FF7A33;                /* orange clair — survol, dégradés d'état */
+  --accent-soft: rgba(255, 85, 0, 0.12); /* fonds d'icônes, badges */
+  --accent-glow: rgba(255, 85, 0, 0.25); /* halo d'ombre au survol */
+
+  /* ——— COULEURS · Sémantiques ——— */
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --danger:  #F87171;
+
+  /* ——— TYPOGRAPHIE · Familles ——— */
+  --police-affichage: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;   /* hero, grands titres (800/900) */
+  --police-titre:     'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif; /* titres UI, labels, boutons, eyebrows */
+  --police-texte:     'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;         /* corps de texte */
+  --police-mono:      ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;          /* code, données */
+
+  /* ——— TYPOGRAPHIE · Échelle modulaire (ratio ~1.25, fluide) ——— */
+  --taille-display: clamp(2.1rem, 4.2vw, 3.5rem); /* H1 hero (Montserrat 800) */
+  --taille-h1:      clamp(2.25rem, 5.5vw, 4rem);
+  --taille-h2:      clamp(1.75rem, 3.5vw, 2.5rem);
+  --taille-h3:      clamp(1.25rem, 2vw, 1.5rem);
+  --taille-h4:      1.1rem;
+  --taille-body:    1rem;     /* 16px */
+  --taille-sm:      0.875rem; /* 14px */
+  --taille-caption: 0.75rem;  /* 12px */
+
+  /* ——— TYPOGRAPHIE · Graisses / interlignes / suivi ——— */
+  --graisse-normale: 400;
+  --graisse-moyenne: 500;
+  --graisse-semi:    600;
+  --graisse-grasse:  700;
+  --graisse-extra:   800;
+  --interligne-titre: 1.15;
+  --interligne-corps: 1.7;
+  --suivi-titre: -0.02em; /* letter-spacing des titres */
+  --suivi-label:  0.14em; /* eyebrows / labels en capitales */
+
+  /* ——— ESPACEMENTS (base 4 px) ——— */
+  --espace-1: 0.25rem; --espace-2: 0.5rem;  --espace-3: 0.75rem; --espace-4: 1rem;
+  --espace-5: 1.5rem;  --espace-6: 2rem;    --espace-7: 3rem;    --espace-8: 4rem;
+  --espace-9: 6rem;    --espace-10: 8rem;
+
+  /* ——— LAYOUT ——— */
+  --largeur-max: 80rem; /* 1280px */
+  --marge-page:  5%;
+
+  /* ——— RAYONS ——— */
+  --rayon-sm:   8px;
+  --rayon-md:   14px;
+  --rayon-lg:   20px;
+  --rayon-full: 999px;
+
+  /* ——— OMBRES ——— */
+  --ombre-sm: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --ombre-md: 0 8px 24px rgba(0, 0, 0, 0.40);
+  --ombre-lg: 0 10px 28px var(--accent-glow); /* halo orange (boutons primaires) */
+
+  /* ——— MOTION ——— */
+  --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}

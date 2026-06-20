@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pirabel Labs — Styleguide</title>
+<link rel="icon" href="brand/assets/logo/pirabel-favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<link rel="stylesheet" href="tokens/tokens.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--police-texte);line-height:var(--interligne-corps);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--largeur-max);margin:0 auto;padding:0 var(--marge-page)}
+  h1,h2,h3,h4{font-family:var(--police-titre);font-weight:var(--graisse-grasse);line-height:var(--interligne-titre);letter-spacing:var(--suivi-titre);color:var(--text)}
+  a{color:var(--accent);text-decoration:none}
+  code{font-family:var(--police-mono);font-size:.85em;background:var(--surface-2);padding:.12em .4em;border-radius:6px;color:var(--text)}
+  .eyebrow{font-family:var(--police-titre);font-weight:700;font-size:var(--taille-caption);text-transform:uppercase;letter-spacing:var(--suivi-label);color:var(--accent);display:block;margin-bottom:var(--espace-3)}
+
+  header{border-bottom:1px solid var(--border);padding:var(--espace-6) 0;position:sticky;top:0;background:rgba(14,14,14,.86);backdrop-filter:blur(10px);z-index:10}
+  .brand{display:flex;align-items:center;gap:var(--espace-3)}
+  .brand img{width:46px;height:46px}
+  .brand .wm{font-family:var(--police-affichage);font-weight:800;font-size:1.3rem;letter-spacing:.5px;color:var(--text-bright)}
+  .brand .wm span{color:var(--accent)}
+  .brand small{display:block;font-family:var(--police-titre);font-weight:500;font-size:.62rem;letter-spacing:2px;color:var(--text-muted)}
+  nav{display:flex;flex-wrap:wrap;gap:var(--espace-4);margin-top:var(--espace-4)}
+  nav a{font-family:var(--police-titre);font-weight:500;font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+  nav a:hover{color:var(--accent)}
+
+  section{padding:var(--espace-9) 0;border-bottom:1px solid var(--border)}
+  section>.wrap>h2{font-size:var(--taille-h2);margin-bottom:var(--espace-2)}
+  .sub{color:var(--text-muted);max-width:46rem;margin-bottom:var(--espace-7)}
+
+  .grid{display:grid;gap:var(--espace-5)}
+  .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rayon-md);padding:var(--espace-5)}
+  .val li{margin-bottom:var(--espace-3);padding-left:var(--espace-4);position:relative;color:var(--text-muted)}
+  .val li::before{content:"";position:absolute;left:0;top:.6em;width:8px;height:8px;background:var(--accent)}
+  .val b{color:var(--text)}
+
+  /* couleurs */
+  .sw{border:1px solid var(--border);border-radius:var(--rayon-md);overflow:hidden;cursor:pointer;transition:transform var(--transition)}
+  .sw:hover{transform:translateY(-3px)}
+  .sw .chip{height:84px}
+  .sw .meta{padding:var(--espace-3) var(--espace-4);background:var(--surface)}
+  .sw .nm{font-family:var(--police-titre);font-weight:700;font-size:.85rem}
+  .sw .hex{font-family:var(--police-mono);font-size:.78rem;color:var(--text-muted)}
+  .contrast{width:100%;border-collapse:collapse;font-size:.9rem}
+  .contrast th,.contrast td{text-align:left;padding:var(--espace-3) var(--espace-4);border-bottom:1px solid var(--border)}
+  .contrast th{font-family:var(--police-titre);font-weight:700;color:var(--text-muted);text-transform:uppercase;font-size:.7rem;letter-spacing:1px}
+  .pair{display:inline-flex;align-items:center;gap:8px;font-family:var(--police-mono);font-size:.8rem}
+  .pdot{width:34px;height:22px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+  .tag{font-family:var(--police-titre);font-weight:700;font-size:.7rem;padding:.2em .6em;border-radius:var(--rayon-full);letter-spacing:.5px}
+  .tag.ok{background:rgba(74,222,128,.15);color:var(--success)}
+  .tag.mid{background:var(--accent-soft);color:var(--accent-2)}
+  .tag.no{background:rgba(248,113,113,.15);color:var(--danger)}
+
+  /* typo */
+  .type-row{display:flex;align-items:baseline;gap:var(--espace-5);padding:var(--espace-4) 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .type-row .lbl{font-family:var(--police-mono);font-size:.72rem;color:var(--text-faint);min-width:130px}
+  .fdisp{font-family:var(--police-affichage)}.ftitle{font-family:var(--police-titre)}.fbody{font-family:var(--police-texte)}
+
+  /* spacing/radius */
+  .sp{display:flex;align-items:flex-end;gap:var(--espace-4);flex-wrap:wrap}
+  .sp i{background:var(--accent);display:block}
+  .sp figcaption{font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px;text-align:center}
+  .rad{display:flex;gap:var(--espace-4);flex-wrap:wrap}
+  .rad i{width:84px;height:84px;background:var(--surface-2);border:1px solid var(--border-2)}
+
+  /* composants */
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--police-titre);font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--rayon-full);padding:.9rem 1.6rem;border:1px solid transparent;cursor:pointer;transition:all var(--transition)}
+  .btn--primary{background:var(--accent);color:var(--on-accent)}
+  .btn--primary:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:var(--ombre-lg)}
+  .btn--ghost{background:transparent;color:var(--text);border-color:var(--border-2)}
+  .btn--ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn--sm{padding:.6rem 1.1rem;font-size:.7rem}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .field{display:block;width:100%;background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--rayon-sm);padding:.85rem 1rem;color:var(--text);font-family:var(--police-texte)}
+  .field::placeholder{color:var(--text-faint)}
+  .field:focus{outline:none;border-color:var(--accent)}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-glow);font-family:var(--police-titre);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.32rem .7rem;border-radius:var(--rayon-full)}
+  .alert{display:flex;gap:10px;align-items:flex-start;padding:var(--espace-4);border-radius:var(--rayon-sm);border:1px solid;margin-bottom:var(--espace-3)}
+  .alert .material-symbols-outlined{font-size:1.2rem}
+  .a-ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--success)}
+  .a-warn{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--warning)}
+  .a-err{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:var(--danger)}
+  .demo-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rayon-md);padding:var(--espace-5)}
+  .demo-card .ic{width:3rem;height:3rem;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);margin-bottom:var(--espace-3)}
+  .demo-card h4{font-family:var(--police-titre);margin-bottom:6px}
+
+  /* logo */
+  .tile{display:flex;align-items:center;justify-content:center;border-radius:var(--rayon-md);height:150px}
+  .t-dark{background:var(--bg)}.t-light{background:#F5F4F1}.t-surf{background:var(--surface-2)}
+  .tile img{height:88px;width:auto}
+  .dont img{height:70px}
+  .dont{position:relative}
+  .dont .x{position:absolute;top:8px;right:8px;color:var(--danger);font-weight:700}
+  .stretch{transform:scaleX(1.6)}
+  .recolor{filter:hue-rotate(160deg) saturate(1.4)}
+  .rotate{transform:rotate(14deg)}
+  .lowc{background:#FF7A33}
+
+  /* applications */
+  .app{background:var(--surface);border:1px solid var(--border);border-radius:var(--rayon-md);padding:var(--espace-4)}
+  .app object,.app img{width:100%;height:auto;border-radius:var(--rayon-sm);background:#0E0E0E}
+  .app .cap{font-family:var(--police-titre);font-weight:500;font-size:.8rem;color:var(--text-muted);margin-top:var(--espace-3)}
+
+  footer{padding:var(--espace-8) 0;color:var(--text-muted);font-size:.9rem}
+  .avalider{background:var(--surface);border:1px solid var(--accent-glow);border-radius:var(--rayon-md);padding:var(--espace-5);margin-top:var(--espace-5)}
+  .avalider li{margin-left:1.1rem;margin-bottom:6px}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--on-accent);font-family:var(--police-titre);font-weight:700;font-size:.85rem;padding:.7rem 1.3rem;border-radius:var(--rayon-full);opacity:0;transition:all var(--transition);pointer-events:none}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <img src="brand/assets/logo/pirabel-mark.svg" alt="Pirabel Labs">
+      <div>
+        <span class="wm">PIRABEL <span>LABS</span></span>
+        <small>CHARTE GRAPHIQUE · STYLEGUIDE · V1 · 2026</small>
+      </div>
+    </div>
+    <nav>
+      <a href="#marque">Marque</a>
+      <a href="#logo">Logo</a>
+      <a href="#couleurs">Couleurs</a>
+      <a href="#typo">Typographie</a>
+      <a href="#systeme">Système</a>
+      <a href="#composants">Composants</a>
+      <a href="#maquettes">Maquettes</a>
+      <a href="#applications">Gabarits</a>
+    </nav>
+  </div>
+</header>
+
+<section id="marque">
+  <div class="wrap">
+    <span class="eyebrow">01 · La marque</span>
+    <h2>Studio tech premium, du Bénin au monde</h2>
+    <p class="sub">Pirabel Labs aide les entreprises francophones à se doter d'outils numériques de niveau international qui génèrent des résultats mesurables.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3 style="font-size:1.1rem;margin-bottom:var(--espace-4)">Valeurs</h3>
+        <ul class="val">
+          <li><b>Exigence</b> — un travail de niveau international, jamais « à peu près ».</li>
+          <li><b>Résultat</b> — on mesure tout : trafic, conversions, chiffre d'affaires.</li>
+          <li><b>Sur-mesure</b> — chaque projet pensé pour son contexte.</li>
+          <li><b>Transparence</b> — langage clair, devis lisibles, comptes rendus honnêtes.</li>
+          <li><b>Ancrage</b> — fiers de nos racines africaines, ouverts au monde.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.1rem;margin-bottom:var(--espace-4)">Ton de voix</h3>
+        <p style="margin-bottom:var(--espace-4)">Expert mais accessible, direct, orienté preuve. On parle résultats, pas jargon.</p>
+        <p style="color:var(--text-muted)"><b style="color:var(--success)">On dit</b> : « On a multiplié votre trafic par 3 en 6 mois. »</p>
+        <p style="color:var(--text-muted)"><b style="color:var(--danger)">On évite</b> : « Synergies omnicanales à fort impact. »</p>
+        <p style="margin-top:var(--espace-4);font-size:.85rem;color:var(--text-faint)">Détails complets : <code>brand/plateforme-de-marque.md</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="logo">
+  <div class="wrap">
+    <span class="eyebrow">02 · Le logo</span>
+    <h2>Le symbole — L'Élan</h2>
+    <p class="sub">Trois chevrons orange qui accélèrent vers l'avant : mouvement, vitesse, momentum. Orange #FF5500 sur fond sombre par défaut. Zone de protection ≈ hauteur d'un chevron ; taille mini 16 px (écran) / 6 mm (print).</p>
+    <div class="grid g3">
+      <div><div class="tile t-dark"><img src="brand/assets/logo/pirabel-mark.svg" alt="L'Élan orange"></div><p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">Orange sur fond sombre (défaut)</p></div>
+      <div><div class="tile t-dark"><img src="brand/assets/logo/pirabel-mark-blanc.svg" alt="L'Élan monochrome clair"></div><p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">Monochrome clair</p></div>
+      <div><div class="tile t-light"><img src="brand/assets/logo/pirabel-mark-noir.svg" alt="L'Élan monochrome sombre"></div><p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">Monochrome sombre / fond clair</p></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:var(--espace-5)">
+      <div><div class="tile t-dark" style="height:120px"><img src="brand/assets/logo/pirabel-logo-horizontal.svg" alt="lockup horizontal" style="height:52px"></div><p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">Lockup horizontal (symbole + wordmark)</p></div>
+      <div><div class="tile t-dark" style="height:120px"><img src="brand/assets/logo/pirabel-favicon.svg" alt="favicon" style="height:66px"></div><p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">Favicon / icône d'application</p></div>
+    </div>
+
+    <h3 style="font-size:1.05rem;margin:var(--espace-7) 0 var(--espace-4)">À éviter</h3>
+    <div class="grid g4">
+      <div class="app"><div class="tile t-dark dont"><span class="x material-symbols-outlined">close</span><img class="stretch" src="brand/assets/logo/pirabel-mark.svg" alt=""></div><p class="cap">Déformer</p></div>
+      <div class="app"><div class="tile t-dark dont"><span class="x material-symbols-outlined">close</span><img class="recolor" src="brand/assets/logo/pirabel-mark.svg" alt=""></div><p class="cap">Recolorer</p></div>
+      <div class="app"><div class="tile t-dark dont"><span class="x material-symbols-outlined">close</span><img class="rotate" src="brand/assets/logo/pirabel-mark.svg" alt=""></div><p class="cap">Pivoter / inverser le sens</p></div>
+      <div class="app"><div class="tile lowc dont"><span class="x material-symbols-outlined">close</span><img src="brand/assets/logo/pirabel-mark.svg" alt=""></div><p class="cap">Contraste insuffisant</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="couleurs">
+  <div class="wrap">
+    <span class="eyebrow">03 · Couleurs</span>
+    <h2>Palette</h2>
+    <p class="sub">Clique sur une couleur pour copier son code. Thème sombre, orange signature. Contrastes calculés en direct depuis les tokens.</p>
+    <div class="grid g4" id="swatches"></div>
+
+    <h3 style="font-size:1.05rem;margin:var(--espace-7) 0 var(--espace-4)">Contrastes (WCAG 2.1)</h3>
+    <table class="contrast"><thead><tr><th>Paire texte / fond</th><th>Ratio</th><th>Verdict</th></tr></thead><tbody id="contrastBody"></tbody></table>
+    <p style="color:var(--text-faint);font-size:.82rem;margin-top:var(--espace-4)">⚠️ Le blanc sur orange n'atteint pas AA en texte courant — préférer le texte sombre (<code>--on-accent</code>) sur les boutons orange.</p>
+  </div>
+</section>
+
+<section id="typo">
+  <div class="wrap">
+    <span class="eyebrow">04 · Typographie</span>
+    <h2>Trois familles, un rôle chacune</h2>
+    <p class="sub">Montserrat (affichage/hero), Space Grotesk (titres UI, labels, boutons), Inter (corps). Échelle fluide, ratio ~1,25.</p>
+    <div class="type-row"><span class="lbl">Display · Montserrat 800</span><span class="fdisp" style="font-size:var(--taille-display);font-weight:800;color:var(--text-bright)">Réussite digitale</span></div>
+    <div class="type-row"><span class="lbl">H1 · Space Grotesk 800</span><span class="ftitle" style="font-size:var(--taille-h1);font-weight:800">Titre de page</span></div>
+    <div class="type-row"><span class="lbl">H2 · Space Grotesk 700</span><span class="ftitle" style="font-size:var(--taille-h2);font-weight:700">Titre de section</span></div>
+    <div class="type-row"><span class="lbl">H3 · Space Grotesk 700</span><span class="ftitle" style="font-size:var(--taille-h3);font-weight:700">Sous-titre</span></div>
+    <div class="type-row"><span class="lbl">Corps · Inter 400</span><span class="fbody" style="font-size:var(--taille-body)">On conçoit, on code, on fait croître. Texte courant en Inter, interligne 1,7 pour le confort de lecture.</span></div>
+    <div class="type-row"><span class="lbl">Légende · Inter 500</span><span class="fbody" style="font-size:var(--taille-caption);font-weight:500;color:var(--text-muted)">Légende et mentions.</span></div>
+    <div class="type-row"><span class="lbl">Eyebrow · Grotesk 700</span><span class="ftitle" style="font-size:var(--taille-caption);font-weight:700;text-transform:uppercase;letter-spacing:var(--suivi-label);color:var(--accent)">Label en capitales</span></div>
+  </div>
+</section>
+
+<section id="systeme">
+  <div class="wrap">
+    <span class="eyebrow">05 · Système</span>
+    <h2>Espacements, rayons, ombres</h2>
+    <p class="sub">Base 4 px. Rayons 8 / 14 / 20 / 999. Transition 220 ms.</p>
+    <div class="sp" style="margin-bottom:var(--espace-7)">
+      <figure><i style="width:var(--espace-1);height:var(--espace-1)"></i><figcaption>1·4px</figcaption></figure>
+      <figure><i style="width:var(--espace-2);height:var(--espace-2)"></i><figcaption>2·8px</figcaption></figure>
+      <figure><i style="width:var(--espace-3);height:var(--espace-3)"></i><figcaption>3·12px</figcaption></figure>
+      <figure><i style="width:var(--espace-4);height:var(--espace-4)"></i><figcaption>4·16px</figcaption></figure>
+      <figure><i style="width:var(--espace-5);height:var(--espace-5)"></i><figcaption>5·24px</figcaption></figure>
+      <figure><i style="width:var(--espace-6);height:var(--espace-6)"></i><figcaption>6·32px</figcaption></figure>
+      <figure><i style="width:var(--espace-7);height:var(--espace-7)"></i><figcaption>7·48px</figcaption></figure>
+      <figure><i style="width:var(--espace-8);height:var(--espace-8)"></i><figcaption>8·64px</figcaption></figure>
+    </div>
+    <div class="rad">
+      <figure><i style="border-radius:var(--rayon-sm)"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">sm · 8</figcaption></figure>
+      <figure><i style="border-radius:var(--rayon-md)"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">md · 14</figcaption></figure>
+      <figure><i style="border-radius:var(--rayon-lg)"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">lg · 20</figcaption></figure>
+      <figure><i style="border-radius:var(--rayon-full)"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">full</figcaption></figure>
+      <figure><i style="border-radius:var(--rayon-md);box-shadow:var(--ombre-md);border:0"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">ombre-md</figcaption></figure>
+      <figure><i style="border-radius:var(--rayon-md);box-shadow:var(--ombre-lg);border:0"></i><figcaption style="font-family:var(--police-mono);font-size:.7rem;color:var(--text-muted);margin-top:6px">ombre-lg</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="composants">
+  <div class="wrap">
+    <span class="eyebrow">06 · Composants</span>
+    <h2>Bibliothèque UI</h2>
+    <p class="sub">Tous construits sur les tokens — aucune valeur en dur.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h4 style="font-family:var(--police-titre);margin-bottom:var(--espace-4)">Boutons</h4>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn--primary">Demander un devis</button>
+          <button class="btn btn--ghost">En savoir plus</button>
+          <button class="btn btn--primary btn--sm">Petit</button>
+          <button class="btn btn--primary" disabled>Désactivé</button>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-family:var(--police-titre);margin-bottom:var(--espace-4)">Champs & badges</h4>
+        <input class="field" placeholder="vous@entreprise.com" style="margin-bottom:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge">Nouveau</span><span class="badge"><span class="material-symbols-outlined" style="font-size:1rem">bolt</span> Premium</span></div>
+      </div>
+      <div class="card">
+        <h4 style="font-family:var(--police-titre);margin-bottom:var(--espace-4)">Alertes</h4>
+        <div class="alert a-ok"><span class="material-symbols-outlined">check_circle</span><span>Votre demande a bien été envoyée.</span></div>
+        <div class="alert a-warn"><span class="material-symbols-outlined">warning</span><span>Pensez à vérifier vos spams.</span></div>
+        <div class="alert a-err"><span class="material-symbols-outlined">error</span><span>Une erreur est survenue.</span></div>
+      </div>
+      <div class="demo-card">
+        <div class="ic"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <h4>Carte de service</h4>
+        <p style="color:var(--text-muted);font-size:.95rem">Création de sites web premium, pensés pour convertir et bien se positionner sur Google.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="maquettes">
+  <div class="wrap">
+    <span class="eyebrow">07 · Applications en situation</span>
+    <h2>La marque dans le monde réel</h2>
+    <p class="sub">Le logo L'Élan décliné sur les supports de la marque (maquettes). Fichiers : <code>brand/assets/mockups/</code>.</p>
+    <div class="grid g3">
+      <div class="app"><img src="brand/assets/mockups/casquette.png" alt="Casquette"><p class="cap">Casquette brodée</p></div>
+      <div class="app"><img src="brand/assets/mockups/t-shirt.png" alt="T-shirt"><p class="cap">T-shirt</p></div>
+      <div class="app"><img src="brand/assets/mockups/mug.png" alt="Mug"><p class="cap">Mug céramique</p></div>
+      <div class="app"><img src="brand/assets/mockups/tote-bag.png" alt="Tote bag"><p class="cap">Tote bag</p></div>
+      <div class="app"><img src="brand/assets/mockups/panneau-billboard.png" alt="Panneau"><p class="cap">Panneau publicitaire</p></div>
+      <div class="app"><img src="brand/assets/mockups/bureau-mur.png" alt="Bureau"><p class="cap">Mur de marque — bureau</p></div>
+      <div class="app"><img src="brand/assets/mockups/enseigne.png" alt="Enseigne"><p class="cap">Enseigne extérieure</p></div>
+      <div class="app"><img src="brand/assets/mockups/vitrine.png" alt="Vitrine"><p class="cap">Devanture / vitrine</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="applications">
+  <div class="wrap">
+    <span class="eyebrow">08 · Gabarits print &amp; digital</span>
+    <h2>Cas d'usage</h2>
+    <p class="sub">Chaque support dérive des tokens + du logo. Fichiers dans <code>cas-usage/</code>.</p>
+    <div class="grid g2">
+      <div class="app"><object type="image/svg+xml" data="cas-usage/carte-visite.svg"></object><p class="cap">Carte de visite (recto / verso)</p></div>
+      <div class="app"><object type="image/svg+xml" data="cas-usage/social-post-carre.svg"></object><p class="cap">Post réseaux sociaux 1080 × 1080</p></div>
+      <div class="app"><object type="image/svg+xml" data="cas-usage/slide-couverture.svg"></object><p class="cap">Slide de couverture 16:9</p></div>
+      <div class="app"><object type="image/svg+xml" data="cas-usage/banniere-display.svg"></object><p class="cap">Bannières display</p></div>
+    </div>
+    <p style="margin-top:var(--espace-5);color:var(--text-muted)">Signature e-mail HTML prête à copier : <code>cas-usage/signature-email.html</code></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong style="color:var(--text)">Pirabel Labs — charte graphique v1</strong> · Tokens : <code>tokens/tokens.css</code> · Docs : <code>brand/</code> · Applications : <code>cas-usage/</code></p>
+    <div class="avalider">
+      <strong style="color:var(--text);font-family:var(--police-titre)">À valider</strong>
+      <ul style="margin-top:var(--espace-3);color:var(--text-muted)">
+        <li>Baseline officielle (3 propositions dans la plateforme de marque)</li>
+        <li>Numéro de téléphone pour la carte de visite et la signature</li>
+        <li>Référence Pantone exacte de l'orange #FF5500 (pour l'impression)</li>
+        <li>Recommandation : produire un master logo vectoriel (SVG) ; unifier l'orange #FF5500/#FF6B00 sur le site</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<div id="toast">Copié !</div>
+
+<script>
+(function(){
+  var root=getComputedStyle(document.documentElement);
+  function tok(n){return root.getPropertyValue(n).trim();}
+  function resolve(v){return v.charAt(0)==='-'?tok(v):v;}
+  function toRGB(str,bg){
+    str=str.trim();var r,g,b,a=1;
+    if(str[0]==='#'){var h=str.slice(1);if(h.length===3)h=h.split('').map(function(c){return c+c;}).join('');r=parseInt(h.slice(0,2),16);g=parseInt(h.slice(2,4),16);b=parseInt(h.slice(4,6),16);}
+    else{var m=str.match(/[\d.]+/g);r=+m[0];g=+m[1];b=+m[2];if(m.length>3)a=+m[3];}
+    if(a<1&&bg){r=Math.round(r*a+bg.r*(1-a));g=Math.round(g*a+bg.g*(1-a));b=Math.round(b*a+bg.b*(1-a));}
+    return {r:r,g:g,b:b};
+  }
+  function lum(c){var f=function(x){x/=255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4);};return 0.2126*f(c.r)+0.7152*f(c.g)+0.0722*f(c.b);}
+  function ratio(a,b){var L1=lum(a),L2=lum(b),hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+0.05)/(lo+0.05);}
+
+  var swatches=[
+    {n:'Fond',v:'--bg'},{n:'Fond alt',v:'--bg-2'},{n:'Surface',v:'--surface'},{n:'Surface 2',v:'--surface-2'},
+    {n:'Accent',v:'--accent'},{n:'Accent clair',v:'--accent-2'},{n:'Texte',v:'--text'},{n:'Texte lumineux',v:'--text-bright'},
+    {n:'Succès',v:'--success'},{n:'Alerte',v:'--warning'},{n:'Erreur',v:'--danger'},{n:'Bordure',v:'--border-2'}
+  ];
+  var sc=document.getElementById('swatches');
+  swatches.forEach(function(s){
+    var hex=resolve(s.v);
+    var el=document.createElement('div');el.className='sw';
+    el.innerHTML='<div class="chip" style="background:'+hex+'"></div><div class="meta"><div class="nm">'+s.n+'</div><div class="hex">'+hex+'</div></div>';
+    el.onclick=function(){navigator.clipboard&&navigator.clipboard.writeText(hex);toast('Copié '+hex);};
+    sc.appendChild(el);
+  });
+
+  var pairs=[
+    {l:'Texte / Fond',fg:'--text',bg:'--bg'},
+    {l:'Texte atténué / Fond',fg:'--text-muted',bg:'--bg'},
+    {l:'Accent / Fond',fg:'--accent',bg:'--bg'},
+    {l:'Blanc / Accent',fg:'#FFFFFF',bg:'--accent'},
+    {l:'Sombre / Accent',fg:'--on-accent',bg:'--accent'}
+  ];
+  var cb=document.getElementById('contrastBody');
+  pairs.forEach(function(p){
+    var bg=toRGB(resolve(p.bg));var fg=toRGB(resolve(p.fg),bg);
+    var r=ratio(fg,bg);var rr=Math.round(r*10)/10;
+    var tag,cls;if(r>=7){tag='AAA';cls='ok';}else if(r>=4.5){tag='AA';cls='ok';}else if(r>=3){tag='AA grand';cls='mid';}else{tag='échec';cls='no';}
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="pair"><span class="pdot" style="background:'+resolve(p.bg)+';color:'+resolve(p.fg)+'">Aa</span>'+p.l+'</span></td><td style="font-family:var(--police-mono)">'+rr+' : 1</td><td><span class="tag '+cls+'">'+tag+'</span></td>';
+    cb.appendChild(tr);
+  });
+
+  var t=document.getElementById('toast');var to;
+  function toast(m){t.textContent=m;t.classList.add('show');clearTimeout(to);to=setTimeout(function(){t.classList.remove('show');},1400);}
+})();
+</script>
+</body>
+</html>

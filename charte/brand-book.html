@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pirabel Labs — Brand Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0E0E0E;--bg2:#161616;--surface:#1c1c1c;--accent:#FF5500;--accent2:#FF7A33;
+  --text:#E5E2E1;--bright:#F5F4F1;--muted:rgba(229,226,225,.6);--faint:rgba(229,226,225,.38);
+  --mont:'Montserrat',sans-serif;--grot:'Space Grotesk',sans-serif;--inter:'Inter',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--inter);-webkit-font-smoothing:antialiased;line-height:1.6}
+.spread{position:relative;min-height:100vh;padding:8vmin 9vmin;display:flex;flex-direction:column;justify-content:center;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.04)}
+.num{position:absolute;top:6vmin;right:9vmin;font-family:var(--grot);font-weight:700;font-size:.8rem;letter-spacing:.3em;color:var(--faint)}
+.kicker{font-family:var(--grot);font-weight:700;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem}
+h1,h2,h3{font-family:var(--mont);font-weight:800;line-height:1.04;letter-spacing:-.02em;color:var(--bright)}
+.grid-bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,85,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,85,0,.05) 1px,transparent 1px);background-size:58px 58px;pointer-events:none;mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,#000,transparent)}
+.chev{display:inline-block}
+.chev svg{display:block;height:100%;width:auto;overflow:visible}
+
+/* COVER */
+.cover{justify-content:space-between;background:radial-gradient(ellipse 70% 55% at 30% 25%,rgba(255,85,0,.12),transparent 60%)}
+.cover__top{display:flex;align-items:center;gap:1rem}
+.cover__wm{font-family:var(--mont);font-weight:800;font-size:1.3rem;letter-spacing:.04em;color:var(--bright)}
+.cover__wm b{color:var(--accent);font-weight:800}
+.cover__mid h1{font-size:clamp(3.2rem,12vw,11rem);line-height:.92}
+.cover__mid h1 span{color:var(--accent)}
+.cover__sub{font-family:var(--grot);font-weight:500;font-size:clamp(1rem,2.2vw,1.5rem);color:var(--muted);margin-top:1.5rem;max-width:34rem}
+.cover__foot{display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--grot);font-weight:500;font-size:.82rem;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+.bar{width:64px;height:4px;background:var(--accent);border-radius:2px}
+
+/* MANIFESTO */
+.mani h2{font-size:clamp(2.2rem,7vw,6rem)}
+.mani h2 em{font-style:normal;color:var(--accent)}
+.mani p{font-family:var(--grot);font-weight:400;font-size:clamp(1rem,2vw,1.4rem);color:var(--muted);max-width:42rem;margin-top:2rem}
+
+/* LOGO */
+.logohero{display:flex;align-items:center;justify-content:center;gap:5vmin;flex-wrap:wrap;margin:3rem 0}
+.logohero .chev{height:min(34vmin,300px)}
+.logogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:1rem}
+@media(max-width:760px){.logogrid{grid-template-columns:1fr}}
+.tile{border-radius:16px;height:160px;display:flex;align-items:center;justify-content:center;position:relative}
+.tile .chev{height:80px}
+.tile span{position:absolute;bottom:12px;left:16px;font-family:var(--grot);font-size:.72rem;color:var(--faint);letter-spacing:.06em}
+.t-dark{background:var(--bg2)}.t-light{background:var(--bright)}.t-surf{background:var(--surface)}
+.donts{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.4rem}
+@media(max-width:760px){.donts{grid-template-columns:repeat(2,1fr)}}
+.dont{background:var(--bg2);border-radius:14px;height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.dont .chev{height:54px}
+.dont::after{content:"\2715";position:absolute;top:6px;right:10px;color:#f87171;font-weight:700;font-size:1rem}
+.dont small{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:var(--grot);font-size:.66rem;color:var(--muted)}
+.x-stretch .chev{transform:scaleX(1.7)}.x-rot .chev{transform:rotate(18deg)}.x-low{background:var(--accent2)}
+.x-recolor .chev{filter:hue-rotate(150deg) saturate(1.5)}
+
+/* COULEURS */
+.swatches{display:flex;gap:0;margin-top:2.5rem;border-radius:18px;overflow:hidden;min-height:46vmin}
+.sw{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:1.4rem;transition:flex .3s}
+.sw b{font-family:var(--grot);font-weight:700;font-size:1rem}
+.sw code{font-family:'Space Grotesk',monospace;font-size:.82rem;opacity:.8}
+.sw--accent{flex:2.4}
+@media(max-width:760px){.swatches{flex-direction:column;min-height:auto}.sw{min-height:80px}}
+
+/* TYPO */
+.typebig{font-family:var(--mont);font-weight:900;font-size:clamp(7rem,28vw,24rem);line-height:.8;color:var(--bright);margin:1rem 0}
+.typebig span{color:var(--accent)}
+.typerow{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1rem}
+@media(max-width:760px){.typerow{grid-template-columns:1fr}}
+.typecard{border-top:2px solid var(--accent);padding-top:1rem}
+.typecard h3{font-size:1.6rem;margin-bottom:.3rem}
+.typecard p{font-family:var(--grot);font-size:.82rem;color:var(--muted)}
+.tc-mont h3{font-family:var(--mont);font-weight:800}.tc-grot h3{font-family:var(--grot);font-weight:700}.tc-inter h3{font-family:var(--inter);font-weight:600}
+
+/* MOTIF */
+.motif{align-items:center;text-align:center}
+.motif .chev{height:min(40vmin,360px);margin:2rem auto}
+.motif h2{font-size:clamp(2rem,6vw,5rem)}
+
+/* APPLICATIONS */
+.appgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem}
+.appgrid img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px;aspect-ratio:1/1;background:#000}
+.appgrid .wide{grid-column:span 2;aspect-ratio:auto}
+.appgrid .wide img{aspect-ratio:16/9}
+@media(max-width:760px){.appgrid{grid-template-columns:repeat(2,1fr)}.appgrid .wide{grid-column:span 2}}
+
+/* VOIX */
+.voix{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2.5rem}
+@media(max-width:760px){.voix{grid-template-columns:1fr}}
+.voixcard{background:var(--bg2);border-radius:16px;padding:2rem;border-left:4px solid}
+.voix--do{border-color:#4ade80}.voix--dont{border-color:#f87171}
+.voixcard h3{font-size:1.1rem;margin-bottom:1rem;font-family:var(--grot);font-weight:700}
+.voixcard p{color:var(--muted);margin-bottom:.7rem;font-size:1.02rem}
+.voix--do h3{color:#4ade80}.voix--dont h3{color:#f87171}
+
+/* CLOSING */
+.closing{align-items:center;text-align:center;background:radial-gradient(ellipse 60% 50% at 50% 60%,rgba(255,85,0,.13),transparent 60%)}
+.closing .chev{height:18vmin;margin-bottom:2.5rem}
+.closing h2{font-size:clamp(2rem,6vw,4.5rem);max-width:18ch}
+.closing .cta{margin-top:2.5rem;font-family:var(--grot);font-weight:500;color:var(--muted);letter-spacing:.04em}
+.closing .cta b{color:var(--accent)}
+
+/* TOC */
+.toc{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 2.5rem;margin-top:2.5rem;max-width:50rem}
+.toc a{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding:.8rem 0;color:var(--text);text-decoration:none;font-family:var(--grot);font-size:1.05rem}
+.toc a:hover{color:var(--accent)}
+.toc b{color:var(--accent);font-weight:700;margin-right:1rem}
+@media(max-width:760px){.toc{grid-template-columns:1fr}}
+
+/* WEB */
+.webwrap{display:flex;gap:2rem;align-items:flex-end;margin-top:1.5rem;flex-wrap:wrap}
+.browser{flex:1;min-width:320px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.browser__bar{background:#1c1c1c;display:flex;align-items:center;padding:11px 14px}
+.dot{width:11px;height:11px;border-radius:50%;background:#3a3a3a;margin-right:7px}
+.browser__url{margin-left:10px;flex:1;background:#0e0e0e;border-radius:6px;padding:6px 14px;font-family:var(--grot);font-size:.74rem;color:var(--muted)}
+.site{background:#0E0E0E;position:relative;overflow:hidden}
+.site__nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.4rem;position:relative;z-index:1}
+.site__brand{display:flex;align-items:center;gap:.5rem;font-family:var(--mont);font-weight:800;font-size:1rem;color:var(--bright);white-space:nowrap}
+.site__menu{font-family:var(--grot);font-size:.74rem;color:var(--muted);display:flex;gap:1rem}
+.site__cta{font-family:var(--grot);font-weight:700;font-size:.6rem;letter-spacing:.04em;background:var(--accent);color:#0E0E0E;padding:.55rem .9rem;border-radius:999px;white-space:nowrap;flex-shrink:0}
+.site__menu{flex-shrink:1;overflow:hidden}
+.site__hero{text-align:center;padding:2.6rem 1.2rem 2.4rem;position:relative;z-index:1}
+.site__eyebrow{display:inline-block;font-family:var(--grot);font-weight:700;font-size:.62rem;letter-spacing:.18em;color:var(--accent);border:1px solid rgba(255,85,0,.4);border-radius:999px;padding:.45rem .9rem;margin-bottom:1.3rem}
+.site__h1{font-family:var(--mont);font-weight:800;font-size:clamp(1.4rem,3.2vw,2.6rem);line-height:1.08;max-width:18ch;margin:0 auto 1.1rem;color:var(--bright)}
+.site__h1 span{color:var(--accent)}
+.site__sub{font-family:var(--inter);font-size:.84rem;color:var(--muted);max-width:46ch;margin:0 auto 1.5rem;line-height:1.6}
+.site__btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.site__btn{font-family:var(--grot);font-weight:700;font-size:.74rem;padding:.75rem 1.3rem;border-radius:999px}
+.site__btn--p{background:var(--accent);color:#0E0E0E}
+.site__btn--g{border:1px solid rgba(255,255,255,.18);color:var(--text)}
+.site__chips{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.site__chips span{font-family:var(--grot);font-size:.64rem;color:var(--muted);background:var(--bg2);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:.45rem .8rem}
+.phone{width:210px;flex:0 0 auto;border-radius:30px;border:7px solid #1c1c1c;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.phone .site__nav{padding:.7rem .8rem}
+.phone .site__menu,.phone .site__cta,.phone .site__btn--g,.phone .site__chips{display:none}
+.phone .site__brand{font-size:.8rem}
+.phone .site__hero{padding:1.6rem .5rem 1.4rem}
+.phone .site__sub{display:none}
+@media(max-width:900px){.phone{display:none}}
+
+/* CONTACT */
+.contact .big{font-family:var(--mont);font-weight:800;font-size:clamp(1.8rem,4.5vw,3.2rem);color:var(--bright)}
+.avalider{list-style:none;margin-top:1.6rem;max-width:40rem}
+.avalider li{padding:.6rem 0;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.07);font-family:var(--grot)}
+.avalider li::before{content:"\203a\203a\203a";color:var(--accent);margin-right:.7rem;font-weight:700;letter-spacing:-2px}
+
+@media print{
+  @page{size:A4 landscape;margin:0}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .spread{min-height:auto;height:100vh;page-break-after:always;break-after:page}
+}
+</style>
+</head>
+<body>
+
+<section class="spread cover grid-bg">
+  <div class="cover__top">
+    <span class="chev" style="height:46px"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span>
+    <span class="cover__wm">PIRABEL <b>LABS</b></span>
+  </div>
+  <div class="cover__mid">
+    <div class="kicker">Identité visuelle · 2026</div>
+    <h1>Brand<br>book<span>.</span></h1>
+    <p class="cover__sub">Le système de marque de Pirabel Labs — studio tech premium. Tout ce qui fait notre signature, en un document.</p>
+  </div>
+  <div class="cover__foot">
+    <div><div class="bar" style="margin-bottom:1rem"></div>Studio tech premium</div>
+    <div style="text-align:right">Abomey-Calavi, Bénin<br>www.pirabellabs.com</div>
+  </div>
+</section>
+
+<section class="spread">
+  <div class="kicker">Sommaire</div>
+  <h2 style="font-size:clamp(1.8rem,4.5vw,3.2rem)">Ce que contient ce livre.</h2>
+  <div class="toc">
+    <a><span><b>01</b> Manifeste</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>02</b> Logo — L'Élan</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>03</b> Couleurs</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>04</b> Typographie</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>05</b> Élément graphique</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>06</b> Web &amp; digital</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>07</b> Applications</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>08</b> Voix &amp; ton</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+    <a><span><b>09</b> Ressources</span><span style="color:var(--faint)">&#8250;&#8250;&#8250;</span></a>
+  </div>
+</section>
+
+<section class="spread mani grid-bg">
+  <span class="num">01 — Manifeste</span>
+  <div class="kicker">Qui nous sommes</div>
+  <h2>On conçoit.<br>On code.<br>On fait <em>croître</em>.</h2>
+  <p>Né à Abomey-Calavi, taillé pour le monde. On donne aux entreprises francophones des outils numériques de niveau international — et des résultats qui se mesurent.</p>
+</section>
+
+<section class="spread grid-bg">
+  <span class="num">02 — Logo</span>
+  <div class="kicker">Le symbole — L'Élan</div>
+  <h2 style="font-size:clamp(1.8rem,4vw,3rem)">Trois chevrons, un cap : l'avant.</h2>
+  <div class="logohero">
+    <span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span>
+  </div>
+  <div class="logogrid">
+    <div class="tile t-dark"><span>Orange / sombre · défaut</span><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span></div>
+    <div class="tile t-light"><span style="color:#888">Mono / fond clair</span><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#0E0E0E" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".45"/><path d="M52 84 L74 62 L52 40" opacity=".72"/><path d="M76 90 L102 64 L76 38"/></g></svg></span></div>
+    <div class="tile t-surf"><span>Mono clair</span><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#F5F4F1" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".45"/><path d="M52 84 L74 62 L52 40" opacity=".72"/><path d="M76 90 L102 64 L76 38"/></g></svg></span></div>
+  </div>
+  <div class="donts">
+    <div class="dont x-stretch"><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span><small>Déformer</small></div>
+    <div class="dont x-recolor"><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span><small>Recolorer</small></div>
+    <div class="dont x-rot"><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span><small>Pivoter</small></div>
+    <div class="dont x-low"><span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span><small>Contraste faible</small></div>
+  </div>
+</section>
+
+<section class="spread">
+  <span class="num">03 — Couleurs</span>
+  <div class="kicker">La palette</div>
+  <h2 style="font-size:clamp(1.8rem,4.5vw,3.4rem)">Le noir pose le décor.<br>L'orange donne le signal.</h2>
+  <div class="swatches">
+    <div class="sw sw--accent" style="background:#FF5500;color:#0E0E0E"><b>Orange signature</b><code>#FF5500</code></div>
+    <div class="sw" style="background:#FF7A33;color:#0E0E0E"><b>Orange clair</b><code>#FF7A33</code></div>
+    <div class="sw" style="background:#0E0E0E;color:#E5E2E1;border-right:1px solid #222"><b>Fond</b><code>#0E0E0E</code></div>
+    <div class="sw" style="background:#1c1c1c;color:#E5E2E1"><b>Surface</b><code>#1C1C1C</code></div>
+    <div class="sw" style="background:#E5E2E1;color:#0E0E0E"><b>Texte</b><code>#E5E2E1</code></div>
+  </div>
+</section>
+
+<section class="spread">
+  <span class="num">04 — Typographie</span>
+  <div class="kicker">Les caractères</div>
+  <div class="typebig">Aa<span>.</span></div>
+  <div class="typerow">
+    <div class="typecard tc-mont"><h3>Montserrat</h3><p>Affichage &amp; titres. Elle parle fort.</p></div>
+    <div class="typecard tc-grot"><h3>Space Grotesk</h3><p>Interface, labels, chiffres. Elle structure.</p></div>
+    <div class="typecard tc-inter"><h3>Inter</h3><p>Corps de texte. Elle explique, sans fatiguer.</p></div>
+  </div>
+</section>
+
+<section class="spread motif grid-bg">
+  <span class="num">05 — Élément</span>
+  <span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="9"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span>
+  <h2>Le chevron, partout.</h2>
+  <p style="font-family:var(--grot);color:var(--muted);max-width:40rem;margin:1.5rem auto 0">Motif signature : flèche d'accélération, puce, séparateur, indicateur de progression. Le mouvement rendu visible.</p>
+</section>
+
+<section class="spread web">
+  <span class="num">06 — Web</span>
+  <div class="kicker">Présence digitale</div>
+  <h2 style="font-size:clamp(1.8rem,4.5vw,3.2rem)">Le site, vitrine de la marque.</h2>
+  <div class="webwrap">
+    <div class="browser">
+      <div class="browser__bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="browser__url">www.pirabellabs.com</div></div>
+      <div class="site grid-bg">
+        <div class="site__nav">
+          <div class="site__brand"><span class="chev" style="height:20px"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span> Pirabel Labs</div>
+          <div class="site__menu"><span>Expertises</span><span>Agences</span><span>Villes</span><span>Ressources</span><span>À propos</span></div>
+          <div class="site__cta">CONTACTEZ-NOUS</div>
+        </div>
+        <div class="site__hero">
+          <span class="site__eyebrow">⚡ AGENCE MARKETING DIGITAL 360°</span>
+          <h3 class="site__h1">Transformez votre présence en ligne en véritable moteur de <span>croissance.</span></h3>
+          <p class="site__sub">Pirabel Labs accompagne les entreprises ambitieuses grâce à ses expertises en acquisition et création digitale — du brief à la mise en ligne.</p>
+          <div class="site__btns"><span class="site__btn site__btn--p">Obtenir un devis gratuit →</span><span class="site__btn site__btn--g">Découvrir nos réalisations →</span></div>
+          <div class="site__chips"><span>150+ projets livrés</span><span>+187 % de leads</span><span>Réponse sous 24 h</span><span>SEO · IA · Web</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="site grid-bg">
+        <div class="site__nav"><div class="site__brand"><span class="chev" style="height:15px"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span> Pirabel</div></div>
+        <div class="site__hero">
+          <span class="site__eyebrow">MARKETING 360°</span>
+          <h3 class="site__h1" style="font-size:1.15rem;max-width:14ch">Votre présence, moteur de <span>croissance.</span></h3>
+          <div class="site__btns"><span class="site__btn site__btn--p">Devis gratuit</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-family:var(--grot);color:var(--faint);font-size:.78rem;margin-top:1.2rem">Hero réel du site — www.pirabellabs.com</p>
+</section>
+
+<section class="spread">
+  <span class="num">07 — Applications</span>
+  <div class="kicker">La marque dans le monde réel</div>
+  <h2 style="font-size:clamp(1.8rem,4.5vw,3.2rem);margin-bottom:.5rem">Elle vit sur tous les supports.</h2>
+  <div class="appgrid">
+    <div class="wide"><img src="brand/assets/mockups/panneau-billboard.png" alt="Panneau publicitaire"></div>
+    <div class="wide"><img src="brand/assets/mockups/bureau-mur.png" alt="Mur de bureau"></div>
+    <img src="brand/assets/mockups/casquette.png" alt="Casquette">
+    <img src="brand/assets/mockups/t-shirt.png" alt="T-shirt">
+    <img src="brand/assets/mockups/mug.png" alt="Mug">
+    <img src="brand/assets/mockups/tote-bag.png" alt="Tote bag">
+    <div class="wide"><img src="brand/assets/mockups/enseigne.png" alt="Enseigne"></div>
+    <div class="wide"><img src="brand/assets/mockups/vitrine.png" alt="Vitrine"></div>
+  </div>
+</section>
+
+<section class="spread">
+  <span class="num">08 — Voix</span>
+  <div class="kicker">Le ton</div>
+  <h2 style="font-size:clamp(1.8rem,4.5vw,3.2rem)">Expert. Direct. Sans jargon.</h2>
+  <div class="voix">
+    <div class="voixcard voix--do"><h3>On dit</h3>
+      <p>« On a multiplié votre trafic par 3 en 6 mois. »</p>
+      <p>« Voici le plan, les délais, le prix. »</p>
+      <p>« Conçu au Bénin, aux standards internationaux. »</p>
+    </div>
+    <div class="voixcard voix--dont"><h3>On évite</h3>
+      <p>« Synergies omnicanales à fort impact. »</p>
+      <p>Des promesses floues, sans chiffres.</p>
+      <p>Le jargon qui cache le vide.</p>
+    </div>
+  </div>
+</section>
+
+<section class="spread contact">
+  <span class="num">09 — Ressources</span>
+  <div class="kicker">Fichiers &amp; à valider</div>
+  <p class="big">Tout est prêt à l'emploi.</p>
+  <ul class="avalider">
+    <li>Logo (SVG + PNG) — <code style="color:var(--muted)">brand/assets/logo/</code> : symbole, monochromes, lockups, favicon</li>
+    <li>Tokens, source unique — <code style="color:var(--muted)">tokens/</code> : tokens.css · tokens.json (W3C) · tailwind</li>
+    <li>Maquettes — <code style="color:var(--muted)">brand/assets/mockups/</code> : 8 supports</li>
+    <li>Styleguide interactif — <code style="color:var(--muted)">styleguide.html</code></li>
+    <li>À valider : baseline officielle · numéro de téléphone · référence Pantone exacte de l'orange</li>
+  </ul>
+</section>
+
+<section class="spread closing">
+  <span class="chev"><svg viewBox="0 0 120 120"><g fill="none" stroke="#FF5500" stroke-width="10"><path d="M30 78 L48 60 L30 42" opacity=".4"/><path d="M52 84 L74 62 L52 40" opacity=".7"/><path d="M76 90 L102 64 L76 38"/></g></svg></span>
+  <h2>Votre réussite digitale, <span style="color:var(--accent)">sans compromis</span>.</h2>
+  <p class="cta">PIRABEL <b>LABS</b> &nbsp;·&nbsp; contact@pirabellabs.com &nbsp;·&nbsp; www.pirabellabs.com</p>
+</section>
+
+</body>
+</html>

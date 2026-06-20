@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 560" font-family="Inter, sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&amp;family=Space+Grotesk:wght@500;700&amp;family=Inter:wght@400;500&amp;display=swap');</style>
+  </defs>
+  <title>Pirabel Labs — carte de visite recto / verso (85 × 55 mm)</title>
+
+  <text x="10" y="22" fill="#888780" font-size="11" font-family="Space Grotesk, sans-serif">RECTO · 85 × 55 mm (fonds perdus +3 mm)</text>
+
+  <g transform="translate(10,30)">
+    <rect width="340" height="220" rx="8" fill="#0E0E0E"/>
+    <polygon points="300,28 320,28 330,45 320,62 300,62 290,45" fill="none" stroke="rgba(255,85,0,0.18)" stroke-width="1.5"/>
+    <image href="../brand/assets/logo/pirabel-mark.svg" x="26" y="26" width="58" height="58"/>
+    <text x="92" y="50" font-family="Montserrat, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="#F5F4F1">PIRABEL <tspan fill="#FF5500">LABS</tspan></text>
+    <text x="92" y="68" font-family="Space Grotesk, sans-serif" font-weight="500" font-size="9.5" letter-spacing="1.5" fill="rgba(229,226,225,0.55)">STUDIO TECH PREMIUM</text>
+    <text x="26" y="158" font-family="Montserrat, sans-serif" font-weight="800" font-size="26" fill="#F5F4F1">Lissanon Gildas</text>
+    <text x="26" y="180" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="11" letter-spacing="2" fill="#FF5500">COFONDATEUR</text>
+    <rect x="26" y="196" width="44" height="3" rx="1.5" fill="#FF5500"/>
+  </g>
+
+  <text x="10" y="300" fill="#888780" font-size="11" font-family="Space Grotesk, sans-serif">VERSO</text>
+
+  <g transform="translate(10,308)">
+    <rect width="340" height="220" rx="8" fill="#0E0E0E"/>
+    <image href="../brand/assets/logo/pirabel-mark.svg" x="26" y="24" width="38" height="38"/>
+    <text x="72" y="42" font-family="Montserrat, sans-serif" font-weight="800" font-size="15" letter-spacing="1" fill="#F5F4F1">PIRABEL <tspan fill="#FF5500">LABS</tspan></text>
+    <text x="72" y="56" font-family="Space Grotesk, sans-serif" font-weight="500" font-size="8.5" letter-spacing="1.4" fill="rgba(229,226,225,0.55)">STUDIO TECH PREMIUM</text>
+
+    <circle cx="29" cy="98" r="2.4" fill="#FF5500"/><text x="40" y="102" font-size="12.5" fill="#E5E2E1">contact@pirabellabs.com</text>
+    <circle cx="29" cy="124" r="2.4" fill="#FF5500"/><text x="40" y="128" font-size="12.5" fill="#E5E2E1">www.pirabellabs.com</text>
+    <circle cx="29" cy="150" r="2.4" fill="#FF5500"/><text x="40" y="154" font-size="12.5" fill="#E5E2E1">Abomey-Calavi, Bénin</text>
+    <circle cx="29" cy="176" r="2.4" fill="#FF5500"/><text x="40" y="180" font-size="12.5" fill="#E5E2E1">+229 ·· ·· ·· ··  <tspan fill="rgba(229,226,225,0.4)" font-size="10">[à valider]</tspan></text>
+
+    <text x="26" y="208" font-family="Space Grotesk, sans-serif" font-weight="500" font-size="10" letter-spacing="0.5" fill="#FF7A33">Votre réussite digitale, sans compromis.</text>
+  </g>
+</svg>

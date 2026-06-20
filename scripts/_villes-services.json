@@ -1,0 +1,43 @@
+{
+  "services": [
+    {"slug":"creation-site-web","label":"Création de site web","existe":true,"focus":"sites vitrines, e-commerce et sur-mesure rapides et SEO-ready"},
+    {"slug":"creation-site-wordpress","label":"Création de site WordPress","existe":false,"focus":"sites WordPress et Elementor sur-mesure, performants et faciles à gérer"},
+    {"slug":"creation-application-web","label":"Création d'application web","existe":false,"focus":"applications métier, portails et outils internes sur-mesure"},
+    {"slug":"seo","label":"Référencement SEO","existe":true,"focus":"référencement naturel, contenu et technique pour gagner des positions Google"},
+    {"slug":"seo-local","label":"SEO local","existe":false,"focus":"visibilité locale, pack local Google et requêtes géolocalisées"},
+    {"slug":"fiche-google-business","label":"Fiche Google Business","existe":true,"focus":"optimisation et gestion de la fiche Google Business Profile"},
+    {"slug":"community-management","label":"Community management","existe":true,"focus":"gestion des réseaux sociaux, contenu et engagement"},
+    {"slug":"automatisation-marketing","label":"Automatisation marketing","existe":true,"focus":"workflows Make, n8n et Zapier pour automatiser les tâches"},
+    {"slug":"email-marketing-crm","label":"Email marketing & CRM","existe":false,"focus":"campagnes e-mail, séquences et CRM (Brevo, HubSpot)"},
+    {"slug":"tunnels-de-vente","label":"Tunnels de vente","existe":true,"focus":"tunnels de conversion et landing pages qui vendent"},
+    {"slug":"montage-video","label":"Montage vidéo","existe":false,"focus":"montage vidéo, reels et contenus pour les réseaux et la pub"},
+    {"slug":"agents-ia-chatbots","label":"Agents IA & chatbots","existe":false,"focus":"assistants IA et chatbots sur-mesure pour le support et la vente"}
+  ],
+  "villes": [
+    {"slug":"cotonou","nom":"Cotonou","pays":"Bénin","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"MTN/Moov Money, Wave, virement","contexte":"capitale économique du Bénin, premier hub commercial du pays"},
+    {"slug":"porto-novo","nom":"Porto-Novo","pays":"Bénin","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"MTN/Moov Money, Wave, virement","contexte":"capitale politique du Bénin, administration et institutions"},
+    {"slug":"abomey-calavi","nom":"Abomey-Calavi","pays":"Bénin","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"MTN/Moov Money, Wave, virement","contexte":"ville universitaire en forte croissance, banlieue de Cotonou"},
+    {"slug":"abidjan","nom":"Abidjan","pays":"Côte d'Ivoire","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"Orange/MTN/Moov Money, Wave, virement","contexte":"poumon économique ivoirien, grand marché numérique régional"},
+    {"slug":"dakar","nom":"Dakar","pays":"Sénégal","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"Orange Money, Wave, Free Money, virement","contexte":"hub tech d'Afrique de l'Ouest, écosystème startup dynamique"},
+    {"slug":"lome","nom":"Lomé","pays":"Togo","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"T-Money, Moov Money, virement","contexte":"port stratégique et plateforme commerciale régionale"},
+    {"slug":"ouagadougou","nom":"Ouagadougou","pays":"Burkina Faso","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"Orange Money, Moov Money, virement","contexte":"capitale administrative et économique du Burkina"},
+    {"slug":"bamako","nom":"Bamako","pays":"Mali","zone":"Afrique de l'Ouest","devise":"FCFA","paiement":"Orange Money, Moov Money, virement","contexte":"principal centre économique malien"},
+    {"slug":"conakry","nom":"Conakry","pays":"Guinée","zone":"Afrique de l'Ouest","devise":"GNF","paiement":"Orange Money, MTN MoMo, virement","contexte":"capitale et port, marché en structuration"},
+    {"slug":"douala","nom":"Douala","pays":"Cameroun","zone":"Afrique centrale","devise":"FCFA","paiement":"Orange/MTN Mobile Money, virement","contexte":"capitale économique du Cameroun, premier port"},
+    {"slug":"yaounde","nom":"Yaoundé","pays":"Cameroun","zone":"Afrique centrale","devise":"FCFA","paiement":"Orange/MTN Mobile Money, virement","contexte":"capitale politique, institutions et services"},
+    {"slug":"casablanca","nom":"Casablanca","pays":"Maroc","zone":"Maghreb","devise":"MAD","paiement":"carte bancaire, virement, cash plus","contexte":"capitale économique du Maroc, grand marché digital"},
+    {"slug":"tunis","nom":"Tunis","pays":"Tunisie","zone":"Maghreb","devise":"TND","paiement":"carte bancaire, virement, e-DINAR","contexte":"hub tech maghrébin, fort vivier de talents"},
+    {"slug":"paris","nom":"Paris","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"marché premium très concurrentiel, exigences élevées"},
+    {"slug":"lyon","nom":"Lyon","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"2e pôle économique français, tissu de PME et scale-ups"},
+    {"slug":"marseille","nom":"Marseille","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"grand bassin méditerranéen, commerce et tourisme"},
+    {"slug":"bordeaux","nom":"Bordeaux","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"écosystème tech et viticole, forte attractivité"},
+    {"slug":"toulouse","nom":"Toulouse","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"pôle aéronautique et tech, ville étudiante"},
+    {"slug":"nice","nom":"Nice","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"Côte d'Azur, tourisme, commerce et international"},
+    {"slug":"nantes","nom":"Nantes","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"hub numérique de l'Ouest, écosystème startup actif"},
+    {"slug":"lille","nom":"Lille","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"carrefour nord-européen, commerce et services"},
+    {"slug":"montpellier","nom":"Montpellier","pays":"France","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA","contexte":"ville tech en pleine croissance, forte démographie"},
+    {"slug":"bruxelles","nom":"Bruxelles","pays":"Belgique","zone":"Europe","devise":"EUR","paiement":"CB Stripe, virement SEPA, Bancontact","contexte":"capitale européenne, marché bilingue et institutionnel"},
+    {"slug":"geneve","nom":"Genève","pays":"Suisse","zone":"Europe","devise":"CHF","paiement":"CB, virement, TWINT","contexte":"marché premium, finance et organisations internationales"},
+    {"slug":"montreal","nom":"Montréal","pays":"Canada","zone":"Amérique du Nord","devise":"CAD","paiement":"CB Stripe, Interac, virement","contexte":"hub francophone d'Amérique du Nord, tech et IA"}
+  ]
+}

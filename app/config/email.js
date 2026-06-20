@@ -353,6 +353,12 @@ async function sendEmail(to, subject, html, opts = {}) {
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     }, opts.headers || {});
     if (!payload.reply_to) payload.reply_to = clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
+    // Version texte (multipart) : meilleur placement en boîte de réception (moins de spam)
+    payload.text = opts.text || String(html)
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<\/(p|div|tr|h[1-6]|li)>/gi, '\n').replace(/<br\s*\/?\>/gi, '\n')
+      .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+      .replace(/&[a-z]+;/gi, ' ').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, 6000);
 
     // Vercel serverless: AbortController for 9s timeout
     const ctrl = new AbortController();

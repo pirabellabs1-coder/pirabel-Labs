@@ -538,11 +538,12 @@
         });
         var json = await r.json();
         if (r.ok && json.success) {
+          var purl = json.pdfUrl || '';
           msg.className = 'lb-form__msg is-show is-success';
-          msg.innerHTML = '<strong>C\'est prêt !</strong> Votre téléchargement va démarrer. S\'il ne démarre pas, <a href="'+(json.pdfUrl||'#')+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-weight:700;">cliquez ici pour télécharger le PDF</a>. Une copie part aussi par e-mail (pensez à vérifier les spams).';
+          msg.innerHTML = '<strong>C\'est prêt !</strong> Votre PDF se télécharge.' + (purl ? ' <a href="'+purl+'" download style="display:inline-block;margin-top:.55rem;padding:.7rem 1.3rem;background:#fff;color:#0a0a0a;font-weight:800;border-radius:8px;text-decoration:none;">Télécharger le PDF</a>' : '') + '<br><span style="font-size:.85rem;opacity:.85;">Une copie part aussi par e-mail (pensez à vérifier les spams).</span>';
           if (submitText) submitText.textContent = 'Téléchargé ✓';
-          if (json.pdfUrl) { var a=document.createElement('a'); a.href=json.pdfUrl; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
-          setTimeout(closeModal, 12000);
+          if (purl) { var a=document.createElement('a'); a.href=purl; a.setAttribute('download',''); a.style.display='none'; document.body.appendChild(a); a.click(); setTimeout(function(){ if(a.parentNode) a.parentNode.removeChild(a); }, 2500); }
+          setTimeout(closeModal, 15000);
         } else {
           msg.className = 'lb-form__msg is-show is-error';
           msg.textContent = json.error || 'Erreur, réessayez ou écrivez-nous directement.';

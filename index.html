@@ -1877,6 +1877,18 @@
   }
 })();
 </script>
+  <script>
+  (function(){
+    var b = document.getElementById('moreServices'), g = document.getElementById('svcGrid');
+    if (b && g) {
+      b.addEventListener('click', function(){
+        var open = g.classList.toggle('is-expanded');
+        b.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) { var first = g.querySelector('.svc-c--extra'); if (first) first.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+      });
+    }
+  })();
+  </script>
   <script defer src="/js/track.js"></script>
 </body>
 </html>

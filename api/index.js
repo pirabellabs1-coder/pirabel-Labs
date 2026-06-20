@@ -678,7 +678,7 @@ const SITE = () => (process.env.SITE_URL || 'https://www.pirabellabs.com').repla
 function blogShell(headExtra, bodyHtml) {
   return '<!doctype html><html lang="fr"><head>' +
     '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<link rel="icon" type="image/png" href="/img/favicon.png">' +
+    '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">' +
     '<link rel="stylesheet" href="/css/global.css">' + (headExtra || '') +

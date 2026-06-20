@@ -1,0 +1,135 @@
+<p class="article-intro">Construire un site web professionnel en quelques jours plutôt qu'en plusieurs semaines, ce n'est plus une promesse marketing&nbsp;: c'est une méthode. Encore faut-il savoir piloter l'outil. Ce guide vous livre, étape par étape, la façon dont Pirabel Labs utilise Claude Code pour passer d'une page blanche à un site en ligne sur Vercel, avec les prompts qui fonctionnent, un cas concret chiffré et les pièges qui font perdre tout le temps gagné. Ce n'est pas une présentation de l'outil&nbsp;: c'est le mode d'emploi du chantier.</p>
+
+<h2 id="ce-que-couvre-ce-guide">Ce que couvre ce guide (et ce qu'il ne couvre pas)</h2>
+<p>Ce guide est un <strong>tutoriel de méthode</strong>, pas une fiche produit. Vous y trouverez la marche à suivre concrète pour construire un site avec Claude Code&nbsp;: cadrage, brief, structure du projet, prompts, génération des pages, design responsive, contenu, SEO et déploiement. L'objectif est que vous puissiez reproduire le processus, pas seulement le comprendre.</p>
+<p>En revanche, nous ne détaillons pas ici <strong>ce qu'est Claude Code</strong>, son fonctionnement interne, ses agents ou ses commandes. Tout cela fait l'objet d'un article dédié&nbsp;: si vous découvrez l'outil, lisez d'abord notre présentation complète de <a href="/blog/claude-code-outil-ia-developpement-web">Claude Code, l'outil d'IA pour le développement web</a>, puis revenez ici pour la méthode. Les deux articles sont complémentaires.</p>
+<p>Un mot de cadrage&nbsp;: «&nbsp;temps record&nbsp;» ne signifie pas «&nbsp;sans effort&nbsp;». Cela signifie que la part de production mécanique — écrire le code page par page, ajuster le balisage, recâbler les liens — s'effondre, tandis que la part de réflexion, de design et de validation reste entièrement humaine. C'est précisément ce déplacement de l'effort que cette méthode organise.</p>
+
+<aside class="art-pullquote"><div class="art-pullquote__icon material-symbols-outlined">format_quote</div><div class="art-pullquote__text">Claude Code ne supprime pas le travail&nbsp;: il déplace l'effort de la production vers la décision. La vitesse vient de là.</div></aside>
+
+<h2 id="prerequis-avant-de-commencer">Les pré-requis avant de commencer</h2>
+<p>Avant d'ouvrir le terminal, réunissez un socle minimal. Sans ces pré-requis, vous passerez votre temps à corriger l'environnement au lieu de construire le site. Voici ce dont vous avez besoin.</p>
+<ul>
+<li><strong>Un compte Claude Code actif.</strong> Une formule Pro (20&nbsp;$ par mois) suffit pour un site vitrine&nbsp;; une formule Max (100 à 200&nbsp;$ par mois) devient pertinente si vous enchaînez les projets ou les sessions longues sans vouloir surveiller les limites d'usage.</li>
+<li><strong>Node.js et Git installés.</strong> Claude Code travaille dans un terminal et versionne votre projet. Sans Git, vous perdez l'historique et la sécurité de pouvoir revenir en arrière.</li>
+<li><strong>Un éditeur de code</strong> (VS Code par exemple), même si vous ne tapez pas une ligne&nbsp;: vous en aurez besoin pour relire les plans, annoter et vérifier visuellement les fichiers générés.</li>
+<li><strong>Un compte de déploiement</strong>, typiquement Vercel ou Netlify, avec leur interface en ligne de commande installée. Leur formule gratuite couvre largement un site vitrine.</li>
+<li><strong>Des comptes pour les services tiers éventuels</strong>&nbsp;: formulaire de contact, base de données, paiement. À réunir seulement si votre site en a besoin.</li>
+</ul>
+<p>Le pré-requis le plus important n'est pas technique&nbsp;: c'est la <strong>clarté de votre projet</strong>. Plus votre intention est précise — pages, ton, public, exemples de sites que vous aimez —, plus la génération sera juste du premier coup. La majorité du temps perdu vient d'un brief flou, pas de l'outil.</p>
+
+<h2 id="methode-etape-par-etape">La méthode pas à pas, du cadrage au déploiement</h2>
+<p>Voici la séquence que nous suivons chez Pirabel Labs. Elle tient en sept étapes, dans cet ordre. Respecter l'ordre est ce qui fait la différence entre un chantier fluide et une session qui part dans tous les sens.</p>
+
+<h3>Étape&nbsp;1 — Cadrer le projet et rédiger le brief</h3>
+<p>Tout commence hors du terminal. Avant de prompter quoi que ce soit, écrivez un <strong>brief d'une page</strong>&nbsp;: objectif du site, public cible, liste exacte des pages, ton éditorial, contraintes de marque (couleurs, logo, polices), exemples de sites de référence et fonctionnalités attendues (formulaire, blog, prise de rendez-vous). Ce document est la fondation de tout le reste.</p>
+<p>Ce brief n'est pas une formalité&nbsp;: c'est le contrat que Claude Code va exécuter. Un brief précis transforme dix allers-retours en deux. Décidez aussi dès maintenant de la <strong>technologie cible</strong> — HTML/CSS statique pour un site simple, ou un cadre comme Next.js ou Astro pour un site évolutif — car ce choix conditionne tout le déploiement.</p>
+
+<h3>Étape&nbsp;2 — Structurer le projet et poser les règles</h3>
+<p>Créez un dossier vide, initialisez Git, lancez Claude Code dedans. La toute première chose à faire est de demander à l'outil de <strong>poser la structure du projet et un fichier de règles</strong>. Ce fichier de règles (souvent nommé CLAUDE.md) décrit vos conventions&nbsp;: charte typographique, langue, ton, nommage des fichiers, contraintes d'accessibilité. Claude Code le relit à chaque session.</p>
+<p>C'est l'investissement le plus rentable de toute la méthode. Une règle écrite une fois — par exemple «&nbsp;français impeccable, accents sur les majuscules, guillemets français&nbsp;» — vous évite de la répéter à chaque page. Le fichier de règles est la mémoire de votre projet&nbsp;: plus il est précis, moins vous corrigez.</p>
+
+<h3>Étape&nbsp;3 — Faire planifier avant de faire coder</h3>
+<p>Ne demandez jamais de générer tout le site d'un coup. <strong>Demandez d'abord un plan, sans aucune ligne de code.</strong> «&nbsp;Propose-moi l'arborescence des fichiers, la liste des composants réutilisables et l'ordre de construction, sans rien implémenter encore.&nbsp;» C'est la pratique la plus rentable de toutes en 2026.</p>
+<p>Vous ouvrez ce plan, vous l'annotez là où il se trompe, vous le corrigez, puis vous lancez l'exécution. Les équipes qui livrent le code le plus propre ne sont pas celles qui ont les prompts les plus astucieux, mais celles qui <strong>traitent la planification comme une étape à part entière</strong>, non optionnelle. Un plan validé évite de devoir tout refaire au milieu du chantier.</p>
+
+<h3>Étape&nbsp;4 — Générer les pages, composant par composant</h3>
+<p>Construisez par briques, pas en bloc. Faites d'abord générer les <strong>éléments partagés</strong> — en-tête, pied de page, navigation, système de couleurs et de typographie — puis chaque page une à une. À chaque page, vérifiez le rendu avant de passer à la suivante. Cette discipline garde votre contexte propre et vos erreurs localisées.</p>
+<p>Pour un site multipages, demandez explicitement à <strong>réutiliser les composants</strong> déjà créés plutôt que d'en recréer des variantes. C'est ce qui garantit la cohérence visuelle et évite la dette technique. Validez page par page&nbsp;: il est bien plus rapide de corriger une page isolée que de démêler un site entier généré en une seule fois.</p>
+
+<h3>Étape&nbsp;5 — Travailler le design et le responsive</h3>
+<p>Le design est l'étape où l'humain reprend la main. Décrivez précisément l'ambiance voulue&nbsp;: «&nbsp;épuré, beaucoup d'espace blanc, accent bleu nuit, typographie sobre, inspiré de tel site&nbsp;». Puis itérez sur le rendu réel, pas sur des descriptions. C'est ici que la connexion d'un outil de pilotage de navigateur change tout.</p>
+<p>En 2026, Claude Code peut piloter un navigateur via un connecteur de test (type Playwright MCP) pour <strong>prendre des captures, redimensionner la fenêtre et vérifier l'affichage sur mobile et bureau</strong> de façon autonome. Demandez-lui de tester les points de rupture courants (320, 768, 1280&nbsp;pixels) et de corriger les débordements. Attention toutefois&nbsp;: ces sessions consomment nettement plus de jetons, car l'arbre d'accessibilité de la page est injecté dans le contexte.</p>
+
+<aside class="art-stat-box"><div class="art-stat-box__num">4×</div><div><div class="art-stat-box__label">jetons consommés en mode navigateur</div><div class="art-stat-box__desc">Piloter un navigateur pour tester le responsive consomme environ quatre fois plus de jetons par session qu'une génération de code classique. À réserver aux vérifications visuelles ciblées, pas à activer en permanence.</div></div></aside>
+
+<h3>Étape&nbsp;6 — Injecter le contenu et le SEO</h3>
+<p>Ne laissez jamais le contenu final à l'improvisation de l'IA. Fournissez vos textes, ou faites-les rédiger puis <strong>relisez-les intégralement</strong>. Pour le SEO, demandez explicitement les fondations techniques&nbsp;: balises de titre uniques, méta-descriptions, structure de titres hiérarchisée, attributs alternatifs sur les images, données structurées, plan de site et fichier robots.</p>
+<p>C'est aussi le moment de soigner la lisibilité par les machines, devenue décisive en 2026. Réponses claires dès la première phrase de chaque section, structure en questions-réponses, données structurées propres&nbsp;: ce sont les fondations qui permettent d'être cité par les moteurs génératifs. Pour aller plus loin, suivez notre <a href="/blog/refonte-site-checklist-40-points">checklist de refonte en 40&nbsp;points</a>, applicable aussi à une création.</p>
+
+<h3>Étape&nbsp;7 — Déployer sur Vercel</h3>
+<p>Le déploiement est l'étape la plus rapide, à condition de l'avoir anticipée à l'étape&nbsp;1. Annoncez à Claude Code dès le départ que vous déploierez sur Vercel et demandez-lui d'installer l'interface en ligne de commande correspondante. Vercel gère sans configuration les projets HTML statiques comme les projets Next.js ou Astro.</p>
+<p>Le flux recommandé&nbsp;: pousser le projet sur un dépôt GitHub, le connecter à Vercel, et obtenir une URL en ligne avec déploiement automatique à chaque envoi de code. Ensuite, chaque modification suit la même boucle&nbsp;: tester en local, pousser, et Vercel redéploie en 60 à 90&nbsp;secondes. Vérifiez un point classique&nbsp;: que le dossier public et tous les fichiers soient bien suivis par Git, car Claude Code génère parfois des références à des fichiers non versionnés.</p>
+
+<h2 id="bonnes-pratiques-prompting">Les bonnes pratiques de prompting</h2>
+<p>La qualité de votre site dépend directement de la qualité de vos instructions. Un bon prompt n'est pas long&nbsp;: il est précis, contextualisé et vérifiable. Voici les principes qui font la différence.</p>
+<ul>
+<li><strong>Un objectif par prompt.</strong> «&nbsp;Crée la page Tarifs avec trois offres et un tableau comparatif&nbsp;» fonctionne mieux que «&nbsp;Fais le site&nbsp;». Découpez.</li>
+<li><strong>Donnez le contexte et la contrainte.</strong> Précisez le public, le ton, la technologie, ce qu'il faut réutiliser et ce qu'il ne faut pas toucher. L'IA ne devine pas votre intention.</li>
+<li><strong>Montrez des exemples.</strong> «&nbsp;Comme la section héros de tel site&nbsp;», ou collez un visuel de référence. Une référence concrète vaut dix adjectifs.</li>
+<li><strong>Demandez à vérifier.</strong> «&nbsp;Vérifie que tous les liens internes pointent vers une page existante&nbsp;» ou «&nbsp;teste l'affichage sur mobile et corrige les débordements&nbsp;». L'IA peut contrôler son propre travail si vous le lui demandez.</li>
+<li><strong>Travaillez par itérations courtes.</strong> Validez avant d'avancer. Une erreur détectée tôt coûte une minute&nbsp;; détectée après dix pages, elle en coûte trente.</li>
+<li><strong>Déléguez la recherche.</strong> Pour explorer une bibliothèque ou comparer des approches, demandez une investigation séparée afin de garder votre conversation principale propre.</li>
+</ul>
+<p>Une dernière règle d'or&nbsp;: <strong>relisez tout ce qui sera public</strong>. L'IA peut introduire une formulation maladroite, une faute, une donnée inventée. La relecture humaine n'est pas négociable, surtout en français où la moindre faute d'accent décrédibilise une marque.</p>
+
+<aside class="art-pullquote"><div class="art-pullquote__icon material-symbols-outlined">format_quote</div><div class="art-pullquote__text">Un prompt précis et vérifiable vaut mieux qu'un prompt astucieux. La vitesse naît de la clarté, pas de la formule magique.</div></aside>
+
+<h2 id="exemple-concret-pirabel-labs">Un exemple concret de projet mené par Pirabel Labs</h2>
+<p>Pour rendre la méthode tangible, voici le déroulé réel d'un site vitrine que nous avons construit pour une PME de services à Cotonou&nbsp;: huit pages, un formulaire de contact relié à une boîte courriel, une carte de localisation et une prise de rendez-vous simple. Verdict&nbsp;: un chantier qui aurait pris environ deux semaines en méthode classique a été livré <strong>en ligne en trois jours ouvrés</strong>.</p>
+<p>Le déroulé, jour par jour&nbsp;:</p>
+<ol>
+<li><strong>Demi-journée de cadrage (humain).</strong> Atelier avec le client, brief d'une page, choix d'un site HTML statique pour la performance et la simplicité de maintenance. Aucune ligne de code.</li>
+<li><strong>Jour&nbsp;1 — structure et design system.</strong> Création du dossier, du fichier de règles (français impeccable, charte, accessibilité), du plan d'arborescence validé, puis de l'en-tête, du pied de page et du système de couleurs. Première page d'accueil en fin de journée.</li>
+<li><strong>Jour&nbsp;2 — pages et responsive.</strong> Génération des sept pages restantes en réutilisant les composants, vérification mobile et bureau via pilotage du navigateur, correction des débordements. Intégration du formulaire de contact.</li>
+<li><strong>Jour&nbsp;3 — contenu, SEO, déploiement.</strong> Relecture intégrale des textes (humain), balises et données structurées, plan de site, puis mise en ligne sur Vercel avec un nom de domaine personnalisé. Tests finaux et livraison.</li>
+</ol>
+<p>Où s'est concentré le gain de temps&nbsp;? Sur la <strong>production de code répétitive</strong>&nbsp;: décliner huit pages cohérentes, recâbler les liens, ajuster le responsive, écrire le balisage SEO. Là où une équipe passait des journées, Claude Code a réduit l'effort à quelques heures de pilotage. Le temps humain s'est, lui, concentré sur le brief, le design, la relecture et la relation client — c'est-à-dire la valeur.</p>
+
+<aside class="art-stat-box"><div class="art-stat-box__num">−70&nbsp;%</div><div><div class="art-stat-box__label">de temps de production sur un site vitrine</div><div class="art-stat-box__desc">Sur ce projet, la phase de production pure (code, intégration, responsive, balisage) est passée d'environ deux semaines à trois jours, soit près de 70&nbsp;% de temps en moins — sans rogner sur la qualité ni la relecture.</div></div></aside>
+
+<h2 id="pieges-a-eviter">Les pièges à éviter</h2>
+<p>La plupart des projets qui dérapent ne le font pas à cause de l'outil, mais à cause de la méthode. Voici les erreurs qui annulent les gains de temps, observées sur nos chantiers comme dans la communauté.</p>
+<ul>
+<li><strong>Tout demander d'un coup.</strong> «&nbsp;Construis le site complet&nbsp;» produit un résultat incohérent et impossible à corriger proprement. Découpez toujours.</li>
+<li><strong>Sauter l'étape de plan.</strong> Coder sans plan validé, c'est s'engager à tout refaire au premier changement d'avis. La planification est l'assurance du projet.</li>
+<li><strong>Ne pas versionner.</strong> Sans commits réguliers, une mauvaise génération peut écraser une heure de travail correct. Engagez le code à chaque étape validée.</li>
+<li><strong>Faire confiance au contenu sans relire.</strong> Fautes, formulations bancales, statistiques inventées&nbsp;: l'IA en produit. En français, une faute d'accent suffit à abîmer la crédibilité.</li>
+<li><strong>Oublier les fichiers dans Git.</strong> Des images ou un dossier non versionnés cassent le site en production alors qu'il fonctionnait en local. Vérifiez l'état du dépôt avant de pousser.</li>
+<li><strong>Laisser le mode navigateur ouvert en permanence.</strong> Très utile pour tester le responsive, mais quatre fois plus coûteux en jetons. Activez-le par salves, pour des vérifications ciblées.</li>
+<li><strong>Confondre «&nbsp;ça marche&nbsp;» et «&nbsp;c'est fini&nbsp;».</strong> Un site généré n'est pas un site validé&nbsp;: performance, accessibilité, SEO et conformité demandent un contrôle humain.</li>
+</ul>
+
+<h2 id="expertise-humaine-encore-indispensable">Ce qui demande encore une expertise humaine</h2>
+<p>Claude Code accélère la production, mais il ne remplace pas le métier. Plusieurs dimensions restent strictement humaines, et c'est ce qui distingue un site bricolé d'un site professionnel. Confondre les deux est l'erreur stratégique la plus fréquente.</p>
+<ul>
+<li><strong>La stratégie et le positionnement.</strong> Quel message, pour quel public, avec quelle promesse&nbsp;? L'IA exécute&nbsp;; elle ne décide pas de votre différenciation.</li>
+<li><strong>Le design et l'identité de marque.</strong> Le goût, la cohérence visuelle, l'émotion d'une marque relèvent du jugement humain. L'IA propose des variantes&nbsp;; vous tranchez.</li>
+<li><strong>L'expérience utilisateur et la conversion.</strong> Structurer un parcours qui convertit, hiérarchiser l'information, choisir les appels à l'action&nbsp;: c'est un savoir-faire de stratège, pas de générateur.</li>
+<li><strong>La relecture éditoriale.</strong> Ton juste, français impeccable, exactitude des faits&nbsp;: irremplaçable, surtout pour une marque francophone exigeante.</li>
+<li><strong>La performance et l'accessibilité réelles.</strong> Optimiser les Core Web Vitals, garantir l'accessibilité, sécuriser le site&nbsp;: l'IA aide, mais le contrôle final est d'expert.</li>
+<li><strong>La conformité et le juridique.</strong> Mentions légales, protection des données, conditions&nbsp;: à valider par quelqu'un qui en répond.</li>
+</ul>
+<p>Autrement dit, l'outil change le rapport vitesse/coût de la production, mais la <strong>valeur d'agence reste entière</strong>&nbsp;: c'est elle qui transforme un assemblage de pages en un actif commercial. Pour choisir entre les différents environnements de développement assistés par IA, notre comparatif <a href="/blog/cursor-vs-copilot-vs-windsurf-ide-ia-2026">Cursor vs Copilot vs Windsurf en 2026</a> complète utilement cette réflexion.</p>
+
+<h2 id="temps-et-cout-reels">Combien de temps et de coût, réellement&nbsp;?</h2>
+<p>Soyons concrets. Pour un <strong>site vitrine de cinq à huit pages</strong>, comptez deux à quatre jours ouvrés avec cette méthode, contre une à trois semaines en production classique. Pour un site plus riche — blog, espace client, paiement —, le gain reste réel mais la part d'expertise humaine augmente proportionnellement à la complexité.</p>
+<p>Côté coût d'outil, l'abonnement Claude Code se situe entre <strong>20&nbsp;$ par mois (formule Pro)</strong> et 100 à 200&nbsp;$ (formules Max) pour un usage intensif. C'est dérisoire au regard du temps gagné&nbsp;: les abonnements optimisent fortement le coût par rapport à un usage facturé au jeton. Un développeur a mesuré une consommation qui aurait coûté plus de 15&nbsp;000&nbsp;$ en facturation à l'usage, mais environ 800&nbsp;$ sur une formule Max sur la même période.</p>
+<p>Le vrai coût d'un projet ne réside donc pas dans l'outil, mais dans le <strong>temps d'expertise humaine</strong>&nbsp;: cadrage, design, relecture, stratégie. C'est rassurant&nbsp;: cela signifie qu'un site construit avec Claude Code par des amateurs et un site construit par une agence ne se ressemblent pas, parce que la différence se joue là où l'IA ne va pas. Discutons de votre projet sur notre <a href="/contact">page contact</a> pour estimer un délai et un budget réalistes.</p>
+
+<aside class="art-stat-box"><div class="art-stat-box__num">800&nbsp;$</div><div><div class="art-stat-box__label">au lieu de 15&nbsp;000&nbsp;$ en facturation à l'usage</div><div class="art-stat-box__desc">Sur un usage intensif mesuré, une formule par abonnement a coûté environ 800&nbsp;$ là où la facturation au jeton aurait dépassé 15&nbsp;000&nbsp;$. Pour un usage soutenu, l'abonnement est le bon choix.</div></div></aside>
+
+<h2 id="faq">FAQ</h2>
+
+<h3>Faut-il savoir coder pour construire un site avec Claude Code&nbsp;?</h3>
+<p>Non pour produire un site simple, oui pour livrer un site professionnel. Claude Code écrit le code à votre place à partir d'instructions en langage naturel, donc un débutant peut obtenir un résultat fonctionnel. Mais valider l'architecture, le design, la performance, le SEO et la conformité demande une expertise. Sans elle, vous obtenez un site qui «&nbsp;marche&nbsp;» sans être pour autant solide ni efficace commercialement.</p>
+
+<h3>Quelle technologie choisir pour le site&nbsp;?</h3>
+<p>Pour un site vitrine simple et performant, le HTML/CSS statique est souvent le meilleur choix&nbsp;: léger, rapide, facile à maintenir. Pour un site évolutif ou avec des fonctionnalités, un cadre comme Next.js ou Astro est pertinent, d'autant qu'il se déploie sans configuration sur Vercel. Décidez ce choix dès le cadrage, car il conditionne le déploiement. Notre comparatif WordPress, Webflow et Next.js peut vous aider à trancher.</p>
+
+<h3>Combien de temps faut-il vraiment pour un site vitrine&nbsp;?</h3>
+<p>Comptez deux à quatre jours ouvrés pour un site de cinq à huit pages avec cette méthode, contre une à trois semaines en production classique. Le gain porte sur la production de code répétitive&nbsp;; le temps de cadrage, de design et de relecture, lui, reste incompressible car c'est là que se joue la qualité.</p>
+
+<h3>Claude Code peut-il déployer le site tout seul&nbsp;?</h3>
+<p>Oui, en grande partie. Si vous lui annoncez dès le départ que vous déployez sur Vercel et qu'il installe l'interface en ligne de commande, il peut configurer le projet, le pousser sur GitHub et déclencher la mise en ligne. Chaque modification suivante redéploie automatiquement en une à deux minutes. Vérifiez simplement que tous les fichiers, notamment les images, sont bien versionnés dans Git.</p>
+
+<h3>Comment garantir un français impeccable sur le site&nbsp;?</h3>
+<p>Inscrivez la règle dès le fichier de règles du projet — accents sur les majuscules, cédilles, ligatures, guillemets français, typographie — puis relisez systématiquement tout texte destiné à être publié. L'IA peut produire des fautes ou des formulations maladroites&nbsp;: la relecture humaine reste obligatoire, surtout pour une marque francophone dont la crédibilité tient à la qualité de la langue.</p>
+
+<h3>Est-ce adapté à une PME au Bénin ou en Afrique de l'Ouest&nbsp;?</h3>
+<p>Tout à fait. La méthode réduit le coût et le délai de production, deux freins majeurs pour les PME ouest-africaines qui veulent une présence en ligne professionnelle. Un site statique léger se charge vite même sur des connexions mobiles, l'hébergement gratuit de Vercel limite les coûts récurrents, et l'accompagnement d'une agence locale garantit le positionnement, le design et la conformité. C'est exactement le type de projet que nous menons depuis Abomey-Calavi.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>Construire un site web avec Claude Code en temps record n'est pas une question de magie, mais de <strong>méthode</strong>&nbsp;: cadrer avant de prompter, planifier avant de coder, générer par briques, relire ce qui sera public et déployer en continu. Suivez cet ordre et vous transformez un chantier de plusieurs semaines en quelques jours, sans sacrifier la qualité.</p>
+<p>Mais souvenez-vous de l'essentiel&nbsp;: l'outil accélère la production, pas la réflexion. La stratégie, le design, la relecture et la conversion restent l'affaire d'humains experts — et c'est précisément ce qui sépare un site bricolé d'un actif commercial. Pour comprendre l'outil en profondeur, lisez notre présentation de <a href="/blog/claude-code-outil-ia-developpement-web">Claude Code pour le développement web</a>&nbsp;; pour cadrer une refonte, suivez notre <a href="/blog/refonte-site-checklist-40-points">checklist en 40&nbsp;points</a>.</p>
+<p>Vous avez un projet de site et vous voulez profiter de cette vitesse sans en payer les pièges&nbsp;? <a href="/contact">Parlons-en</a>&nbsp;: Pirabel Labs conçoit, construit et déploie votre site avec ces méthodes, et garde la main là où l'expertise humaine fait toute la différence.</p>

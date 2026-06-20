@@ -1,0 +1,145 @@
+<p class="article-intro">Vous avez peut-être entendu un développeur dire qu'il «&nbsp;a confié toute une fonctionnalité à Claude Code&nbsp;» et terminé en une après-midi ce qui aurait pris une semaine. Derrière la formule se cache un changement profond&nbsp;: l'arrivée d'agents de codage capables de comprendre un projet entier, d'écrire du code dans plusieurs fichiers à la fois et d'exécuter des commandes par eux-mêmes. Claude Code, l'outil d'Anthropic, est l'un des plus aboutis de cette nouvelle génération. Cet article répond à une question simple&nbsp;: qu'est-ce que Claude Code, comment fonctionne-t-il, et pourquoi bouleverse-t-il la façon de construire des sites et des applications&nbsp;?</p>
+
+<h2 id="claude-code-definition">Claude Code, c'est quoi exactement&nbsp;?</h2>
+<p>Claude Code est un <strong>agent de codage en terminal développé par Anthropic</strong>, l'entreprise derrière les modèles d'intelligence artificielle Claude. Concrètement, c'est un programme que l'on installe sur sa machine et que l'on pilote en ligne de commande&nbsp;: vous lui décrivez une tâche en langage naturel, et il agit directement dans votre projet.</p>
+<p>Là où un assistant classique se contente de proposer des bouts de code à copier-coller, Claude Code va beaucoup plus loin. Il lit votre base de code, modifie les fichiers nécessaires, lance des commandes (tests, installation de dépendances, gestion de version), observe le résultat et corrige le tir si besoin. On parle d'<strong>agent</strong> précisément parce qu'il enchaîne plusieurs actions de façon autonome pour atteindre un objectif, et non d'un simple générateur de texte.</p>
+<p>Il fonctionne dans votre terminal, dans l'application de bureau Anthropic et dans votre environnement de développement (IDE). Cette nature «&nbsp;terminal d'abord&nbsp;» (CLI-first) le distingue des outils qui vivent à l'intérieur d'un éditeur&nbsp;: Claude Code s'installe à la racine de votre projet et travaille au niveau du système.</p>
+
+<aside class="art-pullquote"><div class="art-pullquote__icon material-symbols-outlined">format_quote</div><div class="art-pullquote__text">Un assistant suggère du code. Un agent comme Claude Code comprend votre projet, le modifie, l'exécute et vérifie qu'il fonctionne — sans quitter le terminal.</div></aside>
+
+<p>Important&nbsp;: cet article est une <strong>présentation</strong> de l'outil, pas un tutoriel. Si vous voulez voir comment construire un site web concret, étape par étape, avec Claude Code, nous y consacrons un guide dédié&nbsp;: <a href="/blog/construire-site-claude-code-temps-record">construire un site avec Claude Code en temps record</a>. Ici, l'objectif est de comprendre le pourquoi et le comment avant de passer à la pratique.</p>
+
+<h2 id="comment-fonctionne-claude-code">Comment fonctionne Claude Code&nbsp;?</h2>
+<p>Claude Code combine quatre capacités qui, mises bout à bout, expliquent sa puissance. Comprendre ces briques vous aide à savoir ce que l'outil peut — et ne peut pas — faire pour vous.</p>
+
+<h3>1. La compréhension du code</h3>
+<p>Avant d'agir, Claude Code explore votre projet. Il identifie l'architecture, les conventions de nommage, les bibliothèques utilisées et les fichiers pertinents pour la tâche demandée. Cette lecture contextuelle est cruciale&nbsp;: c'est ce qui lui permet d'écrire du code cohérent avec l'existant plutôt qu'un fragment générique. Les modèles Claude derrière l'outil disposent d'une très grande fenêtre de contexte (jusqu'à un million de tokens), ce qui leur permet de tenir compte d'un volume de code considérable d'un seul coup.</p>
+
+<h3>2. L'édition multi-fichiers</h3>
+<p>Une fonctionnalité touche rarement un seul fichier. Ajouter un formulaire de contact, par exemple, peut nécessiter de modifier un composant d'interface, une route serveur, un modèle de données et un fichier de styles. Claude Code <strong>édite tous ces fichiers dans une même opération</strong>, en gardant la cohérence entre eux. C'est l'un de ses apports les plus visibles pour un projet réel.</p>
+
+<h3>3. L'exécution de commandes</h3>
+<p>Claude Code ne se limite pas à écrire&nbsp;: il <strong>exécute des commandes dans votre terminal</strong>. Il peut lancer une suite de tests, installer un paquet, démarrer un serveur de développement, faire un commit Git ou consulter les journaux d'erreur. Surtout, il lit le résultat de ces commandes&nbsp;: si un test échoue, il comprend pourquoi et propose un correctif. Cette boucle «&nbsp;agir → observer → corriger&nbsp;» est ce qui rend l'agent capable de mener une tâche jusqu'au bout.</p>
+
+<h3>4. Les agents et sous-agents</h3>
+<p>Pour les tâches complexes, Claude Code peut déléguer une partie du travail à des <strong>sous-agents spécialisés</strong>. On retrouve par exemple un agent d'exploration (pour parcourir rapidement les fichiers), un agent de planification (pour étudier le code et concevoir une stratégie) et des agents généralistes pour les missions à plusieurs étapes. Ces sous-agents peuvent travailler en parallèle, ce qui accélère nettement l'exploration d'un grand projet ou l'analyse de plusieurs fichiers à la fois.</p>
+
+<p>À cela s'ajoutent des composants qui structurent le travail&nbsp;: un mode planification (qui réfléchit à l'approche avant d'écrire la moindre ligne), des commandes personnalisées qui agissent comme des modèles de requête, des compétences («&nbsp;skills&nbsp;») qui apportent du savoir-faire métier au bon moment, et des points d'ancrage («&nbsp;hooks&nbsp;») qui imposent des règles via du code. Tous ces éléments sont organisés en couches distinctes, ce qui rend l'outil à la fois puissant et maîtrisable.</p>
+
+<aside class="art-stat-box"><div class="art-stat-box__num">7</div><div><div class="art-stat-box__label">sous-agents en parallèle</div><div class="art-stat-box__desc">Claude Code peut faire travailler plusieurs sous-agents simultanément, par exemple pour explorer une base de code volumineuse ou analyser plusieurs fichiers d'un coup.</div></div></aside>
+
+<h2 id="modeles-claude-derriere">Les modèles Claude derrière l'outil</h2>
+<p>Claude Code n'est pas un modèle d'intelligence artificielle&nbsp;: c'est l'<strong>interface qui pilote les modèles Claude d'Anthropic</strong>. Le choix du modèle détermine l'intelligence, la vitesse et le coût de chaque session. Comprendre cette gamme vous aide à doser l'effort selon la tâche.</p>
+<ul>
+<li><strong>Claude Opus</strong> — la famille la plus capable pour le travail agentique de longue haleine. La version Opus&nbsp;4.8, par exemple, excelle dans les refactorisations complexes, le débogage et les tâches autonomes qui s'étalent sur de nombreuses étapes. C'est le modèle de référence pour le code exigeant.</li>
+<li><strong>Claude Sonnet</strong> — le meilleur compromis entre vitesse et intelligence. Idéal pour les tâches quotidiennes où l'on veut une réponse rapide sans sacrifier la qualité.</li>
+<li><strong>Claude Haiku</strong> — le modèle le plus rapide et le plus économique, parfait pour les opérations simples ou répétitives. Claude Code l'utilise notamment pour ses sous-agents d'exploration, où la rapidité prime.</li>
+<li><strong>Claude Fable&nbsp;5</strong> — le modèle le plus capable d'Anthropic, conçu pour les raisonnements les plus difficiles et les missions agentiques de très longue durée. Il s'adresse aux projets les plus ambitieux. Nous lui consacrons un article dédié pour les entreprises&nbsp;: <a href="/blog/claude-fable-5-nouveautes-entreprises-2026">les nouveautés de Claude Fable&nbsp;5 pour les entreprises en 2026</a>.</li>
+</ul>
+<p>La force de ce système est sa souplesse&nbsp;: vous pouvez confier une mission ardue à Opus ou Fable&nbsp;5, tout en laissant les modèles plus légers gérer les tâches secondaires. Claude Code orchestre ce ballet pour vous, en réservant la puissance là où elle compte vraiment.</p>
+
+<h2 id="ce-qui-distingue-claude-code">Ce qui distingue Claude Code des autres outils</h2>
+<p>Claude Code n'est pas seul sur le marché. En 2026, trois outils dominent l'assistance au code&nbsp;: Claude Code, Cursor et GitHub Copilot, auxquels s'ajoute Windsurf. Chacun adopte une philosophie différente.</p>
+<ul>
+<li><strong>GitHub Copilot</strong> est une extension multi-éditeur, l'option la plus accessible et la plus répandue. Son point fort historique est l'autocomplétion en ligne&nbsp;: il suggère la suite de votre code pendant que vous tapez. C'est l'outil idéal pour rester dans le flux et pour les équipes qui ne veulent pas changer d'éditeur.</li>
+<li><strong>Cursor</strong> est un éditeur de code à part entière, bâti sur la base ouverte de VS&nbsp;Code et repensé autour de l'intelligence artificielle. Son mode Agent planifie et exécute des modifications sur plusieurs fichiers, et son interface Composer offre un terrain de jeu très soigné. C'est l'entre-deux le plus abouti entre l'autocomplétion et l'agent autonome.</li>
+<li><strong>Claude Code</strong> est le plus <strong>agentique</strong> des trois. Il vit dans le terminal, comprend la base de code entière, édite les fichiers de façon autonome, lance des commandes et opère au niveau du système. Il ne se contente pas de compléter du code&nbsp;: il prend en charge des tâches complètes, de la planification jusqu'aux tests.</li>
+</ul>
+<p>En pratique, beaucoup de développeurs expérimentés combinent deux outils&nbsp;: Cursor ou Copilot pour l'édition au fil de l'eau, et Claude Code pour les missions complexes à plusieurs étapes. Si vous hésitez sur lequel choisir, nous avons rédigé un comparatif complet&nbsp;: <a href="/blog/cursor-vs-copilot-vs-windsurf-ide-ia-2026">Cursor vs Copilot vs Windsurf, quel IDE IA choisir en 2026</a>. Il détaille les forces et faiblesses de chacun selon votre profil.</p>
+
+<aside class="art-pullquote"><div class="art-pullquote__icon material-symbols-outlined">format_quote</div><div class="art-pullquote__text">Copilot complète, Cursor édite, Claude Code agit. La différence n'est pas une question de degré, mais de philosophie.</div></aside>
+
+<h2 id="pour-qui-est-claude-code">Pour qui est fait Claude Code&nbsp;?</h2>
+<p>Claude Code s'adresse à un public plus large qu'on ne l'imagine. La ligne de commande peut sembler intimidante, mais l'outil dialogue en langage naturel, ce qui abaisse fortement la barrière d'entrée.</p>
+
+<h3>Les développeurs</h3>
+<p>C'est le public premier. Pour un développeur, Claude Code agit comme un collègue infatigable capable de prendre en charge le code répétitif, d'explorer une base de code inconnue, de déboguer et de refactoriser. Il libère du temps pour les décisions d'architecture et la résolution des problèmes vraiment difficiles, là où l'expertise humaine fait la différence.</p>
+
+<h3>Les agences web</h3>
+<p>Pour une agence comme la nôtre, Claude Code change l'économie d'un projet. Il permet de livrer plus vite, de tenir des délais serrés et de maintenir une qualité constante sur l'ensemble d'un site. C'est particulièrement précieux sur le marché ouest-africain et francophone, où les budgets des PME exigent un excellent rapport qualité-prix sans rogner sur le sérieux du travail.</p>
+
+<h3>Les non-développeurs</h3>
+<p>Entrepreneurs, fondateurs de PME, responsables marketing&nbsp;: même sans savoir coder, on peut utiliser Claude Code pour automatiser des tâches, prototyper une idée ou comprendre un projet technique existant. L'outil ne remplace pas l'expertise pour un site critique en production, mais il démocratise l'accès à des opérations qui, hier encore, exigeaient un spécialiste.</p>
+
+<h2 id="cas-usage-concrets">Cas d'usage concrets</h2>
+<p>Pour rendre tout cela tangible, voici les situations où Claude Code apporte une valeur immédiate, observées dans des projets réels.</p>
+<ul>
+<li><strong>Démarrer un projet de zéro</strong> — générer la structure d'un site, configurer l'environnement et poser les premières pages en quelques minutes.</li>
+<li><strong>Ajouter une fonctionnalité</strong> — un formulaire de contact, une intégration de paiement (utile pour le Mobile Money en Afrique de l'Ouest), un système de filtres&nbsp;: l'agent touche tous les fichiers concernés en une seule passe.</li>
+<li><strong>Déboguer</strong> — décrire un bogue, laisser Claude Code reproduire l'erreur, identifier la cause et proposer un correctif vérifié par les tests.</li>
+<li><strong>Refactoriser</strong> — moderniser un code ancien, renommer des éléments à travers tout le projet, améliorer la lisibilité sans rien casser.</li>
+<li><strong>Comprendre un projet hérité</strong> — explorer une base de code que personne ne maîtrise plus et obtenir une cartographie claire de son fonctionnement.</li>
+<li><strong>Optimiser les performances</strong> — repérer les goulots d'étranglement qui ralentissent un site, un sujet directement lié au <a href="/blog/core-web-vitals-ameliorer-vitesse-site">Core Web Vitals et à l'amélioration de la vitesse d'un site</a>.</li>
+<li><strong>Automatiser des tâches</strong> — écrire des scripts de migration, de traitement de données ou de maintenance que l'on n'aurait pas eu le temps de coder à la main.</li>
+</ul>
+
+<aside class="art-stat-box"><div class="art-stat-box__num">2 à 200&nbsp;$</div><div><div class="art-stat-box__label">par mois selon l'usage</div><div class="art-stat-box__desc">Claude Code est inclus dès l'abonnement Pro à 20&nbsp;$ par mois, et jusqu'aux offres Max à 100 ou 200&nbsp;$ pour un usage intensif avec accès illimité aux modèles les plus puissants.</div></div></aside>
+
+<h2 id="integration-ide-mcp">Intégration&nbsp;: IDE, MCP et écosystème</h2>
+<p>Claude Code n'est pas une île. Il s'intègre dans l'environnement de travail existant et se connecte à des services externes, ce qui décuple son utilité.</p>
+
+<h3>Intégration avec les IDE</h3>
+<p>Bien qu'il soit «&nbsp;terminal d'abord&nbsp;», Claude Code s'intègre aux principaux environnements de développement. Vous pouvez travailler dans votre éditeur habituel tout en laissant l'agent piloter les modifications, ce qui combine le confort visuel de l'IDE et la puissance agentique de l'outil.</p>
+
+<h3>Le protocole MCP</h3>
+<p>Le <strong>MCP (Model Context Protocol)</strong> est sans doute l'extension la plus stratégique. C'est une façon standardisée de connecter Claude Code à des outils et services externes&nbsp;: une base de données PostgreSQL, un dépôt GitHub, un espace de travail Notion, Slack, et bien d'autres. Grâce au MCP, l'agent peut consulter vos données, interagir avec vos outils métier et agir dans un périmètre que vous définissez. C'est ce qui transforme un assistant de code en véritable copilote de votre flux de travail. Cette même logique d'automatisation se retrouve dans des outils comme <a href="/blog/outils-automatisation-marketing-make-n8n-zapier">Make, n8n et Zapier pour le marketing</a>.</p>
+
+<h2 id="tarifs-acces">Tarifs et accès</h2>
+<p>L'accès à Claude Code passe par l'écosystème Anthropic. Il existe deux grandes voies, selon que vous êtes un utilisateur régulier ou un développeur qui facture à l'usage.</p>
+<ul>
+<li><strong>Par abonnement</strong> — Claude Code est inclus dès l'offre <strong>Pro à 20&nbsp;$ par mois</strong> (environ 17&nbsp;$ avec la facturation annuelle). Les offres <strong>Max, de 100 à 200&nbsp;$ par mois</strong>, débloquent un usage intensif avec un accès illimité aux modèles Opus et à Claude Code. Depuis le 15&nbsp;juin 2026, Anthropic distingue l'usage interactif (avec un humain dans la boucle) de l'usage autonome sur ces abonnements.</li>
+<li><strong>Par l'API, au token</strong> — pour un usage facturé à la consommation, les tarifs s'appliquent par million de tokens en entrée et en sortie. À titre indicatif, Haiku est le plus abordable, suivi de Sonnet puis d'Opus. C'est l'option des équipes qui veulent un contrôle fin de leurs coûts.</li>
+<li><strong>Via les fournisseurs cloud</strong> — Claude Code fonctionne aussi sur Amazon Bedrock, Google Vertex AI et Microsoft Foundry, sans abonnement Anthropic&nbsp;: la facturation passe alors par votre fournisseur cloud.</li>
+</ul>
+<p>L'outil en lui-même, le CLI Claude Code, est gratuit et à code ouvert&nbsp;: ce que vous payez, c'est l'usage des modèles d'intelligence artificielle qui l'alimentent.</p>
+
+<h2 id="forces-et-limites">Forces et limites de Claude Code</h2>
+<p>Aucun outil n'est magique. Présenter Claude Code honnêtement, c'est aussi reconnaître ses limites pour mieux en tirer parti.</p>
+
+<h3>Ses forces</h3>
+<ul>
+<li><strong>Une autonomie réelle</strong> — il mène des tâches complètes de bout en bout, pas seulement des suggestions isolées.</li>
+<li><strong>Une compréhension profonde du code</strong> — grâce à la grande fenêtre de contexte des modèles Claude, il saisit l'architecture globale d'un projet.</li>
+<li><strong>L'édition multi-fichiers et l'exécution de commandes</strong> — il agit au niveau du système, ce qui couvre l'essentiel d'un cycle de développement.</li>
+<li><strong>Un écosystème extensible</strong> — sous-agents, compétences, MCP et intégrations IDE en font un outil que l'on façonne à ses besoins.</li>
+</ul>
+
+<h3>Ses limites</h3>
+<ul>
+<li><strong>Le coût peut grimper</strong> — sur les modèles les plus puissants et les sessions intensives, la facture à l'usage demande un suivi attentif.</li>
+<li><strong>La supervision reste indispensable</strong> — un agent autonome peut prendre une mauvaise direction. La relecture humaine, les tests et les garde-fous restent essentiels, surtout en production.</li>
+<li><strong>La barrière du terminal</strong> — même si l'outil dialogue en langage naturel, la ligne de commande peut rebuter les profils non techniques au premier abord.</li>
+<li><strong>Ce n'est pas un substitut à l'expertise</strong> — Claude Code amplifie un savoir-faire, il ne le remplace pas. Les décisions d'architecture, de sécurité et de stratégie demeurent humaines.</li>
+</ul>
+
+<h2 id="pourquoi-pirabel-labs-utilise">Pourquoi Pirabel Labs utilise Claude Code</h2>
+<p>Chez Pirabel Labs, agence digitale basée à Abomey-Calavi au Bénin, Claude Code fait partie de notre outillage quotidien. Ce choix n'est pas une coquetterie technologique&nbsp;: il répond à une exigence concrète de qualité et de rapidité.</p>
+<p>Nos clients sont majoritairement des PME béninoises et ouest-africaines, avec des budgets maîtrisés et des attentes élevées. Claude Code nous permet de <strong>livrer des sites web rapides, propres et bien conçus dans des délais que nous n'aurions pas pu tenir autrement</strong>. L'agent prend en charge le code répétitif et l'exploration technique, pendant que notre équipe se concentre sur ce qui crée de la valeur&nbsp;: la stratégie, le design, l'expérience utilisateur et l'optimisation pour le référencement.</p>
+<p>Cette efficacité se traduit directement pour nos clients par des projets aboutis plus vite, une maintenance facilitée et un meilleur rapport qualité-prix. Mais nous restons clairs sur un point&nbsp;: l'outil est au service de notre méthode, pas l'inverse. Chaque ligne produite est relue, testée et validée par des humains. C'est cette combinaison — la puissance de l'agent et la rigueur de l'équipe — qui fait la différence.</p>
+
+<aside class="art-pullquote"><div class="art-pullquote__icon material-symbols-outlined">format_quote</div><div class="art-pullquote__text">Claude Code accélère notre travail&nbsp;; il ne le remplace pas. La valeur naît de l'alliance entre l'agent et l'expertise humaine.</div></aside>
+
+<h2 id="faq">FAQ</h2>
+
+<h3>Claude Code est-il un modèle d'intelligence artificielle&nbsp;?</h3>
+<p>Non. Claude Code est un agent de codage en terminal, c'est-à-dire l'interface qui pilote les modèles Claude d'Anthropic (Opus, Sonnet, Haiku, Fable&nbsp;5). Le modèle fournit l'intelligence&nbsp;; Claude Code fournit les capacités d'action&nbsp;: lecture du code, édition multi-fichiers, exécution de commandes et orchestration de sous-agents.</p>
+
+<h3>Faut-il savoir coder pour utiliser Claude Code&nbsp;?</h3>
+<p>Pas nécessairement. L'outil dialogue en langage naturel, ce qui permet à des non-développeurs d'automatiser des tâches, de prototyper ou de comprendre un projet existant. Cela dit, pour un site critique en production, l'accompagnement d'un professionnel reste fortement recommandé&nbsp;: l'agent amplifie l'expertise, il ne la remplace pas.</p>
+
+<h3>Quelle est la différence entre Claude Code et Cursor ou Copilot&nbsp;?</h3>
+<p>GitHub Copilot est une extension multi-éditeur centrée sur l'autocomplétion. Cursor est un éditeur de code IA avec un mode agent intégré. Claude Code est le plus agentique&nbsp;: il vit dans le terminal, comprend toute la base de code et agit de façon autonome au niveau du système. Beaucoup de développeurs combinent ces outils. Notre <a href="/blog/cursor-vs-copilot-vs-windsurf-ide-ia-2026">comparatif des IDE IA</a> détaille ces différences.</p>
+
+<h3>Combien coûte Claude Code&nbsp;?</h3>
+<p>Le CLI est gratuit et à code ouvert. Ce que vous payez, c'est l'usage des modèles&nbsp;: Claude Code est inclus dès l'abonnement Pro à 20&nbsp;$ par mois, les offres Max vont de 100 à 200&nbsp;$ pour un usage intensif, et l'accès par API se facture au token. Il fonctionne aussi via Amazon Bedrock, Google Vertex AI et Microsoft Foundry.</p>
+
+<h3>Claude Code peut-il se connecter à mes outils&nbsp;?</h3>
+<p>Oui, via le protocole MCP (Model Context Protocol). Il s'agit d'une norme qui relie Claude Code à des services externes comme GitHub, PostgreSQL, Notion ou Slack. Cela permet à l'agent d'agir dans votre flux de travail réel, dans un périmètre que vous définissez et contrôlez.</p>
+
+<h3>Comment apprendre à construire un site avec Claude Code&nbsp;?</h3>
+<p>Cet article est une présentation de l'outil. Pour la pratique pas à pas, consultez notre guide dédié&nbsp;: <a href="/blog/construire-site-claude-code-temps-record">construire un site avec Claude Code en temps record</a>. Vous y verrez le déroulé concret d'un projet, de l'idée à la mise en ligne.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>Claude Code incarne un basculement&nbsp;: on ne demande plus seulement à l'intelligence artificielle de suggérer du code, on lui confie des tâches complètes qu'elle mène de façon autonome, du raisonnement initial jusqu'aux tests. Sa compréhension profonde du code, son édition multi-fichiers, son exécution de commandes et son écosystème de sous-agents, de compétences et de connecteurs MCP en font l'un des outils les plus aboutis de sa génération. Adossé aux modèles Claude — Opus, Sonnet, Haiku et Fable&nbsp;5 — il offre un curseur d'intelligence et de coût adaptable à chaque mission.</p>
+<p>Mais l'outil ne fait pas tout. Sa vraie valeur naît quand il est manié par une équipe qui sait l'encadrer, le relire et le mettre au service d'une stratégie. C'est exactement notre approche chez Pirabel Labs&nbsp;: une technologie de pointe au service d'un travail rigoureux et d'un excellent rapport qualité-prix pour les PME du Bénin, d'Afrique de l'Ouest et d'ailleurs.</p>
+<p>Vous avez un projet de site web ou d'application et vous voulez bénéficier de cette efficacité&nbsp;? <a href="/contact">Contactez Pirabel Labs</a> pour en discuter. Et pour aller plus loin, explorez le <a href="/blog/cursor-vs-copilot-vs-windsurf-ide-ia-2026">comparatif des IDE IA en 2026</a>, le guide pratique pour <a href="/blog/construire-site-claude-code-temps-record">construire un site avec Claude Code</a>, ou les <a href="/blog/claude-fable-5-nouveautes-entreprises-2026">nouveautés de Claude Fable&nbsp;5 pour les entreprises</a>.</p>

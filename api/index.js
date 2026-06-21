@@ -1294,10 +1294,13 @@ app.get('/sitemap.xml', async (req, res) => {
     const fs = require('fs');
     const root = path.join(__dirname, '..');
     let pages = [];
-    try {
-      pages = fs.readdirSync(root).filter(f => f.endsWith('.html') && !['404.html'].includes(f))
-        .map(f => f === 'index.html' ? '/' : '/' + f.replace(/\.html$/, ''));
-    } catch (e) {}
+    try { pages = require('../app/sitemap-pages.json'); } catch (e) {}
+    if (!pages || !pages.length) {
+      try {
+        pages = fs.readdirSync(root).filter(f => f.endsWith('.html') && !['404.html'].includes(f))
+          .map(f => f === 'index.html' ? '/' : '/' + f.replace(/\.html$/, ''));
+      } catch (e2) {}
+    }
     const arts = await Article.find({ status: 'publie' }).select('slug updatedAt').lean();
     const urls = [];
     urls.push({ loc: SITE() + '/blog', lastmod: new Date().toISOString().slice(0, 10) });

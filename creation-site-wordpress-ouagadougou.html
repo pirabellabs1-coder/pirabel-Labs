@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Création de site WordPress à Ouagadougou - Pirabel Labs</title>
+<meta name="description" content="Sites WordPress et Elementor sur-mesure à Ouagadougou : rapides, faciles à gérer, optimisés SEO. Pour les entreprises burkinabè qui veulent des résultats.">
+<link rel="canonical" href="https://www.pirabellabs.com/creation-site-wordpress-ouagadougou">
+<link rel="icon" type="image/png" href="/img/logo.png?v=elan2">
+<meta name="keywords" content="création site WordPress Ouagadougou, agence Elementor Ouagadougou, développeur WordPress Ouagadougou, site vitrine WordPress Ouagadougou, refonte WordPress Ouagadougou, agence web Ouagadougou, création site Burkina Faso, WordPress Burkina, Pirabel Labs">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Création de site WordPress à Ouagadougou - Pirabel Labs">
+<meta property="og:description" content="Sites WordPress et Elementor sur-mesure à Ouagadougou : rapides, faciles à gérer, optimisés SEO. Pour les entreprises burkinabè qui veulent des résultats.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/creation-site-wordpress-ouagadougou">
+<meta property="og:image" content="https://www.pirabellabs.com/img/logo.png?v=elan2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Création de site WordPress à Ouagadougou - Pirabel Labs">
+<meta name="twitter:description" content="Sites WordPress et Elementor sur-mesure à Ouagadougou : rapides, faciles à gérer, optimisés SEO. Pour les entreprises burkinabè qui veulent des résultats.">
+<meta name="twitter:image" content="https://www.pirabellabs.com/img/logo.png?v=elan2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+<link rel="stylesheet" href="/css/global.css?v=elan2">
+<style>
+.rich-wrap { max-width: 76rem; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) var(--px-page); }
+
+/* Hero */
+.rich-hero { max-width: 56rem; padding: clamp(2.5rem, 5vw, 4rem) 0 3rem; text-align: left; }
+.rich-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.rich-hero h1 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(2rem, 4.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 1.25rem; color: var(--text); text-align: left; }
+.rich-hero h1 em { color: var(--accent); font-style: normal; }
+.rich-hero__sub { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin: 0 0 2rem; text-align: left; }
+.rich-hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.75rem; }
+.rich-hero__trust { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.rich-hero__trust-item { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; color: var(--text); }
+.rich-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1.1rem; }
+
+/* Sections */
+.rich-section { margin-bottom: 5rem; }
+.rich-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3.2vw, 2.5rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1rem; color: var(--text); text-align: left; }
+.rich-section h2 em { color: var(--accent); font-style: normal; }
+.rich-section__intro { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 52rem; margin-bottom: 2.5rem; text-align: left; }
+
+/* Cards génériques */
+.rich-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; }
+.rich-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 1.5rem; transition: all 0.2s; }
+.rich-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.rich-card__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+.rich-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text); }
+.rich-card__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Steps */
+.rich-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem; }
+.rich-step { position: relative; background: linear-gradient(180deg, rgba(255,107,0,0.04) 0%, transparent 50%); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 1.5rem; transition: all 0.2s; }
+.rich-step:hover { border-color: var(--accent); transform: translateY(-3px); }
+.rich-step__num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.25rem; color: var(--accent); opacity: 0.4; line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.05em; }
+.rich-step__body { }
+.rich-step__icon { color: var(--accent); font-size: 1.5rem; margin-bottom: 0.75rem; }
+.rich-step__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text); }
+.rich-step__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Offre détaillée */
+.rich-offer { display: grid; grid-template-columns: 1fr; gap: 1rem; max-width: 56rem; }
+.rich-offer__item { display: flex; gap: 0.85rem; align-items: flex-start; padding: 1.25rem 1.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; list-style: none; }
+.rich-offer__check { color: var(--accent); font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+.rich-offer__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--text); }
+.rich-offer__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Outils grid */
+.rich-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 0.85rem; }
+.rich-tool { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.25rem 0.75rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; transition: all 0.2s; }
+.rich-tool:hover { border-color: var(--accent); transform: translateY(-2px); }
+.rich-tool__icon { color: var(--accent); font-size: 1.8rem; margin-bottom: 0.4rem; }
+.rich-tool__label { font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; color: var(--text); text-align: center; }
+
+/* Keywords */
+.rich-kws { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 56rem; }
+.rich-kw { display: inline-block; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; }
+
+/* Pricing block */
+.rich-pricing { display: grid; grid-template-columns: 1fr; gap: 1.25rem; max-width: 64rem; }
+.rich-pricing__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; }
+.rich-pricing__label { font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; }
+.rich-pricing__price { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--text); margin-bottom: 0.5rem; }
+.rich-pricing__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.rich-faqs { max-width: 56rem; }
+.rich-faq { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.75rem; }
+.rich-faq[open] { border-color: var(--accent); }
+.rich-faq__q { list-style: none; cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; color: var(--text); }
+.rich-faq__q::-webkit-details-marker { display: none; }
+.rich-faq__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; }
+.rich-faq[open] .rich-faq__q .material-symbols-outlined { transform: rotate(180deg); }
+.rich-faq__a { padding: 0 1.5rem 1.5rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+/* Testimonial */
+.rich-testimonial { background: linear-gradient(135deg, rgba(255,107,0,0.08) 0%, var(--bg-2) 70%); border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; max-width: 64rem; }
+.rich-testimonial__stars { color: var(--accent); font-size: 1.1rem; letter-spacing: 0.15em; margin-bottom: 1rem; }
+.rich-testimonial__quote { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 1.15rem; line-height: 1.55; color: var(--text); margin-bottom: 1.5rem; }
+.rich-testimonial__author { display: flex; align-items: center; gap: 0.85rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.rich-testimonial__avatar { width: 2.5rem; height: 2.5rem; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.rich-testimonial__name { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text); }
+.rich-testimonial__role { font-size: 0.78rem; color: var(--text-muted); }
+
+/* Related services */
+.rich-related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.85rem; }
+.rich-related { display: flex; align-items: center; gap: 0.75rem; padding: 1.1rem 1.4rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+.rich-related:hover { border-color: var(--accent); transform: translateX(4px); }
+.rich-related__icon { color: var(--accent); font-size: 1.25rem; }
+.rich-related__label { flex: 1; }
+.rich-related__arrow { color: var(--accent); font-size: 1.1rem; opacity: 0; transform: translateX(-4px); transition: all 0.2s; }
+.rich-related:hover .rich-related__arrow { opacity: 1; transform: translateX(0); }
+
+/* CTA band */
+.rich-cta-band { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.10) 100%); border: 1px solid var(--accent); border-radius: 18px; padding: clamp(2.5rem, 5vw, 4rem); max-width: 76rem; margin: 4rem auto 0; text-align: left; }
+.rich-cta-band h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 1rem; line-height: 1.15; color: var(--text); text-align: left; }
+.rich-cta-band h2 em { color: var(--accent); font-style: normal; }
+.rich-cta-band p { color: var(--text-muted); font-size: 1rem; line-height: 1.65; max-width: 44rem; margin-bottom: 2rem; }
+.rich-cta-band__row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+/* Mobile */
+@media (max-width: 720px) {
+  .rich-hero h1 { font-size: 1.85rem; }
+  .rich-section h2 { font-size: 1.45rem; }
+  .rich-cta-band h2 { font-size: 1.4rem; }
+}
+</style>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+16139273067","email":"contact@pirabellabs.com"},"areaServed":{"@type":"City","name":"Ouagadougou","containedInPlace":{"@type":"AdministrativeArea","name":"Région du Centre"}},"serviceType":"Création de site WordPress","name":"Création de site WordPress à Ouagadougou","description":"Sites WordPress et Elementor sur-mesure, performants et faciles à gérer, pour les entreprises de Ouagadougou au Burkina Faso.","offers":{"@type":"Offer","priceCurrency":"XOF","availability":"https://schema.org/InStock"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Pirabel Labs","image":"https://www.pirabellabs.com/img/logo.png?v=elan2","url":"https://www.pirabellabs.com/creation-site-wordpress-ouagadougou","telephone":"+16139273067","email":"contact@pirabellabs.com","priceRange":"FCFA","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"areaServed":{"@type":"City","name":"Ouagadougou"},"description":"Agence digitale spécialisée dans la création de sites WordPress et Elementor pour les entreprises de Ouagadougou, Burkina Faso."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Création de site WordPress","item":"https://www.pirabellabs.com/creation-site-web"},{"@type":"ListItem","position":3,"name":"À Ouagadougou","item":"https://www.pirabellabs.com/creation-site-wordpress-ouagadougou"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien coûte un site WordPress à Ouagadougou ?","acceptedAnswer":{"@type":"Answer","text":"De 450 000 à 2 500 000 FCFA pour un site vitrine WordPress de 5 à 12 pages. Une boutique WooCommerce démarre autour de 1 200 000 FCFA. Devis ferme sous 48 h après un appel découverte gratuit."}},{"@type":"Question","name":"WordPress ou Elementor : quelle différence pour mon projet à Ouagadougou ?","acceptedAnswer":{"@type":"Answer","text":"WordPress est le moteur (CMS) qui gère votre contenu ; Elementor est le constructeur visuel qui vous permet de modifier vos pages sans coder. Nous livrons les deux ensemble, pour que vous restiez autonome après la mise en ligne."}},{"@type":"Question","name":"Le site sera-t-il facile à gérer moi-même ?","acceptedAnswer":{"@type":"Answer","text":"Oui. C'est tout l'intérêt d'Elementor : vous modifiez textes, images et tarifs en glisser-déposer. Nous incluons une formation en visio et un guide vidéo pour que vous publiiez vos mises à jour seul."}},{"@type":"Question","name":"Acceptez-vous Orange Money et Moov Money pour le règlement ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Vous réglez en FCFA par Orange Money, Moov Money ou virement bancaire. Nous pouvons aussi intégrer ces moyens de paiement mobile directement à votre boutique WooCommerce."}},{"@type":"Question","name":"Travaillez-vous à distance avec les entreprises de Ouagadougou ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Notre siège est à Abomey-Calavi, au Bénin, et nous collaborons à distance avec les clients de Ouagadougou : visios hebdomadaires, WhatsApp, démos en ligne. La distance ne ralentit jamais le projet."}}]}</script>
+<link rel="preload" as="image" href="/img/logo.png?v=elan2" fetchpriority="high">
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Expertises <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--2col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Web &amp; visibilité</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Création de site web</div><div class="nav-mega__link-desc">Sites, e-commerce, applications</div></div></a>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; référencement</div><div class="nav-mega__link-desc">Trafic organique qualifié</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">IA, SaaS &amp; automatisation</div>
+              <a href="/agence-ia" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agence IA</div><div class="nav-mega__link-desc">Chatbots, agents IA, ChatGPT</div></div></a>
+              <a href="/creation-saas" class="nav-mega__link"><span class="material-symbols-outlined">rocket_launch</span><div><div class="nav-mega__link-title">Création de SaaS</div><div class="nav-mega__link-desc">MVP Next.js en 8-12 semaines</div></div></a>
+              <a href="/solutions-ia" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Solutions IA sur mesure</div><div class="nav-mega__link-desc">RAG, fine-tuning, agents</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Agences <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Sites &amp; e-commerce</div>
+              <a href="/agence-webflow" class="nav-mega__link"><span class="material-symbols-outlined">web</span><div><div class="nav-mega__link-title">Agence Webflow</div></div></a>
+              <a href="/agence-elementor" class="nav-mega__link"><span class="material-symbols-outlined">dashboard_customize</span><div><div class="nav-mega__link-title">Agence Elementor</div></div></a>
+              <a href="/agence-woocommerce" class="nav-mega__link"><span class="material-symbols-outlined">shopping_cart</span><div><div class="nav-mega__link-title">Agence WooCommerce</div></div></a>
+              <a href="/agence-prestashop" class="nav-mega__link"><span class="material-symbols-outlined">storefront</span><div><div class="nav-mega__link-title">Agence PrestaShop</div></div></a>
+              <a href="/agence-ecommerce" class="nav-mega__link"><span class="material-symbols-outlined">point_of_sale</span><div><div class="nav-mega__link-title">Agence e-commerce</div></div></a>
+              <a href="/agence-site-vitrine" class="nav-mega__link"><span class="material-symbols-outlined">window</span><div><div class="nav-mega__link-title">Agence site vitrine</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Automatisation &amp; IA</div>
+              <a href="/agence-ia" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agence IA</div></div></a>
+              <a href="/agence-make" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Agence Make</div></div></a>
+              <a href="/agence-n8n" class="nav-mega__link"><span class="material-symbols-outlined">account_tree</span><div><div class="nav-mega__link-title">Agence n8n</div></div></a>
+              <a href="/agents-ia-chatbots" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Agents IA &amp; chatbots</div></div></a>
+              <a href="/agence-systeme-io" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Agence Système.io</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Email, social, vidéo</div>
+              <a href="/agence-hubspot" class="nav-mega__link"><span class="material-symbols-outlined">hub</span><div><div class="nav-mega__link-title">Agence HubSpot</div></div></a>
+              <a href="/agence-brevo" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Agence Brevo</div></div></a>
+              <a href="/community-instagram" class="nav-mega__link"><span class="material-symbols-outlined">photo_camera</span><div><div class="nav-mega__link-title">Agence Instagram</div></div></a>
+              <a href="/community-tiktok" class="nav-mega__link"><span class="material-symbols-outlined">music_video</span><div><div class="nav-mega__link-title">Agence TikTok</div></div></a>
+              <a href="/community-linkedin" class="nav-mega__link"><span class="material-symbols-outlined">work</span><div><div class="nav-mega__link-title">Agence LinkedIn</div></div></a>
+              <a href="/agence-netlinking" class="nav-mega__link"><span class="material-symbols-outlined">link</span><div><div class="nav-mega__link-title">Agence netlinking</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Villes <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Afrique de l'Ouest</div>
+              <a href="/agence-marketing-cotonou" class="nav-mega__link"><div><div class="nav-mega__link-title">Cotonou</div></div></a>
+              <a href="/agence-marketing-abomey-calavi" class="nav-mega__link"><div><div class="nav-mega__link-title">Abomey-Calavi</div></div></a>
+              <a href="/agence-marketing-porto-novo" class="nav-mega__link"><div><div class="nav-mega__link-title">Porto-Novo</div></div></a>
+              <a href="/agence-web-abidjan" class="nav-mega__link"><div><div class="nav-mega__link-title">Abidjan</div></div></a>
+              <a href="/agence-web-dakar" class="nav-mega__link"><div><div class="nav-mega__link-title">Dakar</div></div></a>
+              <a href="/agence-web-lome" class="nav-mega__link"><div><div class="nav-mega__link-title">Lomé</div></div></a>
+              <a href="/agence-web-bamako" class="nav-mega__link"><div><div class="nav-mega__link-title">Bamako</div></div></a>
+              <a href="/agence-web-ouagadougou" class="nav-mega__link"><div><div class="nav-mega__link-title">Ouagadougou</div></div></a>
+              <a href="/agence-web-conakry" class="nav-mega__link"><div><div class="nav-mega__link-title">Conakry</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Afrique Centrale &amp; Maghreb</div>
+              <a href="/agence-web-yaounde" class="nav-mega__link"><div><div class="nav-mega__link-title">Yaoundé</div></div></a>
+              <a href="/agence-web-douala" class="nav-mega__link"><div><div class="nav-mega__link-title">Douala</div></div></a>
+              <a href="/agence-web-casablanca" class="nav-mega__link"><div><div class="nav-mega__link-title">Casablanca</div></div></a>
+              <a href="/agence-web-tunis" class="nav-mega__link"><div><div class="nav-mega__link-title">Tunis</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Europe &amp; Amérique Nord</div>
+              <a href="/agence-web-paris" class="nav-mega__link"><div><div class="nav-mega__link-title">Paris</div></div></a>
+              <a href="/agence-web-lyon" class="nav-mega__link"><div><div class="nav-mega__link-title">Lyon</div></div></a>
+              <a href="/agence-web-marseille" class="nav-mega__link"><div><div class="nav-mega__link-title">Marseille</div></div></a>
+              <a href="/agence-web-bruxelles" class="nav-mega__link"><div><div class="nav-mega__link-title">Bruxelles</div></div></a>
+              <a href="/agence-web-geneve" class="nav-mega__link"><div><div class="nav-mega__link-title">Genève</div></div></a>
+              <a href="/agence-web-montreal" class="nav-mega__link"><div><div class="nav-mega__link-title">Montréal</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Ressources <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/blog" class="nav-mega__link"><span class="material-symbols-outlined">article</span><div><div class="nav-mega__link-title">Blog</div><div class="nav-mega__link-desc">Articles experts</div></div></a>
+              <a href="/realisations" class="nav-mega__link"><span class="material-symbols-outlined">collections</span><div><div class="nav-mega__link-title">Réalisations</div><div class="nav-mega__link-desc">Nos cas clients</div></div></a>
+              <a href="/methodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Méthodologie</div><div class="nav-mega__link-desc">Notre process en 7 étapes</div></div></a>
+              <a href="/livres-blancs" class="nav-mega__link"><span class="material-symbols-outlined">menu_book</span><div><div class="nav-mega__link-title">Livres blancs</div><div class="nav-mega__link-desc">Guides gratuits</div></div></a>
+              <a href="/tarifs" class="nav-mega__link"><span class="material-symbols-outlined">payments</span><div><div class="nav-mega__link-title">Tarifs</div><div class="nav-mega__link-desc">Grille complète</div></div></a>
+              <a href="/faq" class="nav-mega__link"><span class="material-symbols-outlined">help</span><div><div class="nav-mega__link-title">FAQ</div><div class="nav-mega__link-desc">Vos questions</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">À propos <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/a-propos" class="nav-mega__link"><span class="material-symbols-outlined">group</span><div><div class="nav-mega__link-title">L'équipe &amp; l'agence</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Contact</div></div></a>
+              <a href="/mentions-legales" class="nav-mega__link"><span class="material-symbols-outlined">gavel</span><div><div class="nav-mega__link-title">Mentions légales</div></div></a>
+              <a href="/politique-confidentialite" class="nav-mega__link"><span class="material-symbols-outlined">shield</span><div><div class="nav-mega__link-title">Confidentialité</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="rich-wrap">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Fil d'Ariane" style="margin-bottom:1.5rem;">
+    <ol style="display:flex;flex-wrap:wrap;gap:0.5rem;list-style:none;padding:0;margin:0;font-size:0.78rem;color:var(--text-muted);">
+      <li><a href="/" style="color:var(--text-muted);text-decoration:none;">Accueil</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li><a href="/creation-site-web" style="color:var(--text-muted);text-decoration:none;">Création de site WordPress</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li aria-current="page" style="color:var(--accent);">à Ouagadougou</li>
+    </ol>
+  </nav>
+
+  <!-- HERO -->
+  <section class="rich-hero">
+    <span class="rich-hero__eyebrow"><span class="material-symbols-outlined">dashboard_customize</span> Création de site WordPress &middot; Ouagadougou, Burkina Faso</span>
+    <h1>Création de site WordPress à <em>Ouagadougou</em></h1>
+    <p class="rich-hero__sub">Des sites WordPress et Elementor sur-mesure, pensés pour la réalité de Ouagadougou : pages qui s'affichent vite même en réseau mobile, contenu que vous modifiez vous-même en glisser-déposer, et un référencement préparé dès la première ligne. Vous gardez la main, nous garantissons la performance.</p>
+    <div class="rich-hero__cta">
+      <a href="/contact?service=creation-site-wordpress&amp;ville=ouagadougou" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un devis ferme</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+    </div>
+    <div class="rich-hero__trust">
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">star</span> 4,9/5 (47 avis)</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">verified</span> Depuis 2020</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">handshake</span> 150+ projets livrés</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">schedule</span> Devis sous 48 h</div>
+    </div>
+  </section>
+
+  <!-- POURQUOI A OUAGADOUGOU -->
+  <section class="rich-section">
+    <h2>Pourquoi un site <em>WordPress</em> à Ouagadougou ?</h2>
+    <p class="rich-section__intro">Ouagadougou est à la fois la capitale administrative et le poumon économique du Burkina Faso : sièges sociaux, administrations, commerces, ONG et professions libérales s'y concentrent. Dans cet écosystème dense, vos clients vérifient votre sérieux en ligne avant de vous appeler. WordPress reste le choix le plus pertinent ici : un outil mondial, autonome et durable, que vous pilotez sans dépendre éternellement d'un prestataire.</p>
+    <div class="rich-cards">
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">edit_square</span></div>
+          <div class="rich-card__title">Vous restez autonome</div>
+          <div class="rich-card__desc">Avec Elementor, vous changez un tarif, une photo ou une promotion en quelques minutes, sans rappeler un développeur ni payer une intervention à chaque virgule.</div>
+        </div>
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">network_check</span></div>
+          <div class="rich-card__title">Léger pour la connexion locale</div>
+          <div class="rich-card__desc">À Ouagadougou, beaucoup de visiteurs naviguent en 3G ou 4G variable. Nous allégeons images et scripts pour que la page s'ouvre vite, même sur un réseau capricieux.</div>
+        </div>
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+          <div class="rich-card__title">Un écosystème pérenne</div>
+          <div class="rich-card__desc">WordPress propulse plus de 4 sites sur 10 dans le monde. Vous bénéficiez de mises à jour continues, de milliers d'extensions et d'une vraie liberté : aucune dépendance à un outil propriétaire fermé.</div>
+        </div>
+    </div>
+  </section>
+
+  <!-- NOTRE APPROCHE -->
+  <section class="rich-section">
+    <h2>Notre méthode pour votre site WordPress en <em>5 étapes</em></h2>
+    <p class="rich-section__intro">Un déroulé clair et sans surprise, calé sur vos disponibilités et le fuseau de Ouagadougou.</p>
+    <div class="rich-steps">
+        <div class="rich-step">
+          <div class="rich-step__num">01</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">forum</div>
+            <h3 class="rich-step__title">Cadrage métier</h3>
+            <p class="rich-step__desc">Échange de 30 min pour cerner votre activité à Ouagadougou, vos clients cibles et l'arborescence idéale de votre site.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">02</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">request_quote</div>
+            <h3 class="rich-step__title">Devis &amp; planning</h3>
+            <p class="rich-step__desc">Proposition chiffrée en FCFA sous 48 h, périmètre écrit, calendrier précis et liste des contenus à fournir.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">03</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">palette</div>
+            <h3 class="rich-step__title">Maquette Elementor</h3>
+            <p class="rich-step__desc">Conception de la page d'accueil sous Elementor, validée ensemble avant de dérouler le reste du site. 2 retours inclus.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">04</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">build</div>
+            <h3 class="rich-step__title">Intégration</h3>
+            <p class="rich-step__desc">Montage complet sous WordPress, optimisation de la vitesse, sécurisation et préparation du référencement.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">05</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">school</div>
+            <h3 class="rich-step__title">Mise en ligne &amp; formation</h3>
+            <p class="rich-step__desc">Publication, formation à la gestion d'Elementor, puis 30 jours de suivi pour ajuster sereinement.</p>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- NOTRE OFFRE -->
+  <section class="rich-section">
+    <h2>Ce que comprend votre <em>site WordPress</em></h2>
+    <p class="rich-section__intro">Chaque projet WordPress livré à Ouagadougou inclut, sans supplément caché, l'ensemble de ces éléments.</p>
+    <ul class="rich-offer">
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Thème WordPress sur-mesure</div>
+            <div class="rich-offer__desc">Aucun template revendu : un design unique, monté sous Elementor et fidèle à votre identité.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Constructeur Elementor Pro</div>
+            <div class="rich-offer__desc">Licence Elementor Pro configurée et la prise en main pour modifier vos pages en toute autonomie.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Affichage parfait sur mobile</div>
+            <div class="rich-offer__desc">Mise en page vérifiée sur smartphone, tablette et ordinateur, car l'essentiel du trafic burkinabè est mobile.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Optimisation de la vitesse</div>
+            <div class="rich-offer__desc">Cache, compression des images en WebP et chargement différé pour un site rapide, même en réseau mobile.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Référencement préparé</div>
+            <div class="rich-offer__desc">Extension Rank Math configurée, balises, plan de site et URLs propres dès la mise en ligne.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Sécurité &amp; sauvegardes</div>
+            <div class="rich-offer__desc">Certificat SSL, pare-feu, protection contre les attaques et sauvegardes automatiques programmées.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Paiement mobile intégré</div>
+            <div class="rich-offer__desc">Sur les boutiques WooCommerce, intégration d'Orange Money et Moov Money pour encaisser localement.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Formation &amp; guide vidéo</div>
+            <div class="rich-offer__desc">Session en visio d'une heure et tutoriels enregistrés pour gérer Elementor seul, sans crainte.</div>
+          </div>
+        </li>
+    </ul>
+  </section>
+
+  <!-- TARIFS -->
+  <section class="rich-section">
+    <h2>Tarifs d'un <em>site WordPress</em> à Ouagadougou</h2>
+    <p class="rich-section__intro">Des prix clairs, exprimés en FCFA et adaptés au marché burkinabè. Le devis ferme arrive sous 48 h après l'appel découverte gratuit.</p>
+    <div class="rich-pricing">
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Site vitrine WordPress</div>
+        <div class="rich-pricing__price">450 000 à 1 200 000 FCFA</div>
+        <div class="rich-pricing__desc">De 5 à 12 pages montées sous Elementor, formation à la gestion comprise. Idéal pour une PME, un cabinet ou une association de Ouagadougou souhaitant un site crédible et autonome.</div>
+      </div>
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Boutique WooCommerce</div>
+        <div class="rich-pricing__price">à partir de 1 200 000 FCFA</div>
+        <div class="rich-pricing__desc">Catalogue, panier et paiement mobile (Orange Money, Moov Money) intégrés. Pour vendre en ligne à Ouagadougou et dans tout le Burkina Faso.</div>
+      </div>
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Modes de règlement</div>
+        <div class="rich-pricing__price">FCFA &middot; Mobile money</div>
+        <div class="rich-pricing__desc">Paiement en FCFA par Orange Money, Moov Money ou virement bancaire. Acompte au lancement, solde à la livraison. Possibilité d'échelonner pour les projets importants.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTILS -->
+  <section class="rich-section">
+    <h2>Les outils que nous <em>utilisons</em></h2>
+    <p class="rich-section__intro">Un socle WordPress éprouvé, complété par des extensions reconnues pour leur fiabilité et leurs performances.</p>
+    <div class="rich-tools">
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">code</span>
+          <span class="rich-tool__label">WordPress</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">dashboard_customize</span>
+          <span class="rich-tool__label">Elementor Pro</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">shopping_cart</span>
+          <span class="rich-tool__label">WooCommerce</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">search_insights</span>
+          <span class="rich-tool__label">Rank Math</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">bolt</span>
+          <span class="rich-tool__label">WP Rocket</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">shield</span>
+          <span class="rich-tool__label">Cloudflare</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">image</span>
+          <span class="rich-tool__label">Imagify</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">draw</span>
+          <span class="rich-tool__label">Figma</span>
+        </div>
+    </div>
+  </section>
+
+  <!-- MOTS-CLES CIBLES -->
+  <section class="rich-section">
+    <h2>Mots-clés <em>ciblés à Ouagadougou</em></h2>
+    <p class="rich-section__intro">Ces recherches Google amènent des prospects vraiment intéressés par un site WordPress. Notre travail de référencement positionne votre site sur ces requêtes locales.</p>
+    <div class="rich-kws"><span class="rich-kw">création site WordPress Ouagadougou</span><span class="rich-kw">agence Elementor Ouagadougou</span><span class="rich-kw">développeur WordPress Ouagadougou</span><span class="rich-kw">site vitrine WordPress Ouagadougou</span><span class="rich-kw">refonte WordPress Ouagadougou</span><span class="rich-kw">boutique WooCommerce Ouagadougou</span><span class="rich-kw">création site WordPress Burkina Faso</span><span class="rich-kw">maintenance WordPress Ouagadougou</span></div>
+  </section>
+
+  <!-- DELAIS -->
+  <section class="rich-section">
+    <h2>Délais <em>&amp; déroulé</em></h2>
+    <p class="rich-section__intro">Site vitrine WordPress : 2 à 4 semaines. Boutique WooCommerce : 5 à 9 semaines. Refonte d'un site existant : 3 à 6 semaines, selon le volume de contenu à reprendre.</p>
+    <div class="rich-cards">
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="rich-card__title">Lancement sans attente</div>
+        <div class="rich-card__desc">Le projet démarre sous une semaine après l'acceptation du devis. Pas de file d'attente, pas de mois perdu.</div>
+      </div>
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">groups</span></div>
+        <div class="rich-card__title">Un binôme dédié</div>
+        <div class="rich-card__desc">Un responsable de projet et un intégrateur WordPress suivent votre site de bout en bout, avec un seul interlocuteur.</div>
+      </div>
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">verified_user</span></div>
+        <div class="rich-card__title">Suivi 30 jours offert</div>
+        <div class="rich-card__desc">Pendant un mois après la mise en ligne, nous corrigeons et ajustons votre site WordPress sans frais.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMOIGNAGE -->
+  <section class="rich-section">
+    <h2>Ils nous ont fait confiance à <em>Ouagadougou</em></h2>
+    <div class="rich-testimonial">
+      <div class="rich-testimonial__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="rich-testimonial__quote">"Je redoutais de dépendre d'un prestataire pour chaque petite modification. Avec Elementor, je mets à jour mes prix et mes photos seul, depuis mon téléphone. Le site est rapide même en 4G et nos demandes de devis ont doublé en deux mois."</div>
+      <div class="rich-testimonial__author">
+        <div class="rich-testimonial__avatar">RO</div>
+        <div>
+          <div class="rich-testimonial__name">Rasmané Ouédraogo</div>
+          <div class="rich-testimonial__role">Gérant, société de BTP &mdash; Ouagadougou, Burkina Faso</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="rich-section">
+    <h2>Questions <em>fréquentes</em></h2>
+    <p class="rich-section__intro">Les réponses aux questions que se posent le plus souvent les entreprises de Ouagadougou avant de lancer leur site WordPress.</p>
+    <div class="rich-faqs">
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Combien coûte un site WordPress à Ouagadougou ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">De 450 000 à 2 500 000 FCFA pour un site vitrine WordPress de 5 à 12 pages. Une boutique WooCommerce démarre autour de 1 200 000 FCFA. Vous recevez un devis ferme sous 48 h après un appel découverte gratuit, sans aucun frais caché.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>WordPress ou Elementor : quelle différence pour mon projet ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">WordPress est le moteur qui gère tout le contenu de votre site ; Elementor est le constructeur visuel qui vous permet de modifier vos pages en glisser-déposer, sans écrire une ligne de code. Nous livrons toujours les deux ensemble, pour que vous restiez pleinement autonome après la mise en ligne.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Pourrai-je gérer le site moi-même ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Oui, et c'est précisément l'intérêt d'Elementor. Vous modifiez vos textes, vos images, vos tarifs et vos promotions très facilement. Nous incluons une formation en visio d'une heure et un guide vidéo, afin que vous publiiez vos mises à jour en toute confiance.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Acceptez-vous Orange Money et Moov Money ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Oui. Vous réglez votre site en FCFA par Orange Money, Moov Money ou virement bancaire. Pour les boutiques WooCommerce, nous intégrons aussi ces moyens de paiement mobile afin que vos propres clients règlent directement en ligne.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Travaillez-vous à distance avec les entreprises de Ouagadougou ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Oui. Notre siège est à Abomey-Calavi, au Bénin, et nous accompagnons à distance les clients de Ouagadougou : visios hebdomadaires, échanges WhatsApp, démonstrations en ligne et partage d'écran. La distance ne ralentit jamais le projet, bien au contraire.</div>
+        </details>
+    </div>
+  </section>
+
+  <!-- AUTRES SERVICES A LA VILLE -->
+  <section class="rich-section">
+    <h2>Autres services <em>à Ouagadougou</em></h2>
+    <p class="rich-section__intro">Au-delà de WordPress, Pirabel Labs renforce votre présence digitale à Ouagadougou sur l'ensemble de ces leviers.</p>
+    <div class="rich-related-grid">
+      <a href="/creation-site-web-ouagadougou" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">code</span>
+        <span class="rich-related__label">Création de site web</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/seo-ouagadougou" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">search_insights</span>
+        <span class="rich-related__label">SEO</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/community-management-ouagadougou" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">forum</span>
+        <span class="rich-related__label">Community management</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/automatisation-marketing-ouagadougou" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">smart_toy</span>
+        <span class="rich-related__label">Automatisation marketing</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/fiche-google-business-ouagadougou" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">location_on</span>
+        <span class="rich-related__label">Fiche Google Business</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="rich-cta-band">
+    <h2>Prêt à lancer votre site <em>WordPress</em> à Ouagadougou ?</h2>
+    <p>Recevez votre devis ferme en FCFA sous 48 h. L'appel découverte de 30 minutes est gratuit et sans engagement, et c'est un cofondateur qui vous répond, jamais un commercial.</p>
+    <div class="rich-cta-band__row">
+      <a href="/contact?service=creation-site-wordpress&amp;ville=ouagadougou" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander mon devis</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Email</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col footer__col--brand">
+        <a href="/" class="footer__brand-link" aria-label="Pirabel Labs - accueil">
+          <img src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="36" height="36">
+          <strong class="footer__brand">PIRABEL LABS</strong>
+        </a>
+        <p class="footer__tagline">Agence marketing digital francophone pour PME ambitieuses. Sites web, SEO, social, vidéo, automatisation, IA, SaaS - sous le même toit.</p>
+        <div class="footer__social">
+          <a href="https://wa.me/16139273067" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer__social-link"><span class="material-symbols-outlined">chat</span></a>
+          <a href="mailto:contact@pirabellabs.com" aria-label="Email" class="footer__social-link"><span class="material-symbols-outlined">mail</span></a>
+          <a href="tel:+16139273067" aria-label="Téléphone" class="footer__social-link"><span class="material-symbols-outlined">phone</span></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Expertises</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Création de site web</a></li>
+          <li><a href="/seo">SEO &amp; référencement</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+          <li><a href="/agence-ia">Agence IA</a></li>
+          <li><a href="/creation-saas">Création de SaaS</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/services" class="footer__link--accent">Tous nos services &rarr;</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Villes</div>
+        <ul class="footer__list">
+          <li><a href="/agence-marketing-cotonou">Cotonou</a></li>
+          <li><a href="/agence-web-abidjan">Abidjan</a></li>
+          <li><a href="/agence-web-dakar">Dakar</a></li>
+          <li><a href="/agence-web-casablanca">Casablanca</a></li>
+          <li><a href="/agence-web-tunis">Tunis</a></li>
+          <li><a href="/agence-web-paris">Paris</a></li>
+          <li><a href="/agence-web-bruxelles">Bruxelles</a></li>
+          <li><a href="/agence-web-geneve">Genève</a></li>
+          <li><a href="/agence-web-montreal">Montréal</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Pirabel Labs</div>
+        <ul class="footer__list">
+          <li><a href="/a-propos">À propos</a></li>
+          <li><a href="/methodologie">Méthodologie</a></li>
+          <li><a href="/realisations">Réalisations</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/livres-blancs">Livres blancs</a></li>
+          <li><a href="/tarifs">Tarifs</a></li>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs &middot; Tous droits réservés &middot; <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Bénin</span>
+      <span class="footer__credits">Fait avec passion par <strong>Lissanon Gildas</strong> &amp; <strong>Fidah Imorou</strong></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu = document.getElementById('navMenu');
+  if (burger && menu) {
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click', function(e){
+        if (window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if (item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+  <script defer src="/js/track.js"></script>
+</body>
+</html>

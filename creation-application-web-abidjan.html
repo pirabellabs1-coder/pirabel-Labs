@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Création d'application web à Abidjan - Pirabel Labs</title>
+<meta name="description" content="Applications métier, portails et outils internes sur-mesure à Abidjan. Tarifs en FCFA, paiement Mobile Money et Wave. Développement web fiable, devis ferme sous 48h.">
+<link rel="canonical" href="https://www.pirabellabs.com/creation-application-web-abidjan">
+<link rel="icon" type="image/png" href="/img/logo.png?v=elan2">
+<meta name="keywords" content="création application web abidjan, application métier abidjan, développeur application web abidjan, portail web abidjan, outil interne sur mesure abidjan, logiciel de gestion abidjan, agence développement abidjan, web app Côte d'Ivoire, Pirabel Labs">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Création d'application web à Abidjan - Pirabel Labs">
+<meta property="og:description" content="Applications métier, portails et outils internes sur-mesure à Abidjan. Tarifs en FCFA, paiement Mobile Money et Wave. Développement web fiable, devis ferme sous 48h.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pirabellabs.com/creation-application-web-abidjan">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Création d'application web à Abidjan - Pirabel Labs">
+<meta name="twitter:description" content="Applications métier, portails et outils internes sur-mesure à Abidjan. Tarifs en FCFA, paiement Mobile Money et Wave. Développement web fiable, devis ferme sous 48h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+<link rel="stylesheet" href="/css/global.css?v=elan2">
+<style>
+.rich-wrap { max-width: 76rem; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) var(--px-page); }
+
+/* Hero */
+.rich-hero { max-width: 56rem; padding: clamp(2.5rem, 5vw, 4rem) 0 3rem; text-align: left; }
+.rich-hero__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.9rem; margin-bottom: 1.5rem; }
+.rich-hero h1 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(2rem, 4.8vw, 3.5rem); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 1.25rem; color: var(--text); text-align: left; }
+.rich-hero h1 em { color: var(--accent); font-style: normal; }
+.rich-hero__sub { font-size: 1.05rem; color: var(--text-muted); line-height: 1.65; max-width: 48rem; margin: 0 0 2rem; text-align: left; }
+.rich-hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.75rem; }
+.rich-hero__trust { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.rich-hero__trust-item { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; color: var(--text); }
+.rich-hero__trust-item .material-symbols-outlined { color: var(--accent); font-size: 1.1rem; }
+
+/* Sections */
+.rich-section { margin-bottom: 5rem; }
+.rich-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3.2vw, 2.5rem); line-height: 1.15; letter-spacing: -0.025em; margin-bottom: 1rem; color: var(--text); text-align: left; }
+.rich-section h2 em { color: var(--accent); font-style: normal; }
+.rich-section__intro { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 52rem; margin-bottom: 2.5rem; text-align: left; }
+
+/* Cards génériques */
+.rich-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; }
+.rich-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 1.5rem; transition: all 0.2s; }
+.rich-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.rich-card__icon { width: 3rem; height: 3rem; background: var(--accent-soft); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+.rich-card__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text); }
+.rich-card__desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Steps */
+.rich-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem; }
+.rich-step { position: relative; background: linear-gradient(180deg, rgba(255,107,0,0.04) 0%, transparent 50%); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 1.5rem; transition: all 0.2s; }
+.rich-step:hover { border-color: var(--accent); transform: translateY(-3px); }
+.rich-step__num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.25rem; color: var(--accent); opacity: 0.4; line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.05em; }
+.rich-step__body { }
+.rich-step__icon { color: var(--accent); font-size: 1.5rem; margin-bottom: 0.75rem; }
+.rich-step__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text); }
+.rich-step__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Offre détaillée */
+.rich-offer { display: grid; grid-template-columns: 1fr; gap: 1rem; max-width: 56rem; }
+.rich-offer__item { display: flex; gap: 0.85rem; align-items: flex-start; padding: 1.25rem 1.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; list-style: none; }
+.rich-offer__check { color: var(--accent); font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+.rich-offer__title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--text); }
+.rich-offer__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Outils grid */
+.rich-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 0.85rem; }
+.rich-tool { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.25rem 0.75rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; transition: all 0.2s; }
+.rich-tool:hover { border-color: var(--accent); transform: translateY(-2px); }
+.rich-tool__icon { color: var(--accent); font-size: 1.8rem; margin-bottom: 0.4rem; }
+.rich-tool__label { font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; color: var(--text); text-align: center; }
+
+/* Keywords */
+.rich-kws { display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: 56rem; }
+.rich-kw { display: inline-block; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 600; }
+
+/* Pricing block */
+.rich-pricing { display: grid; grid-template-columns: 1fr; gap: 1.25rem; max-width: 64rem; }
+.rich-pricing__card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem 2rem; }
+.rich-pricing__label { font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; }
+.rich-pricing__price { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--text); margin-bottom: 0.5rem; }
+.rich-pricing__desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* FAQ */
+.rich-faqs { max-width: 56rem; }
+.rich-faq { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.75rem; }
+.rich-faq[open] { border-color: var(--accent); }
+.rich-faq__q { list-style: none; cursor: pointer; padding: 1.25rem 1.5rem; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; color: var(--text); }
+.rich-faq__q::-webkit-details-marker { display: none; }
+.rich-faq__q .material-symbols-outlined { color: var(--accent); transition: transform 0.2s; }
+.rich-faq[open] .rich-faq__q .material-symbols-outlined { transform: rotate(180deg); }
+.rich-faq__a { padding: 0 1.5rem 1.5rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+/* Testimonial */
+.rich-testimonial { background: linear-gradient(135deg, rgba(255,107,0,0.08) 0%, var(--bg-2) 70%); border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; max-width: 64rem; }
+.rich-testimonial__stars { color: var(--accent); font-size: 1.1rem; letter-spacing: 0.15em; margin-bottom: 1rem; }
+.rich-testimonial__quote { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 1.15rem; line-height: 1.55; color: var(--text); margin-bottom: 1.5rem; }
+.rich-testimonial__author { display: flex; align-items: center; gap: 0.85rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+.rich-testimonial__avatar { width: 2.5rem; height: 2.5rem; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.rich-testimonial__name { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--text); }
+.rich-testimonial__role { font-size: 0.78rem; color: var(--text-muted); }
+
+/* Related services */
+.rich-related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.85rem; }
+.rich-related { display: flex; align-items: center; gap: 0.75rem; padding: 1.1rem 1.4rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+.rich-related:hover { border-color: var(--accent); transform: translateX(4px); }
+.rich-related__icon { color: var(--accent); font-size: 1.25rem; }
+.rich-related__label { flex: 1; }
+.rich-related__arrow { color: var(--accent); font-size: 1.1rem; opacity: 0; transform: translateX(-4px); transition: all 0.2s; }
+.rich-related:hover .rich-related__arrow { opacity: 1; transform: translateX(0); }
+
+/* CTA band */
+.rich-cta-band { background: linear-gradient(135deg, var(--bg-2) 0%, rgba(255,107,0,0.10) 100%); border: 1px solid var(--accent); border-radius: 18px; padding: clamp(2.5rem, 5vw, 4rem); max-width: 76rem; margin: 4rem auto 0; text-align: left; }
+.rich-cta-band h2 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 1rem; line-height: 1.15; color: var(--text); text-align: left; }
+.rich-cta-band h2 em { color: var(--accent); font-style: normal; }
+.rich-cta-band p { color: var(--text-muted); font-size: 1rem; line-height: 1.65; max-width: 44rem; margin-bottom: 2rem; }
+.rich-cta-band__row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+/* Mobile */
+@media (max-width: 720px) {
+  .rich-hero h1 { font-size: 1.85rem; }
+  .rich-section h2 { font-size: 1.45rem; }
+  .rich-cta-band h2 { font-size: 1.4rem; }
+}
+</style>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+16139273067","email":"contact@pirabellabs.com"},"areaServed":{"@type":"City","name":"Abidjan","containedInPlace":{"@type":"AdministrativeArea","name":"District autonome d'Abidjan"}},"serviceType":"Création d'application web","name":"Création d'application web à Abidjan","description":"Applications métier, portails et outils internes sur-mesure pour les entreprises d'Abidjan. Web apps fiables, sécurisées et évolutives, avec paiement Mobile Money et Wave.","offers":{"@type":"Offer","priceCurrency":"XOF","availability":"https://schema.org/InStock"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Pirabel Labs","image":"https://www.pirabellabs.com/img/logo.png","url":"https://www.pirabellabs.com/creation-application-web-abidjan","telephone":"+16139273067","email":"contact@pirabellabs.com","priceRange":"FCFA","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"areaServed":{"@type":"City","name":"Abidjan"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},{"@type":"ListItem","position":2,"name":"Création de site web","item":"https://www.pirabellabs.com/creation-site-web"},{"@type":"ListItem","position":3,"name":"Application web à Abidjan","item":"https://www.pirabellabs.com/creation-application-web-abidjan"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien coûte une application web sur mesure à Abidjan ?","acceptedAnswer":{"@type":"Answer","text":"Un outil interne simple démarre autour de 1 200 000 FCFA. Une application métier complète (gestion, tableaux de bord, rôles utilisateurs) se situe entre 3 000 000 et 9 000 000 FCFA selon le périmètre. Devis ferme sous 48h après un appel découverte gratuit."}}},{"@type":"Question","name":"Quelle différence entre un site web et une application web à Abidjan ?","acceptedAnswer":{"@type":"Answer","text":"Un site web présente votre activité ; une application web fait travailler vos données : connexion utilisateurs, gestion de stock, facturation, suivi de dossiers, tableaux de bord. C'est un véritable outil de travail accessible depuis un navigateur, sans installation."}}},{"@type":"Question","name":"Puis-je intégrer le paiement Mobile Money et Wave dans mon application à Abidjan ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Nous intégrons Orange Money, MTN MoMo, Moov Money et Wave dans vos applications, avec confirmations automatiques par e-mail et WhatsApp et un suivi des transactions en FCFA dans votre tableau de bord."}}},{"@type":"Question","name":"L'application fonctionnera-t-elle bien avec une connexion lente à Abidjan ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Nous concevons des applications légères, optimisées pour la 3G/4G et les coupures de réseau fréquentes, avec mise en cache et mode dégradé. L'objectif est une application utilisable partout dans le district d'Abidjan, y compris en mobilité."}}},{"@type":"Question","name":"Êtes-vous présents à Abidjan et comment se déroule la collaboration ?","acceptedAnswer":{"@type":"Answer","text":"Notre siège est à Abomey-Calavi, au Bénin. Nous travaillons avec les entreprises d'Abidjan à distance (visios hebdomadaires, WhatsApp, démos en ligne) et nous nous déplaçons à Abidjan pour les projets stratégiques. Paiement en FCFA via Mobile Money, Wave ou virement."}}}]}</script>
+<link rel="preload" as="image" href="/img/logo.png?v=elan2" fetchpriority="high">
+</head>
+<body>
+
+<nav class="nav-mega" id="nav">
+  <div class="nav-mega__inner">
+    <a href="/" class="nav-mega__logo" aria-label="Pirabel Labs - accueil">
+      <img src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="36" height="36" fetchpriority="high">
+      <span>Pirabel Labs</span>
+    </a>
+    <div class="nav-mega__menu" id="navMenu">
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Expertises <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--2col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Web &amp; visibilité</div>
+              <a href="/creation-site-web" class="nav-mega__link"><span class="material-symbols-outlined">code</span><div><div class="nav-mega__link-title">Création de site web</div><div class="nav-mega__link-desc">Sites, e-commerce, applications</div></div></a>
+              <a href="/seo" class="nav-mega__link"><span class="material-symbols-outlined">search_insights</span><div><div class="nav-mega__link-title">SEO &amp; référencement</div><div class="nav-mega__link-desc">Trafic organique qualifié</div></div></a>
+              <a href="/community-management" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Community management</div><div class="nav-mega__link-desc">Instagram, TikTok, LinkedIn</div></div></a>
+              <a href="/tunnels-de-vente" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Tunnels de vente</div><div class="nav-mega__link-desc">Landing pages CRO</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">IA, SaaS &amp; automatisation</div>
+              <a href="/agence-ia" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agence IA</div><div class="nav-mega__link-desc">Chatbots, agents IA, ChatGPT</div></div></a>
+              <a href="/creation-saas" class="nav-mega__link"><span class="material-symbols-outlined">rocket_launch</span><div><div class="nav-mega__link-title">Création de SaaS</div><div class="nav-mega__link-desc">MVP Next.js en 8-12 semaines</div></div></a>
+              <a href="/solutions-ia" class="nav-mega__link"><span class="material-symbols-outlined">psychology</span><div><div class="nav-mega__link-title">Solutions IA sur mesure</div><div class="nav-mega__link-desc">RAG, fine-tuning, agents</div></div></a>
+              <a href="/automatisation-marketing" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Automatisation</div><div class="nav-mega__link-desc">Make, n8n, agents IA</div></div></a>
+            </div>
+            <div class="nav-mega__panel-footer">
+              <a href="/services" class="nav-mega__see-all">Voir tous nos services <span class="material-symbols-outlined">arrow_forward</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Agences <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Sites &amp; e-commerce</div>
+              <a href="/agence-webflow" class="nav-mega__link"><span class="material-symbols-outlined">web</span><div><div class="nav-mega__link-title">Agence Webflow</div></div></a>
+              <a href="/agence-elementor" class="nav-mega__link"><span class="material-symbols-outlined">dashboard_customize</span><div><div class="nav-mega__link-title">Agence Elementor</div></div></a>
+              <a href="/agence-woocommerce" class="nav-mega__link"><span class="material-symbols-outlined">shopping_cart</span><div><div class="nav-mega__link-title">Agence WooCommerce</div></div></a>
+              <a href="/agence-prestashop" class="nav-mega__link"><span class="material-symbols-outlined">storefront</span><div><div class="nav-mega__link-title">Agence PrestaShop</div></div></a>
+              <a href="/agence-ecommerce" class="nav-mega__link"><span class="material-symbols-outlined">point_of_sale</span><div><div class="nav-mega__link-title">Agence e-commerce</div></div></a>
+              <a href="/agence-site-vitrine" class="nav-mega__link"><span class="material-symbols-outlined">window</span><div><div class="nav-mega__link-title">Agence site vitrine</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Automatisation &amp; IA</div>
+              <a href="/agence-ia" class="nav-mega__link"><span class="material-symbols-outlined">smart_toy</span><div><div class="nav-mega__link-title">Agence IA</div></div></a>
+              <a href="/agence-make" class="nav-mega__link"><span class="material-symbols-outlined">linked_services</span><div><div class="nav-mega__link-title">Agence Make</div></div></a>
+              <a href="/agence-n8n" class="nav-mega__link"><span class="material-symbols-outlined">account_tree</span><div><div class="nav-mega__link-title">Agence n8n</div></div></a>
+              <a href="/agents-ia-chatbots" class="nav-mega__link"><span class="material-symbols-outlined">forum</span><div><div class="nav-mega__link-title">Agents IA &amp; chatbots</div></div></a>
+              <a href="/agence-systeme-io" class="nav-mega__link"><span class="material-symbols-outlined">conversion_path</span><div><div class="nav-mega__link-title">Agence Système.io</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Email, social, vidéo</div>
+              <a href="/agence-hubspot" class="nav-mega__link"><span class="material-symbols-outlined">hub</span><div><div class="nav-mega__link-title">Agence HubSpot</div></div></a>
+              <a href="/agence-brevo" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Agence Brevo</div></div></a>
+              <a href="/community-instagram" class="nav-mega__link"><span class="material-symbols-outlined">photo_camera</span><div><div class="nav-mega__link-title">Agence Instagram</div></div></a>
+              <a href="/community-tiktok" class="nav-mega__link"><span class="material-symbols-outlined">music_video</span><div><div class="nav-mega__link-title">Agence TikTok</div></div></a>
+              <a href="/community-linkedin" class="nav-mega__link"><span class="material-symbols-outlined">work</span><div><div class="nav-mega__link-title">Agence LinkedIn</div></div></a>
+              <a href="/agence-netlinking" class="nav-mega__link"><span class="material-symbols-outlined">link</span><div><div class="nav-mega__link-title">Agence netlinking</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Villes <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--3col">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <div class="nav-mega__col-title">Afrique de l'Ouest</div>
+              <a href="/agence-marketing-cotonou" class="nav-mega__link"><div><div class="nav-mega__link-title">Cotonou</div></div></a>
+              <a href="/agence-marketing-abomey-calavi" class="nav-mega__link"><div><div class="nav-mega__link-title">Abomey-Calavi</div></div></a>
+              <a href="/agence-marketing-porto-novo" class="nav-mega__link"><div><div class="nav-mega__link-title">Porto-Novo</div></div></a>
+              <a href="/agence-web-abidjan" class="nav-mega__link"><div><div class="nav-mega__link-title">Abidjan</div></div></a>
+              <a href="/agence-web-dakar" class="nav-mega__link"><div><div class="nav-mega__link-title">Dakar</div></div></a>
+              <a href="/agence-web-lome" class="nav-mega__link"><div><div class="nav-mega__link-title">Lomé</div></div></a>
+              <a href="/agence-web-bamako" class="nav-mega__link"><div><div class="nav-mega__link-title">Bamako</div></div></a>
+              <a href="/agence-web-ouagadougou" class="nav-mega__link"><div><div class="nav-mega__link-title">Ouagadougou</div></div></a>
+              <a href="/agence-web-conakry" class="nav-mega__link"><div><div class="nav-mega__link-title">Conakry</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Afrique Centrale &amp; Maghreb</div>
+              <a href="/agence-web-yaounde" class="nav-mega__link"><div><div class="nav-mega__link-title">Yaoundé</div></div></a>
+              <a href="/agence-web-douala" class="nav-mega__link"><div><div class="nav-mega__link-title">Douala</div></div></a>
+              <a href="/agence-web-casablanca" class="nav-mega__link"><div><div class="nav-mega__link-title">Casablanca</div></div></a>
+              <a href="/agence-web-tunis" class="nav-mega__link"><div><div class="nav-mega__link-title">Tunis</div></div></a>
+            </div>
+            <div>
+              <div class="nav-mega__col-title">Europe &amp; Amérique Nord</div>
+              <a href="/agence-web-paris" class="nav-mega__link"><div><div class="nav-mega__link-title">Paris</div></div></a>
+              <a href="/agence-web-lyon" class="nav-mega__link"><div><div class="nav-mega__link-title">Lyon</div></div></a>
+              <a href="/agence-web-marseille" class="nav-mega__link"><div><div class="nav-mega__link-title">Marseille</div></div></a>
+              <a href="/agence-web-bruxelles" class="nav-mega__link"><div><div class="nav-mega__link-title">Bruxelles</div></div></a>
+              <a href="/agence-web-geneve" class="nav-mega__link"><div><div class="nav-mega__link-title">Genève</div></div></a>
+              <a href="/agence-web-montreal" class="nav-mega__link"><div><div class="nav-mega__link-title">Montréal</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">Ressources <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/blog" class="nav-mega__link"><span class="material-symbols-outlined">article</span><div><div class="nav-mega__link-title">Blog</div><div class="nav-mega__link-desc">Articles experts</div></div></a>
+              <a href="/realisations" class="nav-mega__link"><span class="material-symbols-outlined">collections</span><div><div class="nav-mega__link-title">Réalisations</div><div class="nav-mega__link-desc">Nos cas clients</div></div></a>
+              <a href="/methodologie" class="nav-mega__link"><span class="material-symbols-outlined">timeline</span><div><div class="nav-mega__link-title">Méthodologie</div><div class="nav-mega__link-desc">Notre process en 7 étapes</div></div></a>
+              <a href="/livres-blancs" class="nav-mega__link"><span class="material-symbols-outlined">menu_book</span><div><div class="nav-mega__link-title">Livres blancs</div><div class="nav-mega__link-desc">Guides gratuits</div></div></a>
+              <a href="/tarifs" class="nav-mega__link"><span class="material-symbols-outlined">payments</span><div><div class="nav-mega__link-title">Tarifs</div><div class="nav-mega__link-desc">Grille complète EUR</div></div></a>
+              <a href="/faq" class="nav-mega__link"><span class="material-symbols-outlined">help</span><div><div class="nav-mega__link-title">FAQ</div><div class="nav-mega__link-desc">Vos questions</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-mega__item">
+        <button class="nav-mega__trigger" type="button">À propos <span class="material-symbols-outlined">expand_more</span></button>
+        <div class="nav-mega__panel nav-mega__panel--small">
+          <div class="nav-mega__panel-inner">
+            <div>
+              <a href="/a-propos" class="nav-mega__link"><span class="material-symbols-outlined">group</span><div><div class="nav-mega__link-title">L'équipe &amp; l'agence</div></div></a>
+              <a href="/contact" class="nav-mega__link"><span class="material-symbols-outlined">mail</span><div><div class="nav-mega__link-title">Contact</div></div></a>
+              <a href="/mentions-legales" class="nav-mega__link"><span class="material-symbols-outlined">gavel</span><div><div class="nav-mega__link-title">Mentions légales</div></div></a>
+              <a href="/politique-confidentialite" class="nav-mega__link"><span class="material-symbols-outlined">shield</span><div><div class="nav-mega__link-title">Confidentialité</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
+    <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main class="rich-wrap">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Fil d'Ariane" style="margin-bottom:1.5rem;">
+    <ol style="display:flex;flex-wrap:wrap;gap:0.5rem;list-style:none;padding:0;margin:0;font-size:0.78rem;color:var(--text-muted);">
+      <li><a href="/" style="color:var(--text-muted);text-decoration:none;">Accueil</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li><a href="/creation-site-web" style="color:var(--text-muted);text-decoration:none;">Création de site web</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li aria-current="page" style="color:var(--accent);">Application web à Abidjan</li>
+    </ol>
+  </nav>
+
+  <!-- HERO -->
+  <section class="rich-hero">
+    <span class="rich-hero__eyebrow"><span class="material-symbols-outlined">developer_board</span> Création d'application web &middot; Abidjan, Côte d'Ivoire</span>
+    <h1>Création d'application web à <em>Abidjan</em></h1>
+    <p class="rich-hero__sub">Vous ne voulez plus jongler entre cahiers, fichiers Excel et messages WhatsApp pour piloter votre activité ? Nous construisons l'application métier, le portail client ou l'outil interne sur-mesure qui centralise vos données et fait gagner du temps à toute votre équipe à Abidjan. Accessible depuis un simple navigateur, sans installation.</p>
+    <div class="rich-hero__cta">
+      <a href="/contact?service=creation-application-web&amp;ville=abidjan" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un devis ferme</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+    </div>
+    <div class="rich-hero__trust">
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">star</span> 4.9/5 (47 avis)</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">verified</span> Depuis 2020</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">payments</span> Paiement en FCFA</div>
+      <div class="rich-hero__trust-item"><span class="material-symbols-outlined">schedule</span> Devis sous 48h</div>
+    </div>
+  </section>
+
+  <!-- POURQUOI A ABIDJAN -->
+  <section class="rich-section">
+    <h2>Pourquoi développer une <em>application web</em> à Abidjan ?</h2>
+    <p class="rich-section__intro">Abidjan est le poumon économique de la Côte d'Ivoire et l'un des plus grands marchés numériques d'Afrique de l'Ouest. Avec une économie en pleine accélération, des PME qui se structurent et un taux d'équipement mobile parmi les plus élevés de la sous-région, les entreprises abidjanaises atteignent vite les limites des outils improvisés. Une application web sur-mesure transforme ce désordre en process fluide, fiable et mesurable.</p>
+    <div class="rich-cards">
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">database</span></div>
+          <div class="rich-card__title">La fin des fichiers Excel éclatés</div>
+          <div class="rich-card__desc">Stocks, clients, factures, dossiers : tout est centralisé dans une seule base sécurisée. Plus de doublons, plus de versions perdues entre les équipes.</div>
+        </div>
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">signal_cellular_alt</span></div>
+          <div class="rich-card__title">Pensée pour le réseau ivoirien</div>
+          <div class="rich-card__desc">Application légère, optimisée pour la 3G/4G et les coupures fréquentes. Vos équipes restent productives même quand la connexion faiblit à Abidjan.</div>
+        </div>
+        <div class="rich-card">
+          <div class="rich-card__icon"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+          <div class="rich-card__title">Mobile Money et Wave intégrés</div>
+          <div class="rich-card__desc">Encaissements et abonnements directement dans l'application via Orange, MTN, Moov Money et Wave, avec suivi des transactions en FCFA.</div>
+        </div>
+    </div>
+  </section>
+
+  <!-- NOTRE APPROCHE -->
+  <section class="rich-section">
+    <h2>Notre approche en <em>5 étapes</em></h2>
+    <p class="rich-section__intro">Construire une application, ce n'est pas livrer du code et disparaître. C'est cartographier vos vrais process abidjanais, puis les outiller pas à pas, sans jamais bloquer votre activité.</p>
+    <div class="rich-steps">
+        <div class="rich-step">
+          <div class="rich-step__num">01</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">map</div>
+            <h3 class="rich-step__title">Cartographie métier</h3>
+            <p class="rich-step__desc">Atelier pour modéliser vos process actuels à Abidjan : qui fait quoi, avec quelles données, où sont les pertes de temps.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">02</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">architecture</div>
+            <h3 class="rich-step__title">Architecture &amp; maquette</h3>
+            <p class="rich-step__desc">Schéma des données, rôles utilisateurs et maquettes Figma cliquables, validés avant la moindre ligne de code.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">03</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">terminal</div>
+            <h3 class="rich-step__title">Développement par modules</h3>
+            <p class="rich-step__desc">Livraison fonctionnalité par fonctionnalité, avec démos toutes les deux semaines. Vous voyez l'application grandir.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">04</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">verified_user</div>
+            <h3 class="rich-step__title">Tests &amp; recette</h3>
+            <p class="rich-step__desc">Jeux de tests réels, contrôle des droits, vérification des paiements Mobile Money et Wave avant la mise en production.</p>
+          </div>
+        </div>
+        <div class="rich-step">
+          <div class="rich-step__num">05</div>
+          <div class="rich-step__body">
+            <div class="rich-step__icon material-symbols-outlined">school</div>
+            <h3 class="rich-step__title">Déploiement &amp; transfert</h3>
+            <p class="rich-step__desc">Mise en ligne, formation de vos équipes à Abidjan, documentation, puis maintenance et évolutions au fil de votre croissance.</p>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- NOTRE OFFRE -->
+  <section class="rich-section">
+    <h2>Les applications que nous construisons : <em>notre offre</em></h2>
+    <p class="rich-section__intro">Chaque entreprise abidjanaise a ses propres flux. Voici les types d'applications web sur-mesure que nous livrons le plus souvent pour le marché ivoirien.</p>
+    <ul class="rich-offer">
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Applications métier de gestion</div>
+            <div class="rich-offer__desc">Stocks, ventes, facturation, suivi de production ou de chantiers : votre activité pilotée depuis un tableau de bord unique.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Portails clients et fournisseurs</div>
+            <div class="rich-offer__desc">Espaces sécurisés où vos clients d'Abidjan suivent leurs commandes, dossiers, paiements et documents en autonomie.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Outils internes &amp; back-offices</div>
+            <div class="rich-offer__desc">Interfaces d'administration sur-mesure pour vos équipes : gestion des utilisateurs, validation des demandes, exports.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Gestion des rôles et permissions</div>
+            <div class="rich-offer__desc">Chaque collaborateur voit uniquement ce qui le concerne : direction, comptabilité, terrain, agents commerciaux.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Paiements Mobile Money &amp; Wave</div>
+            <div class="rich-offer__desc">Encaissements et abonnements via Orange, MTN, Moov Money et Wave, avec rapprochement automatique en FCFA.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Notifications WhatsApp &amp; e-mail</div>
+            <div class="rich-offer__desc">Alertes automatiques pour vos clients et vos équipes : confirmation, relance, rappel d'échéance, statut de dossier.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Tableaux de bord &amp; exports</div>
+            <div class="rich-offer__desc">Indicateurs en temps réel, rapports PDF et exports Excel pour décider vite, sans ressaisie manuelle.</div>
+          </div>
+        </li>
+        <li class="rich-offer__item">
+          <span class="rich-offer__check material-symbols-outlined">check_circle</span>
+          <div>
+            <div class="rich-offer__title">Sécurité &amp; sauvegardes</div>
+            <div class="rich-offer__desc">Connexions chiffrées, droits granulaires, sauvegardes automatiques et hébergement fiable pour vos données sensibles.</div>
+          </div>
+        </li>
+    </ul>
+  </section>
+
+  <!-- TARIFS -->
+  <section class="rich-section">
+    <h2>Tarifs <em>application web</em> à Abidjan</h2>
+    <p class="rich-section__intro">Des tarifs clairs, adaptés au marché ivoirien, en FCFA. Le prix dépend du nombre de modules, du volume de données et du niveau d'intégration. Devis ferme sous 48h après un appel découverte gratuit.</p>
+    <div class="rich-pricing">
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Outil interne / MVP</div>
+        <div class="rich-pricing__price">À partir de 1 200 000 FCFA</div>
+        <div class="rich-pricing__desc">Une application légère : un ou deux modules, gestion d'utilisateurs et un tableau de bord. Idéale pour outiller un premier process et tester la solution sur le terrain à Abidjan.</div>
+      </div>
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Application métier complète</div>
+        <div class="rich-pricing__price">3 000 000 à 9 000 000 FCFA</div>
+        <div class="rich-pricing__desc">Plusieurs modules connectés, rôles avancés, paiements Mobile Money et Wave, notifications, rapports. Le système central qui fait tourner votre entreprise.</div>
+      </div>
+      <div class="rich-pricing__card">
+        <div class="rich-pricing__label">Maintenance &amp; évolutions</div>
+        <div class="rich-pricing__price">Dès 150 000 FCFA / mois</div>
+        <div class="rich-pricing__desc">Hébergement, sauvegardes, mises à jour de sécurité et petites évolutions. Paiement en FCFA via Orange, MTN, Moov Money, Wave ou virement.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTILS -->
+  <section class="rich-section">
+    <h2>Technologies &amp; outils <em>utilisés</em></h2>
+    <p class="rich-section__intro">Nous bâtissons sur une stack moderne et éprouvée, choisie pour sa robustesse et sa capacité à évoluer avec votre activité à Abidjan, sans vous enfermer dans un fournisseur unique.</p>
+    <div class="rich-tools">
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">rocket_launch</span>
+          <span class="rich-tool__label">Next.js</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">javascript</span>
+          <span class="rich-tool__label">React</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">dns</span>
+          <span class="rich-tool__label">Node.js</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">database</span>
+          <span class="rich-tool__label">PostgreSQL</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">bolt</span>
+          <span class="rich-tool__label">Supabase</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">draw</span>
+          <span class="rich-tool__label">Figma</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">cloud</span>
+          <span class="rich-tool__label">Vercel</span>
+        </div>
+        <div class="rich-tool">
+          <span class="rich-tool__icon material-symbols-outlined">shield</span>
+          <span class="rich-tool__label">Cloudflare</span>
+        </div>
+    </div>
+  </section>
+
+  <!-- MOTS-CLES CIBLES -->
+  <section class="rich-section">
+    <h2>Mots-clés <em>ciblés à Abidjan</em></h2>
+    <p class="rich-section__intro">Ces recherches Google amènent des décideurs ivoiriens en quête d'un véritable outil de travail, pas d'une simple vitrine. Nous structurons votre présence pour vous positionner dessus.</p>
+    <div class="rich-kws"><span class="rich-kw">création application web abidjan</span><span class="rich-kw">application métier abidjan</span><span class="rich-kw">développeur application web abidjan</span><span class="rich-kw">portail web abidjan</span><span class="rich-kw">outil interne sur mesure abidjan</span><span class="rich-kw">logiciel de gestion abidjan</span><span class="rich-kw">agence développement web Côte d'Ivoire</span><span class="rich-kw">tableau de bord en ligne abidjan</span></div>
+  </section>
+
+  <!-- DELAIS -->
+  <section class="rich-section">
+    <h2>Délais <em>&amp; livrables</em></h2>
+    <p class="rich-section__intro">Outil interne / MVP : 4 à 7 semaines. Application métier complète : 8 à 16 semaines. Projet à modules multiples : phasé sur plusieurs sprints pour livrer de la valeur dès les premières semaines.</p>
+    <div class="rich-cards">
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">view_module</span></div>
+        <div class="rich-card__title">Livraison par modules</div>
+        <div class="rich-card__desc">Vous utilisez les premières fonctionnalités sans attendre la fin du projet. Chaque sprint apporte un livrable concret et testable.</div>
+      </div>
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">diversity_3</span></div>
+        <div class="rich-card__title">Équipe dédiée</div>
+        <div class="rich-card__desc">Chef de projet, développeur back-end, développeur front-end et designer affectés à votre application, joignables sur WhatsApp.</div>
+      </div>
+      <div class="rich-card">
+        <div class="rich-card__icon"><span class="material-symbols-outlined">handyman</span></div>
+        <div class="rich-card__title">Garantie &amp; suivi</div>
+        <div class="rich-card__desc">30 jours de garantie après la mise en ligne, puis un contrat de maintenance pour faire évoluer l'outil avec votre croissance.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMOIGNAGE -->
+  <section class="rich-section">
+    <h2>Résultats <em>clients à Abidjan</em></h2>
+    <div class="rich-testimonial">
+      <div class="rich-testimonial__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="rich-testimonial__quote">"Nous gérions nos commandes et nos livraisons sur cahier et WhatsApp. Pirabel Labs nous a livré une application qui suit chaque commande, encaisse via Wave et Orange Money, et alerte le client par message. Trois heures de paperasse économisées chaque jour, et zéro commande perdue depuis."</div>
+      <div class="rich-testimonial__author">
+        <div class="rich-testimonial__avatar">AK</div>
+        <div>
+          <div class="rich-testimonial__name">Aïcha Konaté</div>
+          <div class="rich-testimonial__role">Gérante, distribution &amp; livraison &mdash; Abidjan, Côte d'Ivoire</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="rich-section">
+    <h2>Questions <em>fréquentes</em></h2>
+    <p class="rich-section__intro">Les réponses aux questions que se posent le plus souvent les entreprises d'Abidjan avant de lancer leur application web.</p>
+    <div class="rich-faqs">
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Combien coûte une application web sur mesure à Abidjan ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Un outil interne simple démarre autour de 1 200 000 FCFA. Une application métier complète, avec plusieurs modules, gestion des rôles et tableaux de bord, se situe entre 3 000 000 et 9 000 000 FCFA selon le périmètre. Vous recevez un devis ferme sous 48h après un appel découverte gratuit.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Quelle différence entre un site web et une application web à Abidjan ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Un site web présente votre activité aux visiteurs. Une application web fait travailler vos données : connexion des utilisateurs, gestion de stock, facturation, suivi de dossiers, tableaux de bord. C'est un véritable outil de travail accessible depuis un navigateur, sans installation sur les postes ni sur les téléphones.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Puis-je intégrer Mobile Money et Wave dans mon application ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Oui. Nous intégrons Orange Money, MTN MoMo, Moov Money et Wave directement dans votre application, avec confirmations automatiques par e-mail et WhatsApp et un suivi des transactions en FCFA dans votre tableau de bord. Le rapprochement des paiements se fait sans ressaisie.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>L'application fonctionnera-t-elle avec une connexion lente à Abidjan ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Oui. Nous concevons des applications légères, optimisées pour la 3G/4G et les coupures de réseau fréquentes, avec mise en cache et mode dégradé. L'objectif est une application réellement utilisable partout dans le district d'Abidjan, y compris pour vos agents en mobilité sur le terrain.</div>
+        </details>
+        <details class="rich-faq">
+          <summary class="rich-faq__q"><span>Êtes-vous présents à Abidjan et comment se passe la collaboration ?</span><span class="material-symbols-outlined">expand_more</span></summary>
+          <div class="rich-faq__a">Notre siège est à Abomey-Calavi, au Bénin. Nous travaillons avec les entreprises d'Abidjan à distance, avec des visios hebdomadaires, un suivi WhatsApp et des démos en ligne, et nous nous déplaçons à Abidjan pour les projets stratégiques. Le paiement se fait en FCFA via Mobile Money, Wave ou virement.</div>
+        </details>
+    </div>
+  </section>
+
+  <!-- AUTRES SERVICES A LA VILLE -->
+  <section class="rich-section">
+    <h2>Autres services <em>à Abidjan</em></h2>
+    <p class="rich-section__intro">Au-delà des applications web, Pirabel Labs accompagne votre développement digital à Abidjan sur l'ensemble de ces leviers.</p>
+    <div class="rich-related-grid">
+      <a href="/creation-site-web-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">code</span>
+        <span class="rich-related__label">Création de site web</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/seo-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">search_insights</span>
+        <span class="rich-related__label">SEO</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/community-management-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">forum</span>
+        <span class="rich-related__label">Community management</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/automatisation-marketing-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">smart_toy</span>
+        <span class="rich-related__label">Automatisation</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/fiche-google-business-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">location_on</span>
+        <span class="rich-related__label">Fiche Google Business</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+      <a href="/agence-web-abidjan" class="rich-related">
+        <span class="rich-related__icon material-symbols-outlined">apartment</span>
+        <span class="rich-related__label">Page Abidjan</span>
+        <span class="rich-related__arrow material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="rich-cta-band">
+    <h2>Prêt à transformer vos process en <em>application web</em> à Abidjan ?</h2>
+    <p>Décrivez-nous votre activité et vos points de blocage : nous vous proposons un périmètre clair et un devis ferme sous 48h. Appel découverte gratuit de 30 minutes, sans engagement. Vous échangez directement avec un cofondateur, pas avec un commercial.</p>
+    <div class="rich-cta-band__row">
+      <a href="/contact?service=creation-application-web&amp;ville=abidjan" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander mon devis</a>
+      <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a>
+      <a href="mailto:contact@pirabellabs.com" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">mail</span> Email</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col footer__col--brand">
+        <a href="/" class="footer__brand-link" aria-label="Pirabel Labs - accueil">
+          <img src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="36" height="36">
+          <strong class="footer__brand">PIRABEL LABS</strong>
+        </a>
+        <p class="footer__tagline">Agence marketing digital francophone pour PME ambitieuses. Sites web, SEO, social, vidéo, automatisation, IA, SaaS - sous le même toit.</p>
+        <div class="footer__social">
+          <a href="https://wa.me/16139273067" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer__social-link"><span class="material-symbols-outlined">chat</span></a>
+          <a href="mailto:contact@pirabellabs.com" aria-label="Email" class="footer__social-link"><span class="material-symbols-outlined">mail</span></a>
+          <a href="tel:+16139273067" aria-label="Téléphone" class="footer__social-link"><span class="material-symbols-outlined">phone</span></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Expertises</div>
+        <ul class="footer__list">
+          <li><a href="/creation-site-web">Création de site web</a></li>
+          <li><a href="/seo">SEO &amp; référencement</a></li>
+          <li><a href="/community-management">Community management</a></li>
+          <li><a href="/tunnels-de-vente">Tunnels de vente</a></li>
+          <li><a href="/agence-ia">Agence IA</a></li>
+          <li><a href="/creation-saas">Création de SaaS</a></li>
+          <li><a href="/automatisation-marketing">Automatisation</a></li>
+          <li><a href="/services" class="footer__link--accent">Tous nos services &rarr;</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Villes</div>
+        <ul class="footer__list">
+          <li><a href="/agence-marketing-cotonou">Cotonou</a></li>
+          <li><a href="/agence-web-abidjan">Abidjan</a></li>
+          <li><a href="/agence-web-dakar">Dakar</a></li>
+          <li><a href="/agence-web-casablanca">Casablanca</a></li>
+          <li><a href="/agence-web-tunis">Tunis</a></li>
+          <li><a href="/agence-web-paris">Paris</a></li>
+          <li><a href="/agence-web-bruxelles">Bruxelles</a></li>
+          <li><a href="/agence-web-geneve">Genève</a></li>
+          <li><a href="/agence-web-montreal">Montréal</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__title">Pirabel Labs</div>
+        <ul class="footer__list">
+          <li><a href="/a-propos">À propos</a></li>
+          <li><a href="/methodologie">Méthodologie</a></li>
+          <li><a href="/realisations">Réalisations</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/livres-blancs">Livres blancs</a></li>
+          <li><a href="/tarifs">Tarifs</a></li>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 Pirabel Labs &middot; Tous droits réservés &middot; <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a> &middot; Abomey-Calavi, Bénin</span>
+      <span class="footer__credits">Fait avec passion par <strong>Lissanon Gildas</strong> &amp; <strong>Fidah Imorou</strong></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu = document.getElementById('navMenu');
+  if (burger && menu) {
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    menu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        menu.classList.remove('is-open');
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+    menu.querySelectorAll('.nav-mega__trigger').forEach(function(t){
+      t.addEventListener('click', function(e){
+        if (window.innerWidth < 980) {
+          e.preventDefault();
+          var item = t.closest('.nav-mega__item');
+          if (item) item.classList.toggle('is-active');
+        }
+      });
+    });
+  }
+})();
+</script>
+  <script defer src="/js/track.js"></script>
+</body>
+</html>

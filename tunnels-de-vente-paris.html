@@ -387,7 +387,7 @@
         </div>
       </div>
     </div>
-    <a href="/contact" class="nav-mega__cta">Contactez-nous</a>
+    <div class="lang-switch notranslate" translate="no" role="group" aria-label="Langue" style="display:inline-flex;gap:2px;align-items:center;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;margin-right:10px;vertical-align:middle;"><button type="button" data-l="fr" onclick="pirabelSetLang('fr')">FR</button><button type="button" data-l="en" onclick="pirabelSetLang('en')">EN</button></div><a href="/contact" class="nav-mega__cta">Contactez-nous</a>
     <button class="nav-mega__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -1250,5 +1250,15 @@
 })();
 </script>
   <script defer src="/js/track.js"></script>
+
+<!-- LANG-SWITCH -->
+<div id="google_translate_element" style="display:none"></div>
+<style>.lang-switch button{border:0;background:transparent;color:inherit;font-family:inherit;font-weight:600;font-size:12px;line-height:1;padding:5px 10px;border-radius:999px;cursor:pointer;}.lang-switch button[aria-pressed="true"]{background:#FF5500;color:#fff;}.goog-te-banner-frame,.skiptranslate{display:none!important;}body{top:0!important;}#goog-gt-tt,.goog-te-balloon-frame{display:none!important;}font font{background:none!important;box-shadow:none!important;}</style>
+<script>
+function pirabelSetLang(l){var h=location.hostname;if(l==="fr"){document.cookie="googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";document.cookie="googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=."+h;}else{document.cookie="googtrans=/fr/"+l+";path=/";document.cookie="googtrans=/fr/"+l+";path=/;domain=."+h;}location.reload();}
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:"fr",includedLanguages:"en,fr",autoDisplay:false},"google_translate_element");}
+(function(){var en=/\/fr\/en/.test(document.cookie);document.querySelectorAll(".lang-switch button").forEach(function(b){b.setAttribute("aria-pressed",((b.getAttribute("data-l")==="en")===en)?"true":"false");});})();
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

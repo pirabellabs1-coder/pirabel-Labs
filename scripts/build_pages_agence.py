@@ -136,12 +136,12 @@ def ns_a(s, c, ct):
       '        <h2 class="ns-h2">' + e(s["label"]) + ' à <em>' + e(c["nom"]) + '</em>&nbsp;: en quoi ça consiste&nbsp;?</h2>\n'
       '        <p>' + e(ct.get("pourquoi_intro", "")) + '</p>\n        <p>' + e(ct.get("hero_sub", "")) + '</p>\n'
       '        <p>' + e(ct.get("approche_intro", "")) + ' ' + e(ct.get("offre_intro", "")) + '</p>\n      </div>\n'
-      '      <div class="ns-split__media"><img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80" alt="' + e(s["label"]) + ' à ' + e(c["nom"]) + '" loading="lazy" /></div>\n'
+      '      <div class="ns-split__media"><img src="/img/illus-a.svg" alt="' + e(s["label"]) + ' à ' + e(c["nom"]) + '" loading="lazy" /></div>\n'
       '    </div>\n  </div>\n</section>\n')
 
 def ns_c(s, c, ct):
     return ('<!-- === NOIISE-STYLE SECTION C: Editorial 2-col reversed === -->\n<section class="ns-section ns-section--c">\n  <div class="ns-container">\n    <div class="ns-split ns-split--rev">\n'
-      '      <div class="ns-split__media"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80" alt="Méthode ' + e(s["label"]) + ' à ' + e(c["nom"]) + '" loading="lazy" /></div>\n'
+      '      <div class="ns-split__media"><img src="/img/illus-c.svg" alt="Méthode ' + e(s["label"]) + ' à ' + e(c["nom"]) + '" loading="lazy" /></div>\n'
       '      <div class="ns-split__text">\n        <span class="ns-eyebrow">Notre approche</span>\n        <h2 class="ns-h2">Notre <em>méthode</em> orientée résultats.</h2>\n'
       '        <p>' + e(ct.get("approche_intro", "")) + '</p>\n        <p>' + e(ct.get("delais_intro", "")) + '</p>\n'
       '        <p>' + e(ct.get("tarifs", {}).get("desc", "")) + '</p>\n      </div>\n    </div>\n  </div>\n</section>\n')

@@ -182,7 +182,7 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
       subtitle: 'Votre demande est entre nos mains',
       body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci de nous avoir contactes&nbsp;! Nous avons bien recu votre demande concernant <strong style="color:#FF5500;">' + escapeHtml(service) + '</strong>.</p>' +
-        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Un membre de notre equipe (souvent un cofondateur) vous repond sous <strong style="color:#e5e2e1;">24h ouvrees</strong> avec :</p>' +
+        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Un membre de notre equipe (souvent le fondateur) vous repond sous <strong style="color:#e5e2e1;">24h ouvrees</strong> avec :</p>' +
         '<table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">' +
         '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Une premiere estimation</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Budget realiste et planning indicatif</span></td></tr>' +
         '<tr><td style="height:8px;"></td></tr>' +
@@ -193,7 +193,7 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
         '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:16px 20px;background:rgba(255,85,0,0.03);margin:24px 0;">' +
         '<p style="margin:0;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;"><strong style="color:#e5e2e1;">Une urgence ?</strong> Joignez-nous directement sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a> ou repondez a cet email.</p>' +
         '</div>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">A tres vite,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong><br>Lissanon Gildas &amp; Fidah Imorou, cofondateurs</p>',
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">A tres vite,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong><br>Lissanon Gildas, cofondateurs</p>',
       cta: 'Visiter notre site',
       ctaUrl: 'https://www.pirabellabs.com',
       ctaSecondary: 'Voir nos realisations',
@@ -1029,7 +1029,7 @@ app.get('/blog/:slug', async (req, res) => {
       ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">'
       : '<div class="bx-cover">' + coverSvg(a.title, a.category) + '</div>';
     const authorCard = (a.content || '').includes('art-author') ? '' :
-      '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Cofondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
+      '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Fondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
       '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Cofondateur, Pirabel Labs</div></div></div>' +
@@ -1054,7 +1054,7 @@ app.get('/blog/:slug', async (req, res) => {
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
-      '<a href="/contact">Parler à un cofondateur</a></div>' +
+      '<a href="/contact">Parler à le fondateur</a></div>' +
       relatedHtml +
       '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
       '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +
@@ -1177,7 +1177,7 @@ app.get('/realisations/:slug', async (req, res) => {
       (c.excerpt ? '<div class="bx-meta">' + escapeHtml(c.excerpt) + '</div>' : '') +
       hero + metrics +
       '<div class="bx-content">' + (c.content || '') + '</div>' +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler à un cofondateur</a></div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler à le fondateur</a></div>' +
       '</article></main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
@@ -1753,7 +1753,7 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
       `Devis accepte - ${quote.reference}`,
       masterTemplate({
         title: 'Merci ' + escapeHtml(quote.clientName.split(' ')[0]) + ' !',
-        body: `<p>Nous avons bien recu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Un cofondateur (Lissanon Gildas ou Fidah Imorou) vous contactera sous 24h pour planifier le kick-off.</p><p>A tres vite,<br><strong>L'equipe Pirabel Labs</strong></p>`,
+        body: `<p>Nous avons bien recu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Lissanon Gildas vous contactera sous 24h pour planifier le kick-off.</p><p>A tres vite,<br><strong>L'equipe Pirabel Labs</strong></p>`,
         cta: 'Visiter pirabellabs.com',
         ctaUrl: 'https://www.pirabellabs.com'
       })

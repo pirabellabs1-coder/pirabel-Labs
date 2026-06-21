@@ -118,8 +118,8 @@ def build(p):
     faqs=''.join('<details class="rich-faq"><summary class="rich-faq__q"><span>'+e(f["q"])+'</span><span class="material-symbols-outlined">expand_more</span></summary><div class="rich-faq__a">'+e(f["a"])+'</div></details>' for f in ct["faq"])
     faq=sec('Questions <em>fréquentes</em>', "", '<div class="rich-faqs">'+faqs+'</div>')
     # autres services
-    OTH=[("creation-site-web","Création de site web"),("seo","Référencement SEO"),("community-management","Community management"),("automatisation-marketing","Automatisation marketing"),("fiche-google-business","Fiche Google Business"),("tunnels-de-vente","Tunnels de vente"),("creation-site-wordpress","Site WordPress"),("agents-ia-chatbots","Agents IA & chatbots")]
-    rel=[(sl,lb) for sl,lb in OTH if sl!=s["sl"]][:5]
+    OTH=[("creation-site-web","Création de site web"),("creation-site-wordpress","Création de site WordPress"),("creation-application-web","Création d'application web"),("seo","Référencement SEO"),("seo-local","SEO local"),("fiche-google-business","Fiche Google Business"),("community-management","Community management"),("automatisation-marketing","Automatisation marketing"),("email-marketing-crm","Email marketing & CRM"),("tunnels-de-vente","Tunnels de vente"),("montage-video","Montage vidéo"),("agents-ia-chatbots","Agents IA & chatbots")]
+    rel=[(sl,lb) for sl,lb in OTH if sl!=s["sl"] and (os.path.exists(os.path.join(ROOT,sl+"-"+c["sl"]+".html")) or os.path.exists(os.path.join(CONTENT_DIR,sl+"-"+c["sl"]+".json")))]
     autres=sec('Autres services <em>à '+e(c["nom"])+'</em>', "Pirabel Labs accompagne aussi votre activité à "+c["nom"]+" sur ces leviers.",
        '<div class="rich-related-grid">'+''.join('<a class="rich-related" href="/'+sl+'-'+c["sl"]+'">'+e(lb)+' à '+e(c["nom"])+' <span class="material-symbols-outlined">arrow_forward</span></a>' for sl,lb in rel)+'</div>')
     cta=('<section class="rich-cta-band"><h2>Prêt à lancer votre projet <em>'+e(s["label"])+'</em> à '+e(c["nom"])+' ?</h2>'

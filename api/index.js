@@ -777,7 +777,7 @@ function blogShell(headExtra, bodyHtml) {
     // --- compteur de vues ---
     '.bx-views{display:inline-flex;align-items:center;gap:.3rem;color:rgba(229,226,225,0.45);font-size:.78rem;}' +
     '.bx-views .material-symbols-outlined{font-size:1rem;}' +
-    '.bx-card__meta{display:flex;justify-content:flex-end;align-items:center;margin-top:.8rem;}' +
+    '.bx-card__meta{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;}' +
     // --- pagination ---
     '.bx-pager{display:flex;justify-content:center;align-items:center;gap:.4rem;flex-wrap:wrap;margin:3rem 0 0;}' +
     '.bx-pager a,.bx-pager span{min-width:2.4rem;height:2.4rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .7rem;border-radius:10px;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid rgba(229,226,225,0.14);color:rgba(229,226,225,0.75);}' +
@@ -1465,7 +1465,7 @@ app.get('/blog', async (req, res) => {
     const card = a => '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + cardImg(a) +
       '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
       '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p>' +
-      '<div class="bx-card__meta"><span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div></div></a>';
+      '<div class="bx-card__meta">' + (a.readTime ? '<span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min</span>' : '<span></span>') + '<span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div></div></a>';
     const cards = arts.length ? arts.map(card).join('') : '<div class="bx-empty">Aucun article ne correspond à votre recherche.</div>';
     // vedette
     const featHtml = (featured && safePage === 1) ?
@@ -1570,12 +1570,12 @@ app.get('/blog/:slug', async (req, res) => {
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
       '<span class="bx-cat">' + catLabel + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +
-      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div>' +
+      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + (a.readTime ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min de lecture</span>' : '') + ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div>' +
       cover +
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
-      '<a href="/contact">Parler à le fondateur</a></div>' +
+      '<a href="/contact">Parler au fondateur</a></div>' +
       relatedHtml +
       '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
       '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +

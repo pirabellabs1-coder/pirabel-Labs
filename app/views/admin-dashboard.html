@@ -424,6 +424,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <a class="sidebar__link" data-view="blog" data-label="Blog"><span class="material-symbols-outlined">article</span><span class="sidebar__link-text">Blog</span></a>
       <a class="sidebar__link" data-view="comments" data-label="Commentaires"><span class="material-symbols-outlined">forum</span><span class="sidebar__link-text">Commentaires</span> <span id="cmBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="bulk-email" data-label="Envoi email masse"><span class="material-symbols-outlined">campaign</span><span class="sidebar__link-text">Envoi email masse</span></a>
+      <a class="sidebar__link" data-view="emails" data-label="E-mails envoyés"><span class="material-symbols-outlined">outgoing_mail</span><span class="sidebar__link-text">E-mails envoyés</span></a>
       <a class="sidebar__link" data-view="analytics" data-label="Analytics"><span class="material-symbols-outlined">analytics</span><span class="sidebar__link-text">Analytics</span></a>
     </nav>
     <div class="sidebar__section">Contenu</div>
@@ -886,6 +887,30 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
       <div id="tasksBoard" class="tasks-board"><div class="empty">Chargement…</div></div>
     </div>
+
+    <!-- E-MAILS ENVOYÉS VIEW -->
+    <div class="view" data-view="emails">
+      <div class="kpi-grid" style="margin-bottom:1.25rem;">
+        <div class="card"><div class="mini-chart__value" id="emKpiTotal">—</div><div class="card__sub">Envois enregistrés</div></div>
+        <div class="card"><div class="mini-chart__value" id="emKpiSent">—</div><div class="card__sub">E-mails partis (total)</div></div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;">
+        <div id="emFilters" style="display:flex;gap:0.4rem;">
+          <button class="btn btn--ghost btn--sm is-active" onclick="loadEmails('',this)">Tous</button>
+          <button class="btn btn--ghost btn--sm" onclick="loadEmails('individuel',this)">Individuels</button>
+          <button class="btn btn--ghost btn--sm" onclick="loadEmails('masse',this)">Campagnes</button>
+        </div>
+        <input id="emSearch" type="text" placeholder="Rechercher (destinataire, sujet)…" oninput="emSearchDebounced()" style="flex:1;min-width:12rem;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.5rem 0.8rem;border-radius:8px;font-size:0.85rem;">
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="text-align:left;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">
+            <th style="padding:0.8rem 1rem;">Destinataire</th><th style="padding:0.8rem 1rem;">Sujet</th><th style="padding:0.8rem 1rem;">Type</th><th style="padding:0.8rem 1rem;">Statut</th><th style="padding:0.8rem 1rem;">Date</th><th></th>
+          </tr></thead>
+          <tbody id="emailsBody"><tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -1020,7 +1045,7 @@ async function refreshCmBadge() {
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -1038,6 +1063,7 @@ function setView(view) {
   if (view === 'assistant') initAssistant();
   if (view === 'team') loadTeam();
   if (view === 'tasks') loadTasks();
+  if (view === 'emails') loadEmails();
   window.location.hash = view;
 }
 
@@ -2643,6 +2669,71 @@ async function saveTask(id) {
 async function deleteTask(id) {
   if (!confirm('Supprimer cette tâche ?')) return;
   try { await api('/api/admin/tasks/' + id, { method: 'DELETE' }); toast('Tâche supprimée', 'success'); var mo = document.getElementById('taskModal'); if (mo) mo.remove(); loadTasks(); }
+  catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+// =================== E-MAILS ENVOYÉS ===================
+var EM_TYPE = '';
+var EM_SEARCH_T = null;
+function emSearchDebounced() { clearTimeout(EM_SEARCH_T); EM_SEARCH_T = setTimeout(function(){ loadEmails(EM_TYPE); }, 350); }
+async function loadEmails(type, btn) {
+  if (typeof type === 'string') EM_TYPE = type;
+  if (btn) { document.querySelectorAll('#emFilters .btn').forEach(function(b){ b.classList.remove('is-active'); }); btn.classList.add('is-active'); }
+  var body = document.getElementById('emailsBody');
+  if (!body) return;
+  body.innerHTML = '<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr>';
+  var q = (document.getElementById('emSearch') || {}).value || '';
+  try {
+    var d = await api('/api/admin/emails?type=' + encodeURIComponent(EM_TYPE) + '&q=' + encodeURIComponent(q));
+    document.getElementById('emKpiTotal').textContent = d.total || 0;
+    document.getElementById('emKpiSent').textContent = d.totalSent || 0;
+    var list = d.emails || [];
+    if (!list.length) { body.innerHTML = '<tr><td colspan="6" style="padding:2.5rem;text-align:center;color:var(--text-muted);"><span class="material-symbols-outlined" style="display:block;font-size:2rem;margin-bottom:0.5rem;opacity:0.5;">mail</span>Aucun e-mail enregistré. Les e-mails envoyés depuis le CRM ou en masse apparaîtront ici.</td></tr>'; return; }
+    body.innerHTML = list.map(function(e){
+      var st = e.status === 'envoye' ? '<span style="color:var(--success);">● Envoyé</span>' : (e.status === 'partiel' ? '<span style="color:var(--warning);">● Partiel</span>' : '<span style="color:var(--danger);">● Échec</span>');
+      var dest = e.type === 'masse' ? ('<strong>Campagne</strong> · ' + (e.recipientsCount||0) + ' dest. (' + (e.sentCount||0) + ' ok)') : (escape(e.toName || '') + (e.toName ? ' &lt;' : '') + escape(e.to || '') + (e.toName ? '&gt;' : ''));
+      var typeTag = e.type === 'masse' ? '<span class="member-tag member-tag--employee">Campagne</span>' : '<span class="member-tag member-tag--load">Individuel</span>';
+      return '<tr style="border-top:1px solid var(--border);cursor:pointer;" onclick="openEmail(\'' + e._id + '\')">' +
+        '<td style="padding:0.75rem 1rem;font-size:0.85rem;">' + dest + '</td>' +
+        '<td style="padding:0.75rem 1rem;font-size:0.85rem;">' + escape(e.subject || '(sans sujet)') + '</td>' +
+        '<td style="padding:0.75rem 1rem;">' + typeTag + '</td>' +
+        '<td style="padding:0.75rem 1rem;font-size:0.8rem;">' + st + '</td>' +
+        '<td style="padding:0.75rem 1rem;font-size:0.78rem;color:var(--text-muted);white-space:nowrap;">' + fmtDateTime(e.createdAt) + '</td>' +
+        '<td style="padding:0.75rem 1rem;text-align:right;"><button class="ai-convo__del" style="opacity:1;" title="Supprimer" onclick="deleteEmail(event,\'' + e._id + '\')"><span class="material-symbols-outlined">delete</span></button></td>' +
+      '</tr>';
+    }).join('');
+  } catch(e) { body.innerHTML = '<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape(e.message) + '</td></tr>'; }
+}
+async function openEmail(id) {
+  try {
+    var d = await api('/api/admin/emails/' + id);
+    var e = d.email;
+    var old = document.getElementById('emailModal'); if (old) old.remove();
+    var mod = document.createElement('div'); mod.id = 'emailModal';
+    mod.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+    var meta = e.type === 'masse'
+      ? ('Campagne · ' + (e.recipientsCount||0) + ' destinataires · ' + (e.sentCount||0) + ' envoyés, ' + (e.failedCount||0) + ' échecs')
+      : ('À : ' + escape(e.toName ? (e.toName + ' <' + e.to + '>') : e.to));
+    // Le corps individuel est du texte ; la campagne est déjà du HTML
+    var bodyHtml = e.type === 'masse' ? (e.body || '') : ('<p style="white-space:pre-wrap;margin:0;line-height:1.6;">' + escape(e.body || '') + '</p>');
+    mod.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:42rem;width:100%;margin:auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.8rem;">' +
+        '<div><div style="font-family:var(--font-display);font-weight:800;font-size:1.15rem;">' + escape(e.subject || '(sans sujet)') + '</div>' +
+        '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;">' + meta + '</div>' +
+        '<div style="font-size:0.74rem;color:var(--text-faint);margin-top:0.2rem;">Envoyé le ' + fmtDateTime(e.createdAt) + (e.sentByName ? ' par ' + escape(e.sentByName) : '') + '</div></div>' +
+        '<button onclick="document.getElementById(\'emailModal\').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button>' +
+      '</div>' +
+      (e.errorMessage ? '<div style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.4);border-radius:8px;padding:0.6rem 0.8rem;font-size:0.8rem;color:var(--danger);margin-bottom:0.8rem;">' + escape(e.errorMessage) + '</div>' : '') +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;font-size:0.9rem;color:var(--text);max-height:50vh;overflow:auto;">' + bodyHtml + '</div>' +
+      (e.to ? '<div style="margin-top:1rem;text-align:right;"><button class="btn btn--sm" onclick="document.getElementById(\'emailModal\').remove();openCompose({email:\'' + escape(e.to) + '\',subject:\'Re: ' + escape((e.subject||'').replace(/\'/g,"")) + '\'})"><span class="material-symbols-outlined">reply</span> Renvoyer / répondre</button></div>' : '') +
+    '</div>';
+    document.body.appendChild(mod);
+  } catch(err) { toast(err.message || 'Erreur', 'error'); }
+}
+async function deleteEmail(ev, id) {
+  ev.stopPropagation();
+  if (!confirm('Supprimer cette entrée du journal ? (n\'annule pas l\'envoi)')) return;
+  try { await api('/api/admin/emails/' + id, { method: 'DELETE' }); toast('Entrée supprimée', 'success'); loadEmails(EM_TYPE); }
   catch(e) { toast(e.message || 'Erreur', 'error'); }
 }
 

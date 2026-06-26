@@ -44,6 +44,7 @@ const LivreBlanc = require('../app/models/LivreBlanc');
 const Comment = require('../app/models/Comment');
 const Task = require('../app/models/Task');
 const Conversation = require('../app/models/Conversation');
+const SentEmail = require('../app/models/SentEmail');
 
 const app = express();
 
@@ -471,6 +472,16 @@ app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limit
       }
     }
 
+    // Journal de la campagne (un résumé)
+    try {
+      await SentEmail.create({
+        type: 'masse', to: '', toName: leads.length + ' destinataire(s)', subject, body: bodyHtml,
+        recipientsCount: leads.length, sentCount: sent, failedCount: failed,
+        status: failed === 0 ? 'envoye' : (sent === 0 ? 'echec' : 'partiel'),
+        sentBy: req.user._id, sentByName: req.user.name || '',
+      });
+    } catch (logErr) { console.error('[bulk-email.log]', logErr.message); }
+
     res.json({
       success: true,
       message: `${sent} email(s) envoye(s), ${failed} echec(s) sur ${leads.length} leads.`,
@@ -599,6 +610,14 @@ app.post('/api/admin/send-email', auth, adminOnly, limitBody(10), async (req, re
       if (lead.status === 'nouveau') lead.status = 'lu';
       await lead.save();
     }
+    // Journal de l'e-mail envoyé (trace consultable)
+    try {
+      await SentEmail.create({
+        type: 'individuel', to, toName: (lead && lead.name) || '', subject, body: message,
+        recipientsCount: 1, sentCount: 1, failedCount: 0, status: 'envoye',
+        leadId: lead ? lead._id : undefined, sentBy: req.user._id, sentByName: req.user.name || '',
+      });
+    } catch (logErr) { console.error('[send-email.log]', logErr.message); }
     res.json({ success: true, message: 'Email envoye a ' + to });
   } catch (err) {
     console.error('[send-email]', err.message);
@@ -1311,6 +1330,35 @@ app.patch('/api/admin/conversations/:id', auth, adminOnly, limitBody(400), async
 // Supprimer une conversation
 app.delete('/api/admin/conversations/:id', auth, adminOnly, async (req, res) => {
   try { await Conversation.deleteOne({ _id: req.params.id, userId: req.user._id }); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+
+// --- Journal des e-mails envoyés ---
+app.get('/api/admin/emails', auth, adminOnly, async (req, res) => {
+  try {
+    const filter = {};
+    if (['individuel', 'masse'].includes(req.query.type)) filter.type = req.query.type;
+    if (req.query.q) {
+      const rx = new RegExp(String(req.query.q).slice(0, 80).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      filter.$or = [{ to: rx }, { toName: rx }, { subject: rx }];
+    }
+    const list = await SentEmail.find(filter).sort({ createdAt: -1 }).limit(300)
+      .select('type to toName subject recipientsCount sentCount failedCount status sentByName createdAt').lean();
+    const counts = await SentEmail.aggregate([{ $group: { _id: null, total: { $sum: 1 }, totalSent: { $sum: '$sentCount' } } }]);
+    res.json({ emails: list, total: (counts[0] || {}).total || 0, totalSent: (counts[0] || {}).totalSent || 0 });
+  } catch (e) { console.error('[emails.list]', e.message); res.status(500).json({ error: 'Erreur chargement e-mails.' }); }
+});
+
+app.get('/api/admin/emails/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const e = await SentEmail.findById(req.params.id).lean();
+    if (!e) return res.status(404).json({ error: 'E-mail introuvable.' });
+    res.json({ email: e });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.delete('/api/admin/emails/:id', auth, adminOnly, async (req, res) => {
+  try { await SentEmail.findByIdAndDelete(req.params.id); res.json({ success: true }); }
   catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
 });
 

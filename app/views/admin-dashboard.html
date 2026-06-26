@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://js.puter.com/v2/"></script>
 <style>
 :root {
   --bg: #0E0E0E; --bg-2: #161616; --surface: #1a1a1a; --surface-2: #202020;
@@ -877,7 +876,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
             <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
             <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
           </div>
-          <div class="ai-foot" id="aiFoot">Propulsé par Puter · Claude Opus 4.8 · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
+          <div class="ai-foot" id="aiFoot">Propulsé par Groq · Llama 3.3 70B · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
         </div>
       </div>
     </div>
@@ -2928,116 +2927,34 @@ function aiShowTyping() {
   div.innerHTML = '<div class="ai-msg__avatar">IA</div><div class="ai-msg__bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
   chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
 }
-// Modèles Puter (IA gratuite côté navigateur, sans clé) — Claude Opus 4.8 d'abord, replis ensuite.
-// On essaie chaque identifiant jusqu'à ce qu'un fonctionne (les alias courts peuvent pointer vers un snapshot mort).
-var AI_PUTER_MODELS = window.AI_PUTER_MODELS || [
-  'claude-opus-4-8',
-  'anthropic:anthropic/claude-opus-4-8',
-  'claude-opus-4-7',
-  'anthropic:anthropic/claude-opus-4-7'
-];
-var AI_RESOLVED_MODEL = null; // mémorise le 1er modèle qui répond, pour ne pas re-tester à chaque message
-var AI_CTX = null; // { context, prompts, tools }
-
-// Appelle puter.ai.chat en essayant les modèles dans l'ordre ; ignore les erreurs « modèle introuvable » (404).
-async function aiChat(convo, tools) {
-  var order = AI_RESOLVED_MODEL ? [AI_RESOLVED_MODEL] : AI_PUTER_MODELS;
-  var lastErr = null;
-  for (var i = 0; i < order.length; i++) {
-    try {
-      var resp = await puter.ai.chat(convo, { model: order[i], tools: tools });
-      AI_RESOLVED_MODEL = order[i];
-      return resp;
-    } catch (e) {
-      lastErr = e;
-      var em = (e && (e.message || e.error && e.error.message)) ? (e.message || e.error.message) : JSON.stringify(e || {});
-      // Si ce n'est PAS une erreur de modèle introuvable, inutile d'essayer les autres
-      if (!/not_found|404|model/i.test(String(em))) throw e;
-    }
-  }
-  throw lastErr || new Error('Aucun modèle Puter disponible.');
-}
-
-
-async function aiLoadContext() {
-  // Rechargé à chaque envoi pour des données fraîches (prospects/devis/tâches à jour).
-  AI_CTX = await api('/api/admin/assistant/context');
-  return AI_CTX;
-}
-function aiBuildSystem(ctx) {
-  var base = (ctx.prompts && ctx.prompts[AI_MODE]) || '';
-  return base +
-    "\n\nTu n'es pas un simple chatbot : tu peux AGIR via des outils (créer/modifier des tâches, consulter prospects/devis/équipe, créer des brouillons d'articles). " +
-    "Quand on te demande une action concrète, UTILISE les outils pour l'exécuter réellement, puis confirme ce que tu as fait. " +
-    "N'invente jamais d'identifiants : appelle lister_taches ou lister_equipe pour obtenir les vrais IDs et e-mails. Les articles sont créés en BROUILLON. " +
-    "Pour un e-mail client : rédige le texte mais ne l'envoie pas (validation manuelle). Réponds en français impeccable, concret et orienté action." +
-    "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx.context) + "\n```";
-}
-// Récupère le texte et les appels d'outils d'une réponse puter.ai.chat (format OpenAI tolérant).
-function aiParsePuter(resp) {
-  var msg = (resp && resp.message) ? resp.message : resp;
-  var content = '';
-  if (msg && typeof msg.content === 'string') content = msg.content;
-  else if (msg && Array.isArray(msg.content)) content = msg.content.map(function(b){ return b && b.text ? b.text : ''; }).join('');
-  else if (typeof resp === 'string') content = resp;
-  else if (resp && typeof resp.text === 'string') content = resp.text;
-  var toolCalls = (msg && msg.tool_calls) || [];
-  return { assistantMsg: msg, content: content, toolCalls: toolCalls };
-}
-
+// L'IA tourne côté serveur (Groq). Le navigateur envoie l'historique, le serveur gère
+// le contexte métier, les outils et la boucle d'agent, puis renvoie { reply, actions }.
 async function aiSend() {
   if (AI_BUSY) return;
   var input = document.getElementById('aiInput');
   var text = input.value.trim();
   if (!text) return;
-  if (typeof puter === 'undefined' || !puter.ai) {
-    aiAppendMessage('assistant', '⚠️ Le moteur IA Puter n\'est pas encore chargé. Vérifie ta connexion et réessaie dans un instant.');
-    return;
-  }
   input.value = ''; input.style.height = 'auto';
   AI_BUSY = true; document.getElementById('aiSend').disabled = true;
   aiAppendMessage('user', text);
   AI_HISTORY.push({ role: 'user', content: text });
   aiShowTyping();
-  var actionsLog = [];
   try {
-    var ctx = await aiLoadContext();
-    var convo = [{ role: 'system', content: aiBuildSystem(ctx) }].concat(
-      AI_HISTORY.map(function(m){ return { role: m.role, content: m.content }; })
-    );
-    var tools = ctx.tools || [];
-    var finalText = '';
-    // Boucle d'agent côté navigateur (max 6 tours d'outils)
-    for (var turn = 0; turn < 6; turn++) {
-      var resp = await aiChat(convo, tools);
-      var parsed = aiParsePuter(resp);
-      finalText = parsed.content || finalText;
-      if (!parsed.toolCalls || !parsed.toolCalls.length) break;
-      // Rejouer le message assistant (avec tool_calls) puis exécuter chaque outil côté serveur
-      convo.push(parsed.assistantMsg || { role: 'assistant', content: parsed.content || '', tool_calls: parsed.toolCalls });
-      for (var i = 0; i < parsed.toolCalls.length; i++) {
-        var tc = parsed.toolCalls[i];
-        var fnName = (tc.function && tc.function.name) || tc.name;
-        var rawArgs = (tc.function && tc.function.arguments) || tc.arguments || '{}';
-        var args = {}; try { args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs; } catch(e) {}
-        var result;
-        try { result = await api('/api/admin/assistant/tool', { method: 'POST', body: { name: fnName, input: args } }); }
-        catch(err) { result = { ok: false, message: err.message }; }
-        if (result && result.message) { actionsLog.push(result.message); TEAM = []; TASKS = []; }
-        convo.push({ role: 'tool', tool_call_id: tc.id || ('call_' + i), content: JSON.stringify(result) });
-      }
-    }
+    var data = await api('/api/admin/assistant', { method: 'POST', body: { mode: AI_MODE, messages: AI_HISTORY } });
     var t = document.getElementById('aiTyping'); if (t) t.remove();
-    var reply = finalText || (actionsLog.length ? 'C\'est fait.' : '(réponse vide)');
-    if (actionsLog.length) reply += '\n\n' + actionsLog.map(function(a){ return '✅ ' + a; }).join('\n');
+    var reply = data.reply || '(réponse vide)';
+    if (data.actions && data.actions.length) {
+      reply += '\n\n' + data.actions.map(function(a){ return '✅ ' + a; }).join('\n');
+      TEAM = []; TASKS = []; // forcer le rechargement des vues impactées
+    }
     aiAppendMessage('assistant', reply);
-    AI_HISTORY.push({ role: 'assistant', content: finalText || reply });
+    AI_HISTORY.push({ role: 'assistant', content: data.reply || reply });
     aiPersist(); // sauvegarde la conversation (mémoire)
   } catch(e) {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
     var msg = (e && e.message) ? e.message : String(e);
-    if (/auth|sign|login|401/i.test(msg)) {
-      aiAppendMessage('assistant', '🔐 Pour utiliser l\'IA gratuite via Puter, une fenêtre de connexion Puter peut s\'ouvrir la première fois. Autorise-la puis renvoie ton message.');
+    if (/NO_KEY|pas encore configuré|GROQ_API_KEY/i.test(msg)) {
+      aiAppendMessage('assistant', '⚙️ L\'assistant n\'est pas encore activé. Ajoute la variable `GROQ_API_KEY` dans Vercel (Settings → Environment Variables), puis redéploie.');
     } else {
       aiAppendMessage('assistant', '❌ ' + msg);
     }

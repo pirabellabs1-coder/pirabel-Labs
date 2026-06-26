@@ -1203,15 +1203,15 @@ async function executeAssistantTool(name, input, currentUser) {
 
 app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré. Ajoutez la variable ANTHROPIC_API_KEY dans Vercel pour l'activer." });
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré. Ajoutez la variable GROQ_API_KEY dans Vercel pour l'activer." });
     const mode = ['redaction', 'analyse', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'libre';
     const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
-    const messages = incoming
+    const history = incoming
       .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
       .slice(-20)
       .map(m => ({ role: m.role, content: m.content.slice(0, 8000) }));
-    if (!messages.length || messages[messages.length - 1].role !== 'user') return res.status(400).json({ error: 'Message utilisateur requis.' });
+    if (!history.length || history[history.length - 1].role !== 'user') return res.status(400).json({ error: 'Message utilisateur requis.' });
 
     const ctx = await gatherBusinessContext();
     const system = AI_SYSTEM_PROMPTS[mode] +
@@ -1222,35 +1222,37 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
       "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx) + "\n```\n" +
       "Réponds en français impeccable. Sois concret, bref et orienté action.";
 
-    const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
-    const convo = messages.slice();
+    const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+    const tools = assistantToolsOpenAI();
+    // Format OpenAI/Groq : message système en tête de la conversation
+    const convo = [{ role: 'system', content: system }].concat(history);
     const actionsLog = [];
     let finalText = '';
     // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30s)
     for (let turn = 0; turn < 6; turn++) {
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: 2500, system, tools: ASSISTANT_TOOLS, messages: convo }),
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+        body: JSON.stringify({ model, max_tokens: 2500, temperature: 0.6, tools, tool_choice: 'auto', messages: convo }),
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) {
         console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
         return res.status(502).json({ error: 'API_ERROR', message: (data && data.error && data.error.message) || 'Erreur API IA.' });
       }
-      const blocks = data.content || [];
-      finalText = blocks.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
-      const toolUses = blocks.filter(b => b.type === 'tool_use');
-      if (data.stop_reason !== 'tool_use' || !toolUses.length) break;
-      // Exécuter les outils demandés
-      convo.push({ role: 'assistant', content: blocks });
-      const toolResults = [];
-      for (const tu of toolUses) {
-        const result = await executeAssistantTool(tu.name, tu.input || {}, req.user);
+      const msg = (data.choices && data.choices[0] && data.choices[0].message) || {};
+      if (msg.content) finalText = String(msg.content).trim();
+      const toolCalls = msg.tool_calls || [];
+      if (!toolCalls.length) break;
+      // Rejouer le message assistant (avec tool_calls) puis exécuter chaque outil côté serveur
+      convo.push(msg);
+      for (const tc of toolCalls) {
+        let input = {};
+        try { input = JSON.parse((tc.function && tc.function.arguments) || '{}'); } catch (e) {}
+        const result = await executeAssistantTool((tc.function && tc.function.name) || '', input, req.user);
         if (result && result.message) actionsLog.push(result.message);
-        toolResults.push({ type: 'tool_result', tool_use_id: tu.id, content: JSON.stringify(result) });
+        convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
       }
-      convo.push({ role: 'user', content: toolResults });
     }
     res.json({ reply: finalText || '(action effectuée)', actions: actionsLog });
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }

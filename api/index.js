@@ -793,7 +793,7 @@ function coverSvg(title, cat) {
 // --- ADMIN CRUD ---
 app.get('/api/admin/articles', auth, adminOnly, async (req, res) => {
   try {
-    const list = await Article.find({}).select('title slug status category author featuredImage publishedAt updatedAt views').sort({ updatedAt: -1 }).lean();
+    const list = await Article.find({}).select('title slug status category author featuredImage publishedAt updatedAt views readTime').sort({ updatedAt: -1 }).lean();
     res.json({ articles: list });
   } catch (e) { res.status(500).json({ error: 'Erreur chargement articles.' }); }
 });
@@ -840,6 +840,51 @@ app.patch('/api/admin/articles/:id', auth, adminOnly, limitBody(20), async (req,
 app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
   try { await Article.findByIdAndDelete(req.params.id); res.json({ success: true }); }
   catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+
+// ============ STATS BLOG ============
+app.get('/api/admin/blog-stats', auth, adminOnly, async (req, res) => {
+  try {
+    const [all, publie] = await Promise.all([
+      Article.find({}).select('title slug category status views readTime publishedAt createdAt').lean(),
+      Article.find({ status: 'publie' }).select('title slug category views readTime publishedAt').lean(),
+    ]);
+    // Top 10 articles par vues
+    const top10 = [...publie].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 10).map(a => ({
+      title: a.title, slug: a.slug, views: a.views || 0, readTime: a.readTime || 0
+    }));
+    // Vues par catégorie
+    const byCategory = {};
+    publie.forEach(a => { const c = a.category || 'Marketing'; byCategory[c] = (byCategory[c] || 0) + (a.views || 0); });
+    // Articles publiés par mois (12 derniers mois)
+    const now = new Date(); const months = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ label: d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }), count: 0 });
+    }
+    publie.forEach(a => {
+      if (!a.publishedAt) return;
+      const d = new Date(a.publishedAt); const mIdx = (d.getFullYear() - now.getFullYear()) * 12 + d.getMonth() - now.getMonth() + 11;
+      if (mIdx >= 0 && mIdx < 12) months[mIdx].count++;
+    });
+    // Vues par mois (approximatif : répartition uniforme sur les publiés récents — sans tracking temporel granulaire)
+    // Distribution par readTime
+    const rtBuckets = { '1 min': 0, '2-3 min': 0, '4-5 min': 0, '6-10 min': 0, '+10 min': 0 };
+    publie.forEach(a => {
+      const rt = a.readTime || 1;
+      if (rt <= 1) rtBuckets['1 min']++;
+      else if (rt <= 3) rtBuckets['2-3 min']++;
+      else if (rt <= 5) rtBuckets['4-5 min']++;
+      else if (rt <= 10) rtBuckets['6-10 min']++;
+      else rtBuckets['+10 min']++;
+    });
+    const totalViews = publie.reduce((s, a) => s + (a.views || 0), 0);
+    const avgReadTime = publie.length ? Math.round(publie.reduce((s, a) => s + (a.readTime || 0), 0) / publie.length) : 0;
+    res.json({
+      kpi: { total: all.length, publie: publie.length, brouillon: all.filter(a => a.status === 'brouillon').length, totalViews, avgReadTime },
+      top10, byCategory, publishedByMonth: months, readTimeDist: rtBuckets,
+    });
+  } catch (e) { console.error('[blog-stats]', e.message); res.status(500).json({ error: 'Erreur stats.' }); }
 });
 
 // ============ CMS LIVRES BLANCS ============
@@ -1033,7 +1078,7 @@ app.get('/blog/:slug', async (req, res) => {
       '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Fondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
-      '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Cofondateur, Pirabel Labs</div></div></div>' +
+      '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Fondateur &amp; CEO, Pirabel Labs</div></div></div>' +
       '<div class="bx-side__cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents

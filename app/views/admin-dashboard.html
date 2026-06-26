@@ -449,14 +449,31 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <!-- CASES VIEW -->
     <!-- BLOG VIEW -->
     <div class="view" data-view="blog">
+      <!-- En-tête -->
       <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
         <div><div class="card__title" style="font-size:1.1rem;">Articles de blog</div><div class="card__sub">Ce qui est publié ici apparaît directement sur /blog du site</div></div>
         <button class="btn btn--sm" onclick="openArticleEditor()"><span class="material-symbols-outlined">add</span> Nouvel article</button>
       </div>
+      <!-- KPIs blog -->
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:1.5rem;">
+        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">article</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiTotal">--</div><div class="kpi-card__label">Articles total</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">public</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiPublie">--</div><div class="kpi-card__label">Publiés</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">visibility</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiViews">--</div><div class="kpi-card__label">Vues totales</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">schedule</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiRead">-- min</div><div class="kpi-card__label">Temps lecture moyen</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">draft</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiBrouillon">--</div><div class="kpi-card__label">Brouillons</div></div></div>
+      </div>
+      <!-- 4 Graphes analytics blog -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
+        <div class="card"><div class="card__header"><div><div class="card__title">Top 10 articles</div><div class="card__sub">Par nombre de vues réelles</div></div></div><div class="card__chart" style="height:18rem;"><canvas id="bChartTop10"></canvas></div></div>
+        <div class="card"><div class="card__header"><div><div class="card__title">Vues par catégorie</div><div class="card__sub">Distribution du trafic</div></div></div><div class="card__chart" style="height:18rem;"><canvas id="bChartCat"></canvas></div></div>
+        <div class="card"><div class="card__header"><div><div class="card__title">Articles publiés par mois</div><div class="card__sub">Cadence de publication (12 mois)</div></div></div><div class="card__chart" style="height:18rem;"><canvas id="bChartMonths"></canvas></div></div>
+        <div class="card"><div class="card__header"><div><div class="card__title">Distribution temps de lecture</div><div class="card__sub">Répartition par durée estimée</div></div></div><div class="card__chart" style="height:18rem;"><canvas id="bChartReadTime"></canvas></div></div>
+      </div>
+      <!-- Tableau articles -->
       <div class="table-wrap">
         <table class="table">
-          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Vues</th><th>Modifié</th><th></th></tr></thead>
-          <tbody id="blogTableBody"><tr><td colspan="6" class="empty">Chargement...</td></tr></tbody>
+          <thead><tr><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Vues</th><th>Lecture</th><th>Modifié</th><th></th></tr></thead>
+          <tbody id="blogTableBody"><tr><td colspan="7" class="empty">Chargement...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -920,30 +937,101 @@ window.requestReviewForCurrentLead = function() {
 };
 
 // ============ BLOG / CMS ============
+var _bCharts = {};
+function _destroyBChart(id) { if (_bCharts[id]) { _bCharts[id].destroy(); delete _bCharts[id]; } }
+
 async function loadBlog() {
   var tbody = document.getElementById('blogTableBody');
   if (!tbody) return;
-  try {
-    var data = await api('/api/admin/articles');
-    var arts = data.articles || [];
-    if (!arts.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty"><span class="material-symbols-outlined">article</span><p>Aucun article. Cliquez « Nouvel article ».</p></td></tr>'; return; }
-    tbody.innerHTML = arts.map(function(a){
-      var badge = a.status === 'publie'
-        ? '<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Publié</span>'
-        : '<span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Brouillon</span>';
-      return '<tr>' +
-        '<td><strong>' + escape(a.title) + '</strong><br><span style="font-size:.72rem;color:var(--text-muted);">/blog/' + escape(a.slug) + '</span></td>' +
-        '<td>' + escape(a.category || '--') + '</td>' +
-        '<td>' + badge + '</td>' +
-        '<td>' + (a.views || 0) + '</td>' +
-        '<td style="font-size:.8rem;">' + fmtDate(a.updatedAt) + '</td>' +
-        '<td style="text-align:right;white-space:nowrap;">' +
-          '<a href="/blog/' + escape(a.slug) + (a.status === 'publie' ? '' : '?preview=1') + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="' + (a.status === 'publie' ? 'Voir sur le site' : 'Aperçu du brouillon') + '"><span class="material-symbols-outlined">' + (a.status === 'publie' ? 'open_in_new' : 'visibility') + '</span></a> ' +
-          '<button class="btn btn--ghost btn--sm" onclick="openArticleEditor(\'' + a._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
-          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteArticle(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
-        '</td></tr>';
-    }).join('');
-  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Erreur de chargement</td></tr>'; }
+  // Charger articles + stats en parallèle
+  var [dataArts, dataStats] = await Promise.all([
+    api('/api/admin/articles').catch(() => ({ articles: [] })),
+    api('/api/admin/blog-stats').catch(() => null),
+  ]);
+  var arts = dataArts.articles || [];
+
+  // --- KPIs ---
+  if (dataStats && dataStats.kpi) {
+    var k = dataStats.kpi;
+    var fmtV = function(n){ return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); };
+    var el = function(id, v){ var e = document.getElementById(id); if(e) e.textContent = v; };
+    el('bKpiTotal', k.total || 0);
+    el('bKpiPublie', k.publie || 0);
+    el('bKpiViews', fmtV(k.totalViews || 0));
+    el('bKpiRead', (k.avgReadTime || 0) + ' min');
+    el('bKpiBrouillon', k.brouillon || 0);
+  }
+
+  // --- Graphes ---
+  var ORANGE = '#FF5500', MUTED = 'rgba(229,226,225,0.12)', TEXT = 'rgba(229,226,225,0.55)';
+  var baseOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: {} } }, scales: { x: { ticks: { color: TEXT, font: { size: 10 } }, grid: { color: MUTED } }, y: { ticks: { color: TEXT, font: { size: 10 } }, grid: { color: MUTED } } } };
+  var noScale = JSON.parse(JSON.stringify(baseOpts)); noScale.scales = {};
+
+  if (dataStats) {
+    // 1. Top 10 articles (vues)
+    _destroyBChart('bChartTop10');
+    var c1 = document.getElementById('bChartTop10');
+    if (c1 && dataStats.top10 && dataStats.top10.length) {
+      var t10 = dataStats.top10.slice().reverse();
+      var opts1 = JSON.parse(JSON.stringify(baseOpts));
+      opts1.indexAxis = 'y'; opts1.plugins.legend.display = false;
+      opts1.scales.x.ticks.callback = function(v){ return v >= 1000 ? (v/1000).toFixed(1)+'k' : v; };
+      _bCharts['bChartTop10'] = new Chart(c1, { type: 'bar', data: {
+        labels: t10.map(function(a){ return a.title.length > 28 ? a.title.slice(0,28)+'…' : a.title; }),
+        datasets: [{ data: t10.map(function(a){ return a.views; }), backgroundColor: ORANGE, borderRadius: 4 }]
+      }, options: opts1 });
+    }
+
+    // 2. Vues par catégorie (donut)
+    _destroyBChart('bChartCat');
+    var c2 = document.getElementById('bChartCat');
+    if (c2 && dataStats.byCategory) {
+      var cats = Object.keys(dataStats.byCategory); var cvals = cats.map(function(c){ return dataStats.byCategory[c]; });
+      var palette = ['#FF5500','#FF8C42','#FFB347','#4ade80','#60a5fa','#c084fc','#f472b6'];
+      var opts2 = JSON.parse(JSON.stringify(noScale)); opts2.plugins.legend = { display: true, position: 'right', labels: { color: TEXT, font: { size: 11 }, boxWidth: 12 } };
+      _bCharts['bChartCat'] = new Chart(c2, { type: 'doughnut', data: { labels: cats, datasets: [{ data: cvals, backgroundColor: palette.slice(0, cats.length), borderWidth: 0 }] }, options: opts2 });
+    }
+
+    // 3. Articles publiés par mois (barres)
+    _destroyBChart('bChartMonths');
+    var c3 = document.getElementById('bChartMonths');
+    if (c3 && dataStats.publishedByMonth) {
+      _bCharts['bChartMonths'] = new Chart(c3, { type: 'bar', data: {
+        labels: dataStats.publishedByMonth.map(function(m){ return m.label; }),
+        datasets: [{ label: 'Articles publiés', data: dataStats.publishedByMonth.map(function(m){ return m.count; }), backgroundColor: ORANGE, borderRadius: 4 }]
+      }, options: baseOpts });
+    }
+
+    // 4. Distribution temps de lecture (donut)
+    _destroyBChart('bChartReadTime');
+    var c4 = document.getElementById('bChartReadTime');
+    if (c4 && dataStats.readTimeDist) {
+      var rtKeys = Object.keys(dataStats.readTimeDist); var rtVals = rtKeys.map(function(k){ return dataStats.readTimeDist[k]; });
+      var palette2 = ['#60a5fa','#4ade80','#FF8C42','#FF5500','#c084fc'];
+      var opts4 = JSON.parse(JSON.stringify(noScale)); opts4.plugins.legend = { display: true, position: 'right', labels: { color: TEXT, font: { size: 11 }, boxWidth: 12 } };
+      _bCharts['bChartReadTime'] = new Chart(c4, { type: 'doughnut', data: { labels: rtKeys, datasets: [{ data: rtVals, backgroundColor: palette2, borderWidth: 0 }] }, options: opts4 });
+    }
+  }
+
+  // --- Tableau ---
+  if (!arts.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty"><span class="material-symbols-outlined">article</span><p>Aucun article. Cliquez « Nouvel article ».</p></td></tr>'; return; }
+  tbody.innerHTML = arts.map(function(a){
+    var badge = a.status === 'publie'
+      ? '<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Publié</span>'
+      : '<span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;">Brouillon</span>';
+    return '<tr>' +
+      '<td><strong>' + escape(a.title) + '</strong><br><span style="font-size:.72rem;color:var(--text-muted);">/blog/' + escape(a.slug) + '</span></td>' +
+      '<td>' + escape(a.category || '--') + '</td>' +
+      '<td>' + badge + '</td>' +
+      '<td style="font-weight:700;color:var(--accent);">' + (a.views || 0) + '</td>' +
+      '<td style="font-size:.82rem;color:var(--text-muted);">' + (a.readTime ? a.readTime + ' min' : '--') + '</td>' +
+      '<td style="font-size:.8rem;">' + fmtDate(a.updatedAt) + '</td>' +
+      '<td style="text-align:right;white-space:nowrap;">' +
+        '<a href="/blog/' + escape(a.slug) + (a.status === 'publie' ? '' : '?preview=1') + '" target="_blank" rel="noopener" class="btn btn--ghost btn--sm" title="' + (a.status === 'publie' ? 'Voir sur le site' : 'Aperçu') + '"><span class="material-symbols-outlined">' + (a.status === 'publie' ? 'open_in_new' : 'visibility') + '</span></a> ' +
+        '<button class="btn btn--ghost btn--sm" onclick="openArticleEditor(\'' + a._id + '\')" title="Modifier"><span class="material-symbols-outlined">edit</span></button> ' +
+        '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteArticle(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+      '</td></tr>';
+  }).join('');
 }
 
 async function openArticleEditor(id) {

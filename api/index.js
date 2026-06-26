@@ -45,6 +45,12 @@ const Comment = require('../app/models/Comment');
 const Task = require('../app/models/Task');
 const Conversation = require('../app/models/Conversation');
 const SentEmail = require('../app/models/SentEmail');
+const Setting = require('../app/models/Setting');
+
+// Lecture d'un réglage serveur (clé/valeur en base). Jamais renvoyé au client.
+async function getSetting(key) {
+  try { const s = await Setting.findOne({ key }).lean(); return s ? s.value : ''; } catch (e) { return ''; }
+}
 
 const app = express();
 
@@ -1203,8 +1209,8 @@ async function executeAssistantTool(name, input, currentUser) {
 
 app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
   try {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré. Ajoutez la variable GROQ_API_KEY dans Vercel pour l'activer." });
+    const apiKey = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
+    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré (clé Groq manquante)." });
     const mode = ['redaction', 'analyse', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'libre';
     const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
     const history = incoming
@@ -1222,7 +1228,7 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
       "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx) + "\n```\n" +
       "Réponds en français impeccable. Sois concret, bref et orienté action.";
 
-    const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+    const model = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
     const tools = assistantToolsOpenAI();
     // Format OpenAI/Groq : message système en tête de la conversation
     const convo = [{ role: 'system', content: system }].concat(history);
@@ -1256,6 +1262,25 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     }
     res.json({ reply: finalText || '(action effectuée)', actions: actionsLog });
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
+});
+
+// Réglages IA (clé Groq, modèle) — admin only. La valeur est stockée en base, jamais relue par le client.
+const ALLOWED_SETTINGS = ['groqApiKey', 'groqModel'];
+app.post('/api/admin/settings', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const key = String(req.body.key || '');
+    if (!ALLOWED_SETTINGS.includes(key)) return res.status(400).json({ error: 'Réglage non autorisé.' });
+    const value = String(req.body.value || '').trim().slice(0, 500);
+    await Setting.updateOne({ key }, { $set: { value, updatedAt: new Date() } }, { upsert: true });
+    res.json({ success: true, key, configured: !!value });
+  } catch (e) { console.error('[settings.set]', e.message); res.status(500).json({ error: 'Erreur enregistrement.' }); }
+});
+// Statut des réglages (booléen uniquement, jamais la valeur secrète).
+app.get('/api/admin/settings/status', auth, adminOnly, async (req, res) => {
+  try {
+    const groq = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
+    res.json({ groqConfigured: !!groq, source: process.env.GROQ_API_KEY ? 'env' : (groq ? 'db' : 'none'), groqModel: process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile' });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });
 
 // --- Pilotage par Puter (IA côté navigateur, gratuit, sans clé) ---

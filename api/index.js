@@ -1236,6 +1236,28 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
 });
 
+// --- Pilotage par Puter (IA côté navigateur, gratuit, sans clé) ---
+// Convertit les outils du format Anthropic vers le format OpenAI attendu par puter.ai.chat.
+function assistantToolsOpenAI() {
+  return ASSISTANT_TOOLS.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+}
+// Contexte métier + invites système + définitions d'outils (pour la boucle d'agent dans le navigateur).
+app.get('/api/admin/assistant/context', auth, adminOnly, async (req, res) => {
+  try {
+    const ctx = await gatherBusinessContext();
+    res.json({ context: ctx, prompts: AI_SYSTEM_PROMPTS, tools: assistantToolsOpenAI() });
+  } catch (e) { console.error('[assistant.context]', e.message); res.status(500).json({ error: 'Erreur contexte.' }); }
+});
+// Exécute un outil demandé par l'IA (création/maj tâche, lecture CRM, brouillon article…). Sécurisé serveur.
+app.post('/api/admin/assistant/tool', auth, adminOnly, limitBody(40), async (req, res) => {
+  try {
+    const name = String(req.body.name || '');
+    if (!ASSISTANT_TOOLS.some(t => t.name === name)) return res.status(400).json({ ok: false, message: 'Outil inconnu.' });
+    const result = await executeAssistantTool(name, req.body.input || {}, req.user);
+    res.json(result);
+  } catch (e) { console.error('[assistant.tool]', e.message); res.status(500).json({ ok: false, message: 'Erreur exécution : ' + e.message }); }
+});
+
 // ============ CMS LIVRES BLANCS ============
 function applyLBBody(body, doc) {
   if (body.title != null) doc.title = sanitize(body.title, 200);

@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root {
   --bg: #0E0E0E; --bg-2: #161616; --surface: #1a1a1a; --surface-2: #202020;
@@ -825,7 +826,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
           <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
           <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
         </div>
-        <div class="ai-foot" id="aiFoot">Propulsé par Claude · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
+        <div class="ai-foot" id="aiFoot">Propulsé par Puter (IA gratuite) · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
       </div>
     </div>
 
@@ -2693,33 +2694,88 @@ function aiShowTyping() {
   div.innerHTML = '<div class="ai-msg__avatar">IA</div><div class="ai-msg__bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
   chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
 }
+// Modèle Puter (IA gratuite côté navigateur, sans clé). Surchargé via window.AI_PUTER_MODEL si besoin.
+var AI_PUTER_MODEL = window.AI_PUTER_MODEL || 'claude-sonnet-4';
+var AI_CTX = null; // { context, prompts, tools }
+
+async function aiLoadContext() {
+  // Rechargé à chaque envoi pour des données fraîches (prospects/devis/tâches à jour).
+  AI_CTX = await api('/api/admin/assistant/context');
+  return AI_CTX;
+}
+function aiBuildSystem(ctx) {
+  var base = (ctx.prompts && ctx.prompts[AI_MODE]) || '';
+  return base +
+    "\n\nTu n'es pas un simple chatbot : tu peux AGIR via des outils (créer/modifier des tâches, consulter prospects/devis/équipe, créer des brouillons d'articles). " +
+    "Quand on te demande une action concrète, UTILISE les outils pour l'exécuter réellement, puis confirme ce que tu as fait. " +
+    "N'invente jamais d'identifiants : appelle lister_taches ou lister_equipe pour obtenir les vrais IDs et e-mails. Les articles sont créés en BROUILLON. " +
+    "Pour un e-mail client : rédige le texte mais ne l'envoie pas (validation manuelle). Réponds en français impeccable, concret et orienté action." +
+    "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx.context) + "\n```";
+}
+// Récupère le texte et les appels d'outils d'une réponse puter.ai.chat (format OpenAI tolérant).
+function aiParsePuter(resp) {
+  var msg = (resp && resp.message) ? resp.message : resp;
+  var content = '';
+  if (msg && typeof msg.content === 'string') content = msg.content;
+  else if (msg && Array.isArray(msg.content)) content = msg.content.map(function(b){ return b && b.text ? b.text : ''; }).join('');
+  else if (typeof resp === 'string') content = resp;
+  else if (resp && typeof resp.text === 'string') content = resp.text;
+  var toolCalls = (msg && msg.tool_calls) || [];
+  return { assistantMsg: msg, content: content, toolCalls: toolCalls };
+}
+
 async function aiSend() {
   if (AI_BUSY) return;
   var input = document.getElementById('aiInput');
   var text = input.value.trim();
   if (!text) return;
+  if (typeof puter === 'undefined' || !puter.ai) {
+    aiAppendMessage('assistant', '⚠️ Le moteur IA Puter n\'est pas encore chargé. Vérifie ta connexion et réessaie dans un instant.');
+    return;
+  }
   input.value = ''; input.style.height = 'auto';
   AI_BUSY = true; document.getElementById('aiSend').disabled = true;
   aiAppendMessage('user', text);
   AI_HISTORY.push({ role: 'user', content: text });
   aiShowTyping();
+  var actionsLog = [];
   try {
-    var data = await api('/api/admin/assistant', { method: 'POST', body: { mode: AI_MODE, messages: AI_HISTORY } });
-    var t = document.getElementById('aiTyping'); if (t) t.remove();
-    var reply = data.reply || '(réponse vide)';
-    // Si l'IA a exécuté des actions concrètes, les afficher en clair
-    if (data.actions && data.actions.length) {
-      reply += '\n\n' + data.actions.map(function(a){ return '✅ ' + a; }).join('\n');
-      // Rafraîchir les vues impactées en arrière-plan
-      TEAM = []; TASKS = [];
+    var ctx = await aiLoadContext();
+    var convo = [{ role: 'system', content: aiBuildSystem(ctx) }].concat(
+      AI_HISTORY.map(function(m){ return { role: m.role, content: m.content }; })
+    );
+    var tools = ctx.tools || [];
+    var finalText = '';
+    // Boucle d'agent côté navigateur (max 6 tours d'outils)
+    for (var turn = 0; turn < 6; turn++) {
+      var resp = await puter.ai.chat(convo, { model: AI_PUTER_MODEL, tools: tools });
+      var parsed = aiParsePuter(resp);
+      finalText = parsed.content || finalText;
+      if (!parsed.toolCalls || !parsed.toolCalls.length) break;
+      // Rejouer le message assistant (avec tool_calls) puis exécuter chaque outil côté serveur
+      convo.push(parsed.assistantMsg || { role: 'assistant', content: parsed.content || '', tool_calls: parsed.toolCalls });
+      for (var i = 0; i < parsed.toolCalls.length; i++) {
+        var tc = parsed.toolCalls[i];
+        var fnName = (tc.function && tc.function.name) || tc.name;
+        var rawArgs = (tc.function && tc.function.arguments) || tc.arguments || '{}';
+        var args = {}; try { args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs; } catch(e) {}
+        var result;
+        try { result = await api('/api/admin/assistant/tool', { method: 'POST', body: { name: fnName, input: args } }); }
+        catch(err) { result = { ok: false, message: err.message }; }
+        if (result && result.message) { actionsLog.push(result.message); TEAM = []; TASKS = []; }
+        convo.push({ role: 'tool', tool_call_id: tc.id || ('call_' + i), content: JSON.stringify(result) });
+      }
     }
+    var t = document.getElementById('aiTyping'); if (t) t.remove();
+    var reply = finalText || (actionsLog.length ? 'C\'est fait.' : '(réponse vide)');
+    if (actionsLog.length) reply += '\n\n' + actionsLog.map(function(a){ return '✅ ' + a; }).join('\n');
     aiAppendMessage('assistant', reply);
-    AI_HISTORY.push({ role: 'assistant', content: data.reply || '' });
+    AI_HISTORY.push({ role: 'assistant', content: finalText || reply });
   } catch(e) {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
-    var msg = e.message || 'Erreur';
-    if (/NO_KEY/.test(msg) || /pas encore configuré/.test(msg)) {
-      aiAppendMessage('assistant', '⚠️ **L\'assistant IA n\'est pas encore activé.**\n\nPour me donner vie, ajoutez la clé API Anthropic dans les variables d\'environnement Vercel (`ANTHROPIC_API_KEY`), puis redéployez. Lissanon, je te guide pas à pas dès que tu as la clé.');
+    var msg = (e && e.message) ? e.message : String(e);
+    if (/auth|sign|login|401/i.test(msg)) {
+      aiAppendMessage('assistant', '🔐 Pour utiliser l\'IA gratuite via Puter, une fenêtre de connexion Puter peut s\'ouvrir la première fois. Autorise-la puis renvoie ton message.');
     } else {
       aiAppendMessage('assistant', '❌ ' + msg);
     }

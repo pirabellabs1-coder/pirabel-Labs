@@ -43,6 +43,7 @@ const CaseStudy = require('../app/models/CaseStudy');
 const LivreBlanc = require('../app/models/LivreBlanc');
 const Comment = require('../app/models/Comment');
 const Task = require('../app/models/Task');
+const Conversation = require('../app/models/Conversation');
 
 const app = express();
 
@@ -1256,6 +1257,61 @@ app.post('/api/admin/assistant/tool', auth, adminOnly, limitBody(40), async (req
     const result = await executeAssistantTool(name, req.body.input || {}, req.user);
     res.json(result);
   } catch (e) { console.error('[assistant.tool]', e.message); res.status(500).json({ ok: false, message: 'Erreur exécution : ' + e.message }); }
+});
+
+// --- Conversations IA (mémoire / historique) ---
+// Liste des conversations de l'utilisateur (sans le détail des messages), filtrable par mode.
+app.get('/api/admin/conversations', auth, adminOnly, async (req, res) => {
+  try {
+    const filter = { userId: req.user._id };
+    if (['analyse', 'redaction', 'equipe', 'libre'].includes(req.query.mode)) filter.mode = req.query.mode;
+    const convos = await Conversation.find(filter).sort({ updatedAt: -1 }).limit(200)
+      .select('mode title updatedAt messages').lean();
+    res.json({ conversations: convos.map(c => ({ _id: c._id, mode: c.mode, title: c.title, updatedAt: c.updatedAt, count: (c.messages || []).length })) });
+  } catch (e) { console.error('[convos.list]', e.message); res.status(500).json({ error: 'Erreur chargement conversations.' }); }
+});
+
+// Détail d'une conversation (avec messages)
+app.get('/api/admin/conversations/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const c = await Conversation.findOne({ _id: req.params.id, userId: req.user._id }).lean();
+    if (!c) return res.status(404).json({ error: 'Conversation introuvable.' });
+    res.json({ conversation: c });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// Créer une conversation (vide) dans un mode donné
+app.post('/api/admin/conversations', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const mode = ['analyse', 'redaction', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'analyse';
+    const c = new Conversation({ userId: req.user._id, mode, messages: [] });
+    await c.save();
+    res.json({ conversation: { _id: c._id, mode: c.mode, title: c.title, updatedAt: c.updatedAt, count: 0 } });
+  } catch (e) { console.error('[convos.create]', e.message); res.status(500).json({ error: 'Erreur création conversation.' }); }
+});
+
+// Enregistrer les messages d'une conversation (remplace le tableau ; titre auto)
+app.patch('/api/admin/conversations/:id', auth, adminOnly, limitBody(400), async (req, res) => {
+  try {
+    const c = await Conversation.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!c) return res.status(404).json({ error: 'Conversation introuvable.' });
+    if (Array.isArray(req.body.messages)) {
+      c.messages = req.body.messages
+        .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+        .slice(-120)
+        .map(m => ({ role: m.role, content: m.content.slice(0, 16000), createdAt: m.createdAt ? new Date(m.createdAt) : new Date() }));
+    }
+    if (typeof req.body.title === 'string' && req.body.title.trim()) c.title = sanitize(req.body.title, 80);
+    if (['analyse', 'redaction', 'equipe', 'libre'].includes(req.body.mode)) c.mode = req.body.mode;
+    await c.save();
+    res.json({ conversation: { _id: c._id, mode: c.mode, title: c.title, updatedAt: c.updatedAt, count: c.messages.length } });
+  } catch (e) { console.error('[convos.update]', e.message); res.status(500).json({ error: 'Erreur sauvegarde.' }); }
+});
+
+// Supprimer une conversation
+app.delete('/api/admin/conversations/:id', auth, adminOnly, async (req, res) => {
+  try { await Conversation.deleteOne({ _id: req.params.id, userId: req.user._id }); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
 });
 
 // ============ CMS LIVRES BLANCS ============

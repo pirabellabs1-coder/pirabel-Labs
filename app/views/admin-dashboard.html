@@ -282,13 +282,39 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .case-card__metric strong { color: var(--accent); font-family: var(--font-display); font-weight: 700; }
 
 /* ===== ASSISTANT IA ===== */
-.ai-wrap { display: flex; flex-direction: column; height: calc(100vh - 9rem); max-width: 60rem; margin: 0 auto; }
-.ai-modes { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.ai-mode { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.9rem; background: var(--surface); border: 1px solid var(--border-2); border-radius: 999px; color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.18s; }
-.ai-mode .material-symbols-outlined { font-size: 1.05rem; }
-.ai-mode:hover { border-color: var(--accent); color: var(--text); }
-.ai-mode.is-active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-.ai-chat { flex: 1; overflow-y: auto; padding: 0.5rem 0.25rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.ai-layout { display: flex; gap: 1rem; height: calc(100vh - 8rem); }
+.ai-sidebar { width: 17rem; flex-shrink: 0; display: flex; flex-direction: column; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem; overflow: hidden; }
+.ai-new { display: flex; align-items: center; justify-content: center; gap: 0.4rem; width: 100%; padding: 0.7rem; background: var(--accent); color: #fff; border: 0; border-radius: 10px; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: background 0.2s; }
+.ai-new:hover { background: var(--accent-2); }
+.ai-new .material-symbols-outlined { font-size: 1.1rem; }
+.ai-side-label { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin: 1rem 0 0.5rem; padding: 0 0.2rem; }
+.ai-mode-menu { display: flex; flex-direction: column; gap: 0.2rem; }
+.ai-mode-item { display: flex; align-items: center; gap: 0.55rem; padding: 0.55rem 0.65rem; background: none; border: 0; border-radius: 8px; color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.15s; }
+.ai-mode-item .material-symbols-outlined { font-size: 1.1rem; }
+.ai-mode-item:hover { background: var(--surface); color: var(--text); }
+.ai-mode-item.is-active { background: var(--accent-soft); color: var(--accent); }
+.ai-convos { flex: 1; overflow-y: auto; margin: 0 -0.3rem; padding: 0 0.3rem; display: flex; flex-direction: column; gap: 0.2rem; }
+.ai-convos::-webkit-scrollbar { width: 6px; }
+.ai-convos::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 6px; }
+.ai-convos-empty { font-size: 0.76rem; color: var(--text-faint); text-align: center; padding: 1.2rem 0.5rem; line-height: 1.5; }
+.ai-convo { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.55rem; border-radius: 8px; cursor: pointer; transition: background 0.15s; position: relative; }
+.ai-convo:hover { background: var(--surface); }
+.ai-convo.is-active { background: var(--accent-soft); }
+.ai-convo__body { flex: 1; min-width: 0; }
+.ai-convo__title { font-size: 0.8rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-convo.is-active .ai-convo__title { color: var(--accent); font-weight: 600; }
+.ai-convo__date { font-size: 0.68rem; color: var(--text-faint); }
+.ai-convo__del { opacity: 0; background: none; border: 0; color: var(--text-muted); cursor: pointer; padding: 0.2rem; border-radius: 6px; flex-shrink: 0; }
+.ai-convo:hover .ai-convo__del { opacity: 1; }
+.ai-convo__del:hover { color: var(--danger); background: var(--surface-2); }
+.ai-convo__del .material-symbols-outlined { font-size: 1rem; }
+.ai-main { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.ai-chat-head { display: flex; align-items: center; gap: 0.7rem; padding-bottom: 0.8rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+.ai-chat-head__title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 38rem; }
+.ai-chat-head__sub { font-size: 0.74rem; color: var(--accent); font-weight: 600; }
+.ai-side-toggle { display: none; background: var(--surface); border: 1px solid var(--border-2); border-radius: 8px; color: var(--text-muted); cursor: pointer; padding: 0.4rem; }
+.ai-side-toggle .material-symbols-outlined { font-size: 1.2rem; }
+.ai-chat { flex: 1; overflow-y: auto; padding: 0.8rem 0.25rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
 .ai-chat::-webkit-scrollbar { width: 8px; }
 .ai-chat::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 8px; }
 .ai-welcome { text-align: center; margin: auto; max-width: 34rem; padding: 2rem 1rem; }
@@ -329,6 +355,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .ai-send:hover { background: var(--accent-2); } .ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
 .ai-foot { text-align: center; font-size: 0.7rem; color: var(--text-faint); margin-top: 0.6rem; }
 .ai-banner { background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.4); border-radius: 12px; padding: 1rem 1.2rem; color: var(--text); font-size: 0.86rem; line-height: 1.55; margin-bottom: 1rem; }
+@media (max-width: 860px) {
+  .ai-layout { position: relative; }
+  .ai-sidebar { position: absolute; inset: 0 auto 0 0; z-index: 30; transform: translateX(-105%); transition: transform 0.22s; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+  .ai-sidebar.is-open { transform: translateX(0); }
+  .ai-side-toggle { display: inline-flex; }
+}
 .ai-banner strong { color: var(--warning); }
 
 /* ===== ÉQUIPE ===== */
@@ -807,26 +839,33 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- ASSISTANT IA VIEW -->
     <div class="view" data-view="assistant">
-      <div class="ai-wrap">
-        <div class="ai-modes" id="aiModes">
-          <button class="ai-mode is-active" data-mode="analyse"><span class="material-symbols-outlined">insights</span> Directeur commercial</button>
-          <button class="ai-mode" data-mode="redaction"><span class="material-symbols-outlined">edit_note</span> Rédaction</button>
-          <button class="ai-mode" data-mode="equipe"><span class="material-symbols-outlined">groups</span> Gestion d'équipe</button>
-          <button class="ai-mode" data-mode="libre"><span class="material-symbols-outlined">chat</span> Discussion libre</button>
-        </div>
-        <div class="ai-chat" id="aiChat">
-          <div class="ai-welcome" id="aiWelcome">
-            <div class="ai-welcome__icon"><span class="material-symbols-outlined">smart_toy</span></div>
-            <h2>Votre directeur commercial IA</h2>
-            <p>Je connais vos prospects, vos devis, vos tâches et votre équipe. Posez-moi une question ou choisissez un raccourci.</p>
-            <div class="ai-suggest" id="aiSuggest"></div>
+      <div class="ai-layout">
+        <!-- Volet gauche : choix de l'IA (sous-menu) + historique des conversations -->
+        <aside class="ai-sidebar" id="aiSidebar">
+          <button class="ai-new" id="aiNewBtn"><span class="material-symbols-outlined">add</span> Nouvelle conversation</button>
+          <div class="ai-side-label">Assistant</div>
+          <div class="ai-mode-menu" id="aiModeMenu">
+            <button class="ai-mode-item is-active" data-mode="analyse"><span class="material-symbols-outlined">insights</span> Directeur commercial</button>
+            <button class="ai-mode-item" data-mode="redaction"><span class="material-symbols-outlined">edit_note</span> Rédaction</button>
+            <button class="ai-mode-item" data-mode="equipe"><span class="material-symbols-outlined">groups</span> Gestion d'équipe</button>
+            <button class="ai-mode-item" data-mode="libre"><span class="material-symbols-outlined">chat</span> Discussion libre</button>
           </div>
+          <div class="ai-side-label">Conversations</div>
+          <div class="ai-convos" id="aiConvos"><div class="ai-convos-empty">Chargement…</div></div>
+        </aside>
+        <!-- Volet droit : le chat -->
+        <div class="ai-main">
+          <div class="ai-chat-head" id="aiChatHead">
+            <button class="ai-side-toggle" id="aiSideToggle" title="Conversations"><span class="material-symbols-outlined">menu</span></button>
+            <div><div class="ai-chat-head__title" id="aiHeadTitle">Nouvelle conversation</div><div class="ai-chat-head__sub" id="aiHeadSub">Directeur commercial</div></div>
+          </div>
+          <div class="ai-chat" id="aiChat"></div>
+          <div class="ai-input-bar">
+            <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
+            <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
+          </div>
+          <div class="ai-foot" id="aiFoot">Propulsé par Puter · Claude Opus 4.8 · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
         </div>
-        <div class="ai-input-bar">
-          <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
-          <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
-        </div>
-        <div class="ai-foot" id="aiFoot">Propulsé par Puter (IA gratuite) · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
       </div>
     </div>
 
@@ -2609,9 +2648,13 @@ async function deleteTask(id) {
 
 // =================== ASSISTANT IA ===================
 var AI_MODE = 'analyse';
-var AI_HISTORY = [];
+var AI_HISTORY = [];          // messages de la conversation ouverte
+var AI_CONVO_ID = null;       // id de la conversation en cours (null = nouvelle, pas encore enregistrée)
+var AI_CONVOS = [];           // liste des conversations du mode courant
 var AI_BUSY = false;
 var AI_INIT_DONE = false;
+var AI_MODE_LABELS = { analyse: 'Directeur commercial', redaction: 'Rédaction', equipe: 'Gestion d\'équipe', libre: 'Discussion libre' };
+var AI_MODE_TITLES = { analyse: 'Votre directeur commercial IA', redaction: 'Votre assistant de rédaction', equipe: 'Votre bras droit RH & opérations', libre: 'Votre assistant IA Pirabel Labs' };
 var AI_SUGGESTIONS = {
   analyse: ['Quels prospects dois-je relancer en priorité cette semaine ?', 'Analyse mon pipeline de devis : quels risques, quelles opportunités ?', 'Donne-moi mon plan d\'action commercial pour les 7 prochains jours.'],
   redaction: ['Rédige un e-mail de prospection pour une PME qui n\'a pas de site web.', 'Écris une réponse chaleureuse à un client qui demande un devis pour un site vitrine.', 'Propose 5 posts LinkedIn pour promouvoir nos services SEO.'],
@@ -2619,33 +2662,121 @@ var AI_SUGGESTIONS = {
   libre: ['Quelles sont les tendances marketing digital à suivre en 2026 ?', 'Comment améliorer le référencement local d\'une PME à Cotonou ?', 'Explique-moi le GEO (Generative Engine Optimization) simplement.'],
 };
 function initAssistant() {
-  if (AI_INIT_DONE) return;
-  AI_INIT_DONE = true;
-  document.querySelectorAll('#aiModes .ai-mode').forEach(function(b){
-    b.onclick = function(){
-      document.querySelectorAll('#aiModes .ai-mode').forEach(function(x){ x.classList.remove('is-active'); });
-      b.classList.add('is-active');
-      AI_MODE = b.dataset.mode;
-      AI_HISTORY = [];
-      renderAiWelcome();
-    };
-  });
-  var input = document.getElementById('aiInput');
-  input.addEventListener('input', function(){ input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 144) + 'px'; });
-  input.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSend(); } });
-  document.getElementById('aiSend').onclick = aiSend;
+  if (!AI_INIT_DONE) {
+    AI_INIT_DONE = true;
+    // Sous-menu : choix de l'IA
+    document.querySelectorAll('#aiModeMenu .ai-mode-item').forEach(function(b){
+      b.onclick = function(){ setAiMode(b.dataset.mode); };
+    });
+    document.getElementById('aiNewBtn').onclick = function(){ newConvo(); };
+    var tgl = document.getElementById('aiSideToggle');
+    if (tgl) tgl.onclick = function(){ document.getElementById('aiSidebar').classList.toggle('is-open'); };
+    var input = document.getElementById('aiInput');
+    input.addEventListener('input', function(){ input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 144) + 'px'; });
+    input.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSend(); } });
+    document.getElementById('aiSend').onclick = aiSend;
+  }
+  newConvo();
+  loadConvos();
+}
+function setAiMode(mode) {
+  AI_MODE = mode;
+  document.querySelectorAll('#aiModeMenu .ai-mode-item').forEach(function(x){ x.classList.toggle('is-active', x.dataset.mode === mode); });
+  newConvo();
+  loadConvos();
+}
+async function loadConvos() {
+  var box = document.getElementById('aiConvos');
+  if (!box) return;
+  try {
+    var d = await api('/api/admin/conversations?mode=' + AI_MODE);
+    AI_CONVOS = d.conversations || [];
+    renderConvos();
+  } catch(e) { box.innerHTML = '<div class="ai-convos-empty">Erreur de chargement</div>'; }
+}
+function renderConvos() {
+  var box = document.getElementById('aiConvos');
+  if (!AI_CONVOS.length) { box.innerHTML = '<div class="ai-convos-empty">Aucune conversation enregistrée pour cet assistant. Posez une question pour démarrer.</div>'; return; }
+  box.innerHTML = AI_CONVOS.map(function(c){
+    var active = c._id === AI_CONVO_ID ? ' is-active' : '';
+    return '<div class="ai-convo' + active + '" onclick="openConvo(\'' + c._id + '\')">' +
+      '<div class="ai-convo__body"><div class="ai-convo__title">' + escape(c.title || 'Sans titre') + '</div>' +
+      '<div class="ai-convo__date">' + aiRelDate(c.updatedAt) + '</div></div>' +
+      '<button class="ai-convo__del" title="Supprimer" onclick="deleteConvo(event,\'' + c._id + '\')"><span class="material-symbols-outlined">delete</span></button>' +
+    '</div>';
+  }).join('');
+}
+function aiRelDate(d) {
+  var diff = (Date.now() - new Date(d).getTime()) / 1000;
+  if (diff < 60) return 'à l\'instant';
+  if (diff < 3600) return Math.floor(diff/60) + ' min';
+  if (diff < 86400) return Math.floor(diff/3600) + ' h';
+  if (diff < 604800) return Math.floor(diff/86400) + ' j';
+  return fmtDate(d);
+}
+async function openConvo(id) {
+  try {
+    var d = await api('/api/admin/conversations/' + id);
+    var c = d.conversation;
+    AI_CONVO_ID = c._id;
+    AI_MODE = c.mode;
+    AI_HISTORY = (c.messages || []).map(function(m){ return { role: m.role, content: m.content }; });
+    document.querySelectorAll('#aiModeMenu .ai-mode-item').forEach(function(x){ x.classList.toggle('is-active', x.dataset.mode === AI_MODE); });
+    renderAiMessages();
+    updateAiHead(c.title);
+    renderConvos();
+    document.getElementById('aiSidebar').classList.remove('is-open');
+  } catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+function newConvo() {
+  AI_CONVO_ID = null;
+  AI_HISTORY = [];
   renderAiWelcome();
+  updateAiHead('Nouvelle conversation');
+  renderConvos();
+  document.getElementById('aiSidebar').classList.remove('is-open');
+}
+async function deleteConvo(ev, id) {
+  ev.stopPropagation();
+  if (!confirm('Supprimer cette conversation ?')) return;
+  try {
+    await api('/api/admin/conversations/' + id, { method: 'DELETE' });
+    if (id === AI_CONVO_ID) newConvo();
+    loadConvos();
+  } catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+function updateAiHead(title) {
+  var t = document.getElementById('aiHeadTitle'); if (t) t.textContent = title || 'Nouvelle conversation';
+  var s = document.getElementById('aiHeadSub'); if (s) s.textContent = AI_MODE_LABELS[AI_MODE] || '';
+}
+function renderAiMessages() {
+  var chat = document.getElementById('aiChat');
+  chat.innerHTML = '';
+  if (!AI_HISTORY.length) { renderAiWelcome(); return; }
+  AI_HISTORY.forEach(function(m){ aiAppendMessage(m.role, m.content); });
 }
 function renderAiWelcome() {
   var chat = document.getElementById('aiChat');
   var sugg = AI_SUGGESTIONS[AI_MODE] || [];
   chat.innerHTML = '<div class="ai-welcome" id="aiWelcome">' +
     '<div class="ai-welcome__icon"><span class="material-symbols-outlined">smart_toy</span></div>' +
-    '<h2>' + ({analyse:'Votre directeur commercial IA', redaction:'Votre assistant de rédaction', equipe:'Votre bras droit RH & opérations', libre:'Votre assistant IA Pirabel Labs'}[AI_MODE]) + '</h2>' +
+    '<h2>' + (AI_MODE_TITLES[AI_MODE] || 'Assistant IA') + '</h2>' +
     '<p>Je connais vos prospects, vos devis, vos tâches et votre équipe en temps réel. Posez une question ou choisissez un raccourci.</p>' +
     '<div class="ai-suggest">' + sugg.map(function(s){ return '<button onclick="aiQuick(this)">' + escape(s) + '</button>'; }).join('') + '</div></div>';
 }
 function aiQuick(btn) { document.getElementById('aiInput').value = btn.textContent; aiSend(); }
+// Crée la conversation en base si nécessaire puis sauvegarde l'historique courant.
+async function aiPersist() {
+  try {
+    if (!AI_CONVO_ID) {
+      var created = await api('/api/admin/conversations', { method: 'POST', body: { mode: AI_MODE } });
+      AI_CONVO_ID = created.conversation._id;
+    }
+    var saved = await api('/api/admin/conversations/' + AI_CONVO_ID, { method: 'PATCH', body: { messages: AI_HISTORY, mode: AI_MODE } });
+    updateAiHead(saved.conversation.title);
+    loadConvos();
+  } catch(e) { /* sauvegarde silencieuse : ne bloque pas le chat */ }
+}
 function aiRenderMarkdown(text) {
   var html = escape(text);
   // blocs de code
@@ -2798,6 +2929,7 @@ async function aiSend() {
     if (actionsLog.length) reply += '\n\n' + actionsLog.map(function(a){ return '✅ ' + a; }).join('\n');
     aiAppendMessage('assistant', reply);
     AI_HISTORY.push({ role: 'assistant', content: finalText || reply });
+    aiPersist(); // sauvegarde la conversation (mémoire)
   } catch(e) {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
     var msg = (e && e.message) ? e.message : String(e);

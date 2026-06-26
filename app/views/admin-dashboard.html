@@ -2706,7 +2706,14 @@ async function aiSend() {
   try {
     var data = await api('/api/admin/assistant', { method: 'POST', body: { mode: AI_MODE, messages: AI_HISTORY } });
     var t = document.getElementById('aiTyping'); if (t) t.remove();
-    aiAppendMessage('assistant', data.reply || '(réponse vide)');
+    var reply = data.reply || '(réponse vide)';
+    // Si l'IA a exécuté des actions concrètes, les afficher en clair
+    if (data.actions && data.actions.length) {
+      reply += '\n\n' + data.actions.map(function(a){ return '✅ ' + a; }).join('\n');
+      // Rafraîchir les vues impactées en arrière-plan
+      TEAM = []; TASKS = [];
+    }
+    aiAppendMessage('assistant', reply);
     AI_HISTORY.push({ role: 'assistant', content: data.reply || '' });
   } catch(e) {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();

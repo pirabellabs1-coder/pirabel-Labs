@@ -843,6 +843,31 @@ app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
   catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
 });
 
+// ============ MAINTENANCE (backfill readTime + migration tâches) ============
+app.post('/api/admin/maintenance/backfill', auth, adminOnly, async (req, res) => {
+  try {
+    let articlesFixed = 0;
+    const arts = await Article.find({}).select('content readTime').lean();
+    for (const a of arts) {
+      const words = (a.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+      const rt = Math.max(1, Math.round(words / 200));
+      if (rt !== a.readTime) { await Article.updateOne({ _id: a._id }, { $set: { readTime: rt } }); articlesFixed++; }
+    }
+    // Migration des anciens statuts/priorités de tâches vers le nouveau schéma
+    const statusMap = { done: 'termine', completed: 'termine', todo: 'a_faire', 'to_do': 'a_faire', in_progress: 'en_cours', doing: 'en_cours', review: 'en_revue', in_review: 'en_revue', blocked: 'bloque' };
+    const prioMap = { high: 'haute', urgent: 'urgente', medium: 'normale', normal: 'normale', low: 'basse' };
+    let tasksFixed = 0;
+    const tasks = await Task.collection.find({}).toArray();
+    for (const t of tasks) {
+      const set = {};
+      if (statusMap[t.status]) set.status = statusMap[t.status];
+      if (prioMap[t.priority]) set.priority = prioMap[t.priority];
+      if (Object.keys(set).length) { await Task.collection.updateOne({ _id: t._id }, { $set: set }); tasksFixed++; }
+    }
+    res.json({ success: true, articlesFixed, tasksFixed, totalArticles: arts.length });
+  } catch (e) { console.error('[backfill]', e.message); res.status(500).json({ error: 'Erreur backfill.', message: e.message }); }
+});
+
 // ============ STATS BLOG ============
 app.get('/api/admin/blog-stats', auth, adminOnly, async (req, res) => {
   try {
@@ -1078,13 +1103,90 @@ const AI_SYSTEM_PROMPTS = {
   libre: "Tu es l'assistant IA de Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin), fondée par Lissanon Gildas (Fondateur & CEO). Tu réponds à toute question business, marketing, SEO, technique ou stratégique pour aider à développer l'agence. Précis, honnête, jamais d'invention de chiffres. Français impeccable. Tu peux t'appuyer sur les données réelles de l'entreprise fournies dans le contexte.",
 };
 
+// Outils que l'assistant peut EXÉCUTER réellement (lecture + écriture interne, réversible).
+const ASSISTANT_TOOLS = [
+  { name: 'creer_tache', description: "Créer une nouvelle tâche interne et l'assigner éventuellement à un employé. Utilise-le quand l'utilisateur demande d'organiser, planifier ou confier du travail.", input_schema: { type: 'object', properties: {
+    title: { type: 'string', description: 'Titre court et clair de la tâche' },
+    description: { type: 'string', description: 'Détails / consignes (optionnel)' },
+    assignedToEmail: { type: 'string', description: "E-mail de l'employé à qui assigner (optionnel, doit exister dans l'équipe)" },
+    priority: { type: 'string', enum: ['basse', 'normale', 'haute', 'urgente'] },
+    dueDate: { type: 'string', description: 'Échéance au format AAAA-MM-JJ (optionnel)' },
+  }, required: ['title'] } },
+  { name: 'modifier_tache', description: 'Modifier une tâche existante (statut, priorité, assignation, titre). Utilise lister_taches d\'abord pour obtenir les IDs.', input_schema: { type: 'object', properties: {
+    taskId: { type: 'string' }, status: { type: 'string', enum: ['a_faire', 'en_cours', 'en_revue', 'termine', 'bloque'] },
+    priority: { type: 'string', enum: ['basse', 'normale', 'haute', 'urgente'] }, assignedToEmail: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' },
+  }, required: ['taskId'] } },
+  { name: 'lister_taches', description: 'Lister les tâches existantes avec leurs IDs, statuts et assignés. Filtrer par statut optionnel.', input_schema: { type: 'object', properties: { status: { type: 'string', enum: ['a_faire', 'en_cours', 'en_revue', 'termine', 'bloque'] } } } },
+  { name: 'lister_equipe', description: 'Lister les membres de l\'équipe (nom, e-mail, poste, pôle, charge de tâches ouvertes).', input_schema: { type: 'object', properties: {} } },
+  { name: 'rechercher_prospects', description: "Rechercher des prospects/leads par stade ou par texte (nom, entreprise, e-mail). Pour préparer des relances.", input_schema: { type: 'object', properties: {
+    stage: { type: 'string', enum: ['prospect', 'qualifie', 'devis_envoye', 'client', 'inactif'] }, query: { type: 'string', description: 'Texte recherché (optionnel)' },
+  } } },
+  { name: 'lister_devis', description: 'Lister les devis, filtrables par statut (brouillon, envoye, consulte, accepte, refuse, expire).', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
+  { name: 'creer_brouillon_article', description: "Créer un brouillon d'article de blog (jamais publié directement — reste en brouillon pour relecture). Utilise pour la production de contenu.", input_schema: { type: 'object', properties: {
+    title: { type: 'string' }, category: { type: 'string', description: 'Ex: Marketing, SEO, IA, Web, Agence' }, excerpt: { type: 'string', description: 'Résumé court (chapô)' }, content: { type: 'string', description: 'Contenu HTML de l\'article (balises <p>, <h2>, <ul>…)' },
+  }, required: ['title', 'content'] } },
+];
+
+async function executeAssistantTool(name, input, currentUser) {
+  try {
+    if (name === 'creer_tache') {
+      let assignedTo = null, assignedToName = '';
+      if (input.assignedToEmail) {
+        const u = await User.findOne({ email: sanitizeEmail(input.assignedToEmail), role: { $in: ['admin', 'employee'] } }).select('name').lean();
+        if (u) { assignedTo = u._id; assignedToName = u.name; } else return { ok: false, message: `Aucun employé avec l'e-mail ${input.assignedToEmail}. Utilise lister_equipe pour voir les e-mails valides.` };
+      }
+      const t = new Task({ title: sanitize(input.title, 200), description: sanitize(input.description || '', 4000), assignedTo, assignedToName, createdBy: currentUser._id,
+        priority: ['basse', 'normale', 'haute', 'urgente'].includes(input.priority) ? input.priority : 'normale', dueDate: input.dueDate ? new Date(input.dueDate) : undefined });
+      await t.save();
+      return { ok: true, message: `Tâche créée : « ${t.title} »${assignedToName ? ' → ' + assignedToName : ''}`, taskId: String(t._id) };
+    }
+    if (name === 'modifier_tache') {
+      const t = await Task.findById(input.taskId); if (!t) return { ok: false, message: 'Tâche introuvable.' };
+      if (input.status) t.status = input.status; if (input.priority) t.priority = input.priority;
+      if (input.title) t.title = sanitize(input.title, 200); if (input.description != null) t.description = sanitize(input.description, 4000);
+      if (input.assignedToEmail) { const u = await User.findOne({ email: sanitizeEmail(input.assignedToEmail) }).select('name').lean(); if (u) { t.assignedTo = u._id; t.assignedToName = u.name; } }
+      await t.save();
+      return { ok: true, message: `Tâche mise à jour : « ${t.title} » (statut: ${t.status})` };
+    }
+    if (name === 'lister_taches') {
+      const f = {}; if (input.status) f.status = input.status;
+      const tasks = await Task.find(f).sort({ dueDate: 1 }).limit(100).select('title status priority dueDate assignedToName').lean();
+      return { ok: true, tasks: tasks.map(t => ({ id: String(t._id), titre: t.title, statut: t.status, priorite: t.priority, echeance: t.dueDate ? new Date(t.dueDate).toISOString().slice(0,10) : null, assigne: t.assignedToName || null })) };
+    }
+    if (name === 'lister_equipe') {
+      const team = await User.find({ role: { $in: ['admin', 'employee'] }, isActive: true }).select('name email poste department role').lean();
+      const load = await Task.aggregate([{ $match: { status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } } }, { $group: { _id: '$assignedTo', n: { $sum: 1 } } }]);
+      const lm = {}; load.forEach(l => { if (l._id) lm[String(l._id)] = l.n; });
+      return { ok: true, equipe: team.map(u => ({ nom: u.name, email: u.email, poste: u.poste || '', pole: u.department || '', role: u.role, taches_ouvertes: lm[String(u._id)] || 0 })) };
+    }
+    if (name === 'rechercher_prospects') {
+      const f = {}; if (input.stage) f.stage = input.stage;
+      if (input.query) { const rx = new RegExp(String(input.query).slice(0, 60).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); f.$or = [{ name: rx }, { company: rx }, { email: rx }]; }
+      const leads = await Lead.find(f).sort({ createdAt: -1 }).limit(40).select('name email phone company service stage createdAt').lean();
+      return { ok: true, prospects: leads.map(l => ({ nom: l.name, email: l.email, tel: l.phone || '', entreprise: l.company || '', service: l.service || '', stade: l.stage, le: new Date(l.createdAt).toISOString().slice(0,10) })) };
+    }
+    if (name === 'lister_devis') {
+      const f = {}; if (input.status) f.status = input.status;
+      const quotes = await Quote.find(f).sort({ createdAt: -1 }).limit(40).select('reference clientName clientCompany total currency status validUntil').lean();
+      return { ok: true, devis: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, statut: q.status, valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0,10) : null })) };
+    }
+    if (name === 'creer_brouillon_article') {
+      const doc = new Article({ title: sanitize(input.title, 200), excerpt: sanitize(input.excerpt || '', 500), content: sanitizeSoft(input.content || '', 100000),
+        category: sanitize(input.category || 'Marketing', 60) || 'Marketing', author: 'Lissanon Gildas', status: 'brouillon' });
+      doc.slug = await uniqueSlug(input.title);
+      await doc.save();
+      return { ok: true, message: `Brouillon créé : « ${doc.title} » (catégorie ${doc.category}). Relis-le dans l'onglet Blog avant publication.`, slug: doc.slug };
+    }
+    return { ok: false, message: 'Outil inconnu.' };
+  } catch (e) { console.error('[ai.tool]', name, e.message); return { ok: false, message: 'Erreur exécution : ' + e.message }; }
+}
+
 app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
   try {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré. Ajoutez la variable ANTHROPIC_API_KEY dans Vercel pour l'activer." });
     const mode = ['redaction', 'analyse', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'libre';
     const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
-    // Normaliser + limiter l'historique (20 derniers tours)
     const messages = incoming
       .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
       .slice(-20)
@@ -1093,23 +1195,44 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 
     const ctx = await gatherBusinessContext();
     const system = AI_SYSTEM_PROMPTS[mode] +
-      "\n\nVoici les DONNÉES RÉELLES et à jour de Pirabel Labs (utilise-les, ne les invente pas) :\n```json\n" +
-      JSON.stringify(ctx) + "\n```\n" +
-      "Utilise ces données quand la question s'y prête. Si une information manque, dis-le clairement plutôt que d'inventer.";
+      "\n\nTu n'es pas un simple chatbot : tu peux AGIR. Tu disposes d'outils pour créer et modifier des tâches, consulter prospects/devis/équipe, et créer des brouillons d'articles. " +
+      "Quand l'utilisateur demande une action concrète (« crée une tâche », « assigne à… », « prépare un article », « qui dois-je relancer »), UTILISE les outils pour l'exécuter réellement, puis confirme ce que tu as fait. " +
+      "N'invente jamais d'identifiants : appelle lister_taches ou lister_equipe pour obtenir les vrais IDs et e-mails. Les articles sont toujours créés en BROUILLON (jamais publiés sans relecture). " +
+      "Pour l'envoi d'e-mails à des clients : rédige le texte et propose-le, mais NE l'envoie pas toi-même (l'envoi reste validé manuellement par le dirigeant). " +
+      "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx) + "\n```\n" +
+      "Réponds en français impeccable. Sois concret, bref et orienté action.";
 
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6', max_tokens: 2000, system, messages }),
-    });
-    const data = await r.json().catch(() => ({}));
-    if (!r.ok) {
-      console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
-      const msg = (data && data.error && data.error.message) || 'Erreur API IA.';
-      return res.status(502).json({ error: 'API_ERROR', message: msg });
+    const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+    const convo = messages.slice();
+    const actionsLog = [];
+    let finalText = '';
+    // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30s)
+    for (let turn = 0; turn < 6; turn++) {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model, max_tokens: 2500, system, tools: ASSISTANT_TOOLS, messages: convo }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
+        return res.status(502).json({ error: 'API_ERROR', message: (data && data.error && data.error.message) || 'Erreur API IA.' });
+      }
+      const blocks = data.content || [];
+      finalText = blocks.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+      const toolUses = blocks.filter(b => b.type === 'tool_use');
+      if (data.stop_reason !== 'tool_use' || !toolUses.length) break;
+      // Exécuter les outils demandés
+      convo.push({ role: 'assistant', content: blocks });
+      const toolResults = [];
+      for (const tu of toolUses) {
+        const result = await executeAssistantTool(tu.name, tu.input || {}, req.user);
+        if (result && result.message) actionsLog.push(result.message);
+        toolResults.push({ type: 'tool_result', tool_use_id: tu.id, content: JSON.stringify(result) });
+      }
+      convo.push({ role: 'user', content: toolResults });
     }
-    const reply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
-    res.json({ reply: reply || '(réponse vide)', usage: data.usage || null });
+    res.json({ reply: finalText || '(action effectuée)', actions: actionsLog });
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
 });
 

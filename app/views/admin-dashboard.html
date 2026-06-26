@@ -279,6 +279,91 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .case-card__desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; }
 .case-card__metrics { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); }
 .case-card__metric strong { color: var(--accent); font-family: var(--font-display); font-weight: 700; }
+
+/* ===== ASSISTANT IA ===== */
+.ai-wrap { display: flex; flex-direction: column; height: calc(100vh - 9rem); max-width: 60rem; margin: 0 auto; }
+.ai-modes { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.ai-mode { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.9rem; background: var(--surface); border: 1px solid var(--border-2); border-radius: 999px; color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+.ai-mode .material-symbols-outlined { font-size: 1.05rem; }
+.ai-mode:hover { border-color: var(--accent); color: var(--text); }
+.ai-mode.is-active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.ai-chat { flex: 1; overflow-y: auto; padding: 0.5rem 0.25rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.ai-chat::-webkit-scrollbar { width: 8px; }
+.ai-chat::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 8px; }
+.ai-welcome { text-align: center; margin: auto; max-width: 34rem; padding: 2rem 1rem; }
+.ai-welcome__icon { width: 4rem; height: 4rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+.ai-welcome__icon .material-symbols-outlined { font-size: 2rem; }
+.ai-welcome h2 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 0.5rem; }
+.ai-welcome p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; margin-bottom: 1.5rem; }
+.ai-suggest { display: flex; flex-direction: column; gap: 0.5rem; }
+.ai-suggest button { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 0.95rem; color: var(--text); font-size: 0.84rem; cursor: pointer; transition: all 0.16s; }
+.ai-suggest button:hover { border-color: var(--accent); background: var(--surface-2); }
+.ai-msg { display: flex; gap: 0.75rem; max-width: 100%; }
+.ai-msg__avatar { width: 2rem; height: 2rem; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.72rem; font-family: var(--font-display); }
+.ai-msg--user { flex-direction: row-reverse; }
+.ai-msg--user .ai-msg__avatar { background: var(--accent); color: #fff; }
+.ai-msg--ai .ai-msg__avatar { background: var(--accent-soft); color: var(--accent); }
+.ai-msg__bubble { padding: 0.8rem 1.05rem; border-radius: 14px; font-size: 0.9rem; line-height: 1.6; max-width: 80%; word-wrap: break-word; overflow-wrap: anywhere; }
+.ai-msg--user .ai-msg__bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.ai-msg--ai .ai-msg__bubble { background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.ai-msg__bubble p { margin: 0 0 0.6rem; } .ai-msg__bubble p:last-child { margin-bottom: 0; }
+.ai-msg__bubble h2, .ai-msg__bubble h3 { font-family: var(--font-display); margin: 0.8rem 0 0.4rem; font-size: 1rem; }
+.ai-msg__bubble ul, .ai-msg__bubble ol { margin: 0.4rem 0 0.6rem; padding-left: 1.25rem; }
+.ai-msg__bubble li { margin-bottom: 0.25rem; }
+.ai-msg__bubble code { background: var(--surface-2); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.82em; }
+.ai-msg__bubble pre { background: var(--surface-2); padding: 0.8rem; border-radius: 8px; overflow-x: auto; margin: 0.5rem 0; }
+.ai-msg__bubble strong { color: inherit; font-weight: 700; }
+.ai-msg__actions { margin-top: 0.4rem; display: flex; gap: 0.4rem; }
+.ai-copy { background: none; border: 1px solid var(--border-2); border-radius: 6px; color: var(--text-muted); font-size: 0.68rem; padding: 0.2rem 0.5rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; }
+.ai-copy:hover { color: var(--accent); border-color: var(--accent); }
+.ai-copy .material-symbols-outlined { font-size: 0.85rem; }
+.ai-typing { display: inline-flex; gap: 0.25rem; padding: 0.3rem 0; }
+.ai-typing span { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--accent); opacity: 0.5; animation: aiBlink 1.2s infinite; }
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; } .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aiBlink { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+.ai-input-bar { display: flex; gap: 0.6rem; align-items: flex-end; background: var(--surface); border: 1px solid var(--border-2); border-radius: 16px; padding: 0.6rem 0.7rem; }
+.ai-input-bar:focus-within { border-color: var(--accent); }
+.ai-input-bar textarea { flex: 1; background: none; border: 0; color: var(--text); font-family: inherit; font-size: 0.92rem; resize: none; outline: none; max-height: 9rem; line-height: 1.5; padding: 0.3rem 0.25rem; }
+.ai-send { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--accent); border: 0; color: #fff; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.ai-send:hover { background: var(--accent-2); } .ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.ai-foot { text-align: center; font-size: 0.7rem; color: var(--text-faint); margin-top: 0.6rem; }
+.ai-banner { background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.4); border-radius: 12px; padding: 1rem 1.2rem; color: var(--text); font-size: 0.86rem; line-height: 1.55; margin-bottom: 1rem; }
+.ai-banner strong { color: var(--warning); }
+
+/* ===== ÉQUIPE ===== */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; }
+.member-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; position: relative; transition: border-color 0.18s; }
+.member-card:hover { border-color: var(--border-2); }
+.member-card.is-inactive { opacity: 0.55; }
+.member-card__top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.9rem; }
+.member-card__avatar { width: 3rem; height: 3rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; flex-shrink: 0; }
+.member-card__name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+.member-card__poste { font-size: 0.78rem; color: var(--text-muted); }
+.member-card__row { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+.member-card__row .material-symbols-outlined { font-size: 1rem; color: var(--text-faint); }
+.member-card__tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.7rem 0; }
+.member-tag { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
+.member-tag--admin { background: var(--accent-soft); color: var(--accent); }
+.member-tag--employee { background: rgba(96,165,250,0.15); color: var(--info); }
+.member-tag--load { background: var(--surface-2); color: var(--text-muted); }
+.member-card__actions { display: flex; gap: 0.4rem; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--border); }
+
+/* ===== TÂCHES (kanban) ===== */
+.tasks-board { display: grid; grid-template-columns: repeat(5, minmax(13rem, 1fr)); gap: 0.85rem; align-items: start; overflow-x: auto; padding-bottom: 1rem; }
+.task-col { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.8rem; min-height: 8rem; }
+.task-col__head { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; margin-bottom: 0.75rem; padding: 0 0.2rem; }
+.task-col__count { background: var(--surface-2); color: var(--text-muted); font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 999px; }
+.task-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--text-faint); border-radius: 10px; padding: 0.7rem 0.8rem; margin-bottom: 0.6rem; cursor: pointer; transition: border-color 0.16s; }
+.task-card:hover { border-color: var(--accent); }
+.task-card--urgente { border-left-color: var(--danger); } .task-card--haute { border-left-color: var(--warning); }
+.task-card--normale { border-left-color: var(--info); } .task-card--basse { border-left-color: var(--text-faint); }
+.task-card__title { font-size: 0.85rem; font-weight: 600; line-height: 1.4; margin-bottom: 0.45rem; }
+.task-card__meta { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.7rem; color: var(--text-muted); }
+.task-card__assignee { display: inline-flex; align-items: center; gap: 0.3rem; }
+.task-card__due { display: inline-flex; align-items: center; gap: 0.25rem; }
+.task-card__due.is-late { color: var(--danger); }
+.task-card__due .material-symbols-outlined { font-size: 0.85rem; }
+@media (max-width: 1100px) { .tasks-board { grid-template-columns: repeat(5, minmax(12rem, 1fr)); } }
 </style>
 </head>
 <body>
@@ -312,6 +397,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <nav class="sidebar__nav">
       <a class="sidebar__link" data-view="cases" data-label="Cas clients"><span class="material-symbols-outlined">workspaces</span><span class="sidebar__link-text">Cas clients</span></a>
       <a class="sidebar__link" data-view="gallery" data-label="Galerie images"><span class="material-symbols-outlined">photo_library</span><span class="sidebar__link-text">Galerie images</span></a>
+    </nav>
+    <div class="sidebar__section">Équipe &amp; IA</div>
+    <nav class="sidebar__nav">
+      <a class="sidebar__link" data-view="assistant" data-label="Assistant IA"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Assistant IA</span></a>
+      <a class="sidebar__link" data-view="team" data-label="Équipe"><span class="material-symbols-outlined">groups</span><span class="sidebar__link-text">Équipe</span></a>
+      <a class="sidebar__link" data-view="tasks" data-label="Tâches"><span class="material-symbols-outlined">checklist</span><span class="sidebar__link-text">Tâches</span></a>
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
@@ -712,6 +803,49 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         </div>
       </div>
     </div>
+
+    <!-- ASSISTANT IA VIEW -->
+    <div class="view" data-view="assistant">
+      <div class="ai-wrap">
+        <div class="ai-modes" id="aiModes">
+          <button class="ai-mode is-active" data-mode="analyse"><span class="material-symbols-outlined">insights</span> Directeur commercial</button>
+          <button class="ai-mode" data-mode="redaction"><span class="material-symbols-outlined">edit_note</span> Rédaction</button>
+          <button class="ai-mode" data-mode="equipe"><span class="material-symbols-outlined">groups</span> Gestion d'équipe</button>
+          <button class="ai-mode" data-mode="libre"><span class="material-symbols-outlined">chat</span> Discussion libre</button>
+        </div>
+        <div class="ai-chat" id="aiChat">
+          <div class="ai-welcome" id="aiWelcome">
+            <div class="ai-welcome__icon"><span class="material-symbols-outlined">smart_toy</span></div>
+            <h2>Votre directeur commercial IA</h2>
+            <p>Je connais vos prospects, vos devis, vos tâches et votre équipe. Posez-moi une question ou choisissez un raccourci.</p>
+            <div class="ai-suggest" id="aiSuggest"></div>
+          </div>
+        </div>
+        <div class="ai-input-bar">
+          <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
+          <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
+        </div>
+        <div class="ai-foot" id="aiFoot">Propulsé par Claude · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
+      </div>
+    </div>
+
+    <!-- ÉQUIPE VIEW -->
+    <div class="view" data-view="team">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Membres de l'équipe</div><div class="card__sub">Administrateurs et employés de Pirabel Labs</div></div>
+        <button class="btn btn--sm" onclick="openMemberEditor()"><span class="material-symbols-outlined">person_add</span> Ajouter un membre</button>
+      </div>
+      <div id="teamGrid" class="team-grid"><div class="empty">Chargement…</div></div>
+    </div>
+
+    <!-- TÂCHES VIEW -->
+    <div class="view" data-view="tasks">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div><div class="card__title" style="font-size:1.1rem;">Tâches de l'équipe</div><div class="card__sub">Assignez, suivez et priorisez le travail</div></div>
+        <button class="btn btn--sm" onclick="openTaskEditor()"><span class="material-symbols-outlined">add_task</span> Nouvelle tâche</button>
+      </div>
+      <div id="tasksBoard" class="tasks-board"><div class="empty">Chargement…</div></div>
+    </div>
   </main>
 </div>
 
@@ -846,7 +980,7 @@ async function refreshCmBadge() {
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -861,6 +995,9 @@ function setView(view) {
   if (view === 'quotes') loadQuotes();
   if (view === 'reviews') loadReviews();
   if (view === 'gallery') loadGallery();
+  if (view === 'assistant') initAssistant();
+  if (view === 'team') loadTeam();
+  if (view === 'tasks') loadTasks();
   window.location.hash = view;
 }
 
@@ -2283,6 +2420,306 @@ async function init() {
 async function logout() {
   try { await api('/api/admin/logout', { method: 'POST' }); } catch(e){}
   window.location.href = '/' + (window.ADMIN_PATH || 'pirabel-admin-7x9k2m');
+}
+
+// =================== ÉQUIPE ===================
+var TEAM = [];
+function initials(name) { return String(name || '?').trim().split(/\s+/).slice(0,2).map(function(w){ return w[0]; }).join('').toUpperCase(); }
+async function loadTeam() {
+  var grid = document.getElementById('teamGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    var data = await api('/api/admin/team');
+    TEAM = data.team || [];
+    if (!TEAM.length) { grid.innerHTML = '<div class="empty"><span class="material-symbols-outlined">groups</span><p>Aucun membre. Cliquez « Ajouter un membre ».</p></div>'; return; }
+    grid.innerHTML = TEAM.map(function(m){
+      var roleTag = m.role === 'admin' ? '<span class="member-tag member-tag--admin">Admin</span>' : '<span class="member-tag member-tag--employee">Employé</span>';
+      var loadTag = '<span class="member-tag member-tag--load">' + (m.openTasks || 0) + ' tâche' + ((m.openTasks||0) > 1 ? 's' : '') + '</span>';
+      return '<div class="member-card' + (m.isActive ? '' : ' is-inactive') + '">' +
+        '<div class="member-card__top">' +
+          '<div class="member-card__avatar">' + initials(m.name) + '</div>' +
+          '<div><div class="member-card__name">' + escape(m.name) + '</div><div class="member-card__poste">' + escape(m.poste || (m.role === 'admin' ? 'Administrateur' : 'Employé')) + '</div></div>' +
+        '</div>' +
+        '<div class="member-card__tags">' + roleTag + loadTag + (m.isActive ? '' : '<span class="member-tag member-tag--load">Désactivé</span>') + '</div>' +
+        '<div class="member-card__row"><span class="material-symbols-outlined">mail</span>' + escape(m.email) + '</div>' +
+        (m.phone ? '<div class="member-card__row"><span class="material-symbols-outlined">call</span>' + escape(m.phone) + '</div>' : '') +
+        (m.department ? '<div class="member-card__row"><span class="material-symbols-outlined">apartment</span>' + escape(m.department) + '</div>' : '') +
+        (m.hiredAt ? '<div class="member-card__row"><span class="material-symbols-outlined">event</span>Depuis le ' + fmtDate(m.hiredAt) + '</div>' : '') +
+        '<div class="member-card__actions">' +
+          '<button class="btn btn--ghost btn--sm" onclick="openMemberEditor(\'' + m._id + '\')"><span class="material-symbols-outlined">edit</span> Modifier</button>' +
+          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);margin-left:auto;" onclick="deleteMember(\'' + m._id + '\',\'' + escape(m.name).replace(/'/g,"\\'") + '\')"><span class="material-symbols-outlined">delete</span></button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) { grid.innerHTML = '<div class="empty" style="color:var(--danger);">Erreur : ' + escape(e.message) + '</div>'; }
+}
+
+function openMemberEditor(id) {
+  var m = id ? TEAM.find(function(x){ return x._id === id; }) : null;
+  var old = document.getElementById('memberModal'); if (old) old.remove();
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.9rem;';
+  var lbl = 'display:block;font-size:0.76rem;font-weight:600;margin:0.9rem 0 0.3rem;color:var(--text-muted);';
+  var mod = document.createElement('div'); mod.id = 'memberModal';
+  mod.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  mod.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:34rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (m ? 'Modifier le membre' : 'Nouveau membre') + '</div>' +
+    '<button onclick="document.getElementById(\'memberModal\').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<label style="' + lbl + '">Nom complet *</label><input id="mbName" style="' + inp + '" value="' + escape(m ? m.name : '') + '">' +
+    '<label style="' + lbl + '">E-mail *</label><input id="mbEmail" type="email" style="' + inp + '" value="' + escape(m ? m.email : '') + '"' + (m ? ' disabled' : '') + '>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">' +
+      '<div><label style="' + lbl + '">Poste</label><input id="mbPoste" style="' + inp + '" placeholder="Chargé de prospection" value="' + escape(m ? m.poste : '') + '"></div>' +
+      '<div><label style="' + lbl + '">Pôle</label><input id="mbDept" style="' + inp + '" placeholder="Commercial" value="' + escape(m ? m.department : '') + '"></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">' +
+      '<div><label style="' + lbl + '">Téléphone</label><input id="mbPhone" style="' + inp + '" value="' + escape(m ? m.phone : '') + '"></div>' +
+      '<div><label style="' + lbl + '">Rôle</label><select id="mbRole" style="' + inp + '"><option value="employee"' + (m && m.role === 'employee' ? ' selected' : '') + '>Employé</option><option value="admin"' + (m && m.role === 'admin' ? ' selected' : '') + '>Administrateur</option></select></div>' +
+    '</div>' +
+    '<label style="' + lbl + '">' + (m ? 'Nouveau mot de passe (laisser vide pour ne pas changer)' : 'Mot de passe * (8 caractères min)') + '</label><input id="mbPass" type="text" style="' + inp + '" placeholder="' + (m ? '••••••••' : 'Mot de passe de connexion') + '">' +
+    '<label style="' + lbl + '">Note interne / compétences</label><textarea id="mbBio" rows="2" style="' + inp + 'resize:vertical;font-family:inherit;">' + escape(m ? m.bio : '') + '</textarea>' +
+    (m ? '<label style="display:flex;align-items:center;gap:0.5rem;margin-top:0.9rem;font-size:0.85rem;cursor:pointer;"><input type="checkbox" id="mbActive"' + (m.isActive ? ' checked' : '') + '> Compte actif (peut se connecter)</label>' : '') +
+    '<div style="display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.3rem;">' +
+      '<button class="btn btn--ghost btn--sm" onclick="document.getElementById(\'memberModal\').remove()">Annuler</button>' +
+      '<button class="btn btn--sm" id="mbSave">' + (m ? 'Enregistrer' : 'Créer le membre') + '</button>' +
+    '</div></div>';
+  document.body.appendChild(mod);
+  document.getElementById('mbSave').onclick = function(){ saveMember(id); };
+}
+
+async function saveMember(id) {
+  var payload = {
+    name: document.getElementById('mbName').value.trim(),
+    poste: document.getElementById('mbPoste').value.trim(),
+    department: document.getElementById('mbDept').value.trim(),
+    phone: document.getElementById('mbPhone').value.trim(),
+    role: document.getElementById('mbRole').value,
+    bio: document.getElementById('mbBio').value.trim(),
+  };
+  var pass = document.getElementById('mbPass').value;
+  if (pass) payload.password = pass;
+  var activeEl = document.getElementById('mbActive'); if (activeEl) payload.isActive = activeEl.checked;
+  if (!payload.name) { toast('Nom requis', 'error'); return; }
+  try {
+    if (id) await api('/api/admin/team/' + id, { method: 'PATCH', body: payload });
+    else {
+      payload.email = document.getElementById('mbEmail').value.trim();
+      if (!payload.email) { toast('E-mail requis', 'error'); return; }
+      if (!pass || pass.length < 8) { toast('Mot de passe de 8 caractères minimum requis', 'error'); return; }
+      await api('/api/admin/team', { method: 'POST', body: payload });
+    }
+    toast('Membre enregistré ✓', 'success');
+    document.getElementById('memberModal').remove();
+    loadTeam();
+  } catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+async function deleteMember(id, name) {
+  if (!confirm('Supprimer ' + name + ' ? Ses tâches seront détachées.')) return;
+  try { await api('/api/admin/team/' + id, { method: 'DELETE' }); toast('Membre supprimé', 'success'); loadTeam(); }
+  catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+// =================== TÂCHES ===================
+var TASKS = [];
+var TASK_COLS = [
+  { key: 'a_faire', label: 'À faire', icon: 'radio_button_unchecked' },
+  { key: 'en_cours', label: 'En cours', icon: 'pending' },
+  { key: 'en_revue', label: 'En revue', icon: 'rate_review' },
+  { key: 'bloque', label: 'Bloqué', icon: 'block' },
+  { key: 'termine', label: 'Terminé', icon: 'check_circle' },
+];
+async function loadTasks() {
+  var board = document.getElementById('tasksBoard');
+  if (!board) return;
+  board.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    if (!TEAM.length) { try { var td = await api('/api/admin/team'); TEAM = td.team || []; } catch(e){} }
+    var data = await api('/api/admin/tasks');
+    TASKS = data.tasks || [];
+    var counts = data.counts || {};
+    board.innerHTML = TASK_COLS.map(function(col){
+      var cards = TASKS.filter(function(t){ return t.status === col.key; }).map(renderTaskCard).join('');
+      return '<div class="task-col">' +
+        '<div class="task-col__head"><span><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">' + col.icon + '</span> ' + col.label + '</span><span class="task-col__count">' + (counts[col.key] || 0) + '</span></div>' +
+        (cards || '<div style="font-size:0.74rem;color:var(--text-faint);text-align:center;padding:0.8rem 0;">—</div>') +
+      '</div>';
+    }).join('');
+  } catch(e) { board.innerHTML = '<div class="empty" style="color:var(--danger);">Erreur : ' + escape(e.message) + '</div>'; }
+}
+function renderTaskCard(t) {
+  var late = t.dueDate && t.status !== 'termine' && new Date(t.dueDate) < new Date();
+  var due = t.dueDate ? '<span class="task-card__due' + (late ? ' is-late' : '') + '"><span class="material-symbols-outlined">schedule</span>' + fmtDate(t.dueDate) + '</span>' : '';
+  var who = t.assignedToName && t.assignedToName !== '(non assigné)' ? '<span class="task-card__assignee"><span class="material-symbols-outlined" style="font-size:0.85rem;">person</span>' + escape(t.assignedToName) + '</span>' : '<span class="task-card__assignee" style="color:var(--text-faint);">non assigné</span>';
+  return '<div class="task-card task-card--' + t.priority + '" onclick="openTaskEditor(\'' + t._id + '\')">' +
+    '<div class="task-card__title">' + escape(t.title) + '</div>' +
+    '<div class="task-card__meta">' + who + due + '</div></div>';
+}
+function openTaskEditor(id) {
+  var t = id ? TASKS.find(function(x){ return x._id === id; }) : null;
+  var old = document.getElementById('taskModal'); if (old) old.remove();
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.9rem;';
+  var lbl = 'display:block;font-size:0.76rem;font-weight:600;margin:0.9rem 0 0.3rem;color:var(--text-muted);';
+  var dueVal = t && t.dueDate ? new Date(t.dueDate).toISOString().slice(0,10) : '';
+  var teamOpts = '<option value="">— Non assigné —</option>' + TEAM.map(function(m){ return '<option value="' + m._id + '"' + (t && String(t.assignedTo) === String(m._id) ? ' selected' : '') + '>' + escape(m.name) + (m.poste ? ' (' + escape(m.poste) + ')' : '') + '</option>'; }).join('');
+  function opt(val, label, cur){ return '<option value="' + val + '"' + (cur === val ? ' selected' : '') + '>' + label + '</option>'; }
+  var mod = document.createElement('div'); mod.id = 'taskModal';
+  mod.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  mod.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:34rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (t ? 'Modifier la tâche' : 'Nouvelle tâche') + '</div>' +
+    '<button onclick="document.getElementById(\'taskModal\').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<label style="' + lbl + '">Titre *</label><input id="tkTitle" style="' + inp + '" value="' + escape(t ? t.title : '') + '">' +
+    '<label style="' + lbl + '">Description</label><textarea id="tkDesc" rows="3" style="' + inp + 'resize:vertical;font-family:inherit;">' + escape(t ? t.description : '') + '</textarea>' +
+    '<label style="' + lbl + '">Assigner à</label><select id="tkAssign" style="' + inp + '">' + teamOpts + '</select>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">' +
+      '<div><label style="' + lbl + '">Statut</label><select id="tkStatus" style="' + inp + '">' + opt('a_faire','À faire',t?t.status:'a_faire') + opt('en_cours','En cours',t?t.status:'') + opt('en_revue','En revue',t?t.status:'') + opt('bloque','Bloqué',t?t.status:'') + opt('termine','Terminé',t?t.status:'') + '</select></div>' +
+      '<div><label style="' + lbl + '">Priorité</label><select id="tkPrio" style="' + inp + '">' + opt('basse','Basse',t?t.priority:'') + opt('normale','Normale',t?t.priority:'normale') + opt('haute','Haute',t?t.priority:'') + opt('urgente','Urgente',t?t.priority:'') + '</select></div>' +
+    '</div>' +
+    '<label style="' + lbl + '">Échéance</label><input id="tkDue" type="date" style="' + inp + '" value="' + dueVal + '">' +
+    '<div style="display:flex;gap:0.5rem;justify-content:' + (t ? 'space-between' : 'flex-end') + ';align-items:center;margin-top:1.3rem;">' +
+      (t ? '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="deleteTask(\'' + t._id + '\')"><span class="material-symbols-outlined">delete</span> Supprimer</button>' : '') +
+      '<div style="display:flex;gap:0.5rem;"><button class="btn btn--ghost btn--sm" onclick="document.getElementById(\'taskModal\').remove()">Annuler</button>' +
+      '<button class="btn btn--sm" id="tkSave">' + (t ? 'Enregistrer' : 'Créer') + '</button></div>' +
+    '</div></div>';
+  document.body.appendChild(mod);
+  document.getElementById('tkSave').onclick = function(){ saveTask(id); };
+}
+async function saveTask(id) {
+  var payload = {
+    title: document.getElementById('tkTitle').value.trim(),
+    description: document.getElementById('tkDesc').value.trim(),
+    assignedTo: document.getElementById('tkAssign').value || null,
+    status: document.getElementById('tkStatus').value,
+    priority: document.getElementById('tkPrio').value,
+    dueDate: document.getElementById('tkDue').value || null,
+  };
+  if (!payload.title) { toast('Titre requis', 'error'); return; }
+  try {
+    if (id) await api('/api/admin/tasks/' + id, { method: 'PATCH', body: payload });
+    else await api('/api/admin/tasks', { method: 'POST', body: payload });
+    toast('Tâche enregistrée ✓', 'success');
+    document.getElementById('taskModal').remove();
+    loadTasks();
+  } catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+async function deleteTask(id) {
+  if (!confirm('Supprimer cette tâche ?')) return;
+  try { await api('/api/admin/tasks/' + id, { method: 'DELETE' }); toast('Tâche supprimée', 'success'); var mo = document.getElementById('taskModal'); if (mo) mo.remove(); loadTasks(); }
+  catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+// =================== ASSISTANT IA ===================
+var AI_MODE = 'analyse';
+var AI_HISTORY = [];
+var AI_BUSY = false;
+var AI_INIT_DONE = false;
+var AI_SUGGESTIONS = {
+  analyse: ['Quels prospects dois-je relancer en priorité cette semaine ?', 'Analyse mon pipeline de devis : quels risques, quelles opportunités ?', 'Donne-moi mon plan d\'action commercial pour les 7 prochains jours.'],
+  redaction: ['Rédige un e-mail de prospection pour une PME qui n\'a pas de site web.', 'Écris une réponse chaleureuse à un client qui demande un devis pour un site vitrine.', 'Propose 5 posts LinkedIn pour promouvoir nos services SEO.'],
+  equipe: ['Répartis les tâches ouvertes entre mes employés selon leur pôle.', 'Rédige un compte-rendu hebdomadaire de l\'activité de l\'équipe.', 'Quels objectifs fixer à mon chargé de prospection ce mois-ci ?'],
+  libre: ['Quelles sont les tendances marketing digital à suivre en 2026 ?', 'Comment améliorer le référencement local d\'une PME à Cotonou ?', 'Explique-moi le GEO (Generative Engine Optimization) simplement.'],
+};
+function initAssistant() {
+  if (AI_INIT_DONE) return;
+  AI_INIT_DONE = true;
+  document.querySelectorAll('#aiModes .ai-mode').forEach(function(b){
+    b.onclick = function(){
+      document.querySelectorAll('#aiModes .ai-mode').forEach(function(x){ x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      AI_MODE = b.dataset.mode;
+      AI_HISTORY = [];
+      renderAiWelcome();
+    };
+  });
+  var input = document.getElementById('aiInput');
+  input.addEventListener('input', function(){ input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 144) + 'px'; });
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSend(); } });
+  document.getElementById('aiSend').onclick = aiSend;
+  renderAiWelcome();
+}
+function renderAiWelcome() {
+  var chat = document.getElementById('aiChat');
+  var sugg = AI_SUGGESTIONS[AI_MODE] || [];
+  chat.innerHTML = '<div class="ai-welcome" id="aiWelcome">' +
+    '<div class="ai-welcome__icon"><span class="material-symbols-outlined">smart_toy</span></div>' +
+    '<h2>' + ({analyse:'Votre directeur commercial IA', redaction:'Votre assistant de rédaction', equipe:'Votre bras droit RH & opérations', libre:'Votre assistant IA Pirabel Labs'}[AI_MODE]) + '</h2>' +
+    '<p>Je connais vos prospects, vos devis, vos tâches et votre équipe en temps réel. Posez une question ou choisissez un raccourci.</p>' +
+    '<div class="ai-suggest">' + sugg.map(function(s){ return '<button onclick="aiQuick(this)">' + escape(s) + '</button>'; }).join('') + '</div></div>';
+}
+function aiQuick(btn) { document.getElementById('aiInput').value = btn.textContent; aiSend(); }
+function aiRenderMarkdown(text) {
+  var html = escape(text);
+  // blocs de code
+  html = html.replace(/```([\s\S]*?)```/g, function(_, c){ return '<pre><code>' + c.trim() + '</code></pre>'; });
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // titres
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  // listes
+  html = html.replace(/(?:^|\n)((?:[-*] .+(?:\n|$))+)/g, function(m){
+    var items = m.trim().split('\n').map(function(l){ return '<li>' + l.replace(/^[-*]\s+/, '') + '</li>'; }).join('');
+    return '<ul>' + items + '</ul>';
+  });
+  html = html.replace(/(?:^|\n)((?:\d+\. .+(?:\n|$))+)/g, function(m){
+    var items = m.trim().split('\n').map(function(l){ return '<li>' + l.replace(/^\d+\.\s+/, '') + '</li>'; }).join('');
+    return '<ol>' + items + '</ol>';
+  });
+  // paragraphes (lignes restantes)
+  html = html.split(/\n{2,}/).map(function(blk){
+    if (/^\s*<(h2|h3|ul|ol|pre)/.test(blk)) return blk;
+    return '<p>' + blk.replace(/\n/g, '<br>') + '</p>';
+  }).join('');
+  return html;
+}
+function aiAppendMessage(role, text) {
+  var chat = document.getElementById('aiChat');
+  var w = document.getElementById('aiWelcome'); if (w) w.remove();
+  var div = document.createElement('div');
+  div.className = 'ai-msg ai-msg--' + (role === 'user' ? 'user' : 'ai');
+  var body = role === 'user' ? '<p>' + escape(text).replace(/\n/g, '<br>') + '</p>' : aiRenderMarkdown(text);
+  var actions = role === 'assistant' ? '<div class="ai-msg__actions"><button class="ai-copy" onclick="aiCopy(this)"><span class="material-symbols-outlined">content_copy</span> Copier</button></div>' : '';
+  div.innerHTML = '<div class="ai-msg__avatar">' + (role === 'user' ? 'Moi' : 'IA') + '</div><div style="max-width:80%;"><div class="ai-msg__bubble">' + body + '</div>' + actions + '</div>';
+  if (role === 'assistant') div.querySelector('.ai-msg__bubble').dataset.raw = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+function aiCopy(btn) {
+  var bubble = btn.closest('.ai-msg').querySelector('.ai-msg__bubble');
+  navigator.clipboard.writeText(bubble.dataset.raw || bubble.textContent).then(function(){ toast('Copié ✓', 'success'); });
+}
+function aiShowTyping() {
+  var chat = document.getElementById('aiChat');
+  var div = document.createElement('div');
+  div.className = 'ai-msg ai-msg--ai'; div.id = 'aiTyping';
+  div.innerHTML = '<div class="ai-msg__avatar">IA</div><div class="ai-msg__bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+}
+async function aiSend() {
+  if (AI_BUSY) return;
+  var input = document.getElementById('aiInput');
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.style.height = 'auto';
+  AI_BUSY = true; document.getElementById('aiSend').disabled = true;
+  aiAppendMessage('user', text);
+  AI_HISTORY.push({ role: 'user', content: text });
+  aiShowTyping();
+  try {
+    var data = await api('/api/admin/assistant', { method: 'POST', body: { mode: AI_MODE, messages: AI_HISTORY } });
+    var t = document.getElementById('aiTyping'); if (t) t.remove();
+    aiAppendMessage('assistant', data.reply || '(réponse vide)');
+    AI_HISTORY.push({ role: 'assistant', content: data.reply || '' });
+  } catch(e) {
+    var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
+    var msg = e.message || 'Erreur';
+    if (/NO_KEY/.test(msg) || /pas encore configuré/.test(msg)) {
+      aiAppendMessage('assistant', '⚠️ **L\'assistant IA n\'est pas encore activé.**\n\nPour me donner vie, ajoutez la clé API Anthropic dans les variables d\'environnement Vercel (`ANTHROPIC_API_KEY`), puis redéployez. Lissanon, je te guide pas à pas dès que tu as la clé.');
+    } else {
+      aiAppendMessage('assistant', '❌ ' + msg);
+    }
+  } finally {
+    AI_BUSY = false; document.getElementById('aiSend').disabled = false;
+    input.focus();
+  }
 }
 
 init();

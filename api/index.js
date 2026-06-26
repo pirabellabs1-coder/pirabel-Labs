@@ -42,6 +42,7 @@ const Article = require('../app/models/Article');
 const CaseStudy = require('../app/models/CaseStudy');
 const LivreBlanc = require('../app/models/LivreBlanc');
 const Comment = require('../app/models/Comment');
+const Task = require('../app/models/Task');
 
 const app = express();
 
@@ -885,6 +886,231 @@ app.get('/api/admin/blog-stats', auth, adminOnly, async (req, res) => {
       top10, byCategory, publishedByMonth: months, readTimeDist: rtBuckets,
     });
   } catch (e) { console.error('[blog-stats]', e.message); res.status(500).json({ error: 'Erreur stats.' }); }
+});
+
+// ============ ÉQUIPE (employés) ============
+// Liste des membres de l'équipe (admins + employés), jamais les clients.
+app.get('/api/admin/team', auth, adminOnly, async (req, res) => {
+  try {
+    const team = await User.find({ role: { $in: ['admin', 'employee'] } })
+      .select('name email role poste department phone hiredAt bio isActive lastLogin createdAt avatar')
+      .sort({ role: 1, createdAt: 1 }).lean();
+    // Charge de travail : tâches ouvertes par membre
+    const openTasks = await Task.aggregate([
+      { $match: { status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } } },
+      { $group: { _id: '$assignedTo', count: { $sum: 1 } } },
+    ]);
+    const loadMap = {}; openTasks.forEach(t => { if (t._id) loadMap[String(t._id)] = t.count; });
+    team.forEach(m => { m.openTasks = loadMap[String(m._id)] || 0; });
+    res.json({ team });
+  } catch (e) { console.error('[team.list]', e.message); res.status(500).json({ error: 'Erreur chargement équipe.' }); }
+});
+
+// Créer un membre d'équipe (employé ou admin)
+app.post('/api/admin/team', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name || '', 120);
+    const email = sanitizeEmail(req.body.email);
+    const password = String(req.body.password || '');
+    const role = ['admin', 'employee'].includes(req.body.role) ? req.body.role : 'employee';
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis (2 caractères min).' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail invalide.' });
+    if (password.length < 8) return res.status(400).json({ error: 'Mot de passe trop court (8 caractères min).' });
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(409).json({ error: 'Un compte existe déjà avec cet e-mail.' });
+    const user = new User({
+      name, email, password, role, isActive: true,
+      poste: sanitize(req.body.poste || '', 100),
+      department: sanitize(req.body.department || '', 60),
+      phone: sanitize(req.body.phone || '', 30),
+      bio: sanitize(req.body.bio || '', 1000),
+      hiredAt: req.body.hiredAt ? new Date(req.body.hiredAt) : new Date(),
+    });
+    await user.save();
+    const out = user.toObject(); delete out.password;
+    res.json({ success: true, member: out });
+  } catch (e) { console.error('[team.create]', e.message); res.status(500).json({ error: 'Erreur création membre.' }); }
+});
+
+// Modifier un membre (infos + rôle + activation + reset mot de passe)
+app.patch('/api/admin/team/:id', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || user.role === 'client') return res.status(404).json({ error: 'Membre introuvable.' });
+    if (req.body.name != null) user.name = sanitize(req.body.name, 120) || user.name;
+    if (req.body.poste != null) user.poste = sanitize(req.body.poste, 100);
+    if (req.body.department != null) user.department = sanitize(req.body.department, 60);
+    if (req.body.phone != null) user.phone = sanitize(req.body.phone, 30);
+    if (req.body.bio != null) user.bio = sanitize(req.body.bio, 1000);
+    if (req.body.hiredAt != null) user.hiredAt = req.body.hiredAt ? new Date(req.body.hiredAt) : user.hiredAt;
+    if (req.body.role != null && ['admin', 'employee'].includes(req.body.role)) user.role = req.body.role;
+    if (typeof req.body.isActive === 'boolean') {
+      // Empêcher de se désactiver soi-même
+      if (String(user._id) === String(req.user._id) && !req.body.isActive) return res.status(400).json({ error: 'Vous ne pouvez pas désactiver votre propre compte.' });
+      user.isActive = req.body.isActive;
+    }
+    if (req.body.password) {
+      const pw = String(req.body.password);
+      if (pw.length < 8) return res.status(400).json({ error: 'Mot de passe trop court (8 caractères min).' });
+      user.password = pw;
+    }
+    await user.save();
+    const out = user.toObject(); delete out.password;
+    res.json({ success: true, member: out });
+  } catch (e) { console.error('[team.update]', e.message); res.status(500).json({ error: 'Erreur mise à jour.' }); }
+});
+
+// Supprimer un membre (jamais soi-même ; jamais le dernier admin)
+app.delete('/api/admin/team/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || user.role === 'client') return res.status(404).json({ error: 'Membre introuvable.' });
+    if (String(user._id) === String(req.user._id)) return res.status(400).json({ error: 'Vous ne pouvez pas vous supprimer vous-même.' });
+    if (user.role === 'admin') {
+      const adminCount = await User.countDocuments({ role: 'admin', isActive: true });
+      if (adminCount <= 1) return res.status(400).json({ error: 'Impossible de supprimer le dernier administrateur.' });
+    }
+    await User.findByIdAndDelete(req.params.id);
+    // Détacher ses tâches plutôt que les perdre
+    await Task.updateMany({ assignedTo: user._id }, { $set: { assignedTo: null, assignedToName: '(non assigné)' } });
+    res.json({ success: true });
+  } catch (e) { console.error('[team.delete]', e.message); res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+
+// ============ TÂCHES ============
+app.get('/api/admin/tasks', auth, adminOnly, async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    if (req.query.assignedTo) filter.assignedTo = req.query.assignedTo;
+    const tasks = await Task.find(filter).sort({ status: 1, dueDate: 1, createdAt: -1 }).limit(500).lean();
+    // Compteurs par statut (pour le tableau de bord kanban)
+    const counts = await Task.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]);
+    const countMap = {}; counts.forEach(c => { countMap[c._id] = c.n; });
+    res.json({ tasks, counts: countMap });
+  } catch (e) { console.error('[tasks.list]', e.message); res.status(500).json({ error: 'Erreur chargement tâches.' }); }
+});
+
+app.post('/api/admin/tasks', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const title = sanitize(req.body.title || '', 200);
+    if (!title || title.length < 2) return res.status(400).json({ error: 'Titre requis.' });
+    let assignedToName = '';
+    if (req.body.assignedTo) {
+      const u = await User.findById(req.body.assignedTo).select('name role').lean();
+      if (u && u.role !== 'client') assignedToName = u.name;
+    }
+    const task = new Task({
+      title,
+      description: sanitize(req.body.description || '', 4000),
+      assignedTo: req.body.assignedTo || null,
+      assignedToName,
+      createdBy: req.user._id,
+      status: ['a_faire', 'en_cours', 'en_revue', 'termine', 'bloque'].includes(req.body.status) ? req.body.status : 'a_faire',
+      priority: ['basse', 'normale', 'haute', 'urgente'].includes(req.body.priority) ? req.body.priority : 'normale',
+      dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined,
+      relatedType: ['lead', 'quote', 'client', 'article', 'autre'].includes(req.body.relatedType) ? req.body.relatedType : '',
+      relatedId: sanitize(req.body.relatedId || '', 100),
+      relatedLabel: sanitize(req.body.relatedLabel || '', 200),
+    });
+    await task.save();
+    res.json({ success: true, task });
+  } catch (e) { console.error('[tasks.create]', e.message); res.status(500).json({ error: 'Erreur création tâche.' }); }
+});
+
+app.patch('/api/admin/tasks/:id', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ error: 'Tâche introuvable.' });
+    if (req.body.title != null) task.title = sanitize(req.body.title, 200) || task.title;
+    if (req.body.description != null) task.description = sanitize(req.body.description, 4000);
+    if (req.body.status != null && ['a_faire', 'en_cours', 'en_revue', 'termine', 'bloque'].includes(req.body.status)) task.status = req.body.status;
+    if (req.body.priority != null && ['basse', 'normale', 'haute', 'urgente'].includes(req.body.priority)) task.priority = req.body.priority;
+    if (req.body.dueDate !== undefined) task.dueDate = req.body.dueDate ? new Date(req.body.dueDate) : undefined;
+    if (req.body.assignedTo !== undefined) {
+      task.assignedTo = req.body.assignedTo || null;
+      if (req.body.assignedTo) {
+        const u = await User.findById(req.body.assignedTo).select('name role').lean();
+        task.assignedToName = (u && u.role !== 'client') ? u.name : '';
+      } else task.assignedToName = '(non assigné)';
+    }
+    await task.save();
+    res.json({ success: true, task });
+  } catch (e) { console.error('[tasks.update]', e.message); res.status(500).json({ error: 'Erreur mise à jour tâche.' }); }
+});
+
+app.delete('/api/admin/tasks/:id', auth, adminOnly, async (req, res) => {
+  try { await Task.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression tâche.' }); }
+});
+
+// ============ ASSISTANT IA (directeur commercial Pirabel Labs) ============
+// Construit un instantané métier compact à injecter dans le contexte de Claude.
+async function gatherBusinessContext() {
+  try {
+    const [leadCount, byStage, recentLeads, quotes, quoteByStatus, openTasks, team, articleCount] = await Promise.all([
+      Lead.countDocuments({}),
+      Lead.aggregate([{ $group: { _id: '$stage', n: { $sum: 1 } } }]),
+      Lead.find({}).sort({ createdAt: -1 }).limit(20).select('name email company service stage createdAt phone').lean(),
+      Quote.find({}).sort({ createdAt: -1 }).limit(20).select('reference clientName clientCompany total currency status validUntil createdAt').lean(),
+      Quote.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
+      Task.find({ status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } }).sort({ dueDate: 1 }).limit(40).select('title status priority dueDate assignedToName').lean(),
+      User.find({ role: { $in: ['admin', 'employee'] }, isActive: true }).select('name role poste department').lean(),
+      Article.countDocuments({ status: 'publie' }),
+    ]);
+    const stageMap = {}; byStage.forEach(s => { stageMap[s._id] = s.n; });
+    const quoteMap = {}; quoteByStatus.forEach(s => { quoteMap[s._id] = { nombre: s.n, montant: Math.round(s.montant || 0) }; });
+    return {
+      date: new Date().toISOString().slice(0, 10),
+      prospects: { total: leadCount, par_stade: stageMap, recents: recentLeads.map(l => ({ nom: l.name, entreprise: l.company || '', service: l.service || '', stade: l.stage, tel: l.phone || '', email: l.email, le: new Date(l.createdAt).toISOString().slice(0, 10) })) },
+      devis: { par_statut: quoteMap, recents: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, statut: q.status, valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0, 10) : '' })) },
+      taches_ouvertes: openTasks.map(t => ({ titre: t.title, statut: t.status, priorite: t.priority, echeance: t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : '', assigne: t.assignedToName || '(non assigné)' })),
+      equipe: team.map(u => ({ nom: u.name, role: u.role, poste: u.poste || '', pole: u.department || '' })),
+      blog: { articles_publies: articleCount },
+    };
+  } catch (e) { console.error('[ai.context]', e.message); return { erreur: 'contexte indisponible' }; }
+}
+
+const AI_SYSTEM_PROMPTS = {
+  redaction: "Tu es l'assistant de rédaction de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi (Bénin), fondée par Lissanon Gildas (Fondateur & CEO). Tu rédiges en français impeccable (accents sur les majuscules, ç, œ, guillemets « », espaces insécables avant : ; ! ?). Tu écris des e-mails de prospection, réponses clients, propositions, posts réseaux sociaux et contenus selon les consignes. Ton professionnel, chaleureux et orienté résultat. Ne jamais inventer de chiffres ni de références. Ne jamais mentionner d'autre fondateur que Lissanon Gildas.",
+  analyse: "Tu es le directeur commercial de Pirabel Labs (agence web/marketing à Abomey-Calavi, Bénin, fondée par Lissanon Gildas). Tu analyses le pipeline commercial réel fourni dans le contexte (prospects, devis, tâches) et donnes des recommandations concrètes, priorisées et actionnables : qui relancer en priorité, quels devis suivre, risques, opportunités, plan de la semaine. Sois direct, chiffré quand les données le permettent, et ne jamais inventer de données absentes du contexte. Français impeccable.",
+  equipe: "Tu es le bras droit RH et opérationnel du dirigeant de Pirabel Labs (Lissanon Gildas), agence web/marketing à Abomey-Calavi (Bénin). Tu aides à répartir les tâches entre les employés selon leur pôle et leur charge actuelle, à rédiger des consignes claires, des comptes-rendus et des objectifs. Tu t'appuies sur la liste d'équipe et les tâches ouvertes du contexte. Pragmatique, bienveillant, structuré. Français impeccable.",
+  libre: "Tu es l'assistant IA de Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin), fondée par Lissanon Gildas (Fondateur & CEO). Tu réponds à toute question business, marketing, SEO, technique ou stratégique pour aider à développer l'agence. Précis, honnête, jamais d'invention de chiffres. Français impeccable. Tu peux t'appuyer sur les données réelles de l'entreprise fournies dans le contexte.",
+};
+
+app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
+  try {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré. Ajoutez la variable ANTHROPIC_API_KEY dans Vercel pour l'activer." });
+    const mode = ['redaction', 'analyse', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'libre';
+    const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
+    // Normaliser + limiter l'historique (20 derniers tours)
+    const messages = incoming
+      .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
+      .slice(-20)
+      .map(m => ({ role: m.role, content: m.content.slice(0, 8000) }));
+    if (!messages.length || messages[messages.length - 1].role !== 'user') return res.status(400).json({ error: 'Message utilisateur requis.' });
+
+    const ctx = await gatherBusinessContext();
+    const system = AI_SYSTEM_PROMPTS[mode] +
+      "\n\nVoici les DONNÉES RÉELLES et à jour de Pirabel Labs (utilise-les, ne les invente pas) :\n```json\n" +
+      JSON.stringify(ctx) + "\n```\n" +
+      "Utilise ces données quand la question s'y prête. Si une information manque, dis-le clairement plutôt que d'inventer.";
+
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6', max_tokens: 2000, system, messages }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
+      const msg = (data && data.error && data.error.message) || 'Erreur API IA.';
+      return res.status(502).json({ error: 'API_ERROR', message: msg });
+    }
+    const reply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+    res.json({ reply: reply || '(réponse vide)', usage: data.usage || null });
+  } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
 });
 
 // ============ CMS LIVRES BLANCS ============

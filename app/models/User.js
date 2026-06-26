@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'employee', 'client'], default: 'client' },
   phone: { type: String, default: '' },
   avatar: { type: String, default: '' },
+  // Champs employé (RH / gestion d'équipe)
+  poste: { type: String, default: '' },          // intitulé du poste (ex. « Chargé de prospection »)
+  department: { type: String, default: '' },      // pôle (Commercial, Rédaction, Technique, Design…)
+  hiredAt: { type: Date },                         // date d'entrée
+  bio: { type: String, default: '' },              // note interne / compétences
   isActive: { type: Boolean, default: true },
   totpSecret: { type: String, default: '' },
   totpEnabled: { type: Boolean, default: false },

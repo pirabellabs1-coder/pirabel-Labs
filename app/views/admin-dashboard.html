@@ -2694,9 +2694,36 @@ function aiShowTyping() {
   div.innerHTML = '<div class="ai-msg__avatar">IA</div><div class="ai-msg__bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
   chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
 }
-// Modèle Puter (IA gratuite côté navigateur, sans clé). Surchargé via window.AI_PUTER_MODEL si besoin.
-var AI_PUTER_MODEL = window.AI_PUTER_MODEL || 'claude-sonnet-4';
+// Modèles Puter (IA gratuite côté navigateur, sans clé) — Claude Opus 4.8 d'abord, replis ensuite.
+// On essaie chaque identifiant jusqu'à ce qu'un fonctionne (les alias courts peuvent pointer vers un snapshot mort).
+var AI_PUTER_MODELS = window.AI_PUTER_MODELS || [
+  'claude-opus-4-8',
+  'anthropic:anthropic/claude-opus-4-8',
+  'claude-opus-4-7',
+  'anthropic:anthropic/claude-opus-4-7'
+];
+var AI_RESOLVED_MODEL = null; // mémorise le 1er modèle qui répond, pour ne pas re-tester à chaque message
 var AI_CTX = null; // { context, prompts, tools }
+
+// Appelle puter.ai.chat en essayant les modèles dans l'ordre ; ignore les erreurs « modèle introuvable » (404).
+async function aiChat(convo, tools) {
+  var order = AI_RESOLVED_MODEL ? [AI_RESOLVED_MODEL] : AI_PUTER_MODELS;
+  var lastErr = null;
+  for (var i = 0; i < order.length; i++) {
+    try {
+      var resp = await puter.ai.chat(convo, { model: order[i], tools: tools });
+      AI_RESOLVED_MODEL = order[i];
+      return resp;
+    } catch (e) {
+      lastErr = e;
+      var em = (e && (e.message || e.error && e.error.message)) ? (e.message || e.error.message) : JSON.stringify(e || {});
+      // Si ce n'est PAS une erreur de modèle introuvable, inutile d'essayer les autres
+      if (!/not_found|404|model/i.test(String(em))) throw e;
+    }
+  }
+  throw lastErr || new Error('Aucun modèle Puter disponible.');
+}
+
 
 async function aiLoadContext() {
   // Rechargé à chaque envoi pour des données fraîches (prospects/devis/tâches à jour).
@@ -2748,7 +2775,7 @@ async function aiSend() {
     var finalText = '';
     // Boucle d'agent côté navigateur (max 6 tours d'outils)
     for (var turn = 0; turn < 6; turn++) {
-      var resp = await puter.ai.chat(convo, { model: AI_PUTER_MODEL, tools: tools });
+      var resp = await aiChat(convo, tools);
       var parsed = aiParsePuter(resp);
       finalText = parsed.content || finalText;
       if (!parsed.toolCalls || !parsed.toolCalls.length) break;

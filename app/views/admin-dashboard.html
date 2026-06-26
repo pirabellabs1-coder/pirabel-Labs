@@ -163,6 +163,18 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 @media (max-width: 1280px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 720px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+/* Carte KPI (stats blog & autres) */
+.kpi-card { display: flex; align-items: center; gap: 0.9rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.05rem 1.15rem; transition: border-color 0.18s, transform 0.18s; }
+.kpi-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+.kpi-card__icon { width: 2.8rem; height: 2.8rem; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-card__icon .material-symbols-outlined { font-size: 1.5rem; }
+.kpi-card__icon--green { background: rgba(74,222,128,0.14); color: var(--success); }
+.kpi-card__icon--blue { background: rgba(96,165,250,0.14); color: var(--info); }
+.kpi-card__icon--amber { background: rgba(251,191,36,0.14); color: var(--warning); }
+.kpi-card__icon--muted { background: var(--surface-2); color: var(--text-muted); }
+.kpi-card__body { min-width: 0; }
+.kpi-card__val { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; line-height: 1.05; letter-spacing: -0.01em; }
+.kpi-card__label { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
 .kpi { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.25rem; transition: border-color 0.2s, transform 0.2s; }
 .kpi:hover { border-color: var(--accent); transform: translateY(-2px); }
 .kpi__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.9rem; }
@@ -582,10 +594,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <!-- KPIs blog -->
       <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:1.5rem;">
         <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">article</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiTotal">--</div><div class="kpi-card__label">Articles total</div></div></div>
-        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">public</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiPublie">--</div><div class="kpi-card__label">Publiés</div></div></div>
-        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">visibility</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiViews">--</div><div class="kpi-card__label">Vues totales</div></div></div>
-        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">schedule</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiRead">-- min</div><div class="kpi-card__label">Temps lecture moyen</div></div></div>
-        <div class="kpi-card"><div class="kpi-card__icon"><span class="material-symbols-outlined">draft</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiBrouillon">--</div><div class="kpi-card__label">Brouillons</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon kpi-card__icon--green"><span class="material-symbols-outlined">public</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiPublie">--</div><div class="kpi-card__label">Publiés</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon kpi-card__icon--blue"><span class="material-symbols-outlined">visibility</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiViews">--</div><div class="kpi-card__label">Vues totales</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon kpi-card__icon--amber"><span class="material-symbols-outlined">schedule</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiRead">-- min</div><div class="kpi-card__label">Temps lecture moyen</div></div></div>
+        <div class="kpi-card"><div class="kpi-card__icon kpi-card__icon--muted"><span class="material-symbols-outlined">draft</span></div><div class="kpi-card__body"><div class="kpi-card__val" id="bKpiBrouillon">--</div><div class="kpi-card__label">Brouillons</div></div></div>
       </div>
       <!-- 4 Graphes analytics blog -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">

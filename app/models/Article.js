@@ -17,6 +17,7 @@ const articleSchema = new mongoose.Schema({
   status: { type: String, enum: ['brouillon', 'publie'], default: 'brouillon', index: true },
   publishedAt: { type: Date },
   views: { type: Number, default: 0 },
+  readTime: { type: Number, default: 0 },  // minutes de lecture (calculé auto au save)
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
@@ -24,6 +25,11 @@ const articleSchema = new mongoose.Schema({
 articleSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   if (this.status === 'publie' && !this.publishedAt) this.publishedAt = new Date();
+  // Calcul auto readTime : ~200 mots/min, balises HTML retirées
+  if (this.isModified('content') || !this.readTime) {
+    const words = (this.content || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+    this.readTime = Math.max(1, Math.round(words / 200));
+  }
   next();
 });
 

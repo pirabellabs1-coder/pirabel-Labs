@@ -53,7 +53,9 @@
     { "source": "/realisations", "destination": "/api" },
     { "source": "/realisations/(.*)", "destination": "/api" },
     { "source": "/temoignages", "destination": "/api" },
-    { "source": "/sitemap.xml", "destination": "/api" }
+    { "source": "/sitemap.xml", "destination": "/api" },
+    { "source": "/en", "destination": "/api" },
+    { "source": "/en/(.*)", "destination": "/api" }
   ],
   "redirects": [
     { "source": "/article-:slug", "destination": "/blog/:slug", "permanent": true },
@@ -64,8 +66,7 @@
     { "source": "/creation-application", "destination": "/creation-application-web", "permanent": true },
     { "source": "/automatisation", "destination": "/automatisation-marketing", "permanent": true },
     { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },
-    { "source": "/lesson/:slug*", "destination": "/contact", "permanent": false },
-    { "source": "/en/:slug*", "destination": "/", "permanent": false }
+    { "source": "/lesson/:slug*", "destination": "/contact", "permanent": false }
   ],
   "cleanUrls": true,
   "trailingSlash": false

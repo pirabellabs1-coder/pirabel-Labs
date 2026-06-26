@@ -1903,6 +1903,26 @@ app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
   app.get(p, (req, res) => res.status(404).send('Not found'));
 });
 
+// Anciennes pages anglaises /en/* (site EN retiré lors de la refonte FR).
+// On renvoie un 410 Gone (Google les retire vite) avec une page de réorientation,
+// au lieu de rediriger vers l'accueil (soft 404 + visiteur perdu).
+app.get(['/en', '/en/*'], (req, res) => {
+  const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="robots" content="noindex,follow"><title>Page non disponible — Pirabel Labs</title>' +
+    '<style>*{box-sizing:border-box;margin:0}body{background:#0e0e0e;color:#e5e2e1;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;text-align:center}' +
+    '.w{max-width:34rem}.b{display:inline-block;background:rgba(255,85,0,0.12);color:#FF5500;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1.2rem}' +
+    'h1{font-size:clamp(1.5rem,4vw,2.1rem);color:#fff;margin-bottom:.8rem;line-height:1.2}p{color:rgba(229,226,225,0.65);line-height:1.65;margin-bottom:1.8rem}' +
+    '.g{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}a.btn{background:#FF5500;color:#fff;text-decoration:none;padding:.7rem 1.3rem;border-radius:999px;font-weight:700;font-size:.85rem}' +
+    'a.gh{background:transparent;border:1px solid rgba(229,226,225,0.2);color:#e5e2e1}a.btn:hover{opacity:.9}</style></head><body><div class="w">' +
+    '<span class="b">Pirabel Labs</span>' +
+    '<h1>Cette page n\'est plus disponible</h1>' +
+    '<p>Notre site est désormais entièrement en français. La version anglaise a été retirée, mais tout notre accompagnement (sites web, SEO, marketing digital, IA) reste disponible&nbsp;:</p>' +
+    '<div class="g"><a class="btn" href="/">Accueil</a><a class="btn gh" href="/services">Nos services</a><a class="btn gh" href="/blog">Blog</a><a class="btn gh" href="/contact">Nous contacter</a></div>' +
+    '</div></body></html>';
+  res.status(410).set({ 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex' }).send(html);
+});
+
 // ========================================================================
 // === MEDIA (image upload + galerie admin) ===
 // ========================================================================

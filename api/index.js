@@ -1102,10 +1102,10 @@ async function gatherBusinessContext() {
     const [leadCount, byStage, recentLeads, quotes, quoteByStatus, openTasks, team, articleCount] = await Promise.all([
       Lead.countDocuments({}),
       Lead.aggregate([{ $group: { _id: '$stage', n: { $sum: 1 } } }]),
-      Lead.find({}).sort({ createdAt: -1 }).limit(20).select('name email company service stage createdAt phone').lean(),
-      Quote.find({}).sort({ createdAt: -1 }).limit(20).select('reference clientName clientCompany total currency status validUntil createdAt').lean(),
+      Lead.find({}).sort({ createdAt: -1 }).limit(8).select('name email company service stage createdAt phone').lean(),
+      Quote.find({}).sort({ createdAt: -1 }).limit(8).select('reference clientName clientCompany total currency status validUntil createdAt').lean(),
       Quote.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
-      Task.find({ status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } }).sort({ dueDate: 1 }).limit(40).select('title status priority dueDate assignedToName').lean(),
+      Task.find({ status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } }).sort({ dueDate: 1 }).limit(15).select('title status priority dueDate assignedToName').lean(),
       User.find({ role: { $in: ['admin', 'employee'] }, isActive: true }).select('name role poste department').lean(),
       Article.countDocuments({ status: 'publie' }),
     ]);
@@ -1241,16 +1241,29 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     const convo = [{ role: 'system', content: system }].concat(history);
     const actionsLog = [];
     let finalText = '';
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
     // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30s)
     for (let turn = 0; turn < 6; turn++) {
-      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-        body: JSON.stringify({ model, max_tokens: 8000, temperature: 0.55, tools, tool_choice: 'auto', messages: convo }),
-      });
-      const data = await r.json().catch(() => ({}));
+      // Appel Groq avec 1 réessai sur 429 (limite de débit gratuite : 12000 tokens/min)
+      let data, r;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+          body: JSON.stringify({ model, max_tokens: 4000, temperature: 0.55, tools, tool_choice: 'auto', messages: convo }),
+        });
+        data = await r.json().catch(() => ({}));
+        if (r.status === 429 && attempt === 0) {
+          const m = JSON.stringify(data).match(/try again in ([0-9.]+)s/);
+          const wait = Math.min(8000, Math.round((m ? parseFloat(m[1]) : 4) * 1000) + 400);
+          await sleep(wait);
+          continue;
+        }
+        break;
+      }
       if (!r.ok) {
         console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
+        if (r.status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: "Limite gratuite Groq atteinte (12 000 tokens/min). Patiente quelques secondes et réessaie, ou raccourcis ta demande." });
         return res.status(502).json({ error: 'API_ERROR', message: (data && data.error && data.error.message) || 'Erreur API IA.' });
       }
       const msg = (data.choices && data.choices[0] && data.choices[0].message) || {};

@@ -2965,7 +2965,9 @@ async function aiSend() {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
     var msg = (e && e.message) ? e.message : String(e);
     if (/NO_KEY|pas encore configuré|GROQ_API_KEY/i.test(msg)) {
-      aiAppendMessage('assistant', '⚙️ L\'assistant n\'est pas encore activé. Ajoute la variable `GROQ_API_KEY` dans Vercel (Settings → Environment Variables), puis redéploie.');
+      aiAppendMessage('assistant', '⚙️ L\'assistant n\'est pas encore activé (clé Groq manquante).');
+    } else if (/RATE_LIMIT|limite gratuite|tokens\/min/i.test(msg)) {
+      aiAppendMessage('assistant', '⏳ Limite gratuite Groq atteinte (12 000 tokens/minute). Patiente ~15 secondes puis réessaie, ou raccourcis ta demande (ex. un article plus court).');
     } else {
       aiAppendMessage('assistant', '❌ ' + msg);
     }

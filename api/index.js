@@ -1148,8 +1148,9 @@ const ASSISTANT_TOOLS = [
     stage: { type: 'string', enum: ['prospect', 'qualifie', 'devis_envoye', 'client', 'inactif'] }, query: { type: 'string', description: 'Texte recherché (optionnel)' },
   } } },
   { name: 'lister_devis', description: 'Lister les devis, filtrables par statut (brouillon, envoye, consulte, accepte, refuse, expire).', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
-  { name: 'creer_brouillon_article', description: "Créer un brouillon d'article de blog (jamais publié directement — reste en brouillon pour relecture). Utilise pour la production de contenu.", input_schema: { type: 'object', properties: {
-    title: { type: 'string' }, category: { type: 'string', description: 'Ex: Marketing, SEO, IA, Web, Agence' }, excerpt: { type: 'string', description: 'Résumé court (chapô)' }, content: { type: 'string', description: 'Contenu HTML de l\'article (balises <p>, <h2>, <ul>…)' },
+  { name: 'creer_brouillon_article', description: "Créer un brouillon d'article de blog COMPLET (reste en brouillon pour relecture). N'appelle cet outil qu'une fois l'article entièrement rédigé.", input_schema: { type: 'object', properties: {
+    title: { type: 'string' }, category: { type: 'string', description: 'Ex: Marketing, SEO, IA, Web, Agence' }, excerpt: { type: 'string', description: 'Résumé court (chapô), 1 à 2 phrases réelles' },
+    content: { type: 'string', description: "Contenu HTML COMPLET et fini de l'article, 900 mots minimum. Structure obligatoire : <p> d'introduction, plusieurs <h2> avec attribut id, des <h3>, des <ul>/<ol>, un <table> si une comparaison s'y prête, puis une conclusion avec appel à l'action. INTERDIT : placeholders (Agence XYZ, ABC, Lorem ipsum, [à compléter]) et sections vides. Français impeccable." },
   }, required: ['title', 'content'] } },
 ];
 
@@ -1225,8 +1226,14 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
       "Quand l'utilisateur demande une action concrète (« crée une tâche », « assigne à… », « prépare un article », « qui dois-je relancer »), UTILISE les outils pour l'exécuter réellement, puis confirme ce que tu as fait. " +
       "N'invente jamais d'identifiants : appelle lister_taches ou lister_equipe pour obtenir les vrais IDs et e-mails. Les articles sont toujours créés en BROUILLON (jamais publiés sans relecture). " +
       "Pour l'envoi d'e-mails à des clients : rédige le texte et propose-le, mais NE l'envoie pas toi-même (l'envoi reste validé manuellement par le dirigeant). " +
+      "\n\nQUALITÉ — RÈGLES STRICTES :\n" +
+      "- INTERDICTION ABSOLUE des placeholders ou exemples bidons : jamais « Agence XYZ », « Entreprise ABC », « exemple1 », « Lorem ipsum », « [à compléter] », « etc. » à la place de vrai contenu. Si tu cites des marques/concurrents, donne de VRAIS noms ; sinon reformule sans inventer.\n" +
+      "- Tu produis du contenu COMPLET et fini, jamais un squelette. Un article de blog fait au minimum 900 mots, structuré (introduction, plusieurs <h2> avec id, <h3>, listes, et un <table> dès qu'une comparaison s'y prête), et se termine par une conclusion + appel à l'action vers Pirabel Labs.\n" +
+      "- Pour un RAPPORT ou une analyse : utilise de vrais tableaux Markdown (| col | col |) avec des données réelles tirées du contexte ci-dessous, pas des cases vides.\n" +
+      "- Français impeccable : accents sur les majuscules (É, À), ç, œ, guillemets « », espaces insécables avant : ; ! ?. Aucune faute.\n" +
+      "- Ne jamais mentionner d'autre fondateur que Lissanon Gildas.\n" +
       "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx) + "\n```\n" +
-      "Réponds en français impeccable. Sois concret, bref et orienté action.";
+      "Appuie-toi sur ces données réelles. Réponds en français impeccable, concret et orienté action.";
 
     const model = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
     const tools = assistantToolsOpenAI();
@@ -1239,7 +1246,7 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
       const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-        body: JSON.stringify({ model, max_tokens: 2500, temperature: 0.6, tools, tool_choice: 'auto', messages: convo }),
+        body: JSON.stringify({ model, max_tokens: 8000, temperature: 0.55, tools, tool_choice: 'auto', messages: convo }),
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) {

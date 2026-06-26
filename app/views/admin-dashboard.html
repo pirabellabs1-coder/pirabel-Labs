@@ -350,6 +350,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .ai-msg__bubble li { margin-bottom: 0.25rem; }
 .ai-msg__bubble code { background: var(--surface-2); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.82em; }
 .ai-msg__bubble pre { background: var(--surface-2); padding: 0.8rem; border-radius: 8px; overflow-x: auto; margin: 0.5rem 0; }
+.ai-table { width: 100%; border-collapse: collapse; margin: 0.7rem 0; font-size: 0.82rem; display: block; overflow-x: auto; }
+.ai-table th, .ai-table td { border: 1px solid var(--border-2); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+.ai-table th { background: var(--surface-2); font-weight: 700; color: var(--text); white-space: nowrap; }
+.ai-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 .ai-msg__bubble strong { color: inherit; font-weight: 700; }
 .ai-msg__actions { margin-top: 0.4rem; display: flex; gap: 0.4rem; }
 .ai-copy { background: none; border: 1px solid var(--border-2); border-radius: 6px; color: var(--text-muted); font-size: 0.68rem; padding: 0.2rem 0.5rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; }
@@ -2885,6 +2889,13 @@ function aiRenderMarkdown(text) {
   html = html.replace(/```([\s\S]*?)```/g, function(_, c){ return '<pre><code>' + c.trim() + '</code></pre>'; });
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // tableaux Markdown : | a | b | suivi de | --- | --- |
+  html = html.replace(/(?:^|\n)(\|[^\n]+\|)\n\|[ :|-]+\|\n((?:\|[^\n]+\|(?:\n|$))+)/g, function(_, header, rows){
+    function cells(line){ return line.trim().replace(/^\||\|$/g, '').split('|').map(function(c){ return c.trim(); }); }
+    var th = cells(header).map(function(c){ return '<th>' + c + '</th>'; }).join('');
+    var trs = rows.trim().split('\n').map(function(r){ return '<tr>' + cells(r).map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('');
+    return '\n<table class="ai-table"><thead><tr>' + th + '</tr></thead><tbody>' + trs + '</tbody></table>\n';
+  });
   // titres
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>');
   // listes
@@ -2898,7 +2909,7 @@ function aiRenderMarkdown(text) {
   });
   // paragraphes (lignes restantes)
   html = html.split(/\n{2,}/).map(function(blk){
-    if (/^\s*<(h2|h3|ul|ol|pre)/.test(blk)) return blk;
+    if (/^\s*<(h2|h3|ul|ol|pre|table)/.test(blk)) return blk;
     return '<p>' + blk.replace(/\n/g, '<br>') + '</p>';
   }).join('');
   return html;

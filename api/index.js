@@ -1028,7 +1028,14 @@ app.post('/api/admin/maintenance/backfill', auth, adminOnly, async (req, res) =>
       if (prioMap[t.priority]) set.priority = prioMap[t.priority];
       if (Object.keys(set).length) { await Task.collection.updateOne({ _id: t._id }, { $set: set }); tasksFixed++; }
     }
-    res.json({ success: true, articlesFixed, tasksFixed, totalArticles: arts.length });
+    // Rétro-attribution d'un jeton public aux RDV qui n'en ont pas (liens « gérer mon RDV »)
+    let apptsFixed = 0;
+    const apptsNoToken = await Appointment.find({ $or: [{ publicToken: { $exists: false } }, { publicToken: null }, { publicToken: '' }] }).select('_id').lean();
+    for (const ap of apptsNoToken) {
+      await Appointment.updateOne({ _id: ap._id }, { $set: { publicToken: crypto.randomBytes(24).toString('hex') } });
+      apptsFixed++;
+    }
+    res.json({ success: true, articlesFixed, tasksFixed, apptsFixed, totalArticles: arts.length });
   } catch (e) { console.error('[backfill]', e.message); res.status(500).json({ error: 'Erreur backfill.', message: e.message }); }
 });
 

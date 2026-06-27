@@ -1347,7 +1347,7 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 });
 
 // Réglages IA (clé Groq, modèle) — admin only. La valeur est stockée en base, jamais relue par le client.
-const ALLOWED_SETTINGS = ['groqApiKey', 'groqModel'];
+const ALLOWED_SETTINGS = ['groqApiKey', 'groqModel', 'cronSecret'];
 app.post('/api/admin/settings', auth, adminOnly, limitBody(10), async (req, res) => {
   try {
     const key = String(req.body.key || '');
@@ -1418,9 +1418,11 @@ app.post('/api/admin/appointments/:id/remind', auth, adminOnly, limitBody(10), a
 // ============ CRON : résumé hebdomadaire (lundi) ============
 app.get('/api/cron/weekly-summary', async (req, res) => {
   try {
-    // Sécurité : autorisé seulement par Vercel Cron (en-tête) ou avec le bon secret
-    const isVercelCron = !!req.headers['x-vercel-cron'];
-    const secretOk = req.query.secret && process.env.CRON_SECRET && req.query.secret === process.env.CRON_SECRET;
+    // Sécurité : autorisé seulement pour Vercel Cron (User-Agent vercel-cron) ou avec le bon secret
+    const ua = (req.headers['user-agent'] || '').toLowerCase();
+    const isVercelCron = ua.includes('vercel-cron') || !!req.headers['x-vercel-cron'];
+    const secretEnv = process.env.CRON_SECRET || await getSetting('cronSecret');
+    const secretOk = req.query.secret && secretEnv && req.query.secret === secretEnv;
     if (!isVercelCron && !secretOk) return res.status(401).json({ error: 'Non autorisé.' });
 
     const since = new Date(Date.now() - 7 * 86400000);

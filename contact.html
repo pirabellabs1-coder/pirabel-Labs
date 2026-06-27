@@ -994,27 +994,40 @@
   // pré-sélection via #rdv dans l'URL
   if((location.hash||'').toLowerCase().indexOf('rdv')>-1) show('rdv');
 
+  // Zone de message inline (pas de pop-up navigateur)
+  var rdvMsg=document.createElement('div'); rdvMsg.id='rdvMsg'; rdvMsg.style.display='none';
+  rdvForm.parentNode.insertBefore(rdvMsg, rdvForm);
+  function rdvShowMsg(type, html){
+    var ok=type==='success';
+    rdvMsg.style.cssText='margin:0 0 1.2rem;padding:1rem 1.25rem;border-radius:10px;font-size:.92rem;line-height:1.5;display:block;'+
+      (ok?'background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.35);color:#4ade80;':'background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.35);color:#f87171;');
+    rdvMsg.innerHTML=html;
+    try{ rdvMsg.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+  }
+
   rdvForm.addEventListener('submit', async function(e){
     e.preventDefault();
-    var rgpd=document.getElementById('rdvRgpd');
-    if(rgpd && !rgpd.checked){ alert('Merci d\'accepter la politique de confidentialité.'); return; }
     var btn=rdvForm.querySelector('.form-submit'); var btnTxt=btn?btn.innerHTML:'';
     var g=function(id){ var el=document.getElementById(id); return el?el.value.trim():''; };
+    var rgpd=document.getElementById('rdvRgpd');
+    if(rgpd && !rgpd.checked){ rdvShowMsg('error','<strong>Un instant.</strong> Merci d\'accepter la politique de confidentialité pour continuer.'); return; }
     var payload={ name:g('rdvName'), email:g('rdvEmail'), phone:g('rdvPhone'), company:g('rdvCompany'),
       date:g('rdvDate'), time:g('rdvTime'), channel:g('rdvChannel'), subject:g('rdvSubject'), message:g('rdvMessage'),
       website_url:g('rdvHp') };
-    if(!payload.name||!payload.email||!payload.date){ alert('Nom, e-mail et date sont requis.'); return; }
+    if(!payload.name||!payload.email||!payload.date){ rdvShowMsg('error','<strong>Champs manquants.</strong> Le nom, l\'e-mail et la date souhaitée sont nécessaires pour réserver.'); return; }
+    rdvMsg.style.display='none';
     if(btn){ btn.disabled=true; btn.innerHTML='<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">progress_activity</span> Envoi…'; }
     try{
       var res=await fetch('/api/rdv',{ method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify(payload) });
       var data=await res.json().catch(function(){return{};});
       if(res.ok && data.success!==false){
-        rdvForm.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;"><span class="material-symbols-outlined" style="font-size:3rem;color:var(--accent);">event_available</span><h3 style="margin:.8rem 0 .5rem;">Demande de rendez-vous envoyée&nbsp;!</h3><p style="color:var(--text-muted);line-height:1.6;">Merci&nbsp;! Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées. Vérifiez votre boîte e-mail (et les indésirables).</p></div>';
+        rdvForm.style.display='none'; if(rdvHead) rdvHead.style.display='none';
+        rdvShowMsg('success','<div style="text-align:center;padding:1rem .5rem;"><span class="material-symbols-outlined" style="font-size:2.6rem;color:#4ade80;">check_circle</span><div style="font-family:var(--font-display,inherit);font-weight:800;font-size:1.2rem;color:#e5e2e1;margin:.5rem 0 .4rem;">Demande de rendez-vous envoyée&nbsp;!</div><p style="color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">Merci&nbsp;! Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées. Vérifiez votre boîte e-mail (pensez aux indésirables).</p></div>');
       } else {
-        var em=(data&&typeof data.error==='string')?data.error:'Erreur. Réessayez ou écrivez à contact@pirabellabs.com';
-        alert(em); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; }
+        var em=(data&&typeof data.error==='string')?data.error:'Impossible d\'envoyer la demande (erreur '+res.status+'). Réessayez ou écrivez à contact@pirabellabs.com';
+        rdvShowMsg('error','<strong>Erreur.</strong> '+em); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; }
       }
-    }catch(err){ alert('Erreur réseau. Réessayez.'); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; } }
+    }catch(err){ rdvShowMsg('error','<strong>Erreur réseau.</strong> Vérifiez votre connexion et réessayez, ou écrivez à contact@pirabellabs.com.'); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; } }
   });
 })();
 </script>

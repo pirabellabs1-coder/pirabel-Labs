@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <style>
 :root {
   --bg: #0E0E0E; --bg-2: #161616; --surface: #1a1a1a; --surface-2: #202020;
@@ -412,6 +413,22 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .task-card__due.is-late { color: var(--danger); }
 .task-card__due .material-symbols-outlined { font-size: 0.85rem; }
 @media (max-width: 1100px) { .tasks-board { grid-template-columns: repeat(5, minmax(12rem, 1fr)); } }
+
+/* ===== FullCalendar (thème sombre) ===== */
+#apptCalendar { --fc-border-color: var(--border); --fc-page-bg-color: transparent; --fc-neutral-bg-color: var(--surface); --fc-today-bg-color: rgba(255,85,0,0.08); --fc-list-event-hover-bg-color: var(--surface); }
+#apptCalendar .fc { color: var(--text); font-family: var(--font-body); }
+#apptCalendar .fc .fc-toolbar-title { font-family: var(--font-display); font-size: 1.15rem; color: var(--text); }
+#apptCalendar .fc .fc-col-header-cell-cushion, #apptCalendar .fc .fc-daygrid-day-number { color: var(--text-muted); text-decoration: none; padding: .35rem .5rem; }
+#apptCalendar .fc-theme-standard td, #apptCalendar .fc-theme-standard th { border-color: var(--border); }
+#apptCalendar .fc .fc-button { background: var(--surface); border: 1px solid var(--border-2); color: var(--text); font-size: .8rem; text-transform: capitalize; box-shadow: none; }
+#apptCalendar .fc .fc-button:hover { background: var(--surface-2); border-color: var(--accent); }
+#apptCalendar .fc .fc-button-primary:not(:disabled).fc-button-active, #apptCalendar .fc .fc-button-primary:not(:disabled):active { background: var(--accent); border-color: var(--accent); color: #fff; }
+#apptCalendar .fc .fc-button-primary:disabled { background: var(--surface); border-color: var(--border); color: var(--text-faint); opacity: 1; }
+#apptCalendar .fc-daygrid-day.fc-day-today { background: rgba(255,85,0,0.07); }
+#apptCalendar .fc-event { border: none; padding: 1px 4px; font-size: .74rem; font-weight: 600; cursor: pointer; color: #0e0e0e; }
+#apptCalendar .fc-daygrid-event-dot { display: none; }
+#apptCalendar .fc-h-event .fc-event-main { color: #0e0e0e; }
+#apptCalendar .fc .fc-daygrid-day-frame { min-height: 4.5rem; }
 </style>
 </head>
 <body>
@@ -930,13 +947,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
     <!-- RENDEZ-VOUS VIEW -->
     <div class="view" data-view="appointments">
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1.1rem;" id="apptFilters">
-        <button class="btn btn--ghost btn--sm is-active" onclick="loadAppointments('',this)">Tous</button>
-        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('demande',this)">Nouveaux</button>
-        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('confirme',this)">Confirmés</button>
-        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('effectue',this)">Effectués</button>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:1.1rem;">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;" id="apptFilters">
+          <button class="btn btn--ghost btn--sm is-active" onclick="loadAppointments('',this)">Tous</button>
+          <button class="btn btn--ghost btn--sm" onclick="loadAppointments('demande',this)">Nouveaux</button>
+          <button class="btn btn--ghost btn--sm" onclick="loadAppointments('confirme',this)">Confirmés</button>
+          <button class="btn btn--ghost btn--sm" onclick="loadAppointments('effectue',this)">Effectués</button>
+        </div>
+        <div style="display:flex;gap:0.3rem;background:var(--surface);border:1px solid var(--border-2);border-radius:999px;padding:0.2rem;">
+          <button id="apptViewList" class="btn btn--sm" onclick="setApptView('list')" style="border-radius:999px;"><span class="material-symbols-outlined">view_list</span> Liste</button>
+          <button id="apptViewCal" class="btn btn--ghost btn--sm" onclick="setApptView('cal')" style="border-radius:999px;"><span class="material-symbols-outlined">calendar_month</span> Calendrier</button>
+        </div>
       </div>
       <div id="apptList"><div class="empty">Chargement…</div></div>
+      <div id="apptCalendar" style="display:none;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;"></div>
     </div>
   </main>
 </div>
@@ -2506,6 +2530,13 @@ async function init() {
   await Promise.all([loadStats(), loadLeads()]);
   refreshCmBadge();
   api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){});
+  // Rafraîchissement auto des RDV (changements client pris en compte sans recharger la page)
+  setInterval(function(){
+    var activeView = document.querySelector('.view.is-active');
+    var modalOpen = document.getElementById('apptEditModal') || document.getElementById('apptRemindModal');
+    if (activeView && activeView.dataset.view === 'appointments' && !modalOpen) { loadAppointments(APPT_STATUS); }
+    else { api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){}); }
+  }, 60000);
 
   const hash = (window.location.hash || '').replace('#', '');
   const validViews = Array.from(document.querySelectorAll('.sidebar__link[data-view]')).map(function(l){ return l.dataset.view; });
@@ -2715,6 +2746,7 @@ async function loadAppointments(status, btn) {
     var d = await api('/api/admin/appointments' + (APPT_STATUS ? '?status=' + APPT_STATUS : ''));
     APPTS = d.appointments || [];
     refreshApptBadge((d.counts || {}).demande || 0);
+    if (APPT_VIEW === 'cal') renderApptCalendar();
     if (!APPTS.length) { box.innerHTML = '<div class="empty"><span class="material-symbols-outlined">event_busy</span><p>Aucune demande de rendez-vous.</p></div>'; return; }
     box.innerHTML = APPTS.map(function(a){
       var stColor = { demande: 'var(--warning)', confirme: 'var(--success)', effectue: 'var(--info)', annule: 'var(--danger)', no_show: 'var(--danger)' }[a.status] || 'var(--text-muted)';
@@ -2733,6 +2765,7 @@ async function loadAppointments(status, btn) {
         (a.message ? '<p style="margin:.2rem 0 .6rem;color:var(--text-muted);font-size:.85rem;line-height:1.55;white-space:pre-wrap;">' + escape(a.message) + '</p>' : '') +
         '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.6rem;padding-top:.7rem;border-top:1px solid var(--border);">' +
           '<select onchange="setApptStatus(\'' + a._id + '\',this.value)" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.4rem .6rem;border-radius:8px;font-size:.8rem;">' + opts + '</select>' +
+          '<button class="btn btn--ghost btn--sm" onclick="openApptEditor(\'' + a._id + '\')"><span class="material-symbols-outlined">edit_calendar</span> Modifier</button>' +
           '<button class="btn btn--sm" onclick="openApptReminder(\'' + a._id + '\')"><span class="material-symbols-outlined">send</span> Rappel / message</button>' +
           (a.remindersSent ? '<span style="font-size:.72rem;color:var(--text-faint);">' + a.remindersSent + ' rappel(s) envoyé(s)</span>' : '') +
           '<button class="btn btn--ghost btn--sm" style="color:var(--danger);margin-left:auto;" onclick="deleteAppt(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
@@ -2778,6 +2811,73 @@ function openApptReminder(id) {
 function refreshApptBadge(n) {
   var b = document.getElementById('apptBadge'); if (!b) return;
   if (n > 0) { b.textContent = n; b.style.display = ''; } else { b.style.display = 'none'; }
+}
+// --- Vue Liste / Calendrier ---
+var APPT_VIEW = 'list', apptCal = null;
+function setApptView(v) {
+  APPT_VIEW = v;
+  document.getElementById('apptList').style.display = v === 'cal' ? 'none' : '';
+  document.getElementById('apptCalendar').style.display = v === 'cal' ? '' : 'none';
+  var bl = document.getElementById('apptViewList'), bc = document.getElementById('apptViewCal');
+  bl.className = v === 'cal' ? 'btn btn--ghost btn--sm' : 'btn btn--sm'; bl.style.borderRadius = '999px';
+  bc.className = v === 'cal' ? 'btn btn--sm' : 'btn btn--ghost btn--sm'; bc.style.borderRadius = '999px';
+  if (v === 'cal') renderApptCalendar();
+}
+var APPT_COLORS = { demande: '#fbbf24', confirme: '#4ade80', effectue: '#60a5fa', annule: '#6b7280', no_show: '#f87171' };
+function renderApptCalendar() {
+  var el = document.getElementById('apptCalendar');
+  if (typeof FullCalendar === 'undefined') { el.innerHTML = '<div class="empty">Calendrier indisponible (rechargez la page).</div>'; return; }
+  var events = APPTS.filter(function(a){ return a.preferredDate; }).map(function(a){
+    var hasTime = !!a.preferredTime;
+    return { id: a._id, title: a.name + (a.preferredTime ? ' · ' + a.preferredTime : ''), start: a.preferredDate + (hasTime ? 'T' + a.preferredTime + ':00' : ''), allDay: !hasTime, backgroundColor: APPT_COLORS[a.status] || '#FF5500', borderColor: APPT_COLORS[a.status] || '#FF5500' };
+  });
+  if (apptCal) { apptCal.removeAllEvents(); events.forEach(function(e){ apptCal.addEvent(e); }); apptCal.render(); return; }
+  apptCal = new FullCalendar.Calendar(el, {
+    initialView: 'dayGridMonth', locale: 'fr', firstDay: 1, height: 'auto',
+    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
+    buttonText: { today: "Aujourd'hui", month: 'Mois', week: 'Semaine' },
+    editable: true, eventStartEditable: true, eventDurationEditable: false, events: events,
+    eventDrop: async function(info) {
+      var d = info.event.start; var ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      var ts = info.event.allDay ? '' : (String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'));
+      try { await api('/api/admin/appointments/' + info.event.id, { method: 'PATCH', body: { preferredDate: ds, preferredTime: ts } }); toast('Rendez-vous déplacé au ' + ds + (ts ? ' à ' + ts : '') + ' ✓', 'success'); var a = APPTS.find(function(x){return x._id===info.event.id;}); if (a){ a.preferredDate=ds; a.preferredTime=ts; } }
+      catch(e) { toast(e.message || 'Erreur', 'error'); info.revert(); }
+    },
+    eventClick: function(info) { openApptEditor(info.event.id); }
+  });
+  apptCal.render();
+}
+// Éditeur de RDV (date, heure, canal, statut) — utilisé depuis le calendrier et la liste
+function openApptEditor(id) {
+  var a = APPTS.find(function(x){ return x._id === id; }); if (!a) return;
+  var old = document.getElementById('apptEditModal'); if (old) old.remove();
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.6rem .8rem;border-radius:8px;font-size:.9rem;';
+  var lbl = 'display:block;font-size:.76rem;font-weight:600;margin:.8rem 0 .3rem;color:var(--text-muted);';
+  function opt(v,l,cur){ return '<option value="'+v+'"'+(cur===v?' selected':'')+'>'+l+'</option>'; }
+  var times = ['','09:00','10:00','11:00','12:00','14:00','15:00','16:00','17:00'].map(function(v){ return '<option'+(v===a.preferredTime?' selected':'')+'>'+(v||'Indifférent')+'</option>'; }).join('');
+  var mod = document.createElement('div'); mod.id='apptEditModal';
+  mod.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  mod.innerHTML='<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:32rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.15rem;">Rendez-vous — ' + escape(a.name) + '</div>' +
+    '<button onclick="document.getElementById(\'apptEditModal\').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;">' + escape(a.email) + (a.phone?' · '+escape(a.phone):'') + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;">' +
+      '<div><label style="'+lbl+'">Date</label><input id="aeDate" type="date" style="'+inp+'" value="'+escape(a.preferredDate||'')+'"></div>' +
+      '<div><label style="'+lbl+'">Heure</label><select id="aeTime" style="'+inp+'">'+times+'</select></div>' +
+    '</div>' +
+    '<label style="'+lbl+'">Statut</label><select id="aeStatus" style="'+inp+'">'+opt('demande','Nouveau',a.status)+opt('confirme','Confirmé',a.status)+opt('effectue','Effectué',a.status)+opt('annule','Annulé',a.status)+opt('no_show','Absent',a.status)+'</select>' +
+    '<label style="'+lbl+'">Notes internes</label><textarea id="aeNotes" rows="2" style="'+inp+'resize:vertical;font-family:inherit;">'+escape(a.internalNotes||'')+'</textarea>' +
+    '<div style="display:flex;gap:.5rem;justify-content:space-between;align-items:center;margin-top:1.3rem;">' +
+      '<button class="btn btn--ghost btn--sm" onclick="document.getElementById(\'apptEditModal\').remove();openApptReminder(\''+a._id+'\')"><span class="material-symbols-outlined">send</span> Rappel</button>' +
+      '<div style="display:flex;gap:.5rem;"><button class="btn btn--ghost btn--sm" onclick="document.getElementById(\'apptEditModal\').remove()">Fermer</button><button class="btn btn--sm" id="aeSave">Enregistrer</button></div>' +
+    '</div></div>';
+  document.body.appendChild(mod);
+  document.getElementById('aeSave').onclick = async function(){
+    var t = document.getElementById('aeTime').value; if (t==='Indifférent') t='';
+    var body = { preferredDate: document.getElementById('aeDate').value, preferredTime: t, status: document.getElementById('aeStatus').value, internalNotes: document.getElementById('aeNotes').value };
+    try { await api('/api/admin/appointments/'+id, { method:'PATCH', body: body }); toast('Rendez-vous mis à jour ✓','success'); document.getElementById('apptEditModal').remove(); loadAppointments(APPT_STATUS); if (APPT_VIEW==='cal') setTimeout(renderApptCalendar, 100); }
+    catch(e){ toast(e.message||'Erreur','error'); }
+  };
 }
 
 // =================== E-MAILS ENVOYÉS ===================

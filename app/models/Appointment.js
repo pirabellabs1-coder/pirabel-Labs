@@ -13,6 +13,8 @@ const appointmentSchema = new mongoose.Schema({
   subject: { type: String, default: '', maxlength: 200 },   // objet du RDV
   message: { type: String, default: '', maxlength: 3000 },
   status: { type: String, enum: ['demande', 'confirme', 'effectue', 'annule', 'no_show'], default: 'demande', index: true },
+  publicToken: { type: String, index: true },   // jeton du lien client (modifier / annuler)
+  modifiedByClientAt: { type: Date },           // dernière modification faite par le client
   remindersSent: { type: Number, default: 0 },
   lastReminderAt: { type: Date },
   internalNotes: { type: String, default: '', maxlength: 3000 },

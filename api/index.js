@@ -245,10 +245,12 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
     if (!preferredDate) return res.status(400).json({ error: 'Date souhaitée requise.' });
     if (!phone && channel !== 'visio') return res.status(400).json({ error: 'Téléphone requis pour ce canal.' });
 
-    const appt = await Appointment.create({ name, email, phone, company, preferredDate, preferredTime, channel, subject, message, source: 'site_contact' });
+    const publicToken = crypto.randomBytes(24).toString('hex');
+    const appt = await Appointment.create({ name, email, phone, company, preferredDate, preferredTime, channel, subject, message, publicToken, source: 'site_contact' });
 
     const chanLabel = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'WhatsApp', presentiel: 'Présentiel (Abomey-Calavi)' }[channel];
     const when = preferredDate + (preferredTime ? (' à ' + preferredTime) : '');
+    const manageUrl = (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/rdv/' + publicToken;
     // E-mail admin
     sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
@@ -277,8 +279,10 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
         headerType: 'hero', preheader: 'Demande de rendez-vous reçue',
         title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
         body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci&nbsp;! Votre demande de rendez-vous (' + escapeHtml(chanLabel) + ') pour le <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> est bien enregistrée.</p>' +
-          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées. Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a>.</p>',
-        cta: 'Visiter notre site', ctaUrl: 'https://www.pirabellabs.com',
+          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées.</p>' +
+          '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:14px 18px;background:rgba(255,85,0,0.03);margin:20px 0;"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;">Besoin de <strong style="color:#e5e2e1;">changer de créneau ou d\'annuler</strong>&nbsp;? Vous pouvez le faire vous-même en un clic, à tout moment&nbsp;:<br><a href="' + escapeHtml(manageUrl) + '" style="color:#FF5500;font-weight:600;">Gérer mon rendez-vous &rarr;</a></p></div>' +
+          '<p style="font-size:14px;line-height:1.7;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a>.</p>',
+        cta: 'Gérer mon rendez-vous', ctaUrl: manageUrl,
       })
     ).catch(e => console.error('[rdv] confirm email error:', e.message));
 
@@ -287,6 +291,78 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
     console.error('[rdv] error:', err && err.message);
     res.status(500).json({ error: 'Erreur serveur. Réessayez ou écrivez à contact@pirabellabs.com.' });
   }
+});
+
+// === PUBLIC : le client gère son rendez-vous (replanifier / annuler) ===
+const RDV_CHAN = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'Appel WhatsApp', presentiel: 'En personne (Abomey-Calavi)' };
+app.get('/rdv/:token', async (req, res) => {
+  try {
+    const token = String(req.params.token || '').slice(0, 80);
+    const a = await Appointment.findOne({ publicToken: token }).lean();
+    const page = (inner) => '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined&display=swap">' +
+      '<title>Mon rendez-vous — Pirabel Labs</title><style>*{box-sizing:border-box;margin:0}body{background:#0e0e0e;color:#e5e2e1;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}' +
+      '.card{background:#161616;border:1px solid rgba(229,226,225,.1);border-radius:16px;padding:2rem;max-width:34rem;width:100%}.b{display:inline-block;background:rgba(255,85,0,.12);color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}' +
+      'h1{font-family:Space Grotesk,sans-serif;font-size:1.5rem;margin-bottom:.4rem}p{color:rgba(229,226,225,.65);line-height:1.6}label{display:block;font-size:.78rem;font-weight:600;color:rgba(229,226,225,.6);margin:1rem 0 .35rem}' +
+      'input,select{width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit}' +
+      '.row{display:flex;gap:.8rem;flex-wrap:wrap}.row>div{flex:1;min-width:9rem}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border:0;border-radius:999px;padding:.8rem 1.4rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:Space Grotesk,sans-serif}' +
+      '.btn--p{background:#FF5500;color:#fff}.btn--g{background:transparent;border:1px solid rgba(229,226,225,.2);color:#e5e2e1}.msg{margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:none}' +
+      '.material-symbols-outlined{font-size:1.1rem;vertical-align:middle}</style></head><body><div class="card">' + inner + '</div></body></html>';
+    if (!a) return res.status(404).set('Content-Type', 'text/html; charset=utf-8').send(page('<span class="b">Pirabel Labs</span><h1>Lien introuvable</h1><p>Ce rendez-vous n\'existe pas ou le lien a expiré. Écrivez-nous à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500">contact@pirabellabs.com</a>.</p>'));
+    if (a.status === 'annule') return res.set('Content-Type', 'text/html; charset=utf-8').send(page('<span class="b">Pirabel Labs</span><h1>Rendez-vous annulé</h1><p>Ce rendez-vous a été annulé. Pour en reprendre un, <a href="/contact#rdv" style="color:#FF5500">cliquez ici</a>.</p>'));
+    const opt = (v, sel) => '<option' + (v === sel ? ' selected' : '') + '>' + v + '</option>';
+    const chanOpt = (k) => '<option value="' + k + '"' + (a.channel === k ? ' selected' : '') + '>' + RDV_CHAN[k] + '</option>';
+    const inner = '<span class="b">Pirabel Labs</span><h1>Votre rendez-vous</h1>' +
+      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez modifier le créneau ci-dessous ou annuler. Lissanon Gildas est prévenu automatiquement.</p>' +
+      '<div id="msg" class="msg"></div>' +
+      '<label>Date souhaitée</label><input id="d" type="date" value="' + escapeHtml(a.preferredDate || '') + '">' +
+      '<div class="row"><div><label>Heure</label><select id="t">' + ['', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map(v => '<option' + (v === a.preferredTime ? ' selected' : '') + '>' + (v || 'Indifférent') + '</option>').join('') + '</select></div>' +
+      '<div><label>Comment&nbsp;?</label><select id="c">' + ['visio', 'whatsapp', 'telephone', 'presentiel'].map(chanOpt).join('') + '</select></div></div>' +
+      '<div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.6rem"><button class="btn btn--p" id="save"><span class="material-symbols-outlined">event_available</span> Enregistrer le changement</button>' +
+      '<button class="btn btn--g" id="cancel"><span class="material-symbols-outlined">cancel</span> Annuler le RDV</button></div>' +
+      '<script>var T="' + token + '";function show(ok,t){var m=document.getElementById("msg");m.style.display="block";m.style.cssText="margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=t;}' +
+      'async function post(b){return (await fetch("/api/rdv/"+T,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)})).json();}' +
+      'document.getElementById("save").onclick=async function(){this.disabled=true;try{var r=await post({action:"reschedule",date:document.getElementById("d").value,time:document.getElementById("t").value==="Indifférent"?"":document.getElementById("t").value,channel:document.getElementById("c").value});if(r.success)show(true,"<strong>C\\u0027est noté&nbsp;!</strong> Votre nouveau créneau a été enregistré et transmis à Pirabel Labs.");else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}this.disabled=false;};' +
+      'document.getElementById("cancel").onclick=async function(){if(!confirm("Annuler définitivement ce rendez-vous ?"))return;this.disabled=true;try{var r=await post({action:"cancel"});if(r.success){show(true,"Votre rendez-vous a été annulé. À bientôt&nbsp;!");}else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}};<\/script>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(page(inner));
+  } catch (e) { console.error('[rdv.page]', e.message); res.status(500).send('Erreur'); }
+});
+
+app.post('/api/rdv/:token', contactLimiter, limitBody(10), async (req, res) => {
+  try {
+    const token = String(req.params.token || '').slice(0, 80);
+    const a = await Appointment.findOne({ publicToken: token });
+    if (!a) return res.status(404).json({ error: 'Rendez-vous introuvable.' });
+    const action = req.body.action;
+    if (action === 'cancel') {
+      a.status = 'annule'; a.modifiedByClientAt = new Date(); await a.save();
+    } else if (action === 'reschedule') {
+      const d = sanitize(req.body.date || '', 10);
+      if (!d) return res.status(400).json({ error: 'Date requise.' });
+      a.preferredDate = d;
+      a.preferredTime = sanitize(req.body.time || '', 10);
+      if (['visio', 'telephone', 'whatsapp', 'presentiel'].includes(req.body.channel)) a.channel = req.body.channel;
+      if (a.status === 'effectue' || a.status === 'no_show') a.status = 'demande';
+      else if (a.status === 'confirme') a.status = 'demande'; // à reconfirmer
+      a.modifiedByClientAt = new Date(); await a.save();
+    } else return res.status(400).json({ error: 'Action invalide.' });
+
+    // Prévenir l'admin
+    const when = a.preferredDate + (a.preferredTime ? (' à ' + a.preferredTime) : '');
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      '[Pirabel Labs] RDV ' + (action === 'cancel' ? 'ANNULÉ' : 'modifié') + ' par ' + a.name,
+      masterTemplate({
+        headerType: 'hero', preheader: 'Modification de rendez-vous par le client',
+        title: action === 'cancel' ? 'Rendez-vous annulé par le client' : 'Rendez-vous modifié par le client',
+        body: '<p style="font-size:15px;color:rgba(229,226,225,0.85);line-height:1.7;"><strong>' + escapeHtml(a.name) + '</strong> (' + escapeHtml(a.email) + ')' +
+          (action === 'cancel' ? ' a annulé son rendez-vous.' : ' a déplacé son rendez-vous au <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> (' + escapeHtml(RDV_CHAN[a.channel]) + ').') + '</p>',
+        cta: 'Ouvrir l\'admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+      })
+    ).catch(e => console.error('[rdv.client] admin email error:', e.message));
+
+    res.json({ success: true });
+  } catch (e) { console.error('[rdv.update]', e.message); res.status(500).json({ error: 'Erreur. Réessayez.' }); }
 });
 
 // === PUBLIC : Demande de livre blanc ===

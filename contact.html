@@ -394,7 +394,12 @@
   <section class="section form-section" id="formulaire">
     <div class="container">
       <div class="form-card">
-        <div class="form-card__h">
+        <!-- CHOIX : message ou rendez-vous -->
+        <div class="contact-tabs" style="display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+          <button type="button" id="tabMsg" class="contact-tab is-active" style="flex:1;min-width:12rem;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-family:var(--font-display,inherit);font-weight:700;font-size:.85rem;cursor:pointer;"><span class="material-symbols-outlined">edit_note</span> Envoyer un message</button>
+          <button type="button" id="tabRdv" class="contact-tab" style="flex:1;min-width:12rem;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--border-2);background:transparent;color:var(--text);font-family:var(--font-display,inherit);font-weight:700;font-size:.85rem;cursor:pointer;"><span class="material-symbols-outlined">event_available</span> Prendre rendez-vous</button>
+        </div>
+        <div class="form-card__h" id="msgHead">
           <h2>Decrivez votre <em>projet</em> en quelques minutes</h2>
           <p>Plus le brief est précis, plus le devis est juste. Tous les champs marques d'un asterisque sont obligatoires. Le reste nous aide à affiner votre estimation.</p>
         </div>
@@ -528,6 +533,61 @@
             <button type="submit" class="form-submit">Envoyer ma demande <span class="material-symbols-outlined">send</span></button>
           </div>
 
+        </form>
+
+        <!-- FORMULAIRE RENDEZ-VOUS (masqué par défaut) -->
+        <div class="form-card__h" id="rdvHead" style="display:none;">
+          <h2>Réservez un <em>rendez-vous</em> de 30 minutes</h2>
+          <p>Un échange gratuit et sans engagement pour comprendre vos enjeux. Choisissez un créneau souhaité : Lissanon Gildas vous le confirme (ou en propose un proche) sous 24&nbsp;h.</p>
+        </div>
+        <form id="rdvForm" style="display:none;" novalidate>
+          <div class="form-section-block">
+            <div class="form-section-title"><span class="form-section-title__num">1</span> Vous</div>
+            <div class="form-row">
+              <div class="form-field"><label class="form-field__label" for="rdvName">Nom complet <span class="required">*</span></label><input id="rdvName" name="name" class="form-field__input" required maxlength="120"></div>
+              <div class="form-field"><label class="form-field__label" for="rdvEmail">E-mail <span class="required">*</span></label><input id="rdvEmail" name="email" type="email" class="form-field__input" required maxlength="200"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label class="form-field__label" for="rdvPhone">Téléphone / WhatsApp</label><input id="rdvPhone" name="phone" class="form-field__input" maxlength="30"></div>
+              <div class="form-field"><label class="form-field__label" for="rdvCompany">Entreprise</label><input id="rdvCompany" name="company" class="form-field__input" maxlength="120"></div>
+            </div>
+          </div>
+          <div class="form-section-block">
+            <div class="form-section-title"><span class="form-section-title__num">2</span> Le créneau</div>
+            <div class="form-row">
+              <div class="form-field"><label class="form-field__label" for="rdvDate">Date souhaitée <span class="required">*</span></label><input id="rdvDate" name="date" type="date" class="form-field__input" required></div>
+              <div class="form-field"><label class="form-field__label" for="rdvTime">Heure souhaitée</label>
+                <select id="rdvTime" name="time" class="form-field__select">
+                  <option value="">Indifférent</option>
+                  <option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option>
+                  <option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field"><label class="form-field__label" for="rdvChannel">Comment ?</label>
+                <select id="rdvChannel" name="channel" class="form-field__select">
+                  <option value="visio">Visioconférence (Zoom / Meet)</option>
+                  <option value="whatsapp">Appel WhatsApp</option>
+                  <option value="telephone">Téléphone</option>
+                  <option value="presentiel">En personne (Abomey-Calavi)</option>
+                </select>
+              </div>
+              <div class="form-field"><label class="form-field__label" for="rdvSubject">Objet du rendez-vous</label><input id="rdvSubject" name="subject" class="form-field__input" placeholder="Ex. audit gratuit, présentation de projet…" maxlength="200"></div>
+            </div>
+          </div>
+          <div class="form-section-block">
+            <div class="form-section-title"><span class="form-section-title__num">3</span> Quelques mots (optionnel)</div>
+            <div class="form-row form-row--single">
+              <div class="form-field"><textarea id="rdvMessage" name="message" class="form-field__textarea" placeholder="De quoi aimeriez-vous parler&nbsp;?" maxlength="1500"></textarea></div>
+            </div>
+          </div>
+          <input type="text" name="website_url" id="rdvHp" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="form-rgpd" for="rdvRgpd"><input type="checkbox" id="rdvRgpd" required><span class="form-rgpd__label">J'accepte d'être contacté par Pirabel Labs au sujet de ce rendez-vous, conformément à la <a href="/politique-confidentialite">politique de confidentialité</a>.</span></label>
+          <div class="form-submit-row">
+            <span class="form-submit-note"><span class="material-symbols-outlined">event_available</span> Confirmation sous 24h ouvrées.</span>
+            <button type="submit" class="form-submit">Demander ce rendez-vous <span class="material-symbols-outlined">event_available</span></button>
+          </div>
         </form>
 
         <!-- Success state (hidden by default) -->
@@ -912,6 +972,50 @@
       }
     });
   }
+})();
+</script>
+<script>
+(function(){
+  var tabMsg=document.getElementById('tabMsg'), tabRdv=document.getElementById('tabRdv');
+  var msgForm=document.getElementById('contactForm'), msgHead=document.getElementById('msgHead');
+  var rdvForm=document.getElementById('rdvForm'), rdvHead=document.getElementById('rdvHead');
+  if(!tabMsg||!tabRdv||!rdvForm) return;
+  var ON='border:1px solid var(--accent);background:var(--accent);color:#fff;', OFF='border:1px solid var(--border-2);background:transparent;color:var(--text);';
+  var base='flex:1;min-width:12rem;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1rem;border-radius:12px;font-family:var(--font-display,inherit);font-weight:700;font-size:.85rem;cursor:pointer;';
+  function show(which){
+    var rdv = which==='rdv';
+    msgForm.style.display = rdv?'none':''; if(msgHead) msgHead.style.display = rdv?'none':'';
+    rdvForm.style.display = rdv?'':'none'; if(rdvHead) rdvHead.style.display = rdv?'':'none';
+    tabMsg.setAttribute('style', base + (rdv?OFF:ON));
+    tabRdv.setAttribute('style', base + (rdv?ON:OFF));
+  }
+  tabMsg.onclick=function(){ show('msg'); };
+  tabRdv.onclick=function(){ show('rdv'); };
+  // pré-sélection via #rdv dans l'URL
+  if((location.hash||'').toLowerCase().indexOf('rdv')>-1) show('rdv');
+
+  rdvForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var rgpd=document.getElementById('rdvRgpd');
+    if(rgpd && !rgpd.checked){ alert('Merci d\'accepter la politique de confidentialité.'); return; }
+    var btn=rdvForm.querySelector('.form-submit'); var btnTxt=btn?btn.innerHTML:'';
+    var g=function(id){ var el=document.getElementById(id); return el?el.value.trim():''; };
+    var payload={ name:g('rdvName'), email:g('rdvEmail'), phone:g('rdvPhone'), company:g('rdvCompany'),
+      date:g('rdvDate'), time:g('rdvTime'), channel:g('rdvChannel'), subject:g('rdvSubject'), message:g('rdvMessage'),
+      website_url:g('rdvHp') };
+    if(!payload.name||!payload.email||!payload.date){ alert('Nom, e-mail et date sont requis.'); return; }
+    if(btn){ btn.disabled=true; btn.innerHTML='<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">progress_activity</span> Envoi…'; }
+    try{
+      var res=await fetch('/api/rdv',{ method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify(payload) });
+      var data=await res.json().catch(function(){return{};});
+      if(res.ok && data.success!==false){
+        rdvForm.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;"><span class="material-symbols-outlined" style="font-size:3rem;color:var(--accent);">event_available</span><h3 style="margin:.8rem 0 .5rem;">Demande de rendez-vous envoyée&nbsp;!</h3><p style="color:var(--text-muted);line-height:1.6;">Merci&nbsp;! Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées. Vérifiez votre boîte e-mail (et les indésirables).</p></div>';
+      } else {
+        var em=(data&&typeof data.error==='string')?data.error:'Erreur. Réessayez ou écrivez à contact@pirabellabs.com';
+        alert(em); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; }
+      }
+    }catch(err){ alert('Erreur réseau. Réessayez.'); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; } }
+  });
 })();
 </script>
 <style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>

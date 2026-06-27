@@ -68,6 +68,9 @@
     { "source": "/formation/:slug*", "destination": "/contact", "permanent": false },
     { "source": "/lesson/:slug*", "destination": "/contact", "permanent": false }
   ],
+  "crons": [
+    { "path": "/api/cron/weekly-summary", "schedule": "0 8 * * 1" }
+  ],
   "cleanUrls": true,
   "trailingSlash": false
 }

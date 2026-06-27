@@ -46,6 +46,7 @@ const Task = require('../app/models/Task');
 const Conversation = require('../app/models/Conversation');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
+const Appointment = require('../app/models/Appointment');
 
 // Lecture d'un réglage serveur (clé/valeur en base). Jamais renvoyé au client.
 async function getSetting(key) {
@@ -224,6 +225,67 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       msg = 'Donnees invalides. Verifiez les champs et reessayez.';
     }
     res.status(500).json({ error: msg });
+  }
+});
+
+// === PUBLIC : Prise de rendez-vous (depuis la page contact) ===
+app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
+  try {
+    const name = sanitize(req.body.name, 120);
+    const email = sanitizeEmail(req.body.email);
+    const phone = sanitize(req.body.phone || '', 30);
+    const company = sanitize(req.body.company || '', 120);
+    const preferredDate = sanitize(req.body.date || '', 10);
+    const preferredTime = sanitize(req.body.time || '', 10);
+    const channel = ['visio', 'telephone', 'whatsapp', 'presentiel'].includes(req.body.channel) ? req.body.channel : 'visio';
+    const subject = sanitize(req.body.subject || '', 200);
+    const message = sanitize(req.body.message || '', 3000);
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail invalide.' });
+    if (!preferredDate) return res.status(400).json({ error: 'Date souhaitée requise.' });
+    if (!phone && channel !== 'visio') return res.status(400).json({ error: 'Téléphone requis pour ce canal.' });
+
+    const appt = await Appointment.create({ name, email, phone, company, preferredDate, preferredTime, channel, subject, message, source: 'site_contact' });
+
+    const chanLabel = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'WhatsApp', presentiel: 'Présentiel (Abomey-Calavi)' }[channel];
+    const when = preferredDate + (preferredTime ? (' à ' + preferredTime) : '');
+    // E-mail admin
+    sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      '[Pirabel Labs] Nouvelle demande de RDV — ' + name,
+      masterTemplate({
+        headerType: 'hero', preheader: 'Nouvelle demande de rendez-vous',
+        title: 'Nouvelle demande de rendez-vous',
+        body: '<table width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;font-size:14px;color:rgba(229,226,225,0.85);">' +
+          '<tr><td style="padding:6px 0;"><strong>Nom :</strong> ' + escapeHtml(name) + (company ? ' (' + escapeHtml(company) + ')' : '') + '</td></tr>' +
+          '<tr><td style="padding:6px 0;"><strong>E-mail :</strong> ' + escapeHtml(email) + '</td></tr>' +
+          (phone ? '<tr><td style="padding:6px 0;"><strong>Téléphone :</strong> ' + escapeHtml(phone) + '</td></tr>' : '') +
+          '<tr><td style="padding:6px 0;"><strong>Créneau souhaité :</strong> ' + escapeHtml(when) + '</td></tr>' +
+          '<tr><td style="padding:6px 0;"><strong>Canal :</strong> ' + escapeHtml(chanLabel) + '</td></tr>' +
+          (subject ? '<tr><td style="padding:6px 0;"><strong>Objet :</strong> ' + escapeHtml(subject) + '</td></tr>' : '') +
+          (message ? '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;">' + escapeHtml(message) + '</td></tr>' : '') +
+          '</table>',
+        cta: 'Ouvrir l\'admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+      }),
+      { replyTo: email }
+    ).catch(e => console.error('[rdv] admin email error:', e.message));
+
+    // Confirmation client
+    sendEmail(
+      email, 'Pirabel Labs — votre demande de rendez-vous est bien reçue',
+      masterTemplate({
+        headerType: 'hero', preheader: 'Demande de rendez-vous reçue',
+        title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
+        body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci&nbsp;! Votre demande de rendez-vous (' + escapeHtml(chanLabel) + ') pour le <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> est bien enregistrée.</p>' +
+          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées. Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a>.</p>',
+        cta: 'Visiter notre site', ctaUrl: 'https://www.pirabellabs.com',
+      })
+    ).catch(e => console.error('[rdv] confirm email error:', e.message));
+
+    res.json({ success: true, message: 'Demande de rendez-vous envoyée. Confirmation sous 24h ouvrées.' });
+  } catch (err) {
+    console.error('[rdv] error:', err && err.message);
+    res.status(500).json({ error: 'Erreur serveur. Réessayez ou écrivez à contact@pirabellabs.com.' });
   }
 });
 
@@ -1301,6 +1363,94 @@ app.get('/api/admin/settings/status', auth, adminOnly, async (req, res) => {
     const groq = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
     res.json({ groqConfigured: !!groq, source: process.env.GROQ_API_KEY ? 'env' : (groq ? 'db' : 'none'), groqModel: process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile' });
   } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// ============ RENDEZ-VOUS (admin) ============
+app.get('/api/admin/appointments', auth, adminOnly, async (req, res) => {
+  try {
+    const filter = {};
+    if (['demande', 'confirme', 'effectue', 'annule', 'no_show'].includes(req.query.status)) filter.status = req.query.status;
+    const list = await Appointment.find(filter).sort({ createdAt: -1 }).limit(300).lean();
+    const counts = await Appointment.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]);
+    const countMap = {}; counts.forEach(c => { countMap[c._id] = c.n; });
+    res.json({ appointments: list, counts: countMap });
+  } catch (e) { console.error('[appts.list]', e.message); res.status(500).json({ error: 'Erreur chargement rendez-vous.' }); }
+});
+app.patch('/api/admin/appointments/:id', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const a = await Appointment.findById(req.params.id);
+    if (!a) return res.status(404).json({ error: 'Rendez-vous introuvable.' });
+    if (['demande', 'confirme', 'effectue', 'annule', 'no_show'].includes(req.body.status)) a.status = req.body.status;
+    if (req.body.preferredDate != null) a.preferredDate = sanitize(req.body.preferredDate, 10);
+    if (req.body.preferredTime != null) a.preferredTime = sanitize(req.body.preferredTime, 10);
+    if (req.body.internalNotes != null) a.internalNotes = sanitize(req.body.internalNotes, 3000);
+    await a.save();
+    res.json({ success: true, appointment: a });
+  } catch (e) { console.error('[appts.update]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+app.delete('/api/admin/appointments/:id', auth, adminOnly, async (req, res) => {
+  try { await Appointment.findByIdAndDelete(req.params.id); res.json({ success: true }); }
+  catch (e) { res.status(500).json({ error: 'Erreur suppression.' }); }
+});
+// Envoyer un rappel / message au contact d'un RDV
+app.post('/api/admin/appointments/:id/remind', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const a = await Appointment.findById(req.params.id);
+    if (!a) return res.status(404).json({ error: 'Rendez-vous introuvable.' });
+    const subject = sanitize(req.body.subject || 'Rappel de votre rendez-vous — Pirabel Labs', 200);
+    const message = String(req.body.message || '').slice(0, 8000);
+    if (message.trim().length < 2) return res.status(400).json({ error: 'Message requis.' });
+    const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
+    const html = masterTemplate({
+      headerType: 'hero', preheader: subject,
+      title: 'Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ',',
+      body: '<p style="' + para + '">' + escapeHtml(message).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>',
+      cta: 'Visiter pirabellabs.com', ctaUrl: 'https://www.pirabellabs.com',
+    });
+    const ok = await sendEmail(a.email, subject, html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
+    if (!ok) return res.status(502).json({ error: "Envoi refusé (vérifiez la config e-mail)." });
+    a.remindersSent = (a.remindersSent || 0) + 1; a.lastReminderAt = new Date(); await a.save();
+    try { await SentEmail.create({ type: 'individuel', to: a.email, toName: a.name, subject, body: message, status: 'envoye', sentBy: req.user._id, sentByName: req.user.name || '' }); } catch (e) {}
+    res.json({ success: true, message: 'Rappel envoyé à ' + a.email });
+  } catch (e) { console.error('[appts.remind]', e.message); res.status(500).json({ error: 'Erreur envoi.' }); }
+});
+
+// ============ CRON : résumé hebdomadaire (lundi) ============
+app.get('/api/cron/weekly-summary', async (req, res) => {
+  try {
+    // Sécurité : autorisé seulement par Vercel Cron (en-tête) ou avec le bon secret
+    const isVercelCron = !!req.headers['x-vercel-cron'];
+    const secretOk = req.query.secret && process.env.CRON_SECRET && req.query.secret === process.env.CRON_SECRET;
+    if (!isVercelCron && !secretOk) return res.status(401).json({ error: 'Non autorisé.' });
+
+    const since = new Date(Date.now() - 7 * 86400000);
+    const [newLeads, newAppts, newQuotes, openTasks, weekViews] = await Promise.all([
+      Lead.countDocuments({ createdAt: { $gte: since } }),
+      Appointment.find({ createdAt: { $gte: since } }).sort({ createdAt: -1 }).limit(20).lean(),
+      Quote.countDocuments({ createdAt: { $gte: since } }),
+      Task.countDocuments({ status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } }),
+      Article.aggregate([{ $group: { _id: null, v: { $sum: '$views' } } }]),
+    ]);
+    const cell = 'padding:10px 14px;border-left:3px solid #FF5500;background:#0e0e0e;margin-bottom:8px;';
+    const apptRows = newAppts.length ? newAppts.map(a => '<tr><td style="' + cell + '"><strong>' + escapeHtml(a.name) + '</strong> — ' + escapeHtml(a.preferredDate || '') + ' ' + escapeHtml(a.preferredTime || '') + ' (' + escapeHtml(a.status) + ')</td></tr>').join('') : '<tr><td style="' + cell + 'color:rgba(229,226,225,0.5);">Aucune demande de RDV cette semaine.</td></tr>';
+    const html = masterTemplate({
+      headerType: 'hero', preheader: 'Votre résumé Pirabel Labs de la semaine',
+      title: 'Résumé hebdomadaire',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici l\'activité des 7 derniers jours&nbsp;:</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;font-size:15px;color:#e5e2e1;">' +
+        '<tr><td style="' + cell + '"><strong>' + newLeads + '</strong> nouveaux prospects</td></tr>' +
+        '<tr><td style="' + cell + '"><strong>' + newAppts.length + '</strong> demandes de rendez-vous</td></tr>' +
+        '<tr><td style="' + cell + '"><strong>' + newQuotes + '</strong> nouveaux devis</td></tr>' +
+        '<tr><td style="' + cell + '"><strong>' + openTasks + '</strong> tâches ouvertes</td></tr>' +
+        '<tr><td style="' + cell + '"><strong>' + (((weekViews[0] || {}).v) || 0) + '</strong> vues blog cumulées</td></tr>' +
+        '</table>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.6);margin-top:18px;">Demandes de RDV récentes&nbsp;:</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;">' + apptRows + '</table>',
+      cta: 'Ouvrir le tableau de bord', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+    });
+    await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com', '[Pirabel Labs] Résumé de la semaine', html);
+    res.json({ success: true, sent: true, newLeads, newAppts: newAppts.length, newQuotes });
+  } catch (e) { console.error('[cron.weekly]', e.message); res.status(500).json({ error: 'Erreur cron.' }); }
 });
 
 // --- Pilotage par Puter (IA côté navigateur, gratuit, sans clé) ---

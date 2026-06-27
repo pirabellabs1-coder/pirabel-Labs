@@ -434,6 +434,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <a class="sidebar__link" data-view="leads" data-label="Prospects (CRM)"><span class="material-symbols-outlined">person_search</span><span class="sidebar__link-text">Prospects (CRM)</span></a>
       <a class="sidebar__link" data-view="clients" data-label="Clients"><span class="material-symbols-outlined">verified_user</span><span class="sidebar__link-text">Clients</span></a>
       <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
+      <a class="sidebar__link" data-view="appointments" data-label="Rendez-vous"><span class="material-symbols-outlined">event</span><span class="sidebar__link-text">Rendez-vous</span> <span id="apptBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="reviews" data-label="Avis clients"><span class="material-symbols-outlined">reviews</span><span class="sidebar__link-text">Avis clients</span></a>
       <a class="sidebar__link" data-view="livres-blancs" data-label="Livres blancs"><span class="material-symbols-outlined">menu_book</span><span class="sidebar__link-text">Livres blancs</span></a>
       <a class="sidebar__link" data-view="blog" data-label="Blog"><span class="material-symbols-outlined">article</span><span class="sidebar__link-text">Blog</span></a>
@@ -842,7 +843,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Notifications email</div><div class="card__sub">Sur quelles actions recevoir un mail</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
-        <div class="setting-row"><div><div class="setting-row__label">Resume hebdomadaire</div><div class="setting-row__sub">Tous les lundis a 9h00 (à venir)</div></div><span class="badge badge--nouveau">Bientôt</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Résumé hebdomadaire</div><div class="setting-row__sub">Envoyé automatiquement chaque lundi à 9h00 (heure du Bénin) à contact@pirabellabs.com</div></div><span class="badge badge--converti">Actif</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Sécurité</div><div class="card__sub">Accès et session</div></div></div>
@@ -925,6 +926,17 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
           <tbody id="emailsBody"><tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- RENDEZ-VOUS VIEW -->
+    <div class="view" data-view="appointments">
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1.1rem;" id="apptFilters">
+        <button class="btn btn--ghost btn--sm is-active" onclick="loadAppointments('',this)">Tous</button>
+        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('demande',this)">Nouveaux</button>
+        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('confirme',this)">Confirmés</button>
+        <button class="btn btn--ghost btn--sm" onclick="loadAppointments('effectue',this)">Effectués</button>
+      </div>
+      <div id="apptList"><div class="empty">Chargement…</div></div>
     </div>
   </main>
 </div>
@@ -1060,7 +1072,7 @@ async function refreshCmBadge() {
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'], appointments: ['Rendez-vous', 'Demandes de RDV depuis le site — relances et suivi'] };
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
@@ -1079,6 +1091,7 @@ function setView(view) {
   if (view === 'team') loadTeam();
   if (view === 'tasks') loadTasks();
   if (view === 'emails') loadEmails();
+  if (view === 'appointments') loadAppointments();
   window.location.hash = view;
 }
 
@@ -2492,6 +2505,7 @@ async function init() {
   await loadMe();
   await Promise.all([loadStats(), loadLeads()]);
   refreshCmBadge();
+  api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){});
 
   const hash = (window.location.hash || '').replace('#', '');
   const validViews = Array.from(document.querySelectorAll('.sidebar__link[data-view]')).map(function(l){ return l.dataset.view; });
@@ -2685,6 +2699,85 @@ async function deleteTask(id) {
   if (!confirm('Supprimer cette tâche ?')) return;
   try { await api('/api/admin/tasks/' + id, { method: 'DELETE' }); toast('Tâche supprimée', 'success'); var mo = document.getElementById('taskModal'); if (mo) mo.remove(); loadTasks(); }
   catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+// =================== RENDEZ-VOUS ===================
+var APPT_STATUS = '';
+var APPT_LABELS = { demande: 'Nouveau', confirme: 'Confirmé', effectue: 'Effectué', annule: 'Annulé', no_show: 'Absent' };
+var APPT_CHAN = { visio: 'Visio', telephone: 'Téléphone', whatsapp: 'WhatsApp', presentiel: 'Présentiel' };
+var APPTS = [];
+async function loadAppointments(status, btn) {
+  if (typeof status === 'string') APPT_STATUS = status;
+  if (btn) { document.querySelectorAll('#apptFilters .btn').forEach(function(b){ b.classList.remove('is-active'); }); btn.classList.add('is-active'); }
+  var box = document.getElementById('apptList'); if (!box) return;
+  box.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    var d = await api('/api/admin/appointments' + (APPT_STATUS ? '?status=' + APPT_STATUS : ''));
+    APPTS = d.appointments || [];
+    refreshApptBadge((d.counts || {}).demande || 0);
+    if (!APPTS.length) { box.innerHTML = '<div class="empty"><span class="material-symbols-outlined">event_busy</span><p>Aucune demande de rendez-vous.</p></div>'; return; }
+    box.innerHTML = APPTS.map(function(a){
+      var stColor = { demande: 'var(--warning)', confirme: 'var(--success)', effectue: 'var(--info)', annule: 'var(--danger)', no_show: 'var(--danger)' }[a.status] || 'var(--text-muted)';
+      var opts = ['demande','confirme','effectue','annule','no_show'].map(function(s){ return '<option value="' + s + '"' + (a.status === s ? ' selected' : '') + '>' + APPT_LABELS[s] + '</option>'; }).join('');
+      return '<div class="card" style="margin-bottom:.8rem;padding:1.1rem 1.3rem;">' +
+        '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:flex-start;">' +
+          '<div><div style="font-family:var(--font-display);font-weight:700;font-size:1rem;">' + escape(a.name) + (a.company ? ' <span style="color:var(--text-muted);font-weight:400;">· ' + escape(a.company) + '</span>' : '') + '</div>' +
+          '<div style="font-size:.82rem;color:var(--text-muted);margin-top:.2rem;"><span class="material-symbols-outlined" style="font-size:.95rem;vertical-align:middle;">mail</span> ' + escape(a.email) + (a.phone ? ' &nbsp;·&nbsp; <span class="material-symbols-outlined" style="font-size:.95rem;vertical-align:middle;">call</span> ' + escape(a.phone) : '') + '</div></div>' +
+          '<span style="color:' + stColor + ';font-weight:700;font-size:.78rem;white-space:nowrap;">● ' + (APPT_LABELS[a.status] || a.status) + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin:.7rem 0;font-size:.84rem;color:var(--text);">' +
+          '<span><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;color:var(--accent);">event</span> <strong>' + escape(a.preferredDate || '?') + '</strong>' + (a.preferredTime ? ' à ' + escape(a.preferredTime) : '') + '</span>' +
+          '<span><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;color:var(--accent);">videocam</span> ' + (APPT_CHAN[a.channel] || a.channel) + '</span>' +
+          (a.subject ? '<span><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;color:var(--accent);">subject</span> ' + escape(a.subject) + '</span>' : '') +
+        '</div>' +
+        (a.message ? '<p style="margin:.2rem 0 .6rem;color:var(--text-muted);font-size:.85rem;line-height:1.55;white-space:pre-wrap;">' + escape(a.message) + '</p>' : '') +
+        '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.6rem;padding-top:.7rem;border-top:1px solid var(--border);">' +
+          '<select onchange="setApptStatus(\'' + a._id + '\',this.value)" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.4rem .6rem;border-radius:8px;font-size:.8rem;">' + opts + '</select>' +
+          '<button class="btn btn--sm" onclick="openApptReminder(\'' + a._id + '\')"><span class="material-symbols-outlined">send</span> Rappel / message</button>' +
+          (a.remindersSent ? '<span style="font-size:.72rem;color:var(--text-faint);">' + a.remindersSent + ' rappel(s) envoyé(s)</span>' : '') +
+          '<button class="btn btn--ghost btn--sm" style="color:var(--danger);margin-left:auto;" onclick="deleteAppt(\'' + a._id + '\')" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) { box.innerHTML = '<div class="empty" style="color:var(--danger);">Erreur : ' + escape(e.message) + '</div>'; }
+}
+async function setApptStatus(id, status) {
+  try { await api('/api/admin/appointments/' + id, { method: 'PATCH', body: { status: status } }); toast('Statut mis à jour ✓', 'success'); loadAppointments(APPT_STATUS); }
+  catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+async function deleteAppt(id) {
+  if (!confirm('Supprimer cette demande de rendez-vous ?')) return;
+  try { await api('/api/admin/appointments/' + id, { method: 'DELETE' }); toast('Supprimé', 'success'); loadAppointments(APPT_STATUS); }
+  catch(e) { toast(e.message || 'Erreur', 'error'); }
+}
+function openApptReminder(id) {
+  var a = APPTS.find(function(x){ return x._id === id; }); if (!a) return;
+  var old = document.getElementById('apptRemindModal'); if (old) old.remove();
+  var inp = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.6rem .8rem;border-radius:8px;font-size:.9rem;';
+  var when = (a.preferredDate || '') + (a.preferredTime ? ' à ' + a.preferredTime : '');
+  var defaultMsg = 'Petit rappel de notre rendez-vous prévu le ' + when + ' (' + (APPT_CHAN[a.channel] || a.channel) + ').\n\nLien de connexion / détails : \n\nÀ très vite,\nLissanon Gildas — Pirabel Labs';
+  var mod = document.createElement('div'); mod.id = 'apptRemindModal';
+  mod.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  mod.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;max-width:34rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;"><div style="font-family:var(--font-display);font-weight:800;font-size:1.15rem;">Rappel / message</div>' +
+    '<button onclick="document.getElementById(\'apptRemindModal\').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.9rem;">À : ' + escape(a.name) + ' &lt;' + escape(a.email) + '&gt;</div>' +
+    '<label style="display:block;font-size:.76rem;font-weight:600;margin-bottom:.3rem;color:var(--text-muted);">Sujet</label><input id="arSubject" style="' + inp + 'margin-bottom:.8rem;" value="Rappel de votre rendez-vous — Pirabel Labs">' +
+    '<label style="display:block;font-size:.76rem;font-weight:600;margin-bottom:.3rem;color:var(--text-muted);">Message (tu peux coller un lien)</label><textarea id="arMsg" rows="7" style="' + inp + 'resize:vertical;font-family:inherit;">' + escape(defaultMsg) + '</textarea>' +
+    '<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.2rem;"><button class="btn btn--ghost btn--sm" onclick="document.getElementById(\'apptRemindModal\').remove()">Annuler</button>' +
+    '<button class="btn btn--sm" id="arSend"><span class="material-symbols-outlined">send</span> Envoyer</button></div></div>';
+  document.body.appendChild(mod);
+  document.getElementById('arSend').onclick = async function(){
+    var subject = document.getElementById('arSubject').value.trim();
+    var message = document.getElementById('arMsg').value.trim();
+    if (!message) { toast('Message vide', 'error'); return; }
+    this.disabled = true; this.textContent = 'Envoi…';
+    try { var r = await api('/api/admin/appointments/' + id + '/remind', { method: 'POST', body: { subject: subject, message: message } }); toast(r.message || 'Envoyé ✓', 'success'); document.getElementById('apptRemindModal').remove(); loadAppointments(APPT_STATUS); }
+    catch(e) { toast(e.message || 'Erreur', 'error'); this.disabled = false; this.textContent = 'Envoyer'; }
+  };
+}
+function refreshApptBadge(n) {
+  var b = document.getElementById('apptBadge'); if (!b) return;
+  if (n > 0) { b.textContent = n; b.style.display = ''; } else { b.style.display = 'none'; }
 }
 
 // =================== E-MAILS ENVOYÉS ===================

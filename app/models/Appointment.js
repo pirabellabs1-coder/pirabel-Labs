@@ -15,6 +15,7 @@ const appointmentSchema = new mongoose.Schema({
   status: { type: String, enum: ['demande', 'confirme', 'effectue', 'annule', 'no_show'], default: 'demande', index: true },
   publicToken: { type: String, index: true },   // jeton du lien client (modifier / annuler)
   modifiedByClientAt: { type: Date },           // dernière modification faite par le client
+  clientReason: { type: String, default: '', maxlength: 1000 },  // motif du dernier changement/annulation par le client
   remindersSent: { type: Number, default: 0 },
   lastReminderAt: { type: Date },
   internalNotes: { type: String, default: '', maxlength: 3000 },

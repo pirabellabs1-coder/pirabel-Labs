@@ -2764,6 +2764,7 @@ async function loadAppointments(status, btn) {
           (a.subject ? '<span><span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;color:var(--accent);">subject</span> ' + escape(a.subject) + '</span>' : '') +
         '</div>' +
         (a.message ? '<p style="margin:.2rem 0 .6rem;color:var(--text-muted);font-size:.85rem;line-height:1.55;white-space:pre-wrap;">' + escape(a.message) + '</p>' : '') +
+        (a.clientReason ? '<div style="margin:.2rem 0 .6rem;padding:.5rem .75rem;border-left:3px solid var(--accent);background:var(--surface);border-radius:6px;font-size:.82rem;"><span style="color:var(--text-faint);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;">Motif client' + (a.modifiedByClientAt ? ' · modifié le ' + fmtDate(a.modifiedByClientAt) : '') + '</span><div style="color:var(--text);margin-top:.15rem;white-space:pre-wrap;">' + escape(a.clientReason) + '</div></div>' : '') +
         '<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.6rem;padding-top:.7rem;border-top:1px solid var(--border);">' +
           '<select onchange="setApptStatus(\'' + a._id + '\',this.value)" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.4rem .6rem;border-radius:8px;font-size:.8rem;">' + opts + '</select>' +
           '<button class="btn btn--ghost btn--sm" onclick="openApptEditor(\'' + a._id + '\')"><span class="material-symbols-outlined">edit_calendar</span> Modifier</button>' +

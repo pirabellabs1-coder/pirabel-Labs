@@ -313,17 +313,31 @@ app.get('/rdv/:token', async (req, res) => {
     const opt = (v, sel) => '<option' + (v === sel ? ' selected' : '') + '>' + v + '</option>';
     const chanOpt = (k) => '<option value="' + k + '"' + (a.channel === k ? ' selected' : '') + '>' + RDV_CHAN[k] + '</option>';
     const inner = '<span class="b">Pirabel Labs</span><h1>Votre rendez-vous</h1>' +
-      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez modifier le créneau ci-dessous ou annuler. Lissanon Gildas est prévenu automatiquement.</p>' +
+      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez déplacer ce rendez-vous ou l\'annuler. Lissanon Gildas est prévenu automatiquement.</p>' +
       '<div id="msg" class="msg"></div>' +
+      '<div id="form">' +
       '<label>Date souhaitée</label><input id="d" type="date" value="' + escapeHtml(a.preferredDate || '') + '">' +
       '<div class="row"><div><label>Heure</label><select id="t">' + ['', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map(v => '<option' + (v === a.preferredTime ? ' selected' : '') + '>' + (v || 'Indifférent') + '</option>').join('') + '</select></div>' +
       '<div><label>Comment&nbsp;?</label><select id="c">' + ['visio', 'whatsapp', 'telephone', 'presentiel'].map(chanOpt).join('') + '</select></div></div>' +
-      '<div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.6rem"><button class="btn btn--p" id="save"><span class="material-symbols-outlined">event_available</span> Enregistrer le changement</button>' +
-      '<button class="btn btn--g" id="cancel"><span class="material-symbols-outlined">cancel</span> Annuler le RDV</button></div>' +
-      '<script>var T="' + token + '";function show(ok,t){var m=document.getElementById("msg");m.style.display="block";m.style.cssText="margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=t;}' +
+      '<label>Motif <span style="color:#FF5500">*</span> <span style="font-weight:400;color:rgba(229,226,225,.45)">(obligatoire pour déplacer ou annuler)</span></label>' +
+      '<textarea id="r" rows="2" placeholder="Ex. imprévu, conflit d\'agenda, besoin d\'un autre créneau…" style="width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit;resize:vertical"></textarea>' +
+      '<div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.4rem"><button class="btn btn--p" id="save"><span class="material-symbols-outlined">event_available</span> Enregistrer le changement</button>' +
+      '<button class="btn btn--g" id="cancel" style="color:#f87171;border-color:rgba(248,113,113,.4)"><span class="material-symbols-outlined">cancel</span> Annuler le rendez-vous</button></div>' +
+      // Bloc de confirmation d'annulation (inline, masqué) — pas de pop-up navigateur
+      '<div id="cancelBox" style="display:none;margin-top:1.2rem;padding:1.1rem 1.2rem;border:1px solid rgba(248,113,113,.35);background:rgba(248,113,113,.08);border-radius:12px;">' +
+        '<div style="font-weight:700;color:#f87171;margin-bottom:.4rem;">Confirmer l\'annulation&nbsp;?</div>' +
+        '<p style="margin:0 0 .6rem;font-size:.88rem;">Indiquez le motif ci-dessus, puis confirmez. Cette action est définitive.</p>' +
+        '<div style="display:flex;gap:.6rem;flex-wrap:wrap;"><button class="btn btn--g" id="cancelBack">Garder le rendez-vous</button>' +
+        '<button class="btn" id="cancelYes" style="background:#f87171;color:#0e0e0e"><span class="material-symbols-outlined">delete</span> Oui, annuler</button></div>' +
+      '</div>' +
+      '</div>' +
+      '<script>var T="' + token + '";function show(ok,t){var m=document.getElementById("msg");m.style.display="block";m.style.cssText="margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=t;m.scrollIntoView({behavior:"smooth",block:"center"});}' +
+      'function reason(){return (document.getElementById("r").value||"").trim();}' +
       'async function post(b){return (await fetch("/api/rdv/"+T,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)})).json();}' +
-      'document.getElementById("save").onclick=async function(){this.disabled=true;try{var r=await post({action:"reschedule",date:document.getElementById("d").value,time:document.getElementById("t").value==="Indifférent"?"":document.getElementById("t").value,channel:document.getElementById("c").value});if(r.success)show(true,"<strong>C\\u0027est noté&nbsp;!</strong> Votre nouveau créneau a été enregistré et transmis à Pirabel Labs.");else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}this.disabled=false;};' +
-      'document.getElementById("cancel").onclick=async function(){if(!confirm("Annuler définitivement ce rendez-vous ?"))return;this.disabled=true;try{var r=await post({action:"cancel"});if(r.success){show(true,"Votre rendez-vous a été annulé. À bientôt&nbsp;!");}else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}};<\/script>';
+      'document.getElementById("save").onclick=async function(){if(reason().length<3){show(false,"Merci d\\u0027indiquer un motif (au moins quelques mots) pour ce changement.");return;}this.disabled=true;try{var r=await post({action:"reschedule",date:document.getElementById("d").value,time:document.getElementById("t").value==="Indifférent"?"":document.getElementById("t").value,channel:document.getElementById("c").value,reason:reason()});if(r.success)show(true,"<strong>C\\u0027est noté&nbsp;!</strong> Votre nouveau créneau a été enregistré et transmis à Pirabel Labs.");else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}this.disabled=false;};' +
+      'document.getElementById("cancel").onclick=function(){document.getElementById("cancelBox").style.display="block";document.getElementById("cancelBox").scrollIntoView({behavior:"smooth",block:"center"});};' +
+      'document.getElementById("cancelBack").onclick=function(){document.getElementById("cancelBox").style.display="none";};' +
+      'document.getElementById("cancelYes").onclick=async function(){if(reason().length<3){show(false,"Merci d\\u0027indiquer le motif de l\\u0027annulation dans le champ ci-dessus.");return;}this.disabled=true;try{var r=await post({action:"cancel",reason:reason()});if(r.success){document.getElementById("form").style.display="none";show(true,"<strong>Rendez-vous annulé.</strong> Merci de nous avoir prévenus. Vous pouvez en reprendre un quand vous le souhaitez sur pirabellabs.com/contact.");}else{show(false,r.error||"Erreur.");this.disabled=false;}}catch(e){show(false,"Erreur réseau.");this.disabled=false;}};<\/script>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(page(inner));
   } catch (e) { console.error('[rdv.page]', e.message); res.status(500).send('Erreur'); }
 });
@@ -334,20 +348,22 @@ app.post('/api/rdv/:token', contactLimiter, limitBody(10), async (req, res) => {
     const a = await Appointment.findOne({ publicToken: token });
     if (!a) return res.status(404).json({ error: 'Rendez-vous introuvable.' });
     const action = req.body.action;
+    const reason = sanitize(req.body.reason || '', 1000);
     if (action === 'cancel') {
-      a.status = 'annule'; a.modifiedByClientAt = new Date(); await a.save();
+      if (!reason || reason.length < 3) return res.status(400).json({ error: 'Merci d\'indiquer un motif d\'annulation.' });
+      a.status = 'annule'; a.clientReason = reason; a.modifiedByClientAt = new Date(); await a.save();
     } else if (action === 'reschedule') {
       const d = sanitize(req.body.date || '', 10);
       if (!d) return res.status(400).json({ error: 'Date requise.' });
+      if (!reason || reason.length < 3) return res.status(400).json({ error: 'Merci d\'indiquer un motif du changement.' });
       a.preferredDate = d;
       a.preferredTime = sanitize(req.body.time || '', 10);
       if (['visio', 'telephone', 'whatsapp', 'presentiel'].includes(req.body.channel)) a.channel = req.body.channel;
-      if (a.status === 'effectue' || a.status === 'no_show') a.status = 'demande';
-      else if (a.status === 'confirme') a.status = 'demande'; // à reconfirmer
-      a.modifiedByClientAt = new Date(); await a.save();
+      if (['effectue', 'no_show', 'confirme'].includes(a.status)) a.status = 'demande'; // à reconfirmer
+      a.clientReason = reason; a.modifiedByClientAt = new Date(); await a.save();
     } else return res.status(400).json({ error: 'Action invalide.' });
 
-    // Prévenir l'admin
+    // Prévenir l'admin (avec le motif)
     const when = a.preferredDate + (a.preferredTime ? (' à ' + a.preferredTime) : '');
     sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
@@ -356,7 +372,8 @@ app.post('/api/rdv/:token', contactLimiter, limitBody(10), async (req, res) => {
         headerType: 'hero', preheader: 'Modification de rendez-vous par le client',
         title: action === 'cancel' ? 'Rendez-vous annulé par le client' : 'Rendez-vous modifié par le client',
         body: '<p style="font-size:15px;color:rgba(229,226,225,0.85);line-height:1.7;"><strong>' + escapeHtml(a.name) + '</strong> (' + escapeHtml(a.email) + ')' +
-          (action === 'cancel' ? ' a annulé son rendez-vous.' : ' a déplacé son rendez-vous au <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> (' + escapeHtml(RDV_CHAN[a.channel]) + ').') + '</p>',
+          (action === 'cancel' ? ' a annulé son rendez-vous.' : ' a déplacé son rendez-vous au <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> (' + escapeHtml(RDV_CHAN[a.channel]) + ').') + '</p>' +
+          '<div style="margin-top:14px;padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><div style="font-size:12px;color:rgba(229,226,225,0.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Motif indiqué</div><div style="font-size:14px;color:#e5e2e1;line-height:1.6;white-space:pre-wrap;">' + escapeHtml(reason) + '</div></div>',
         cta: 'Ouvrir l\'admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
       })
     ).catch(e => console.error('[rdv.client] admin email error:', e.message));

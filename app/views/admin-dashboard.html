@@ -556,7 +556,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <!-- LEADS VIEW -->
     <div class="view" data-view="leads">
       <div class="filters">
-        <div class="search-wrap"><span class="material-symbols-outlined">search</span><input class="search-input" type="text" placeholder="Rechercher par nom, email, entreprise..." id="leadsSearch"></div>
+        <div class="search-wrap"><span class="material-symbols-outlined">search</span><input class="search-input" type="text" placeholder="Rechercher : entreprise, ville, téléphone, niche…" id="leadsSearch"></div>
         <select class="filter" id="leadsStatusFilter">
           <option value="">Tous les statuts</option>
           <option value="nouveau">Nouveau</option>
@@ -566,15 +566,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
           <option value="perdu">Perdu</option>
           <option value="newsletter_ok">Newsletter OK</option>
         </select>
+        <select class="filter" id="leadsSourceFilter">
+          <option value="">Toutes sources</option>
+          <option value="prospection">Prospection (à froid)</option>
+          <option value="site">Demandes du site</option>
+        </select>
         <select class="filter" id="leadsServiceFilter">
-          <option value="">Tous les services</option>
+          <option value="">Toutes niches</option>
         </select>
       </div>
+      <div id="leadsCount" style="font-size:.8rem;color:var(--text-muted);margin:-.4rem 0 .8rem;"></div>
 
       <div class="table-wrap">
         <table class="table">
-          <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Entreprise</th><th>Service</th><th>Statut</th><th>Date</th></tr></thead>
-          <tbody id="leadsTableBody"><tr><td colspan="7" class="empty">Chargement...</td></tr></tbody>
+          <thead><tr><th>Entreprise / Contact</th><th>Ville</th><th>Niche</th><th>Téléphone</th><th>Statut</th><th>Ajouté</th></tr></thead>
+          <tbody id="leadsTableBody"><tr><td colspan="6" class="empty">Chargement...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -994,6 +1000,7 @@ const STATE = {
   search: '',
   filterStatus: '',
   filterService: '',
+  filterSource: '',
 };
 
 const CHART_COLORS = {
@@ -2109,20 +2116,27 @@ function renderLeadsTable() {
   let leads = STATE.leads;
   if (STATE.search) {
     const s = STATE.search.toLowerCase();
-    leads = leads.filter(function(l){ return (l.name||'').toLowerCase().includes(s) || (l.email||'').toLowerCase().includes(s) || (l.company||'').toLowerCase().includes(s); });
+    leads = leads.filter(function(l){ var c=(l.clientData||{}); return (l.name||'').toLowerCase().includes(s) || (l.email||'').toLowerCase().includes(s) || (l.company||'').toLowerCase().includes(s) || (l.phone||'').toLowerCase().includes(s) || (c.city||'').toLowerCase().includes(s) || (l.service||'').toLowerCase().includes(s); });
   }
   if (STATE.filterStatus) leads = leads.filter(function(l){ return l.status === STATE.filterStatus; });
   if (STATE.filterService) leads = leads.filter(function(l){ return l.service === STATE.filterService; });
-  if (!leads.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty"><span class="material-symbols-outlined">filter_alt_off</span><p>Aucun lead avec ces filtres</p></td></tr>'; return; }
-  tbody.innerHTML = leads.map(function(l){
-    return '<tr data-id="' + l._id + '">' +
-      '<td><strong>' + escape(l.name) + '</strong></td>' +
-      '<td>' + escape(l.email) + '</td>' +
-      '<td>' + escape(l.phone || '--') + '</td>' +
-      '<td>' + escape(l.company || '--') + '</td>' +
-      '<td>' + escape(l.service || '--') + '</td>' +
+  if (STATE.filterSource === 'prospection') leads = leads.filter(function(l){ return l.source === 'prospection'; });
+  else if (STATE.filterSource === 'site') leads = leads.filter(function(l){ return l.source !== 'prospection'; });
+  var cnt = document.getElementById('leadsCount');
+  if (cnt) cnt.textContent = leads.length + ' contact' + (leads.length>1?'s':'') + ' affiché' + (leads.length>1?'s':'');
+  if (!leads.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty"><span class="material-symbols-outlined">filter_alt_off</span><p>Aucun contact avec ces filtres</p></td></tr>'; return; }
+  tbody.innerHTML = leads.slice(0, 600).map(function(l){
+    var c = l.clientData || {};
+    var waDigits = (l.phone||'').replace(/[^0-9]/g,'');
+    var tel = l.phone ? (waDigits ? '<a href="https://wa.me/'+waDigits+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--accent);">' + escape(l.phone) + '</a>' : escape(l.phone)) : '<span style="color:var(--text-faint)">—</span>';
+    var sub = (l.company && l.company !== l.name) ? l.company : (l.email || '');
+    return '<tr data-id="' + l._id + '" style="cursor:pointer;">' +
+      '<td><strong>' + escape(l.name) + '</strong>' + (sub ? '<div style="font-size:.74rem;color:var(--text-muted);">' + escape(sub) + '</div>' : '') + '</td>' +
+      '<td>' + (c.city ? escape(c.city) : '—') + '</td>' +
+      '<td>' + (l.service ? '<span class="badge badge--nouveau">' + escape(l.service) + '</span>' : '—') + '</td>' +
+      '<td>' + tel + '</td>' +
       '<td>' + statusBadge(l.status || 'nouveau') + '</td>' +
-      '<td>' + fmtDate(l.createdAt) + '</td>' +
+      '<td style="white-space:nowrap;">' + fmtDate(l.createdAt) + '</td>' +
       '</tr>';
   }).join('');
   tbody.querySelectorAll('tr').forEach(function(r){ r.addEventListener('click', function(){ openDetail(r.dataset.id); }); });
@@ -2132,7 +2146,7 @@ function populateServiceFilter() {
   const services = Array.from(new Set(STATE.leads.map(function(l){ return l.service; }).filter(Boolean)));
   const sel = document.getElementById('leadsServiceFilter');
   const current = sel.value;
-  sel.innerHTML = '<option value="">Tous les services</option>' + services.map(function(s){ return '<option value="' + escape(s) + '">' + escape(s) + '</option>'; }).join('');
+  sel.innerHTML = '<option value="">Toutes niches</option>' + services.sort().map(function(s){ return '<option value="' + escape(s) + '">' + escape(s) + '</option>'; }).join('');
   sel.value = current;
 }
 
@@ -2439,6 +2453,7 @@ async function init() {
   document.getElementById('leadsSearch').addEventListener('input', function(e){ STATE.search = e.target.value; renderLeadsTable(); });
   document.getElementById('leadsStatusFilter').addEventListener('change', function(e){ STATE.filterStatus = e.target.value; renderLeadsTable(); });
   document.getElementById('leadsServiceFilter').addEventListener('change', function(e){ STATE.filterService = e.target.value; renderLeadsTable(); });
+  var lsf = document.getElementById('leadsSourceFilter'); if (lsf) lsf.addEventListener('change', function(e){ STATE.filterSource = e.target.value; renderLeadsTable(); });
 
   // Livres blancs handlers
   const lbRefresh = document.getElementById('lbRefresh');

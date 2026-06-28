@@ -558,12 +558,22 @@ app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
   try {
     const status = sanitize(req.query.status || '', 30);
     const type = sanitize(req.query.type || '', 30);
+    const stage = sanitize(req.query.stage || '', 30);
+    const source = sanitize(req.query.source || '', 40);
+    const search = sanitize(req.query.q || '', 80);
     const livreBlanc = sanitize(req.query.livreBlanc || '', 100);
     const q = {};
     if (['nouveau', 'lu', 'en_cours', 'converti', 'perdu', 'newsletter_ok'].includes(status)) q.status = status;
     if (['contact', 'livre-blanc'].includes(type)) q.type = type;
+    if (['prospect', 'qualifie', 'devis_envoye', 'client', 'inactif'].includes(stage)) q.stage = stage;
+    if (source === 'prospection') q.source = 'prospection';
+    else if (source === 'site') q.source = { $ne: 'prospection' };
     if (livreBlanc) q.livreBlancSlug = livreBlanc;
-    const leads = await Lead.find(q).sort({ createdAt: -1 }).limit(500);
+    if (search) {
+      const rx = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      q.$or = [{ name: rx }, { company: rx }, { email: rx }, { phone: rx }, { 'clientData.city': rx }, { 'clientData.industry': rx }];
+    }
+    const leads = await Lead.find(q).sort({ createdAt: -1 }).limit(1500);
     const stats = await Lead.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
     const byType = await Lead.aggregate([{ $group: { _id: '$type', count: { $sum: 1 } } }]);
     const byLivreBlanc = await Lead.aggregate([
@@ -576,6 +586,37 @@ app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
     console.error('[leads] list error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
   }
+});
+
+// Import en masse de prospects (prospection à froid). Dédup par entreprise+téléphone/e-mail.
+app.post('/api/admin/leads/import', auth, adminOnly, limitBody(4000), async (req, res) => {
+  try {
+    const items = Array.isArray(req.body.prospects) ? req.body.prospects.slice(0, 3000) : [];
+    if (!items.length) return res.status(400).json({ error: 'Aucun prospect fourni.' });
+    let created = 0, skipped = 0;
+    for (const p of items) {
+      const company = sanitize(p.company || p.name || '', 120);
+      if (!company) { skipped++; continue; }
+      const phone = sanitize(p.phone || '', 30);
+      const email = sanitizeEmail(p.email || '');
+      const city = sanitize(p.city || '', 100);
+      // Dédup : même entreprise + (même tel OU même e-mail OU même ville)
+      const dupQ = { source: 'prospection', company };
+      if (phone) dupQ.phone = phone; else if (email) dupQ.email = email; else if (city) dupQ['clientData.city'] = city;
+      const exists = await Lead.findOne(dupQ).select('_id').lean();
+      if (exists) { skipped++; continue; }
+      await Lead.create({
+        type: 'contact', stage: 'prospect', status: 'nouveau',
+        name: company, company, email, phone,
+        service: sanitize(p.niche || '', 60),
+        source: 'prospection', newsletterOptIn: false,
+        clientData: { city, industry: sanitize(p.niche || '', 100), website: sanitize(p.website || '', 300), notes: sanitize(p.notes || '', 5000) },
+        internalNotes: sanitize(p.notes || '', 5000),
+      });
+      created++;
+    }
+    res.json({ success: true, created, skipped, received: items.length });
+  } catch (err) { console.error('[leads.import]', err.message); res.status(500).json({ error: 'Erreur import.', message: err.message }); }
 });
 
 // Bulk email aux leads (newsletter / relance / annonce)

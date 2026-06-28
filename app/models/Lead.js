@@ -23,7 +23,9 @@ const leadSchema = new mongoose.Schema({
 
   // Données soumises (communes contact + livre-blanc)
   name: { type: String, required: true, trim: true, maxlength: 120 },
-  email: { type: String, required: true, lowercase: true, trim: true, maxlength: 200 },
+  // Optionnel : les prospects importés (prospection à froid) n'ont souvent qu'un téléphone.
+  // Les formulaires publics valident l'e-mail côté API avant création.
+  email: { type: String, default: '', lowercase: true, trim: true, maxlength: 200 },
   phone: { type: String, default: '', trim: true, maxlength: 30 },
   company: { type: String, default: '', trim: true, maxlength: 120 },
 

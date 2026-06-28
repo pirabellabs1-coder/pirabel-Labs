@@ -2329,13 +2329,74 @@ function renderAnalyticsCharts() {
 }
 
 // ============ Detail panel ============
+// Modèles de prospection par niche : message WhatsApp court + e-mail. {E} = nom de l'entreprise.
+var PROSPECT_TEMPLATES = {
+  'Clinique': {
+    wa: 'Bonjour, je suis Lissanon Gildas de Pirabel Labs (agence web à Abomey-Calavi). En parcourant les cliniques de la région, je suis tombé sur {E}. Aujourd\'hui, beaucoup de patients vérifient une clinique en ligne avant d\'appeler : un site clair et une fiche Google bien gérée rassurent et amènent des rendez-vous. Je vous offre un audit gratuit de votre présence en ligne, sans engagement. Ça vous intéresse ?',
+    sujet: 'Une présence en ligne qui rassure vos patients — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi.\n\nDe plus en plus de patients consultent Internet avant de choisir une clinique. Un site clair (services, horaires, prise de rendez-vous) et une fiche Google bien gérée font une vraie différence sur le nombre de nouveaux patients.\n\nJe vous propose un audit gratuit et sans engagement de la présence en ligne de {E} : ce qui fonctionne, ce qui freine, et 2 ou 3 actions prioritaires.\n\nSeriez-vous disponible 15 minutes cette semaine ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'Hotel-Restaurant': {
+    wa: 'Bonjour, Lissanon Gildas de Pirabel Labs (agence web, Abomey-Calavi). J\'ai repéré {E} et je me demandais : vos clients peuvent-ils voir votre menu et vous réserver facilement en ligne ? Un site soigné + Instagram + une fiche Google à jour, ça remplit les tables. Je vous offre un audit gratuit de votre visibilité, sans engagement. Intéressé ?',
+    sujet: 'Remplir vos tables grâce au digital — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs (agence web et marketing à Abomey-Calavi).\n\nDans la restauration et l\'hôtellerie, les clients regardent les photos, le menu et les avis avant de réserver. Un site agréable, un Instagram vivant et une fiche Google à jour transforment cette recherche en réservations.\n\nJe vous offre un audit gratuit et sans engagement de la présence en ligne de {E}, avec quelques recommandations concrètes.\n\nUn court échange de 15 minutes cette semaine vous conviendrait-il ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'École': {
+    wa: 'Bonjour, Lissanon Gildas de Pirabel Labs (agence web à Abomey-Calavi). Les parents choisissent souvent une école après l\'avoir vue en ligne. {E} dispose-t-il d\'un site qui rassure et facilite les inscriptions ? Je vous propose un audit gratuit de votre présence digitale, sans engagement. Ça vous dit ?',
+    sujet: 'Faciliter vos inscriptions grâce à votre site — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs (agence web et marketing, Abomey-Calavi).\n\nDe plus en plus de parents se renseignent en ligne avant d\'inscrire leur enfant. Un site clair (programme, valeurs, photos, formulaire de pré-inscription) et une bonne visibilité Google rassurent et génèrent des demandes.\n\nJe vous offre un audit gratuit et sans engagement de la présence en ligne de {E}, avec 2 ou 3 priorités concrètes.\n\nAuriez-vous 15 minutes cette semaine ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'Immobilier': {
+    wa: 'Bonjour, Lissanon Gildas de Pirabel Labs (agence web, Abomey-Calavi). Dans l\'immobilier, un site avec de belles annonces et un bon référencement Google attire des acheteurs sérieux. J\'ai vu {E} et j\'aimerais vous offrir un audit gratuit de votre visibilité en ligne, sans engagement. Intéressé ?',
+    sujet: 'Attirer des acheteurs sérieux en ligne — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs (agence web et marketing à Abomey-Calavi).\n\nDans l\'immobilier, la première visite se fait en ligne : un site avec des annonces claires, de belles photos et un bon référencement Google fait la différence entre un contact curieux et un acheteur sérieux.\n\nJe vous propose un audit gratuit et sans engagement de la présence en ligne de {E}.\n\nUn échange de 15 minutes cette semaine vous conviendrait-il ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'Cabinet pro': {
+    wa: 'Bonjour, Lissanon Gildas de Pirabel Labs (agence web à Abomey-Calavi). Pour un cabinet comme {E}, un site professionnel et de bons avis Google inspirent confiance avant même le premier rendez-vous. Je vous offre un audit gratuit de votre présence en ligne, sans engagement. On en parle ?',
+    sujet: 'Inspirer confiance avant le premier rendez-vous — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs (agence web et marketing, Abomey-Calavi).\n\nPour un cabinet (conseil, droit, expertise, santé…), la confiance se gagne en ligne avant le premier contact : un site professionnel, des avis Google et un message clair sur votre expertise.\n\nJe vous offre un audit gratuit et sans engagement de la présence en ligne de {E}, avec des recommandations concrètes.\n\nSeriez-vous disponible 15 minutes cette semaine ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'Commerce': {
+    wa: 'Bonjour, Lissanon Gildas de Pirabel Labs (agence web, Abomey-Calavi). Vos clients vous cherchent sur Google et Instagram avant de venir : {E} est-il bien visible ? Je vous propose un audit gratuit de votre présence en ligne (site, réseaux, fiche Google), sans engagement. Ça vous intéresse ?',
+    sujet: 'Être trouvé par vos clients en ligne — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs (agence web et marketing à Abomey-Calavi).\n\nVos futurs clients vous cherchent sur Google et les réseaux avant de pousser la porte. Une boutique en ligne ou simplement une bonne visibilité (site, Instagram, fiche Google) attire plus de monde.\n\nJe vous offre un audit gratuit et sans engagement de la présence en ligne de {E}.\n\nUn court échange de 15 minutes cette semaine vous irait-il ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  },
+  'Autre': {
+    wa: 'Bonjour, je suis Lissanon Gildas de Pirabel Labs, agence web et marketing à Abomey-Calavi. J\'ai repéré {E} et j\'aimerais vous offrir un audit gratuit de votre présence en ligne (site, SEO, réseaux, fiche Google), sans engagement. Ça vous dit d\'en discuter ?',
+    sujet: 'Audit gratuit de votre présence en ligne — {E}',
+    email: 'Bonjour,\n\nJe suis Lissanon Gildas, fondateur de Pirabel Labs, agence web et marketing digital à Abomey-Calavi.\n\nJe vous propose un audit gratuit et sans engagement de la présence en ligne de {E} : site, référencement Google, réseaux sociaux et fiche d\'établissement. Vous repartez avec 2 ou 3 actions prioritaires, que vous travailliez avec nous ou non.\n\nAuriez-vous 15 minutes cette semaine ?\n\nBien à vous,\nLissanon Gildas — Pirabel Labs\nwww.pirabellabs.com'
+  }
+};
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(function(){ var o=btn.innerHTML; btn.innerHTML='<span class="material-symbols-outlined">check</span> Copié'; setTimeout(function(){ btn.innerHTML=o; }, 1500); });
+}
+function prospectMessageBlock(lead) {
+  if ((lead.source || '') !== 'prospection') return '';
+  var ent = lead.company || lead.name || 'votre entreprise';
+  var tpl = PROSPECT_TEMPLATES[lead.service] || PROSPECT_TEMPLATES['Autre'];
+  var wa = tpl.wa.replace(/\{E\}/g, ent);
+  var sujet = tpl.sujet.replace(/\{E\}/g, ent);
+  var email = tpl.email.replace(/\{E\}/g, ent);
+  var waDigits = (lead.phone || '').replace(/[^0-9]/g, '');
+  var waBtn = waDigits ? '<a class="btn btn--sm" style="justify-content:center;" href="https://wa.me/' + waDigits + '?text=' + encodeURIComponent(wa) + '" target="_blank" rel="noopener"><span class="material-symbols-outlined">chat</span> Ouvrir WhatsApp</a>' : '';
+  var emailBtn = lead.email ? '<button class="btn btn--ghost btn--sm" style="justify-content:center;" onclick="openCompose({leadId:\'' + lead._id + '\',email:\'' + escape(lead.email) + '\',subject:\'' + escape(sujet).replace(/'/g,"") + '\',message:' + JSON.stringify(email).replace(/"/g,'&quot;') + '})"><span class="material-symbols-outlined">mail</span> Pré-remplir l\'e-mail</button>' : '';
+  return '<div class="detail__field" style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.6rem;">' +
+    '<div class="detail__label" style="color:var(--accent);font-weight:700;">Message de prospection &middot; ' + escape(lead.service || 'Général') + '</div>' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem;font-size:.82rem;line-height:1.55;white-space:pre-wrap;margin:.5rem 0;">' + escape(wa) + '</div>' +
+    '<div style="display:flex;gap:.4rem;flex-wrap:wrap;">' + waBtn +
+      '<button class="btn btn--ghost btn--sm" style="justify-content:center;" onclick="copyToClipboard(' + JSON.stringify(wa).replace(/"/g,'&quot;') + ',this)"><span class="material-symbols-outlined">content_copy</span> Copier WhatsApp</button>' +
+      emailBtn +
+      '<button class="btn btn--ghost btn--sm" style="justify-content:center;" onclick="copyToClipboard(' + JSON.stringify(email).replace(/"/g,'&quot;') + ',this)"><span class="material-symbols-outlined">content_copy</span> Copier e-mail</button>' +
+    '</div></div>';
+}
+
 function openDetail(id) {
   const lead = STATE.leads.find(function(l){ return l._id === id; });
   if (!lead) return;
   STATE.currentLead = lead;
   document.getElementById('detailTitle').textContent = lead.name;
   const body = document.getElementById('detailBody');
-  body.innerHTML = '' +
+  body.innerHTML = prospectMessageBlock(lead) +
     '<div class="detail__field"><div class="detail__label">Email</div><div class="detail__value"><a href="mailto:' + escape(lead.email) + '">' + escape(lead.email) + '</a></div></div>' +
     (lead.phone ? '<div class="detail__field"><div class="detail__label">Téléphone</div><div class="detail__value"><a href="tel:' + escape(lead.phone) + '">' + escape(lead.phone) + '</a></div></div>' : '') +
     (lead.company ? '<div class="detail__field"><div class="detail__label">Entreprise</div><div class="detail__value">' + escape(lead.company) + '</div></div>' : '') +

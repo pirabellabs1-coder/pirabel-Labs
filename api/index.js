@@ -591,30 +591,32 @@ app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
 // Import en masse de prospects (prospection à froid). Dédup par entreprise+téléphone/e-mail.
 app.post('/api/admin/leads/import', auth, adminOnly, limitBody(4000), async (req, res) => {
   try {
-    const items = Array.isArray(req.body.prospects) ? req.body.prospects.slice(0, 3000) : [];
+    const items = Array.isArray(req.body.prospects) ? req.body.prospects.slice(0, 600) : [];
     if (!items.length) return res.status(400).json({ error: 'Aucun prospect fourni.' });
-    let created = 0, skipped = 0;
+    // Clés existantes (entreprise|tel) des prospects déjà importés — une seule requête.
+    const existing = await Lead.find({ source: 'prospection' }).select('company phone').lean();
+    const seen = new Set(existing.map(l => (l.company || '').toLowerCase() + '|' + (l.phone || '')));
+    let skipped = 0;
+    const docs = [];
     for (const p of items) {
       const company = sanitize(p.company || p.name || '', 120);
       if (!company) { skipped++; continue; }
       const phone = sanitize(p.phone || '', 30);
-      const email = sanitizeEmail(p.email || '');
-      const city = sanitize(p.city || '', 100);
-      // Dédup : même entreprise + (même tel OU même e-mail OU même ville)
-      const dupQ = { source: 'prospection', company };
-      if (phone) dupQ.phone = phone; else if (email) dupQ.email = email; else if (city) dupQ['clientData.city'] = city;
-      const exists = await Lead.findOne(dupQ).select('_id').lean();
-      if (exists) { skipped++; continue; }
-      await Lead.create({
+      const key = company.toLowerCase() + '|' + phone;
+      if (seen.has(key)) { skipped++; continue; }
+      seen.add(key);
+      const niche = sanitize(p.niche || '', 100);
+      docs.push({
         type: 'contact', stage: 'prospect', status: 'nouveau',
-        name: company, company, email, phone,
-        service: sanitize(p.niche || '', 60),
-        source: 'prospection', newsletterOptIn: false,
-        clientData: { city, industry: sanitize(p.niche || '', 100), website: sanitize(p.website || '', 300), notes: sanitize(p.notes || '', 5000) },
+        name: company, company, email: sanitizeEmail(p.email || ''), phone,
+        service: niche.slice(0, 60), source: 'prospection', newsletterOptIn: false,
+        clientData: { city: sanitize(p.city || '', 100), industry: niche, website: sanitize(p.website || '', 300), notes: sanitize(p.notes || '', 5000) },
         internalNotes: sanitize(p.notes || '', 5000),
+        createdAt: new Date(), updatedAt: new Date(),
       });
-      created++;
     }
+    let created = 0;
+    if (docs.length) { const r = await Lead.insertMany(docs, { ordered: false }); created = r.length; }
     res.json({ success: true, created, skipped, received: items.length });
   } catch (err) { console.error('[leads.import]', err.message); res.status(500).json({ error: 'Erreur import.', message: err.message }); }
 });

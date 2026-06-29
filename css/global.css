@@ -362,3 +362,12 @@ p { color: var(--text-muted); line-height: 1.7; }
 /* === FIX responsive : empêche le débordement des cartes plateformes (grille) sur mobile === */
 .plat-panel.is-active > * { min-width: 0; }
 .plat-panel__intro, .plat-panel__feat li, .plat-panel__name { overflow-wrap: break-word; word-break: break-word; }
+
+/* ===== Bouton WhatsApp flottant (toutes pages) ===== */
+.wa-float{position:fixed;right:18px;bottom:18px;z-index:9000;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(0,0,0,.32);transition:transform .2s, box-shadow .2s;text-decoration:none;}
+.wa-float:hover{transform:scale(1.08);box-shadow:0 10px 28px rgba(37,211,102,.45);}
+.wa-float svg{width:32px;height:32px;display:block;}
+.wa-float::before{content:"";position:absolute;inset:0;border-radius:50%;background:#25D366;z-index:-1;animation:waPulse 2.2s ease-out infinite;}
+@keyframes waPulse{0%{transform:scale(1);opacity:.55}70%{transform:scale(1.7);opacity:0}100%{transform:scale(1.7);opacity:0}}
+@media(max-width:600px){.wa-float{right:14px;bottom:14px;width:52px;height:52px}.wa-float svg{width:28px;height:28px}}
+@media(prefers-reduced-motion:reduce){.wa-float::before{animation:none}}

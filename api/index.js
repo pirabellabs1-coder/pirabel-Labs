@@ -997,6 +997,7 @@ function blogShell(headExtra, bodyHtml) {
     bodyHtml +
     '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
     siteNav.js +
+    '<a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>' +
     '<script defer src="/js/track.js"></script></body></html>';
 }
 function fmtFr(d) {

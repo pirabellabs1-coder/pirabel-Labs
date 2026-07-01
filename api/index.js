@@ -1958,6 +1958,7 @@ async function applyCaseBody(body, doc) {
   if (body.content != null) doc.content = sanitizeSoft(body.content, 100000);
   if (body.featuredImage != null) doc.featuredImage = sanitize(body.featuredImage, 2000);
   if (body.imageAlt != null) doc.imageAlt = sanitize(body.imageAlt, 200);
+  if (Array.isArray(body.gallery)) doc.gallery = body.gallery.map(u => sanitize(String(u), 300).trim()).filter(Boolean).slice(0, 30);
   if (body.projectUrl != null) {
     let u = sanitize(body.projectUrl, 300).trim();
     if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;        // ajoute https:// si absent
@@ -2022,6 +2023,21 @@ function casePlaceholder(c, i) {
     '<text x="44" y="225" font-family="Montserrat,Arial,sans-serif" font-weight="900" font-size="168" fill="#ffffff" opacity="0.13">' + escapeHtml(mono) + '</text>' +
     '<text x="48" y="300" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#ffffff" opacity="0.82">' + tag + '</text>' +
     '<text x="596" y="334" text-anchor="end" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="16" fill="#FF5500">Pirabel Labs</text></svg>';
+}
+// Flèches pointillées décoratives réutilisables (utilisent .dot-arrow de global.css).
+const DOT_VARIANTS = [
+  ['M14 20 C 150 20 90 94 208 94', 'M194 80 L212 95 L192 104'],
+  ['M10 62 C 60 22 110 100 160 62 C 196 34 216 78 234 60', 'M222 48 L236 60 L222 72'],
+  ['M14 18 Q 130 18 214 96', 'M200 82 L218 98 L198 106'],
+  ['M12 74 C 80 8 160 8 228 74', 'M216 62 L232 78 L214 86'],
+  ['M14 44 C 110 44 130 94 212 92', 'M200 80 L218 92 L200 104'],
+];
+function pageArrow(i) {
+  const v = DOT_VARIANTS[i % DOT_VARIANTS.length];
+  const mirror = (i % 2) ? ' dot-arrow--r' : '';
+  return '<div class="dot-arrow' + mirror + '" aria-hidden="true"><svg viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<path class="df" d="' + v[0] + '" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 15" opacity="0.55"/>' +
+    '<path d="' + v[1] + '" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>';
 }
 app.get('/realisations', async (req, res) => {
   try {
@@ -2288,6 +2304,19 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}' +
       '.cd-btn--g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
       '.cd-btn--g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
+      '.cd-eyebrow{display:inline-block;color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.9rem;border:1px solid rgba(255,85,0,.3);background:rgba(255,85,0,.06);padding:.35rem .85rem;border-radius:999px;}' +
+      '.cd-gwrap{max-width:60rem;margin:3.2rem auto 0;}' +
+      '.cd-gwrap>h2{font-family:"Space Grotesk",sans-serif;font-size:1.5rem;color:#fff;margin:0 0 .4rem;display:flex;align-items:center;gap:.65rem;line-height:1.2;}' +
+      '.cd-gwrap>h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;}' +
+      '.cd-gwrap>p{color:rgba(229,226,225,.6);font-size:.95rem;margin:0 0 1.4rem;}' +
+      '.cd-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,21rem),1fr));gap:1rem;}' +
+      '.cd-shot{display:block;border-radius:14px;overflow:hidden;border:1px solid rgba(229,226,225,.12);background:#0e0e0e;cursor:zoom-in;box-shadow:0 12px 30px rgba(0,0,0,.35);transition:transform .25s,border-color .25s;}' +
+      '.cd-shot:hover{transform:translateY(-4px);border-color:#FF5500;box-shadow:0 18px 40px rgba(0,0,0,.5);}' +
+      '.cd-shot img{display:block;width:100%;height:auto;}' +
+      '.cd-lb{position:fixed;inset:0;background:rgba(0,0,0,.93);display:none;align-items:center;justify-content:center;z-index:9999;padding:clamp(1rem,4vw,3rem);cursor:zoom-out;}' +
+      '.cd-lb.is-open{display:flex;}' +
+      '.cd-lb img{max-width:100%;max-height:92vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);}' +
+      '.cd-lb__x{position:absolute;top:1rem;right:1.3rem;color:#fff;font-size:2.2rem;background:none;border:none;cursor:pointer;line-height:1;}' +
       '@media(max-width:600px){.cd-body p{font-size:1rem;}.cd-body h2{font-size:1.28rem;}.cd-metric b{font-size:1.8rem;}}' +
       '</style>';
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
@@ -2301,16 +2330,33 @@ app.get('/realisations/:slug', async (req, res) => {
     const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cd-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
     // Met en valeur la liste de la stack technique (grille de puces)
     const contentHtml = String(c.content || '').replace(/(<h2>[^<]*[Ss]tack[^<]*<\/h2>\s*)<ul>/, '$1<ul class="cs-stack">');
+    // Flèches décoratives entre les sections du contenu (avant chaque <h2> sauf le premier)
+    let _sec = 0;
+    const contentArrowed = contentHtml.replace(/<h2/g, function () { _sec++; return _sec === 1 ? '<h2' : pageArrow(_sec) + '<h2'; });
+    const hasBody = !!contentHtml.trim();
+    // Galerie de captures d'écran (études de cas SEO, aperçus)
+    const gallery = Array.isArray(c.gallery) ? c.gallery.filter(Boolean) : [];
+    const gallerySection = gallery.length
+      ? '<section class="cd-gwrap"><h2>Aperçus du projet</h2><p>Cliquez sur une image pour l\'agrandir.</p><div class="cd-gallery">' +
+        gallery.map((g, i) => '<a class="cd-shot" href="' + escapeHtml(pubImg(g)) + '" data-full="' + escapeHtml(pubImg(g)) + '"><img src="' + escapeHtml(pubImg(g)) + '" alt="Aperçu ' + (i + 1) + ' — ' + escapeHtml(c.title) + '" loading="lazy"></a>').join('') +
+        '</div></section>'
+      : '';
+    const preCtaArrow = (hasBody || gallery.length) ? pageArrow(9) : '';
+    const lightbox = gallery.length ? '<script>(function(){var s=document.querySelectorAll(".cd-shot");if(!s.length)return;var lb=document.createElement("div");lb.className="cd-lb";lb.innerHTML=\'<button class="cd-lb__x" aria-label="Fermer">&times;</button><img alt="">\';document.body.appendChild(lb);var im=lb.querySelector("img");function op(u){im.src=u;lb.classList.add("is-open");}function cl(){lb.classList.remove("is-open");im.src="";}s.forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();op(a.getAttribute("data-full")||a.getAttribute("href"));});});lb.addEventListener("click",function(e){if(e.target===lb||e.target.classList.contains("cd-lb__x"))cl();});document.addEventListener("keydown",function(e){if(e.key==="Escape")cl();});})();</script>' : '';
     const body = '<main class="cd-wrap">' +
       '<a class="cd-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
       '<header class="cd-head">' +
+      '<div class="cd-eyebrow">Étude de cas</div>' +
       '<div class="cd-tags">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') + (c.inProgress ? '<span class="cd-wip"><span class="material-symbols-outlined">construction</span> En cours</span>' : '') + (c.confidential ? '<span class="cd-priv"><span class="material-symbols-outlined">lock</span> Projet confidentiel</span>' : '') + '</div>' +
       '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') +
       (visitBtn ? '<div class="cd-btns">' + visitBtn + '</div>' : '') + '</header>' +
       '<div class="cd-hero' + (c.featuredImage ? ' cd-hero--photo' : '') + '">' + heroInner + '</div>' +
       metrics + techSection +
-      '<div class="cd-body">' + contentHtml + '</div>' +
-      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
+      (hasBody ? '<div class="cd-body">' + contentArrowed + '</div>' : '') +
+      gallerySection +
+      preCtaArrow +
+      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez-nous de votre besoin : on étudie votre projet et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
+      lightbox +
       '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }

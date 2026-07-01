@@ -10,6 +10,7 @@ const caseStudySchema = new mongoose.Schema({
   content: { type: String, default: '' },            // contenu HTML enrichi
   featuredImage: { type: String, default: '' },
   imageAlt: { type: String, default: '' },
+  gallery: { type: [String], default: [] },          // galerie de captures d'écran (études de cas SEO, aperçus)
   projectUrl: { type: String, default: '' },         // lien vers le projet en ligne (bouton "Visiter le site")
   // 2 métriques clés (résultats)
   metric1Value: { type: String, default: '' }, metric1Label: { type: String, default: '' },

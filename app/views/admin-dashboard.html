@@ -1416,6 +1416,7 @@ async function openCaseEditor(id) {
     f('Description courte (carte)', '<textarea id="caExcerpt" rows="2" style="' + inp + 'resize:vertical;">' + escape(c.excerpt || '') + '</textarea>') +
     f('Image à la une', '<div style="display:flex;gap:.5rem;align-items:center;"><input id="caImg" placeholder="URL, ou téléversez →" style="' + inp + '" value="' + escape(c.featuredImage || '') + '"><button class="btn btn--ghost btn--sm" id="caUpload" type="button"><span class="material-symbols-outlined">upload</span></button><input type="file" id="caFile" accept="image/*" style="display:none;"></div><div id="caImgPrev" style="margin-top:.5rem;">' + (c.featuredImage ? '<img src="' + escape(c.featuredImage) + '" style="max-height:90px;border-radius:8px;">' : '') + '</div>') +
     f('Lien du site en ligne (bouton « Visiter le site »)', '<input id="caUrl" placeholder="https://exemple.com" style="' + inp + '" value="' + escape(c.projectUrl || '') + '">') +
+    f('Galerie de captures d\'écran (une URL par ligne — idéal pour les études de cas SEO)', '<div style="display:flex;gap:.5rem;align-items:flex-start;"><textarea id="caGallery" rows="3" placeholder="/media/xxxxx (une capture par ligne)" style="' + inp + 'resize:vertical;font-family:monospace;font-size:.8rem;">' + escape((c.gallery || []).join('\n')) + '</textarea><button class="btn btn--ghost btn--sm" id="caGalUpload" type="button" title="Téléverser des captures"><span class="material-symbols-outlined">upload</span></button><input type="file" id="caGalFile" accept="image/*" multiple style="display:none;"></div>') +
     '<div style="border-top:1px solid var(--border);margin:1rem 0 0.2rem;padding-top:0.5rem;font-size:0.8rem;color:var(--accent);font-weight:800;">RÉSULTATS (2 chiffres clés)</div>' +
     '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 1', '<input id="caM1V" style="' + inp + '" placeholder="+187%" value="' + escape(c.metric1Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 1', '<input id="caM1L" style="' + inp + '" placeholder="leads en 3 mois" value="' + escape(c.metric1Label || '') + '">') + '</div></div>' +
     '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 2', '<input id="caM2V" style="' + inp + '" placeholder="x3.2" value="' + escape(c.metric2Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 2', '<input id="caM2L" style="' + inp + '" placeholder="chiffre d affaires" value="' + escape(c.metric2Label || '') + '">') + '</div></div>' +
@@ -1447,11 +1448,26 @@ async function openCaseEditor(id) {
     };
     rd.readAsDataURL(file);
   });
+  document.getElementById('caGalUpload').addEventListener('click', function(){ document.getElementById('caGalFile').click(); });
+  document.getElementById('caGalFile').addEventListener('change', function(e){
+    var files = [].slice.call(e.target.files); if (!files.length) return;
+    files.forEach(function(file){
+      if (file.size > 2*1024*1024) { toast(file.name + ' trop lourde (max 2 Mo)', 'error'); return; }
+      var rd = new FileReader();
+      rd.onload = async function(){
+        try { var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('caTitle').value, folder:'réalisations' } });
+          var ta = document.getElementById('caGallery'); ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + '/media/' + up.media._id; toast('Capture ajoutée', 'success');
+        } catch(err){ toast(err.message || 'Échec upload', 'error'); }
+      };
+      rd.readAsDataURL(file);
+    });
+  });
   document.getElementById('caSave').addEventListener('click', async function(){
     var payload = {
       title: document.getElementById('caTitle').value.trim(), sector: document.getElementById('caSector').value.trim(), location: document.getElementById('caLoc').value.trim(),
       excerpt: document.getElementById('caExcerpt').value, featuredImage: document.getElementById('caImg').value.trim(),
       projectUrl: document.getElementById('caUrl').value.trim(),
+      gallery: document.getElementById('caGallery').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean),
       metric1Value: document.getElementById('caM1V').value.trim(), metric1Label: document.getElementById('caM1L').value.trim(),
       metric2Value: document.getElementById('caM2V').value.trim(), metric2Label: document.getElementById('caM2L').value.trim(),
       content: document.getElementById('caContent').value, seoTitle: document.getElementById('caSeoTitle').value.trim(),

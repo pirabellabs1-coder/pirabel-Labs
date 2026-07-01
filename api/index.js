@@ -2250,6 +2250,8 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
       '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
       '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}' +
+      '.cd-hero--photo{aspect-ratio:auto;display:flex;justify-content:center;align-items:flex-start;}' +
+      '.cd-hero--photo img{width:auto;height:auto;max-width:100%;max-height:80vh;object-fit:contain;object-position:top center;}' +
       '.cd-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 1.8rem;}' +
       '.cd-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.12),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.4rem 1.6rem;}' +
       '.cd-metric b{display:block;font-family:"Montserrat",sans-serif;font-weight:900;font-size:2.1rem;color:#FF5500;line-height:1;}' +
@@ -2296,7 +2298,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '<header class="cd-head">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') +
       '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') +
       (visitBtn ? '<div class="cd-btns">' + visitBtn + '</div>' : '') + '</header>' +
-      '<div class="cd-hero">' + heroInner + '</div>' +
+      '<div class="cd-hero' + (c.featuredImage ? ' cd-hero--photo' : '') + '">' + heroInner + '</div>' +
       metrics + techSection +
       '<div class="cd-body">' + contentHtml + '</div>' +
       '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +

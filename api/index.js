@@ -1971,6 +1971,7 @@ async function applyCaseBody(body, doc) {
   if (body.metaDescription != null) doc.metaDescription = sanitize(body.metaDescription, 320);
   if (body.status != null && ['brouillon', 'publie'].includes(body.status)) doc.status = body.status;
   if (body.inProgress != null) doc.inProgress = !!body.inProgress;
+  if (body.confidential != null) doc.confidential = !!body.confidential;
 }
 app.get('/api/admin/case-studies', auth, adminOnly, async (req, res) => {
   try { const list = await CaseStudy.find({}).select('title slug sector location status featuredImage updatedAt').sort({ updatedAt: -1 }).lean(); res.json({ cases: list }); }
@@ -2048,8 +2049,10 @@ app.get('/realisations', async (req, res) => {
       const pill = (v, l) => v ? '<span class="rz-pill"><strong>' + escapeHtml(v) + '</strong>' + (l ? ' ' + escapeHtml(l) : '') + '</span>' : '';
       const metrics = (c.metric1Value || c.metric2Value) ? '<div class="rz-pills">' + pill(c.metric1Value, c.metric1Label) + pill(c.metric2Value, c.metric2Label) + '</div>' : '';
       const sub = escapeHtml([c.sector, c.location].filter(Boolean).join(' · '));
-      const visit = (c.projectUrl && /^https?:\/\//i.test(c.projectUrl))
-        ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
+      const visit = c.confidential
+        ? '<span class="rz-priv"><span class="material-symbols-outlined">lock</span> Projet privé</span>'
+        : ((c.projectUrl && /^https?:\/\//i.test(c.projectUrl))
+          ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '');
       const wip = c.inProgress ? '<span class="rz-wip"><span class="material-symbols-outlined">construction</span> En cours</span>' : '';
       return '<div class="rz-card" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms">' +
         '<div class="rz-card__img">' + img + wip + visit + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
@@ -2119,6 +2122,8 @@ app.get('/realisations', async (req, res) => {
       '.rz-visit .material-symbols-outlined{font-size:.95rem;}' +
       '.rz-wip{position:absolute;top:.75rem;left:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.28rem;background:rgba(251,191,36,.95);color:#1a1400;font-weight:700;font-size:.72rem;padding:.32rem .7rem .32rem .55rem;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.4);}' +
       '.rz-wip .material-symbols-outlined{font-size:.9rem;}' +
+      '.rz-priv{position:absolute;left:.75rem;bottom:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.35rem;background:rgba(14,14,14,.9);color:rgba(229,226,225,.75);border:1px solid rgba(229,226,225,.2);font-weight:600;font-size:.74rem;padding:.42rem .78rem;border-radius:999px;backdrop-filter:blur(4px);}' +
+      '.rz-priv .material-symbols-outlined{font-size:.9rem;}' +
       '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
       '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
       '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0e0e0e;}' +
@@ -2247,6 +2252,8 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-cat{display:inline-block;color:#FF5500;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;}' +
       '.cd-wip{display:inline-flex;align-items:center;gap:.35rem;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:.32rem .75rem;border-radius:999px;}' +
       '.cd-wip .material-symbols-outlined{font-size:.95rem;}' +
+      '.cd-priv{display:inline-flex;align-items:center;gap:.35rem;background:rgba(229,226,225,.08);color:rgba(229,226,225,.72);border:1px solid rgba(229,226,225,.2);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:.32rem .75rem;border-radius:999px;}' +
+      '.cd-priv .material-symbols-outlined{font-size:.95rem;}' +
       '.cd-head h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.2vw,2.25rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 1rem;}' +
       '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
       '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
@@ -2286,7 +2293,7 @@ app.get('/realisations/:slug', async (req, res) => {
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + cdStyle;
-    const visitUrl = (c.projectUrl && /^https?:\/\//i.test(c.projectUrl)) ? c.projectUrl : '';
+    const visitUrl = (!c.confidential && c.projectUrl && /^https?:\/\//i.test(c.projectUrl)) ? c.projectUrl : '';
     const visitBtn = visitUrl ? '<a class="cd-btn" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
     const visitBtnG = visitUrl ? '<a class="cd-btn cd-btn--g" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
     const heroInner = c.featuredImage ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : casePlaceholder(c, 0);
@@ -2297,7 +2304,7 @@ app.get('/realisations/:slug', async (req, res) => {
     const body = '<main class="cd-wrap">' +
       '<a class="cd-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
       '<header class="cd-head">' +
-      '<div class="cd-tags">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') + (c.inProgress ? '<span class="cd-wip"><span class="material-symbols-outlined">construction</span> En cours</span>' : '') + '</div>' +
+      '<div class="cd-tags">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') + (c.inProgress ? '<span class="cd-wip"><span class="material-symbols-outlined">construction</span> En cours</span>' : '') + (c.confidential ? '<span class="cd-priv"><span class="material-symbols-outlined">lock</span> Projet confidentiel</span>' : '') + '</div>' +
       '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') +
       (visitBtn ? '<div class="cd-btns">' + visitBtn + '</div>' : '') + '</header>' +
       '<div class="cd-hero' + (c.featuredImage ? ' cd-hero--photo' : '') + '">' + heroInner + '</div>' +

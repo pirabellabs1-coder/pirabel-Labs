@@ -1426,6 +1426,7 @@ async function openCaseEditor(id) {
     f('Slug (URL)', '<input id="caSlug" style="' + inp + '" placeholder="auto" value="' + escape(c.slug || '') + '">') +
     f('Statut', '<select id="caStatus" style="' + inp + '"><option value="brouillon"' + (c.status!=='publie'?' selected':'') + '>Brouillon</option><option value="publie"' + (c.status==='publie'?' selected':'') + '>Publié (visible sur le site)</option></select>') +
     '<label style="display:flex;align-items:center;gap:.5rem;margin:0.9rem 0 0.2rem;font-size:0.82rem;color:var(--text);cursor:pointer;"><input type="checkbox" id="caInProgress"' + (c.inProgress ? ' checked' : '') + ' style="width:auto;"> Projet en cours (affiche un badge « En cours »)</label>' +
+    '<label style="display:flex;align-items:center;gap:.5rem;margin:0.4rem 0 0.2rem;font-size:0.82rem;color:var(--text);cursor:pointer;"><input type="checkbox" id="caConfidential"' + (c.confidential ? ' checked' : '') + ' style="width:auto;"> Projet confidentiel (masque le bouton « Visiter le site »)</label>' +
     '<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.3rem;"><button class="btn btn--ghost btn--sm" id="caCancel">Annuler</button><button class="btn btn--sm" id="caSave"><span class="material-symbols-outlined">save</span> Enregistrer</button></div></div>';
   document.body.appendChild(m);
   if (id) m.dataset.id = id;
@@ -1455,7 +1456,8 @@ async function openCaseEditor(id) {
       metric2Value: document.getElementById('caM2V').value.trim(), metric2Label: document.getElementById('caM2L').value.trim(),
       content: document.getElementById('caContent').value, seoTitle: document.getElementById('caSeoTitle').value.trim(),
       metaDescription: document.getElementById('caMeta').value.trim(), slug: document.getElementById('caSlug').value.trim(), status: document.getElementById('caStatus').value,
-      inProgress: document.getElementById('caInProgress').checked
+      inProgress: document.getElementById('caInProgress').checked,
+      confidential: document.getElementById('caConfidential').checked
     };
     if (!payload.title || payload.title.length < 3) { toast('Titre requis (3 caractères min)', 'error'); return; }
     var btn = document.getElementById('caSave'); btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> ...';

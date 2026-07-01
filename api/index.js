@@ -2008,13 +2008,13 @@ function casePlaceholder(c, i) {
   const words = clean.split(/\s+/);
   const mono = ((words[0] || 'P')[0] + (words[1] ? words[1][0] : (words[0] || 'P').slice(1, 2))).toUpperCase();
   const tag = escapeHtml(String(c.sector || 'Projet').split('·')[0].trim().toUpperCase());
-  return '<svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(c.title || '') + '">' +
+  return '<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(c.title || '') + '">' +
     '<defs><linearGradient id="rzg' + i + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + pal[0] + '"/><stop offset="1" stop-color="' + pal[1] + '"/></linearGradient></defs>' +
-    '<rect width="640" height="400" fill="#0e0d0d"/><rect width="640" height="400" fill="url(#rzg' + i + ')" opacity="0.20"/>' +
-    '<circle cx="540" cy="70" r="170" fill="' + pal[0] + '" opacity="0.10"/><circle cx="90" cy="360" r="120" fill="' + pal[0] + '" opacity="0.07"/>' +
-    '<text x="44" y="250" font-family="Montserrat,Arial,sans-serif" font-weight="900" font-size="185" fill="#ffffff" opacity="0.13">' + escapeHtml(mono) + '</text>' +
-    '<text x="48" y="330" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#ffffff" opacity="0.82">' + tag + '</text>' +
-    '<text x="596" y="366" text-anchor="end" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="16" fill="#FF5500">Pirabel Labs</text></svg>';
+    '<rect width="640" height="360" fill="#0e0d0d"/><rect width="640" height="360" fill="url(#rzg' + i + ')" opacity="0.20"/>' +
+    '<circle cx="545" cy="60" r="165" fill="' + pal[0] + '" opacity="0.10"/><circle cx="80" cy="330" r="120" fill="' + pal[0] + '" opacity="0.07"/>' +
+    '<text x="44" y="225" font-family="Montserrat,Arial,sans-serif" font-weight="900" font-size="168" fill="#ffffff" opacity="0.13">' + escapeHtml(mono) + '</text>' +
+    '<text x="48" y="300" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#ffffff" opacity="0.82">' + tag + '</text>' +
+    '<text x="596" y="334" text-anchor="end" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="16" fill="#FF5500">Pirabel Labs</text></svg>';
 }
 app.get('/realisations', async (req, res) => {
   try {
@@ -2070,11 +2070,11 @@ app.get('/realisations', async (req, res) => {
       '.rz-head{text-align:center;max-width:42rem;margin:0 auto 2.4rem;}' +
       '.rz-head h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .6rem;letter-spacing:-.025em;}' +
       '.rz-head p{color:rgba(229,226,225,.6);font-size:1rem;line-height:1.6;margin:0;}' +
-      '.rz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,20.5rem),1fr));gap:1.6rem;}' +
+      '.rz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem;}' +
       '.rz-card{position:relative;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
       '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
       '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
-      '.rz-card__img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0e0e0e;}' +
+      '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0e0e0e;}' +
       '.rz-card__img img,.rz-card__img svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1);}' +
       '.rz-card:hover .rz-card__img img,.rz-card:hover .rz-card__img svg{transform:scale(1.07);}' +
       '.rz-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(21,20,20,.85),transparent 55%);pointer-events:none;}' +
@@ -2101,6 +2101,7 @@ app.get('/realisations', async (req, res) => {
       '.rz-final h2{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .8rem;letter-spacing:-.025em;}' +
       '.rz-final p{color:rgba(229,226,225,.72);font-size:1.05rem;line-height:1.6;max-width:38rem;margin:0 auto 1.6rem;}' +
       '@media(max-width:820px){.rz-two{grid-template-columns:1fr;}}' +
+      '@media(max-width:680px){.rz-grid{grid-template-columns:1fr;}}' +
       '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.rz-stats{gap:1.2rem 1.8rem;}.rz-stat b{font-size:1.5rem;}}' +
       '@media(prefers-reduced-motion:reduce){.rz-card{animation:none;opacity:1;transform:none;}html{scroll-behavior:auto;}}' +
       '</style>';
@@ -2171,39 +2172,79 @@ app.get('/realisations/:slug', async (req, res) => {
     const url = SITE() + '/realisations/' + encodeURIComponent(c.slug);
     const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + pubImg(c.featuredImage)) : (SITE() + '/img/og-blog.jpg');
     const sub = [c.sector, c.location].filter(Boolean).join(' · ');
-    const csStyle = '<style>' +
-      '.cs-page .bx-meta{font-size:1.18rem;color:rgba(229,226,225,.78);line-height:1.65;margin:.2rem 0 2.4rem;}' +
-      '.cs-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 2.8rem;}' +
-      '.cs-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.10),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.35rem 1.6rem;}' +
-      '.cs-metric__num{font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:2rem;color:#FF5500;line-height:1;}' +
-      '.cs-metric__label{color:rgba(229,226,225,.72);font-size:.9rem;margin-top:.45rem;line-height:1.45;}' +
-      '.cs-page .cs-intro{font-size:1.2rem;line-height:1.72;color:#fff;font-weight:500;border-left:3px solid #FF5500;padding-left:1.25rem;margin:0 0 2.6rem;}' +
-      '.cs-page .bx-content h2{font-family:"Space Grotesk",sans-serif;font-size:1.5rem;color:#fff;margin:2.8rem 0 1.1rem;display:flex;align-items:center;gap:.65rem;}' +
-      '.cs-page .bx-content h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;flex-shrink:0;}' +
-      '.cs-page .bx-content>p{color:rgba(229,226,225,.82);line-height:1.78;margin:0 0 1rem;font-size:1.02rem;}' +
-      '.cs-page .bx-content ul{list-style:none;padding:0;margin:.5rem 0 1.2rem;display:grid;gap:.65rem;}' +
-      '.cs-page .bx-content .cs-stack{grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));}' +
-      '.cs-page .bx-content li{position:relative;padding:.9rem 1.1rem .9rem 2.55rem;background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:12px;line-height:1.55;color:rgba(229,226,225,.85);}' +
-      '.cs-page .bx-content li::before{content:"\\2713";position:absolute;left:.9rem;top:.85rem;color:#FF5500;font-weight:800;}' +
-      '.cs-page .bx-content li strong{color:#fff;font-weight:700;}' +
+    // Détecte les technologies citées dans le contenu -> badges (dot coloré + nom).
+    const TECHS = [
+      ['Next.js', '#e5e2e1', /next\.?\s?js/i], ['React', '#61DAFB', /\breact\b/i], ['Astro', '#FF5D01', /\bastro\b/i],
+      ['Vue.js', '#42B883', /\bvue(\.js)?\b/i], ['Node.js', '#3C873A', /node\.?\s?js/i], ['TypeScript', '#3178C6', /typescript/i],
+      ['JavaScript', '#F7DF1E', /javascript/i], ['HTML5', '#E34F26', /\bhtml5?\b/i], ['CSS3', '#1572B6', /\bcss3?\b/i],
+      ['Tailwind CSS', '#38BDF8', /tailwind/i], ['WordPress', '#3aa0d6', /wordpress/i], ['Vite', '#646CFF', /\bvite\b/i],
+      ['Supabase', '#3ECF8E', /supabase/i], ['PostgreSQL', '#6a8fe0', /postgre/i], ['MongoDB', '#47A248', /mongodb/i],
+      ['Vercel', '#e5e2e1', /\bvercel\b/i], ['Cloudflare', '#F38020', /cloudflare/i], ['Cloudinary', '#5a6ff0', /cloudinary/i],
+      ['Stripe', '#8b83ff', /\bstripe\b/i], ['CinetPay', '#00A95C', /cinetpay/i], ['PayPal', '#3b7bbf', /paypal/i],
+      ['PWA', '#a06cf0', /\bpwa\b/i], ['Chart.js', '#FF6384', /chart\.?\s?js/i], ['Tesseract.js', '#e5e2e1', /tesseract/i],
+      ['jsPDF', '#e5e2e1', /jspdf/i], ['Web3', '#F16822', /\bweb3\b/i], ['Mobile Money', '#FFCC00', /mobile\s?money/i],
+      ['Google Analytics', '#E37400', /google analytics|analytics\s?4|\bga4\b/i], ['IA / LLM', '#10A37F', /\bllm\b|intelligence artificielle|mod[èe]les? de langage|\bgpt\b|assistant ia|agent vocal/i],
+      ['SEO', '#4CAF50', /\bseo\b|r[ée]f[ée]rencement/i],
+    ];
+    const hay = String(c.content || '') + ' ' + String(c.sector || '');
+    const foundTechs = TECHS.filter(t => t[2].test(hay)).slice(0, 14);
+    const techSection = foundTechs.length ? '<section class="cd-tech"><div class="cd-tech__h">Technologies utilisées</div><div class="cd-badges">' +
+      foundTechs.map(t => '<span class="cd-badge"><i style="background:' + t[1] + '"></i>' + escapeHtml(t[0]) + '</span>').join('') + '</div></section>' : '';
+
+    const cdStyle = '<style>' +
+      '.cd-wrap{max-width:66rem;margin:0 auto;padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,4vw,3rem) 4rem;}' +
+      '.cd-back{display:inline-flex;align-items:center;gap:.4rem;color:rgba(229,226,225,.6);text-decoration:none;font-size:.9rem;margin-bottom:1.6rem;transition:color .2s;}' +
+      '.cd-back:hover{color:#FF5500;}.cd-back .material-symbols-outlined{font-size:1.1rem;}' +
+      '.cd-head{max-width:52rem;margin:0 auto 2rem;text-align:center;}' +
+      '.cd-cat{display:inline-block;color:#FF5500;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem;}' +
+      '.cd-head h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff;margin:0 0 1rem;}' +
+      '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
+      '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
+      '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;display:block;}' +
+      '.cd-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 1.8rem;}' +
+      '.cd-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.12),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.4rem 1.6rem;}' +
+      '.cd-metric b{display:block;font-family:"Montserrat",sans-serif;font-weight:900;font-size:2.1rem;color:#FF5500;line-height:1;}' +
+      '.cd-metric span{display:block;color:rgba(229,226,225,.72);font-size:.9rem;margin-top:.45rem;line-height:1.45;}' +
+      '.cd-tech{background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:16px;padding:1.4rem 1.5rem;margin:0 0 2.6rem;}' +
+      '.cd-tech__h{font-family:"Space Grotesk",sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:rgba(229,226,225,.55);margin:0 0 .95rem;}' +
+      '.cd-badges{display:flex;flex-wrap:wrap;gap:.6rem;}' +
+      '.cd-badge{display:inline-flex;align-items:center;gap:.5rem;background:#0e0e0e;border:1px solid rgba(229,226,225,.14);border-radius:10px;padding:.5rem .85rem;font-size:.86rem;font-weight:600;color:#fff;transition:border-color .2s,transform .2s;}' +
+      '.cd-badge:hover{border-color:#FF5500;transform:translateY(-2px);}' +
+      '.cd-badge i{width:.7rem;height:.7rem;border-radius:50%;flex-shrink:0;}' +
+      '.cd-body{max-width:52rem;margin:0 auto;}' +
+      '.cd-body .cs-intro{font-size:1.22rem;line-height:1.7;color:#fff;font-weight:500;border-left:3px solid #FF5500;padding-left:1.25rem;margin:0 0 2.6rem;}' +
+      '.cd-body h2{font-family:"Space Grotesk",sans-serif;font-size:1.5rem;color:#fff;margin:2.8rem 0 1.1rem;display:flex;align-items:center;gap:.65rem;line-height:1.2;}' +
+      '.cd-body h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;flex-shrink:0;}' +
+      '.cd-body p{color:rgba(229,226,225,.84);line-height:1.8;margin:0 0 1.1rem;font-size:1.05rem;}' +
+      '.cd-body ul{list-style:none;padding:0;margin:.6rem 0 1.3rem;display:grid;gap:.7rem;}' +
+      '.cd-body .cs-stack{grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));}' +
+      '.cd-body li{position:relative;padding:.95rem 1.15rem .95rem 2.6rem;background:#161515;border:1px solid rgba(229,226,225,.1);border-radius:12px;line-height:1.55;color:rgba(229,226,225,.85);}' +
+      '.cd-body li::before{content:"\\2713";position:absolute;left:.95rem;top:.9rem;color:#FF5500;font-weight:800;}' +
+      '.cd-body li strong{color:#fff;font-weight:700;}.cd-body a{color:#FF5500;}' +
+      '.cd-cta{text-align:center;background:linear-gradient(135deg,rgba(255,85,0,.16),#151414);border:1px solid rgba(255,85,0,.3);border-radius:22px;padding:clamp(2.2rem,5vw,3.2rem);margin:3.4rem auto 0;max-width:52rem;}' +
+      '.cd-cta h2{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.5vw,2.2rem);color:#fff;margin:0 0 .7rem;}' +
+      '.cd-cta p{color:rgba(229,226,225,.72);font-size:1.02rem;line-height:1.6;margin:0 auto 1.5rem;max-width:34rem;}' +
+      '.cd-btn{display:inline-flex;align-items:center;gap:.5rem;background:#FF5500;color:#190800;font-weight:700;font-size:.98rem;padding:.9rem 1.9rem;border-radius:999px;text-decoration:none;box-shadow:0 10px 32px rgba(255,85,0,.28);transition:transform .15s,box-shadow .2s;}' +
+      '.cd-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,85,0,.45);}.cd-btn .material-symbols-outlined{font-size:1.15rem;}' +
+      '@media(max-width:600px){.cd-body p{font-size:1rem;}.cd-body h2{font-size:1.28rem;}.cd-metric b{font-size:1.8rem;}}' +
       '</style>';
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
-      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + csStyle;
-    const hero = c.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : '';
-    const mb = (v, l) => v ? '<div class="cs-metric"><div class="cs-metric__num">' + escapeHtml(v) + '</div><div class="cs-metric__label">' + escapeHtml(l) + '</div></div>' : '';
-    const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cs-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
+      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + cdStyle;
+    const heroInner = c.featuredImage ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : casePlaceholder(c, 0);
+    const mb = (v, l) => v ? '<div class="cd-metric"><b>' + escapeHtml(v) + '</b><span>' + escapeHtml(l) + '</span></div>' : '';
+    const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cd-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
     // Met en valeur la liste de la stack technique (grille de puces)
     const contentHtml = String(c.content || '').replace(/(<h2>[^<]*[Ss]tack[^<]*<\/h2>\s*)<ul>/, '$1<ul class="cs-stack">');
-    const body = '<main class="bx-wrap"><article class="bx-article cs-page">' +
-      '<a class="bx-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
-      (sub ? '<span class="bx-cat">' + escapeHtml(sub) + '</span>' : '') +
-      '<h1>' + escapeHtml(c.title) + '</h1>' +
-      (c.excerpt ? '<div class="bx-meta">' + escapeHtml(c.excerpt) + '</div>' : '') +
-      hero + metrics +
-      '<div class="bx-content">' + contentHtml + '</div>' +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler au fondateur</a></div>' +
-      '</article></main>';
+    const body = '<main class="cd-wrap">' +
+      '<a class="cd-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
+      '<header class="cd-head">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') +
+      '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') + '</header>' +
+      '<div class="cd-hero">' + heroInner + '</div>' +
+      metrics + techSection +
+      '<div class="cd-body">' + contentHtml + '</div>' +
+      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><a class="cd-btn" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a></section>' +
+      '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
 });

@@ -909,7 +909,7 @@ function blogShell(headExtra, bodyHtml) {
     '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">' +
-    '<link rel="stylesheet" href="/css/global.css?v=elan3">' + (headExtra || '') +
+    '<link rel="stylesheet" href="/css/global.css?v=elan4">' + (headExtra || '') +
     '<style>' +
     '.bx-top{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1.25rem,4vw,3rem);border-bottom:1px solid rgba(229,226,225,0.1);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);z-index:20;}' +
     '.bx-top a.bx-logo{font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:1.15rem;color:#e5e2e1;text-decoration:none;letter-spacing:-.02em;}' +

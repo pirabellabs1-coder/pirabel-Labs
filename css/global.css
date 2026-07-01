@@ -371,3 +371,13 @@ p { color: var(--text-muted); line-height: 1.7; }
 @keyframes waPulse{0%{transform:scale(1);opacity:.55}70%{transform:scale(1.7);opacity:0}100%{transform:scale(1.7);opacity:0}}
 @media(max-width:600px){.wa-float{right:14px;bottom:14px;width:52px;height:52px}.wa-float svg{width:28px;height:28px}}
 @media(prefers-reduced-motion:reduce){.wa-float::before{animation:none}}
+
+
+/* --- Fleches pointillees decoratives (connecteurs entre sections) --- */
+.dot-arrow{display:flex;justify-content:center;align-items:center;margin:1.2rem 0;pointer-events:none;overflow:hidden;}
+.dot-arrow svg{width:min(230px,52%);height:auto;overflow:visible;}
+.dot-arrow--r svg{transform:scaleX(-1);}
+.dot-arrow .df{animation:dotFlow 1.5s linear infinite;}
+@keyframes dotFlow{to{stroke-dashoffset:-30.4;}}
+@media(max-width:600px){.dot-arrow{display:none;}}
+@media(prefers-reduced-motion:reduce){.dot-arrow .df{animation:none;}}

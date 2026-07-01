@@ -2111,7 +2111,7 @@ app.get('/realisations', async (req, res) => {
       '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
       '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
       '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0e0e0e;}' +
-      '.rz-card__img img,.rz-card__img svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1);}' +
+      '.rz-card__img img,.rz-card__img svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1);}' +
       '.rz-card:hover .rz-card__img img,.rz-card:hover .rz-card__img svg{transform:scale(1.07);}' +
       '.rz-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(21,20,20,.85),transparent 55%);pointer-events:none;}' +
       '.rz-card__eye{position:absolute;top:.8rem;right:.8rem;z-index:2;width:2.2rem;height:2.2rem;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-6px);transition:.25s;}' +
@@ -2242,7 +2242,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-head h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.2vw,2.25rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 1rem;}' +
       '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
       '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
-      '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;display:block;}' +
+      '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}' +
       '.cd-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 1.8rem;}' +
       '.cd-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.12),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.4rem 1.6rem;}' +
       '.cd-metric b{display:block;font-family:"Montserrat",sans-serif;font-weight:900;font-size:2.1rem;color:#FF5500;line-height:1;}' +

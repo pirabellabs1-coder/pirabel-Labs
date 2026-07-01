@@ -1415,6 +1415,7 @@ async function openCaseEditor(id) {
     '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Secteur', '<input id="caSector" style="' + inp + '" placeholder="ex : Cabinet conseil" value="' + escape(c.sector || '') + '">') + '</div><div style="flex:1;">' + f('Ville', '<input id="caLoc" style="' + inp + '" placeholder="ex : Cotonou" value="' + escape(c.location || '') + '">') + '</div></div>' +
     f('Description courte (carte)', '<textarea id="caExcerpt" rows="2" style="' + inp + 'resize:vertical;">' + escape(c.excerpt || '') + '</textarea>') +
     f('Image à la une', '<div style="display:flex;gap:.5rem;align-items:center;"><input id="caImg" placeholder="URL, ou téléversez →" style="' + inp + '" value="' + escape(c.featuredImage || '') + '"><button class="btn btn--ghost btn--sm" id="caUpload" type="button"><span class="material-symbols-outlined">upload</span></button><input type="file" id="caFile" accept="image/*" style="display:none;"></div><div id="caImgPrev" style="margin-top:.5rem;">' + (c.featuredImage ? '<img src="' + escape(c.featuredImage) + '" style="max-height:90px;border-radius:8px;">' : '') + '</div>') +
+    f('Lien du site en ligne (bouton « Visiter le site »)', '<input id="caUrl" placeholder="https://exemple.com" style="' + inp + '" value="' + escape(c.projectUrl || '') + '">') +
     '<div style="border-top:1px solid var(--border);margin:1rem 0 0.2rem;padding-top:0.5rem;font-size:0.8rem;color:var(--accent);font-weight:800;">RÉSULTATS (2 chiffres clés)</div>' +
     '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 1', '<input id="caM1V" style="' + inp + '" placeholder="+187%" value="' + escape(c.metric1Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 1', '<input id="caM1L" style="' + inp + '" placeholder="leads en 3 mois" value="' + escape(c.metric1Label || '') + '">') + '</div></div>' +
     '<div style="display:flex;gap:.6rem;"><div style="flex:1;">' + f('Chiffre 2', '<input id="caM2V" style="' + inp + '" placeholder="x3.2" value="' + escape(c.metric2Value || '') + '">') + '</div><div style="flex:2;">' + f('Libellé 2', '<input id="caM2L" style="' + inp + '" placeholder="chiffre d affaires" value="' + escape(c.metric2Label || '') + '">') + '</div></div>' +
@@ -1448,6 +1449,7 @@ async function openCaseEditor(id) {
     var payload = {
       title: document.getElementById('caTitle').value.trim(), sector: document.getElementById('caSector').value.trim(), location: document.getElementById('caLoc').value.trim(),
       excerpt: document.getElementById('caExcerpt').value, featuredImage: document.getElementById('caImg').value.trim(),
+      projectUrl: document.getElementById('caUrl').value.trim(),
       metric1Value: document.getElementById('caM1V').value.trim(), metric1Label: document.getElementById('caM1L').value.trim(),
       metric2Value: document.getElementById('caM2V').value.trim(), metric2Label: document.getElementById('caM2L').value.trim(),
       content: document.getElementById('caContent').value, seoTitle: document.getElementById('caSeoTitle').value.trim(),

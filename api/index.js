@@ -1958,6 +1958,11 @@ async function applyCaseBody(body, doc) {
   if (body.content != null) doc.content = sanitizeSoft(body.content, 100000);
   if (body.featuredImage != null) doc.featuredImage = sanitize(body.featuredImage, 2000);
   if (body.imageAlt != null) doc.imageAlt = sanitize(body.imageAlt, 200);
+  if (body.projectUrl != null) {
+    let u = sanitize(body.projectUrl, 300).trim();
+    if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;        // ajoute https:// si absent
+    doc.projectUrl = /^https?:\/\/[^\s"'<>]+$/i.test(u) ? u : ''; // n'accepte qu'une URL http(s) propre
+  }
   if (body.metric1Value != null) doc.metric1Value = sanitize(body.metric1Value, 40);
   if (body.metric1Label != null) doc.metric1Label = sanitize(body.metric1Label, 60);
   if (body.metric2Value != null) doc.metric2Value = sanitize(body.metric2Value, 40);
@@ -2263,11 +2268,17 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-cta p{color:rgba(229,226,225,.72);font-size:1.02rem;line-height:1.6;margin:0 auto 1.5rem;max-width:34rem;}' +
       '.cd-btn{display:inline-flex;align-items:center;gap:.5rem;background:#FF5500;color:#190800;font-weight:700;font-size:.98rem;padding:.9rem 1.9rem;border-radius:999px;text-decoration:none;box-shadow:0 10px 32px rgba(255,85,0,.28);transition:transform .15s,box-shadow .2s;}' +
       '.cd-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,85,0,.45);}.cd-btn .material-symbols-outlined{font-size:1.15rem;}' +
+      '.cd-btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}' +
+      '.cd-btn--g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
+      '.cd-btn--g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
       '@media(max-width:600px){.cd-body p{font-size:1rem;}.cd-body h2{font-size:1.28rem;}.cd-metric b{font-size:1.8rem;}}' +
       '</style>';
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + cdStyle;
+    const visitUrl = (c.projectUrl && /^https?:\/\//i.test(c.projectUrl)) ? c.projectUrl : '';
+    const visitBtn = visitUrl ? '<a class="cd-btn" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
+    const visitBtnG = visitUrl ? '<a class="cd-btn cd-btn--g" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
     const heroInner = c.featuredImage ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : casePlaceholder(c, 0);
     const mb = (v, l) => v ? '<div class="cd-metric"><b>' + escapeHtml(v) + '</b><span>' + escapeHtml(l) + '</span></div>' : '';
     const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cd-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
@@ -2276,11 +2287,12 @@ app.get('/realisations/:slug', async (req, res) => {
     const body = '<main class="cd-wrap">' +
       '<a class="cd-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
       '<header class="cd-head">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') +
-      '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') + '</header>' +
+      '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') +
+      (visitBtn ? '<div class="cd-btns">' + visitBtn + '</div>' : '') + '</header>' +
       '<div class="cd-hero">' + heroInner + '</div>' +
       metrics + techSection +
       '<div class="cd-body">' + contentHtml + '</div>' +
-      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><a class="cd-btn" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a></section>' +
+      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
       '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }

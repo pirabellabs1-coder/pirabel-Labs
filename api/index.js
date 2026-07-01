@@ -1920,7 +1920,7 @@ app.get('/blog/:slug', async (req, res) => {
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
       '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
-      '<a href="/contact">Parler au fondateur</a></div>' +
+      '<a href="/contact">Discutons de votre projet</a></div>' +
       relatedHtml +
       '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
       '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +
@@ -2207,7 +2207,7 @@ app.get('/realisations', async (req, res) => {
       '<section class="rz-final">' +
         '<h2>Votre projet mérite la même exigence</h2>' +
         '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable — et comment.</p>' +
-        '<a class="rz-btn rz-btn--p" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' +
+        '<a class="rz-btn rz-btn--p" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' +
       '</section>' +
       '<script>(function(){var bar=document.getElementById("rzFilters");if(!bar)return;var cards=[].slice.call(document.querySelectorAll(".rz-grid .rz-card"));bar.addEventListener("click",function(e){var b=e.target.closest("[data-cat]");if(!b)return;bar.querySelectorAll("[data-cat]").forEach(function(x){x.classList.toggle("is-active",x===b);});var cat=b.getAttribute("data-cat");cards.forEach(function(c){var ok=cat==="all"||((" "+(c.getAttribute("data-cats")||"")+" ").indexOf(" "+cat+" ")>-1);c.style.display=ok?"":"none";});});})();</script>' +
       '</main>';
@@ -2310,7 +2310,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '<div class="cd-hero' + (c.featuredImage ? ' cd-hero--photo' : '') + '">' + heroInner + '</div>' +
       metrics + techSection +
       '<div class="cd-body">' + contentHtml + '</div>' +
-      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
+      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez directement au fondateur : on étudie votre besoin et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
       '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }

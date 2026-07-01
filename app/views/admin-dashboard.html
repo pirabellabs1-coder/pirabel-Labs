@@ -1340,7 +1340,7 @@ async function openArticleEditor(id) {
     rd.onload = async function(){
       try {
         var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('amAlt').value, folder:'blog' } });
-        var url = '/api/admin/media/' + up.media._id;
+        var url = '/media/' + up.media._id;
         document.getElementById('amImg').value = url;
         document.getElementById('amImgPrev').innerHTML = '<img src="' + url + '" style="max-height:90px;border-radius:8px;">';
         toast('Image téléversée', 'success');
@@ -1438,7 +1438,7 @@ async function openCaseEditor(id) {
     var rd = new FileReader();
     rd.onload = async function(){
       try { var up = await api('/api/admin/media', { method:'POST', body:{ data: rd.result, filename: file.name, alt: document.getElementById('caTitle').value, folder:'réalisations' } });
-        var url = '/api/admin/media/' + up.media._id; document.getElementById('caImg').value = url;
+        var url = '/media/' + up.media._id; document.getElementById('caImg').value = url;
         document.getElementById('caImgPrev').innerHTML = '<img src="' + url + '" style="max-height:90px;border-radius:8px;">'; toast('Image téléversée', 'success');
       } catch(err){ toast(err.message || 'Échec upload', 'error'); }
     };

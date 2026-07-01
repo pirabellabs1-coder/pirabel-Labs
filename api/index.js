@@ -134,6 +134,8 @@ const contactLimiter = rateLimit({
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
+// Convertit une URL media admin (JSON, protégée) en URL publique servant l'image brute.
+function pubImg(src) { return String(src || '').replace('/api/admin/media/', '/media/'); }
 
 app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
   try {
@@ -1998,23 +2000,164 @@ app.delete('/api/admin/case-studies/:id', auth, adminOnly, async (req, res) => {
   catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });
 
+// Placeholder SVG thématique quand une fiche n'a pas encore d'image à la une.
+const RZ_PALETTES = [['#FF5500', '#7a1f00'], ['#FF7A00', '#3a1500'], ['#FF3D00', '#4a0f00'], ['#FF9500', '#2a1800'], ['#E64500', '#1a0800'], ['#FF6A2C', '#301100']];
+function casePlaceholder(c, i) {
+  const pal = RZ_PALETTES[i % RZ_PALETTES.length];
+  const clean = String(c.title || 'Projet').replace(/[^A-Za-zÀ-ÿ0-9 ]/g, ' ').trim();
+  const words = clean.split(/\s+/);
+  const mono = ((words[0] || 'P')[0] + (words[1] ? words[1][0] : (words[0] || 'P').slice(1, 2))).toUpperCase();
+  const tag = escapeHtml(String(c.sector || 'Projet').split('·')[0].trim().toUpperCase());
+  return '<svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + escapeHtml(c.title || '') + '">' +
+    '<defs><linearGradient id="rzg' + i + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + pal[0] + '"/><stop offset="1" stop-color="' + pal[1] + '"/></linearGradient></defs>' +
+    '<rect width="640" height="400" fill="#0e0d0d"/><rect width="640" height="400" fill="url(#rzg' + i + ')" opacity="0.20"/>' +
+    '<circle cx="540" cy="70" r="170" fill="' + pal[0] + '" opacity="0.10"/><circle cx="90" cy="360" r="120" fill="' + pal[0] + '" opacity="0.07"/>' +
+    '<text x="44" y="250" font-family="Montserrat,Arial,sans-serif" font-weight="900" font-size="185" fill="#ffffff" opacity="0.13">' + escapeHtml(mono) + '</text>' +
+    '<text x="48" y="330" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#ffffff" opacity="0.82">' + tag + '</text>' +
+    '<text x="596" y="366" text-anchor="end" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="16" fill="#FF5500">Pirabel Labs</text></svg>';
+}
 app.get('/realisations', async (req, res) => {
   try {
     const cs = await CaseStudy.find({ status: 'publie' }).sort({ publishedAt: -1 }).limit(60).lean();
-    const cards = cs.length ? cs.map(c => {
-      const img = c.featuredImage ? '<img class="bx-card__img" src="' + escapeHtml(c.featuredImage) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy">' : '<div class="bx-card__img"></div>';
-      const mk = (v, l) => v ? '<div><strong style="color:#FF5500;font-size:1.1rem;">' + escapeHtml(v) + '</strong> <span style="color:rgba(229,226,225,0.55);font-size:.8rem;">' + escapeHtml(l) + '</span></div>' : '';
-      const metrics = (c.metric1Value || c.metric2Value) ? '<div style="display:flex;gap:1.2rem;margin-top:.7rem;">' + mk(c.metric1Value, c.metric1Label) + mk(c.metric2Value, c.metric2Label) + '</div>' : '';
-      const sub = [c.sector, c.location].filter(Boolean).join(' · ');
-      return '<a class="bx-card" href="/realisations/' + escapeHtml(c.slug) + '">' + img +
-        '<div class="bx-card__b">' + (sub ? '<span class="bx-cat">' + escapeHtml(sub) + '</span>' : '') +
-        '<h2>' + escapeHtml(c.title) + '</h2><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics + '</div></a>';
+    const cards = cs.length ? cs.map((c, i) => {
+      const img = c.featuredImage
+        ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy">'
+        : casePlaceholder(c, i);
+      const pill = (v, l) => v ? '<span class="rz-pill"><strong>' + escapeHtml(v) + '</strong>' + (l ? ' ' + escapeHtml(l) : '') + '</span>' : '';
+      const metrics = (c.metric1Value || c.metric2Value) ? '<div class="rz-pills">' + pill(c.metric1Value, c.metric1Label) + pill(c.metric2Value, c.metric2Label) + '</div>' : '';
+      const sub = escapeHtml([c.sector, c.location].filter(Boolean).join(' · '));
+      return '<a class="rz-card" style="animation-delay:' + ((i % 9) * 70) + 'ms" href="/realisations/' + escapeHtml(c.slug) + '">' +
+        '<div class="rz-card__img">' + img + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
+        '<div class="rz-card__b">' + (sub ? '<span class="rz-cat">' + sub + '</span>' : '') +
+        '<h3>' + escapeHtml(c.title) + '</h3><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics +
+        '<span class="rz-more">Voir l\'étude de cas <span class="material-symbols-outlined">arrow_forward</span></span></div></a>';
     }).join('') : '<div class="bx-empty">Études de cas à venir.</div>';
+
     const head = '<title>Réalisations & études de cas — Pirabel Labs</title>' +
-      '<meta name="description" content="Nos réalisations : sites web, SEO, e-commerce, automatisation — résultats concrets pour des PME francophones.">' +
+      '<meta name="description" content="Nos réalisations : sites web, boutiques en ligne, plateformes SaaS, applications IA et SEO — des produits livrés et en production, au Bénin, en Afrique et en Europe.">' +
       '<link rel="canonical" href="' + SITE() + '/realisations">' +
-      '<meta property="og:title" content="Réalisations — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/realisations">';
-    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Nos réalisations</h1><p>Des résultats concrets pour des PME francophones — web, SEO, e-commerce, automatisation.</p></div><div class="bx-grid">' + cards + '</div></main>';
+      '<meta property="og:title" content="Réalisations & études de cas — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/realisations"><meta property="og:image" content="' + SITE() + '/img/og-blog.jpg">' +
+      '<style>' +
+      'html{scroll-behavior:smooth;}#projets{scroll-margin-top:5rem;}' +
+      '.rz-wrap{max-width:78rem;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem) 4rem;}' +
+      '.rz-hero{text-align:center;max-width:52rem;margin:0 auto;padding:clamp(2.5rem,6vw,4.5rem) 0 2.6rem;}' +
+      '.rz-eyebrow{display:inline-flex;align-items:center;gap:.45rem;color:#FF5500;font-weight:700;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(255,85,0,.3);background:rgba(255,85,0,.07);padding:.42rem .95rem;border-radius:999px;margin-bottom:1.4rem;}' +
+      '.rz-hero h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(2.2rem,6vw,4rem);line-height:1.03;letter-spacing:-.04em;margin:0 0 1.1rem;color:#fff;}' +
+      '.rz-hero h1 em{font-style:normal;color:#FF5500;}' +
+      '.rz-lead{color:rgba(229,226,225,.72);font-size:clamp(1rem,2vw,1.18rem);line-height:1.65;max-width:44rem;margin:0 auto 1.9rem;}' +
+      '.rz-lead strong{color:#fff;font-weight:600;}' +
+      '.rz-ctas{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}' +
+      '.rz-btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;padding:.85rem 1.7rem;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .2s,background .2s,border-color .2s,color .2s;}' +
+      '.rz-btn .material-symbols-outlined{font-size:1.15rem;transition:transform .2s;}' +
+      '.rz-btn:hover .material-symbols-outlined{transform:translateX(4px);}' +
+      '.rz-btn--p{background:#FF5500;color:#190800;box-shadow:0 10px 32px rgba(255,85,0,.28);}' +
+      '.rz-btn--p:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,85,0,.45);}' +
+      '.rz-btn--g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.22);}' +
+      '.rz-btn--g:hover{border-color:#FF5500;color:#fff;}' +
+      '.rz-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem 2.6rem;margin:2.7rem auto 0;padding-top:2rem;border-top:1px solid rgba(229,226,225,.1);max-width:46rem;}' +
+      '.rz-stat b{display:block;font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.8rem;color:#fff;line-height:1;}' +
+      '.rz-stat span{color:rgba(229,226,225,.55);font-size:.82rem;}' +
+      '.rz-two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;margin:clamp(3rem,7vw,5.5rem) 0;}' +
+      '.rz-kick{color:#FF5500;font-weight:700;font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;}' +
+      '.rz-two__t h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(1.6rem,3.5vw,2.4rem);line-height:1.12;color:#fff;margin:.6rem 0 1rem;letter-spacing:-.02em;}' +
+      '.rz-two__t p{color:rgba(229,226,225,.68);font-size:1.02rem;line-height:1.7;margin:0 0 1rem;}' +
+      '.rz-deliver{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}' +
+      '.rz-deliver div{background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:14px;padding:1.1rem;transition:border-color .2s,transform .2s;}' +
+      '.rz-deliver div:hover{border-color:#FF5500;transform:translateY(-3px);}' +
+      '.rz-deliver .material-symbols-outlined{color:#FF5500;font-size:1.55rem;}' +
+      '.rz-deliver b{display:block;color:#fff;font-size:.98rem;margin:.4rem 0 .2rem;}' +
+      '.rz-deliver small{color:rgba(229,226,225,.55);font-size:.82rem;line-height:1.4;}' +
+      '.rz-head{text-align:center;max-width:42rem;margin:0 auto 2.4rem;}' +
+      '.rz-head h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .6rem;letter-spacing:-.025em;}' +
+      '.rz-head p{color:rgba(229,226,225,.6);font-size:1rem;line-height:1.6;margin:0;}' +
+      '.rz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,20.5rem),1fr));gap:1.6rem;}' +
+      '.rz-card{position:relative;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
+      '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
+      '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
+      '.rz-card__img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0e0e0e;}' +
+      '.rz-card__img img,.rz-card__img svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1);}' +
+      '.rz-card:hover .rz-card__img img,.rz-card:hover .rz-card__img svg{transform:scale(1.07);}' +
+      '.rz-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(21,20,20,.85),transparent 55%);pointer-events:none;}' +
+      '.rz-card__eye{position:absolute;top:.8rem;right:.8rem;z-index:2;width:2.2rem;height:2.2rem;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-6px);transition:.25s;}' +
+      '.rz-card:hover .rz-card__eye{opacity:1;transform:translateY(0);}' +
+      '.rz-card__eye .material-symbols-outlined{font-size:1.2rem;}' +
+      '.rz-card__b{padding:1.2rem 1.3rem 1.4rem;display:flex;flex-direction:column;flex:1;}' +
+      '.rz-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;line-height:1.45;}' +
+      '.rz-card h3{font-family:"Space Grotesk",sans-serif;font-size:1.18rem;line-height:1.25;color:#fff;margin:.5rem 0;}' +
+      '.rz-card p{color:rgba(229,226,225,.6);font-size:.9rem;line-height:1.55;margin:0 0 .95rem;flex:1;}' +
+      '.rz-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}' +
+      '.rz-pill{font-size:.75rem;color:rgba(229,226,225,.62);background:#0e0e0e;border:1px solid rgba(229,226,225,.1);border-radius:999px;padding:.35rem .7rem;}' +
+      '.rz-pill strong{color:#FF5500;font-weight:700;}' +
+      '.rz-more{display:inline-flex;align-items:center;gap:.35rem;color:#fff;font-weight:700;font-size:.85rem;margin-top:auto;}' +
+      '.rz-more .material-symbols-outlined{font-size:1.05rem;color:#FF5500;transition:transform .25s;}' +
+      '.rz-card:hover .rz-more .material-symbols-outlined{transform:translateX(5px);}' +
+      '.rz-steps{display:flex;flex-direction:column;gap:.9rem;}' +
+      '.rz-step{display:flex;gap:1rem;align-items:flex-start;background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:14px;padding:1.1rem 1.2rem;transition:border-color .2s,transform .2s;}' +
+      '.rz-step:hover{border-color:#FF5500;transform:translateX(4px);}' +
+      '.rz-step .n{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.35rem;color:#FF5500;line-height:1;min-width:2rem;}' +
+      '.rz-step .t{display:block;color:#fff;font-size:1rem;margin-bottom:.2rem;font-weight:700;}' +
+      '.rz-step small{color:rgba(229,226,225,.6);font-size:.88rem;line-height:1.5;}' +
+      '.rz-final{text-align:center;background:linear-gradient(135deg,rgba(255,85,0,.16),#151414);border:1px solid rgba(255,85,0,.3);border-radius:22px;padding:clamp(2.4rem,5vw,3.6rem);margin:clamp(3rem,6vw,5rem) 0 0;}' +
+      '.rz-final h2{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .8rem;letter-spacing:-.025em;}' +
+      '.rz-final p{color:rgba(229,226,225,.72);font-size:1.05rem;line-height:1.6;max-width:38rem;margin:0 auto 1.6rem;}' +
+      '@media(max-width:820px){.rz-two{grid-template-columns:1fr;}}' +
+      '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.rz-stats{gap:1.2rem 1.8rem;}.rz-stat b{font-size:1.5rem;}}' +
+      '@media(prefers-reduced-motion:reduce){.rz-card{animation:none;opacity:1;transform:none;}html{scroll-behavior:auto;}}' +
+      '</style>';
+
+    const body = '<main class="rz-wrap">' +
+      '<section class="rz-hero">' +
+        '<span class="rz-eyebrow"><span class="material-symbols-outlined" style="font-size:1rem;">workspace_premium</span> Portfolio · Études de cas</span>' +
+        '<h1>Des produits web qui <em>travaillent</em> vraiment</h1>' +
+        '<p class="rz-lead">Sites vitrines, boutiques en ligne, plateformes SaaS, applications métier, agents IA… Voici des projets <strong>livrés et en production</strong>, conçus sur mesure pour des clients au Bénin, en Afrique et en Europe.</p>' +
+        '<div class="rz-ctas"><a class="rz-btn rz-btn--p" href="/contact#rdv">Démarrer mon projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="rz-btn rz-btn--g" href="#projets">Voir les projets</a></div>' +
+        '<div class="rz-stats">' +
+          '<div class="rz-stat"><b>' + cs.length + '</b><span>projets livrés</span></div>' +
+          '<div class="rz-stat"><b>3</b><span>continents</span></div>' +
+          '<div class="rz-stat"><b>100%</b><span>sur mesure</span></div>' +
+          '<div class="rz-stat"><b>24/7</b><span>support & suivi</span></div>' +
+        '</div>' +
+      '</section>' +
+
+      '<section class="rz-two">' +
+        '<div class="rz-two__t"><span class="rz-kick">Notre savoir-faire</span>' +
+          '<h2>Un partenaire technique, du premier croquis à la mise en production</h2>' +
+          '<p>Nous ne livrons pas des maquettes : nous concevons, développons et déployons des produits complets, pensés pour convertir et pour durer. Chaque projet est optimisé pour la vitesse, le référencement et les usages locaux — Mobile Money, multidevise, multilingue.</p>' +
+          '<p>Une seule équipe, un seul interlocuteur, une exécution de bout en bout.</p></div>' +
+        '<div class="rz-deliver">' +
+          '<div><span class="material-symbols-outlined">language</span><b>Sites vitrines</b><small>Rapides, élégants, optimisés SEO.</small></div>' +
+          '<div><span class="material-symbols-outlined">shopping_bag</span><b>E-commerce</b><small>Boutiques avec paiement local.</small></div>' +
+          '<div><span class="material-symbols-outlined">dashboard</span><b>Plateformes SaaS</b><small>Produits web à abonnement.</small></div>' +
+          '<div><span class="material-symbols-outlined">smart_toy</span><b>IA & agents</b><small>Assistants et agents vocaux.</small></div>' +
+          '<div><span class="material-symbols-outlined">build</span><b>Applications métier</b><small>Outils de gestion sur mesure.</small></div>' +
+          '<div><span class="material-symbols-outlined">trending_up</span><b>SEO & acquisition</b><small>Référencement et conversion.</small></div>' +
+        '</div>' +
+      '</section>' +
+
+      '<section id="projets">' +
+        '<div class="rz-head"><h2>Études de cas</h2><p>Chaque projet, avec sa problématique, notre solution et la stack technique employée. Cliquez pour lire l\'étude complète.</p></div>' +
+        '<div class="rz-grid">' + cards + '</div>' +
+      '</section>' +
+
+      '<section class="rz-two">' +
+        '<div class="rz-steps">' +
+          '<div class="rz-step"><span class="n">01</span><div><span class="t">Audit & cadrage</span><small>On comprend votre marché, vos objectifs et vos utilisateurs avant d\'écrire la moindre ligne de code.</small></div></div>' +
+          '<div class="rz-step"><span class="n">02</span><div><span class="t">Conception & design</span><small>Maquettes, parcours et identité : un produit clair, crédible et orienté conversion.</small></div></div>' +
+          '<div class="rz-step"><span class="n">03</span><div><span class="t">Développement</span><small>Un code moderne, rapide et évolutif, testé et pensé pour le référencement.</small></div></div>' +
+          '<div class="rz-step"><span class="n">04</span><div><span class="t">Lancement & suivi</span><small>Mise en ligne, mesure des résultats et accompagnement dans la durée.</small></div></div>' +
+        '</div>' +
+        '<div class="rz-two__t"><span class="rz-kick">Notre méthode</span>' +
+          '<h2>Une exécution carrée, à chaque étape</h2>' +
+          '<p>De l\'idée au produit en ligne, nous suivons un processus éprouvé qui limite les mauvaises surprises et maximise l\'impact. Vous savez toujours où en est votre projet.</p>' +
+          '<a class="rz-btn rz-btn--g" href="/contact#rdv">Discuter de votre projet <span class="material-symbols-outlined">arrow_forward</span></a></div>' +
+      '</section>' +
+
+      '<section class="rz-final">' +
+        '<h2>Votre projet mérite la même exigence</h2>' +
+        '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable — et comment.</p>' +
+        '<a class="rz-btn rz-btn--p" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' +
+      '</section>' +
+      '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations]', e.message); res.status(500).send('Erreur'); }
 });
@@ -2026,7 +2169,7 @@ app.get('/realisations/:slug', async (req, res) => {
     const metaTitle = escapeHtml(c.seoTitle || c.title);
     const metaDesc = escapeHtml(c.metaDescription || c.excerpt || '');
     const url = SITE() + '/realisations/' + encodeURIComponent(c.slug);
-    const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + c.featuredImage) : (SITE() + '/img/og-blog.jpg');
+    const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + pubImg(c.featuredImage)) : (SITE() + '/img/og-blog.jpg');
     const sub = [c.sector, c.location].filter(Boolean).join(' · ');
     const csStyle = '<style>' +
       '.cs-page .bx-meta{font-size:1.18rem;color:rgba(229,226,225,.78);line-height:1.65;margin:.2rem 0 2.4rem;}' +
@@ -2047,7 +2190,7 @@ app.get('/realisations/:slug', async (req, res) => {
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + csStyle;
-    const hero = c.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(c.featuredImage) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : '';
+    const hero = c.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : '';
     const mb = (v, l) => v ? '<div class="cs-metric"><div class="cs-metric__num">' + escapeHtml(v) + '</div><div class="cs-metric__label">' + escapeHtml(l) + '</div></div>' : '';
     const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cs-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
     // Met en valeur la liste de la stack technique (grille de puces)
@@ -2063,6 +2206,19 @@ app.get('/realisations/:slug', async (req, res) => {
       '</article></main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
+});
+
+// --- PUBLIC : sert une image (media) en binaire, décodée depuis le data URL stocké ---
+app.get('/media/:id', async (req, res) => {
+  try {
+    const media = await Media.findById(req.params.id).lean();
+    if (!media || !media.data) return res.status(404).send('Not found');
+    const m = /^data:([^;]+);base64,(.*)$/.exec(media.data);
+    if (!m) return res.status(404).send('Not found');
+    res.set('Content-Type', m[1]);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return res.send(Buffer.from(m[2], 'base64'));
+  } catch (e) { return res.status(500).send('Erreur'); }
 });
 
 // --- AVIS : generer un lien de demande (sans passer par une fiche) ---

@@ -51,6 +51,7 @@
     { "source": "/pirabel-admin-7x9k2m", "destination": "/api" },
     { "source": "/blog", "destination": "/api" },
     { "source": "/blog/(.*)", "destination": "/api" },
+    { "source": "/media/(.*)", "destination": "/api" },
     { "source": "/realisations", "destination": "/api" },
     { "source": "/realisations/(.*)", "destination": "/api" },
     { "source": "/temoignages", "destination": "/api" },

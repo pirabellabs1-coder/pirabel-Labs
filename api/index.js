@@ -2019,6 +2019,22 @@ function casePlaceholder(c, i) {
 app.get('/realisations', async (req, res) => {
   try {
     const cs = await CaseStudy.find({ status: 'publie' }).sort({ publishedAt: -1 }).limit(60).lean();
+    // Catégories de filtre déduites du secteur + titre de chaque projet.
+    const RZ_CATS = [
+      ['web', 'Sites web', /site|vitrine|\bweb\b|wordpress|marque personnelle/i],
+      ['ecommerce', 'E-commerce', /e-?commerce|\bcommerce\b|boutique|\bmode\b|lifestyle/i],
+      ['saas', 'SaaS & apps', /\bsaas\b|application|plateforme|logiciel/i],
+      ['ia', 'IA', /\bia\b|intelligence artificielle|\bai\b|vocal|\bvoix\b/i],
+      ['fintech', 'Fintech & Web3', /fintech|crypto|web3|blockchain/i],
+      ['marketing', 'Marketing & SEO', /marketing|\bseo\b|acquisition|publicit/i],
+      ['graphisme', 'Graphisme', /graphisme|\bdesign\b|branding|identit[ée] visuelle|\blogo\b/i],
+      ['automatisation', 'Automatisation', /automatisation|automation|workflow|no-?code/i],
+      ['rh', 'RH & recrutement', /ressources humaines|recrutement|talent|emploi/i],
+      ['immobilier', 'Immobilier', /immobilier|proptech/i],
+    ];
+    const catsOf = (c) => RZ_CATS.filter(k => k[2].test(String(c.sector || '') + ' ' + String(c.title || ''))).map(k => k[0]);
+    const present = new Set();
+    cs.forEach(c => catsOf(c).forEach(x => present.add(x)));
     const cards = cs.length ? cs.map((c, i) => {
       const img = c.featuredImage
         ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy">'
@@ -2026,12 +2042,17 @@ app.get('/realisations', async (req, res) => {
       const pill = (v, l) => v ? '<span class="rz-pill"><strong>' + escapeHtml(v) + '</strong>' + (l ? ' ' + escapeHtml(l) : '') + '</span>' : '';
       const metrics = (c.metric1Value || c.metric2Value) ? '<div class="rz-pills">' + pill(c.metric1Value, c.metric1Label) + pill(c.metric2Value, c.metric2Label) + '</div>' : '';
       const sub = escapeHtml([c.sector, c.location].filter(Boolean).join(' · '));
-      return '<a class="rz-card" style="animation-delay:' + ((i % 9) * 70) + 'ms" href="/realisations/' + escapeHtml(c.slug) + '">' +
+      return '<a class="rz-card" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms" href="/realisations/' + escapeHtml(c.slug) + '">' +
         '<div class="rz-card__img">' + img + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
         '<div class="rz-card__b">' + (sub ? '<span class="rz-cat">' + sub + '</span>' : '') +
         '<h3>' + escapeHtml(c.title) + '</h3><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics +
         '<span class="rz-more">Voir l\'étude de cas <span class="material-symbols-outlined">arrow_forward</span></span></div></a>';
     }).join('') : '<div class="bx-empty">Études de cas à venir.</div>';
+    const filterBar = present.size > 1
+      ? '<div class="rz-filters" id="rzFilters"><button class="rz-fbtn is-active" data-cat="all">Tous</button>' +
+        RZ_CATS.filter(k => present.has(k[0])).map(k => '<button class="rz-fbtn" data-cat="' + k[0] + '">' + escapeHtml(k[1]) + '</button>').join('') + '</div>'
+      : '';
+    const dotArrow = (mirror) => '<div class="rz-arrow' + (mirror ? ' rz-arrow--r' : '') + '" aria-hidden="true"><svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="rz-flow" d="M14 22 C 150 22 90 96 210 96" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 15" opacity="0.55"/><path d="M196 82 L214 97 L194 106" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>';
 
     const head = '<title>Réalisations & études de cas — Pirabel Labs</title>' +
       '<meta name="description" content="Nos réalisations : sites web, boutiques en ligne, plateformes SaaS, applications IA et SEO — des produits livrés et en production, au Bénin, en Afrique et en Europe.">' +
@@ -2042,7 +2063,7 @@ app.get('/realisations', async (req, res) => {
       '.rz-wrap{max-width:78rem;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem) 4rem;}' +
       '.rz-hero{text-align:center;max-width:52rem;margin:0 auto;padding:clamp(2.5rem,6vw,4.5rem) 0 2.6rem;}' +
       '.rz-eyebrow{display:inline-flex;align-items:center;gap:.45rem;color:#FF5500;font-weight:700;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(255,85,0,.3);background:rgba(255,85,0,.07);padding:.42rem .95rem;border-radius:999px;margin-bottom:1.4rem;}' +
-      '.rz-hero h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(2.2rem,6vw,4rem);line-height:1.03;letter-spacing:-.04em;margin:0 0 1.1rem;color:#fff;}' +
+      '.rz-hero h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.08;letter-spacing:-.03em;margin:0 0 1.1rem;color:#fff;}' +
       '.rz-hero h1 em{font-style:normal;color:#FF5500;}' +
       '.rz-lead{color:rgba(229,226,225,.72);font-size:clamp(1rem,2vw,1.18rem);line-height:1.65;max-width:44rem;margin:0 auto 1.9rem;}' +
       '.rz-lead strong{color:#fff;font-weight:600;}' +
@@ -2070,6 +2091,16 @@ app.get('/realisations', async (req, res) => {
       '.rz-head{text-align:center;max-width:42rem;margin:0 auto 2.4rem;}' +
       '.rz-head h2{font-family:"Montserrat",sans-serif;font-weight:800;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .6rem;letter-spacing:-.025em;}' +
       '.rz-head p{color:rgba(229,226,225,.6);font-size:1rem;line-height:1.6;margin:0;}' +
+      '.rz-filters{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:0 0 2rem;}' +
+      '.rz-fbtn{font-family:inherit;font-size:.82rem;font-weight:600;color:rgba(229,226,225,.72);background:#161616;border:1px solid rgba(229,226,225,.14);padding:.5rem 1.05rem;border-radius:999px;cursor:pointer;transition:.18s;}' +
+      '.rz-fbtn:hover{border-color:#FF5500;color:#fff;}' +
+      '.rz-fbtn.is-active{background:#FF5500;color:#190800;border-color:#FF5500;}' +
+      '.rz-arrow{display:flex;justify-content:center;margin:.6rem 0 -.4rem;pointer-events:none;}' +
+      '.rz-arrow svg{width:min(230px,55%);height:auto;overflow:visible;}' +
+      '.rz-arrow--r svg{transform:scaleX(-1);}' +
+      '.rz-arrow .rz-flow{animation:rzFlow 1.4s linear infinite;}' +
+      '@keyframes rzFlow{to{stroke-dashoffset:-30.4;}}' +
+      '@media(max-width:560px){.rz-arrow{display:none;}}' +
       '.rz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem;}' +
       '.rz-card{position:relative;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
       '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
@@ -2103,7 +2134,7 @@ app.get('/realisations', async (req, res) => {
       '@media(max-width:820px){.rz-two{grid-template-columns:1fr;}}' +
       '@media(max-width:680px){.rz-grid{grid-template-columns:1fr;}}' +
       '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.rz-stats{gap:1.2rem 1.8rem;}.rz-stat b{font-size:1.5rem;}}' +
-      '@media(prefers-reduced-motion:reduce){.rz-card{animation:none;opacity:1;transform:none;}html{scroll-behavior:auto;}}' +
+      '@media(prefers-reduced-motion:reduce){.rz-card{animation:none;opacity:1;transform:none;}.rz-arrow .rz-flow{animation:none;}html{scroll-behavior:auto;}}' +
       '</style>';
 
     const body = '<main class="rz-wrap">' +
@@ -2119,6 +2150,8 @@ app.get('/realisations', async (req, res) => {
           '<div class="rz-stat"><b>24/7</b><span>support & suivi</span></div>' +
         '</div>' +
       '</section>' +
+
+      dotArrow(false) +
 
       '<section class="rz-two">' +
         '<div class="rz-two__t"><span class="rz-kick">Notre savoir-faire</span>' +
@@ -2136,9 +2169,12 @@ app.get('/realisations', async (req, res) => {
       '</section>' +
 
       '<section id="projets">' +
-        '<div class="rz-head"><h2>Études de cas</h2><p>Chaque projet, avec sa problématique, notre solution et la stack technique employée. Cliquez pour lire l\'étude complète.</p></div>' +
+        '<div class="rz-head"><h2>Études de cas</h2><p>Filtrez par type de projet, puis cliquez pour lire l\'étude complète — problématique, solution et stack technique.</p></div>' +
+        filterBar +
         '<div class="rz-grid">' + cards + '</div>' +
       '</section>' +
+
+      dotArrow(true) +
 
       '<section class="rz-two">' +
         '<div class="rz-steps">' +
@@ -2158,6 +2194,7 @@ app.get('/realisations', async (req, res) => {
         '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable — et comment.</p>' +
         '<a class="rz-btn rz-btn--p" href="/contact#rdv">Parler au fondateur <span class="material-symbols-outlined">arrow_forward</span></a>' +
       '</section>' +
+      '<script>(function(){var bar=document.getElementById("rzFilters");if(!bar)return;var cards=[].slice.call(document.querySelectorAll(".rz-grid .rz-card"));bar.addEventListener("click",function(e){var b=e.target.closest("[data-cat]");if(!b)return;bar.querySelectorAll("[data-cat]").forEach(function(x){x.classList.toggle("is-active",x===b);});var cat=b.getAttribute("data-cat");cards.forEach(function(c){var ok=cat==="all"||((" "+(c.getAttribute("data-cats")||"")+" ").indexOf(" "+cat+" ")>-1);c.style.display=ok?"":"none";});});})();</script>' +
       '</main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations]', e.message); res.status(500).send('Erreur'); }
@@ -2197,7 +2234,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-back:hover{color:#FF5500;}.cd-back .material-symbols-outlined{font-size:1.1rem;}' +
       '.cd-head{max-width:52rem;margin:0 auto 2rem;text-align:center;}' +
       '.cd-cat{display:inline-block;color:#FF5500;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem;}' +
-      '.cd-head h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff;margin:0 0 1rem;}' +
+      '.cd-head h1{font-family:"Montserrat",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.2vw,2.25rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 1rem;}' +
       '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
       '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
       '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;display:block;}' +

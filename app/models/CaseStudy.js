@@ -19,6 +19,7 @@ const caseStudySchema = new mongoose.Schema({
   metaDescription: { type: String, default: '' },
   // Publication
   status: { type: String, enum: ['brouillon', 'publie'], default: 'brouillon', index: true },
+  inProgress: { type: Boolean, default: false },     // affiche un badge « En cours » (projet en développement)
   publishedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

@@ -1,3 +1,8 @@
+
+/* --- Polices de secours a metriques calees (anti-CLS au swap) --- */
+@font-face{font-family:"Space Grotesk Fallback";src:local("Arial");size-adjust:103.4%;ascent-override:95%;descent-override:29%;line-gap-override:0%;}
+@font-face{font-family:"Inter Fallback";src:local("Arial");size-adjust:107.4%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%;}
+@font-face{font-family:"Montserrat Fallback";src:local("Arial");size-adjust:110.5%;ascent-override:88%;descent-override:22.8%;line-gap-override:0%;}
 /* ============================================================================
    PIRABEL LABS - Studio tech premium
    Design system v2 (post-pivot 2026) - minimal, focus, accent #FF5500
@@ -23,8 +28,8 @@
   --danger: #f87171;
 
   /* Typo */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, Segoe UI, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, Segoe UI, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Layout */

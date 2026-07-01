@@ -2159,12 +2159,6 @@ app.get('/realisations', async (req, res) => {
         '<h1>Des produits web qui <em>travaillent</em> vraiment</h1>' +
         '<p class="rz-lead">Sites vitrines, boutiques en ligne, plateformes SaaS, applications métier, agents IA… Voici des projets <strong>livrés et en production</strong>, conçus sur mesure pour des clients au Bénin, en Afrique et en Europe.</p>' +
         '<div class="rz-ctas"><a class="rz-btn rz-btn--p" href="/contact#rdv">Démarrer mon projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="rz-btn rz-btn--g" href="#projets">Voir les projets</a></div>' +
-        '<div class="rz-stats">' +
-          '<div class="rz-stat"><b>' + cs.length + '</b><span>projets livrés</span></div>' +
-          '<div class="rz-stat"><b>3</b><span>continents</span></div>' +
-          '<div class="rz-stat"><b>100%</b><span>sur mesure</span></div>' +
-          '<div class="rz-stat"><b>24/7</b><span>support & suivi</span></div>' +
-        '</div>' +
       '</section>' +
 
       dotArrow(false) +

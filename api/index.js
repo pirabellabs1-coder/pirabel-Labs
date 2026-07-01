@@ -2028,20 +2028,38 @@ app.get('/realisations/:slug', async (req, res) => {
     const url = SITE() + '/realisations/' + encodeURIComponent(c.slug);
     const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + c.featuredImage) : (SITE() + '/img/og-blog.jpg');
     const sub = [c.sector, c.location].filter(Boolean).join(' · ');
+    const csStyle = '<style>' +
+      '.cs-page .bx-meta{font-size:1.18rem;color:rgba(229,226,225,.78);line-height:1.65;margin:.2rem 0 2.4rem;}' +
+      '.cs-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 2.8rem;}' +
+      '.cs-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.10),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.35rem 1.6rem;}' +
+      '.cs-metric__num{font-family:"Space Grotesk",sans-serif;font-weight:800;font-size:2rem;color:#FF5500;line-height:1;}' +
+      '.cs-metric__label{color:rgba(229,226,225,.72);font-size:.9rem;margin-top:.45rem;line-height:1.45;}' +
+      '.cs-page .cs-intro{font-size:1.2rem;line-height:1.72;color:#fff;font-weight:500;border-left:3px solid #FF5500;padding-left:1.25rem;margin:0 0 2.6rem;}' +
+      '.cs-page .bx-content h2{font-family:"Space Grotesk",sans-serif;font-size:1.5rem;color:#fff;margin:2.8rem 0 1.1rem;display:flex;align-items:center;gap:.65rem;}' +
+      '.cs-page .bx-content h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;flex-shrink:0;}' +
+      '.cs-page .bx-content>p{color:rgba(229,226,225,.82);line-height:1.78;margin:0 0 1rem;font-size:1.02rem;}' +
+      '.cs-page .bx-content ul{list-style:none;padding:0;margin:.5rem 0 1.2rem;display:grid;gap:.65rem;}' +
+      '.cs-page .bx-content .cs-stack{grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));}' +
+      '.cs-page .bx-content li{position:relative;padding:.9rem 1.1rem .9rem 2.55rem;background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:12px;line-height:1.55;color:rgba(229,226,225,.85);}' +
+      '.cs-page .bx-content li::before{content:"\\2713";position:absolute;left:.9rem;top:.85rem;color:#FF5500;font-weight:800;}' +
+      '.cs-page .bx-content li strong{color:#fff;font-weight:700;}' +
+      '</style>';
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
-      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">';
+      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + csStyle;
     const hero = c.featuredImage ? '<img class="bx-heroimg" src="' + escapeHtml(c.featuredImage) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : '';
-    const mb = (v, l) => v ? '<div class="art-stat-box" style="margin:0;flex:1;min-width:12rem;"><div class="art-stat-box__num">' + escapeHtml(v) + '</div><div><div class="art-stat-box__label">' + escapeHtml(l) + '</div></div></div>' : '';
-    const metrics = (c.metric1Value || c.metric2Value) ? '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 2rem;">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
-    const body = '<main class="bx-wrap"><article class="bx-article">' +
+    const mb = (v, l) => v ? '<div class="cs-metric"><div class="cs-metric__num">' + escapeHtml(v) + '</div><div class="cs-metric__label">' + escapeHtml(l) + '</div></div>' : '';
+    const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cs-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
+    // Met en valeur la liste de la stack technique (grille de puces)
+    const contentHtml = String(c.content || '').replace(/(<h2>[^<]*[Ss]tack[^<]*<\/h2>\s*)<ul>/, '$1<ul class="cs-stack">');
+    const body = '<main class="bx-wrap"><article class="bx-article cs-page">' +
       '<a class="bx-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
       (sub ? '<span class="bx-cat">' + escapeHtml(sub) + '</span>' : '') +
       '<h1>' + escapeHtml(c.title) + '</h1>' +
       (c.excerpt ? '<div class="bx-meta">' + escapeHtml(c.excerpt) + '</div>' : '') +
       hero + metrics +
-      '<div class="bx-content">' + (c.content || '') + '</div>' +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler à le fondateur</a></div>' +
+      '<div class="bx-content">' + contentHtml + '</div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet similaire ?</div><a href="/contact">Parler au fondateur</a></div>' +
       '</article></main>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }

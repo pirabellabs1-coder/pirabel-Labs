@@ -2047,11 +2047,13 @@ app.get('/realisations', async (req, res) => {
       const pill = (v, l) => v ? '<span class="rz-pill"><strong>' + escapeHtml(v) + '</strong>' + (l ? ' ' + escapeHtml(l) : '') + '</span>' : '';
       const metrics = (c.metric1Value || c.metric2Value) ? '<div class="rz-pills">' + pill(c.metric1Value, c.metric1Label) + pill(c.metric2Value, c.metric2Label) + '</div>' : '';
       const sub = escapeHtml([c.sector, c.location].filter(Boolean).join(' · '));
-      return '<a class="rz-card" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms" href="/realisations/' + escapeHtml(c.slug) + '">' +
-        '<div class="rz-card__img">' + img + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
+      const visit = (c.projectUrl && /^https?:\/\//i.test(c.projectUrl))
+        ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
+      return '<div class="rz-card" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms">' +
+        '<div class="rz-card__img">' + img + visit + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
         '<div class="rz-card__b">' + (sub ? '<span class="rz-cat">' + sub + '</span>' : '') +
-        '<h3>' + escapeHtml(c.title) + '</h3><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics +
-        '<span class="rz-more">Voir l\'étude de cas <span class="material-symbols-outlined">arrow_forward</span></span></div></a>';
+        '<h3><a class="rz-stretch" href="/realisations/' + escapeHtml(c.slug) + '">' + escapeHtml(c.title) + '</a></h3><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics +
+        '<span class="rz-more">Voir l\'étude de cas <span class="material-symbols-outlined">arrow_forward</span></span></div></div>';
     }).join('') : '<div class="bx-empty">Études de cas à venir.</div>';
     const filterBar = present.size > 1
       ? '<div class="rz-filters" id="rzFilters"><button class="rz-fbtn is-active" data-cat="all">Tous</button>' +
@@ -2107,7 +2109,12 @@ app.get('/realisations', async (req, res) => {
       '@keyframes rzFlow{to{stroke-dashoffset:-30.4;}}' +
       '@media(max-width:560px){.rz-arrow{display:none;}}' +
       '.rz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem;}' +
-      '.rz-card{position:relative;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
+      '.rz-card{position:relative;isolation:isolate;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
+      '.rz-stretch{color:inherit;text-decoration:none;}' +
+      '.rz-stretch::after{content:"";position:absolute;inset:0;z-index:1;}' +
+      '.rz-visit{position:absolute;left:.75rem;bottom:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,85,0,.96);color:#190800;font-weight:700;font-size:.78rem;padding:.42rem .8rem;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .2s,background .2s;}' +
+      '.rz-visit:hover{transform:translateY(-2px);background:#FF5500;}' +
+      '.rz-visit .material-symbols-outlined{font-size:.95rem;}' +
       '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
       '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
       '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0e0e0e;}' +

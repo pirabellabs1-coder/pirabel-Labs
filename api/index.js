@@ -939,8 +939,14 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-content p{margin:0 0 1.1rem;}.bx-content img{max-width:100%;border-radius:12px;margin:1rem 0;}' +
     '.bx-content a{color:#FF5500;}.bx-content ul,.bx-content ol{padding-left:1.3rem;margin:0 0 1.1rem;}.bx-content li{margin:.3rem 0;}' +
     '.bx-back{display:inline-flex;align-items:center;gap:.4rem;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.9rem;margin-bottom:1.5rem;}' +
-    '.bx-cta{margin-top:3rem;text-align:center;background:#161616;border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:2rem;}' +
-    '.bx-cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.9rem 2rem;border-radius:999px;text-decoration:none;margin-top:1rem;}' +
+    '.bx-cta{margin-top:3rem;text-align:center;background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:2.2rem;}' +
+    '.bx-cta__sub{color:rgba(229,226,225,0.7);font-size:.98rem;line-height:1.55;margin:.5rem auto 0;max-width:34rem;}' +
+    '.bx-cta__btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.3rem;}' +
+    '.bx-cta a{display:inline-flex;align-items:center;gap:.5rem;background:#FF5500;color:#190800;font-weight:700;padding:.85rem 1.8rem;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .2s,border-color .2s,color .2s;box-shadow:0 10px 30px rgba(255,85,0,.26);}' +
+    '.bx-cta a:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(255,85,0,.42);}' +
+    '.bx-cta a .material-symbols-outlined{font-size:1.1rem;}' +
+    '.bx-cta a.bx-cta__g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
+    '.bx-cta a.bx-cta__g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
     '.bx-foot{text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(229,226,225,0.1);color:rgba(229,226,225,0.5);font-size:.85rem;}.bx-foot a{color:#FF5500;text-decoration:none;}' +
     '.art-pullquote{border-left:3px solid #FF5500;background:rgba(255,85,0,0.05);padding:1.2rem 1.4rem;margin:1.8rem 0;display:flex;gap:1rem;align-items:flex-start;border-radius:0 10px 10px 0;}' +
     '.art-pullquote__icon{color:#FF5500;font-size:1.8rem;flex-shrink:0;}.art-pullquote__text{font-style:italic;color:#fff;font-size:1.1rem;line-height:1.6;}' +
@@ -1919,8 +1925,9 @@ app.get('/blog/:slug', async (req, res) => {
       cover +
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:1.2rem;color:#fff;">Un projet en tête ?</div>' +
-      '<a href="/contact">Discutons de votre projet</a></div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:800;font-size:1.35rem;color:#fff;">Un projet en tête ?</div>' +
+      '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit — parlez-en directement au fondateur.</p>' +
+      '<div class="bx-cta__btns"><a href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="bx-cta__g" href="/realisations">Voir nos réalisations <span class="material-symbols-outlined">arrow_outward</span></a></div></div>' +
       relatedHtml +
       '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
       '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +

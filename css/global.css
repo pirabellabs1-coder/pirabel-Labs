@@ -430,3 +430,15 @@ h1,h2,h3{text-wrap:balance;}
   .s-hero__inner .s-hero__txt h1{font-size:clamp(1.5rem,7vw,1.75rem);line-height:1.16;}
   .s-hero__inner .s-hero__txt .s-hero__tagline{font-size:.98rem;}
 }
+
+
+/* --- Banniere cookies (RGPD, Consent Mode v2) --- */
+.pl-ck{position:fixed;left:1rem;bottom:1rem;z-index:9998;max-width:22rem;background:#161515;border:1px solid rgba(255,85,0,.35);border-radius:16px;padding:1.1rem 1.2rem;box-shadow:0 18px 50px rgba(0,0,0,.55);}
+.pl-ck p{margin:0 0 .8rem;color:rgba(229,226,225,.82);font-size:.85rem;line-height:1.5;}
+.pl-ck a{color:#FF5500;}
+.pl-ck__btns{display:flex;gap:.5rem;flex-wrap:wrap;}
+.pl-ck__b{flex:1;min-width:7rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.84rem;padding:.6rem .9rem;border-radius:999px;cursor:pointer;border:none;font-family:inherit;transition:transform .15s;}
+.pl-ck__b:hover{transform:translateY(-1px);}
+.pl-ck__b--a{background:#FF5500;color:#190800;}
+.pl-ck__b--r{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.3);}
+@media(max-width:560px){.pl-ck{left:.6rem;right:.6rem;bottom:.6rem;max-width:none;}}

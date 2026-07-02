@@ -3,7 +3,7 @@
 <head>
 <!-- Google tag (gtag.js) GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("consent","default",{analytics_storage:"denied",ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",wait_for_update:500});try{if(localStorage.getItem("pl_consent")==="granted"){gtag("consent","update",{analytics_storage:"granted"});}}catch(e){}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0E0E0E">
@@ -456,6 +456,18 @@ h1,h2,h3{text-wrap:balance;}
   .s-hero__inner .s-hero__txt h1{font-size:clamp(1.5rem,7vw,1.75rem);line-height:1.16;}
   .s-hero__inner .s-hero__txt .s-hero__tagline{font-size:.98rem;}
 }
+
+
+/* --- Banniere cookies (RGPD, Consent Mode v2) --- */
+.pl-ck{position:fixed;left:1rem;bottom:1rem;z-index:9998;max-width:22rem;background:#161515;border:1px solid rgba(255,85,0,.35);border-radius:16px;padding:1.1rem 1.2rem;box-shadow:0 18px 50px rgba(0,0,0,.55);}
+.pl-ck p{margin:0 0 .8rem;color:rgba(229,226,225,.82);font-size:.85rem;line-height:1.5;}
+.pl-ck a{color:#FF5500;}
+.pl-ck__btns{display:flex;gap:.5rem;flex-wrap:wrap;}
+.pl-ck__b{flex:1;min-width:7rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.84rem;padding:.6rem .9rem;border-radius:999px;cursor:pointer;border:none;font-family:inherit;transition:transform .15s;}
+.pl-ck__b:hover{transform:translateY(-1px);}
+.pl-ck__b--a{background:#FF5500;color:#190800;}
+.pl-ck__b--r{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.3);}
+@media(max-width:560px){.pl-ck{left:.6rem;right:.6rem;bottom:.6rem;max-width:none;}}
 </style>
 <style>
 .sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
@@ -2138,5 +2150,5 @@ h1,h2,h3{text-wrap:balance;}
 <script>(function(){if(document.cookie.indexOf("/fr/en")>-1){var s=document.createElement("script");s.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";s.defer=true;document.head.appendChild(s);}})();</script>
 
 <a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>
-</body>
+<div id="pl-ck" class="pl-ck" hidden role="dialog" aria-label="Gestion des cookies"><p>Nous utilisons des cookies de mesure d'audience (Google Analytics) pour am&eacute;liorer le site. <a href="/politique-confidentialite">En savoir plus</a></p><div class="pl-ck__btns"><button type="button" id="plcA" class="pl-ck__b pl-ck__b--a">Accepter</button><button type="button" id="plcR" class="pl-ck__b pl-ck__b--r">Refuser</button></div></div><script>(function(){var c=null;try{c=localStorage.getItem("pl_consent")}catch(e){}if(c)return;var b=document.getElementById("pl-ck");if(!b)return;b.hidden=false;function set(v){try{localStorage.setItem("pl_consent",v)}catch(e){}if(v==="granted"&&window.gtag){gtag("consent","update",{analytics_storage:"granted"});}b.hidden=true;}document.getElementById("plcA").addEventListener("click",function(){set("granted")});document.getElementById("plcR").addEventListener("click",function(){set("denied")});})();</script></body>
 </html>

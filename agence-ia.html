@@ -430,6 +430,25 @@ p { color: var(--text-muted); line-height: 1.7; }
   .ctaf__btns{flex-direction:column;align-items:stretch;}
   .ctaf__b{width:100%;font-size:.94rem;padding:.85rem 1rem;}
 }
+
+
+/* --- Bandeau CTA milieu de page (responsive) --- */
+.cta-mid-pirabel{max-width:80rem;margin:0 auto;padding:10px 6%;}
+.ctam__box{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;background:#151414;border:1px solid rgba(229,226,225,.12);border-left:4px solid #FF5500;border-radius:16px;padding:1.2rem 1.5rem;}
+.ctam__txt{flex:1;min-width:15rem;}
+.ctam__t{font-family:var(--font-display);font-weight:700;color:#fff;font-size:1.05rem;margin:0 0 .2rem;}
+.ctam__p{color:rgba(229,226,225,.62);font-size:.9rem;margin:0;line-height:1.5;}
+.ctam__btns{display:flex;gap:.6rem;flex-wrap:wrap;}
+.ctam__b{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;font-weight:700;font-size:.9rem;padding:.7rem 1.3rem;border-radius:999px;text-decoration:none;white-space:nowrap;transition:transform .15s;}
+.ctam__b:hover{transform:translateY(-2px);}
+.ctam__b--p{background:#FF5500;color:#190800;}
+.ctam__b--w{background:rgba(37,211,102,.12);color:#4ade80;border:1px solid rgba(37,211,102,.35);}
+.ctam__b .material-symbols-outlined{font-size:1.05rem;}
+@media(max-width:560px){
+  .ctam__box{flex-direction:column;align-items:stretch;text-align:center;padding:1.1rem 1rem;}
+  .ctam__btns{flex-direction:column;}
+  .ctam__b{width:100%;}
+}
 </style>
 <style>
 .sec-h { text-align: center; max-width: 50rem; margin: 0 auto var(--s-7); }
@@ -476,7 +495,7 @@ p { color: var(--text-muted); line-height: 1.7; }
   .s-hero__inner { grid-template-columns: 1fr; gap: 2.5rem; text-align: left; }
   .s-hero__lead { margin-left: 0; margin-right: auto; }
   .s-hero h1 { max-width: 100%; }
-  .s-hero, .bc { padding-left: 6px; padding-right: 6px; }
+  .s-hero, .bc { padding-left: 6%; padding-right: 6%; }
   .s-hero__cta { justify-content: center; }
   .s-hero__visual { max-width: 17rem; }
 }
@@ -1204,6 +1223,8 @@ p { color: var(--text-muted); line-height: 1.7; }
       </div>
     </div>
   </section>
+<div class="cta-mid-pirabel"><div class="ctam__box"><div class="ctam__txt"><p class="ctam__t">Un projet, une question&nbsp;?</p><p class="ctam__p">Devis gratuit et r&eacute;ponse sous 24&nbsp;h &mdash; sans engagement.</p></div><div class="ctam__btns"><a class="ctam__b ctam__b--p" href="/contact">Demander un devis <span class="material-symbols-outlined">request_quote</span></a><a class="ctam__b ctam__b--w" href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%27ai%20un%20projet" target="_blank" rel="noopener">WhatsApp <span class="material-symbols-outlined">chat</span></a></div></div></div>
+
 
   <!-- 9. FAQ -->
   

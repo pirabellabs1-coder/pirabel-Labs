@@ -914,7 +914,7 @@ function blogShell(headExtra, bodyHtml) {
     '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional">' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional" media="print" onload="this.media=\'all\'">' +
     '<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional"></noscript>' +
-    '<link rel="stylesheet" href="/css/global.css?v=elan6">' + (headExtra || '') +
+    '<link rel="stylesheet" href="/css/global.css?v=elan7">' + (headExtra || '') +
     '<style>' +
     '.bx-top{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1.25rem,4vw,3rem);border-bottom:1px solid rgba(229,226,225,0.1);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);z-index:20;}' +
     '.bx-top a.bx-logo{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:800;font-size:1.15rem;color:#e5e2e1;text-decoration:none;letter-spacing:-.02em;}' +

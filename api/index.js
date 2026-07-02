@@ -476,8 +476,8 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
       subtitle: 'Voici votre livre blanc Pirabel Labs',
       body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d&apos;avoir telecharge notre livre blanc :</p>' +
         '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
-        '<div style="font-family:Montserrat,"Montserrat Fallback",sans-serif;font-weight:700;font-size:13px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Livre blanc &middot; ' + lb.pages + ' pages</div>' +
-        '<div style="font-family:Montserrat,"Montserrat Fallback",sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:12px;">' + escapeHtml(lb.title) + '</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Livre blanc &middot; ' + lb.pages + ' pages</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:12px;">' + escapeHtml(lb.title) + '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">' + escapeHtml(lb.description) + '</p>' +
         '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le telecharger en cliquant sur le bouton ci-dessous. Conservez cet email pour y revenir plus tard si besoin.</p>' +
@@ -1822,7 +1822,7 @@ app.get('/blog', async (req, res) => {
     const card = a => '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + cardImg(a) +
       '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
       '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p>' +
-      '<div class="bx-card__meta">' + (a.readTime ? '<span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min</span>' : '<span></span>') + '<span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div></div></a>';
+      '<div class="bx-card__meta">' + (a.readTime ? '<span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min</span>' : '<span></span>') + ((a.views || 0) >= 100 ? '<span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span>' : '<span></span>') + '</div></div></a>';
     const cards = arts.length ? arts.map(card).join('') : '<div class="bx-empty">Aucun article ne correspond à votre recherche.</div>';
     // vedette
     const featHtml = (featured && safePage === 1) ?
@@ -1911,7 +1911,7 @@ app.get('/blog/:slug', async (req, res) => {
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
       '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Fondateur &amp; CEO, Pirabel Labs</div></div></div>' +
-      '<div class="bx-side__cta"><div style="font-family:Space Grotesk,"Space Grotesk Fallback",sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
+      '<div class="bx-side__cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents
     const related = await Article.find({ status: 'publie', _id: { $ne: a._id }, category: a.category }).sort({ views: -1, publishedAt: -1 }).limit(3).lean();
@@ -1927,11 +1927,11 @@ app.get('/blog/:slug', async (req, res) => {
       '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
       '<span class="bx-cat">' + catLabel + '</span>' +
       '<h1>' + escapeHtml(a.title) + '</h1>' +
-      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + (a.readTime ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min de lecture</span>' : '') + ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span></div>' +
+      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + (a.readTime ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min de lecture</span>' : '') + ((a.views || 0) >= 100 ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span>' : '') + '</div>' +
       cover +
       '<div class="bx-content">' + contentHtml + '</div>' +
       authorCard +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,"Space Grotesk Fallback",sans-serif;font-weight:800;font-size:1.35rem;color:#fff;">Un projet en tête ?</div>' +
+      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:800;font-size:1.35rem;color:#fff;">Un projet en tête ?</div>' +
       '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit — parlez-en directement au fondateur.</p>' +
       '<div class="bx-cta__btns"><a href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="bx-cta__g" href="/realisations">Voir nos réalisations <span class="material-symbols-outlined">arrow_outward</span></a></div></div>' +
       relatedHtml +
@@ -2418,16 +2418,26 @@ app.post('/api/admin/reviews/create-link', auth, adminOnly, limitBody(6), async 
 });
 
 // --- PUBLIC : page temoignages (avis publies, apres moderation) ---
+// Secours : les avis affichés sur l'accueil — la page ne doit JAMAIS être vide (cohérence accueil/témoignages).
+const SEED_REVIEWS = [
+  { clientName: 'A. Akouete', clientRole: 'Cabinet conseil — Cotonou', rating: 5, comment: "Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui répond en moins de 4h." },
+  { clientName: 'F. Kpogo', clientRole: 'E-commerce mode — Cotonou', rating: 5, comment: "Boutique livrée en 4 semaines, paiements Mobile Money intégrés sans friction. Nos ventes en ligne ont doublé." },
+  { clientName: 'S. Olou', clientRole: "Cabinet d'avocat — Cotonou", rating: 5, comment: "Le chatbot IA a transformé notre service client. 22h économisées par semaine, réponses instantanées 24h/24." },
+  { clientName: 'M. Bocandy', clientRole: 'Clinique médicale — Abidjan', rating: 5, comment: "SaaS de gestion patient livré en 12 semaines. Code propre, documentation complète, équipe très professionnelle." },
+  { clientName: 'R. Locko', clientRole: 'Restaurant — Cotonou', rating: 5, comment: "Top 3 Google Maps en 5 mois sur 12 mots-clés. +340% d'appels entrants depuis la fiche Google Business." },
+  { clientName: 'C. Diop', clientRole: 'Marque mode — Dakar', rating: 5, comment: "Community management 6 mois : +18k followers IG, engagement x4. Un contenu qui nous ressemble vraiment." },
+];
 app.get('/temoignages', async (req, res) => {
   try {
-    const reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
+    let reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
+    if (!reviews.length) reviews = SEED_REVIEWS;
     const cards = reviews.length ? reviews.map(r => {
       const stars = '&#9733;'.repeat(Math.max(1, Math.min(5, r.rating || 5))) + '<span style="color:rgba(229,226,225,0.2);">' + '&#9733;'.repeat(5 - Math.max(1, Math.min(5, r.rating || 5))) + '</span>';
       const sub = [r.clientRole, r.clientCompany, r.clientCity].filter(Boolean).join(' · ');
       return '<div class="bx-card" style="cursor:default;"><div class="bx-card__b">' +
         '<div style="color:#FF5500;font-size:1.15rem;margin-bottom:.6rem;">' + stars + '</div>' +
         '<p style="color:#e5e2e1;font-style:italic;line-height:1.6;margin:0 0 1rem;">&laquo;&nbsp;' + escapeHtml(r.comment) + '&nbsp;&raquo;</p>' +
-        '<div style="font-family:Space Grotesk,"Space Grotesk Fallback",sans-serif;font-weight:700;color:#fff;">' + escapeHtml(r.clientName) + '</div>' +
+        '<div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;">' + escapeHtml(r.clientName) + '</div>' +
         (sub || r.serviceUsed ? '<div style="color:rgba(229,226,225,0.5);font-size:.82rem;">' + escapeHtml(sub) + (r.serviceUsed ? (sub ? ' — ' : '') + escapeHtml(r.serviceUsed) : '') + '</div>' : '') +
         '</div></div>';
     }).join('') : '<div class="bx-empty">Les premiers avis clients arrivent bientôt.</div>';
@@ -2871,12 +2881,12 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
       subtitle: 'Votre devis est prêt',
       body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Comme convenu, voici votre devis personnalise :</p>' +
         '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
-        '<div style="font-family:Montserrat,"Montserrat Fallback",sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(quote.reference) + '</div>' +
-        '<div style="font-family:Montserrat,"Montserrat Fallback",sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(quote.title) + '</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(quote.reference) + '</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(quote.title) + '</div>' +
         '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Qte</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">PU</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Total</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
         '<div style="margin-top:16px;text-align:right;"><div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">Sous-total : ' + quote.subtotal.toFixed(2) + ' ' + quote.currency + '</div>' +
         (quote.taxRate > 0 ? '<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">TVA ' + quote.taxRate + '% : ' + quote.taxAmount.toFixed(2) + ' ' + quote.currency + '</div>' : '') +
-        '<div style="font-family:Montserrat,"Montserrat Fallback",sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + quote.total.toFixed(2) + ' ' + quote.currency + '</div></div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + quote.total.toFixed(2) + ' ' + quote.currency + '</div></div>' +
         '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Valide jusqu&apos;au <strong style="color:#e5e2e1;">' + quote.validUntil.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) + '</strong>.</p>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le detail, accepter ou refuser le devis directement en ligne.</p>',

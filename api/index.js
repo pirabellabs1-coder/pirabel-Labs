@@ -914,7 +914,7 @@ function blogShell(headExtra, bodyHtml) {
     '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional">' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional" media="print" onload="this.media=\'all\'">' +
     '<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional"></noscript>' +
-    '<link rel="stylesheet" href="/css/global.css?v=elan5">' + (headExtra || '') +
+    '<link rel="stylesheet" href="/css/global.css?v=elan6">' + (headExtra || '') +
     '<style>' +
     '.bx-top{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1.25rem,4vw,3rem);border-bottom:1px solid rgba(229,226,225,0.1);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);z-index:20;}' +
     '.bx-top a.bx-logo{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:800;font-size:1.15rem;color:#e5e2e1;text-decoration:none;letter-spacing:-.02em;}' +
@@ -952,6 +952,7 @@ function blogShell(headExtra, bodyHtml) {
     '.bx-cta a .material-symbols-outlined{font-size:1.1rem;}' +
     '.bx-cta a.bx-cta__g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
     '.bx-cta a.bx-cta__g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
+    '@media(max-width:560px){.bx-cta__btns a{width:100%;justify-content:center;box-sizing:border-box;}}' +
     '.bx-foot{text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(229,226,225,0.1);color:rgba(229,226,225,0.5);font-size:.85rem;}.bx-foot a{color:#FF5500;text-decoration:none;}' +
     '.art-pullquote{border-left:3px solid #FF5500;background:rgba(255,85,0,0.05);padding:1.2rem 1.4rem;margin:1.8rem 0;display:flex;gap:1rem;align-items:flex-start;border-radius:0 10px 10px 0;}' +
     '.art-pullquote__icon{color:#FF5500;font-size:1.8rem;flex-shrink:0;}.art-pullquote__text{font-style:italic;color:#fff;font-size:1.1rem;line-height:1.6;}' +
@@ -2329,6 +2330,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-lb.is-open{display:flex;}' +
       '.cd-lb img{max-width:100%;max-height:92vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);}' +
       '.cd-lb__x{position:absolute;top:1rem;right:1.3rem;color:#fff;font-size:2.2rem;background:none;border:none;cursor:pointer;line-height:1;}' +
+      '@media(max-width:560px){.cd-btns .cd-btn{width:100%;justify-content:center;box-sizing:border-box;}}' +
       '@media(max-width:600px){.cd-body p{font-size:1rem;}.cd-body h2{font-size:1.28rem;}.cd-metric b{font-size:1.8rem;}}' +
       '</style>';
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +

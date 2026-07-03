@@ -2084,7 +2084,7 @@ app.get('/realisations', async (req, res) => {
         : ((c.projectUrl && /^https?:\/\//i.test(c.projectUrl))
           ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '');
       const wip = c.inProgress ? '<span class="rz-wip"' + (c.featured ? ' style="top:2.9rem;"' : '') + '><span class="material-symbols-outlined">construction</span> En cours</span>' : '';
-      const star = c.featured ? '<span class="rz-star"><span class="material-symbols-outlined">star</span> En vedette</span>' : '';
+      const star = c.featured ? '<span class="rz-star" title="En vedette" aria-label="En vedette"><span class="material-symbols-outlined">star</span></span>' : '';
       return '<div class="rz-card' + (c.featured ? ' rz-card--feat' : '') + '" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms">' +
         '<div class="rz-card__img">' + img + star + wip + visit + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
         '<div class="rz-card__b">' + (sub ? '<span class="rz-cat">' + sub + '</span>' : '') +
@@ -2153,8 +2153,8 @@ app.get('/realisations', async (req, res) => {
       '.rz-visit .material-symbols-outlined{font-size:.95rem;}' +
       '.rz-wip{position:absolute;top:.75rem;left:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.28rem;background:rgba(251,191,36,.95);color:#1a1400;font-weight:700;font-size:.72rem;padding:.32rem .7rem .32rem .55rem;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.4);}' +
       '.rz-wip .material-symbols-outlined{font-size:.9rem;}' +
-      '.rz-star{position:absolute;top:.75rem;left:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.3rem;background:#FF5500;color:#190800;font-weight:800;font-size:.72rem;padding:.32rem .7rem .32rem .55rem;border-radius:999px;box-shadow:0 6px 16px rgba(255,85,0,.45);}' +
-      '.rz-star .material-symbols-outlined{font-size:.9rem;}' +
+      '.rz-star{position:absolute;top:.75rem;left:.75rem;z-index:3;display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;background:#FF5500;color:#190800;border-radius:50%;box-shadow:0 6px 16px rgba(255,85,0,.45);}' +
+      '.rz-star .material-symbols-outlined{font-size:1.15rem;}' +
       '.rz-card--feat{border-color:rgba(255,85,0,.45);box-shadow:0 0 0 1px rgba(255,85,0,.25),0 14px 40px rgba(0,0,0,.45);}' +
       '.rz-card--feat:hover{border-color:#FF5500;}' +
       '.rz-priv{position:absolute;left:.75rem;bottom:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.35rem;background:rgba(14,14,14,.9);color:rgba(229,226,225,.75);border:1px solid rgba(229,226,225,.2);font-weight:600;font-size:.74rem;padding:.42rem .78rem;border-radius:999px;backdrop-filter:blur(4px);}' +

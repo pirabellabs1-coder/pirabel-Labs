@@ -22,6 +22,7 @@ const caseStudySchema = new mongoose.Schema({
   status: { type: String, enum: ['brouillon', 'publie'], default: 'brouillon', index: true },
   inProgress: { type: Boolean, default: false },     // affiche un badge « En cours » (projet en développement)
   confidential: { type: Boolean, default: false },   // projet privé : masque le bouton « Visiter le site »
+  featured: { type: Boolean, default: false, index: true }, // cas en vedette (mis en avant en tête du portfolio)
   publishedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

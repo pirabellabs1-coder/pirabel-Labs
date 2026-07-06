@@ -297,6 +297,47 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
 
 // === PUBLIC : le client gère son rendez-vous (replanifier / annuler) ===
 const RDV_CHAN = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'Appel WhatsApp', presentiel: 'En personne (Abomey-Calavi)' };
+// === PUBLIC : page de prise de rendez-vous (lien court partageable pirabellabs.com/rdv) ===
+app.get('/rdv', (req, res) => {
+  const S = 'width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit;box-sizing:border-box;';
+  const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow">' +
+    '<title>Prendre rendez-vous — Pirabel Labs</title>' +
+    '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined&display=swap">' +
+    '<style>*{box-sizing:border-box;margin:0}body{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,85,0,.12),transparent 60%),#0e0e0e;color:#e5e2e1;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}' +
+    '.card{background:#161616;border:1px solid rgba(229,226,225,.1);border-radius:18px;padding:clamp(1.5rem,4vw,2.4rem);max-width:36rem;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5)}' +
+    '.b{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,85,0,.12);color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}' +
+    'h1{font-family:Space Grotesk,sans-serif;font-size:clamp(1.4rem,3.5vw,1.9rem);margin-bottom:.4rem;color:#fff}p.lead{color:rgba(229,226,225,.65);line-height:1.6;margin-bottom:1.2rem}' +
+    'label{display:block;font-size:.78rem;font-weight:600;color:rgba(229,226,225,.6);margin:.9rem 0 .35rem}.row{display:flex;gap:.8rem;flex-wrap:wrap}.row>div{flex:1;min-width:9rem}' +
+    '.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:999px;padding:.9rem 1.6rem;font-weight:700;font-size:.92rem;cursor:pointer;font-family:Space Grotesk,sans-serif;background:#FF5500;color:#190800;width:100%;margin-top:1.4rem;box-shadow:0 10px 30px rgba(255,85,0,.28)}' +
+    '.btn:disabled{opacity:.6}.msg{margin:1rem 0 0;padding:.95rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.5;display:none}.hp{position:absolute;left:-9999px}.material-symbols-outlined{font-size:1.15rem;vertical-align:middle}' +
+    '.foot{margin-top:1.1rem;font-size:.82rem;color:rgba(229,226,225,.5);text-align:center}.foot a{color:#FF5500;text-decoration:none}</style></head><body><div class="card">' +
+    '<span class="b"><span class="material-symbols-outlined" style="font-size:1rem">event</span> Pirabel Labs</span>' +
+    '<h1>Réservez votre rendez-vous</h1>' +
+    '<p class="lead">Choisissez un créneau : un échange de 30&nbsp;minutes avec Lissanon Gildas (fondateur), gratuit et sans engagement. Confirmation sous 24&nbsp;h ouvrées.</p>' +
+    '<div id="msg" class="msg"></div><form id="f" autocomplete="on">' +
+    '<input type="text" name="website_url" class="hp" tabindex="-1" autocomplete="off">' +
+    '<label>Nom complet *</label><input id="name" style="' + S + '" required>' +
+    '<div class="row"><div><label>E-mail *</label><input id="email" type="email" style="' + S + '" required></div>' +
+    '<div><label>Téléphone / WhatsApp</label><input id="phone" type="tel" style="' + S + '"></div></div>' +
+    '<label>Entreprise (optionnel)</label><input id="company" style="' + S + '">' +
+    '<div class="row"><div><label>Date souhaitée *</label><input id="date" type="date" style="' + S + '" required></div>' +
+    '<div><label>Heure</label><select id="time" style="' + S + '">' + ['', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map(v => '<option value="' + v + '">' + (v || 'Indifférent') + '</option>').join('') + '</select></div></div>' +
+    '<label>Comment&nbsp;?</label><select id="channel" style="' + S + '"><option value="visio">Visioconférence</option><option value="whatsapp">Appel WhatsApp</option><option value="telephone">Téléphone</option><option value="presentiel">En personne (Abomey-Calavi)</option></select>' +
+    '<label>Votre projet en quelques mots (optionnel)</label><textarea id="message" rows="3" style="' + S + 'resize:vertical"></textarea>' +
+    '<button class="btn" id="go" type="submit"><span class="material-symbols-outlined">calendar_month</span> Demander mon rendez-vous</button>' +
+    '</form><div class="foot">Une question&nbsp;? <a href="https://wa.me/16139273067">WhatsApp</a> · <a href="/contact">Contact</a></div>' +
+    '<script>(function(){var f=document.getElementById("f"),d=document.getElementById("date");' +
+    'var t=new Date();t.setDate(t.getDate()+1);d.min=t.toISOString().slice(0,10);' +
+    'function show(ok,h){var m=document.getElementById("msg");m.style.cssText="margin:1rem 0 0;padding:.95rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.5;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=h;m.scrollIntoView({behavior:"smooth",block:"center"});}' +
+    'f.addEventListener("submit",async function(e){e.preventDefault();var g=document.getElementById("go");var v=function(id){return (document.getElementById(id).value||"").trim();};' +
+    'if(!v("name")||!v("email")||!v("date")){show(false,"Merci de renseigner votre nom, e-mail et la date souhaitée.");return;}' +
+    'g.disabled=true;g.innerHTML="<span class=\\u0027material-symbols-outlined\\u0027>hourglass_top</span> Envoi…";' +
+    'try{var r=await fetch("/api/rdv",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("name"),email:v("email"),phone:v("phone"),company:v("company"),date:v("date"),time:document.getElementById("time").value,channel:document.getElementById("channel").value,message:v("message"),website_url:document.querySelector("[name=website_url]").value})});' +
+    'var j=await r.json();if(r.ok&&j.success!==false){f.style.display="none";show(true,"<strong>C\\u0027est envoyé&nbsp;!</strong> Votre demande de rendez-vous est bien reçue. Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées (vérifiez vos e-mails, pensez aux indésirables).");}else{show(false,j.error||"Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}}catch(err){show(false,"Erreur réseau. Vérifiez votre connexion et réessayez.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}});})();<\/script>' +
+    '</div></body></html>';
+  res.set('Content-Type', 'text/html; charset=utf-8').send(html);
+});
 app.get('/rdv/:token', async (req, res) => {
   try {
     const token = String(req.params.token || '').slice(0, 80);

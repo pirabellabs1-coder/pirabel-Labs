@@ -179,8 +179,8 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       ipHash,
     });
 
-    // Email admin (beau template avec details lead)
-    sendEmail(
+    // Email admin (AWAIT : sur Vercel, sans await l'envoi est coupé au retour de la fonction)
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] Nouvelle demande - ' + service,
       newOrderEmail({ name, email, phone, company, service, message }),
@@ -212,7 +212,7 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       ctaSecondaryUrl: 'https://www.pirabellabs.com/realisations',
     });
 
-    sendEmail(
+    await sendEmail(
       email,
       'Pirabel Labs - Demande recue, reponse sous 24h',
       confirmHtml
@@ -253,8 +253,8 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
     const chanLabel = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'WhatsApp', presentiel: 'Présentiel (Abomey-Calavi)' }[channel];
     const when = preferredDate + (preferredTime ? (' à ' + preferredTime) : '');
     const manageUrl = (process.env.SITE_URL || 'https://www.pirabellabs.com') + '/rdv/' + publicToken;
-    // E-mail admin
-    sendEmail(
+    // E-mail admin (AWAIT : sinon Vercel gèle la fonction après la réponse et l'envoi est coupé)
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] Nouvelle demande de RDV — ' + name,
       masterTemplate({
@@ -274,14 +274,14 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
       { replyTo: email }
     ).catch(e => console.error('[rdv] admin email error:', e.message));
 
-    // Confirmation client
-    sendEmail(
+    // Confirmation client (AWAIT également)
+    await sendEmail(
       email, 'Pirabel Labs — votre demande de rendez-vous est bien reçue',
       masterTemplate({
         headerType: 'hero', preheader: 'Demande de rendez-vous reçue',
         title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
         body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci&nbsp;! Votre demande de rendez-vous (' + escapeHtml(chanLabel) + ') pour le <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> est bien enregistrée.</p>' +
-          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées.</p>' +
+          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">L\'équipe Pirabel Labs vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées.</p>' +
           '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:14px 18px;background:rgba(255,85,0,0.03);margin:20px 0;"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;">Besoin de <strong style="color:#e5e2e1;">changer de créneau ou d\'annuler</strong>&nbsp;? Vous pouvez le faire vous-même en un clic, à tout moment&nbsp;:<br><a href="' + escapeHtml(manageUrl) + '" style="color:#FF5500;font-weight:600;">Gérer mon rendez-vous &rarr;</a></p></div>' +
           '<p style="font-size:14px;line-height:1.7;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a>.</p>',
         cta: 'Gérer mon rendez-vous', ctaUrl: manageUrl,
@@ -314,7 +314,7 @@ app.get('/rdv', (req, res) => {
     '.foot{margin-top:1.1rem;font-size:.82rem;color:rgba(229,226,225,.5);text-align:center}.foot a{color:#FF5500;text-decoration:none}</style></head><body><div class="card">' +
     '<span class="b"><span class="material-symbols-outlined" style="font-size:1rem">event</span> Pirabel Labs</span>' +
     '<h1>Réservez votre rendez-vous</h1>' +
-    '<p class="lead">Choisissez un créneau : un échange de 30&nbsp;minutes avec Lissanon Gildas (fondateur), gratuit et sans engagement. Confirmation sous 24&nbsp;h ouvrées.</p>' +
+    '<p class="lead">Choisissez un créneau : un échange de 30&nbsp;minutes avec l\'équipe Pirabel Labs, gratuit et sans engagement. Confirmation sous 24&nbsp;h ouvrées.</p>' +
     '<div id="msg" class="msg"></div><form id="f" autocomplete="on">' +
     '<input type="text" name="website_url" class="hp" tabindex="-1" autocomplete="off">' +
     '<label>Nom complet *</label><input id="name" style="' + S + '" required>' +
@@ -334,7 +334,7 @@ app.get('/rdv', (req, res) => {
     'if(!v("name")||!v("email")||!v("date")){show(false,"Merci de renseigner votre nom, e-mail et la date souhaitée.");return;}' +
     'g.disabled=true;g.innerHTML="<span class=\\u0027material-symbols-outlined\\u0027>hourglass_top</span> Envoi…";' +
     'try{var r=await fetch("/api/rdv",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("name"),email:v("email"),phone:v("phone"),company:v("company"),date:v("date"),time:document.getElementById("time").value,channel:document.getElementById("channel").value,message:v("message"),website_url:document.querySelector("[name=website_url]").value})});' +
-    'var j=await r.json();if(r.ok&&j.success!==false){f.style.display="none";show(true,"<strong>C\\u0027est envoyé&nbsp;!</strong> Votre demande de rendez-vous est bien reçue. Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées (vérifiez vos e-mails, pensez aux indésirables).");}else{show(false,j.error||"Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}}catch(err){show(false,"Erreur réseau. Vérifiez votre connexion et réessayez.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}});})();<\/script>' +
+    'var j=await r.json();if(r.ok&&j.success!==false){f.style.display="none";show(true,"<strong>C\\u0027est envoyé&nbsp;!</strong> Votre demande de rendez-vous est bien reçue. Pirabel Labs vous confirme le créneau sous 24&nbsp;h ouvrées (vérifiez vos e-mails, pensez aux indésirables).");}else{show(false,j.error||"Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}}catch(err){show(false,"Erreur réseau. Vérifiez votre connexion et réessayez.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}});})();<\/script>' +
     '</div></body></html>';
   res.set('Content-Type', 'text/html; charset=utf-8').send(html);
 });
@@ -356,7 +356,7 @@ app.get('/rdv/:token', async (req, res) => {
     const opt = (v, sel) => '<option' + (v === sel ? ' selected' : '') + '>' + v + '</option>';
     const chanOpt = (k) => '<option value="' + k + '"' + (a.channel === k ? ' selected' : '') + '>' + RDV_CHAN[k] + '</option>';
     const inner = '<span class="b">Pirabel Labs</span><h1>Votre rendez-vous</h1>' +
-      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez déplacer ce rendez-vous ou l\'annuler. Lissanon Gildas est prévenu automatiquement.</p>' +
+      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez déplacer ce rendez-vous ou l\'annuler. Pirabel Labs est prévenu automatiquement.</p>' +
       '<div id="msg" class="msg"></div>' +
       '<div id="form">' +
       '<label>Date souhaitée</label><input id="d" type="date" value="' + escapeHtml(a.preferredDate || '') + '">' +

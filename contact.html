@@ -1477,7 +1477,7 @@ h1,h2,h3{text-wrap:balance;}
       var data=await res.json().catch(function(){return{};});
       if(res.ok && data.success!==false){
         rdvForm.style.display='none'; if(rdvHead) rdvHead.style.display='none';
-        rdvShowMsg('success','<div style="text-align:center;padding:1rem .5rem;"><span class="material-symbols-outlined" style="font-size:2.6rem;color:#4ade80;">check_circle</span><div style="font-family:var(--font-display,inherit);font-weight:800;font-size:1.2rem;color:#e5e2e1;margin:.5rem 0 .4rem;">Demande de rendez-vous envoyée&nbsp;!</div><p style="color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">Merci&nbsp;! Lissanon Gildas vous confirme le créneau sous 24&nbsp;h ouvrées. Vérifiez votre boîte e-mail (pensez aux indésirables).</p></div>');
+        rdvShowMsg('success','<div style="text-align:center;padding:1rem .5rem;"><span class="material-symbols-outlined" style="font-size:2.6rem;color:#4ade80;">check_circle</span><div style="font-family:var(--font-display,inherit);font-weight:800;font-size:1.2rem;color:#e5e2e1;margin:.5rem 0 .4rem;">Demande de rendez-vous envoyée&nbsp;!</div><p style="color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">Merci&nbsp;! Pirabel Labs vous confirme le créneau sous 24&nbsp;h ouvrées. Vérifiez votre boîte e-mail (pensez aux indésirables).</p></div>');
       } else {
         var em=(data&&typeof data.error==='string')?data.error:'Impossible d\'envoyer la demande (erreur '+res.status+'). Réessayez ou écrivez à contact@pirabellabs.com';
         rdvShowMsg('error','<strong>Erreur.</strong> '+em); if(btn){ btn.disabled=false; btn.innerHTML=btnTxt; }

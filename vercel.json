@@ -46,6 +46,7 @@
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/admin/(.*)", "destination": "/api" },
     { "source": "/devis/(.*)", "destination": "/api" },
+    { "source": "/facture/(.*)", "destination": "/api" },
     { "source": "/avis/(.*)", "destination": "/api" },
     { "source": "/rdv", "destination": "/api" },
     { "source": "/rdv/(.*)", "destination": "/api" },

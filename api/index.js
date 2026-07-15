@@ -36,6 +36,7 @@ const User = require('../app/models/User');
 const Lead = require('../app/models/Lead');
 const Media = require('../app/models/Media');
 const Quote = require('../app/models/Quote');
+const Invoice = require('../app/models/Invoice');
 const Review = require('../app/models/Review');
 const TrafficStat = require('../app/models/TrafficStat');
 const Article = require('../app/models/Article');
@@ -3079,6 +3080,247 @@ app.post('/api/quotes/:token/refuse', async (req, res) => {
 // Static : page publique devis
 app.get('/devis/:token', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'app', 'views', 'public-devis.html'));
+});
+
+// ========================================================================
+// === INVOICES (factures) ===
+// ========================================================================
+
+function generateInvoiceReference() {
+  const year = new Date().getFullYear();
+  const random = Math.floor(Math.random() * 9000) + 1000;
+  return `FACT-${year}-${random}`;
+}
+
+// POST /api/admin/invoices : creer une facture (brouillon), depuis un devis ou en libre
+app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const { leadId, quoteId, title, items, taxRate, currency, introduction, terms, dueDays } = req.body;
+
+    let lead, baseItems = Array.isArray(items) ? items : [], baseTitle = title, baseTaxRate = Number(taxRate) || 0, baseCurrency = currency, baseIntro = introduction, baseTerms = terms, sourceQuote = null;
+
+    if (quoteId) {
+      if (!/^[a-f0-9]{24}$/i.test(quoteId)) return res.status(400).json({ error: 'Devis invalide.' });
+      sourceQuote = await Quote.findById(quoteId);
+      if (!sourceQuote) return res.status(404).json({ error: 'Devis introuvable.' });
+      lead = await Lead.findById(sourceQuote.leadId);
+      if (!baseTitle) baseTitle = sourceQuote.title;
+      if (!items) baseItems = sourceQuote.items;
+      if (taxRate === undefined) baseTaxRate = sourceQuote.taxRate;
+      if (!currency) baseCurrency = sourceQuote.currency;
+      if (!introduction) baseIntro = sourceQuote.introduction;
+      if (!terms) baseTerms = sourceQuote.terms;
+    } else {
+      if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Lead invalide.' });
+      lead = await Lead.findById(leadId);
+    }
+    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+    if (!baseTitle || baseTitle.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+
+    const totals = recalcQuote(baseItems, baseTaxRate);
+
+    const invoice = await Invoice.create({
+      reference: generateInvoiceReference(),
+      leadId: lead._id,
+      quoteId: sourceQuote ? sourceQuote._id : undefined,
+      clientName: lead.name,
+      clientEmail: lead.email,
+      clientCompany: lead.company || '',
+      clientPhone: lead.phone || '',
+      clientAddress: lead.clientData?.address || '',
+      items: totals.items,
+      subtotal: totals.subtotal,
+      taxRate: Math.max(0, baseTaxRate || 0),
+      taxAmount: totals.taxAmount,
+      total: totals.total,
+      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(baseCurrency) ? baseCurrency : 'EUR',
+      title: sanitize(baseTitle, 200),
+      introduction: sanitize(baseIntro || '', 2000),
+      terms: sanitize(baseTerms || '', 5000),
+      dueDate: new Date(Date.now() + (Number(dueDays) || 15) * 86400000),
+      publicToken: generateToken(),
+      createdBy: req.user._id
+    });
+
+    res.json({ success: true, invoice });
+  } catch (err) {
+    console.error('[invoices] create error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+  }
+});
+
+// GET /api/admin/invoices : liste
+app.get('/api/admin/invoices', auth, adminOnly, async (req, res) => {
+  try {
+    const status = sanitize(req.query.status || '', 30);
+    const leadId = sanitize(req.query.leadId || '', 30);
+    const q = {};
+    if (['brouillon', 'envoyee', 'consultee', 'payee', 'en_retard', 'annulee'].includes(status)) q.status = status;
+    if (/^[a-f0-9]{24}$/i.test(leadId)) q.leadId = leadId;
+    const invoices = await Invoice.find(q).sort({ createdAt: -1 }).limit(300);
+    const stats = await Invoice.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 }, total: { $sum: '$total' } } }
+    ]);
+    res.json({ invoices, stats });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// GET /api/admin/invoices/:id
+app.get('/api/admin/invoices/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    res.json(invoice);
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PATCH /api/admin/invoices/:id : update
+app.patch('/api/admin/invoices/:id', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    if (invoice.status === 'payee' || invoice.status === 'annulee') {
+      return res.status(403).json({ error: 'Facture verrouillee (deja payee/annulee).' });
+    }
+
+    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'dueDate', 'paymentMethod'];
+    fields.forEach(f => {
+      if (req.body[f] !== undefined) {
+        if (f === 'taxRate') invoice.taxRate = Math.max(0, Number(req.body.taxRate) || 0);
+        else if (f === 'dueDate') invoice.dueDate = new Date(req.body.dueDate);
+        else invoice[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
+      }
+    });
+
+    if (Array.isArray(req.body.items)) {
+      const totals = recalcQuote(req.body.items, invoice.taxRate);
+      invoice.items = totals.items;
+    }
+
+    await invoice.save();
+    res.json({ success: true, invoice });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// DELETE /api/admin/invoices/:id
+app.delete('/api/admin/invoices/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const invoice = await Invoice.findByIdAndDelete(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/invoices/:id/send : envoyer par email
+app.post('/api/admin/invoices/:id/send', auth, adminOnly, async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+
+    const publicUrl = `https://www.pirabellabs.com/facture/${invoice.publicToken}`;
+
+    const itemsRows = invoice.items.map(i =>
+      `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.unitPrice.toFixed(2)} ${invoice.currency}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${invoice.currency}</td></tr>`
+    ).join('');
+
+    const html = masterTemplate({
+      headerType: 'hero',
+      preheader: `Votre facture ${invoice.reference} - ${invoice.title}`,
+      title: 'Bonjour ' + escapeHtml(invoice.clientName.split(' ')[0]) + ',',
+      subtitle: 'Votre facture est disponible',
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici votre facture :</p>' +
+        '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(invoice.reference) + '</div>' +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(invoice.title) + '</div>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Qte</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">PU</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Total</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
+        '<div style="margin-top:16px;text-align:right;"><div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">Sous-total : ' + invoice.subtotal.toFixed(2) + ' ' + invoice.currency + '</div>' +
+        (invoice.taxRate > 0 ? '<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">TVA ' + invoice.taxRate + '% : ' + invoice.taxAmount.toFixed(2) + ' ' + invoice.currency + '</div>' : '') +
+        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + invoice.total.toFixed(2) + ' ' + invoice.currency + '</div></div>' +
+        '</div>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">A regler avant le <strong style="color:#e5e2e1;">' + invoice.dueDate.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) + '</strong>.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le detail et les modalites de paiement.</p>',
+      cta: 'Consulter la facture',
+      ctaUrl: publicUrl
+    });
+
+    sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html)
+      .catch(e => console.error('[invoices] send email error:', e.message));
+
+    if (invoice.status === 'brouillon') invoice.status = 'envoyee';
+    invoice.sentAt = new Date();
+    await invoice.save();
+
+    res.json({ success: true, message: 'Facture envoyee au client.', publicUrl });
+  } catch (err) {
+    console.error('[invoices] send error:', err.message);
+    res.status(500).json({ error: 'Erreur envoi : ' + err.message });
+  }
+});
+
+// POST /api/admin/invoices/:id/mark-paid : marquer comme payee (manuel, cote admin)
+app.post('/api/admin/invoices/:id/mark-paid', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    if (invoice.status === 'annulee') return res.status(403).json({ error: 'Facture annulee.' });
+
+    invoice.status = 'payee';
+    invoice.paidAt = new Date();
+    invoice.paymentMethod = sanitize(req.body?.paymentMethod || '', 100);
+    await invoice.save();
+
+    res.json({ success: true, invoice });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// === PUBLIC invoice view (no auth, by token) ===
+app.get('/api/invoices/:token', async (req, res) => {
+  try {
+    const invoice = await Invoice.findOne({ publicToken: req.params.token });
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+
+    if (!invoice.viewedAt) {
+      invoice.viewedAt = new Date();
+      if (invoice.status === 'envoyee') invoice.status = 'consultee';
+      await invoice.save();
+    }
+
+    res.json({
+      reference: invoice.reference,
+      title: invoice.title,
+      clientName: invoice.clientName,
+      clientCompany: invoice.clientCompany,
+      items: invoice.items,
+      subtotal: invoice.subtotal,
+      taxRate: invoice.taxRate,
+      taxAmount: invoice.taxAmount,
+      total: invoice.total,
+      currency: invoice.currency,
+      introduction: invoice.introduction,
+      terms: invoice.terms,
+      dueDate: invoice.dueDate,
+      issuedAt: invoice.issuedAt,
+      status: invoice.status,
+      paidAt: invoice.paidAt
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// Static : page publique facture
+app.get('/facture/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'public-facture.html'));
 });
 
 // ========================================================================

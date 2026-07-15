@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facture Pirabel Labs</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap">
+<style>
+:root { --bg:#0E0E0E; --bg2:#161616; --surface:#1a1a1a; --border:rgba(229,226,225,0.08); --text:#E5E2E1; --muted:rgba(229,226,225,0.62); --accent:#FF5500; --success:#4ade80; --danger:#f87171; --warn:#fbbf24; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; padding:2rem 1rem; }
+.wrap { max-width: 56rem; margin: 0 auto; }
+.header { display:flex; align-items:center; gap:0.85rem; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+.logo { width:2.5rem; height:2.5rem; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; }
+.brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.05rem; }
+.brand small { display:block; font-weight:600; font-size:0.72rem; color:var(--muted); margin-top:2px; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:2rem; margin-bottom:1.25rem; }
+.ref { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.78rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.5rem; }
+.title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.85rem; line-height:1.2; margin-bottom:1rem; }
+.meta { display:flex; gap:1.5rem; flex-wrap:wrap; font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
+.meta strong { color:var(--text); font-weight:600; }
+.intro { font-size:0.95rem; line-height:1.7; color:var(--muted); }
+table { width:100%; border-collapse:collapse; margin:1rem 0; }
+th { text-align:left; padding:0.75rem 0.5rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); border-bottom:1px solid var(--border); font-weight:700; }
+td { padding:0.85rem 0.5rem; border-bottom:1px solid rgba(229,226,225,0.05); font-size:0.92rem; }
+th.r, td.r { text-align:right; }
+.totals { background:var(--surface); padding:1.25rem; border-radius:10px; margin-top:1.25rem; }
+.totals .row { display:flex; justify-content:space-between; padding:0.4rem 0; font-size:0.92rem; color:var(--muted); }
+.totals .row.total { font-family:'Montserrat',sans-serif; font-size:1.35rem; font-weight:800; color:var(--accent); padding-top:0.85rem; margin-top:0.5rem; border-top:1px solid var(--border); }
+.terms { font-size:0.85rem; color:var(--muted); line-height:1.7; white-space:pre-line; }
+.actions { display:flex; gap:0.75rem; flex-wrap:wrap; padding:1.5rem; background:var(--bg2); border:1px solid var(--accent); border-radius:14px; margin-top:1.5rem; }
+.actions .info { flex:1; min-width:14rem; font-size:0.88rem; color:var(--muted); line-height:1.55; }
+.actions .info strong { color:var(--text); display:block; margin-bottom:0.3rem; }
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.5rem; background:var(--accent); color:#fff; border:0; border-radius:10px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; transition:opacity 0.2s; }
+.btn:hover { opacity:0.9; }
+.btn--ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
+.btn--ghost:hover { border-color:var(--accent); color:var(--accent); opacity:1; }
+.btn--wa { background:#25D366; }
+.btn--wa:hover { background:#1ebe5d; opacity:1; }
+
+@media print {
+  body { background:#fff !important; color:#000 !important; padding:1rem !important; }
+  .header, .card { background:#fff !important; border:1px solid #ddd !important; box-shadow:none !important; color:#000 !important; }
+  .actions, .no-print, .btn { display:none !important; }
+  .title, h1, h3 { color:#000 !important; }
+  .ref, .status-badge.payee { color:#FF5500 !important; }
+  .meta, .intro, .terms, .totals .row { color:#333 !important; }
+  .meta strong, .totals .row.total { color:#000 !important; }
+  table { color:#000 !important; }
+  th { background:#f5f5f5 !important; color:#666 !important; }
+  td { color:#000 !important; border-bottom:1px solid #eee !important; }
+  .logo { background:#FF5500 !important; }
+  .brand { color:#000 !important; }
+  .brand small { color:#666 !important; }
+}
+.status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
+.status-badge.envoyee { background:rgba(96,165,250,0.15); color:#60a5fa; }
+.status-badge.consultee { background:rgba(251,191,36,0.15); color:#fbbf24; }
+.status-badge.payee { background:rgba(74,222,128,0.15); color:var(--success); }
+.status-badge.en_retard { background:rgba(248,113,113,0.15); color:var(--danger); }
+.status-badge.annulee { background:rgba(248,113,113,0.15); color:var(--danger); }
+.status-badge.brouillon { background:rgba(229,226,225,0.1); color:var(--muted); }
+.loading { text-align:center; padding:4rem 2rem; color:var(--muted); }
+.error-page { text-align:center; padding:4rem 2rem; }
+@media (max-width:640px) { .title { font-size:1.4rem; } th.r, td.r { font-size:0.8rem; } .totals .row.total { font-size:1.1rem; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo">P</div>
+    <div class="brand">PIRABEL LABS<small>Facture</small></div>
+  </div>
+
+  <div id="loading" class="loading">Chargement de la facture...</div>
+  <div id="errorBlock" class="error-page" style="display:none;">
+    <h1 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;">Facture introuvable</h1>
+    <p style="color:var(--muted);">Le lien est invalide. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
+  </div>
+  <div id="content" style="display:none;"></div>
+</div>
+
+<script>
+const token = (function(){ var p = window.location.pathname.split('/').filter(Boolean); return p[p.length - 1] || ''; })();
+const loading = document.getElementById('loading');
+const content = document.getElementById('content');
+const errorBlock = document.getElementById('errorBlock');
+
+function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
+function formatMoney(v, c) { return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2,maximumFractionDigits:2}).format(v) + ' ' + c; }
+
+async function loadInvoice() {
+  try {
+    const r = await fetch('/api/invoices/' + token);
+    if (!r.ok) throw new Error('not found');
+    const inv = await r.json();
+    renderInvoice(inv);
+  } catch (e) {
+    loading.style.display = 'none';
+    errorBlock.style.display = 'block';
+  }
+}
+
+function renderInvoice(inv) {
+  loading.style.display = 'none';
+  content.style.display = 'block';
+
+  const itemsHtml = inv.items.map(i => `<tr><td>${escapeHtml(i.description)}</td><td class="r">${i.quantity}</td><td class="r">${formatMoney(i.unitPrice, inv.currency)}</td><td class="r" style="font-weight:600;">${formatMoney(i.total, inv.currency)}</td></tr>`).join('');
+
+  const statusLabels = { brouillon: 'Brouillon', envoyee: 'Envoyee', consultee: 'Consultee', payee: 'Payee', en_retard: 'En retard', annulee: 'Annulee' };
+
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF de la facture ou contactez-nous pour toute question.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+la+facture+' + encodeURIComponent(inv.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+
+  let actionsHtml = utilsBar;
+  if (inv.status === 'payee') {
+    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Facture payee</strong>Merci, cette facture a ete reglee' + (inv.paidAt ? ' le ' + formatDate(inv.paidAt) : '') + '.</div></div>';
+  } else if (inv.status === 'annulee') {
+    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Facture annulee</strong>Cette facture a ete annulee. Contactez-nous pour plus d\'informations.</div></div>';
+  } else {
+    actionsHtml += '<div class="actions"><div class="info"><strong>Reglement</strong>Merci de regler cette facture avant la date d\'echeance indiquee ci-dessus, selon les modalites de paiement precisees plus bas. Pour toute question, contactez-nous par WhatsApp ou email.</div></div>';
+  }
+
+  content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(inv.reference) + '</div><h1 class="title">' + escapeHtml(inv.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(inv.clientName) + (inv.clientCompany ? ' &middot; ' + escapeHtml(inv.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(inv.issuedAt) + '</div><div><strong>Echeance :</strong> ' + formatDate(inv.dueDate) + '</div><div><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
+    (inv.introduction ? '<p class="intro">' + escapeHtml(inv.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
+    '</div>' +
+    '<div class="card"><table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table><div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(inv.subtotal, inv.currency) + '</span></div>' +
+    (inv.taxRate > 0 ? '<div class="row"><span>TVA ' + inv.taxRate + '%</span><span>' + formatMoney(inv.taxAmount, inv.currency) + '</span></div>' : '') +
+    '<div class="row total"><span>Total</span><span>' + formatMoney(inv.total, inv.currency) + '</span></div></div></div>' +
+    (inv.terms ? '<div class="card"><h3 style="font-family:Montserrat,sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.85rem;">Modalites de paiement</h3><div class="terms">' + escapeHtml(inv.terms) + '</div></div>' : '') +
+    actionsHtml;
+}
+
+loadInvoice();
+</script>
+</body>
+</html>

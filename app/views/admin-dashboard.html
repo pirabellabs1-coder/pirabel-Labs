@@ -452,6 +452,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <a class="sidebar__link" data-view="leads" data-label="Prospects (CRM)"><span class="material-symbols-outlined">person_search</span><span class="sidebar__link-text">Prospects (CRM)</span></a>
       <a class="sidebar__link" data-view="clients" data-label="Clients"><span class="material-symbols-outlined">verified_user</span><span class="sidebar__link-text">Clients</span></a>
       <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
+      <a class="sidebar__link" data-view="invoices" data-label="Factures"><span class="material-symbols-outlined">receipt_long</span><span class="sidebar__link-text">Factures</span></a>
       <a class="sidebar__link" data-view="appointments" data-label="Rendez-vous"><span class="material-symbols-outlined">event</span><span class="sidebar__link-text">Rendez-vous</span> <span id="apptBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="reviews" data-label="Avis clients"><span class="material-symbols-outlined">reviews</span><span class="sidebar__link-text">Avis clients</span></a>
       <a class="sidebar__link" data-view="livres-blancs" data-label="Livres blancs"><span class="material-symbols-outlined">menu_book</span><span class="sidebar__link-text">Livres blancs</span></a>
@@ -819,6 +820,33 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
     </div>
 
+    <!-- INVOICES VIEW -->
+    <div class="view" data-view="invoices">
+      <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-bottom:1.5rem;">
+        <button class="btn btn--ghost btn--sm" id="ivRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+        <button class="btn btn--sm" id="ivNew"><span class="material-symbols-outlined">add</span> Nouvelle facture</button>
+      </div>
+      <div class="kpi-grid" id="ivKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div class="card">
+        <div class="card__header"><div><div class="card__title">Toutes les factures</div></div></div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Reference</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Date</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Client</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Titre</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Echeance</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Total</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Statut</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
+            </tr></thead>
+            <tbody id="ivTbody"><tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- REVIEWS VIEW -->
     <div class="view" data-view="reviews">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
@@ -1127,6 +1155,7 @@ function setView(view) {
   if (view === 'bulk-email') initBulkEmail();
   if (view === 'clients') loadClients();
   if (view === 'quotes') loadQuotes();
+  if (view === 'invoices') loadInvoices();
   if (view === 'reviews') loadReviews();
   if (view === 'gallery') loadGallery();
   if (view === 'assistant') initAssistant();
@@ -1741,6 +1770,7 @@ async function loadQuotes() {
           '<button onclick="sendQuoteWhatsApp(\'' + q._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' +
           '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir le devis publique"><span class="material-symbols-outlined">visibility</span></a>' +
           '<button onclick="copyQuoteLink(\'' + escape(q.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
+          (q.status === 'accepte' ? '<button onclick="invoiceFromQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--accent);" title="Creer la facture"><span class="material-symbols-outlined">receipt_long</span></button>' : '') +
           (q.status === 'brouillon' ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
         '</td>' +
         '</tr>';
@@ -1782,6 +1812,105 @@ function openNewQuoteModal(preLeadId) {
     showQuoteModal(typeof preLeadId === 'string' ? preLeadId : undefined);
   } else {
     toast('Modal devis indisponible, rechargez la page', 'error');
+  }
+}
+
+// ============ INVOICES ============
+async function loadInvoices() {
+  document.getElementById('ivTbody').innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr>';
+  try {
+    const data = await api('/api/admin/invoices');
+    const invoices = data.invoices || [];
+
+    const kpis = document.getElementById('ivKpis');
+    const total = invoices.length;
+    const paid = invoices.filter(i => i.status === 'payee').length;
+    const totalPaid = invoices.filter(i => i.status === 'payee').reduce((s, i) => s + i.total, 0);
+    const totalDue = invoices.filter(i => i.status !== 'payee' && i.status !== 'annulee').reduce((s, i) => s + i.total, 0);
+    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">receipt_long</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total factures</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + paid + '</div><div class="kpi__label">Payees</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalPaid.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA encaisse</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + totalDue.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">En attente de paiement</div></div>';
+
+    const tbody = document.getElementById('ivTbody');
+    if (!invoices.length) { tbody.innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucune facture. Cliquez sur "Nouvelle facture" pour commencer.</td></tr>'; return; }
+    const labels = { brouillon: ['Brouillon','badge--new'], envoyee: ['Envoyee','badge--info'], consultee: ['Consultee','badge--warning'], payee: ['Payee','badge--won'], en_retard: ['En retard','badge--lost'], annulee: ['Annulee','badge--lost'] };
+    tbody.innerHTML = invoices.map(i => {
+      const lab = labels[i.status] || [i.status, ''];
+      return '<tr style="border-bottom:1px solid var(--border);">' +
+        '<td style="padding:0.85rem 0.5rem;font-family:monospace;font-size:0.82rem;color:var(--accent);">' + escape(i.reference) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(i.createdAt).toLocaleDateString('fr-FR') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;">' + escape(i.clientName) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(i.title) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(i.dueDate).toLocaleDateString('fr-FR') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;">' + i.total.toLocaleString('fr-FR') + ' ' + i.currency + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span></td>' +
+        '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
+          (i.status === 'brouillon' ? '<button onclick="sendInvoice(\'' + i._id + '\')" class="btn btn--sm" title="Envoyer par email"><span class="material-symbols-outlined">mail</span></button>' : '') +
+          '<button onclick="sendInvoiceWhatsApp(\'' + i._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' +
+          '<a href="/facture/' + escape(i.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir la facture publique"><span class="material-symbols-outlined">visibility</span></a>' +
+          '<button onclick="copyInvoiceLink(\'' + escape(i.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
+          (i.status !== 'payee' && i.status !== 'annulee' ? '<button onclick="markInvoicePaid(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--success);" title="Marquer payee"><span class="material-symbols-outlined">payments</span></button>' : '') +
+          (i.status === 'brouillon' ? '<button onclick="deleteInvoice(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
+        '</td>' +
+        '</tr>';
+    }).join('');
+  } catch(e) {
+    console.error(e);
+    errorState('ivTbody', 8, 'Erreur chargement factures : ' + (e.message || 'API indisponible'));
+    toast('Erreur chargement factures', 'error');
+  }
+}
+
+async function sendInvoice(id) {
+  if (!confirm('Envoyer cette facture par email au client ?')) return;
+  try {
+    await api('/api/admin/invoices/' + id + '/send', { method: 'POST', body: '{}' });
+    toast('Facture envoyee au client', 'success');
+    loadInvoices();
+  } catch(e) { toast('Erreur envoi', 'error'); }
+}
+
+async function copyInvoiceLink(token) {
+  const url = window.location.origin + '/facture/' + token;
+  try { await navigator.clipboard.writeText(url); toast('Lien copie : ' + url, 'success'); }
+  catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
+}
+
+async function deleteInvoice(id) {
+  if (!confirm('Supprimer cette facture ?')) return;
+  try {
+    await api('/api/admin/invoices/' + id, { method: 'DELETE' });
+    toast('Facture supprimee', 'success');
+    loadInvoices();
+  } catch(e) { toast('Erreur suppression', 'error'); }
+}
+
+async function markInvoicePaid(id) {
+  const method = prompt('Moyen de paiement (optionnel) : virement, Mobile Money, especes...');
+  if (method === null) return;
+  try {
+    await api('/api/admin/invoices/' + id + '/mark-paid', { method: 'POST', body: JSON.stringify({ paymentMethod: method || '' }) });
+    toast('Facture marquee payee', 'success');
+    loadInvoices();
+  } catch(e) { toast('Erreur', 'error'); }
+}
+
+async function invoiceFromQuote(quoteId) {
+  if (!confirm('Creer une facture a partir de ce devis accepte ?')) return;
+  try {
+    const data = await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify({ quoteId }) });
+    toast('Facture creee en brouillon', 'success');
+    setView('invoices');
+    setTimeout(loadInvoices, 200);
+  } catch(e) { toast('Erreur creation facture : ' + (e.message || ''), 'error'); }
+}
+
+function openNewInvoiceModal(preLeadId) {
+  if (typeof showInvoiceModal === 'function') {
+    showInvoiceModal(typeof preLeadId === 'string' ? preLeadId : undefined);
+  } else {
+    toast('Modal facture indisponible, rechargez la page', 'error');
   }
 }
 
@@ -3359,6 +3488,75 @@ init();
   </div>
 </div>
 
+<!-- ============= MODAL : NOUVELLE FACTURE ============= -->
+<div id="invoiceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;">
+  <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:46rem;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouvelle facture</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer une facture</div>
+      </div>
+      <button type="button" id="imClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div style="padding:1.5rem 2rem;">
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Client <span style="color:var(--accent);">*</span></label>
+        <select id="imClient" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+          <option value="">-- Sélectionnez un prospect/client --</option>
+        </select>
+        <div id="imClientInfo" style="margin-top:0.5rem;font-size:0.78rem;color:var(--text-muted);"></div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Titre de la facture <span style="color:var(--accent);">*</span></label>
+        <input type="text" id="imTitle" maxlength="200" placeholder="ex : Création site web vitrine + SEO 6 mois" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
+        <textarea id="imIntro" rows="2" maxlength="2000" placeholder="Comme convenu suite au devis accepte..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Lignes de la facture <span style="color:var(--accent);">*</span></label>
+        <div id="imItems"></div>
+        <button type="button" id="imAddItem" class="btn btn--ghost btn--sm" style="margin-top:0.5rem;"><span class="material-symbols-outlined">add</span> Ajouter une ligne</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">TVA (%)</label>
+          <input type="number" id="imTva" value="0" min="0" max="100" step="0.5" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Devise</label>
+          <select id="imCurrency" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+            <option value="XOF">FCFA (XOF)</option>
+            <option value="XAF">FCFA (XAF)</option>
+            <option value="MAD">MAD</option>
+            <option value="TND">TND</option>
+            <option value="CHF">CHF</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Echeance (jours)</label>
+          <input type="number" id="imDueDays" value="15" min="1" max="365" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Modalités de paiement (optionnel)</label>
+        <textarea id="imTerms" rows="3" maxlength="5000" placeholder="Paiement par virement bancaire ou Mobile Money. Merci de nous contacter pour les coordonnees..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      <div id="imTotals" style="background:var(--surface);padding:1rem 1.25rem;border-radius:10px;margin-bottom:1rem;font-size:0.88rem;color:var(--text-muted);"></div>
+      <div id="imMsg" style="margin-bottom:1rem;"></div>
+      <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
+        <button type="button" id="imCancel" class="btn btn--ghost btn--sm">Annuler</button>
+        <button type="button" id="imSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer brouillon</button>
+        <button type="button" id="imSend" class="btn"><span class="material-symbols-outlined">send</span> Créer et envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============= MODAL : NOUVEAU CLIENT ============= -->
 <div id="clientModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
   <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:32rem;width:100%;">
@@ -3509,6 +3707,109 @@ async function saveQuote(sendAfter) {
   }
 }
 
+// ============= INVOICE MODAL LOGIC =============
+function showInvoiceModal(preLeadId) {
+  loadLeadsIntoInvoiceSelector(preLeadId);
+  document.getElementById('imTitle').value = '';
+  document.getElementById('imIntro').value = '';
+  document.getElementById('imTerms').value = 'Paiement par virement bancaire ou Mobile Money. Coordonnees transmises sur demande.';
+  document.getElementById('imTva').value = 0;
+  document.getElementById('imCurrency').value = 'EUR';
+  document.getElementById('imDueDays').value = 15;
+  document.getElementById('imItems').innerHTML = '';
+  addInvoiceLine();
+  updateInvoiceTotals();
+  document.getElementById('imMsg').innerHTML = '';
+  document.getElementById('invoiceModal').style.display = 'flex';
+}
+
+function hideInvoiceModal() { document.getElementById('invoiceModal').style.display = 'none'; }
+
+async function loadLeadsIntoInvoiceSelector(preSelectedId) {
+  const sel = document.getElementById('imClient');
+  sel.innerHTML = '<option value="">Chargement...</option>';
+  try {
+    const data = await api('/api/admin/leads');
+    const leads = (data.leads || data).filter(l => l.email);
+    sel.innerHTML = '<option value="">-- Sélectionnez --</option>' +
+      leads.map(l => '<option value="' + l._id + '" data-name="' + escape(l.name) + '" data-email="' + escape(l.email) + '" data-phone="' + escape(l.phone||'') + '" data-company="' + escape(l.company||'') + '">' + escape(l.name) + ' &middot; ' + escape(l.email) + (l.company ? ' (' + escape(l.company) + ')' : '') + '</option>').join('');
+    if (preSelectedId) sel.value = preSelectedId;
+    sel.dispatchEvent(new Event('change'));
+  } catch(e) { sel.innerHTML = '<option value="">Erreur chargement</option>'; }
+}
+
+function addInvoiceLine(desc, qty, price) {
+  const container = document.getElementById('imItems');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 4rem 7rem 2rem;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
+  row.innerHTML = '<input type="text" placeholder="Description de la prestation" value="' + (desc||'') + '" class="im-line-desc" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;">' +
+    '<input type="number" min="0" step="1" value="' + (qty||1) + '" class="im-line-qty" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<input type="number" min="0" step="0.01" placeholder="Prix" value="' + (price||0) + '" class="im-line-price" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<button type="button" class="im-line-del" style="background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:6px;cursor:pointer;height:2rem;width:2rem;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:1rem;">delete</span></button>';
+  container.appendChild(row);
+  row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateInvoiceTotals));
+  row.querySelector('.im-line-del').addEventListener('click', () => { row.remove(); updateInvoiceTotals(); });
+  updateInvoiceTotals();
+}
+
+function updateInvoiceTotals() {
+  const cur = document.getElementById('imCurrency').value;
+  const tva = parseFloat(document.getElementById('imTva').value) || 0;
+  let subtotal = 0;
+  document.querySelectorAll('#imItems > div').forEach(row => {
+    const q = parseFloat(row.querySelector('.im-line-qty').value) || 0;
+    const p = parseFloat(row.querySelector('.im-line-price').value) || 0;
+    subtotal += q * p;
+  });
+  const taxAmt = subtotal * tva / 100;
+  const total = subtotal + taxAmt;
+  document.getElementById('imTotals').innerHTML =
+    '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Sous-total</span><span>' + subtotal.toFixed(2) + ' ' + cur + '</span></div>' +
+    (tva > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>TVA ' + tva + '%</span><span>' + taxAmt.toFixed(2) + ' ' + cur + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;border-top:1px solid var(--border);margin-top:0.5rem;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--accent);"><span>Total</span><span>' + total.toFixed(2) + ' ' + cur + '</span></div>';
+}
+
+function collectInvoiceData() {
+  const leadId = document.getElementById('imClient').value;
+  const title = document.getElementById('imTitle').value.trim();
+  const items = [...document.querySelectorAll('#imItems > div')].map(row => ({
+    description: row.querySelector('.im-line-desc').value.trim(),
+    quantity: parseFloat(row.querySelector('.im-line-qty').value) || 0,
+    unitPrice: parseFloat(row.querySelector('.im-line-price').value) || 0
+  })).filter(i => i.description && i.quantity > 0 && i.unitPrice >= 0);
+  return {
+    leadId, title, items,
+    introduction: document.getElementById('imIntro').value.trim(),
+    terms: document.getElementById('imTerms').value.trim(),
+    taxRate: parseFloat(document.getElementById('imTva').value) || 0,
+    currency: document.getElementById('imCurrency').value,
+    dueDays: parseInt(document.getElementById('imDueDays').value) || 15
+  };
+}
+
+async function saveInvoice(sendAfter) {
+  const data = collectInvoiceData();
+  const msg = document.getElementById('imMsg');
+  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Sélectionnez un client.</div>'; return; }
+  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caractères min).</div>'; return; }
+  if (!data.items.length) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Au moins une ligne valide requise.</div>'; return; }
+  msg.innerHTML = '<div style="color:var(--info);">Enregistrement...</div>';
+  try {
+    const invoice = await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify(data) });
+    if (sendAfter) {
+      await api('/api/admin/invoices/' + invoice.invoice._id + '/send', { method: 'POST', body: '{}' });
+      const publicUrl = window.location.origin + '/facture/' + invoice.invoice.publicToken;
+      showLinkModal('Facture envoyee !', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier ou l\'envoyer via WhatsApp.', publicUrl);
+    } else {
+      toast('Facture enregistree en brouillon', 'success');
+    }
+    hideInvoiceModal();
+    if (typeof loadInvoices === 'function') loadInvoices();
+  } catch(e) {
+    msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Erreur : ' + (e.message || 'API') + '</div>';
+  }
+}
+
 // ============= CLIENT MODAL LOGIC =============
 function showClientModal(returnToQuote) {
   document.getElementById('cmName').value = '';
@@ -3572,6 +3873,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.querySelector('#quoteModal').addEventListener('click', e => { if (e.target.id === 'quoteModal') hideQuoteModal(); });
 
+  // Invoice modal
+  document.getElementById('imClose')?.addEventListener('click', hideInvoiceModal);
+  document.getElementById('imCancel')?.addEventListener('click', hideInvoiceModal);
+  document.getElementById('imAddItem')?.addEventListener('click', () => addInvoiceLine());
+  document.getElementById('imTva')?.addEventListener('input', updateInvoiceTotals);
+  document.getElementById('imCurrency')?.addEventListener('change', updateInvoiceTotals);
+  document.getElementById('imSave')?.addEventListener('click', () => saveInvoice(false));
+  document.getElementById('imSend')?.addEventListener('click', () => saveInvoice(true));
+  document.getElementById('imClient')?.addEventListener('change', function() {
+    const opt = this.selectedOptions[0];
+    const info = document.getElementById('imClientInfo');
+    if (opt && opt.value) {
+      const phone = opt.dataset.phone;
+      info.innerHTML = 'Email : <strong>' + opt.dataset.email + '</strong>' + (phone ? ' &middot; Tel : <strong>' + phone + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + opt.dataset.company : '');
+    } else info.innerHTML = '';
+  });
+  document.querySelector('#invoiceModal').addEventListener('click', e => { if (e.target.id === 'invoiceModal') hideInvoiceModal(); });
+  document.getElementById('ivRefresh')?.addEventListener('click', loadInvoices);
+  document.getElementById('ivNew')?.addEventListener('click', () => openNewInvoiceModal());
+
   // Client modal
   document.getElementById('cmClose')?.addEventListener('click', hideClientModal);
   document.getElementById('cmCancel')?.addEventListener('click', hideClientModal);
@@ -3584,6 +3905,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Remplace les fonctions prompt() existantes
 window.openNewQuoteModal = function(preLeadId) { showQuoteModal(preLeadId); };
+window.openNewInvoiceModal = function(preLeadId) { showInvoiceModal(preLeadId); };
 
 // ============= ACTIONS QUOTE : WhatsApp send =============
 window.sendQuoteWhatsApp = async function(quoteId) {
@@ -3600,6 +3922,24 @@ window.sendQuoteWhatsApp = async function(quoteId) {
     if (q.status === 'brouillon') {
       await api('/api/admin/quotes/' + quoteId + '/send', { method: 'POST', body: '{}' });
       if (typeof loadQuotes === 'function') loadQuotes();
+    }
+  } catch(e) { toast('Erreur : ' + (e.message || 'API'), 'error'); }
+};
+
+// ============= ACTIONS INVOICE : WhatsApp send =============
+window.sendInvoiceWhatsApp = async function(invoiceId) {
+  try {
+    const i = await api('/api/admin/invoices/' + invoiceId);
+    const lead = await api('/api/admin/leads/' + i.leadId);
+    if (!lead.phone) { toast('Pas de téléphone pour ce client', 'error'); return; }
+    const phone = lead.phone.replace(/[^0-9]/g, '');
+    const url = window.location.origin + '/facture/' + i.publicToken;
+    const msg = 'Bonjour ' + lead.name.split(' ')[0] + ', voici votre facture Pirabel Labs - ' + i.reference + ' (' + i.title + ') : ' + url;
+    const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    window.open(waUrl, '_blank');
+    if (i.status === 'brouillon') {
+      await api('/api/admin/invoices/' + invoiceId + '/send', { method: 'POST', body: '{}' });
+      if (typeof loadInvoices === 'function') loadInvoices();
     }
   } catch(e) { toast('Erreur : ' + (e.message || 'API'), 'error'); }
 };

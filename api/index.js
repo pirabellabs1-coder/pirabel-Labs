@@ -3092,6 +3092,17 @@ function generateInvoiceReference() {
   return `FACT-${year}-${random}`;
 }
 
+// Maintenance ponctuelle : supprime un index obsolete (invoiceNumber_1) laisse par une ancienne
+// version de la collection, qui bloque toute creation avec une erreur de cle dupliquee (null).
+app.post('/api/admin/invoices/_fix-index', auth, adminOnly, async (req, res) => {
+  try {
+    await Invoice.collection.dropIndex('invoiceNumber_1');
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
 // POST /api/admin/invoices : creer une facture (brouillon), depuis un devis ou en libre
 app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res) => {
   try {

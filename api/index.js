@@ -409,7 +409,7 @@ app.post('/api/rdv/:token', contactLimiter, limitBody(10), async (req, res) => {
 
     // Prévenir l'admin (avec le motif)
     const when = a.preferredDate + (a.preferredTime ? (' à ' + a.preferredTime) : '');
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] RDV ' + (action === 'cancel' ? 'ANNULÉ' : 'modifié') + ' par ' + a.name,
       masterTemplate({
@@ -503,7 +503,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
     const pdfFullUrl = 'https://www.pirabellabs.com' + lb.pdfUrl;
 
     // Email admin
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] Nouveau telechargement livre blanc - ' + lb.title,
       newOrderEmail({ name, email, phone, company, service: 'Livre blanc : ' + lb.title, message: `Lead : ${name} <${email}>\nLivre blanc telecharge : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}` }),
@@ -531,7 +531,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
       ctaSecondaryUrl: 'https://www.pirabellabs.com/livres-blancs',
     });
 
-    sendEmail(
+    await sendEmail(
       email,
       'Votre livre blanc : ' + lb.title,
       downloadHtml
@@ -2520,7 +2520,7 @@ app.post('/api/blog/:slug/comments', commentLimiter, honeypotCheck('cm_check_hp'
     if (!content || content.trim().length < 2) return res.status(400).json({ error: 'Commentaire trop court.' });
     const ipHash = crypto.createHash('sha256').update((req.ip || '') + (process.env.JWT_SECRET || '')).digest('hex').slice(0, 32);
     await Comment.create({ articleSlug: slug, articleTitle: article.title, author, email, content, status: 'en_attente', ipHash });
-    sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com', '[Blog] Nouveau commentaire à modérer — ' + article.title,
+    await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com', '[Blog] Nouveau commentaire à modérer — ' + article.title,
       masterTemplate({ title: 'Nouveau commentaire', subtitle: article.title, body: '<p style="font-size:15px;color:rgba(229,226,225,0.8);"><strong>' + escapeHtml(author) + '</strong> a écrit&nbsp;:</p><div style="border-left:3px solid #FF5500;padding:12px 16px;background:#0e0e0e;color:rgba(229,226,225,0.7);">' + escapeHtml(content) + '</div>', cta: "Modérer dans l'admin", ctaUrl: SITE() + '/admin/dashboard' })).catch(() => {});
     res.json({ success: true, message: 'Merci ! Votre commentaire sera publié après modération.' });
   } catch (e) { console.error('[comment]', e.message); res.status(500).json({ error: 'Erreur serveur.' }); }
@@ -2942,7 +2942,7 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
       ctaUrl: publicUrl
     });
 
-    sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html)
+    await sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html)
       .catch(e => console.error('[quotes] send email error:', e.message));
 
     quote.status = 'envoye';
@@ -3020,7 +3020,7 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     }
 
     // Email admin
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Devis ACCEPTE - ${quote.reference} (${quote.total} ${quote.currency})`,
       masterTemplate({
@@ -3032,7 +3032,7 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     ).catch(e => console.error('[quotes] accept admin email:', e.message));
 
     // Email confirmation client
-    sendEmail(
+    await sendEmail(
       quote.clientEmail,
       `Devis accepte - ${quote.reference}`,
       masterTemplate({
@@ -3060,7 +3060,7 @@ app.post('/api/quotes/:token/refuse', async (req, res) => {
     quote.internalNotes = (quote.internalNotes || '') + '\n[Refus client] ' + sanitize(req.body?.reason || 'Aucune raison fournie', 1000);
     await quote.save();
 
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Devis REFUSE - ${quote.reference}`,
       masterTemplate({
@@ -3263,7 +3263,7 @@ app.post('/api/admin/invoices/:id/send', auth, adminOnly, async (req, res) => {
       ctaUrl: publicUrl
     });
 
-    sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html)
+    await sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html)
       .catch(e => console.error('[invoices] send email error:', e.message));
 
     if (invoice.status === 'brouillon') invoice.status = 'envoyee';
@@ -3379,7 +3379,7 @@ app.post('/api/admin/reviews/request', auth, adminOnly, limitBody(5), async (req
       ctaUrl: publicUrl
     });
 
-    sendEmail(lead.email, 'Votre avis sur Pirabel Labs (2 min)', html)
+    await sendEmail(lead.email, 'Votre avis sur Pirabel Labs (2 min)', html)
       .catch(e => console.error('[reviews] request email error:', e.message));
 
     lead.reviewRequestedAt = new Date();
@@ -3487,7 +3487,7 @@ app.post('/api/reviews/:token', reviewSubmitLimiter, limitBody(5), async (req, r
     // Update lead
     await Lead.findByIdAndUpdate(review.leadId, { $set: { reviewSubmittedAt: new Date() } });
 
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Nouvel avis client - ${rating}/5 - ${review.clientName}`,
       masterTemplate({
@@ -3555,7 +3555,7 @@ app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
     quote.internalNotes = (quote.internalNotes || '') + '\n[Ajustement demande ' + new Date().toISOString() + '] ' + message;
     await quote.save();
 
-    sendEmail(
+    await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Ajustement demande - Devis ${quote.reference}`,
       masterTemplate({

@@ -3511,6 +3511,11 @@ init();
         <input type="text" id="imTitle" maxlength="200" placeholder="ex : Création site web vitrine + SEO 6 mois" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
       </div>
       <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Émetteur (marque affichée sur la facture)</label>
+        <input type="text" id="imIssuer" maxlength="100" value="Pirabel Labs" placeholder="ex : Pirabel Labs, Goscale Studio..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.92rem;">
+        <div style="margin-top:0.4rem;font-size:0.76rem;color:var(--text-faint);">L'entité légale reste toujours Pirabel Labs (RCCM/IFU affichés en bas de facture) ; ce champ ne change que le nom de marque affiché en en-tête.</div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
         <textarea id="imIntro" rows="2" maxlength="2000" placeholder="Comme convenu suite au devis accepte..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
@@ -3713,6 +3718,7 @@ function showInvoiceModal(preLeadId) {
   document.getElementById('imTitle').value = '';
   document.getElementById('imIntro').value = '';
   document.getElementById('imTerms').value = 'Paiement par virement bancaire ou Mobile Money. Coordonnees transmises sur demande.';
+  document.getElementById('imIssuer').value = 'Pirabel Labs';
   document.getElementById('imTva').value = 0;
   document.getElementById('imCurrency').value = 'EUR';
   document.getElementById('imDueDays').value = 15;
@@ -3781,6 +3787,7 @@ function collectInvoiceData() {
     leadId, title, items,
     introduction: document.getElementById('imIntro').value.trim(),
     terms: document.getElementById('imTerms').value.trim(),
+    issuerBrand: document.getElementById('imIssuer').value.trim() || 'Pirabel Labs',
     taxRate: parseFloat(document.getElementById('imTva').value) || 0,
     currency: document.getElementById('imCurrency').value,
     dueDays: parseInt(document.getElementById('imDueDays').value) || 15

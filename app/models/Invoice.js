@@ -37,6 +37,9 @@ const invoiceSchema = new mongoose.Schema({
   introduction: { type: String, default: '', maxlength: 2000 },
   terms: { type: String, default: '', maxlength: 5000 }, // modalites de paiement
 
+  // Marque commerciale affichee comme emetteur (l'entite legale reste toujours Pirabel Labs)
+  issuerBrand: { type: String, default: 'Pirabel Labs', maxlength: 100 },
+
   // Statut
   status: {
     type: String,

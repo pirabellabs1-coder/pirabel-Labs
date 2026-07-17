@@ -10,32 +10,58 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap">
 <style>
-:root { --bg:#0E0E0E; --bg2:#161616; --surface:#1a1a1a; --border:rgba(229,226,225,0.08); --text:#E5E2E1; --muted:rgba(229,226,225,0.62); --accent:#FF5500; --success:#4ade80; --danger:#f87171; --warn:#fbbf24; }
+:root { --bg:#0E0E0E; --bg2:#161616; --surface:#1a1a1a; --border:rgba(229,226,225,0.1); --text:#E5E2E1; --muted:rgba(229,226,225,0.62); --faint:rgba(229,226,225,0.42); --accent:#FF5500; --success:#4ade80; --danger:#f87171; --warn:#fbbf24; }
 * { box-sizing:border-box; margin:0; padding:0; }
-body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; padding:2rem 1rem; }
-.wrap { max-width: 56rem; margin: 0 auto; }
-.header { display:flex; align-items:center; gap:0.85rem; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
-.logo { width:2.5rem; height:2.5rem; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; }
-.brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.05rem; }
-.brand small { display:block; font-weight:600; font-size:0.72rem; color:var(--muted); margin-top:2px; }
-.card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:2rem; margin-bottom:1.25rem; }
-.ref { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.78rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.5rem; }
-.title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.85rem; line-height:1.2; margin-bottom:1rem; }
-.meta { display:flex; gap:1.5rem; flex-wrap:wrap; font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); }
-.meta strong { color:var(--text); font-weight:600; }
-.intro { font-size:0.95rem; line-height:1.7; color:var(--muted); }
-table { width:100%; border-collapse:collapse; margin:1rem 0; }
-th { text-align:left; padding:0.75rem 0.5rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); border-bottom:1px solid var(--border); font-weight:700; }
-td { padding:0.85rem 0.5rem; border-bottom:1px solid rgba(229,226,225,0.05); font-size:0.92rem; }
+body { background:#050505; color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; padding:2.5rem 1rem; }
+.wrap { max-width: 50rem; margin: 0 auto; }
+.sheet { background:var(--bg); border:1px solid var(--border); border-radius:18px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.5); }
+.sheet__band { height:6px; background:linear-gradient(90deg,var(--accent),#ffb37a); }
+.sheet__inner { padding:clamp(1.5rem,4vw,3rem); }
+
+/* HEADER : emetteur vs facture */
+.top { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; margin-bottom:2.25rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+.issuer { display:flex; gap:0.9rem; align-items:flex-start; }
+.issuer__logo { width:3rem; height:3rem; flex-shrink:0; background:var(--accent); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.3rem; }
+.issuer__brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; }
+.issuer__legal { font-size:0.78rem; color:var(--muted); line-height:1.65; margin-top:0.35rem; max-width:20rem; }
+.issuer__dba { font-size:0.72rem; color:var(--faint); margin-top:0.25rem; font-style:italic; }
+.doctype { text-align:right; }
+.doctype__label { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.7rem; letter-spacing:-0.02em; color:var(--text); }
+.doctype__ref { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.85rem; color:var(--accent); letter-spacing:0.06em; margin-top:0.3rem; }
+.doctype__status { margin-top:0.6rem; }
+
+/* BLOC facturé à / dates */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem; }
+@media (max-width:640px) { .grid2 { grid-template-columns:1fr; } }
+.bloc-label { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--faint); margin-bottom:0.6rem; }
+.bloc-name { font-weight:700; font-size:1rem; margin-bottom:0.2rem; }
+.bloc-sub { font-size:0.85rem; color:var(--muted); line-height:1.6; }
+.dates-row { display:flex; flex-direction:column; gap:0.55rem; font-size:0.85rem; }
+.dates-row span { color:var(--faint); }
+.dates-row strong { color:var(--text); font-weight:600; margin-left:0.4rem; }
+
+.title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:1rem; }
+.intro { font-size:0.92rem; line-height:1.7; color:var(--muted); margin-bottom:1.75rem; }
+
+table { width:100%; border-collapse:collapse; margin-bottom:1.25rem; }
+th { text-align:left; padding:0.7rem 0.6rem; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--faint); border-bottom:1px solid var(--border); font-weight:700; }
+td { padding:0.9rem 0.6rem; border-bottom:1px solid rgba(229,226,225,0.05); font-size:0.9rem; }
+tbody tr:nth-child(odd) td { background:rgba(255,255,255,0.015); }
 th.r, td.r { text-align:right; }
-.totals { background:var(--surface); padding:1.25rem; border-radius:10px; margin-top:1.25rem; }
-.totals .row { display:flex; justify-content:space-between; padding:0.4rem 0; font-size:0.92rem; color:var(--muted); }
-.totals .row.total { font-family:'Montserrat',sans-serif; font-size:1.35rem; font-weight:800; color:var(--accent); padding-top:0.85rem; margin-top:0.5rem; border-top:1px solid var(--border); }
+.totals { max-width:20rem; margin-left:auto; padding:1.1rem 1.3rem; background:var(--surface); border-radius:12px; margin-bottom:1.75rem; }
+.totals .row { display:flex; justify-content:space-between; padding:0.35rem 0; font-size:0.88rem; color:var(--muted); }
+.totals .row.total { font-family:'Montserrat',sans-serif; font-size:1.4rem; font-weight:800; color:var(--accent); padding-top:0.8rem; margin-top:0.4rem; border-top:1px solid var(--border); }
+
+.panel { background:var(--surface); border-radius:12px; padding:1.25rem 1.4rem; margin-bottom:1.25rem; }
+.panel__title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.85rem; margin-bottom:0.6rem; }
 .terms { font-size:0.85rem; color:var(--muted); line-height:1.7; white-space:pre-line; }
-.actions { display:flex; gap:0.75rem; flex-wrap:wrap; padding:1.5rem; background:var(--bg2); border:1px solid var(--accent); border-radius:14px; margin-top:1.5rem; }
-.actions .info { flex:1; min-width:14rem; font-size:0.88rem; color:var(--muted); line-height:1.55; }
+
+.legal-footer { margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); font-size:0.72rem; color:var(--faint); line-height:1.8; text-align:center; }
+
+.actions { display:flex; gap:0.75rem; flex-wrap:wrap; padding:1.4rem; background:var(--bg2); border:1px solid var(--accent); border-radius:14px; margin-top:1.5rem; }
+.actions .info { flex:1; min-width:14rem; font-size:0.86rem; color:var(--muted); line-height:1.55; }
 .actions .info strong { color:var(--text); display:block; margin-bottom:0.3rem; }
-.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.5rem; background:var(--accent); color:#fff; border:0; border-radius:10px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; transition:opacity 0.2s; }
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.5rem; background:var(--accent); color:#fff; border:0; border-radius:10px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.9rem; cursor:pointer; text-decoration:none; transition:opacity 0.2s; }
 .btn:hover { opacity:0.9; }
 .btn--ghost { background:transparent; color:var(--text); border:1px solid var(--border); }
 .btn--ghost:hover { border-color:var(--accent); color:var(--accent); opacity:1; }
@@ -43,21 +69,20 @@ th.r, td.r { text-align:right; }
 .btn--wa:hover { background:#1ebe5d; opacity:1; }
 
 @media print {
-  body { background:#fff !important; color:#000 !important; padding:1rem !important; }
-  .header, .card { background:#fff !important; border:1px solid #ddd !important; box-shadow:none !important; color:#000 !important; }
+  body { background:#fff !important; color:#000 !important; padding:0 !important; }
+  .sheet { background:#fff !important; border:0 !important; box-shadow:none !important; color:#000 !important; }
+  .sheet__band { display:none !important; }
   .actions, .no-print, .btn { display:none !important; }
-  .title, h1, h3 { color:#000 !important; }
-  .ref, .status-badge.payee { color:#FF5500 !important; }
-  .meta, .intro, .terms, .totals .row { color:#333 !important; }
-  .meta strong, .totals .row.total { color:#000 !important; }
+  .issuer__brand, .doctype__label, .title, .bloc-name, .totals .row.total { color:#000 !important; }
+  .issuer__legal, .issuer__dba, .doctype__ref, .bloc-sub, .intro, .terms, .totals .row, .dates-row, .legal-footer { color:#333 !important; }
   table { color:#000 !important; }
   th { background:#f5f5f5 !important; color:#666 !important; }
   td { color:#000 !important; border-bottom:1px solid #eee !important; }
-  .logo { background:#FF5500 !important; }
-  .brand { color:#000 !important; }
-  .brand small { color:#666 !important; }
+  tbody tr:nth-child(odd) td { background:#fafafa !important; }
+  .totals, .panel { background:#f7f7f7 !important; }
+  .issuer__logo { background:#FF5500 !important; }
 }
-.status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
+.status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
 .status-badge.envoyee { background:rgba(96,165,250,0.15); color:#60a5fa; }
 .status-badge.consultee { background:rgba(251,191,36,0.15); color:#fbbf24; }
 .status-badge.payee { background:rgba(74,222,128,0.15); color:var(--success); }
@@ -66,17 +91,12 @@ th.r, td.r { text-align:right; }
 .status-badge.brouillon { background:rgba(229,226,225,0.1); color:var(--muted); }
 .loading { text-align:center; padding:4rem 2rem; color:var(--muted); }
 .error-page { text-align:center; padding:4rem 2rem; }
-@media (max-width:640px) { .title { font-size:1.4rem; } th.r, td.r { font-size:0.8rem; } .totals .row.total { font-size:1.1rem; } }
+@media (max-width:640px) { .doctype { text-align:left; } .top { flex-direction:column; } .doctype__label { font-size:1.4rem; } th.r, td.r { font-size:0.8rem; } .totals { max-width:none; } .totals .row.total { font-size:1.15rem; } }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <div class="header">
-    <div class="logo">P</div>
-    <div class="brand">PIRABEL LABS<small>Facture</small></div>
-  </div>
-
   <div id="loading" class="loading">Chargement de la facture...</div>
   <div id="errorBlock" class="error-page" style="display:none;">
     <h1 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;">Facture introuvable</h1>
@@ -90,6 +110,14 @@ const token = (function(){ var p = window.location.pathname.split('/').filter(Bo
 const loading = document.getElementById('loading');
 const content = document.getElementById('content');
 const errorBlock = document.getElementById('errorBlock');
+
+const LEGAL_NAME = 'PIRABEL';
+const LEGAL_STATUS = 'Etablissement immatricule en qualite de personne physique';
+const LEGAL_RCCM = 'RB/ABY/26 A 39852';
+const LEGAL_IFU = '0202336099991';
+const LEGAL_ADDRESS = 'Abomey-Calavi, Republique du Benin';
+const LEGAL_EMAIL = 'contact@pirabellabs.com';
+const LEGAL_REP = 'Lissanon Gildas';
 
 function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
@@ -111,6 +139,11 @@ function renderInvoice(inv) {
   loading.style.display = 'none';
   content.style.display = 'block';
 
+  document.title = 'Facture ' + inv.reference + ' - ' + (inv.issuerBrand || 'Pirabel Labs');
+
+  const brand = inv.issuerBrand || 'Pirabel Labs';
+  const isDba = brand !== 'Pirabel Labs' && brand !== LEGAL_NAME;
+
   const itemsHtml = inv.items.map(i => `<tr><td>${escapeHtml(i.description)}</td><td class="r">${i.quantity}</td><td class="r">${formatMoney(i.unitPrice, inv.currency)}</td><td class="r" style="font-weight:600;">${formatMoney(i.total, inv.currency)}</td></tr>`).join('');
 
   const statusLabels = { brouillon: 'Brouillon', envoyee: 'Envoyee', consultee: 'Consultee', payee: 'Payee', en_retard: 'En retard', annulee: 'Annulee' };
@@ -126,13 +159,28 @@ function renderInvoice(inv) {
     actionsHtml += '<div class="actions"><div class="info"><strong>Reglement</strong>Merci de regler cette facture avant la date d\'echeance indiquee ci-dessus, selon les modalites de paiement precisees plus bas. Pour toute question, contactez-nous par WhatsApp ou email.</div></div>';
   }
 
-  content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(inv.reference) + '</div><h1 class="title">' + escapeHtml(inv.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(inv.clientName) + (inv.clientCompany ? ' &middot; ' + escapeHtml(inv.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(inv.issuedAt) + '</div><div><strong>Echeance :</strong> ' + formatDate(inv.dueDate) + '</div><div><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
-    (inv.introduction ? '<p class="intro">' + escapeHtml(inv.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
+  const issuerLegalLine = escapeHtml(LEGAL_NAME) + ' &middot; ' + escapeHtml(LEGAL_STATUS) + '<br>RCCM ' + escapeHtml(LEGAL_RCCM) + ' &middot; IFU ' + escapeHtml(LEGAL_IFU) + '<br>' + escapeHtml(LEGAL_ADDRESS) + '<br>' + escapeHtml(LEGAL_EMAIL);
+  const dbaLine = isDba ? '<div class="issuer__dba">' + escapeHtml(brand) + ' est une marque commerciale de ' + escapeHtml(LEGAL_NAME) + '</div>' : '';
+
+  content.innerHTML =
+    '<div class="sheet"><div class="sheet__band"></div><div class="sheet__inner">' +
+    '<div class="top">' +
+      '<div class="issuer"><div class="issuer__logo">' + escapeHtml(brand.charAt(0)) + '</div><div><div class="issuer__brand">' + escapeHtml(brand.toUpperCase()) + '</div>' + dbaLine + '<div class="issuer__legal">' + issuerLegalLine + '</div></div></div>' +
+      '<div class="doctype"><div class="doctype__label">FACTURE</div><div class="doctype__ref">' + escapeHtml(inv.reference) + '</div><div class="doctype__status"><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
     '</div>' +
-    '<div class="card"><table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table><div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(inv.subtotal, inv.currency) + '</span></div>' +
-    (inv.taxRate > 0 ? '<div class="row"><span>TVA ' + inv.taxRate + '%</span><span>' + formatMoney(inv.taxAmount, inv.currency) + '</span></div>' : '') +
-    '<div class="row total"><span>Total</span><span>' + formatMoney(inv.total, inv.currency) + '</span></div></div></div>' +
-    (inv.terms ? '<div class="card"><h3 style="font-family:Montserrat,sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.85rem;">Modalites de paiement</h3><div class="terms">' + escapeHtml(inv.terms) + '</div></div>' : '') +
+    '<div class="grid2">' +
+      '<div><div class="bloc-label">Facture a</div><div class="bloc-name">' + escapeHtml(inv.clientName) + '</div><div class="bloc-sub">' + (inv.clientCompany ? escapeHtml(inv.clientCompany) + '<br>' : '') + (inv.clientAddress ? escapeHtml(inv.clientAddress) + '<br>' : '') + escapeHtml(inv.clientEmail || '') + '</div></div>' +
+      '<div><div class="bloc-label">Details</div><div class="dates-row"><div><span>Date d\'emission</span><strong>' + formatDate(inv.issuedAt) + '</strong></div><div><span>Date d\'echeance</span><strong>' + formatDate(inv.dueDate) + '</strong></div><div><span>Represente par</span><strong>' + escapeHtml(LEGAL_REP) + '</strong></div></div></div>' +
+    '</div>' +
+    '<div class="title">' + escapeHtml(inv.title) + '</div>' +
+    (inv.introduction ? '<p class="intro">' + escapeHtml(inv.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
+    '<table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table>' +
+    '<div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(inv.subtotal, inv.currency) + '</span></div>' +
+    (inv.taxRate > 0 ? '<div class="row"><span>TVA ' + inv.taxRate + '%</span><span>' + formatMoney(inv.taxAmount, inv.currency) + '</span></div>' : '<div class="row"><span>TVA</span><span>Non applicable</span></div>') +
+    '<div class="row total"><span>Total TTC</span><span>' + formatMoney(inv.total, inv.currency) + '</span></div></div>' +
+    (inv.terms ? '<div class="panel"><div class="panel__title">Modalites de paiement</div><div class="terms">' + escapeHtml(inv.terms) + '</div></div>' : '') +
+    '<div class="legal-footer">Facture emise par ' + escapeHtml(LEGAL_NAME) + (isDba ? ' (' + escapeHtml(brand) + ')' : '') + ', ' + escapeHtml(LEGAL_STATUS.toLowerCase()) + ', RCCM ' + escapeHtml(LEGAL_RCCM) + ', IFU ' + escapeHtml(LEGAL_IFU) + '.<br>Document genere electroniquement, valable sans signature manuscrite.</div>' +
+    '</div></div>' +
     actionsHtml;
 }
 

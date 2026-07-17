@@ -3106,7 +3106,7 @@ app.post('/api/admin/invoices/_fix-index', auth, adminOnly, async (req, res) => 
 // POST /api/admin/invoices : creer une facture (brouillon), depuis un devis ou en libre
 app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
-    const { leadId, quoteId, title, items, taxRate, currency, introduction, terms, dueDays } = req.body;
+    const { leadId, quoteId, title, items, taxRate, currency, introduction, terms, dueDays, issuerBrand } = req.body;
 
     let lead, baseItems = Array.isArray(items) ? items : [], baseTitle = title, baseTaxRate = Number(taxRate) || 0, baseCurrency = currency, baseIntro = introduction, baseTerms = terms, sourceQuote = null;
 
@@ -3148,6 +3148,7 @@ app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res)
       title: sanitize(baseTitle, 200),
       introduction: sanitize(baseIntro || '', 2000),
       terms: sanitize(baseTerms || '', 5000),
+      issuerBrand: sanitize(issuerBrand || '', 100) || 'Pirabel Labs',
       dueDate: new Date(Date.now() + (Number(dueDays) || 15) * 86400000),
       publicToken: generateToken(),
       createdBy: req.user._id
@@ -3198,7 +3199,7 @@ app.patch('/api/admin/invoices/:id', auth, adminOnly, limitBody(50), async (req,
       return res.status(403).json({ error: 'Facture verrouillee (deja payee/annulee).' });
     }
 
-    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'dueDate', 'paymentMethod'];
+    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'dueDate', 'paymentMethod', 'issuerBrand'];
     fields.forEach(f => {
       if (req.body[f] !== undefined) {
         if (f === 'taxRate') invoice.taxRate = Math.max(0, Number(req.body.taxRate) || 0);
@@ -3309,8 +3310,11 @@ app.get('/api/invoices/:token', async (req, res) => {
     res.json({
       reference: invoice.reference,
       title: invoice.title,
+      issuerBrand: invoice.issuerBrand || 'Pirabel Labs',
       clientName: invoice.clientName,
       clientCompany: invoice.clientCompany,
+      clientEmail: invoice.clientEmail,
+      clientAddress: invoice.clientAddress,
       items: invoice.items,
       subtotal: invoice.subtotal,
       taxRate: invoice.taxRate,

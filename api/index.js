@@ -3103,6 +3103,21 @@ app.post('/api/admin/invoices/_fix-index', auth, adminOnly, async (req, res) => 
   }
 });
 
+// Diagnostic ponctuel : interroge le statut de livraison reel d'un email aupres de Resend
+app.get('/api/admin/_email-diag/:resendId', auth, adminOnly, async (req, res) => {
+  try {
+    const key = (process.env.RESEND_API_KEY || '').trim();
+    if (!key) return res.status(500).json({ error: 'RESEND_API_KEY manquante.' });
+    const r = await fetch('https://api.resend.com/emails/' + encodeURIComponent(req.params.resendId), {
+      headers: { 'Authorization': 'Bearer ' + key }
+    });
+    const body = await r.json().catch(() => ({}));
+    res.status(r.status).json(body);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST /api/admin/invoices : creer une facture (brouillon), depuis un devis ou en libre
 app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
@@ -3263,14 +3278,14 @@ app.post('/api/admin/invoices/:id/send', auth, adminOnly, async (req, res) => {
       ctaUrl: publicUrl
     });
 
-    await sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html)
-      .catch(e => console.error('[invoices] send email error:', e.message));
+    const emailResult = await sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html, { returnInfo: true })
+      .catch(e => { console.error('[invoices] send email error:', e.message); return false; });
 
     if (invoice.status === 'brouillon') invoice.status = 'envoyee';
     invoice.sentAt = new Date();
     await invoice.save();
 
-    res.json({ success: true, message: 'Facture envoyee au client.', publicUrl });
+    res.json({ success: true, message: 'Facture envoyee au client.', publicUrl, emailSent: !!emailResult, resendId: emailResult ? emailResult.messageId : null });
   } catch (err) {
     console.error('[invoices] send error:', err.message);
     res.status(500).json({ error: 'Erreur envoi : ' + err.message });

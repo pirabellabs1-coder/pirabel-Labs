@@ -21,7 +21,7 @@ body { background:#050505; color:var(--text); font-family:'Inter',system-ui,sans
 /* HEADER : emetteur vs facture */
 .top { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; margin-bottom:2.25rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
 .issuer { display:flex; gap:0.9rem; align-items:flex-start; }
-.issuer__logo { width:3rem; height:3rem; flex-shrink:0; background:var(--accent); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.3rem; }
+.issuer__logo { width:3rem; height:3rem; flex-shrink:0; border-radius:10px; display:block; }
 .issuer__brand { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.01em; }
 .issuer__legal { font-size:0.78rem; color:var(--muted); line-height:1.65; margin-top:0.35rem; max-width:20rem; }
 .issuer__dba { font-size:0.72rem; color:var(--faint); margin-top:0.25rem; font-style:italic; }
@@ -43,10 +43,12 @@ body { background:#050505; color:var(--text); font-family:'Inter',system-ui,sans
 .title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:1rem; }
 .intro { font-size:0.92rem; line-height:1.7; color:var(--muted); margin-bottom:1.75rem; }
 
-table { width:100%; border-collapse:collapse; margin-bottom:1.25rem; }
-th { text-align:left; padding:0.7rem 0.6rem; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--faint); border-bottom:1px solid var(--border); font-weight:700; }
-td { padding:0.9rem 0.6rem; border-bottom:1px solid rgba(229,226,225,0.05); font-size:0.9rem; }
-tbody tr:nth-child(odd) td { background:rgba(255,255,255,0.015); }
+table { width:100%; border-collapse:collapse; margin-bottom:1.25rem; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+th { text-align:left; padding:0.75rem 0.9rem; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--faint); background:var(--surface); border-bottom:1px solid var(--border); border-right:1px solid var(--border); font-weight:700; }
+th:last-child { border-right:0; }
+td { padding:0.85rem 0.9rem; border-bottom:1px solid var(--border); border-right:1px solid var(--border); font-size:0.9rem; }
+td:last-child { border-right:0; }
+tbody tr:last-child td { border-bottom:0; }
 th.r, td.r { text-align:right; }
 .totals { max-width:20rem; margin-left:auto; padding:1.1rem 1.3rem; background:var(--surface); border-radius:12px; margin-bottom:1.75rem; }
 .totals .row { display:flex; justify-content:space-between; padding:0.35rem 0; font-size:0.88rem; color:var(--muted); }
@@ -80,7 +82,6 @@ th.r, td.r { text-align:right; }
   td { color:#000 !important; border-bottom:1px solid #eee !important; }
   tbody tr:nth-child(odd) td { background:#fafafa !important; }
   .totals, .panel { background:#f7f7f7 !important; }
-  .issuer__logo { background:#FF5500 !important; }
 }
 .status-badge { display:inline-block; padding:0.3rem 0.85rem; border-radius:999px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
 .status-badge.envoyee { background:rgba(96,165,250,0.15); color:#60a5fa; }
@@ -117,7 +118,6 @@ const LEGAL_RCCM = 'RB/ABY/26 A 39852';
 const LEGAL_IFU = '0202336099991';
 const LEGAL_ADDRESS = 'Abomey-Calavi, Republique du Benin';
 const LEGAL_EMAIL = 'contact@pirabellabs.com';
-const LEGAL_REP = 'Lissanon Gildas';
 
 function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
@@ -165,12 +165,12 @@ function renderInvoice(inv) {
   content.innerHTML =
     '<div class="sheet"><div class="sheet__band"></div><div class="sheet__inner">' +
     '<div class="top">' +
-      '<div class="issuer"><div class="issuer__logo">' + escapeHtml(brand.charAt(0)) + '</div><div><div class="issuer__brand">' + escapeHtml(brand.toUpperCase()) + '</div>' + dbaLine + '<div class="issuer__legal">' + issuerLegalLine + '</div></div></div>' +
+      '<div class="issuer"><img class="issuer__logo" src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="48" height="48"><div><div class="issuer__brand">' + escapeHtml(brand.toUpperCase()) + '</div>' + dbaLine + '<div class="issuer__legal">' + issuerLegalLine + '</div></div></div>' +
       '<div class="doctype"><div class="doctype__label">FACTURE</div><div class="doctype__ref">' + escapeHtml(inv.reference) + '</div><div class="doctype__status"><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
     '</div>' +
     '<div class="grid2">' +
       '<div><div class="bloc-label">Facture a</div><div class="bloc-name">' + escapeHtml(inv.clientName) + '</div><div class="bloc-sub">' + (inv.clientCompany ? escapeHtml(inv.clientCompany) + '<br>' : '') + (inv.clientAddress ? escapeHtml(inv.clientAddress) + '<br>' : '') + escapeHtml(inv.clientEmail || '') + '</div></div>' +
-      '<div><div class="bloc-label">Details</div><div class="dates-row"><div><span>Date d\'emission</span><strong>' + formatDate(inv.issuedAt) + '</strong></div><div><span>Date d\'echeance</span><strong>' + formatDate(inv.dueDate) + '</strong></div><div><span>Represente par</span><strong>' + escapeHtml(LEGAL_REP) + '</strong></div></div></div>' +
+      '<div><div class="bloc-label">Details</div><div class="dates-row"><div><span>Date d\'emission</span><strong>' + formatDate(inv.issuedAt) + '</strong></div><div><span>Date d\'echeance</span><strong>' + formatDate(inv.dueDate) + '</strong></div></div></div>' +
     '</div>' +
     '<div class="title">' + escapeHtml(inv.title) + '</div>' +
     (inv.introduction ? '<p class="intro">' + escapeHtml(inv.introduction).replace(/\n/g, '<br>') + '</p>' : '') +

@@ -948,6 +948,7 @@ function blogShell(headExtra, bodyHtml) {
   return '<!doctype html><html lang="fr"><head>' +
     '<script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>' +
     '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="msvalidate.01" content="EB6FCB92F9E0D2E3264DE2FFBE2EEA94" />' +
     '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2">' +

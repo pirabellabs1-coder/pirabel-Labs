@@ -3863,6 +3863,12 @@ app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, r
         else quote[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
       }
     });
+    // Correction manuelle du statut (ex. consultation faussement enregistree).
+    // Revenir a « envoye » efface la date de consultation, sinon elle resterait incoherente.
+    if (['brouillon', 'envoye', 'consulte', 'expire'].includes(req.body.status)) {
+      quote.status = req.body.status;
+      if (req.body.status === 'envoye' || req.body.status === 'brouillon') quote.viewedAt = undefined;
+    }
 
     if (Array.isArray(req.body.items)) {
       const totals = recalcQuote(req.body.items, quote.taxRate);

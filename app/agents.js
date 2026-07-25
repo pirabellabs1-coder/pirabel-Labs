@@ -9,9 +9,11 @@
 
 const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
 
-// Modeles par defaut (surchargeables via env OPENROUTER_MODEL / OPENROUTER_MODEL_PUBLIC)
-const MODEL_PRO = 'anthropic/claude-3.5-sonnet';   // agents internes : qualite maximale
-const MODEL_FAST = 'openai/gpt-4o-mini';           // chatbot public : rapide et economique
+// Modeles par defaut (surchargeables via env OPENROUTER_MODEL / OPENROUTER_MODEL_PUBLIC).
+// Identifiants verifies sur l'API OpenRouter — ne pas mettre un modele deprecie,
+// l'API repond alors 404 « No endpoints found ».
+const MODEL_PRO = 'anthropic/claude-sonnet-5';     // agents internes : qualite de raisonnement
+const MODEL_FAST = 'anthropic/claude-haiku-4.5';   // chatbot public : rapide, economique, appels d'outils fiables
 
 // ---------------------------------------------------------------------------
 // Connaissance de l'agence — socle commun a TOUS les agents.

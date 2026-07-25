@@ -49,6 +49,7 @@ const Conversation = require('../app/models/Conversation');
 const PendingAction = require('../app/models/PendingAction');
 const Project = require('../app/models/Project');
 const ClientMessage = require('../app/models/ClientMessage');
+const ChatSession = require('../app/models/ChatSession');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
 const Appointment = require('../app/models/Appointment');
@@ -1060,7 +1061,7 @@ function blogShell(headExtra, bodyHtml) {
     siteNav.js +
     '<a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>' +
     '<script defer src="/js/track.js"></script>' +
-    '<script defer src="/js/chat-widget.js?v=elan2"></script></body></html>';
+    '<script defer src="/js/chat-widget.js?v=elan3"></script></body></html>';
 }
 function fmtFr(d) {
   try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; }
@@ -2277,11 +2278,135 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
         convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
       }
     }
-    res.json({ reply: finalText || "Pouvez-vous préciser votre besoin ?", captured });
+    const reply = finalText || "Pouvez-vous préciser votre besoin ?";
+
+    // Persiste la conversation pour que l'équipe la retrouve dans l'admin.
+    try {
+      const key = sanitize(req.body.sessionKey || '', 64);
+      if (key) {
+        const full = history.concat([{ role: 'assistant', content: reply }]);
+        const session = await ChatSession.findOneAndUpdate(
+          { sessionKey: key },
+          {
+            $set: {
+              messages: full.map(m => ({ role: m.role, content: m.content })),
+              pageOrigine: sanitize(req.body.page || '', 300),
+              updatedAt: new Date(),
+            },
+            $setOnInsert: { createdAt: new Date() },
+          },
+          { upsert: true, new: true }
+        );
+        if (captured && !session.capturedContact) {
+          session.capturedContact = true;
+          // Retrouve la fiche créée à l'instant par l'outil pour la relier.
+          const recent = await Lead.findOne({ source: 'chatbot_ia' }).sort({ createdAt: -1 });
+          if (recent) { session.leadId = recent._id; session.visitorName = recent.name; session.visitorEmail = recent.email; }
+          await session.save();
+        }
+        // Analyse : au moment où le contact est capté, ou après un échange déjà nourri.
+        if (!session.analyzedAt && (captured || full.length >= 6)) {
+          await analyserConversation(session, apiKey).catch(e => console.error('[chat.analyse]', e.message));
+        }
+      }
+    } catch (e) { console.error('[chat.persist]', e.message); }
+
+    res.json({ reply, captured });
   } catch (e) {
     console.error('[chat.public]', e.message);
     res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous à contact@pirabellabs.com, l'équipe vous répondra rapidement." });
   }
+});
+
+// Analyse d'une conversation publique : résumé + qualification du prospect.
+// Appel volontairement bref et sur le modèle économique : ce n'est pas de la rédaction.
+async function analyserConversation(session, apiKey) {
+  const transcript = (session.messages || []).slice(-16)
+    .map(m => (m.role === 'user' ? 'VISITEUR' : 'ASSISTANT') + ' : ' + m.content).join('\n').slice(0, 6000);
+  if (!transcript) return;
+
+  const system = `Tu analyses une conversation entre un visiteur et l'assistant du site de Pirabel Labs (agence web et marketing).
+Reponds UNIQUEMENT par un objet JSON valide, sans texte autour, avec exactement ces cles :
+{"resume":"3 phrases maximum decrivant ce que veut le visiteur et ou en est l'echange",
+"besoin":"le besoin en une phrase courte","service":"site web|e-commerce|SEO|automatisation|IA|community management|autre|indetermine",
+"budget":"le budget evoque tel quel, ou vide si non aborde","echeance":"le delai evoque, ou vide",
+"qualification":"chaud|tiede|froid","score":0,"prochaine_action":"la prochaine action concrete que l'equipe doit mener"}
+
+Regles de qualification :
+- chaud : le visiteur a un projet precis ET a laisse ses coordonnees ou pris rendez-vous.
+- tiede : interet reel et projet identifiable, mais pas encore de coordonnees.
+- froid : simple curiosite, question generale, ou aucun projet exprime.
+score : entier de 0 a 100 refletant la probabilite de conversion.
+N'invente rien : si une information n'a pas ete dite, laisse la chaine vide.
+Francais impeccable, sans aucun caractere de mise en forme.`;
+
+  const { ok, data } = await AI.callOpenRouter({
+    apiKey, model: AI.MODEL_FAST,
+    messages: [{ role: 'system', content: system }, { role: 'user', content: transcript }],
+    maxTokens: 500, temperature: 0.2, timeoutMs: 15000,
+  });
+  if (!ok) return;
+  const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
+  const m = raw.match(/\{[\s\S]*\}/);
+  if (!m) return;
+  let a; try { a = JSON.parse(m[0]); } catch (e) { return; }
+
+  session.summary = sanitize(a.resume || '', 2000);
+  session.besoin = sanitize(a.besoin || '', 500);
+  session.service = sanitize(a.service || '', 120);
+  session.budget = sanitize(a.budget || '', 120);
+  session.echeance = sanitize(a.echeance || '', 120);
+  session.qualification = ['chaud', 'tiede', 'froid'].includes(a.qualification) ? a.qualification : 'non_evalue';
+  session.score = Math.max(0, Math.min(100, parseInt(a.score, 10) || 0));
+  session.prochaineAction = sanitize(a.prochaine_action || '', 400);
+  session.analyzedAt = new Date();
+  await session.save();
+}
+
+// --- Conversations du chatbot : lecture côté administration ---
+app.get('/api/admin/chat-sessions', auth, adminOnly, async (req, res) => {
+  try {
+    const f = {};
+    if (['chaud', 'tiede', 'froid', 'non_evalue'].includes(req.query.qualification)) f.qualification = req.query.qualification;
+    if (req.query.avecContact === '1') f.capturedContact = true;
+    const list = await ChatSession.find(f).sort({ updatedAt: -1 }).limit(150).lean();
+    const stats = await ChatSession.aggregate([{ $group: { _id: '$qualification', n: { $sum: 1 } } }]);
+    const parQualif = {}; stats.forEach(s => { parQualif[s._id] = s.n; });
+    res.json({
+      sessions: list.map(s => ({
+        id: String(s._id), nom: s.visitorName || '', email: s.visitorEmail || '',
+        contactCapte: s.capturedContact, qualification: s.qualification, score: s.score,
+        resume: s.summary, besoin: s.besoin, service: s.service, budget: s.budget, echeance: s.echeance,
+        prochaineAction: s.prochaineAction, nbMessages: (s.messages || []).length,
+        page: s.pageOrigine || '', lu: s.lu, le: s.createdAt, maj: s.updatedAt,
+      })),
+      parQualification: parQualif,
+      total: list.length,
+      nonLues: await ChatSession.countDocuments({ lu: false }),
+    });
+  } catch (e) { console.error('[chat.list]', e.message); res.status(500).json({ error: 'Erreur chargement.' }); }
+});
+
+app.get('/api/admin/chat-sessions/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const s = await ChatSession.findById(req.params.id);
+    if (!s) return res.status(404).json({ error: 'Conversation introuvable.' });
+    if (!s.lu) { s.lu = true; await s.save(); }
+    res.json({ session: s });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// Relance l'analyse à la demande (utile si la conversation s'est poursuivie).
+app.post('/api/admin/chat-sessions/:id/analyser', auth, adminOnly, async (req, res) => {
+  try {
+    const s = await ChatSession.findById(req.params.id);
+    if (!s) return res.status(404).json({ error: 'Conversation introuvable.' });
+    const apiKey = await getOpenRouterKey();
+    if (!apiKey) return res.status(503).json({ error: 'Clé OpenRouter manquante.' });
+    s.analyzedAt = undefined;
+    await analyserConversation(s, apiKey);
+    res.json({ success: true, qualification: s.qualification, score: s.score, resume: s.summary, prochaineAction: s.prochaineAction });
+  } catch (e) { console.error('[chat.analyse.manual]', e.message); res.status(500).json({ error: 'Erreur analyse : ' + e.message }); }
 });
 
 // Réglages IA — admin only. La valeur est stockée en base, jamais relue par le client.

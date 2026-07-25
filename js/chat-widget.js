@@ -10,6 +10,18 @@
   window.__plChatLoaded = true;
 
   var WHATSAPP = 'https://wa.me/16139273067';
+  // Cle de session : permet a l'equipe de retrouver la conversation dans l'admin.
+  // Conservee le temps de l'onglet uniquement (aucun cookie, aucun suivi persistant).
+  var sessionKey = (function () {
+    try {
+      var k = sessionStorage.getItem('plc_session');
+      if (!k) {
+        k = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        sessionStorage.setItem('plc_session', k);
+      }
+      return k;
+    } catch (e) { return 'c' + Date.now().toString(36); }
+  })();
   var history = [];
   var busy = false;
   var opened = false;
@@ -166,7 +178,7 @@
       var r = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history.slice(-16) })
+        body: JSON.stringify({ messages: history.slice(-16), sessionKey: sessionKey, page: location.pathname })
       });
       var d = await r.json();
       hideTyping();

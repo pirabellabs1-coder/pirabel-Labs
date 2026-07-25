@@ -103,9 +103,20 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+  // Filet de securite : le widget n'interprete pas le Markdown, donc on retire les
+  // marqueurs si le modele en produit malgre la consigne (evite d'afficher des **).
+  function stripMarkdown(s) {
+    return String(s)
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/(^|[\s(])\*([^*\n]+)\*/g, '$1$2')
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/^\s*[-*]\s+/gm, '• ')
+      .replace(/`([^`]+)`/g, '$1');
+  }
+
   // Transforme les URL et adresses e-mail en liens cliquables.
   function linkify(s) {
-    return esc(s)
+    return esc(stripMarkdown(s))
       .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
       .replace(/([\w.+-]+@[\w-]+\.[\w.]+)/g, '<a href="mailto:$1">$1</a>');
   }

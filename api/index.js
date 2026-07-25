@@ -185,11 +185,17 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       ipHash,
     });
 
+    // Ayaba qualifie la demande et prépare la réponse pendant que le reste part.
+    // En cas d'échec, la demande suit son cours normal : c'est un bonus, pas un maillon critique.
+    await traiterFormulaire(lead).catch(e => console.error('[contact] traitement IA:', e.message));
+
     // Email admin (AWAIT : sur Vercel, sans await l'envoi est coupé au retour de la fonction)
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      '[Pirabel Labs] Nouvelle demande - ' + service,
-      newOrderEmail({ name, email, phone, company, service, message }),
+      '[Pirabel Labs] Nouvelle demande - ' + service +
+        (lead.aiQualification && lead.aiQualification !== 'non_evalue' ? ' [' + lead.aiQualification.toUpperCase() + ' ' + lead.aiScore + '/100]' : ''),
+      newOrderEmail({ name, email, phone, company, service,
+        message: message + (lead.aiSummary ? '\n\n— Analyse d\'Ayaba —\n' + lead.aiSummary + (lead.aiNextAction ? '\n\nProchaine action : ' + lead.aiNextAction : '') + '\n\nUne réponse est prête à valider dans l\'assistant.' : '') }),
       { replyTo: email }
     ).catch(e => console.error('[contact] admin email error:', e.message));
 
@@ -2320,6 +2326,71 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
     res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous à contact@pirabellabs.com, l'équipe vous répondra rapidement." });
   }
 });
+
+// Traitement automatique d'une demande reçue par formulaire : Ayaba qualifie le
+// prospect et prépare une réponse personnalisée, mise en attente de validation.
+// Appel unique sur le modèle rapide pour ne pas ralentir l'envoi du formulaire.
+async function traiterFormulaire(lead) {
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) return;
+
+  const system = `Tu es Ayaba, assistante de Pirabel Labs (agence web et marketing digital, Abomey-Calavi, Benin).
+Une demande vient d'arriver par le formulaire du site. Tu la qualifies et tu prepares la reponse.
+
+Reponds UNIQUEMENT par un objet JSON valide, sans texte autour :
+{"resume":"2 phrases : ce que veut ce prospect et ce qui compte pour lui",
+"qualification":"chaud|tiede|froid","score":0,
+"prochaine_action":"l'action concrete que l'equipe doit mener ensuite",
+"objet":"objet de l'e-mail de reponse","reponse":"le corps de l'e-mail"}
+
+Regles pour le corps de la reponse :
+- Ne commence pas par « Bonjour X » : la formule d'appel est ajoutee automatiquement.
+- Montre que tu as VRAIMENT lu sa demande : reprends son projet avec ses mots a lui.
+- Apporte un element utile des maintenant (un conseil, une question de cadrage pertinente).
+- N'annonce JAMAIS de prix. Le devis est gratuit et etabli sous 48 h apres un echange.
+- Propose un rendez-vous avec le lien https://www.pirabellabs.com/rdv
+- Termine par la signature : Lissanon Gildas, Fondateur & CEO — Pirabel Labs.
+- Francais impeccable, ton professionnel et chaleureux, sans flatterie ni exageration.
+- N'invente aucune reference client, aucun chiffre, aucun delai que tu ne peux tenir.
+
+Qualification : chaud = projet precis avec budget ou echeance claire. tiede = besoin
+identifiable mais flou. froid = demande vague, hors sujet, ou candidature spontanee.`;
+
+  const demande = `Nom : ${lead.name}\nEntreprise : ${lead.company || 'non precisee'}\n` +
+    `E-mail : ${lead.email}\nTelephone : ${lead.phone || 'non precise'}\n` +
+    `Service demande : ${lead.service}\n\nMessage :\n${lead.message}`;
+
+  const { ok, data } = await AI.callOpenRouter({
+    apiKey, model: AI.MODEL_FAST,
+    messages: [{ role: 'system', content: system }, { role: 'user', content: demande }],
+    maxTokens: 1400, temperature: 0.4, timeoutMs: 20000,
+  });
+  if (!ok) return;
+  const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
+  const m = raw.match(/\{[\s\S]*\}/);
+  if (!m) return;
+  let a; try { a = JSON.parse(m[0]); } catch (e) { return; }
+
+  lead.aiQualification = ['chaud', 'tiede', 'froid'].includes(a.qualification) ? a.qualification : 'non_evalue';
+  lead.aiScore = Math.max(0, Math.min(100, parseInt(a.score, 10) || 0));
+  lead.aiSummary = sanitize(a.resume || '', 1500);
+  lead.aiNextAction = sanitize(a.prochaine_action || '', 400);
+  lead.aiProcessedAt = new Date();
+  await lead.save();
+
+  // La réponse rédigée n'est jamais envoyée seule : elle attend la validation.
+  if (a.reponse && a.objet) {
+    const admin = await User.findOne({ role: 'admin' }).select('_id').lean();
+    if (admin) {
+      await PendingAction.create({
+        userId: admin._id, agent: 'commercial', tool: 'envoyer_email',
+        input: { email: lead.email, subject: sanitize(a.objet, 200), message: sanitize(a.reponse, 5000) },
+        summary: `Répondre à ${lead.name} (${lead.service}) — « ${sanitize(a.objet, 90)} »`,
+        risk: 'eleve',
+      });
+    }
+  }
+}
 
 // Analyse d'une conversation publique : résumé + qualification du prospect.
 // Appel volontairement bref et sur le modèle économique : ce n'est pas de la rédaction.

@@ -74,6 +74,13 @@ const leadSchema = new mongoose.Schema({
   reviewRequestedAt: { type: Date },
   reviewSubmittedAt: { type: Date },
 
+  // Qualification produite par Ayaba a la reception du formulaire.
+  aiQualification: { type: String, enum: ['non_evalue', 'froid', 'tiede', 'chaud'], default: 'non_evalue', index: true },
+  aiScore: { type: Number, default: 0, min: 0, max: 100 },
+  aiSummary: { type: String, default: '', maxlength: 1500 },
+  aiNextAction: { type: String, default: '', maxlength: 400 },
+  aiProcessedAt: { type: Date },
+
   // Espace client : connexion par lien magique (aucun mot de passe stocke).
   // Le jeton est a usage unique et expire au bout de 30 minutes.
   portalToken: { type: String, index: true },

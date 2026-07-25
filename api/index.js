@@ -1056,7 +1056,8 @@ function blogShell(headExtra, bodyHtml) {
     '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
     siteNav.js +
     '<a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>' +
-    '<script defer src="/js/track.js"></script></body></html>';
+    '<script defer src="/js/track.js"></script>' +
+    '<script defer src="/js/chat-widget.js?v=elan1"></script></body></html>';
 }
 function fmtFr(d) {
   try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; }
@@ -1684,6 +1685,65 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 // Liste des agents disponibles (pour l'interface d'administration).
 app.get('/api/admin/agents', auth, adminOnly, (req, res) => {
   res.json({ agents: AI.ADMIN_AGENTS.map(a => ({ id: a.id, name: a.name, icon: a.icon, tagline: a.tagline, tools: a.tools })) });
+});
+
+// ========================================================================
+// === CHATBOT PUBLIC (agent « assistant client ») ===
+// ========================================================================
+// Sans authentification : limité en débit, sans accès aux données internes.
+// L'agent ne dispose que de deux outils d'écriture (prospect + rendez-vous).
+const chatLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 40,
+  message: 'Trop de messages. Merci de patienter quelques minutes ou de nous écrire à contact@pirabellabs.com.',
+  keyPrefix: 'chat-public',
+});
+
+app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
+  try {
+    const apiKey = await getOpenRouterKey();
+    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', reply: "L'assistant n'est pas disponible pour le moment. Écrivez-nous à contact@pirabellabs.com, nous répondons vite." });
+
+    const agent = AI.PUBLIC_AGENT;
+    const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
+    const history = incoming
+      .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
+      .slice(-16)
+      .map(m => ({ role: m.role, content: m.content.slice(0, 2000) }));
+    if (!history.length || history[history.length - 1].role !== 'user') return res.status(400).json({ error: 'Message requis.' });
+
+    const model = process.env.OPENROUTER_MODEL_PUBLIC || agent.model;
+    const tools = assistantToolsOpenAI(agent.tools);
+    const convo = [{ role: 'system', content: AI.buildSystemPrompt(agent, null) }].concat(history);
+    let finalText = '';
+    let captured = false;
+
+    // Boucle courte : le chatbot doit répondre vite (2 tours d'outils maximum).
+    for (let turn = 0; turn < 3; turn++) {
+      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 900, temperature: 0.6, timeoutMs: 18000 });
+      if (!ok) {
+        console.error('[chat.public]', status, JSON.stringify(data).slice(0, 200));
+        return res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous directement à contact@pirabellabs.com ou sur WhatsApp, l'équipe vous répondra rapidement." });
+      }
+      const msg = (data.choices && data.choices[0] && data.choices[0].message) || {};
+      if (msg.content) finalText = String(msg.content).trim();
+      const toolCalls = msg.tool_calls || [];
+      if (!toolCalls.length) break;
+      convo.push(msg);
+      for (const tc of toolCalls) {
+        let input = {};
+        try { input = JSON.parse((tc.function && tc.function.arguments) || '{}'); } catch (e) {}
+        const toolName = (tc.function && tc.function.name) || '';
+        if (!agent.tools.includes(toolName)) { convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify({ ok: false, message: 'Outil non autorisé.' }) }); continue; }
+        const result = await executeAssistantTool(toolName, input, { _id: null });
+        if (result && result.ok) captured = true;
+        convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
+      }
+    }
+    res.json({ reply: finalText || "Pouvez-vous préciser votre besoin ?", captured });
+  } catch (e) {
+    console.error('[chat.public]', e.message);
+    res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous à contact@pirabellabs.com, l'équipe vous répondra rapidement." });
+  }
 });
 
 // Réglages IA — admin only. La valeur est stockée en base, jamais relue par le client.

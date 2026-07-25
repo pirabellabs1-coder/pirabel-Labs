@@ -914,10 +914,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
           <button class="ai-new" id="aiNewBtn"><span class="material-symbols-outlined">add</span> Nouvelle conversation</button>
           <div class="ai-side-label">Assistant</div>
           <div class="ai-mode-menu" id="aiModeMenu">
-            <button class="ai-mode-item is-active" data-mode="analyse"><span class="material-symbols-outlined">insights</span> Directeur commercial</button>
-            <button class="ai-mode-item" data-mode="redaction"><span class="material-symbols-outlined">edit_note</span> Rédaction</button>
-            <button class="ai-mode-item" data-mode="equipe"><span class="material-symbols-outlined">groups</span> Gestion d'équipe</button>
-            <button class="ai-mode-item" data-mode="libre"><span class="material-symbols-outlined">chat</span> Discussion libre</button>
+            <button class="ai-mode-item is-active" data-mode="chef"><span class="material-symbols-outlined">hub</span> Chef de projet</button>
+            <button class="ai-mode-item" data-mode="commercial"><span class="material-symbols-outlined">handshake</span> Commercial</button>
+            <button class="ai-mode-item" data-mode="redacteur"><span class="material-symbols-outlined">edit_note</span> Rédacteur SEO</button>
+            <button class="ai-mode-item" data-mode="analyste"><span class="material-symbols-outlined">monitoring</span> Analyste</button>
           </div>
           <div class="ai-side-label">Conversations</div>
           <div class="ai-convos" id="aiConvos"><div class="ai-convos-empty">Chargement…</div></div>
@@ -926,14 +926,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="ai-main">
           <div class="ai-chat-head" id="aiChatHead">
             <button class="ai-side-toggle" id="aiSideToggle" title="Conversations"><span class="material-symbols-outlined">menu</span></button>
-            <div><div class="ai-chat-head__title" id="aiHeadTitle">Nouvelle conversation</div><div class="ai-chat-head__sub" id="aiHeadSub">Directeur commercial</div></div>
+            <div><div class="ai-chat-head__title" id="aiHeadTitle">Nouvelle conversation</div><div class="ai-chat-head__sub" id="aiHeadSub">Chef de projet</div></div>
           </div>
           <div class="ai-chat" id="aiChat"></div>
           <div class="ai-input-bar">
             <textarea id="aiInput" rows="1" placeholder="Écrivez votre demande… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)"></textarea>
             <button class="ai-send" id="aiSend" title="Envoyer"><span class="material-symbols-outlined">send</span></button>
           </div>
-          <div class="ai-foot" id="aiFoot">Propulsé par Groq · Llama 3.3 70B · les réponses peuvent contenir des erreurs, vérifiez les informations importantes.</div>
+          <div class="ai-foot" id="aiFoot">Vos agents agissent sur vos données réelles. Devis, factures et articles sont toujours créés <strong>en brouillon</strong> et attendent votre validation — rien n'est envoyé à un client sans votre accord.</div>
         </div>
       </div>
     </div>
@@ -3194,19 +3194,29 @@ async function deleteEmail(ev, id) {
 }
 
 // =================== ASSISTANT IA ===================
-var AI_MODE = 'analyse';
+var AI_MODE = 'chef';
 var AI_HISTORY = [];          // messages de la conversation ouverte
 var AI_CONVO_ID = null;       // id de la conversation en cours (null = nouvelle, pas encore enregistrée)
 var AI_CONVOS = [];           // liste des conversations du mode courant
 var AI_BUSY = false;
 var AI_INIT_DONE = false;
-var AI_MODE_LABELS = { analyse: 'Directeur commercial', redaction: 'Rédaction', equipe: 'Gestion d\'équipe', libre: 'Discussion libre' };
-var AI_MODE_TITLES = { analyse: 'Votre directeur commercial IA', redaction: 'Votre assistant de rédaction', equipe: 'Votre bras droit RH & opérations', libre: 'Votre assistant IA Pirabel Labs' };
+var AI_MODE_LABELS = { chef: 'Chef de projet', commercial: 'Commercial', redacteur: 'Rédacteur SEO', analyste: 'Analyste',
+  analyse: 'Analyste', redaction: 'Rédacteur SEO', equipe: 'Chef de projet', libre: 'Chef de projet' };
+var AI_MODE_TITLES = {
+  chef: 'Votre chef de projet IA', commercial: 'Votre directeur commercial IA',
+  redacteur: 'Votre rédacteur en chef SEO', analyste: 'Votre analyste de gestion',
+  analyse: 'Votre analyste de gestion', redaction: 'Votre rédacteur en chef SEO', equipe: 'Votre chef de projet IA', libre: 'Votre chef de projet IA' };
+var AI_MODE_INTRO = {
+  chef: "Je vois vos prospects, devis, factures, tâches et votre équipe en temps réel. Je peux créer et assigner des tâches, prioriser votre semaine et coordonner le travail.",
+  commercial: "Je suis votre pipeline commercial. Je peux préparer des devis et factures en brouillon, identifier qui relancer en priorité et rédiger vos propositions.",
+  redacteur: "J'écris vos articles de blog optimisés SEO, toujours créés en brouillon pour votre relecture avant publication.",
+  analyste: "Je lis vos chiffres réels : encaissé, en attente de règlement, taux de conversion des devis, factures en retard.",
+};
 var AI_SUGGESTIONS = {
-  analyse: ['Quels prospects dois-je relancer en priorité cette semaine ?', 'Analyse mon pipeline de devis : quels risques, quelles opportunités ?', 'Donne-moi mon plan d\'action commercial pour les 7 prochains jours.'],
-  redaction: ['Rédige un e-mail de prospection pour une PME qui n\'a pas de site web.', 'Écris une réponse chaleureuse à un client qui demande un devis pour un site vitrine.', 'Propose 5 posts LinkedIn pour promouvoir nos services SEO.'],
-  equipe: ['Répartis les tâches ouvertes entre mes employés selon leur pôle.', 'Rédige un compte-rendu hebdomadaire de l\'activité de l\'équipe.', 'Quels objectifs fixer à mon chargé de prospection ce mois-ci ?'],
-  libre: ['Quelles sont les tendances marketing digital à suivre en 2026 ?', 'Comment améliorer le référencement local d\'une PME à Cotonou ?', 'Explique-moi le GEO (Generative Engine Optimization) simplement.'],
+  chef: ['Quelle est ma priorité absolue cette semaine ?', 'Répartis les tâches ouvertes entre mes employés selon leur pôle.', 'Fais le point : où en sont mes projets et qu\'est-ce qui bloque ?'],
+  commercial: ['Quels prospects dois-je relancer en priorité cette semaine ?', 'Analyse mon pipeline de devis : quels risques, quelles opportunités ?', 'Rédige un e-mail de relance pour mes devis restés sans réponse.'],
+  redacteur: ['Rédige un article sur le référencement local pour les PME à Cotonou.', 'Quels sujets d\'articles me manquent pour couvrir le SEO ?', 'Écris un article comparatif WordPress vs Next.js pour une PME.'],
+  analyste: ['Fais-moi la synthèse financière du mois.', 'Quelles factures sont en retard de règlement ?', 'Quel est mon taux de conversion des devis et comment l\'améliorer ?'],
 };
 function initAssistant() {
   if (!AI_INIT_DONE) {
@@ -3308,7 +3318,7 @@ function renderAiWelcome() {
   chat.innerHTML = '<div class="ai-welcome" id="aiWelcome">' +
     '<div class="ai-welcome__icon"><span class="material-symbols-outlined">smart_toy</span></div>' +
     '<h2>' + (AI_MODE_TITLES[AI_MODE] || 'Assistant IA') + '</h2>' +
-    '<p>Je connais vos prospects, vos devis, vos tâches et votre équipe en temps réel. Posez une question ou choisissez un raccourci.</p>' +
+    '<p>' + escape(AI_MODE_INTRO[AI_MODE] || 'Posez une question ou choisissez un raccourci.') + '</p>' +
     '<div class="ai-suggest">' + sugg.map(function(s){ return '<button onclick="aiQuick(this)">' + escape(s) + '</button>'; }).join('') + '</div></div>';
 }
 function aiQuick(btn) { document.getElementById('aiInput').value = btn.textContent; aiSend(); }
@@ -3392,7 +3402,7 @@ async function aiSend() {
   AI_HISTORY.push({ role: 'user', content: text });
   aiShowTyping();
   try {
-    var data = await api('/api/admin/assistant', { method: 'POST', body: { mode: AI_MODE, messages: AI_HISTORY } });
+    var data = await api('/api/admin/assistant', { method: 'POST', body: { agent: AI_MODE, mode: AI_MODE, messages: AI_HISTORY } });
     var t = document.getElementById('aiTyping'); if (t) t.remove();
     var reply = data.reply || '(réponse vide)';
     if (data.actions && data.actions.length) {

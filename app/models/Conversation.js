@@ -9,7 +9,9 @@ const messageSchema = new mongoose.Schema({
 
 const conversationSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  mode: { type: String, enum: ['analyse', 'redaction', 'equipe', 'libre'], default: 'analyse' },
+  // Identifiant de l'agent (chef, commercial, redacteur, analyste). Les quatre premieres
+  // valeurs sont les anciens « modes » conservees pour les conversations deja en base.
+  mode: { type: String, enum: ['analyse', 'redaction', 'equipe', 'libre', 'chef', 'commercial', 'redacteur', 'analyste'], default: 'chef' },
   title: { type: String, default: 'Nouvelle conversation' },
   messages: { type: [messageSchema], default: [] },
   createdAt: { type: Date, default: Date.now },

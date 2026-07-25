@@ -1493,6 +1493,31 @@ const ASSISTANT_TOOLS = [
   { name: 'supprimer_prospect', description: "Supprimer DÉFINITIVEMENT une fiche prospect du CRM (doublon, test, données erronées). Refusé si la fiche est rattachée à un devis ou une facture. ACTION IRRÉVERSIBLE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     email: { type: 'string', description: 'E-mail exact de la fiche à supprimer' },
     raison: { type: 'string' } }, required: ['email'] } },
+  { name: 'creer_projet', description: "Créer un projet client visible dans son espace, avec ses étapes de suivi. Utilise-le dès qu'un devis est accepté ou qu'une mission démarre. Propose des étapes réalistes et propres au service vendu.", input_schema: { type: 'object', properties: {
+    clientEmail: { type: 'string', description: "E-mail du client (doit exister dans le CRM)" },
+    title: { type: 'string', description: 'Intitulé du projet, ex : « Refonte du site vitrine »' },
+    description: { type: 'string', description: "Résumé du périmètre, visible par le client" },
+    service: { type: 'string', description: 'Type de prestation : site web, SEO, automatisation…' },
+    dueDate: { type: 'string', description: 'Date de livraison prévue au format AAAA-MM-JJ' },
+    steps: { type: 'array', description: "Étapes de suivi dans l'ordre chronologique", items: { type: 'object', properties: {
+      label: { type: 'string', description: "Nom de l'étape, ex : « Maquettes validées »" },
+      description: { type: 'string' },
+      status: { type: 'string', enum: ['a_venir', 'en_cours', 'termine', 'bloque'] },
+    }, required: ['label'] } },
+  }, required: ['clientEmail', 'title'] } },
+  { name: 'lister_projets', description: "Lister les projets clients avec leur avancement et leurs étapes. Utilise-le avant toute modification pour obtenir les identifiants.", input_schema: { type: 'object', properties: {
+    status: { type: 'string', enum: ['cadrage', 'en_cours', 'en_revue', 'livre', 'suspendu'] } } } },
+  { name: 'modifier_projet', description: "Faire avancer un projet : changer son statut, marquer une étape comme terminée ou en cours, renseigner les liens d'aperçu et de mise en ligne. Le client voit le changement immédiatement dans son espace.", input_schema: { type: 'object', properties: {
+    projetId: { type: 'string', description: 'Identifiant obtenu via lister_projets' },
+    status: { type: 'string', enum: ['cadrage', 'en_cours', 'en_revue', 'livre', 'suspendu'] },
+    etapeIndex: { type: 'number', description: "Position de l'étape à modifier (0 pour la première)" },
+    etapeStatus: { type: 'string', enum: ['a_venir', 'en_cours', 'termine', 'bloque'] },
+    ajouterEtape: { type: 'string', description: "Libellé d'une nouvelle étape à ajouter à la fin" },
+    previewUrl: { type: 'string' }, liveUrl: { type: 'string' },
+    dueDate: { type: 'string', description: 'Nouvelle échéance AAAA-MM-JJ' },
+  }, required: ['projetId'] } },
+  { name: 'ouvrir_espace_client', description: "Activer l'accès à l'espace client pour un contact et lui envoyer son lien de connexion. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    email: { type: 'string', description: 'E-mail du client' } }, required: ['email'] } },
   { name: 'requalifier_factures_en_retard', description: "Passer automatiquement au statut « en_retard » toutes les factures envoyées ou consultées dont la date d'échéance est dépassée. Fais-le toi-même au lieu de conseiller une vérification manuelle. Action interne et réversible : exécutée immédiatement.", input_schema: { type: 'object', properties: {} } },
   { name: 'relancer_facture', description: "Préparer et envoyer une relance de paiement au client pour une facture impayée. Rédige toi-même un message courtois et ferme, adapté au retard. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     reference: { type: 'string', description: 'Référence de la facture, ex : FACT-2026-1234' },
@@ -1506,7 +1531,7 @@ const SENSITIVE_TOOLS = new Set([
   'envoyer_devis', 'envoyer_facture', 'envoyer_email',
   'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
   'modifier_rendez_vous', 'publier_article',
-  'supprimer_rendez_vous', 'supprimer_prospect', 'relancer_facture',
+  'supprimer_rendez_vous', 'supprimer_prospect', 'relancer_facture', 'ouvrir_espace_client',
 ]);
 // Parmi elles, celles qui détruisent une donnée ou partent vers l'extérieur sans retour possible.
 const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article',
@@ -1527,6 +1552,7 @@ function summarizeAction(name, input) {
     case 'supprimer_rendez_vous': return `SUPPRIMER définitivement un rendez-vous${input.raison ? ' — ' + input.raison : ''}`;
     case 'supprimer_prospect': return `SUPPRIMER définitivement la fiche ${input.email} du CRM${input.raison ? ' — ' + input.raison : ''}`;
     case 'relancer_facture': return `Envoyer une relance de paiement pour la facture ${r}`;
+    case 'ouvrir_espace_client': return `Ouvrir l'espace client à ${input.email} et lui envoyer son lien de connexion`;
     default: return name;
   }
 }
@@ -1798,6 +1824,77 @@ async function executeAssistantTool(name, input, currentUser, opts) {
           cta: 'Prendre / gérer un rendez-vous', ctaUrl: 'https://www.pirabellabs.com/rdv' })
       ).catch(e => console.error('[ai.rdv.modif] mail:', e.message));
       return { ok: true, message: `Rendez-vous de ${a.name} : ${input.action}${quand ? ' — ' + quand : ''}. Le client a été prévenu par e-mail.` };
+    }
+    if (name === 'creer_projet') {
+      const lead = await Lead.findOne({ email: sanitizeEmail(input.clientEmail || '') });
+      if (!lead) return { ok: false, message: `Aucun contact avec l'e-mail ${input.clientEmail}. Utilise rechercher_prospects pour trouver le bon.` };
+      const steps = (Array.isArray(input.steps) ? input.steps : []).filter(s => s && s.label).slice(0, 20).map(s => ({
+        label: sanitize(s.label, 120), description: sanitize(s.description || '', 600),
+        status: ['a_venir', 'en_cours', 'termine', 'bloque'].includes(s.status) ? s.status : 'a_venir',
+        completedAt: s.status === 'termine' ? new Date() : undefined,
+      }));
+      const p = await Project.create({
+        leadId: lead._id, clientName: lead.name, clientEmail: lead.email,
+        title: sanitize(input.title, 200), description: sanitize(input.description || '', 4000),
+        service: sanitize(input.service || lead.service || '', 120),
+        dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
+        steps, status: steps.some(s => s.status === 'en_cours' || s.status === 'termine') ? 'en_cours' : 'cadrage',
+      });
+      // Ouvre automatiquement l'espace client : le projet n'a d'intérêt que s'il est consultable.
+      if (!lead.portalEnabled) { lead.portalEnabled = true; await lead.save(); }
+      return { ok: true, message: `Projet « ${p.title} » créé pour ${lead.name} avec ${steps.length} étape(s). Visible dans son espace client.`, projetId: String(p._id) };
+    }
+    if (name === 'lister_projets') {
+      const f = {}; if (input.status) f.status = input.status;
+      const list = await Project.find(f).sort({ createdAt: -1 }).limit(50).lean();
+      return { ok: true, projets: list.map(p => ({
+        id: String(p._id), titre: p.title, client: p.clientName, email: p.clientEmail,
+        statut: p.status, service: p.service || '',
+        echeance: p.dueDate ? new Date(p.dueDate).toISOString().slice(0, 10) : null,
+        etapes: (p.steps || []).map((s, i) => ({ index: i, libelle: s.label, statut: s.status })),
+        progression: p.steps && p.steps.length ? Math.round((p.steps.filter(s => s.status === 'termine').length / p.steps.length) * 100) : 0,
+      })) };
+    }
+    if (name === 'modifier_projet') {
+      if (!/^[a-f0-9]{24}$/i.test(input.projetId || '')) return { ok: false, message: 'Identifiant de projet invalide — utilise lister_projets.' };
+      const p = await Project.findById(input.projetId);
+      if (!p) return { ok: false, message: 'Projet introuvable.' };
+      const faits = [];
+      if (input.status) { p.status = input.status; faits.push(`statut → ${input.status}`); if (input.status === 'livre' && !p.deliveredAt) p.deliveredAt = new Date(); }
+      if (typeof input.etapeIndex === 'number' && input.etapeStatus && p.steps[input.etapeIndex]) {
+        p.steps[input.etapeIndex].status = input.etapeStatus;
+        p.steps[input.etapeIndex].completedAt = input.etapeStatus === 'termine' ? new Date() : undefined;
+        faits.push(`étape « ${p.steps[input.etapeIndex].label} » → ${input.etapeStatus}`);
+      }
+      if (input.ajouterEtape) { p.steps.push({ label: sanitize(input.ajouterEtape, 120), status: 'a_venir' }); faits.push(`étape ajoutée : « ${sanitize(input.ajouterEtape, 120)} »`); }
+      if (input.previewUrl !== undefined) { p.previewUrl = sanitize(input.previewUrl, 500); faits.push('lien d\'aperçu mis à jour'); }
+      if (input.liveUrl !== undefined) { p.liveUrl = sanitize(input.liveUrl, 500); faits.push('lien de mise en ligne mis à jour'); }
+      if (input.dueDate) { p.dueDate = new Date(input.dueDate); faits.push(`échéance → ${input.dueDate}`); }
+      if (!faits.length) return { ok: false, message: 'Aucune modification demandée.' };
+      await p.save();
+      const prog = p.steps.length ? Math.round((p.steps.filter(s => s.status === 'termine').length / p.steps.length) * 100) : 0;
+      return { ok: true, message: `Projet « ${p.title} » mis à jour (${faits.join(', ')}). Avancement : ${prog} %.` };
+    }
+    if (name === 'ouvrir_espace_client') {
+      const email = sanitizeEmail(input.email || '');
+      const lead = await Lead.findOne({ email });
+      if (!lead) return { ok: false, message: `Aucun contact avec l'e-mail ${input.email}.` };
+      lead.portalEnabled = true;
+      const tok = generateToken();
+      lead.portalToken = tok;
+      lead.portalTokenExpires = new Date(Date.now() + 30 * 60 * 1000);
+      await lead.save();
+      const sent = await sendEmail(lead.email, 'Votre espace client Pirabel Labs est ouvert',
+        masterTemplate({
+          headerType: 'hero', preheader: 'Accédez à votre espace client',
+          title: 'Bonjour ' + escapeHtml((lead.name || '').split(' ')[0]) + ',',
+          subtitle: 'Votre espace client est prêt',
+          body: "<p style=\"font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);\">Vous pouvez désormais suivre l'avancement de votre projet, consulter vos devis et factures, et échanger directement avec notre équipe depuis votre espace personnel.</p>" +
+            "<p style=\"font-size:14px;color:rgba(229,226,225,0.6);\">Le lien ci-dessous vous connecte directement. Il est valable 30 minutes ; ensuite, demandez-en un nouveau depuis la page de connexion avec cette même adresse e-mail.</p>",
+          cta: 'Ouvrir mon espace client', ctaUrl: `https://www.pirabellabs.com/espace-client/connexion/${tok}`,
+        }));
+      if (!sent) return { ok: false, message: "Espace activé mais l'e-mail n'a pas pu partir." };
+      return { ok: true, message: `Espace client ouvert pour ${lead.name} et lien de connexion envoyé à ${email}.` };
     }
     if (name === 'requalifier_factures_en_retard') {
       const r = await Invoice.updateMany(

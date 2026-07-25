@@ -113,7 +113,8 @@ const AGENTS = {
     model: MODEL_PRO,
     tools: ['creer_tache', 'modifier_tache', 'lister_taches', 'lister_equipe', 'rechercher_prospects', 'lister_devis', 'lister_factures', 'stats_revenus',
       'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'envoyer_email', 'lister_articles', 'supprimer_prospect',
-      'requalifier_factures_en_retard', 'relancer_facture'],
+      'requalifier_factures_en_retard', 'relancer_facture',
+      'creer_projet', 'lister_projets', 'modifier_projet', 'ouvrir_espace_client'],
     prompt: `Tu es le chef de projet et bras droit de Lissanon Gildas chez Pirabel Labs.
 Tu as la vue d'ensemble : prospects, devis, factures, taches, equipe, blog, rendez-vous.
 Ton role : transformer une intention floue en plan d'action concret et l'executer via tes outils.
@@ -132,7 +133,8 @@ Sois direct, structure et chiffre quand les donnees le permettent. Pas de blabla
     tools: ['rechercher_prospects', 'lister_devis', 'creer_devis', 'creer_facture', 'lister_factures', 'enregistrer_prospect', 'creer_tache', 'stats_revenus',
       'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
       'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'supprimer_prospect',
-      'requalifier_factures_en_retard', 'relancer_facture'],
+      'requalifier_factures_en_retard', 'relancer_facture',
+      'creer_projet', 'lister_projets', 'ouvrir_espace_client'],
     prompt: `Tu es le directeur commercial de Pirabel Labs.
 Ton role : faire avancer le pipeline. Tu analyses les prospects et devis reels, tu identifies
 qui relancer en priorite et pourquoi, tu rediges des propositions commerciales convaincantes,
@@ -169,7 +171,7 @@ Tu ne publies jamais : tu crees des BROUILLONS relus par le dirigeant.`,
     tagline: 'Revenus, performance, reporting',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee', 'requalifier_factures_en_retard', 'relancer_facture', 'creer_tache'],
+    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee', 'requalifier_factures_en_retard', 'relancer_facture', 'creer_tache', 'lister_projets'],
     prompt: `Tu es l'analyste de gestion de Pirabel Labs.
 Ton role : donner au dirigeant une lecture claire et honnete de la sante de l'activite —
 chiffre d'affaires encaisse, en attente de reglement, taux de conversion des devis,

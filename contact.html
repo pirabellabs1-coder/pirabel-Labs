@@ -938,16 +938,18 @@ h1,h2,h3{text-wrap:balance;}
             <div class="form-section-title"><span class="form-section-title__num">3</span> Budget &amp; delai</div>
             <div class="form-row">
               <div class="form-field">
-                <label for="budget" class="form-field__label">Budget estimé (EUR HT)</label>
-                <select id="budget" name="budget" class="form-field__select">
+                <label for="budget" class="form-field__label">Budget estimé (EUR HT) <span aria-hidden="true" style="color:#FF5500;">*</span></label>
+                <select id="budget" name="budget" class="form-field__select" required aria-required="true">
                   <option value="" disabled selected>Choisir une fourchette de budget</option>
-                  <option value="&lt;3000">Moins de 3 000 EUR</option>
+                  <option value="&lt;500">Moins de 500 EUR</option>
+                  <option value="500-1500">500 à 1 500 EUR</option>
+                  <option value="1500-3000">1 500 à 3 000 EUR</option>
                   <option value="3000-6000">3 000 à 6 000 EUR</option>
                   <option value="6000-15000">6 000 à 15 000 EUR</option>
                   <option value="15000-50000">15 000 à 50 000 EUR</option>
                   <option value="&gt;50000">Plus de 50 000 EUR</option>
                 </select>
-                <span class="form-field__hint">Une fourchette honnete nous aide à calibrer la proposition.</span>
+                <span class="form-field__hint">Une fourchette honnête nous aide à calibrer la proposition. Aucun budget n'est disqualifiant&nbsp;: nous adaptons le périmètre.</span>
               </div>
               <div class="form-field">
                 <label for="delai" class="form-field__label">Delai souhaite</label>
@@ -1379,7 +1381,13 @@ h1,h2,h3{text-wrap:balance;}
         phone: raw.telephone || raw.phone || '',
         company: raw.entreprise || raw.company || '',
         service: raw.service || 'autre',
-        message: raw.message || raw.brief || ('Type: ' + (raw.type || 'n/a') + ' / Budget: ' + (raw.budget || 'n/a') + ' / Delai: ' + (raw.delai || 'n/a')),
+        // Le budget et le delai sont toujours joints au message : ils conditionnent
+        // la qualification du prospect et le calibrage de la proposition.
+        message: (raw.message || raw.brief || '').trim()
+          + ((raw.budget || raw.delai) ? '\n\n— Cadrage indiqué —' : '')
+          + (raw.budget ? '\nBudget estimé : ' + raw.budget + ' EUR HT' : '')
+          + (raw.delai ? '\nDélai souhaité : ' + raw.delai : '')
+          + (raw.type ? '\nType de projet : ' + raw.type : ''),
         website_url: raw.website_url || '', // honeypot
       };
 

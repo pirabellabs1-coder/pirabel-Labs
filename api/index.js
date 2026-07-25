@@ -1993,8 +1993,10 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 
     // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30 s)
     for (let turn = 0; turn < 6; turn++) {
+      // Le délai doit rester sous la durée max de la fonction (60 s) tout en laissant
+      // le temps aux générations longues : la rédaction d'un article dépasse 30 s.
       const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools,
-        maxTokens: agent.maxTokens || 4000, temperature: 0.5 });
+        maxTokens: agent.maxTokens || 4000, temperature: 0.5, timeoutMs: agent.timeoutMs || 45000 });
       if (!ok) {
         console.error('[ai.api]', status, JSON.stringify(data).slice(0, 300));
         if (status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Limite de débit atteinte chez OpenRouter. Patiente quelques secondes et réessaie.' });

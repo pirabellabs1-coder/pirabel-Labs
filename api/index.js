@@ -2029,6 +2029,19 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
 });
 
+// Maintenance : supprime un index unique herite d'un ancien schema (champ disparu),
+// qui bloque toute creation avec « E11000 duplicate key ... : null ».
+app.post('/api/admin/_drop-legacy-index', auth, adminOnly, limitBody(5), async (req, res) => {
+  const MODELES = { quotes: Quote, invoices: Invoice, leads: Lead, projects: Project };
+  try {
+    const M = MODELES[String(req.body.collection || '')];
+    const idx = String(req.body.index || '').slice(0, 80);
+    if (!M || !/^[a-zA-Z0-9_]+$/.test(idx)) return res.status(400).json({ error: 'Collection ou index invalide.' });
+    await M.collection.dropIndex(idx);
+    res.json({ success: true, message: `Index ${idx} supprime.` });
+  } catch (e) { res.json({ success: false, error: e.message }); }
+});
+
 // --- Actions en attente de validation humaine ---
 app.get('/api/admin/pending-actions', auth, adminOnly, async (req, res) => {
   try {

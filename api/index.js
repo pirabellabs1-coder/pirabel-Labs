@@ -1485,6 +1485,12 @@ const ASSISTANT_TOOLS = [
   }, required: ['rdvId', 'action'] } },
   { name: 'publier_article', description: "Publier un article de blog actuellement en brouillon. ACTION PUBLIQUE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     slug: { type: 'string', description: "Slug de l'article, obtenu via lister_articles" } }, required: ['slug'] } },
+  { name: 'supprimer_rendez_vous', description: "Supprimer DÉFINITIVEMENT un rendez-vous de la base (doublon, test, erreur de saisie). Différent d'une annulation : ici la trace disparaît et le client n'est pas prévenu. Pour annuler un vrai rendez-vous en prévenant le client, utilise plutôt modifier_rendez_vous avec action='annuler'. ACTION IRRÉVERSIBLE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    rdvId: { type: 'string', description: 'Identifiant obtenu via lister_rendez_vous' },
+    raison: { type: 'string', description: 'Pourquoi cette suppression' } }, required: ['rdvId'] } },
+  { name: 'supprimer_prospect', description: "Supprimer DÉFINITIVEMENT une fiche prospect du CRM (doublon, test, données erronées). Refusé si la fiche est rattachée à un devis ou une facture. ACTION IRRÉVERSIBLE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    email: { type: 'string', description: 'E-mail exact de la fiche à supprimer' },
+    raison: { type: 'string' } }, required: ['email'] } },
 ];
 
 // Outils dont l'exécution est IRRÉVERSIBLE ou SORTANTE (vers un client / le public).
@@ -1493,9 +1499,11 @@ const SENSITIVE_TOOLS = new Set([
   'envoyer_devis', 'envoyer_facture', 'envoyer_email',
   'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
   'modifier_rendez_vous', 'publier_article',
+  'supprimer_rendez_vous', 'supprimer_prospect',
 ]);
 // Parmi elles, celles qui détruisent une donnée ou partent vers l'extérieur sans retour possible.
-const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article']);
+const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article',
+  'supprimer_rendez_vous', 'supprimer_prospect']);
 
 // Résumé lisible d'une action sensible, affiché sur la carte de confirmation.
 function summarizeAction(name, input) {
@@ -1509,6 +1517,8 @@ function summarizeAction(name, input) {
     case 'marquer_facture_payee': return `Marquer la facture ${r} comme réglée${input.paymentMethod ? ' (' + input.paymentMethod + ')' : ''}`;
     case 'modifier_rendez_vous': return `Rendez-vous : ${input.action}${input.preferredDate ? ' au ' + input.preferredDate + ' ' + (input.preferredTime || '') : ''}`;
     case 'publier_article': return `PUBLIER l'article « ${r} » sur le blog (visible par tous)`;
+    case 'supprimer_rendez_vous': return `SUPPRIMER définitivement un rendez-vous${input.raison ? ' — ' + input.raison : ''}`;
+    case 'supprimer_prospect': return `SUPPRIMER définitivement la fiche ${input.email} du CRM${input.raison ? ' — ' + input.raison : ''}`;
     default: return name;
   }
 }
@@ -1780,6 +1790,22 @@ async function executeAssistantTool(name, input, currentUser, opts) {
           cta: 'Prendre / gérer un rendez-vous', ctaUrl: 'https://www.pirabellabs.com/rdv' })
       ).catch(e => console.error('[ai.rdv.modif] mail:', e.message));
       return { ok: true, message: `Rendez-vous de ${a.name} : ${input.action}${quand ? ' — ' + quand : ''}. Le client a été prévenu par e-mail.` };
+    }
+    if (name === 'supprimer_rendez_vous') {
+      if (!/^[a-f0-9]{24}$/i.test(input.rdvId || '')) return { ok: false, message: 'Identifiant invalide — utilise lister_rendez_vous pour le récupérer.' };
+      const a = await Appointment.findByIdAndDelete(input.rdvId);
+      if (!a) return { ok: false, message: 'Rendez-vous introuvable (déjà supprimé ?).' };
+      return { ok: true, message: `Rendez-vous de ${a.name} (${a.email}) supprimé définitivement.` };
+    }
+    if (name === 'supprimer_prospect') {
+      const email = sanitizeEmail(input.email || '');
+      const lead = await Lead.findOne({ email });
+      if (!lead) return { ok: false, message: `Aucune fiche avec l'e-mail ${input.email}.` };
+      // Refus si la fiche porte un historique commercial : on ne casse pas une piste comptable.
+      const [nq, ni] = await Promise.all([Quote.countDocuments({ leadId: lead._id }), Invoice.countDocuments({ leadId: lead._id })]);
+      if (nq || ni) return { ok: false, message: `Suppression refusée : ${lead.name} est rattaché à ${nq} devis et ${ni} facture(s). Supprime d'abord ces documents si c'est vraiment voulu.` };
+      await Lead.deleteOne({ _id: lead._id });
+      return { ok: true, message: `Fiche de ${lead.name} (${email}) supprimée du CRM.` };
     }
     if (name === 'publier_article') {
       const art = await Article.findOne({ slug: sanitize(input.slug || '', 200) });

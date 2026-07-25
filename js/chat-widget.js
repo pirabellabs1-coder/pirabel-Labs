@@ -54,7 +54,7 @@
     '.plc-typing i{width:6px;height:6px;border-radius:50%;background:rgba(232,229,228,.5);animation:plcB 1.3s infinite}',
     '.plc-typing i:nth-child(2){animation-delay:.18s}.plc-typing i:nth-child(3){animation-delay:.36s}',
     '@keyframes plcB{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}',
-    '.plc-quick{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 .9rem .6rem}',
+    '.plc-quick{display:flex;flex-wrap:wrap;gap:.4rem;padding:.2rem 0 .1rem}',
     '.plc-quick button{background:rgba(255,85,0,.1);border:1px solid rgba(255,85,0,.3);color:#ff8c4d;font-family:inherit;font-size:.78rem;padding:.42rem .7rem;border-radius:999px;cursor:pointer;transition:background .15s}',
     '.plc-quick button:hover{background:rgba(255,85,0,.2)}',
     '.plc-bar{display:flex;gap:.5rem;align-items:flex-end;padding:.7rem .8rem;border-top:1px solid rgba(255,255,255,.07);background:#151414}',
@@ -65,7 +65,17 @@
     '.plc-send:disabled{opacity:.4;cursor:default}',
     '.plc-send svg{width:18px;height:18px}',
     '.plc-legal{font-size:.66rem;color:rgba(232,229,228,.32);text-align:center;padding:0 .8rem .55rem;background:#151414;line-height:1.4}',
-    '@media(max-width:520px){.plc-panel{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100vh - 16px);border-radius:14px}.plc-launch{right:14px;bottom:14px}}',
+    // Mobile : plein ecran reel. 100dvh suit la hauteur visible quand la barre
+    // d'adresse du navigateur se retracte ; 100vh la surestime et cree un vide.
+    '@media(max-width:520px){',
+    '.plc-panel{inset:0;right:0;bottom:0;width:100vw;height:100vh;height:100dvh;max-height:none;border-radius:0;border-left:0;border-right:0;border-bottom:0}',
+    '.plc-launch{right:14px;bottom:14px}',
+    '.plc-msg{max-width:88%}',
+    '.plc-head{padding:.8rem .9rem;padding-top:max(.8rem,env(safe-area-inset-top))}',
+    '.plc-legal{padding-bottom:max(.55rem,env(safe-area-inset-bottom))}',
+    '}',
+    // Empeche la page de defiler derriere le panneau ouvert (mobile surtout).
+    'body.plc-open{overflow:hidden!important;touch-action:none}',
     '@media(prefers-reduced-motion:reduce){.plc-typing i{animation:none}.plc-launch{transition:none}}'
   ].join('');
   document.head.appendChild(css);
@@ -97,8 +107,9 @@
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
       '</button>' +
     '</div>' +
-    '<div class="plc-body" id="plcBody"></div>' +
-    '<div class="plc-quick" id="plcQuick"></div>' +
+    // Les suggestions vivent DANS le fil : sinon elles restent collees en bas de
+    // l'ecran et laissent un grand vide sous le premier message.
+    '<div class="plc-body" id="plcBody"><div class="plc-quick" id="plcQuick"></div></div>' +
     '<div class="plc-bar">' +
       '<textarea id="plcInput" rows="1" placeholder="Votre message…" aria-label="Votre message"></textarea>' +
       '<button class="plc-send" id="plcSend" type="button" aria-label="Envoyer">' +
@@ -137,7 +148,8 @@
     var d = document.createElement('div');
     d.className = 'plc-msg ' + (role === 'user' ? 'me' : 'bot');
     d.innerHTML = linkify(text);
-    body.appendChild(d);
+    // Les suggestions restent le dernier element du fil : on insere avant elles.
+    body.insertBefore(d, quick);
     body.scrollTop = body.scrollHeight;
   }
 
@@ -146,7 +158,7 @@
     t.className = 'plc-typing';
     t.id = 'plcTyping';
     t.innerHTML = '<i></i><i></i><i></i>';
-    body.appendChild(t);
+    body.insertBefore(t, quick);
     body.scrollTop = body.scrollHeight;
   }
   function hideTyping() { var t = document.getElementById('plcTyping'); if (t) t.remove(); }
@@ -197,6 +209,7 @@
     opened = true;
     panel.classList.add('is-open');
     launch.classList.add('is-hidden');
+    document.body.classList.add('plc-open');
     if (!history.length && !body.children.length) {
       addMsg('assistant', "Bonjour ! Je suis l'assistant de Pirabel Labs. Quel projet souhaitez-vous mener — un site web, du référencement, de l'automatisation ?");
       renderQuick();
@@ -204,8 +217,10 @@
     setTimeout(function () { input.focus(); }, 60);
   }
   function close() {
+    opened = false;
     panel.classList.remove('is-open');
     launch.classList.remove('is-hidden');
+    document.body.classList.remove('plc-open');
   }
 
   launch.onclick = open;

@@ -1447,7 +1447,7 @@ const ASSISTANT_TOOLS = [
   { name: 'lister_factures', description: 'Lister les factures avec leur statut de règlement (brouillon, envoyee, consultee, payee, en_retard, annulee).', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
   { name: 'stats_revenus', description: "Obtenir la synthèse financière réelle : chiffre d'affaires encaissé, montants en attente de règlement, pipeline des devis, taux de conversion, factures en retard.", input_schema: { type: 'object', properties: {} } },
   { name: 'enregistrer_prospect', description: "Enregistrer un nouveau prospect dans le CRM (ou compléter une fiche existante repérée par son e-mail). À utiliser dès qu'un visiteur du site laisse son contact.", input_schema: { type: 'object', properties: {
-    name: { type: 'string', description: 'Nom complet du prospect' },
+    name: { type: 'string', description: "Nom du prospect EXACTEMENT tel qu'il l'a écrit, sans rien ajouter, corriger ni inventer. S'il n'a donné qu'un prénom, n'enregistre que ce prénom." },
     email: { type: 'string' },
     phone: { type: 'string', description: 'Téléphone ou WhatsApp (optionnel)' },
     company: { type: 'string', description: 'Entreprise (optionnel)' },
@@ -1993,7 +1993,8 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 
     // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30 s)
     for (let turn = 0; turn < 6; turn++) {
-      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 4000, temperature: 0.5 });
+      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools,
+        maxTokens: agent.maxTokens || 4000, temperature: 0.5 });
       if (!ok) {
         console.error('[ai.api]', status, JSON.stringify(data).slice(0, 300));
         if (status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Limite de débit atteinte chez OpenRouter. Patiente quelques secondes et réessaie.' });

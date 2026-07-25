@@ -466,6 +466,11 @@ h1,h2,h3{text-wrap:balance;}
 .pl-ck__b--a{background:#FF5500;color:#190800;}
 .pl-ck__b--r{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.3);}
 @media(max-width:560px){.pl-ck{left:.6rem;right:.6rem;bottom:.6rem;max-width:none;}}
+
+/* --- Assistant IA : le lanceur du chat remplace le bouton WhatsApp flottant.
+   Masque en CSS (et non retire en JS apres chargement) pour eviter que
+   l'ancien bouton n'apparaisse une fraction de seconde au chargement. --- */
+.wa-float{display:none !important;}
 </style>
 <style>
 .sec-h { text-align: center; max-width: 50rem; margin: 0 auto 3rem; }

@@ -469,7 +469,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </nav>
     <div class="sidebar__section">Équipe &amp; IA</div>
     <nav class="sidebar__nav">
-      <a class="sidebar__link" data-view="assistant" data-label="Assistant IA"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Assistant IA</span></a>
+      <a class="sidebar__link" data-view="assistant" data-label="Ayaba — assistante de l&#39;agence"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Ayaba</span></a>
+      <a class="sidebar__link" data-view="conversations" data-label="Conversations site"><span class="material-symbols-outlined">chat</span><span class="sidebar__link-text">Conversations site</span> <span id="csBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="team" data-label="Équipe"><span class="material-symbols-outlined">groups</span><span class="sidebar__link-text">Équipe</span></a>
       <a class="sidebar__link" data-view="tasks" data-label="Tâches"><span class="material-symbols-outlined">checklist</span><span class="sidebar__link-text">Tâches</span></a>
     </nav>
@@ -912,7 +913,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <!-- Volet gauche : choix de l'IA (sous-menu) + historique des conversations -->
         <aside class="ai-sidebar" id="aiSidebar">
           <button class="ai-new" id="aiNewBtn"><span class="material-symbols-outlined">add</span> Nouvelle conversation</button>
-          <div class="ai-side-label">Assistant</div>
+          <div class="ai-side-label">Casquette</div>
           <div class="ai-mode-menu" id="aiModeMenu">
             <button class="ai-mode-item is-active" data-mode="chef"><span class="material-symbols-outlined">hub</span> Chef de projet</button>
             <button class="ai-mode-item" data-mode="commercial"><span class="material-symbols-outlined">handshake</span> Commercial</button>
@@ -936,6 +937,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
           <div class="ai-foot" id="aiFoot">Vos agents agissent sur vos données réelles. Devis, factures et articles sont toujours créés <strong>en brouillon</strong> et attendent votre validation — rien n'est envoyé à un client sans votre accord.</div>
         </div>
       </div>
+    </div>
+
+    <!-- CONVERSATIONS DU CHATBOT -->
+    <div class="view" data-view="conversations">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;" id="csFilters">
+          <button class="btn btn--sm" data-q="">Toutes</button>
+          <button class="btn btn--ghost btn--sm" data-q="chaud">🔥 Chaudes</button>
+          <button class="btn btn--ghost btn--sm" data-q="tiede">Tièdes</button>
+          <button class="btn btn--ghost btn--sm" data-q="froid">Froides</button>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="csRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+      </div>
+      <div class="kpi-grid" id="csKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
+      <div id="csList" style="display:grid;gap:1rem;"></div>
     </div>
 
     <!-- ÉQUIPE VIEW -->
@@ -1156,6 +1172,7 @@ function setView(view) {
   if (view === 'clients') loadClients();
   if (view === 'quotes') loadQuotes();
   if (view === 'invoices') loadInvoices();
+  if (view === 'conversations') loadChatSessions();
   if (view === 'reviews') loadReviews();
   if (view === 'gallery') loadGallery();
   if (view === 'assistant') initAssistant();
@@ -1818,6 +1835,115 @@ function openNewQuoteModal(preLeadId) {
   } else {
     toast('Modal devis indisponible, rechargez la page', 'error');
   }
+}
+
+// ============ CONVERSATIONS DU CHATBOT ============
+var CS_FILTER = '';
+var CS_QUAL = {
+  chaud:      ['🔥 Chaud',   'rgba(74,222,128,.14)', 'var(--success)'],
+  tiede:      ['Tiède',      'rgba(251,191,36,.14)', 'var(--warning)'],
+  froid:      ['Froid',      'rgba(229,226,225,.1)', 'var(--text-muted)'],
+  non_evalue: ['Non évaluée','rgba(96,165,250,.14)', 'var(--info)']
+};
+
+async function loadChatSessions() {
+  var box = document.getElementById('csList');
+  box.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    var d = await api('/api/admin/chat-sessions' + (CS_FILTER ? '?qualification=' + CS_FILTER : ''));
+    var s = d.parQualification || {};
+    document.getElementById('csKpis').innerHTML =
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">chat</span></div></div><div class="kpi__value">' + (d.total || 0) + '</div><div class="kpi__label">Conversations</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">local_fire_department</span></div></div><div class="kpi__value">' + (s.chaud || 0) + '</div><div class="kpi__label">Prospects chauds</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + (s.tiede || 0) + '</div><div class="kpi__label">Tièdes</div></div>' +
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">mark_email_unread</span></div></div><div class="kpi__value">' + (d.nonLues || 0) + '</div><div class="kpi__label">Non lues</div></div>';
+    updateCsBadge(d.nonLues || 0);
+
+    if (!d.sessions.length) {
+      box.innerHTML = '<div class="card"><div class="empty" style="padding:2.5rem;text-align:center;color:var(--text-muted);"><span class="material-symbols-outlined" style="font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5;">forum</span>Aucune conversation' + (CS_FILTER ? ' dans ce filtre' : ' pour le moment') + '.</div></div>';
+      return;
+    }
+    box.innerHTML = d.sessions.map(function(c){
+      var q = CS_QUAL[c.qualification] || CS_QUAL.non_evalue;
+      var ident = c.nom ? escape(c.nom) + (c.email ? ' · ' + escape(c.email) : '') : 'Visiteur anonyme';
+      var meta = [];
+      if (c.service) meta.push('Service : <strong>' + escape(c.service) + '</strong>');
+      if (c.budget) meta.push('Budget : <strong>' + escape(c.budget) + '</strong>');
+      if (c.echeance) meta.push('Échéance : <strong>' + escape(c.echeance) + '</strong>');
+      return '<div class="card" style="' + (c.lu ? '' : 'border-color:rgba(255,85,0,.35);') + '">' +
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.7rem;">' +
+          '<div><div style="font-family:var(--font-display);font-weight:700;font-size:1rem;">' + ident +
+            (c.lu ? '' : ' <span style="background:#FF5500;color:#190800;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:999px;vertical-align:middle;">NOUVEAU</span>') + '</div>' +
+            '<div style="font-size:.76rem;color:var(--text-faint);margin-top:.15rem;">' + new Date(c.le).toLocaleString('fr-FR') + ' · ' + c.nbMessages + ' messages' + (c.page ? ' · depuis ' + escape(c.page) : '') + '</div></div>' +
+          '<div style="text-align:right;"><span class="badge" style="background:' + q[1] + ';color:' + q[2] + ';">' + q[0] + '</span>' +
+            (c.score ? '<div style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">score ' + c.score + '/100</div>' : '') + '</div>' +
+        '</div>' +
+        (c.resume ? '<div style="font-size:.88rem;line-height:1.6;color:var(--text-muted);margin-bottom:.7rem;">' + escape(c.resume) + '</div>' : '<div style="font-size:.85rem;color:var(--text-faint);margin-bottom:.7rem;font-style:italic;">Pas encore analysée.</div>') +
+        (meta.length ? '<div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;">' + meta.join('') + '</div>' : '') +
+        (c.prochaineAction ? '<div style="background:var(--surface);border-left:3px solid var(--accent);padding:.6rem .85rem;border-radius:0 8px 8px 0;font-size:.83rem;line-height:1.5;margin-bottom:.8rem;"><strong style="color:var(--accent);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.2rem;">Prochaine action</strong>' + escape(c.prochaineAction) + '</div>' : '') +
+        '<div style="display:flex;gap:.4rem;flex-wrap:wrap;">' +
+          '<button class="btn btn--ghost btn--sm" onclick="voirConversation(\'' + c.id + '\')"><span class="material-symbols-outlined">visibility</span> Lire l\'échange</button>' +
+          '<button class="btn btn--ghost btn--sm" onclick="analyserConversation(\'' + c.id + '\')"><span class="material-symbols-outlined">auto_awesome</span> Réanalyser</button>' +
+          (c.email ? '<button class="btn btn--sm" onclick="repondreProspect(\'' + escape(c.email) + '\')"><span class="material-symbols-outlined">mail</span> Répondre</button>' : '') +
+        '</div></div>';
+    }).join('');
+  } catch(e) {
+    box.innerHTML = '<div class="card"><div class="empty" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape((e && e.message) || '') + '</div></div>';
+  }
+}
+
+function updateCsBadge(n) {
+  var b = document.getElementById('csBadge'); if (!b) return;
+  if (n > 0) { b.textContent = n; b.style.display = ''; } else b.style.display = 'none';
+}
+
+async function voirConversation(id) {
+  try {
+    var d = await api('/api/admin/chat-sessions/' + id);
+    var s = d.session;
+    var html = (s.messages || []).map(function(m){
+      var me = m.role === 'user';
+      return '<div style="display:flex;justify-content:' + (me ? 'flex-end' : 'flex-start') + ';margin-bottom:.6rem;">' +
+        '<div style="max-width:80%;padding:.65rem .9rem;border-radius:12px;font-size:.88rem;line-height:1.55;white-space:pre-wrap;background:' +
+        (me ? 'var(--accent);color:#fff;border-bottom-right-radius:4px' : 'var(--surface);color:var(--text);border-bottom-left-radius:4px') + ';">' +
+        escape(m.content) + '</div></div>';
+    }).join('') || '<div class="empty">Aucun message.</div>';
+    showInfoModal('Conversation' + (s.visitorName ? ' — ' + escape(s.visitorName) : ''),
+      '<div style="max-height:60vh;overflow-y:auto;padding:.3rem;">' + html + '</div>');
+    loadChatSessions();
+  } catch(e) { toast('Erreur : ' + ((e && e.message) || ''), 'error'); }
+}
+
+async function analyserConversation(id) {
+  toast('Analyse en cours…', 'info');
+  try {
+    var d = await api('/api/admin/chat-sessions/' + id + '/analyser', { method: 'POST', body: '{}' });
+    toast('Analyse mise à jour : ' + (d.qualification || '') + ' (' + (d.score || 0) + '/100)', 'success');
+    loadChatSessions();
+  } catch(e) { toast('Erreur analyse : ' + ((e && e.message) || ''), 'error'); }
+}
+
+function repondreProspect(email) {
+  setView('leads');
+  setTimeout(function(){
+    if (typeof openEmailModal === 'function') openEmailModal(null, email);
+    else toast('Prospect : ' + email, 'info');
+  }, 250);
+}
+
+// Petite fenêtre de lecture réutilisable.
+function showInfoModal(titre, contenuHtml) {
+  var old = document.getElementById('infoModal'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'infoModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:44rem;width:100%;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.6rem;border-bottom:1px solid var(--border);">' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;">' + titre + '</div>' +
+      '<button type="button" onclick="document.getElementById(\'infoModal\').remove()" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:.3rem;"><span class="material-symbols-outlined">close</span></button>' +
+    '</div><div style="padding:1.2rem 1.6rem;overflow-y:auto;">' + contenuHtml + '</div></div>';
+  m.addEventListener('click', function(e){ if (e.target === m) m.remove(); });
+  document.body.appendChild(m);
 }
 
 // ============ INVOICES ============
@@ -3208,9 +3334,9 @@ var AI_INIT_DONE = false;
 var AI_MODE_LABELS = { chef: 'Chef de projet', commercial: 'Commercial', redacteur: 'Rédacteur SEO', analyste: 'Analyste',
   analyse: 'Analyste', redaction: 'Rédacteur SEO', equipe: 'Chef de projet', libre: 'Chef de projet' };
 var AI_MODE_TITLES = {
-  chef: 'Votre chef de projet IA', commercial: 'Votre directeur commercial IA',
-  redacteur: 'Votre rédacteur en chef SEO', analyste: 'Votre analyste de gestion',
-  analyse: 'Votre analyste de gestion', redaction: 'Votre rédacteur en chef SEO', equipe: 'Votre chef de projet IA', libre: 'Votre chef de projet IA' };
+  chef: 'Ayaba · Pilotage', commercial: 'Ayaba · Commercial',
+  redacteur: 'Ayaba · Rédaction SEO', analyste: 'Ayaba · Analyse',
+  analyse: 'Ayaba · Analyse', redaction: 'Ayaba · Redaction SEO', equipe: 'Ayaba · Pilotage', libre: 'Ayaba · Pilotage' };
 var AI_MODE_INTRO = {
   chef: "Je vois vos prospects, devis, factures, tâches et votre équipe en temps réel. Je peux créer et assigner des tâches, prioriser votre semaine et coordonner le travail.",
   commercial: "Je suis votre pipeline commercial. Je peux préparer des devis et factures en brouillon, identifier qui relancer en priorité et rédiger vos propositions.",
@@ -3962,6 +4088,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.querySelector('#invoiceModal').addEventListener('click', e => { if (e.target.id === 'invoiceModal') hideInvoiceModal(); });
   document.getElementById('ivRefresh')?.addEventListener('click', loadInvoices);
+  document.getElementById('csRefresh')?.addEventListener('click', loadChatSessions);
+  document.querySelectorAll('#csFilters button').forEach(function(b){
+    b.addEventListener('click', function(){
+      CS_FILTER = b.dataset.q || '';
+      document.querySelectorAll('#csFilters button').forEach(function(x){
+        x.className = 'btn btn--sm' + (x === b ? '' : ' btn--ghost');
+      });
+      loadChatSessions();
+    });
+  });
   document.getElementById('ivNew')?.addEventListener('click', () => openNewInvoiceModal());
 
   // Client modal

@@ -74,6 +74,13 @@ const leadSchema = new mongoose.Schema({
   reviewRequestedAt: { type: Date },
   reviewSubmittedAt: { type: Date },
 
+  // Espace client : connexion par lien magique (aucun mot de passe stocke).
+  // Le jeton est a usage unique et expire au bout de 30 minutes.
+  portalToken: { type: String, index: true },
+  portalTokenExpires: { type: Date },
+  portalEnabled: { type: Boolean, default: false },   // acces ouvert par l'admin
+  portalLastLoginAt: { type: Date },
+
   // Meta
   source: { type: String, default: 'site_contact', maxlength: 60 },
   userAgent: { type: String, default: '', maxlength: 500 },

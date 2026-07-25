@@ -47,6 +47,8 @@ const Comment = require('../app/models/Comment');
 const Task = require('../app/models/Task');
 const Conversation = require('../app/models/Conversation');
 const PendingAction = require('../app/models/PendingAction');
+const Project = require('../app/models/Project');
+const ClientMessage = require('../app/models/ClientMessage');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
 const Appointment = require('../app/models/Appointment');
@@ -1491,6 +1493,11 @@ const ASSISTANT_TOOLS = [
   { name: 'supprimer_prospect', description: "Supprimer DÉFINITIVEMENT une fiche prospect du CRM (doublon, test, données erronées). Refusé si la fiche est rattachée à un devis ou une facture. ACTION IRRÉVERSIBLE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     email: { type: 'string', description: 'E-mail exact de la fiche à supprimer' },
     raison: { type: 'string' } }, required: ['email'] } },
+  { name: 'requalifier_factures_en_retard', description: "Passer automatiquement au statut « en_retard » toutes les factures envoyées ou consultées dont la date d'échéance est dépassée. Fais-le toi-même au lieu de conseiller une vérification manuelle. Action interne et réversible : exécutée immédiatement.", input_schema: { type: 'object', properties: {} } },
+  { name: 'relancer_facture', description: "Préparer et envoyer une relance de paiement au client pour une facture impayée. Rédige toi-même un message courtois et ferme, adapté au retard. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string', description: 'Référence de la facture, ex : FACT-2026-1234' },
+    message: { type: 'string', description: "Corps de la relance en texte simple. Ne commence pas par « Bonjour X », c'est ajouté automatiquement." },
+  }, required: ['reference', 'message'] } },
 ];
 
 // Outils dont l'exécution est IRRÉVERSIBLE ou SORTANTE (vers un client / le public).
@@ -1499,7 +1506,7 @@ const SENSITIVE_TOOLS = new Set([
   'envoyer_devis', 'envoyer_facture', 'envoyer_email',
   'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
   'modifier_rendez_vous', 'publier_article',
-  'supprimer_rendez_vous', 'supprimer_prospect',
+  'supprimer_rendez_vous', 'supprimer_prospect', 'relancer_facture',
 ]);
 // Parmi elles, celles qui détruisent une donnée ou partent vers l'extérieur sans retour possible.
 const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article',
@@ -1519,6 +1526,7 @@ function summarizeAction(name, input) {
     case 'publier_article': return `PUBLIER l'article « ${r} » sur le blog (visible par tous)`;
     case 'supprimer_rendez_vous': return `SUPPRIMER définitivement un rendez-vous${input.raison ? ' — ' + input.raison : ''}`;
     case 'supprimer_prospect': return `SUPPRIMER définitivement la fiche ${input.email} du CRM${input.raison ? ' — ' + input.raison : ''}`;
+    case 'relancer_facture': return `Envoyer une relance de paiement pour la facture ${r}`;
     default: return name;
   }
 }
@@ -1791,6 +1799,40 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       ).catch(e => console.error('[ai.rdv.modif] mail:', e.message));
       return { ok: true, message: `Rendez-vous de ${a.name} : ${input.action}${quand ? ' — ' + quand : ''}. Le client a été prévenu par e-mail.` };
     }
+    if (name === 'requalifier_factures_en_retard') {
+      const r = await Invoice.updateMany(
+        { status: { $in: ['envoyee', 'consultee'] }, dueDate: { $lt: new Date() } },
+        { $set: { status: 'en_retard', updatedAt: new Date() } }
+      );
+      const total = await Invoice.countDocuments({ status: 'en_retard' });
+      return { ok: true, message: r.modifiedCount
+        ? `${r.modifiedCount} facture(s) requalifiée(s) « en retard ». Total en retard : ${total}.`
+        : `Aucune facture à requalifier — les échéances sont à jour. Total déjà en retard : ${total}.` };
+    }
+    if (name === 'relancer_facture') {
+      const inv = await Invoice.findOne({ reference: sanitize(input.reference || '', 40) });
+      if (!inv) return { ok: false, message: `Facture ${input.reference} introuvable.` };
+      if (inv.status === 'payee') return { ok: false, message: `La facture ${inv.reference} est déjà réglée : aucune relance à envoyer.` };
+      const jours = inv.dueDate ? Math.floor((Date.now() - new Date(inv.dueDate).getTime()) / 86400000) : 0;
+      const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
+      const html = masterTemplate({
+        headerType: 'hero', preheader: `Relance — facture ${inv.reference}`,
+        title: 'Bonjour ' + escapeHtml((inv.clientName || '').split(' ')[0]) + ',',
+        subtitle: `Facture ${inv.reference}`,
+        body: '<p style="' + para + '">' + escapeHtml(String(input.message || '')).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>' +
+          `<div style="margin:20px 0;padding:18px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:10px;">` +
+          `<div style="font-size:13px;color:rgba(229,226,225,0.6);">Montant dû</div>` +
+          `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:24px;color:#FF5500;">${inv.total.toFixed(2)} ${inv.currency}</div>` +
+          (inv.dueDate ? `<div style="font-size:13px;color:rgba(229,226,225,0.6);margin-top:6px;">Échéance : ${new Date(inv.dueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}${jours > 0 ? ` (dépassée de ${jours} jour${jours > 1 ? 's' : ''})` : ''}</div>` : '') +
+          `</div>`,
+        cta: 'Consulter et régler la facture', ctaUrl: `https://www.pirabellabs.com/facture/${inv.publicToken}`,
+      });
+      const sent = await sendEmail(inv.clientEmail, `Relance — facture ${inv.reference}`, html);
+      if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
+      inv.internalNotes = ((inv.internalNotes || '') + `\n[Relance ${new Date().toISOString().slice(0, 10)}]`).slice(0, 5000);
+      await inv.save();
+      return { ok: true, message: `Relance envoyée à ${inv.clientEmail} pour ${inv.reference} (${inv.total} ${inv.currency}).` };
+    }
     if (name === 'supprimer_rendez_vous') {
       if (!/^[a-f0-9]{24}$/i.test(input.rdvId || '')) return { ok: false, message: 'Identifiant invalide — utilise lister_rendez_vous pour le récupérer.' };
       const a = await Appointment.findByIdAndDelete(input.rdvId);
@@ -1928,6 +1970,161 @@ app.post('/api/admin/leads/purge', auth, adminOnly, limitBody(20), async (req, r
 // Liste des agents disponibles (pour l'interface d'administration).
 app.get('/api/admin/agents', auth, adminOnly, (req, res) => {
   res.json({ agents: AI.ADMIN_AGENTS.map(a => ({ id: a.id, name: a.name, icon: a.icon, tagline: a.tagline, tools: a.tools })) });
+});
+
+// ========================================================================
+// === ESPACE CLIENT (connexion par lien magique, sans mot de passe) ===
+// ========================================================================
+const CLIENT_COOKIE = 'pl_client';
+const clientLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 8,
+  message: 'Trop de demandes de connexion. Réessayez dans 15 minutes.',
+  keyPrefix: 'client-login',
+});
+
+// Middleware : identifie le client à partir du cookie signé.
+async function clientAuth(req, res, next) {
+  try {
+    const token = (req.cookies && req.cookies[CLIENT_COOKIE]) || '';
+    if (!token) return res.status(401).json({ error: 'NON_CONNECTE' });
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    if (!payload || payload.kind !== 'client') return res.status(401).json({ error: 'NON_CONNECTE' });
+    const lead = await Lead.findById(payload.sub);
+    if (!lead) return res.status(401).json({ error: 'NON_CONNECTE' });
+    req.client = lead;
+    next();
+  } catch (e) { return res.status(401).json({ error: 'NON_CONNECTE' }); }
+}
+
+// 1) Demande de lien magique. Réponse volontairement identique que le compte
+//    existe ou non : on n'indique jamais si une adresse est cliente.
+app.post('/api/client/login', clientLoginLimiter, limitBody(5), async (req, res) => {
+  const generique = { success: true, message: "Si cette adresse correspond à un espace client, un lien de connexion vient d'être envoyé." };
+  try {
+    const email = sanitizeEmail(req.body && req.body.email || '');
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Adresse e-mail invalide.' });
+    const lead = await Lead.findOne({ email });
+    // Seuls les clients (ou les fiches explicitement autorisées) ont un espace.
+    if (!lead || !(lead.stage === 'client' || lead.portalEnabled)) return res.json(generique);
+
+    const token = generateToken();
+    lead.portalToken = token;
+    lead.portalTokenExpires = new Date(Date.now() + 30 * 60 * 1000);
+    await lead.save();
+
+    const url = `https://www.pirabellabs.com/espace-client/connexion/${token}`;
+    await sendEmail(lead.email, 'Votre lien de connexion — Espace client Pirabel Labs',
+      masterTemplate({
+        headerType: 'hero', preheader: 'Votre lien de connexion sécurisé',
+        title: 'Bonjour ' + escapeHtml((lead.name || '').split(' ')[0]) + ',',
+        subtitle: 'Accès à votre espace client',
+        body: "<p style=\"font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);\">Voici votre lien de connexion personnel. Il est valable <strong style=\"color:#e5e2e1;\">30 minutes</strong> et ne fonctionne qu'une seule fois.</p>" +
+          "<p style=\"font-size:14px;color:rgba(229,226,225,0.5);\">Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet e-mail : votre espace reste protégé.</p>",
+        cta: 'Ouvrir mon espace client', ctaUrl: url,
+      })
+    ).catch(e => console.error('[client.login] mail:', e.message));
+    res.json(generique);
+  } catch (e) { console.error('[client.login]', e.message); res.json(generique); }
+});
+
+// 2) Validation du lien : consomme le jeton et pose le cookie de session (7 jours).
+app.get('/espace-client/connexion/:token', async (req, res) => {
+  try {
+    const lead = await Lead.findOne({ portalToken: String(req.params.token || '').slice(0, 100) });
+    if (!lead || !lead.portalTokenExpires || lead.portalTokenExpires < new Date()) {
+      return res.redirect('/espace-client?erreur=lien_expire');
+    }
+    lead.portalToken = undefined;          // usage unique
+    lead.portalTokenExpires = undefined;
+    lead.portalLastLoginAt = new Date();
+    await lead.save();
+
+    const jwtToken = jwt.sign({ sub: String(lead._id), kind: 'client' }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.cookie(CLIENT_COOKIE, jwtToken, {
+      httpOnly: true, secure: true, sameSite: 'lax', maxAge: 7 * 24 * 3600 * 1000, path: '/',
+    });
+    res.redirect('/espace-client');
+  } catch (e) { console.error('[client.auth]', e.message); res.redirect('/espace-client?erreur=technique'); }
+});
+
+app.post('/api/client/logout', (req, res) => {
+  res.clearCookie(CLIENT_COOKIE, { path: '/' });
+  res.json({ success: true });
+});
+
+// 3) Toutes les données de l'espace client en un appel.
+app.get('/api/client/me', clientAuth, async (req, res) => {
+  try {
+    const lead = req.client;
+    const [projects, quotes, invoices, messages, appointments] = await Promise.all([
+      Project.find({ leadId: lead._id }).sort({ createdAt: -1 }).lean(),
+      Quote.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
+        .select('reference title total currency status validUntil issuedAt publicToken').lean(),
+      Invoice.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
+        .select('reference title total currency status dueDate issuedAt paidAt publicToken').lean(),
+      ClientMessage.find({ leadId: lead._id }).sort({ createdAt: 1 }).limit(200).lean(),
+      Appointment.find({ email: lead.email, status: { $in: ['demande', 'confirme'] } }).sort({ createdAt: -1 }).limit(10)
+        .select('preferredDate preferredTime channel status subject').lean(),
+    ]);
+
+    // Comptabilite : synthese des montants, par devise (jamais additionner des devises differentes).
+    const parDevise = {};
+    invoices.forEach(i => {
+      const d = i.currency || 'EUR';
+      parDevise[d] = parDevise[d] || { facture: 0, paye: 0, du: 0 };
+      parDevise[d].facture += i.total;
+      if (i.status === 'payee') parDevise[d].paye += i.total;
+      else parDevise[d].du += i.total;
+    });
+    Object.values(parDevise).forEach(v => {
+      v.facture = Math.round(v.facture * 100) / 100;
+      v.paye = Math.round(v.paye * 100) / 100;
+      v.du = Math.round(v.du * 100) / 100;
+    });
+
+    // Marque les messages de l'equipe comme lus par le client.
+    await ClientMessage.updateMany({ leadId: lead._id, from: 'equipe', readByClient: false }, { $set: { readByClient: true } });
+
+    res.json({
+      client: { nom: lead.name, email: lead.email, entreprise: lead.company || '', depuis: lead.clientData?.becameClientAt || lead.createdAt },
+      projets: projects.map(p => ({
+        id: String(p._id), titre: p.title, description: p.description, service: p.service,
+        statut: p.status, etapes: p.steps, progression: p.progress,
+        debut: p.startedAt, echeance: p.dueDate, livre: p.deliveredAt,
+        previewUrl: p.previewUrl || '', liveUrl: p.liveUrl || '',
+      })),
+      devis: quotes.map(q => ({ ref: q.reference, titre: q.title, montant: q.total, devise: q.currency, statut: q.status, valideJusqu: q.validUntil, lien: '/devis/' + q.publicToken })),
+      factures: invoices.map(i => ({ ref: i.reference, titre: i.title, montant: i.total, devise: i.currency, statut: i.status, echeance: i.dueDate, payeeLe: i.paidAt, lien: '/facture/' + i.publicToken })),
+      messages: messages.map(m => ({ de: m.from, auteur: m.authorName, contenu: m.content, le: m.createdAt })),
+      rendezVous: appointments.map(a => ({ date: a.preferredDate, heure: a.preferredTime, canal: a.channel, statut: a.status, objet: a.subject })),
+      comptabilite: parDevise,
+    });
+  } catch (e) { console.error('[client.me]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// 4) Le client écrit à l'équipe.
+app.post('/api/client/message', clientAuth, limitBody(10), async (req, res) => {
+  try {
+    const content = sanitize(req.body && req.body.content || '', 5000);
+    if (!content || content.trim().length < 2) return res.status(400).json({ error: 'Message vide.' });
+    const lead = req.client;
+    await ClientMessage.create({ leadId: lead._id, from: 'client', authorName: lead.name, content });
+    await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Espace client] Nouveau message de ${lead.name}`,
+      masterTemplate({
+        title: 'Message depuis l\'espace client',
+        body: `<p><strong>${escapeHtml(lead.name)}</strong> (${escapeHtml(lead.email)}) vous a écrit :</p>` +
+          `<div style="border-left:3px solid #FF5500;padding:14px 18px;background:#0e0e0e;color:rgba(229,226,225,0.85);white-space:pre-wrap;">${escapeHtml(content)}</div>`,
+        cta: 'Répondre dans l\'admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+      })
+    ).catch(e => console.error('[client.message] mail:', e.message));
+    res.json({ success: true });
+  } catch (e) { console.error('[client.message]', e.message); res.status(500).json({ error: 'Erreur envoi.' }); }
+});
+
+// 5) Page de l'espace client (login + tableau de bord dans une seule vue).
+app.get('/espace-client', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'app', 'views', 'client-portal.html'));
 });
 
 // ========================================================================

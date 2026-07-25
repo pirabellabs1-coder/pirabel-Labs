@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espace client — Pirabel Labs</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/img/logo.png?v=elan2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined&display=swap">
+<style>
+:root{--bg:#0B0B0B;--bg2:#141313;--surface:#1a1919;--border:rgba(229,226,225,.1);--border2:rgba(229,226,225,.18);--text:#E9E6E5;--muted:rgba(233,230,229,.62);--faint:rgba(233,230,229,.4);--accent:#FF5500;--accent2:#ff7a33;--success:#4ade80;--warn:#fbbf24;--danger:#f87171;--font:'Inter',system-ui,sans-serif;--display:'Space Grotesk',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+.material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;vertical-align:middle;font-feature-settings:'liga'}
+
+/* ---------- Connexion ---------- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.login{width:100%;max-width:27rem;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;text-align:center}
+.login img{width:54px;height:54px;margin:0 auto 1.2rem;display:block}
+.login h1{font-family:var(--display);font-weight:800;font-size:1.5rem;margin-bottom:.5rem;letter-spacing:-.02em}
+.login p{color:var(--muted);font-size:.92rem;line-height:1.6;margin-bottom:1.6rem}
+.field{text-align:left;margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.4rem}
+.field input{width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:.85rem 1rem;border-radius:11px;font-family:inherit;font-size:.95rem;outline:none}
+.field input:focus{border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:var(--accent);color:#fff;border:0;border-radius:11px;padding:.85rem 1.4rem;font-family:var(--display);font-weight:700;font-size:.92rem;cursor:pointer;transition:background .18s,transform .18s;text-decoration:none}
+.btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.btn--w{width:100%}
+.btn--ghost{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn--ghost:hover{background:var(--surface);border-color:var(--accent);color:var(--accent)}
+.btn--sm{padding:.55rem .95rem;font-size:.82rem;border-radius:9px}
+.msg{padding:.85rem 1rem;border-radius:10px;font-size:.88rem;line-height:1.5;margin-bottom:1rem;display:none;text-align:left}
+.msg.show{display:block}
+.msg.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--success)}
+.msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--danger)}
+.login__foot{margin-top:1.5rem;font-size:.8rem;color:var(--faint);line-height:1.6}
+
+/* ---------- Portail ---------- */
+.top{position:sticky;top:0;z-index:20;background:rgba(11,11,11,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.9rem clamp(1rem,4vw,2.5rem);display:flex;align-items:center;gap:1rem}
+.top__brand{display:flex;align-items:center;gap:.6rem;font-family:var(--display);font-weight:800;font-size:1.02rem}
+.top__brand img{width:34px;height:34px}
+.top__brand small{display:block;font-weight:500;font-size:.7rem;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+.top__right{margin-left:auto;display:flex;align-items:center;gap:.8rem}
+.top__who{text-align:right;font-size:.82rem;line-height:1.35}
+.top__who strong{display:block;font-weight:600}
+.top__who span{color:var(--faint);font-size:.75rem}
+.wrap{max-width:74rem;margin:0 auto;padding:clamp(1.2rem,3vw,2.2rem) clamp(1rem,4vw,2.5rem) 4rem}
+
+.tabs{display:flex;gap:.3rem;overflow-x:auto;border-bottom:1px solid var(--border);margin-bottom:1.8rem;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:0;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--display);font-weight:600;font-size:.88rem;padding:.75rem 1rem;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:.4rem;transition:color .15s}
+.tab:hover{color:var(--text)}
+.tab.is-on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .material-symbols-outlined{font-size:1.1rem}
+.tab__badge{background:var(--accent);color:#fff;font-size:.66rem;font-weight:700;border-radius:999px;padding:.05rem .38rem;min-width:1.1rem}
+.panel{display:none}
+.panel.is-on{display:block}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1rem;margin-bottom:1.8rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem}
+.card__l{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:600;margin-bottom:.4rem}
+.card__v{font-family:var(--display);font-weight:800;font-size:1.55rem;letter-spacing:-.02em}
+.card__s{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.2rem}
+.sec__h{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.sec__t{font-family:var(--display);font-weight:700;font-size:1.05rem}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--faint);font-size:.9rem}
+.empty .material-symbols-outlined{font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5}
+
+/* Suivi par etapes */
+.proj{border:1px solid var(--border);border-radius:14px;padding:1.3rem;margin-bottom:1rem;background:var(--surface)}
+.proj__h{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+.proj__t{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:.2rem}
+.proj__m{font-size:.8rem;color:var(--faint)}
+.bar{height:7px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin:.9rem 0 .35rem}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .5s}
+.bar-l{font-size:.76rem;color:var(--faint);margin-bottom:1rem}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:.85rem;position:relative;padding-bottom:1.1rem}
+.step:last-child{padding-bottom:0}
+.step::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--border2)}
+.step:last-child::before{display:none}
+.step__i{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:.9rem;background:var(--bg2);border:2px solid var(--border2);color:var(--faint);z-index:1}
+.step__i .material-symbols-outlined{font-size:.9rem}
+.step.done .step__i{background:var(--success);border-color:var(--success);color:#0b0b0b}
+.step.now .step__i{background:var(--accent);border-color:var(--accent);color:#fff;animation:pulse 2s infinite}
+.step.block .step__i{background:var(--danger);border-color:var(--danger);color:#fff}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,85,0,.45)}50%{box-shadow:0 0 0 7px rgba(255,85,0,0)}}
+.step__c{flex:1;min-width:0;padding-top:.1rem}
+.step__l{font-weight:600;font-size:.92rem;margin-bottom:.15rem}
+.step.done .step__l{color:var(--muted)}
+.step__d{font-size:.8rem;color:var(--faint);line-height:1.5}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:.6rem .7rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);font-weight:700;border-bottom:1px solid var(--border)}
+td{padding:.85rem .7rem;border-bottom:1px solid rgba(229,226,225,.05);font-size:.88rem}
+tr:last-child td{border-bottom:0}
+th.r,td.r{text-align:right}
+.tbl-wrap{overflow-x:auto}
+.badge{display:inline-block;padding:.24rem .65rem;border-radius:999px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.b-ok{background:rgba(74,222,128,.14);color:var(--success)}
+.b-wait{background:rgba(251,191,36,.14);color:var(--warn)}
+.b-late{background:rgba(248,113,113,.14);color:var(--danger)}
+.b-info{background:rgba(96,165,250,.14);color:#60a5fa}
+.b-mute{background:rgba(229,226,225,.1);color:var(--muted)}
+.ref{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;color:var(--accent)}
+
+/* Messagerie */
+.chat{display:flex;flex-direction:column;gap:.7rem;max-height:26rem;overflow-y:auto;padding:.3rem;margin-bottom:1rem}
+.bub{max-width:78%;padding:.7rem .95rem;border-radius:13px;font-size:.89rem;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
+.bub.eq{align-self:flex-start;background:var(--surface);border-bottom-left-radius:4px}
+.bub.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.bub__m{display:block;font-size:.68rem;opacity:.65;margin-top:.35rem}
+.chat-bar{display:flex;gap:.6rem;align-items:flex-end}
+.chat-bar textarea{flex:1;resize:none;max-height:8rem;background:var(--surface);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:inherit;font-size:.9rem;padding:.75rem .9rem;outline:none;line-height:1.5}
+.chat-bar textarea:focus{border-color:var(--accent)}
+
+.loader{text-align:center;padding:4rem 1rem;color:var(--muted)}
+@media(max-width:640px){.top__who{display:none}.sec{padding:1.1rem}.card__v{font-size:1.3rem}}
+</style>
+</head>
+<body>
+
+<!-- ====== CONNEXION ====== -->
+<div class="login-wrap" id="loginView" style="display:none;">
+  <div class="login">
+    <img src="/img/logo.png?v=elan2" alt="Pirabel Labs">
+    <h1>Espace client</h1>
+    <p>Saisissez votre adresse e-mail : nous vous envoyons un lien de connexion sécurisé. Aucun mot de passe à retenir.</p>
+    <div class="msg" id="loginMsg"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Adresse e-mail</label>
+        <input type="email" id="email" required autocomplete="email" placeholder="vous@entreprise.com">
+      </div>
+      <button class="btn btn--w" type="submit" id="loginBtn">
+        <span class="material-symbols-outlined">mail</span> Recevoir mon lien de connexion
+      </button>
+    </form>
+    <div class="login__foot">
+      Le lien est valable 30 minutes et ne fonctionne qu'une fois.<br>
+      Une question ? <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PORTAIL ====== -->
+<div id="portalView" style="display:none;">
+  <div class="top">
+    <a class="top__brand" href="/">
+      <img src="/img/logo.png?v=elan2" alt="">
+      <span>Pirabel Labs<small>Espace client</small></span>
+    </a>
+    <div class="top__right">
+      <div class="top__who"><strong id="whoName"></strong><span id="whoMail"></span></div>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn"><span class="material-symbols-outlined">logout</span> Quitter</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="cards" id="kpis"></div>
+
+    <div class="tabs">
+      <button class="tab is-on" data-p="suivi"><span class="material-symbols-outlined">timeline</span> Suivi</button>
+      <button class="tab" data-p="devis"><span class="material-symbols-outlined">request_quote</span> Devis</button>
+      <button class="tab" data-p="factures"><span class="material-symbols-outlined">receipt_long</span> Factures</button>
+      <button class="tab" data-p="compta"><span class="material-symbols-outlined">account_balance</span> Comptabilité</button>
+      <button class="tab" data-p="messages"><span class="material-symbols-outlined">forum</span> Messages</button>
+    </div>
+
+    <div class="panel is-on" data-p="suivi" id="pSuivi"></div>
+    <div class="panel" data-p="devis" id="pDevis"></div>
+    <div class="panel" data-p="factures" id="pFactures"></div>
+    <div class="panel" data-p="compta" id="pCompta"></div>
+    <div class="panel" data-p="messages" id="pMessages"></div>
+  </div>
+</div>
+
+<div class="loader" id="loader">Chargement de votre espace…</div>
+
+<script>
+var DATA = null;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function money(v,c){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0)+' '+(c||'EUR')}
+function dateFr(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}catch(e){return '—'}}
+function dateCourt(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}catch(e){return '—'}}
+function show(id,on){var e=document.getElementById(id);if(e)e.style.display=on?'':'none'}
+
+// ---------- Connexion ----------
+function initLogin(){
+  show('loader',false); show('loginView',true); show('portalView',false);
+  var p=new URLSearchParams(location.search), m=document.getElementById('loginMsg');
+  if(p.get('erreur')==='lien_expire'){m.className='msg err show';m.textContent="Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau ci-dessous.";}
+  else if(p.get('erreur')){m.className='msg err show';m.textContent="Un problème technique est survenu. Réessayez dans un instant.";}
+  document.getElementById('loginForm').onsubmit=async function(e){
+    e.preventDefault();
+    var btn=document.getElementById('loginBtn'), email=document.getElementById('email').value.trim();
+    btn.disabled=true; btn.innerHTML='<span class="material-symbols-outlined">hourglass_top</span> Envoi…';
+    try{
+      var r=await fetch('/api/client/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})});
+      var d=await r.json();
+      m.className='msg '+(r.ok?'ok':'err')+' show';
+      m.textContent=d.message||d.error||'Erreur.';
+    }catch(err){ m.className='msg err show'; m.textContent="Impossible de joindre le serveur. Réessayez."; }
+    btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">mail</span> Recevoir mon lien de connexion';
+  };
+}
+
+// ---------- Portail ----------
+function initPortal(d){
+  DATA=d;
+  show('loader',false); show('loginView',false); show('portalView',true);
+  document.getElementById('whoName').textContent=d.client.nom||'';
+  document.getElementById('whoMail').textContent=d.client.entreprise||d.client.email;
+  document.getElementById('logoutBtn').onclick=async function(){
+    await fetch('/api/client/logout',{method:'POST'}); location.href='/espace-client';
+  };
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.onclick=function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('is-on',x===t)});
+      document.querySelectorAll('.panel').forEach(function(x){x.classList.toggle('is-on',x.dataset.p===t.dataset.p)});
+    };
+  });
+  renderKpis(); renderSuivi(); renderDevis(); renderFactures(); renderCompta(); renderMessages();
+}
+
+function renderKpis(){
+  var d=DATA, dev=Object.keys(d.comptabilite)[0]||'EUR', c=d.comptabilite[dev]||{facture:0,paye:0,du:0};
+  var actifs=d.projets.filter(function(p){return p.statut!=='livre'}).length;
+  document.getElementById('kpis').innerHTML=
+    '<div class="card"><div class="card__l">Projets en cours</div><div class="card__v">'+actifs+'</div><div class="card__s">'+d.projets.length+' au total</div></div>'+
+    '<div class="card"><div class="card__l">Réglé</div><div class="card__v" style="color:var(--success)">'+money(c.paye,dev)+'</div><div class="card__s">merci !</div></div>'+
+    '<div class="card"><div class="card__l">Reste à régler</div><div class="card__v" style="color:'+(c.du>0?'var(--warn)':'var(--muted)')+'">'+money(c.du,dev)+'</div><div class="card__s">'+d.factures.filter(function(f){return f.statut!=='payee'}).length+' facture(s)</div></div>'+
+    '<div class="card"><div class="card__l">Client depuis</div><div class="card__v" style="font-size:1.05rem">'+dateFr(d.client.depuis)+'</div></div>';
+}
+
+var ST={a_venir:{c:'',i:'radio_button_unchecked'},en_cours:{c:'now',i:'bolt'},termine:{c:'done',i:'check'},bloque:{c:'block',i:'priority_high'}};
+var PST={cadrage:['Cadrage','b-info'],en_cours:['En cours','b-wait'],en_revue:['En revue','b-wait'],livre:['Livré','b-ok'],suspendu:['Suspendu','b-mute']};
+
+function renderSuivi(){
+  var d=DATA, el=document.getElementById('pSuivi');
+  if(!d.projets.length){
+    el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">timeline</span>Aucun projet en cours pour le moment.<br>Votre chef de projet ouvrira le suivi dès le lancement.</div></div>';
+    return;
+  }
+  el.innerHTML=d.projets.map(function(p){
+    var st=PST[p.statut]||[p.statut,'b-mute'];
+    var steps=(p.etapes||[]).map(function(s){
+      var k=ST[s.status]||ST.a_venir;
+      return '<div class="step '+k.c+'"><div class="step__i"><span class="material-symbols-outlined">'+k.i+'</span></div>'+
+        '<div class="step__c"><div class="step__l">'+esc(s.label)+'</div>'+
+        (s.description?'<div class="step__d">'+esc(s.description)+'</div>':'')+
+        (s.completedAt?'<div class="step__d">Terminé le '+dateCourt(s.completedAt)+'</div>':'')+'</div></div>';
+    }).join('')||'<div class="empty" style="padding:1.2rem">Les étapes seront détaillées au lancement.</div>';
+    var liens='';
+    if(p.previewUrl) liens+='<a class="btn btn--ghost btn--sm" href="'+esc(p.previewUrl)+'" target="_blank" rel="noopener"><span class="material-symbols-outlined">visibility</span> Aperçu</a> ';
+    if(p.liveUrl) liens+='<a class="btn btn--sm" href="'+esc(p.liveUrl)+'" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span> Voir en ligne</a>';
+    return '<div class="sec"><div class="proj">'+
+      '<div class="proj__h"><div><div class="proj__t">'+esc(p.titre)+'</div>'+
+      '<div class="proj__m">'+esc(p.service||'')+(p.echeance?' · livraison prévue le '+dateCourt(p.echeance):'')+'</div></div>'+
+      '<span class="badge '+st[1]+'">'+st[0]+'</span></div>'+
+      (p.description?'<div class="step__d" style="margin-bottom:.6rem">'+esc(p.description)+'</div>':'')+
+      '<div class="bar"><i style="width:'+(p.progression||0)+'%"></i></div>'+
+      '<div class="bar-l">'+(p.progression||0)+' % — '+(p.etapes||[]).filter(function(s){return s.status==='termine'}).length+' étape(s) sur '+(p.etapes||[]).length+'</div>'+
+      '<div class="steps">'+steps+'</div>'+
+      (liens?'<div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">'+liens+'</div>':'')+
+      '</div></div>';
+  }).join('');
+}
+
+var QST={envoye:['À examiner','b-info'],consulte:['Consulté','b-wait'],accepte:['Accepté','b-ok'],refuse:['Refusé','b-late'],expire:['Expiré','b-mute']};
+function renderDevis(){
+  var d=DATA, el=document.getElementById('pDevis');
+  if(!d.devis.length){ el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">request_quote</span>Aucun devis pour le moment.</div></div>'; return; }
+  el.innerHTML='<div class="sec"><div class="sec__h"><div class="sec__t">Vos devis</div></div><div class="tbl-wrap"><table>'+
+    '<thead><tr><th>Référence</th><th>Objet</th><th>Validité</th><th class="r">Montant</th><th>Statut</th><th class="r"></th></tr></thead><tbody>'+
+    d.devis.map(function(q){var s=QST[q.statut]||[q.statut,'b-mute'];
+      return '<tr><td class="ref">'+esc(q.ref)+'</td><td>'+esc(q.titre)+'</td><td>'+dateCourt(q.valideJusqu)+'</td>'+
+      '<td class="r" style="font-weight:700">'+money(q.montant,q.devise)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td>'+
+      '<td class="r"><a class="btn btn--sm" href="'+esc(q.lien)+'" target="_blank" rel="noopener">Ouvrir</a></td></tr>';
+    }).join('')+'</tbody></table></div></div>';
+}
+
+var IST={envoyee:['À régler','b-info'],consultee:['À régler','b-wait'],payee:['Réglée','b-ok'],en_retard:['En retard','b-late'],annulee:['Annulée','b-mute']};
+function renderFactures(){
+  var d=DATA, el=document.getElementById('pFactures');
+  if(!d.factures.length){ el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">receipt_long</span>Aucune facture pour le moment.</div></div>'; return; }
+  el.innerHTML='<div class="sec"><div class="sec__h"><div class="sec__t">Vos factures</div></div><div class="tbl-wrap"><table>'+
+    '<thead><tr><th>Référence</th><th>Objet</th><th>Échéance</th><th class="r">Montant</th><th>Statut</th><th class="r"></th></tr></thead><tbody>'+
+    d.factures.map(function(f){var s=IST[f.statut]||[f.statut,'b-mute'];
+      return '<tr><td class="ref">'+esc(f.ref)+'</td><td>'+esc(f.titre)+'</td><td>'+dateCourt(f.echeance)+'</td>'+
+      '<td class="r" style="font-weight:700">'+money(f.montant,f.devise)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td>'+
+      '<td class="r"><a class="btn '+(f.statut==='payee'?'btn--ghost ':'')+'btn--sm" href="'+esc(f.lien)+'" target="_blank" rel="noopener">'+(f.statut==='payee'?'Voir':'Régler')+'</a></td></tr>';
+    }).join('')+'</tbody></table></div></div>';
+}
+
+function renderCompta(){
+  var d=DATA, el=document.getElementById('pCompta'), devises=Object.keys(d.comptabilite);
+  if(!devises.length){ el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">account_balance</span>Aucun mouvement comptable pour le moment.</div></div>'; return; }
+  var blocs=devises.map(function(dev){
+    var c=d.comptabilite[dev], pct=c.facture?Math.round((c.paye/c.facture)*100):0;
+    return '<div class="sec"><div class="sec__h"><div class="sec__t">Récapitulatif '+esc(dev)+'</div></div>'+
+      '<div class="cards" style="margin-bottom:1.2rem">'+
+        '<div class="card"><div class="card__l">Total facturé</div><div class="card__v">'+money(c.facture,dev)+'</div></div>'+
+        '<div class="card"><div class="card__l">Réglé</div><div class="card__v" style="color:var(--success)">'+money(c.paye,dev)+'</div></div>'+
+        '<div class="card"><div class="card__l">Reste dû</div><div class="card__v" style="color:'+(c.du>0?'var(--warn)':'var(--muted)')+'">'+money(c.du,dev)+'</div></div>'+
+      '</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div><div class="bar-l">'+pct+' % du montant facturé est réglé</div></div>';
+  }).join('');
+  var hist='<div class="sec"><div class="sec__h"><div class="sec__t">Historique des règlements</div></div><div class="tbl-wrap"><table>'+
+    '<thead><tr><th>Référence</th><th>Objet</th><th>Réglée le</th><th class="r">Montant</th></tr></thead><tbody>'+
+    (d.factures.filter(function(f){return f.statut==='payee'}).map(function(f){
+      return '<tr><td class="ref">'+esc(f.ref)+'</td><td>'+esc(f.titre)+'</td><td>'+dateCourt(f.payeeLe)+'</td><td class="r" style="font-weight:700">'+money(f.montant,f.devise)+'</td></tr>';
+    }).join('')||'<tr><td colspan="4" style="padding:1.6rem;text-align:center;color:var(--faint)">Aucun règlement enregistré.</td></tr>')+
+    '</tbody></table></div>'+
+    '<div style="margin-top:1rem;font-size:.78rem;color:var(--faint);line-height:1.6">Pour toute question comptable ou une facture au format spécifique, écrivez-nous depuis l\'onglet Messages.</div></div>';
+  el.innerHTML=blocs+hist;
+}
+
+function renderMessages(){
+  var d=DATA, el=document.getElementById('pMessages');
+  var bulles=(d.messages||[]).map(function(m){
+    return '<div class="bub '+(m.de==='client'?'me':'eq')+'">'+esc(m.contenu)+
+      '<span class="bub__m">'+(m.de==='client'?'Vous':esc(m.auteur||'Pirabel Labs'))+' · '+dateCourt(m.le)+'</span></div>';
+  }).join('')||'<div class="empty"><span class="material-symbols-outlined">forum</span>Aucun message. Écrivez-nous, nous répondons sous 24 h ouvrées.</div>';
+  el.innerHTML='<div class="sec"><div class="sec__h"><div class="sec__t">Échanges avec votre équipe</div></div>'+
+    '<div class="chat" id="chatBox">'+bulles+'</div>'+
+    '<div class="msg" id="msgFeedback"></div>'+
+    '<div class="chat-bar"><textarea id="msgInput" rows="2" placeholder="Votre message…"></textarea>'+
+    '<button class="btn" id="msgSend"><span class="material-symbols-outlined">send</span></button></div></div>';
+  var box=document.getElementById('chatBox'); if(box) box.scrollTop=box.scrollHeight;
+  var ta=document.getElementById('msgInput');
+  ta.addEventListener('input',function(){ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,128)+'px'});
+  ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();envoyerMessage()}});
+  document.getElementById('msgSend').onclick=envoyerMessage;
+}
+
+async function envoyerMessage(){
+  var ta=document.getElementById('msgInput'), btn=document.getElementById('msgSend'), fb=document.getElementById('msgFeedback');
+  var txt=(ta.value||'').trim(); if(!txt) return;
+  btn.disabled=true;
+  try{
+    var r=await fetch('/api/client/message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:txt})});
+    var d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Erreur');
+    DATA.messages.push({de:'client',auteur:DATA.client.nom,contenu:txt,le:new Date().toISOString()});
+    ta.value=''; ta.style.height='auto';
+    renderMessages();
+    var f=document.getElementById('msgFeedback');
+    f.className='msg ok show'; f.textContent="Message transmis. Nous vous répondons sous 24 h ouvrées.";
+  }catch(e){ fb.className='msg err show'; fb.textContent=(e&&e.message)||'Envoi impossible.'; }
+  btn.disabled=false;
+}
+
+// ---------- Amorçage ----------
+(async function(){
+  try{
+    var r=await fetch('/api/client/me');
+    if(r.status===401){ initLogin(); return; }
+    if(!r.ok) throw new Error('erreur');
+    initPortal(await r.json());
+  }catch(e){ initLogin(); }
+})();
+</script>
+</body>
+</html>

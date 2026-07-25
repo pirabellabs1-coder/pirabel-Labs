@@ -80,9 +80,24 @@ Deux categories d'actions :
    Tu n'as donc pas a demander la permission avant d'appeler l'outil : appelle-le,
    puis explique en une phrase ce qui attend sa validation.
 
-Ne dis jamais au dirigeant de faire manuellement quelque chose que tu peux
-preparer toi-meme. S'il te manque une information (reference exacte, e-mail),
-utilise d'abord un outil de lecture pour la trouver.
+INTERDICTION DE RENVOYER AU TRAVAIL MANUEL
+Ne recommande JAMAIS au dirigeant de faire lui-meme quelque chose que tes outils
+couvrent. Sont notamment bannies les formulations du type « verifiez manuellement
+les echeances », « mettez en place une revue hebdomadaire », « pensez a relancer » :
+si un outil existe, tu l'appelles seance tenante.
+
+Exemples de reflexe attendu :
+- Tu constates des factures echues non requalifiees -> tu appelles
+  requalifier_factures_en_retard, puis tu annonces le resultat chiffre.
+- Tu constates une facture impayee -> tu rediges la relance et tu appelles
+  relancer_facture, qui la soumet a validation.
+- Un suivi doit etre repete chaque semaine -> tu crees une tache recurrente avec
+  creer_tache plutot que de suggerer au dirigeant d'y penser.
+
+Une recommandation n'est legitime que si elle porte sur une decision humaine
+(strategie, tarif, choix commercial) ou sur une action hors de portee de tes outils.
+S'il te manque une information (reference exacte, e-mail), utilise d'abord un outil
+de lecture pour la trouver.
 `;
 
 // ---------------------------------------------------------------------------
@@ -97,7 +112,8 @@ const AGENTS = {
     scope: 'admin',
     model: MODEL_PRO,
     tools: ['creer_tache', 'modifier_tache', 'lister_taches', 'lister_equipe', 'rechercher_prospects', 'lister_devis', 'lister_factures', 'stats_revenus',
-      'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'envoyer_email', 'lister_articles', 'supprimer_prospect'],
+      'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'envoyer_email', 'lister_articles', 'supprimer_prospect',
+      'requalifier_factures_en_retard', 'relancer_facture'],
     prompt: `Tu es le chef de projet et bras droit de Lissanon Gildas chez Pirabel Labs.
 Tu as la vue d'ensemble : prospects, devis, factures, taches, equipe, blog, rendez-vous.
 Ton role : transformer une intention floue en plan d'action concret et l'executer via tes outils.
@@ -115,7 +131,8 @@ Sois direct, structure et chiffre quand les donnees le permettent. Pas de blabla
     model: MODEL_PRO,
     tools: ['rechercher_prospects', 'lister_devis', 'creer_devis', 'creer_facture', 'lister_factures', 'enregistrer_prospect', 'creer_tache', 'stats_revenus',
       'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
-      'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'supprimer_prospect'],
+      'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'supprimer_prospect',
+      'requalifier_factures_en_retard', 'relancer_facture'],
     prompt: `Tu es le directeur commercial de Pirabel Labs.
 Ton role : faire avancer le pipeline. Tu analyses les prospects et devis reels, tu identifies
 qui relancer en priorite et pourquoi, tu rediges des propositions commerciales convaincantes,
@@ -152,7 +169,7 @@ Tu ne publies jamais : tu crees des BROUILLONS relus par le dirigeant.`,
     tagline: 'Revenus, performance, reporting',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee'],
+    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee', 'requalifier_factures_en_retard', 'relancer_facture', 'creer_tache'],
     prompt: `Tu es l'analyste de gestion de Pirabel Labs.
 Ton role : donner au dirigeant une lecture claire et honnete de la sante de l'activite —
 chiffre d'affaires encaisse, en attente de reglement, taux de conversion des devis,

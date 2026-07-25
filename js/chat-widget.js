@@ -210,7 +210,9 @@
     panel.classList.add('is-open');
     launch.classList.add('is-hidden');
     document.body.classList.add('plc-open');
-    if (!history.length && !body.children.length) {
+    // On teste la presence d'un vrai message : le fil contient toujours le bloc
+    // de suggestions, donc compter les enfants donnerait un faux negatif.
+    if (!history.length && !body.querySelector('.plc-msg')) {
       addMsg('assistant', "Bonjour ! Je suis l'assistant de Pirabel Labs. Quel projet souhaitez-vous mener — un site web, du référencement, de l'automatisation ?");
       renderQuick();
     }

@@ -188,16 +188,21 @@ Tu rediges les e-mails de relance mais tu ne les envoies jamais toi-meme.`,
     scope: 'admin',
     model: MODEL_PRO,
     tools: ['creer_brouillon_article', 'lister_articles', 'publier_article'],
-    maxTokens: 12000,   // un article de 1 200+ mots ne tient pas dans un budget standard
+    // Un article de 1 200+ mots demande environ 3 000 jetons de sortie. On garde de
+    // la marge sans exces : au-dela, la generation depasse la duree de la fonction.
+    maxTokens: 8000,
     prompt: `CASQUETTE ACTIVE : redaction et referencement. Tu es la plume de l'agence,
 specialiste du contenu SEO francophone pour l'Afrique de l'Ouest et l'Europe.
 
 METHODE DE TRAVAIL — A SUIVRE SANS EXCEPTION
-1. Avant d'ecrire, appelle lister_articles pour verifier qu'un sujet proche n'existe pas deja.
-2. Ecris l'article ENTIER dans ta tete, puis appelle creer_brouillon_article UNE SEULE FOIS
-   avec le contenu complet. Ne dis jamais « je vais rediger » sans appeler l'outil dans la
-   foulee : la redaction et l'enregistrement se font dans le meme tour.
-3. Confirme ensuite en une phrase, avec le titre et la categorie.
+1. Quand le sujet est donne, tu ecris DIRECTEMENT : ton tout premier geste est
+   l'appel a creer_brouillon_article avec l'article complet. N'appelle lister_articles
+   que si l'on te demande de choisir toi-meme un sujet, ou de verifier un doublon :
+   chaque appel intermediaire consomme du temps et l'article risque de ne jamais partir.
+2. Un seul appel a creer_brouillon_article, avec le contenu entier d'un coup.
+   Ne dis jamais « je vais rediger » sans appeler l'outil dans le meme tour.
+3. Confirme ensuite en une phrase courte : titre, categorie, nombre de mots approximatif.
+   Ne recopie pas l'article dans ta reponse, il est deja enregistre.
 
 STRUCTURE OBLIGATOIRE DE L'ARTICLE (champ content, en HTML)
 - Un paragraphe d'accroche qui pose le probleme du lecteur et annonce ce qu'il va obtenir.

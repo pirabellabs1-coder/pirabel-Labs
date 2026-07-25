@@ -186,7 +186,11 @@ Tu rediges les e-mails de relance mais tu ne les envoies jamais toi-meme.`,
     icon: 'edit_note',
     tagline: 'Articles de blog, contenus, optimisation SEO',
     scope: 'admin',
-    model: MODEL_PRO,
+    // Modele rapide impose par la contrainte de duree : un article complet represente
+    // environ 5 000 jetons de sortie. Sur le modele haut de gamme la generation depasse
+    // 60 s et la fonction serverless coupe avant l'enregistrement du brouillon.
+    // Le texte reste relu avant publication, ce qui rend ce compromis acceptable.
+    model: MODEL_FAST,
     tools: ['creer_brouillon_article', 'lister_articles', 'publier_article'],
     // Un article de 1 200+ mots demande environ 3 000 jetons de sortie. On garde de
     // la marge sans exces : au-dela, la generation depasse la duree de la fonction.

@@ -1856,7 +1856,7 @@ async function loadInvoices() {
           '<a href="/facture/' + escape(i.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir la facture publique"><span class="material-symbols-outlined">visibility</span></a>' +
           '<button onclick="copyInvoiceLink(\'' + escape(i.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
           (i.status !== 'payee' && i.status !== 'annulee' ? '<button onclick="markInvoicePaid(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--success);" title="Marquer payee"><span class="material-symbols-outlined">payments</span></button>' : '') +
-          (i.status === 'brouillon' ? '<button onclick="deleteInvoice(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
+          '<button onclick="deleteInvoice(\'' + i._id + '\',\'' + escape(i.reference) + '\',\'' + i.status + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
         '</td>' +
         '</tr>';
     }).join('');
@@ -1882,13 +1882,18 @@ async function copyInvoiceLink(token) {
   catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
 }
 
-async function deleteInvoice(id) {
-  if (!confirm('Supprimer cette facture ?')) return;
+async function deleteInvoice(id, reference, status) {
+  // Une facture deja envoyee/payee est une piece comptable : double confirmation.
+  const sensible = status && status !== 'brouillon';
+  const msg = sensible
+    ? 'La facture ' + (reference || '') + ' a le statut « ' + status + ' ».\n\nLa supprimer est DÉFINITIF : le lien public déjà transmis au client cessera de fonctionner et le montant disparaîtra du chiffre d\'affaires.\n\nConfirmer la suppression ?'
+    : 'Supprimer le brouillon ' + (reference || '') + ' ?';
+  if (!confirm(msg)) return;
   try {
     await api('/api/admin/invoices/' + id, { method: 'DELETE' });
-    toast('Facture supprimee', 'success');
+    toast('Facture supprimée', 'success');
     loadInvoices();
-  } catch(e) { toast('Erreur suppression', 'error'); }
+  } catch(e) { toast('Erreur suppression : ' + (e.message || ''), 'error'); }
 }
 
 async function markInvoicePaid(id) {

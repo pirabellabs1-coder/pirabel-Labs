@@ -117,6 +117,7 @@ const SKIP_GLOBAL_SANITIZE = [
   '/api/admin/articles',   // contenu HTML enrichi (sanitize cible appliquee dans la route)
   '/api/admin/case-studies', // contenu HTML enrichi
   '/api/admin/media',      // upload image base64 (long) — sinon tronque a 10000 car. -> image corrompue
+  '/api/admin/quotes',     // envoi de devis avec piece jointe base64 (meme piege que /media)
   '/api/admin/send-email', // message libre
   '/api/articles',         // markdown editorial
   '/api/email-templates',  // HTML templates

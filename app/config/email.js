@@ -345,6 +345,12 @@ async function sendEmail(to, subject, html, opts = {}) {
       html,
     };
     if (opts.replyTo) payload.reply_to = opts.replyTo;
+    // Pieces jointes (format Resend) : [{ filename, content }] ou content est en base64.
+    if (Array.isArray(opts.attachments) && opts.attachments.length) {
+      payload.attachments = opts.attachments
+        .filter(a => a && a.filename && a.content)
+        .map(a => ({ filename: String(a.filename).slice(0, 200), content: a.content }));
+    }
     if (opts.cc) payload.cc = Array.isArray(opts.cc) ? opts.cc : [opts.cc];
     if (opts.bcc) payload.bcc = Array.isArray(opts.bcc) ? opts.bcc : [opts.bcc];
     // Délivrabilité (exigences Gmail/Yahoo) : en-têtes de désabonnement + Reply-To par défaut

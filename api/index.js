@@ -3895,8 +3895,15 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
       ctaUrl: publicUrl
     });
 
-    await sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html)
-      .catch(e => console.error('[quotes] send email error:', e.message));
+    // Pièce jointe facultative (proposition détaillée en PDF, par exemple).
+    const att = req.body && req.body.attachment;
+    const attachments = (att && att.filename && att.content)
+      ? [{ filename: String(att.filename).slice(0, 200), content: att.content }]
+      : undefined;
+
+    const envoye = await sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html, { attachments })
+      .catch(e => { console.error('[quotes] send email error:', e.message); return false; });
+    if (!envoye) return res.status(502).json({ error: "Envoi refusé par le fournisseur d'e-mail." });
 
     quote.status = 'envoye';
     quote.sentAt = new Date();

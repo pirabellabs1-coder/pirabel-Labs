@@ -32,6 +32,7 @@ const {
 } = require('../app/middleware/security');
 const { auth, adminOnly } = require('../app/middleware/auth');
 const siteNav = require('../app/nav'); // en-tête de site partagé (mega menu) pour blog/réalisations/témoignages
+const AI = require('../app/agents'); // registre des agents IA (rôles, prompts, modèles) + client OpenRouter
 const User = require('../app/models/User');
 const Lead = require('../app/models/Lead');
 const Media = require('../app/models/Media');
@@ -1415,6 +1416,46 @@ const ASSISTANT_TOOLS = [
     title: { type: 'string' }, category: { type: 'string', description: 'Ex: Marketing, SEO, IA, Web, Agence' }, excerpt: { type: 'string', description: 'Résumé court (chapô), 1 à 2 phrases réelles' },
     content: { type: 'string', description: "Contenu HTML COMPLET et fini de l'article, 900 mots minimum. Structure obligatoire : <p> d'introduction, plusieurs <h2> avec attribut id, des <h3>, des <ul>/<ol>, un <table> si une comparaison s'y prête, puis une conclusion avec appel à l'action. INTERDIT : placeholders (Agence XYZ, ABC, Lorem ipsum, [à compléter]) et sections vides. Français impeccable." },
   }, required: ['title', 'content'] } },
+  { name: 'lister_articles', description: "Lister les articles de blog existants (titre, statut, catégorie) pour éviter les doublons de sujet avant d'en rédiger un nouveau.", input_schema: { type: 'object', properties: { status: { type: 'string', enum: ['brouillon', 'publie'] } } } },
+  { name: 'creer_devis', description: "Créer un DEVIS en brouillon pour un prospect/client existant. Le devis n'est jamais envoyé automatiquement : il attend la validation du dirigeant. Utilise rechercher_prospects avant pour obtenir l'e-mail exact du client.", input_schema: { type: 'object', properties: {
+    clientEmail: { type: 'string', description: "E-mail exact du prospect/client (doit déjà exister dans le CRM)" },
+    title: { type: 'string', description: 'Intitulé du devis, ex : « Création site vitrine + SEO local »' },
+    introduction: { type: 'string', description: 'Phrase de contexte affichée en tête du devis (optionnel)' },
+    items: { type: 'array', description: 'Lignes du devis', items: { type: 'object', properties: {
+      description: { type: 'string' }, quantity: { type: 'number' }, unitPrice: { type: 'number' },
+    }, required: ['description', 'unitPrice'] } },
+    currency: { type: 'string', enum: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'] },
+    taxRate: { type: 'number', description: 'Taux de TVA en %, 0 si non applicable' },
+    terms: { type: 'string', description: 'Conditions de règlement (optionnel)' },
+  }, required: ['clientEmail', 'title', 'items'] } },
+  { name: 'creer_facture', description: "Créer une FACTURE en brouillon pour un client existant. Jamais envoyée automatiquement : elle attend la validation du dirigeant.", input_schema: { type: 'object', properties: {
+    clientEmail: { type: 'string', description: "E-mail exact du client (doit exister dans le CRM)" },
+    title: { type: 'string' },
+    introduction: { type: 'string' },
+    items: { type: 'array', items: { type: 'object', properties: {
+      description: { type: 'string' }, quantity: { type: 'number' }, unitPrice: { type: 'number' },
+    }, required: ['description', 'unitPrice'] } },
+    currency: { type: 'string', enum: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'] },
+    taxRate: { type: 'number' },
+    dueDays: { type: 'number', description: "Délai de règlement en jours (15 par défaut)" },
+  }, required: ['clientEmail', 'title', 'items'] } },
+  { name: 'lister_factures', description: 'Lister les factures avec leur statut de règlement (brouillon, envoyee, consultee, payee, en_retard, annulee).', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
+  { name: 'stats_revenus', description: "Obtenir la synthèse financière réelle : chiffre d'affaires encaissé, montants en attente de règlement, pipeline des devis, taux de conversion, factures en retard.", input_schema: { type: 'object', properties: {} } },
+  { name: 'enregistrer_prospect', description: "Enregistrer un nouveau prospect dans le CRM (ou compléter une fiche existante repérée par son e-mail). À utiliser dès qu'un visiteur du site laisse son contact.", input_schema: { type: 'object', properties: {
+    name: { type: 'string', description: 'Nom complet du prospect' },
+    email: { type: 'string' },
+    phone: { type: 'string', description: 'Téléphone ou WhatsApp (optionnel)' },
+    company: { type: 'string', description: 'Entreprise (optionnel)' },
+    service: { type: 'string', description: "Service qui l'intéresse (site web, SEO, IA, tunnel de vente...)" },
+    message: { type: 'string', description: "Résumé du besoin exprimé, en une ou deux phrases fidèles à ce qu'a dit le visiteur" },
+  }, required: ['name', 'email'] } },
+  { name: 'creer_rendez_vous', description: "Enregistrer une demande de rendez-vous de cadrage. À n'appeler qu'une fois que le visiteur a donné son nom, son e-mail, un créneau souhaité et le motif.", input_schema: { type: 'object', properties: {
+    name: { type: 'string' }, email: { type: 'string' }, phone: { type: 'string' },
+    preferredDate: { type: 'string', description: 'Date souhaitée au format AAAA-MM-JJ' },
+    preferredTime: { type: 'string', description: 'Heure souhaitée, ex : 15:00' },
+    channel: { type: 'string', enum: ['visio', 'telephone', 'whatsapp', 'presentiel'] },
+    reason: { type: 'string', description: 'Motif du rendez-vous, fidèle au besoin exprimé' },
+  }, required: ['name', 'email', 'reason'] } },
 ];
 
 async function executeAssistantTool(name, input, currentUser) {
@@ -1467,15 +1508,137 @@ async function executeAssistantTool(name, input, currentUser) {
       await doc.save();
       return { ok: true, message: `Brouillon créé : « ${doc.title} » (catégorie ${doc.category}). Relis-le dans l'onglet Blog avant publication.`, slug: doc.slug };
     }
+    if (name === 'lister_articles') {
+      const f = {}; if (['brouillon', 'publie'].includes(input.status)) f.status = input.status;
+      const arts = await Article.find(f).sort({ createdAt: -1 }).limit(60).select('title slug status category createdAt').lean();
+      return { ok: true, articles: arts.map(a => ({ titre: a.title, slug: a.slug, statut: a.status, categorie: a.category || '', le: new Date(a.createdAt).toISOString().slice(0, 10) })) };
+    }
+    if (name === 'creer_devis' || name === 'creer_facture') {
+      const isQuote = name === 'creer_devis';
+      const lead = await Lead.findOne({ email: sanitizeEmail(input.clientEmail || '') });
+      if (!lead) return { ok: false, message: `Aucun prospect avec l'e-mail ${input.clientEmail}. Utilise rechercher_prospects pour trouver le bon e-mail, ou enregistrer_prospect pour le créer d'abord.` };
+      const rawItems = Array.isArray(input.items) ? input.items.filter(i => i && i.description && Number(i.unitPrice) >= 0) : [];
+      if (!rawItems.length) return { ok: false, message: 'Au moins une ligne valide (description + prix unitaire) est requise.' };
+      const taxRate = Math.max(0, Number(input.taxRate) || 0);
+      const totals = recalcQuote(rawItems, taxRate);
+      const currency = ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(input.currency) ? input.currency : 'EUR';
+      const common = {
+        leadId: lead._id, clientName: lead.name, clientEmail: lead.email,
+        clientCompany: lead.company || '', clientPhone: lead.phone || '', clientAddress: lead.clientData?.address || '',
+        items: totals.items, subtotal: totals.subtotal, taxRate, taxAmount: totals.taxAmount, total: totals.total,
+        currency, title: sanitize(input.title, 200), introduction: sanitize(input.introduction || '', 2000),
+        terms: sanitize(input.terms || '', 5000), publicToken: generateToken(), createdBy: currentUser._id, status: 'brouillon',
+      };
+      if (isQuote) {
+        const q = await Quote.create(Object.assign({}, common, {
+          reference: generateQuoteReference(),
+          validUntil: new Date(Date.now() + 30 * 86400000),
+        }));
+        return { ok: true, message: `Devis ${q.reference} créé EN BROUILLON pour ${q.clientName} — ${q.total} ${q.currency}. Il attend ta validation dans l'onglet Devis avant tout envoi.`, reference: q.reference, total: q.total, devise: q.currency };
+      }
+      const inv = await Invoice.create(Object.assign({}, common, {
+        reference: generateInvoiceReference(),
+        issuerBrand: 'Pirabel Labs',
+        dueDate: new Date(Date.now() + (Number(input.dueDays) || 15) * 86400000),
+      }));
+      return { ok: true, message: `Facture ${inv.reference} créée EN BROUILLON pour ${inv.clientName} — ${inv.total} ${inv.currency}. Elle attend ta validation dans l'onglet Factures avant tout envoi.`, reference: inv.reference, total: inv.total, devise: inv.currency };
+    }
+    if (name === 'lister_factures') {
+      const f = {}; if (input.status) f.status = input.status;
+      const list = await Invoice.find(f).sort({ createdAt: -1 }).limit(40).select('reference clientName total currency status dueDate').lean();
+      return { ok: true, factures: list.map(i => ({ ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency, statut: i.status, echeance: i.dueDate ? new Date(i.dueDate).toISOString().slice(0, 10) : null })) };
+    }
+    if (name === 'stats_revenus') {
+      const [quoteAgg, invAgg, leadCount, clientCount] = await Promise.all([
+        Quote.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
+        Invoice.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
+        Lead.countDocuments({}),
+        Lead.countDocuments({ stage: 'client' }),
+      ]);
+      const qm = {}; quoteAgg.forEach(q => { qm[q._id] = { nombre: q.n, montant: Math.round(q.montant) }; });
+      const im = {}; invAgg.forEach(i => { im[i._id] = { nombre: i.n, montant: Math.round(i.montant) }; });
+      const encaisse = (im.payee && im.payee.montant) || 0;
+      const enAttente = ['envoyee', 'consultee', 'en_retard'].reduce((s, k) => s + ((im[k] && im[k].montant) || 0), 0);
+      const devisTotal = quoteAgg.reduce((s, q) => s + q.n, 0);
+      const devisAcceptes = (qm.accepte && qm.accepte.nombre) || 0;
+      const enRetard = await Invoice.countDocuments({ status: { $in: ['envoyee', 'consultee'] }, dueDate: { $lt: new Date() } });
+      return { ok: true, revenus: {
+        encaisse_total: encaisse,
+        en_attente_de_reglement: enAttente,
+        factures_par_statut: im,
+        devis_par_statut: qm,
+        taux_acceptation_devis_pct: devisTotal ? Math.round((devisAcceptes / devisTotal) * 100) : 0,
+        factures_echues_non_payees: enRetard,
+        prospects_total: leadCount,
+        clients: clientCount,
+        note: 'Montants exprimes dans la devise de chaque document (majoritairement EUR) — ne pas additionner aveuglement des devises differentes.',
+      } };
+    }
+    if (name === 'enregistrer_prospect') {
+      const email = sanitizeEmail(input.email || '');
+      if (!isValidEmail(email)) return { ok: false, message: "E-mail invalide — redemande-le poliment au visiteur." };
+      const existing = await Lead.findOne({ email });
+      const note = sanitize(input.message || '', 3000);
+      if (existing) {
+        if (input.phone && !existing.phone) existing.phone = sanitize(input.phone, 30);
+        if (input.company && !existing.company) existing.company = sanitize(input.company, 120);
+        if (input.service && !existing.service) existing.service = sanitize(input.service, 120);
+        if (note) existing.internalNotes = ((existing.internalNotes || '') + '\n[Chatbot IA] ' + note).slice(0, 5000);
+        await existing.save();
+        return { ok: true, message: `Fiche de ${existing.name} mise à jour dans le CRM.`, dejaConnu: true };
+      }
+      const lead = await Lead.create({
+        name: sanitize(input.name || '', 120), email,
+        phone: sanitize(input.phone || '', 30), company: sanitize(input.company || '', 120),
+        service: sanitize(input.service || '', 120), message: note || 'Contact via l\'assistant IA du site',
+        type: 'contact', stage: 'prospect', status: 'nouveau', source: 'chatbot_ia',
+      });
+      return { ok: true, message: `Prospect enregistré : ${lead.name} (${lead.email}).`, dejaConnu: false };
+    }
+    if (name === 'creer_rendez_vous') {
+      const email = sanitizeEmail(input.email || '');
+      if (!isValidEmail(email)) return { ok: false, message: "E-mail invalide — redemande-le au visiteur." };
+      const reason = sanitize(input.reason || '', 3000);
+      if (!reason || reason.length < 5) return { ok: false, message: 'Le motif du rendez-vous est obligatoire — demande au visiteur ce qu\'il souhaite aborder.' };
+      const appt = await Appointment.create({
+        name: sanitize(input.name || '', 120), email, phone: sanitize(input.phone || '', 30),
+        preferredDate: sanitize(input.preferredDate || '', 20), preferredTime: sanitize(input.preferredTime || '', 10),
+        channel: ['visio', 'telephone', 'whatsapp', 'presentiel'].includes(input.channel) ? input.channel : 'visio',
+        subject: 'Rendez-vous de cadrage', message: reason,
+        status: 'demande', publicToken: generateToken(), source: 'chatbot_ia',
+      });
+      // Notifie l'equipe (await obligatoire : sur Vercel la fonction gele apres la reponse)
+      await sendEmail(
+        process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+        `[Pirabel Labs] Nouveau RDV via l'assistant IA — ${appt.name}`,
+        masterTemplate({
+          title: 'Rendez-vous demandé via le chatbot',
+          body: `<p><strong>${escapeHtml(appt.name)}</strong> (${escapeHtml(appt.email)}${appt.phone ? ' — ' + escapeHtml(appt.phone) : ''}) a demandé un rendez-vous depuis l'assistant IA du site.</p>` +
+            `<p>Créneau souhaité : <strong>${escapeHtml((appt.preferredDate || 'non précisé') + ' ' + (appt.preferredTime || ''))}</strong> — canal : ${escapeHtml(appt.channel)}</p>` +
+            `<div style="border-left:3px solid #FF5500;padding:12px 16px;background:#0e0e0e;"><div style="font-size:12px;color:rgba(229,226,225,0.5);text-transform:uppercase;margin-bottom:4px;">Motif</div><div style="color:#e5e2e1;white-space:pre-wrap;">${escapeHtml(reason)}</div></div>`,
+          cta: 'Ouvrir les rendez-vous', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+        })
+      ).catch(e => console.error('[ai.rdv] mail admin:', e.message));
+      return { ok: true, message: `Rendez-vous enregistré pour ${appt.name}. L'équipe confirme le créneau sous 24 h ouvrées.` };
+    }
     return { ok: false, message: 'Outil inconnu.' };
   } catch (e) { console.error('[ai.tool]', name, e.message); return { ok: false, message: 'Erreur exécution : ' + e.message }; }
 }
 
+// Ancien découpage par « mode » → nouveau registre d'agents (rétrocompatibilité de l'UI).
+const MODE_TO_AGENT = { redaction: 'redacteur', analyse: 'analyste', equipe: 'chef', libre: 'chef' };
+
 app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
   try {
-    const apiKey = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
-    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas encore configuré (clé Groq manquante)." });
-    const mode = ['redaction', 'analyse', 'equipe', 'libre'].includes(req.body.mode) ? req.body.mode : 'libre';
+    const apiKey = await getOpenRouterKey();
+    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas configuré (clé OpenRouter manquante)." });
+
+    // Sélection de l'agent : paramètre `agent` explicite, sinon dérivé de l'ancien `mode`.
+    const agentId = AI.AGENTS[req.body.agent] && AI.AGENTS[req.body.agent].scope === 'admin'
+      ? req.body.agent
+      : (MODE_TO_AGENT[req.body.mode] || 'chef');
+    const agent = AI.AGENTS[agentId];
+
     const incoming = Array.isArray(req.body.messages) ? req.body.messages : [];
     const history = incoming
       .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
@@ -1484,56 +1647,27 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     if (!history.length || history[history.length - 1].role !== 'user') return res.status(400).json({ error: 'Message utilisateur requis.' });
 
     const ctx = await gatherBusinessContext();
-    const system = AI_SYSTEM_PROMPTS[mode] +
-      "\n\nTu n'es pas un simple chatbot : tu peux AGIR. Tu disposes d'outils pour créer et modifier des tâches, consulter prospects/devis/équipe, et créer des brouillons d'articles. " +
-      "Quand l'utilisateur demande une action concrète (« crée une tâche », « assigne à… », « prépare un article », « qui dois-je relancer »), UTILISE les outils pour l'exécuter réellement, puis confirme ce que tu as fait. " +
-      "N'invente jamais d'identifiants : appelle lister_taches ou lister_equipe pour obtenir les vrais IDs et e-mails. Les articles sont toujours créés en BROUILLON (jamais publiés sans relecture). " +
-      "Pour l'envoi d'e-mails à des clients : rédige le texte et propose-le, mais NE l'envoie pas toi-même (l'envoi reste validé manuellement par le dirigeant). " +
-      "\n\nQUALITÉ — RÈGLES STRICTES :\n" +
-      "- INTERDICTION ABSOLUE des placeholders ou exemples bidons : jamais « Agence XYZ », « Entreprise ABC », « exemple1 », « Lorem ipsum », « [à compléter] », « etc. » à la place de vrai contenu. Si tu cites des marques/concurrents, donne de VRAIS noms ; sinon reformule sans inventer.\n" +
-      "- Tu produis du contenu COMPLET et fini, jamais un squelette. Un article de blog fait au minimum 900 mots, structuré (introduction, plusieurs <h2> avec id, <h3>, listes, et un <table> dès qu'une comparaison s'y prête), et se termine par une conclusion + appel à l'action vers Pirabel Labs.\n" +
-      "- Pour un RAPPORT ou une analyse : utilise de vrais tableaux Markdown (| col | col |) avec des données réelles tirées du contexte ci-dessous, pas des cases vides.\n" +
-      "- Français impeccable : accents sur les majuscules (É, À), ç, œ, guillemets « », espaces insécables avant : ; ! ?. Aucune faute.\n" +
-      "- Ne jamais mentionner d'autre fondateur que Lissanon Gildas.\n" +
-      "\n\nDONNÉES RÉELLES de Pirabel Labs (instantané) :\n```json\n" + JSON.stringify(ctx) + "\n```\n" +
-      "Appuie-toi sur ces données réelles. Réponds en français impeccable, concret et orienté action.";
-
-    const model = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
-    const tools = assistantToolsOpenAI();
-    // Format OpenAI/Groq : message système en tête de la conversation
+    const system = AI.buildSystemPrompt(agent, JSON.stringify(ctx));
+    const model = process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || agent.model;
+    const tools = assistantToolsOpenAI(agent.tools);
     const convo = [{ role: 'system', content: system }].concat(history);
     const actionsLog = [];
     let finalText = '';
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30s)
+
+    // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30 s)
     for (let turn = 0; turn < 6; turn++) {
-      // Appel Groq avec 1 réessai sur 429 (limite de débit gratuite : 12000 tokens/min)
-      let data, r;
-      for (let attempt = 0; attempt < 2; attempt++) {
-        r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-          body: JSON.stringify({ model, max_tokens: 4000, temperature: 0.55, tools, tool_choice: 'auto', messages: convo }),
-        });
-        data = await r.json().catch(() => ({}));
-        if (r.status === 429 && attempt === 0) {
-          const m = JSON.stringify(data).match(/try again in ([0-9.]+)s/);
-          const wait = Math.min(8000, Math.round((m ? parseFloat(m[1]) : 4) * 1000) + 400);
-          await sleep(wait);
-          continue;
-        }
-        break;
-      }
-      if (!r.ok) {
-        console.error('[ai.api]', r.status, JSON.stringify(data).slice(0, 300));
-        if (r.status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: "Limite gratuite Groq atteinte (12 000 tokens/min). Patiente quelques secondes et réessaie, ou raccourcis ta demande." });
+      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 4000, temperature: 0.5 });
+      if (!ok) {
+        console.error('[ai.api]', status, JSON.stringify(data).slice(0, 300));
+        if (status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Limite de débit atteinte chez OpenRouter. Patiente quelques secondes et réessaie.' });
+        if (status === 402) return res.status(402).json({ error: 'NO_CREDIT', message: 'Crédit OpenRouter épuisé. Recharge le compte pour continuer à utiliser les agents.' });
         return res.status(502).json({ error: 'API_ERROR', message: (data && data.error && data.error.message) || 'Erreur API IA.' });
       }
       const msg = (data.choices && data.choices[0] && data.choices[0].message) || {};
       if (msg.content) finalText = String(msg.content).trim();
       const toolCalls = msg.tool_calls || [];
       if (!toolCalls.length) break;
-      // Rejouer le message assistant (avec tool_calls) puis exécuter chaque outil côté serveur
+      // Rejouer le message assistant (avec ses tool_calls) puis exécuter chaque outil côté serveur
       convo.push(msg);
       for (const tc of toolCalls) {
         let input = {};
@@ -1543,12 +1677,17 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
         convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
       }
     }
-    res.json({ reply: finalText || '(action effectuée)', actions: actionsLog });
+    res.json({ reply: finalText || '(action effectuée)', actions: actionsLog, agent: agent.id, agentName: agent.name });
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
 });
 
-// Réglages IA (clé Groq, modèle) — admin only. La valeur est stockée en base, jamais relue par le client.
-const ALLOWED_SETTINGS = ['groqApiKey', 'groqModel', 'cronSecret'];
+// Liste des agents disponibles (pour l'interface d'administration).
+app.get('/api/admin/agents', auth, adminOnly, (req, res) => {
+  res.json({ agents: AI.ADMIN_AGENTS.map(a => ({ id: a.id, name: a.name, icon: a.icon, tagline: a.tagline, tools: a.tools })) });
+});
+
+// Réglages IA — admin only. La valeur est stockée en base, jamais relue par le client.
+const ALLOWED_SETTINGS = ['openrouterApiKey', 'openrouterModel', 'groqApiKey', 'groqModel', 'cronSecret'];
 app.post('/api/admin/settings', auth, adminOnly, limitBody(10), async (req, res) => {
   try {
     const key = String(req.body.key || '');
@@ -1562,7 +1701,14 @@ app.post('/api/admin/settings', auth, adminOnly, limitBody(10), async (req, res)
 app.get('/api/admin/settings/status', auth, adminOnly, async (req, res) => {
   try {
     const groq = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
-    res.json({ groqConfigured: !!groq, source: process.env.GROQ_API_KEY ? 'env' : (groq ? 'db' : 'none'), groqModel: process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile' });
+    const openrouter = await getOpenRouterKey();
+    res.json({
+      openrouterConfigured: !!openrouter,
+      openrouterSource: process.env.OPENROUTER_API_KEY ? 'env' : (openrouter ? 'db' : 'none'),
+      openrouterModel: process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || AI.MODEL_PRO,
+      groqConfigured: !!groq, source: process.env.GROQ_API_KEY ? 'env' : (groq ? 'db' : 'none'),
+      groqModel: process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile',
+    });
   } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
 });
 
@@ -1658,8 +1804,17 @@ app.get('/api/cron/weekly-summary', async (req, res) => {
 
 // --- Pilotage par Puter (IA côté navigateur, gratuit, sans clé) ---
 // Convertit les outils du format Anthropic vers le format OpenAI attendu par puter.ai.chat.
-function assistantToolsOpenAI() {
-  return ASSISTANT_TOOLS.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+// Convertit les outils au format OpenAI. `allowed` restreint la liste aux outils de l'agent courant.
+function assistantToolsOpenAI(allowed) {
+  const list = Array.isArray(allowed) && allowed.length
+    ? ASSISTANT_TOOLS.filter(t => allowed.includes(t.name))
+    : ASSISTANT_TOOLS;
+  return list.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+}
+
+// Clé OpenRouter : variable d'environnement en priorité, sinon réglage en base.
+async function getOpenRouterKey() {
+  return process.env.OPENROUTER_API_KEY || await getSetting('openrouterApiKey');
 }
 // Contexte métier + invites système + définitions d'outils (pour la boucle d'agent dans le navigateur).
 app.get('/api/admin/assistant/context', auth, adminOnly, async (req, res) => {

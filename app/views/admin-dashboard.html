@@ -1771,7 +1771,7 @@ async function loadQuotes() {
           '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir le devis publique"><span class="material-symbols-outlined">visibility</span></a>' +
           '<button onclick="copyQuoteLink(\'' + escape(q.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
           (q.status === 'accepte' ? '<button onclick="invoiceFromQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--accent);" title="Creer la facture"><span class="material-symbols-outlined">receipt_long</span></button>' : '') +
-          (q.status === 'brouillon' ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
+          '<button onclick="deleteQuote(\'' + q._id + '\',\'' + escape(q.reference) + '\',\'' + q.status + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
         '</td>' +
         '</tr>';
     }).join('');
@@ -1797,13 +1797,18 @@ async function copyQuoteLink(token) {
   catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
 }
 
-async function deleteQuote(id) {
-  if (!confirm('Supprimer ce devis ?')) return;
+async function deleteQuote(id, reference, status) {
+  // Un devis deja envoye/accepte est un document commercial : double confirmation.
+  const sensible = status && status !== 'brouillon';
+  const msg = sensible
+    ? 'Ce devis (' + (reference || '') + ') a le statut « ' + status + ' ».\n\nLe supprimer est DÉFINITIF et casse le lien public déjà transmis au client.\n\nConfirmer la suppression ?'
+    : 'Supprimer le brouillon ' + (reference || '') + ' ?';
+  if (!confirm(msg)) return;
   try {
     await api('/api/admin/quotes/' + id, { method: 'DELETE' });
     toast('Devis supprimé', 'success');
     loadQuotes();
-  } catch(e) { toast('Erreur suppression', 'error'); }
+  } catch(e) { toast('Erreur suppression : ' + (e.message || ''), 'error'); }
 }
 
 // Ouvre le modal devis complet (defini plus bas, scope global). Remplace l'ancien prompt().

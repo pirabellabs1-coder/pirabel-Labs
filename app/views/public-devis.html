@@ -69,6 +69,19 @@ th.r, td.r { text-align:right; }
 .msg.show { display:block; }
 .msg.success { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--success); }
 .msg.error { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:var(--danger); }
+/* Fenetre de dialogue integree — remplace les prompt()/confirm() natifs du navigateur,
+   qui affichaient « www.pirabellabs.com indique » sur un document commercial. */
+.dlg-back { position:fixed; inset:0; background:rgba(0,0,0,.72); backdrop-filter:blur(6px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:1rem; }
+.dlg { background:var(--bg2); border:1px solid var(--border); border-radius:16px; max-width:30rem; width:100%; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.6); }
+.dlg__h { padding:1.3rem 1.5rem .9rem; }
+.dlg__t { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.12rem; margin-bottom:.4rem; }
+.dlg__d { font-size:.9rem; color:var(--muted); line-height:1.6; }
+.dlg__b { padding:0 1.5rem 1.1rem; }
+.dlg textarea { width:100%; min-height:7rem; resize:vertical; background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:.92rem; padding:.75rem .9rem; outline:none; line-height:1.55; }
+.dlg textarea:focus { border-color:var(--accent); }
+.dlg__err { color:var(--danger); font-size:.82rem; margin-top:.45rem; display:none; }
+.dlg__f { display:flex; gap:.6rem; justify-content:flex-end; padding:0 1.5rem 1.4rem; flex-wrap:wrap; }
+@media (max-width:520px) { .dlg__f { flex-direction:column-reverse; } .dlg__f .btn { width:100%; justify-content:center; } }
 .loading { text-align:center; padding:4rem 2rem; color:var(--muted); }
 .error-page { text-align:center; padding:4rem 2rem; }
 @media (max-width:640px) { .title { font-size:1.4rem; } th.r, td.r { font-size:0.8rem; } .totals .row.total { font-size:1.1rem; } }
@@ -143,8 +156,55 @@ function renderQuote(q) {
     '<div id="msg" class="msg"></div>';
 }
 
+// Fenetre de dialogue integree. Retourne une promesse : la valeur saisie, ou null si annule.
+function dialogue(opts) {
+  return new Promise(function (resolve) {
+    var back = document.createElement('div');
+    back.className = 'dlg-back';
+    back.innerHTML =
+      '<div class="dlg" role="dialog" aria-modal="true">' +
+        '<div class="dlg__h"><div class="dlg__t">' + escapeHtml(opts.titre) + '</div>' +
+          (opts.description ? '<div class="dlg__d">' + escapeHtml(opts.description) + '</div>' : '') + '</div>' +
+        (opts.champ ? '<div class="dlg__b"><textarea id="dlgTxt" placeholder="' + escapeHtml(opts.placeholder || '') + '"></textarea>' +
+          '<div class="dlg__err" id="dlgErr"></div></div>' : '') +
+        '<div class="dlg__f">' +
+          '<button class="btn btn--ghost" id="dlgNon">' + escapeHtml(opts.annuler || 'Annuler') + '</button>' +
+          '<button class="btn ' + (opts.danger ? 'btn--danger' : 'btn--accent') + '" id="dlgOui">' + escapeHtml(opts.valider) + '</button>' +
+        '</div></div>';
+    document.body.appendChild(back);
+
+    var champ = back.querySelector('#dlgTxt');
+    var err = back.querySelector('#dlgErr');
+    if (champ) setTimeout(function () { champ.focus(); }, 50);
+
+    function fermer(valeur) { back.remove(); document.removeEventListener('keydown', onKey); resolve(valeur); }
+    function onKey(e) { if (e.key === 'Escape') fermer(null); }
+    document.addEventListener('keydown', onKey);
+
+    back.querySelector('#dlgNon').onclick = function () { fermer(null); };
+    back.addEventListener('click', function (e) { if (e.target === back) fermer(null); });
+    back.querySelector('#dlgOui').onclick = function () {
+      if (!champ) return fermer(true);
+      var v = (champ.value || '').trim();
+      if (opts.minimum && v.length < opts.minimum) {
+        err.textContent = 'Merci de détailler votre demande (' + opts.minimum + ' caractères minimum).';
+        err.style.display = 'block';
+        champ.focus();
+        return;
+      }
+      fermer(v);
+    };
+  });
+}
+
 async function acceptQuote() {
-  if (!confirm('Confirmer l\'acceptation de ce devis ?')) return;
+  var ok = await dialogue({
+    titre: 'Confirmer l’acceptation',
+    description: 'En acceptant ce devis, vous validez le périmètre et le montant indiqués. Notre équipe vous recontacte sous 24 h ouvrées pour organiser le lancement.',
+    valider: 'Oui, j’accepte ce devis',
+    annuler: 'Revenir au devis',
+  });
+  if (!ok) return;
   const msg = document.getElementById('msg');
   try {
     const r = await fetch('/api/quotes/' + token + '/accept', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
@@ -155,8 +215,16 @@ async function acceptQuote() {
 }
 
 async function refuseQuote() {
-  const reason = prompt('Pouvez-vous nous donner la raison du refus ? (optionnel, mais utile)');
-  if (reason === null) return; // cancel
+  const reason = await dialogue({
+    titre: 'Refuser ce devis',
+    description: 'Votre retour nous aide à comprendre ce qui n’allait pas. Le budget, le périmètre, le calendrier ? C’est facultatif, mais précieux.',
+    champ: true,
+    placeholder: 'Ce qui ne convient pas…',
+    valider: 'Confirmer le refus',
+    annuler: 'Revenir au devis',
+    danger: true,
+  });
+  if (reason === null) return; // annulé
   const msg = document.getElementById('msg');
   try {
     const r = await fetch('/api/quotes/' + token + '/refuse', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ reason: reason || '' }) });
@@ -167,8 +235,16 @@ async function refuseQuote() {
 }
 
 async function adjustQuote() {
-  const message = prompt('Quels ajustements souhaitez-vous demander ? Soyez precis (lignes a modifier, ajouter, retirer, ou questions).');
-  if (!message || message.trim().length < 10) { alert('Merci de detailler votre demande (10 caractères min).'); return; }
+  const message = await dialogue({
+    titre: 'Demander des ajustements',
+    description: 'Précisez ce que vous souhaitez modifier : lignes à ajouter ou retirer, périmètre, calendrier, conditions. Nous revenons vers vous avec une version corrigée.',
+    champ: true,
+    minimum: 10,
+    placeholder: 'Par exemple : retirer la ligne X, décaler le démarrage à septembre, revoir le nombre de plateformes…',
+    valider: 'Envoyer ma demande',
+    annuler: 'Revenir au devis',
+  });
+  if (message === null) return; // annulé
   const msg = document.getElementById('msg');
   msg.className = 'msg'; msg.textContent = '';
   try {

@@ -2622,6 +2622,17 @@ function assistantToolsOpenAI(allowed) {
   return list.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
 }
 
+// Vrai si la requete provient de l'equipe (session admin valide) plutot que du client.
+// Sert a ne pas compter une previsualisation interne comme une consultation client.
+function estRequeteInterne(req) {
+  try {
+    const token = (req.cookies && (req.cookies.token || req.cookies.pl_admin)) || '';
+    if (!token) return false;
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return !!(payload && payload.id);
+  } catch (e) { return false; }
+}
+
 // Clé OpenRouter : variable d'environnement en priorité, sinon réglage en base.
 async function getOpenRouterKey() {
   return process.env.OPENROUTER_API_KEY || await getSetting('openrouterApiKey');
@@ -3941,7 +3952,9 @@ app.get('/api/quotes/:token', async (req, res) => {
     const quote = await Quote.findOne({ publicToken: req.params.token });
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
 
-    if (!quote.viewedAt) {
+    // Ne pas marquer « consulte » quand c'est l'equipe qui previsualise : sinon le statut
+    // ne dit plus rien sur le comportement reel du client.
+    if (!quote.viewedAt && !estRequeteInterne(req)) {
       quote.viewedAt = new Date();
       if (quote.status === 'envoye') quote.status = 'consulte';
       await quote.save();
@@ -4274,7 +4287,7 @@ app.get('/api/invoices/:token', async (req, res) => {
     const invoice = await Invoice.findOne({ publicToken: req.params.token });
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
 
-    if (!invoice.viewedAt) {
+    if (!invoice.viewedAt && !estRequeteInterne(req)) {
       invoice.viewedAt = new Date();
       if (invoice.status === 'envoyee') invoice.status = 'consultee';
       await invoice.save();

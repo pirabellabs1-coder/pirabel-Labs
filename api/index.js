@@ -46,6 +46,7 @@ const LivreBlanc = require('../app/models/LivreBlanc');
 const Comment = require('../app/models/Comment');
 const Task = require('../app/models/Task');
 const Conversation = require('../app/models/Conversation');
+const PendingAction = require('../app/models/PendingAction');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
 const Appointment = require('../app/models/Appointment');
@@ -1457,10 +1458,77 @@ const ASSISTANT_TOOLS = [
     channel: { type: 'string', enum: ['visio', 'telephone', 'whatsapp', 'presentiel'] },
     reason: { type: 'string', description: 'Motif du rendez-vous, fidèle au besoin exprimé' },
   }, required: ['name', 'email', 'reason'] } },
+  { name: 'lister_rendez_vous', description: 'Lister les rendez-vous avec leur statut, date, heure et canal. Utilise-le avant toute modification pour obtenir les références exactes.', input_schema: { type: 'object', properties: { status: { type: 'string', enum: ['demande', 'confirme', 'effectue', 'annule', 'no_show'] } } } },
+
+  // ---- Outils SENSIBLES : jamais exécutés directement, toujours soumis à confirmation ----
+  { name: 'envoyer_devis', description: "Envoyer un devis au client par e-mail. ACTION SORTANTE : elle sera soumise à la confirmation du dirigeant avant tout envoi réel.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string', description: 'Référence du devis, ex : DEVIS-2026-1234' } }, required: ['reference'] } },
+  { name: 'envoyer_facture', description: "Envoyer une facture au client par e-mail. ACTION SORTANTE : soumise à confirmation avant envoi réel.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string', description: 'Référence de la facture, ex : FACT-2026-1234' } }, required: ['reference'] } },
+  { name: 'envoyer_email', description: "Envoyer un e-mail rédigé à un prospect ou client. ACTION SORTANTE : soumise à confirmation. Rédige un message complet, personnalisé et prêt à partir (sans formule d'appel, elle est ajoutée automatiquement).", input_schema: { type: 'object', properties: {
+    email: { type: 'string', description: "E-mail du destinataire (doit exister dans le CRM)" },
+    subject: { type: 'string' },
+    message: { type: 'string', description: "Corps du message en texte simple, paragraphes séparés par une ligne vide. Ne commence pas par « Bonjour X », c'est ajouté automatiquement." },
+  }, required: ['email', 'subject', 'message'] } },
+  { name: 'supprimer_devis', description: "Supprimer définitivement un devis (erreur de saisie, doublon). ACTION IRRÉVERSIBLE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string' }, raison: { type: 'string', description: 'Pourquoi ce devis doit être supprimé' } }, required: ['reference'] } },
+  { name: 'supprimer_facture', description: "Supprimer définitivement une facture (erreur, doublon). ACTION IRRÉVERSIBLE : soumise à confirmation. Le lien public déjà transmis au client cessera de fonctionner.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string' }, raison: { type: 'string' } }, required: ['reference'] } },
+  { name: 'marquer_facture_payee', description: "Marquer une facture comme réglée. Soumis à confirmation.", input_schema: { type: 'object', properties: {
+    reference: { type: 'string' }, paymentMethod: { type: 'string', description: 'Moyen de paiement : virement, Mobile Money, espèces…' } }, required: ['reference'] } },
+  { name: 'modifier_rendez_vous', description: "Confirmer, déplacer ou annuler un rendez-vous. Soumis à confirmation. Utilise lister_rendez_vous d'abord pour obtenir l'identifiant.", input_schema: { type: 'object', properties: {
+    rdvId: { type: 'string', description: "Identifiant du rendez-vous obtenu via lister_rendez_vous" },
+    action: { type: 'string', enum: ['confirmer', 'deplacer', 'annuler'] },
+    preferredDate: { type: 'string', description: 'Nouvelle date AAAA-MM-JJ (pour un déplacement)' },
+    preferredTime: { type: 'string', description: 'Nouvelle heure, ex : 15:00' },
+    raison: { type: 'string', description: 'Motif communiqué au client' },
+  }, required: ['rdvId', 'action'] } },
+  { name: 'publier_article', description: "Publier un article de blog actuellement en brouillon. ACTION PUBLIQUE : soumise à confirmation.", input_schema: { type: 'object', properties: {
+    slug: { type: 'string', description: "Slug de l'article, obtenu via lister_articles" } }, required: ['slug'] } },
 ];
 
-async function executeAssistantTool(name, input, currentUser) {
+// Outils dont l'exécution est IRRÉVERSIBLE ou SORTANTE (vers un client / le public).
+// Ils ne sont jamais exécutés directement par l'agent : ils passent par une confirmation.
+const SENSITIVE_TOOLS = new Set([
+  'envoyer_devis', 'envoyer_facture', 'envoyer_email',
+  'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
+  'modifier_rendez_vous', 'publier_article',
+]);
+// Parmi elles, celles qui détruisent une donnée ou partent vers l'extérieur sans retour possible.
+const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article']);
+
+// Résumé lisible d'une action sensible, affiché sur la carte de confirmation.
+function summarizeAction(name, input) {
+  const r = input.reference || input.slug || '';
+  switch (name) {
+    case 'envoyer_devis': return `Envoyer le devis ${r} au client par e-mail`;
+    case 'envoyer_facture': return `Envoyer la facture ${r} au client par e-mail`;
+    case 'envoyer_email': return `Envoyer un e-mail à ${input.email} — objet : « ${String(input.subject || '').slice(0, 90)} »`;
+    case 'supprimer_devis': return `SUPPRIMER définitivement le devis ${r}${input.raison ? ' — ' + input.raison : ''}`;
+    case 'supprimer_facture': return `SUPPRIMER définitivement la facture ${r}${input.raison ? ' — ' + input.raison : ''}`;
+    case 'marquer_facture_payee': return `Marquer la facture ${r} comme réglée${input.paymentMethod ? ' (' + input.paymentMethod + ')' : ''}`;
+    case 'modifier_rendez_vous': return `Rendez-vous : ${input.action}${input.preferredDate ? ' au ' + input.preferredDate + ' ' + (input.preferredTime || '') : ''}`;
+    case 'publier_article': return `PUBLIER l'article « ${r} » sur le blog (visible par tous)`;
+    default: return name;
+  }
+}
+
+// `opts.allowSensitive` n'est vrai que lors d'une exécution confirmée par l'utilisateur.
+async function executeAssistantTool(name, input, currentUser, opts) {
+  opts = opts || {};
   try {
+    // Interception : une action sensible est mise en attente au lieu d'être exécutée.
+    if (SENSITIVE_TOOLS.has(name) && !opts.allowSensitive) {
+      const pa = await PendingAction.create({
+        userId: currentUser && currentUser._id ? currentUser._id : undefined,
+        conversationId: opts.conversationId || undefined,
+        agent: opts.agentId || '', tool: name, input: input || {},
+        summary: summarizeAction(name, input || {}),
+        risk: HIGH_RISK_TOOLS.has(name) ? 'eleve' : 'normal',
+      });
+      return { ok: true, pending: true, actionId: String(pa._id), summary: pa.summary,
+        message: `Action préparée et EN ATTENTE de confirmation : ${pa.summary}. Explique à l'utilisateur ce que tu as préparé et invite-le à valider via le bouton de confirmation affiché.` };
+    }
     if (name === 'creer_tache') {
       let assignedTo = null, assignedToName = '';
       if (input.assignedToEmail) {
@@ -1622,6 +1690,105 @@ async function executeAssistantTool(name, input, currentUser) {
       ).catch(e => console.error('[ai.rdv] mail admin:', e.message));
       return { ok: true, message: `Rendez-vous enregistré pour ${appt.name}. L'équipe confirme le créneau sous 24 h ouvrées.` };
     }
+    if (name === 'lister_rendez_vous') {
+      const f = {}; if (input.status) f.status = input.status;
+      const list = await Appointment.find(f).sort({ createdAt: -1 }).limit(50).select('name email phone preferredDate preferredTime channel status message').lean();
+      return { ok: true, rendez_vous: list.map(a => ({ id: String(a._id), nom: a.name, email: a.email, tel: a.phone || '', date: a.preferredDate || '', heure: a.preferredTime || '', canal: a.channel, statut: a.status, motif: (a.message || '').slice(0, 160) })) };
+    }
+
+    // ---------- Exécutions confirmées (opts.allowSensitive === true) ----------
+    if (name === 'envoyer_devis' || name === 'envoyer_facture') {
+      const isQuote = name === 'envoyer_devis';
+      const Model = isQuote ? Quote : Invoice;
+      const doc = await Model.findOne({ reference: sanitize(input.reference || '', 40) });
+      if (!doc) return { ok: false, message: `${isQuote ? 'Devis' : 'Facture'} ${input.reference} introuvable.` };
+      const publicUrl = `https://www.pirabellabs.com/${isQuote ? 'devis' : 'facture'}/${doc.publicToken}`;
+      const rows = doc.items.map(i =>
+        `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${doc.currency}</td></tr>`).join('');
+      const echeance = isQuote ? doc.validUntil : doc.dueDate;
+      const html = masterTemplate({
+        headerType: 'hero', preheader: `${isQuote ? 'Votre devis' : 'Votre facture'} ${doc.reference}`,
+        title: 'Bonjour ' + escapeHtml((doc.clientName || '').split(' ')[0]) + ',',
+        subtitle: isQuote ? 'Votre devis est prêt' : 'Votre facture est disponible',
+        body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici ${isQuote ? 'votre devis personnalisé' : 'votre facture'} :</p>` +
+          `<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">` +
+          `<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">${escapeHtml(doc.reference)}</div>` +
+          `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">${escapeHtml(doc.title)}</div>` +
+          `<table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #333;border-bottom:1px solid #333;"><tbody>${rows}</tbody></table>` +
+          `<div style="margin-top:16px;text-align:right;font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;">Total : ${doc.total.toFixed(2)} ${doc.currency}</div></div>` +
+          (echeance ? `<p style="font-size:14px;color:rgba(229,226,225,0.6);">${isQuote ? 'Valable jusqu’au' : 'À régler avant le'} <strong style="color:#e5e2e1;">${new Date(echeance).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.</p>` : ''),
+        cta: isQuote ? 'Consulter et valider le devis' : 'Consulter la facture', ctaUrl: publicUrl,
+      });
+      const sent = await sendEmail(doc.clientEmail, `${isQuote ? 'Votre devis' : 'Votre facture'} Pirabel Labs - ${doc.reference}`, html);
+      if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
+      if (doc.status === 'brouillon') doc.status = isQuote ? 'envoye' : 'envoyee';
+      doc.sentAt = new Date();
+      await doc.save();
+      if (isQuote) await Lead.findByIdAndUpdate(doc.leadId, { $inc: { quotesSent: 1 }, $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' } });
+      return { ok: true, message: `${isQuote ? 'Devis' : 'Facture'} ${doc.reference} envoyé à ${doc.clientEmail}.` };
+    }
+    if (name === 'envoyer_email') {
+      const email = sanitizeEmail(input.email || '');
+      const lead = await Lead.findOne({ email });
+      if (!lead) return { ok: false, message: `Aucun contact avec l'e-mail ${input.email} dans le CRM.` };
+      const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
+      const bodyHtml = '<p style="' + para + '">' + escapeHtml(String(input.message || '')).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>';
+      const html = masterTemplate({ headerType: 'hero', preheader: sanitize(input.subject || '', 200),
+        title: 'Bonjour ' + escapeHtml((lead.name || '').split(' ')[0]) + ',', body: bodyHtml,
+        cta: 'Visiter pirabellabs.com', ctaUrl: 'https://www.pirabellabs.com' });
+      const sent = await sendEmail(email, sanitize(input.subject || '', 200), html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
+      if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
+      lead.lastEmailSentAt = new Date(); lead.emailsSentCount = (lead.emailsSentCount || 0) + 1;
+      if (lead.status === 'nouveau') lead.status = 'lu';
+      await lead.save();
+      return { ok: true, message: `E-mail envoyé à ${lead.name} (${email}).` };
+    }
+    if (name === 'supprimer_devis' || name === 'supprimer_facture') {
+      const Model = name === 'supprimer_devis' ? Quote : Invoice;
+      const doc = await Model.findOneAndDelete({ reference: sanitize(input.reference || '', 40) });
+      if (!doc) return { ok: false, message: `Document ${input.reference} introuvable.` };
+      return { ok: true, message: `${doc.reference} supprimé définitivement (${doc.total} ${doc.currency}).` };
+    }
+    if (name === 'marquer_facture_payee') {
+      const inv = await Invoice.findOne({ reference: sanitize(input.reference || '', 40) });
+      if (!inv) return { ok: false, message: `Facture ${input.reference} introuvable.` };
+      inv.status = 'payee'; inv.paidAt = new Date();
+      inv.paymentMethod = sanitize(input.paymentMethod || '', 100);
+      await inv.save();
+      return { ok: true, message: `Facture ${inv.reference} marquée réglée (${inv.total} ${inv.currency}).` };
+    }
+    if (name === 'modifier_rendez_vous') {
+      if (!/^[a-f0-9]{24}$/i.test(input.rdvId || '')) return { ok: false, message: 'Identifiant de rendez-vous invalide — utilise lister_rendez_vous.' };
+      const a = await Appointment.findById(input.rdvId);
+      if (!a) return { ok: false, message: 'Rendez-vous introuvable.' };
+      if (input.action === 'confirmer') a.status = 'confirme';
+      else if (input.action === 'annuler') a.status = 'annule';
+      else if (input.action === 'deplacer') {
+        if (input.preferredDate) a.preferredDate = sanitize(input.preferredDate, 20);
+        if (input.preferredTime) a.preferredTime = sanitize(input.preferredTime, 10);
+        a.status = 'confirme';
+      }
+      if (input.raison) a.internalNotes = ((a.internalNotes || '') + '\n[Agent IA] ' + sanitize(input.raison, 800)).slice(0, 3000);
+      await a.save();
+      // Prévenir le client du changement
+      const quand = (a.preferredDate || '') + (a.preferredTime ? ' à ' + a.preferredTime : '');
+      await sendEmail(a.email, `Votre rendez-vous Pirabel Labs — ${input.action === 'annuler' ? 'annulation' : 'confirmation'}`,
+        masterTemplate({ title: 'Bonjour ' + escapeHtml((a.name || '').split(' ')[0]) + ',',
+          body: input.action === 'annuler'
+            ? `<p>Votre rendez-vous a été annulé.${input.raison ? ' ' + escapeHtml(input.raison) : ''}</p><p>Vous pouvez en reprendre un quand vous le souhaitez.</p>`
+            : `<p>Votre rendez-vous est confirmé pour le <strong>${escapeHtml(quand || 'créneau convenu')}</strong> (${escapeHtml(a.channel)}).</p>${input.raison ? '<p>' + escapeHtml(input.raison) + '</p>' : ''}`,
+          cta: 'Prendre / gérer un rendez-vous', ctaUrl: 'https://www.pirabellabs.com/rdv' })
+      ).catch(e => console.error('[ai.rdv.modif] mail:', e.message));
+      return { ok: true, message: `Rendez-vous de ${a.name} : ${input.action}${quand ? ' — ' + quand : ''}. Le client a été prévenu par e-mail.` };
+    }
+    if (name === 'publier_article') {
+      const art = await Article.findOne({ slug: sanitize(input.slug || '', 200) });
+      if (!art) return { ok: false, message: `Article « ${input.slug} » introuvable.` };
+      art.status = 'publie';
+      if (!art.publishedAt) art.publishedAt = new Date();
+      await art.save();
+      return { ok: true, message: `Article « ${art.title} » publié : https://www.pirabellabs.com/blog/${art.slug}` };
+    }
     return { ok: false, message: 'Outil inconnu.' };
   } catch (e) { console.error('[ai.tool]', name, e.message); return { ok: false, message: 'Erreur exécution : ' + e.message }; }
 }
@@ -1653,6 +1820,7 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     const tools = assistantToolsOpenAI(agent.tools);
     const convo = [{ role: 'system', content: system }].concat(history);
     const actionsLog = [];
+    const pendingList = [];
     let finalText = '';
 
     // Boucle d'agent : jusqu'à 6 tours d'outils (limite serverless 30 s)
@@ -1673,13 +1841,60 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
       for (const tc of toolCalls) {
         let input = {};
         try { input = JSON.parse((tc.function && tc.function.arguments) || '{}'); } catch (e) {}
-        const result = await executeAssistantTool((tc.function && tc.function.name) || '', input, req.user);
-        if (result && result.message) actionsLog.push(result.message);
+        const result = await executeAssistantTool((tc.function && tc.function.name) || '', input, req.user,
+          { agentId: agent.id, conversationId: /^[a-f0-9]{24}$/i.test(req.body.conversationId || '') ? req.body.conversationId : undefined });
+        if (result && result.pending) pendingList.push({ id: result.actionId, summary: result.summary, tool: (tc.function && tc.function.name) || '', risk: HIGH_RISK_TOOLS.has((tc.function && tc.function.name) || '') ? 'eleve' : 'normal' });
+        else if (result && result.message) actionsLog.push(result.message);
         convo.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
       }
     }
-    res.json({ reply: finalText || '(action effectuée)', actions: actionsLog, agent: agent.id, agentName: agent.name });
+    res.json({ reply: finalText || '(action effectuée)', actions: actionsLog, pending: pendingList, agent: agent.id, agentName: agent.name });
   } catch (e) { console.error('[assistant]', e.message); res.status(500).json({ error: 'Erreur assistant.', message: e.message }); }
+});
+
+// --- Actions en attente de validation humaine ---
+app.get('/api/admin/pending-actions', auth, adminOnly, async (req, res) => {
+  try {
+    const list = await PendingAction.find({ userId: req.user._id, status: 'en_attente', expiresAt: { $gt: new Date() } })
+      .sort({ createdAt: -1 }).limit(50).lean();
+    res.json({ actions: list.map(a => ({ id: String(a._id), tool: a.tool, summary: a.summary, risk: a.risk, agent: a.agent, createdAt: a.createdAt })) });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// Confirme (et exécute) ou refuse une action préparée par un agent.
+app.post('/api/admin/pending-actions/:id', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const pa = await PendingAction.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!pa) return res.status(404).json({ error: 'Action introuvable.' });
+    if (pa.status !== 'en_attente') return res.status(409).json({ error: `Action déjà ${pa.status}.` });
+    if (pa.expiresAt < new Date()) { pa.status = 'expiree'; await pa.save(); return res.status(410).json({ error: 'Action expirée (plus de 24 h). Redemandez-la à l\'agent.' }); }
+
+    if (req.body && req.body.decision === 'refuser') {
+      pa.status = 'refusee'; await pa.save();
+      return res.json({ success: true, status: 'refusee', message: 'Action annulée, rien n\'a été exécuté.' });
+    }
+    // Exécution réelle, avec le drapeau qui lève l'interception.
+    const result = await executeAssistantTool(pa.tool, pa.input, req.user, { allowSensitive: true });
+    pa.status = result && result.ok ? 'confirmee' : 'en_attente';
+    pa.result = (result && result.message) || '';
+    if (result && result.ok) pa.executedAt = new Date();
+    await pa.save();
+    res.json({ success: !!(result && result.ok), status: pa.status, message: pa.result });
+  } catch (e) { console.error('[pending.confirm]', e.message); res.status(500).json({ error: 'Erreur exécution : ' + e.message }); }
+});
+
+// Purge ciblée du CRM : supprime tous les prospects SAUF les identifiants conservés.
+app.post('/api/admin/leads/purge', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const keep = Array.isArray(req.body.keepIds) ? req.body.keepIds.filter(id => /^[a-f0-9]{24}$/i.test(id)) : [];
+    if (!keep.length) return res.status(400).json({ error: 'Aucun identifiant à conserver : opération refusée par sécurité.' });
+    // Filet de sécurité : ne jamais supprimer une fiche rattachée à un devis ou une facture.
+    const [qLeads, iLeads] = await Promise.all([Quote.distinct('leadId'), Invoice.distinct('leadId')]);
+    const protectedIds = [...new Set([...keep, ...qLeads.map(String), ...iLeads.map(String)].filter(Boolean))];
+    const r = await Lead.deleteMany({ _id: { $nin: protectedIds } });
+    const restants = await Lead.countDocuments({});
+    res.json({ success: true, supprimes: r.deletedCount, conserves: restants, protegesParDocuments: protectedIds.length - keep.length });
+  } catch (e) { console.error('[leads.purge]', e.message); res.status(500).json({ error: 'Erreur purge : ' + e.message }); }
 });
 
 // Liste des agents disponibles (pour l'interface d'administration).

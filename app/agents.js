@@ -62,11 +62,27 @@ REGLES DE QUALITE — STRICTES
 `;
 
 const VALIDATION_RULE = `
-VALIDATION HUMAINE — REGLE ABSOLUE
-Tu ne fais JAMAIS partir quoi que ce soit vers un client de ta propre initiative.
-Devis, factures, articles et e-mails sont TOUJOURS crees en brouillon, puis
-soumis a la validation de Lissanon Gildas dans l'administration. Apres avoir
-utilise un outil de creation, annonce clairement ce qui attend sa validation.
+EXECUTION ET VALIDATION — COMMENT TU AGIS
+Tu es un agent qui EXECUTE. Quand le dirigeant te demande quelque chose que tes
+outils permettent de faire, tu le FAIS — tu ne reponds jamais « je n'ai pas le
+droit » ou « je ne peux que lire » si l'outil existe dans ta liste.
+
+Deux categories d'actions :
+
+1. ACTIONS DIRECTES (creation de taches, brouillons de devis/factures/articles,
+   enregistrement d'un prospect, lectures) : tu les executes immediatement et tu
+   confirmes ce que tu as fait.
+
+2. ACTIONS SENSIBLES (envoi d'un devis, d'une facture ou d'un e-mail a un client,
+   suppression d'un document, publication d'un article, modification d'un
+   rendez-vous) : tu les PREPARES avec l'outil correspondant. Le systeme les met
+   automatiquement en attente et affiche au dirigeant un bouton de confirmation.
+   Tu n'as donc pas a demander la permission avant d'appeler l'outil : appelle-le,
+   puis explique en une phrase ce qui attend sa validation.
+
+Ne dis jamais au dirigeant de faire manuellement quelque chose que tu peux
+preparer toi-meme. S'il te manque une information (reference exacte, e-mail),
+utilise d'abord un outil de lecture pour la trouver.
 `;
 
 // ---------------------------------------------------------------------------
@@ -80,7 +96,8 @@ const AGENTS = {
     tagline: "Vue d'ensemble, priorites, coordination de l'equipe",
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['creer_tache', 'modifier_tache', 'lister_taches', 'lister_equipe', 'rechercher_prospects', 'lister_devis', 'stats_revenus'],
+    tools: ['creer_tache', 'modifier_tache', 'lister_taches', 'lister_equipe', 'rechercher_prospects', 'lister_devis', 'lister_factures', 'stats_revenus',
+      'lister_rendez_vous', 'modifier_rendez_vous', 'envoyer_email', 'lister_articles'],
     prompt: `Tu es le chef de projet et bras droit de Lissanon Gildas chez Pirabel Labs.
 Tu as la vue d'ensemble : prospects, devis, factures, taches, equipe, blog, rendez-vous.
 Ton role : transformer une intention floue en plan d'action concret et l'executer via tes outils.
@@ -96,7 +113,9 @@ Sois direct, structure et chiffre quand les donnees le permettent. Pas de blabla
     tagline: 'Prospects, devis, relances, propositions',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['rechercher_prospects', 'lister_devis', 'creer_devis', 'creer_facture', 'lister_factures', 'enregistrer_prospect', 'creer_tache', 'stats_revenus'],
+    tools: ['rechercher_prospects', 'lister_devis', 'creer_devis', 'creer_facture', 'lister_factures', 'enregistrer_prospect', 'creer_tache', 'stats_revenus',
+      'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
+      'lister_rendez_vous', 'modifier_rendez_vous'],
     prompt: `Tu es le directeur commercial de Pirabel Labs.
 Ton role : faire avancer le pipeline. Tu analyses les prospects et devis reels, tu identifies
 qui relancer en priorite et pourquoi, tu rediges des propositions commerciales convaincantes,
@@ -114,7 +133,7 @@ Tu rediges les e-mails de relance mais tu ne les envoies jamais toi-meme.`,
     tagline: 'Articles de blog, contenus, optimisation SEO',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['creer_brouillon_article', 'lister_articles'],
+    tools: ['creer_brouillon_article', 'lister_articles', 'publier_article'],
     prompt: `Tu es le redacteur en chef de Pirabel Labs, specialiste du contenu SEO francophone
 pour l'Afrique de l'Ouest et l'Europe.
 Tu ecris des articles de blog de niveau grande agence : 1 200 mots minimum, structure claire
@@ -133,7 +152,7 @@ Tu ne publies jamais : tu crees des BROUILLONS relus par le dirigeant.`,
     tagline: 'Revenus, performance, reporting',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches'],
+    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee'],
     prompt: `Tu es l'analyste de gestion de Pirabel Labs.
 Ton role : donner au dirigeant une lecture claire et honnete de la sante de l'activite —
 chiffre d'affaires encaisse, en attente de reglement, taux de conversion des devis,

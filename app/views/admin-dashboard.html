@@ -3327,6 +3327,46 @@ function renderAiWelcome() {
     '<div class="ai-suggest">' + sugg.map(function(s){ return '<button onclick="aiQuick(this)">' + escape(s) + '</button>'; }).join('') + '</div></div>';
 }
 function aiQuick(btn) { document.getElementById('aiInput').value = btn.textContent; aiSend(); }
+
+// Carte « Confirmer / Annuler » pour une action sensible préparée par un agent.
+function aiRenderPending(p) {
+  var chat = document.getElementById('aiChat');
+  if (!chat) return;
+  var eleve = p.risk === 'eleve';
+  var card = document.createElement('div');
+  card.className = 'ai-pending';
+  card.id = 'pa-' + p.id;
+  card.style.cssText = 'align-self:flex-start;max-width:92%;margin:.35rem 0;padding:.9rem 1rem;border-radius:12px;background:var(--bg-2);border:1px solid ' + (eleve ? 'rgba(248,113,113,.45)' : 'rgba(255,85,0,.4)') + ';';
+  card.innerHTML =
+    '<div style="display:flex;align-items:center;gap:.45rem;font-family:var(--font-display);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:' + (eleve ? 'var(--danger)' : 'var(--accent)') + ';margin-bottom:.5rem;">' +
+      '<span class="material-symbols-outlined" style="font-size:1rem;">' + (eleve ? 'warning' : 'task_alt') + '</span>' +
+      (eleve ? 'Action irréversible — votre accord requis' : 'En attente de votre confirmation') + '</div>' +
+    '<div style="font-size:.92rem;color:var(--text);line-height:1.5;margin-bottom:.8rem;">' + escape(p.summary || p.tool) + '</div>' +
+    '<div style="display:flex;gap:.5rem;flex-wrap:wrap;" data-btns>' +
+      '<button class="btn btn--sm" onclick="aiDecidePending(\'' + p.id + '\',\'confirmer\')"><span class="material-symbols-outlined">check</span> Confirmer</button>' +
+      '<button class="btn btn--ghost btn--sm" onclick="aiDecidePending(\'' + p.id + '\',\'refuser\')">Annuler</button>' +
+    '</div>';
+  chat.appendChild(card);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function aiDecidePending(id, decision) {
+  var card = document.getElementById('pa-' + id);
+  var btns = card ? card.querySelector('[data-btns]') : null;
+  if (btns) btns.innerHTML = '<span style="font-size:.85rem;color:var(--text-muted);">Traitement…</span>';
+  try {
+    var r = await api('/api/admin/pending-actions/' + id, { method: 'POST', body: { decision: decision } });
+    if (btns) {
+      var ok = r.status === 'confirmee';
+      var refuse = r.status === 'refusee';
+      btns.innerHTML = '<span style="font-size:.85rem;color:' + (ok ? 'var(--success)' : refuse ? 'var(--text-muted)' : 'var(--danger)') + ';">' +
+        (ok ? '✅ ' : refuse ? '✖ ' : '⚠ ') + escape(r.message || '') + '</span>';
+    }
+    if (r.status === 'confirmee') { TEAM = []; TASKS = []; toast(r.message || 'Action exécutée', 'success'); }
+  } catch (e) {
+    if (btns) btns.innerHTML = '<span style="font-size:.85rem;color:var(--danger);">❌ ' + escape((e && e.message) || 'Erreur') + '</span>';
+  }
+}
 // Crée la conversation en base si nécessaire puis sauvegarde l'historique courant.
 async function aiPersist() {
   try {
@@ -3407,7 +3447,7 @@ async function aiSend() {
   AI_HISTORY.push({ role: 'user', content: text });
   aiShowTyping();
   try {
-    var data = await api('/api/admin/assistant', { method: 'POST', body: { agent: AI_MODE, mode: AI_MODE, messages: AI_HISTORY } });
+    var data = await api('/api/admin/assistant', { method: 'POST', body: { agent: AI_MODE, mode: AI_MODE, messages: AI_HISTORY, conversationId: AI_CONVO_ID } });
     var t = document.getElementById('aiTyping'); if (t) t.remove();
     var reply = data.reply || '(réponse vide)';
     if (data.actions && data.actions.length) {
@@ -3416,14 +3456,18 @@ async function aiSend() {
     }
     aiAppendMessage('assistant', reply);
     AI_HISTORY.push({ role: 'assistant', content: data.reply || reply });
+    // Actions sensibles préparées par l'agent : carte de confirmation
+    if (data.pending && data.pending.length) data.pending.forEach(aiRenderPending);
     aiPersist(); // sauvegarde la conversation (mémoire)
   } catch(e) {
     var ty = document.getElementById('aiTyping'); if (ty) ty.remove();
     var msg = (e && e.message) ? e.message : String(e);
-    if (/NO_KEY|pas encore configuré|GROQ_API_KEY/i.test(msg)) {
-      aiAppendMessage('assistant', '⚙️ L\'assistant n\'est pas encore activé (clé Groq manquante).');
-    } else if (/RATE_LIMIT|limite gratuite|tokens\/min/i.test(msg)) {
-      aiAppendMessage('assistant', '⏳ Limite gratuite Groq atteinte (12 000 tokens/minute). Patiente ~15 secondes puis réessaie, ou raccourcis ta demande (ex. un article plus court).');
+    if (/NO_KEY|pas configuré|OPENROUTER/i.test(msg)) {
+      aiAppendMessage('assistant', '⚙️ L\'assistant n\'est pas activé (clé OpenRouter manquante).');
+    } else if (/NO_CREDIT|Crédit/i.test(msg)) {
+      aiAppendMessage('assistant', '💳 Crédit OpenRouter épuisé. Rechargez le compte sur openrouter.ai pour réactiver les agents.');
+    } else if (/RATE_LIMIT|limite de débit/i.test(msg)) {
+      aiAppendMessage('assistant', '⏳ Limite de débit atteinte. Patientez quelques secondes puis réessayez.');
     } else {
       aiAppendMessage('assistant', '❌ ' + msg);
     }

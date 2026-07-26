@@ -3886,7 +3886,10 @@ app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, r
       let slug = req.body.publicSlug.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
       if (slug.length < 3) return res.status(400).json({ error: 'Alias trop court (3 caractères minimum).' });
-      if (!/-[a-z0-9]{4,}$/.test(slug)) slug += '-' + crypto.randomBytes(3).toString('hex').slice(0, 4);
+      // Le suffixe aleatoire est TOUJOURS ajoute : impossible de distinguer de maniere
+      // fiable un vrai suffixe aleatoire d'un mot ordinaire, et un alias entierement
+      // devinable exposerait le devis a qui tente sa chance.
+      slug = slug.replace(/-[a-f0-9]{4}$/, '').slice(0, 34) + '-' + crypto.randomBytes(3).toString('hex').slice(0, 4);
       const pris = await Quote.findOne({ publicSlug: slug, _id: { $ne: quote._id } }).select('_id').lean();
       if (pris) return res.status(409).json({ error: 'Cet alias est déjà utilisé par un autre devis.' });
       quote.publicSlug = slug;

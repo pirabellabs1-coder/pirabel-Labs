@@ -54,6 +54,9 @@ const quoteSchema = new mongoose.Schema({
 
   // Token publique d'accès (URL sécurisée pour le client)
   publicToken: { type: String, required: true, unique: true, index: true },
+  // Alias court et lisible pour l'URL (ex. « remorques-k7m2 »). Reste aleatoire sur
+  // sa partie finale : un slug entierement devinable exposerait le devis a n'importe qui.
+  publicSlug: { type: String, unique: true, sparse: true, index: true },
 
   // Notes internes (non visibles client)
   internalNotes: { type: String, default: '', maxlength: 5000 },

@@ -3750,6 +3750,22 @@ app.delete('/api/admin/media/:id', auth, adminOnly, async (req, res) => {
 // === QUOTES (devis) ===
 // ========================================================================
 
+// Un devis est accessible par son jeton long (historique) ou par son alias court.
+function refDevis(valeur) {
+  const v = String(valeur || '').slice(0, 100);
+  return { $or: [{ publicToken: v }, { publicSlug: v.toLowerCase() }] };
+}
+
+// Alias court : mots lisibles + suffixe aleatoire (4 caracteres) pour rester non devinable.
+function genererAlias(base) {
+  const mots = String(base || 'devis').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')   // retire les accents
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    .split('-').filter(Boolean).slice(0, 2).join('-').slice(0, 24) || 'devis';
+  const suffixe = crypto.randomBytes(3).toString('hex').slice(0, 4);
+  return `${mots}-${suffixe}`;
+}
+
 function generateQuoteReference() {
   const year = new Date().getFullYear();
   const random = Math.floor(Math.random() * 9000) + 1000;
@@ -3807,6 +3823,7 @@ app.post('/api/admin/quotes', auth, adminOnly, limitBody(50), async (req, res) =
       terms: sanitize(terms || '', 5000),
       validUntil: new Date(Date.now() + (Number(validDays) || 30) * 86400000),
       publicToken: generateToken(),
+      publicSlug: genererAlias(sanitize(title, 200)),
       createdBy: req.user._id
     });
 
@@ -3863,6 +3880,18 @@ app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, r
         else quote[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
       }
     });
+    // Alias court personnalise. Un suffixe aleatoire est ajoute s'il n'y en a pas,
+    // pour qu'un lien reste non devinable : c'est la seule protection du devis.
+    if (typeof req.body.publicSlug === 'string') {
+      let slug = req.body.publicSlug.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+      if (slug.length < 3) return res.status(400).json({ error: 'Alias trop court (3 caractères minimum).' });
+      if (!/-[a-z0-9]{4,}$/.test(slug)) slug += '-' + crypto.randomBytes(3).toString('hex').slice(0, 4);
+      const pris = await Quote.findOne({ publicSlug: slug, _id: { $ne: quote._id } }).select('_id').lean();
+      if (pris) return res.status(409).json({ error: 'Cet alias est déjà utilisé par un autre devis.' });
+      quote.publicSlug = slug;
+    }
+
     // Correction manuelle du statut (ex. consultation faussement enregistree).
     // Revenir a « envoye » efface la date de consultation, sinon elle resterait incoherente.
     if (['brouillon', 'envoye', 'consulte', 'expire'].includes(req.body.status)) {
@@ -3899,7 +3928,9 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
 
-    const publicUrl = `https://www.pirabellabs.com/devis/${quote.publicToken}`;
+    // On privilégie l'alias court dans le lien envoyé au client : plus lisible,
+    // notamment quand le devis transite par WhatsApp.
+    const publicUrl = `https://www.pirabellabs.com/devis/${quote.publicSlug || quote.publicToken}`;
 
     const itemsRows = quote.items.map(i =>
       `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.unitPrice.toFixed(2)} ${quote.currency}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${quote.currency}</td></tr>`
@@ -3955,7 +3986,7 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
 // === PUBLIC quote view (no auth, by token) ===
 app.get('/api/quotes/:token', async (req, res) => {
   try {
-    const quote = await Quote.findOne({ publicToken: req.params.token });
+    const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
 
     // Ne pas marquer « consulte » quand c'est l'equipe qui previsualise : sinon le statut
@@ -3990,7 +4021,7 @@ app.get('/api/quotes/:token', async (req, res) => {
 
 app.post('/api/quotes/:token/accept', async (req, res) => {
   try {
-    const quote = await Quote.findOne({ publicToken: req.params.token });
+    const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
     if (quote.status === 'accepte') return res.json({ success: true, message: 'Devis deja accepte.' });
     if (quote.status === 'refuse') return res.status(403).json({ error: 'Devis deja refuse.' });
@@ -4043,7 +4074,7 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
 
 app.post('/api/quotes/:token/refuse', async (req, res) => {
   try {
-    const quote = await Quote.findOne({ publicToken: req.params.token });
+    const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
     if (quote.status === 'accepte') return res.status(403).json({ error: 'Devis deja accepte.' });
 
@@ -4536,7 +4567,7 @@ app.post('/api/admin/leads-create', auth, adminOnly, limitBody(10), async (req, 
 // === PUBLIC : demander ajustements sur devis ===
 app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
   try {
-    const quote = await Quote.findOne({ publicToken: req.params.token });
+    const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
     if (quote.status === 'accepte' || quote.status === 'refuse') {
       return res.status(403).json({ error: 'Devis deja accepte ou refuse.' });

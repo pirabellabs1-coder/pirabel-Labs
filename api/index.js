@@ -2287,15 +2287,155 @@ app.get('/carrieres', async (req, res) => {
        .jb-empty .material-symbols-outlined{font-size:2.6rem;color:var(--text-faint);margin-bottom:1rem;}
        .jb-empty h2{font-size:1.3rem;margin-bottom:.7rem;}
        .jb-empty p{color:var(--text-muted);line-height:1.7;max-width:34rem;margin:0 auto;}
+
+       .jb-stats{display:flex;gap:2.2rem;flex-wrap:wrap;margin-top:2rem;padding-top:1.6rem;border-top:1px solid var(--border);}
+       .jb-st strong{display:block;font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--accent);}
+       .jb-st span{font-size:.82rem;color:var(--text-faint);}
+       .jb-sec{max-width:64rem;margin:0 auto;padding:2.6rem var(--px-page);}
+       .jb-h2{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.7rem;}
+       .jb-lead{color:var(--text-muted);line-height:1.7;max-width:44rem;margin-bottom:1.8rem;}
+       .jb-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.1rem;margin-top:1.4rem;}
+       .jb-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.1rem;margin-top:1.4rem;}
+       .jb-card{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.5rem;}
+       .jb-card .material-symbols-outlined{color:var(--accent);font-size:1.9rem;margin-bottom:.7rem;}
+       .jb-card h3{font-size:1.05rem;margin-bottom:.5rem;}
+       .jb-card p{color:var(--text-muted);font-size:.92rem;line-height:1.65;margin-bottom:1rem;}
+       .jb-card .btn{margin-top:.2rem;}
+       .jb-steps{list-style:none;padding:0;margin:0;counter-reset:s;}
+       .jb-steps li{display:flex;gap:1.1rem;padding-bottom:1.5rem;position:relative;}
+       .jb-steps li:last-child{padding-bottom:0;}
+       .jb-steps li::before{content:'';position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--border-2);}
+       .jb-steps li:last-child::before{display:none;}
+       .jb-num{flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;z-index:1;}
+       .jb-steps strong{display:block;font-family:var(--font-display);font-size:1rem;margin-bottom:.25rem;padding-top:.4rem;}
+       .jb-steps p{color:var(--text-muted);font-size:.92rem;line-height:1.65;}
+       .jb-faq details{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.7rem;}
+       .jb-faq summary{cursor:pointer;font-weight:600;font-size:.95rem;list-style:none;}
+       .jb-faq summary::-webkit-details-marker{display:none;}
+       .jb-faq summary::after{content:'+';float:right;color:var(--accent);font-weight:700;}
+       .jb-faq details[open] summary::after{content:'−';}
+       .jb-faq p{color:var(--text-muted);font-size:.92rem;line-height:1.7;margin-top:.7rem;}
+       .jb-cta{max-width:64rem;margin:1rem auto 4rem;padding:2.6rem var(--px-page);text-align:center;}
+       .jb-cta h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:.6rem;}
+       .jb-cta p{color:var(--text-muted);margin-bottom:1.4rem;}
+       .jb-cta__b{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;}
+       @media(max-width:600px){.jb-stats{gap:1.2rem;}}
        </style>`,
       `<section class="jb-hero">
          <span class="eyebrow">Carrières</span>
          <h1>Construire des produits qui <em style="color:var(--accent);font-style:normal;">servent vraiment</em></h1>
          <p>Pirabel Labs conçoit des sites, des applications et des automatisations pour des entreprises
-         d'Afrique de l'Ouest et d'Europe. Nous cherchons des personnes rigoureuses, autonomes, qui
-         préfèrent livrer quelque chose de solide plutôt que beaucoup de choses à moitié.</p>
+         d'Afrique de l'Ouest et d'Europe. Nous cherchons des personnes rigoureuses et autonomes, qui
+         préfèrent livrer une chose solide plutôt que beaucoup de choses à moitié.</p>
+         <div class="jb-stats">
+           <div class="jb-st"><strong>Abomey-Calavi</strong><span>Bénin, avec télétravail possible</span></div>
+           <div class="jb-st"><strong>Web, IA, marketing</strong><span>Nos trois domaines</span></div>
+           <div class="jb-st"><strong>7 jours ouvrés</strong><span>Notre délai de réponse</span></div>
+         </div>
        </section>
-       <div class="jb-wrap">${cartes}</div>`
+
+       <section class="jb-sec">
+         <h2 class="jb-h2">Travailler ici</h2>
+         <div class="jb-grid3">
+           <div class="jb-card">
+             <span class="material-symbols-outlined">visibility</span>
+             <h3>Vous voyez le résultat</h3>
+             <p>Nous sommes une structure courte. Ce que vous produisez part en production et sert de vrais
+             clients, souvent en quelques semaines. Pas de travail qui dort dans un tiroir.</p>
+           </div>
+           <div class="jb-card">
+             <span class="material-symbols-outlined">school</span>
+             <h3>On apprend en construisant</h3>
+             <p>Next.js, automatisation, agents IA, référencement : les sujets sont variés et les outils
+             récents. Vous montez en compétence sur des projets réels, pas sur des exercices.</p>
+           </div>
+           <div class="jb-card">
+             <span class="material-symbols-outlined">handshake</span>
+             <h3>Un cadre franc</h3>
+             <p>Objectifs clairs, retours directs, pas de réunions inutiles. On dit ce qui va et ce qui ne va
+             pas, dans les deux sens.</p>
+           </div>
+         </div>
+       </section>
+
+       <section class="jb-sec" id="offres">
+         <h2 class="jb-h2">Nos postes ouverts</h2>
+         <div class="jb-wrap">${cartes}</div>
+       </section>
+
+       <section class="jb-sec">
+         <h2 class="jb-h2">Comment se passe le recrutement</h2>
+         <p class="jb-lead">Cinq étapes, sans zone d'ombre. Vous savez à chaque instant où vous en êtes,
+         et vous recevez une réponse même en cas de refus.</p>
+         <ol class="jb-steps">
+           <li><span class="jb-num">1</span><div><strong>Votre candidature</strong>
+             <p>Vous remplissez le formulaire de l'offre avec le lien vers votre CV. Vous recevez
+             immédiatement un accusé de réception par e-mail.</p></div></li>
+           <li><span class="jb-num">2</span><div><strong>Examen du dossier — sous 7 jours ouvrés</strong>
+             <p>Nous lisons chaque candidature. Si votre profil correspond, nous passons à l'étape
+             suivante ; sinon, vous recevez une réponse claire plutôt qu'un silence.</p></div></li>
+           <li><span class="jb-num">3</span><div><strong>Premier échange — 30 minutes</strong>
+             <p>Une visio pour faire connaissance, comprendre votre parcours et répondre à vos questions
+             sur le poste, le rythme et la rémunération.</p></div></li>
+           <li><span class="jb-num">4</span><div><strong>Mise en situation</strong>
+             <p>Un exercice court et concret, proche de ce que vous feriez réellement. Il reste
+             raisonnable en temps : nous ne demandons pas de travail gratuit déguisé.</p></div></li>
+           <li><span class="jb-num">5</span><div><strong>Décision et intégration</strong>
+             <p>Retour sous 5 jours ouvrés. Si c'est un oui, nous convenons ensemble de la date de
+             démarrage et des modalités.</p></div></li>
+         </ol>
+       </section>
+
+       <section class="jb-sec">
+         <h2 class="jb-h2">Postuler</h2>
+         <div class="jb-grid2">
+           <div class="jb-card">
+             <h3>À un poste ouvert</h3>
+             <p>Ouvrez l'offre qui vous intéresse et remplissez le formulaire en bas de page. Prévoyez un
+             lien vers votre CV : Google Drive, Dropbox, LinkedIn ou tout lien consultable.
+             Nous ne stockons aucun fichier sur nos serveurs.</p>
+             <a class="btn btn--primary" href="#offres">Voir les offres</a>
+           </div>
+           <div class="jb-card">
+             <h3>Candidature spontanée</h3>
+             <p>Aucune offre ne correspond, mais vous pensez avoir votre place ici ? Écrivez-nous en
+             présentant ce que vous savez faire et ce que vous cherchez. Nous lisons tout, et nous
+             gardons les profils qui nous marquent.</p>
+             <a class="btn btn--ghost" href="mailto:contact@pirabellabs.com?subject=Candidature%20spontan%C3%A9e">Nous écrire</a>
+           </div>
+         </div>
+       </section>
+
+       <section class="jb-sec">
+         <h2 class="jb-h2">Questions fréquentes</h2>
+         <div class="jb-faq">
+           <details><summary>Le télétravail est-il possible ?</summary>
+             <p>Oui, selon le poste. Chaque offre précise le mode : sur site, hybride ou télétravail
+             complet. Nous travaillons déjà avec des personnes réparties sur plusieurs pays.</p></details>
+           <details><summary>Acceptez-vous les profils juniors ?</summary>
+             <p>Oui, quand l'offre le mentionne. Nous regardons ce que vous avez réellement construit,
+             pas seulement les diplômes. Un portfolio ou un dépôt de code vaut mieux qu'un long CV.</p></details>
+           <details><summary>Je n'ai pas de CV formel, puis-je postuler ?</summary>
+             <p>Un profil LinkedIn à jour, un portfolio ou un GitHub suffisent. L'important est que nous
+             puissions voir votre travail.</p></details>
+           <details><summary>Combien de temps conservez-vous ma candidature ?</summary>
+             <p>Deux ans au maximum, uniquement pour traiter votre candidature et vous recontacter si un
+             poste correspond. Vous pouvez demander sa suppression à tout moment en écrivant à
+             contact@pirabellabs.com.</p></details>
+           <details><summary>Recevrai-je une réponse même si c'est non ?</summary>
+             <p>Oui, systématiquement. Rester sans nouvelle est la pire expérience pour un candidat, et
+             nous nous y refusons.</p></details>
+         </div>
+       </section>
+
+       <section class="jb-cta">
+         <h2>Une question avant de postuler&nbsp;?</h2>
+         <p>Écrivez-nous, nous répondons sous 24 h ouvrées.</p>
+         <div class="jb-cta__b">
+           <a class="btn btn--primary" href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a>
+           <a class="btn btn--ghost" href="https://wa.me/16139273067" target="_blank" rel="noopener">WhatsApp</a>
+         </div>
+       </section>`
     ));
   } catch (e) { console.error('[carrieres]', e.message); res.status(500).send('Erreur serveur.'); }
 });

@@ -471,6 +471,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     <nav class="sidebar__nav">
       <a class="sidebar__link" data-view="assistant" data-label="Ayaba — assistante de l&#39;agence"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Ayaba</span></a>
       <a class="sidebar__link" data-view="conversations" data-label="Conversations site"><span class="material-symbols-outlined">chat</span><span class="sidebar__link-text">Conversations site</span> <span id="csBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
+      <a class="sidebar__link" data-view="recrutement" data-label="Recrutement"><span class="material-symbols-outlined">badge</span><span class="sidebar__link-text">Recrutement</span> <span id="rcBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="team" data-label="Équipe"><span class="material-symbols-outlined">groups</span><span class="sidebar__link-text">Équipe</span></a>
       <a class="sidebar__link" data-view="tasks" data-label="Tâches"><span class="material-symbols-outlined">checklist</span><span class="sidebar__link-text">Tâches</span></a>
     </nav>
@@ -954,6 +955,22 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div id="csList" style="display:grid;gap:1rem;"></div>
     </div>
 
+    <!-- RECRUTEMENT -->
+    <div class="view" data-view="recrutement">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;" id="rcOnglets">
+          <button class="btn btn--sm" data-o="candidats">Candidatures</button>
+          <button class="btn btn--ghost btn--sm" data-o="offres">Offres d'emploi</button>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn btn--ghost btn--sm" id="rcRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+          <button class="btn btn--sm" id="rcNewJob"><span class="material-symbols-outlined">add</span> Nouvelle offre</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="rcKpis" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:2rem;"></div>
+      <div id="rcContenu" style="display:grid;gap:1rem;"></div>
+    </div>
+
     <!-- ÉQUIPE VIEW -->
     <div class="view" data-view="team">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
@@ -1173,6 +1190,7 @@ function setView(view) {
   if (view === 'quotes') loadQuotes();
   if (view === 'invoices') loadInvoices();
   if (view === 'conversations') loadChatSessions();
+  if (view === 'recrutement') loadRecrutement();
   if (view === 'reviews') loadReviews();
   if (view === 'gallery') loadGallery();
   if (view === 'assistant') initAssistant();

@@ -47,6 +47,8 @@
     { "source": "/admin/(.*)", "destination": "/api" },
     { "source": "/devis/(.*)", "destination": "/api" },
     { "source": "/facture/(.*)", "destination": "/api" },
+    { "source": "/carrieres", "destination": "/api" },
+    { "source": "/carrieres/(.*)", "destination": "/api" },
     { "source": "/espace-client", "destination": "/api" },
     { "source": "/espace-client/(.*)", "destination": "/api" },
     { "source": "/avis/(.*)", "destination": "/api" },

@@ -25,7 +25,9 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 const connectDB = require('../app/config/db');
-const { sendEmail, masterTemplate, newOrderEmail } = require('../app/config/email');
+const { sendEmail, masterTemplate, newOrderEmail,
+  newApplicationAdminEmail, applicationConfirmationEmail, applicationStatusEmail, STATUS_MESSAGES,
+} = require('../app/config/email');
 const {
   rateLimit, sanitize, sanitizeSoft, sanitizeEmail, honeypotCheck, limitBody,
   isValidEmail, securityHeaders, globalSanitize,
@@ -50,6 +52,8 @@ const PendingAction = require('../app/models/PendingAction');
 const Project = require('../app/models/Project');
 const ClientMessage = require('../app/models/ClientMessage');
 const ChatSession = require('../app/models/ChatSession');
+const Job = require('../app/models/Job');
+const Application = require('../app/models/Application');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
 const Appointment = require('../app/models/Appointment');
@@ -2042,6 +2046,119 @@ app.post('/api/admin/_drop-legacy-index', auth, adminOnly, limitBody(5), async (
   } catch (e) { res.json({ success: false, error: e.message }); }
 });
 
+// --- Recrutement : administration des offres et des candidatures ---
+app.get('/api/admin/jobs', auth, adminOnly, async (req, res) => {
+  try {
+    const f = {}; if (['brouillon', 'publie', 'pourvu', 'archive'].includes(req.query.status)) f.status = req.query.status;
+    const jobs = await Job.find(f).sort({ createdAt: -1 }).limit(100).lean();
+    res.json({ jobs });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.post('/api/admin/jobs', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const title = sanitize(req.body.title || '', 160);
+    if (!title || title.length < 3) return res.status(400).json({ error: 'Intitulé du poste requis.' });
+    const base = title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'poste';
+    let slug = base, n = 1;
+    while (await Job.findOne({ slug }).select('_id').lean()) slug = `${base}-${++n}`;
+
+    const liste = (v) => Array.isArray(v) ? v.map(x => sanitize(String(x), 300)).filter(Boolean).slice(0, 20) : [];
+    const job = await Job.create({
+      title, slug,
+      department: sanitize(req.body.department || '', 80),
+      contract: ['cdi', 'cdd', 'stage', 'alternance', 'freelance'].includes(req.body.contract) ? req.body.contract : 'cdi',
+      location: sanitize(req.body.location || 'Abomey-Calavi, Bénin', 120),
+      remote: ['sur_site', 'hybride', 'full_remote'].includes(req.body.remote) ? req.body.remote : 'hybride',
+      experience: sanitize(req.body.experience || '', 80),
+      salary: sanitize(req.body.salary || '', 120),
+      excerpt: sanitize(req.body.excerpt || '', 400),
+      content: sanitizeSoft(req.body.content || '', 40000),
+      missions: liste(req.body.missions), profile: liste(req.body.profile), advantages: liste(req.body.advantages),
+      status: req.body.status === 'publie' ? 'publie' : 'brouillon',
+      publishedAt: req.body.status === 'publie' ? new Date() : undefined,
+    });
+    res.json({ success: true, job });
+  } catch (e) { console.error('[jobs.create]', e.message); res.status(500).json({ error: 'Erreur : ' + e.message }); }
+});
+
+app.patch('/api/admin/jobs/:id', auth, adminOnly, limitBody(50), async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Offre introuvable.' });
+    ['title', 'department', 'location', 'experience', 'salary', 'excerpt'].forEach(f => {
+      if (req.body[f] !== undefined) job[f] = sanitize(String(req.body[f]), 400);
+    });
+    if (req.body.content !== undefined) job.content = sanitizeSoft(req.body.content, 40000);
+    if (['cdi', 'cdd', 'stage', 'alternance', 'freelance'].includes(req.body.contract)) job.contract = req.body.contract;
+    if (['sur_site', 'hybride', 'full_remote'].includes(req.body.remote)) job.remote = req.body.remote;
+    ['missions', 'profile', 'advantages'].forEach(f => {
+      if (Array.isArray(req.body[f])) job[f] = req.body[f].map(x => sanitize(String(x), 300)).filter(Boolean).slice(0, 20);
+    });
+    if (['brouillon', 'publie', 'pourvu', 'archive'].includes(req.body.status)) {
+      job.status = req.body.status;
+      if (req.body.status === 'publie' && !job.publishedAt) job.publishedAt = new Date();
+    }
+    await job.save();
+    res.json({ success: true, job });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.delete('/api/admin/jobs/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const job = await Job.findByIdAndDelete(req.params.id);
+    if (!job) return res.status(404).json({ error: 'Offre introuvable.' });
+    await Application.deleteMany({ jobId: job._id });
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.get('/api/admin/candidatures', auth, adminOnly, async (req, res) => {
+  try {
+    const f = {};
+    if (['nouveau', 'en_revue', 'preselectionne', 'entretien', 'test', 'accepte', 'refuse'].includes(req.query.status)) f.status = req.query.status;
+    if (/^[a-f0-9]{24}$/i.test(req.query.jobId || '')) f.jobId = req.query.jobId;
+    const list = await Application.find(f).sort({ createdAt: -1 }).limit(200).lean();
+    const stats = await Application.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]);
+    const parStatut = {}; stats.forEach(s => { parStatut[s._id] = s.n; });
+    res.json({
+      candidatures: list.map(a => ({
+        id: String(a._id), nom: a.name, email: a.email, tel: a.phone, ville: a.city,
+        poste: a.jobTitle, statut: a.status, lu: a.lu,
+        cv: a.cvUrl, linkedin: a.linkedin, portfolio: a.portfolio,
+        motivation: a.coverLetter, resume: a.aiSummary, adequation: a.aiFit,
+        pointsForts: a.aiStrengths, reserves: a.aiConcerns, le: a.createdAt,
+      })),
+      parStatut, nonLues: await Application.countDocuments({ lu: false }),
+    });
+  } catch (e) { console.error('[candidatures.list]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// Changement d'etape : declenche l'e-mail correspondant au candidat.
+app.post('/api/admin/candidatures/:id/statut', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const c = await Application.findById(req.params.id);
+    if (!c) return res.status(404).json({ error: 'Candidature introuvable.' });
+    const statut = req.body.status;
+    if (!['nouveau', 'en_revue', 'preselectionne', 'entretien', 'test', 'accepte', 'refuse'].includes(statut)) {
+      return res.status(400).json({ error: 'Statut invalide.' });
+    }
+    c.status = statut; c.lu = true;
+    if (req.body.note) c.internalNotes = ((c.internalNotes || '') + '\n' + sanitize(req.body.note, 1000)).slice(0, 5000);
+    await c.save();
+
+    let prevenu = false;
+    const cfg = STATUS_MESSAGES[statut];
+    if (cfg && req.body.prevenirCandidat !== false) {
+      prevenu = !!await sendEmail(c.email, cfg.subject + ' — Pirabel Labs',
+        applicationStatusEmail(c.name, c.jobTitle, statut, sanitize(req.body.note || '', 1000))
+      ).catch(e => { console.error('[candidature.statut] mail:', e.message); return false; });
+    }
+    res.json({ success: true, statut, candidatPrevenu: prevenu });
+  } catch (e) { console.error('[candidature.statut]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+
 // --- Actions en attente de validation humaine ---
 app.get('/api/admin/pending-actions', auth, adminOnly, async (req, res) => {
   try {
@@ -2091,6 +2208,263 @@ app.post('/api/admin/leads/purge', auth, adminOnly, limitBody(20), async (req, r
 app.get('/api/admin/agents', auth, adminOnly, (req, res) => {
   res.json({ agents: AI.ADMIN_AGENTS.map(a => ({ id: a.id, name: a.name, icon: a.icon, tagline: a.tagline, tools: a.tools })) });
 });
+
+// ========================================================================
+// === RECRUTEMENT : offres publiques et candidatures ===
+// ========================================================================
+const CONTRATS = { cdi: 'CDI', cdd: 'CDD', stage: 'Stage', alternance: 'Alternance', freelance: 'Freelance' };
+const PRESENCE = { sur_site: 'Sur site', hybride: 'Hybride', full_remote: 'Télétravail complet' };
+
+const candidatureLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 5,
+  message: 'Trop de candidatures envoyées. Réessayez dans une heure.',
+  keyPrefix: 'candidature',
+});
+
+// --- Page publique : liste des offres ---
+app.get('/carrieres', async (req, res) => {
+  try {
+    const jobs = await Job.find({ status: 'publie' }).sort({ publishedAt: -1 }).lean();
+    const cartes = jobs.length ? jobs.map(j => `
+      <a class="jb" href="/carrieres/${escapeHtml(j.slug)}">
+        <div class="jb__top">
+          <span class="jb__tag">${escapeHtml(CONTRATS[j.contract] || j.contract)}</span>
+          ${j.department ? `<span class="jb__dep">${escapeHtml(j.department)}</span>` : ''}
+        </div>
+        <h2 class="jb__t">${escapeHtml(j.title)}</h2>
+        ${j.excerpt ? `<p class="jb__x">${escapeHtml(j.excerpt)}</p>` : ''}
+        <div class="jb__meta">
+          <span>${escapeHtml(j.location)}</span>
+          <span>${escapeHtml(PRESENCE[j.remote] || '')}</span>
+          ${j.experience ? `<span>${escapeHtml(j.experience)}</span>` : ''}
+        </div>
+        <span class="jb__go">Voir l'offre <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>`).join('') : `
+      <div class="jb-empty">
+        <span class="material-symbols-outlined">work_off</span>
+        <h2>Aucun poste ouvert pour le moment</h2>
+        <p>Nous n'avons pas d'offre en cours, mais nous étudions toujours les candidatures spontanées.
+        Écrivez-nous à <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a> en présentant votre profil.</p>
+      </div>`;
+
+    res.send(blogShell(
+      `<title>Carrières — rejoindre Pirabel Labs</title>
+       <meta name="description" content="Postes ouverts chez Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin). Développement, marketing, design, IA.">
+       <link rel="canonical" href="https://www.pirabellabs.com/carrieres">
+       <style>
+       .jb-hero{padding:clamp(3rem,7vw,5rem) var(--px-page) 2rem;max-width:64rem;margin:0 auto;}
+       .jb-hero h1{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem;}
+       .jb-hero p{font-size:1.05rem;color:var(--text-muted);line-height:1.7;max-width:44rem;}
+       .jb-wrap{max-width:64rem;margin:0 auto;padding:0 var(--px-page) 5rem;display:grid;gap:1.1rem;}
+       .jb{display:block;background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.6rem;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s;}
+       .jb:hover{border-color:var(--accent);transform:translateY(-2px);opacity:1;}
+       .jb__top{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap;}
+       .jb__tag{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(255,85,0,.3);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.25rem .65rem;border-radius:999px;}
+       .jb__dep{font-size:.78rem;color:var(--text-faint);}
+       .jb__t{font-size:1.3rem;margin-bottom:.5rem;}
+       .jb__x{color:var(--text-muted);font-size:.95rem;line-height:1.6;margin-bottom:.9rem;}
+       .jb__meta{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:.82rem;color:var(--text-faint);margin-bottom:1rem;}
+       .jb__go{display:inline-flex;align-items:center;gap:.35rem;color:var(--accent);font-weight:700;font-size:.85rem;}
+       .jb-empty{text-align:center;padding:4rem 1.5rem;background:var(--bg-2);border:1px solid var(--border);border-radius:16px;}
+       .jb-empty .material-symbols-outlined{font-size:2.6rem;color:var(--text-faint);margin-bottom:1rem;}
+       .jb-empty h2{font-size:1.3rem;margin-bottom:.7rem;}
+       .jb-empty p{color:var(--text-muted);line-height:1.7;max-width:34rem;margin:0 auto;}
+       </style>`,
+      `<section class="jb-hero">
+         <span class="eyebrow">Carrières</span>
+         <h1>Construire des produits qui <em style="color:var(--accent);font-style:normal;">servent vraiment</em></h1>
+         <p>Pirabel Labs conçoit des sites, des applications et des automatisations pour des entreprises
+         d'Afrique de l'Ouest et d'Europe. Nous cherchons des personnes rigoureuses, autonomes, qui
+         préfèrent livrer quelque chose de solide plutôt que beaucoup de choses à moitié.</p>
+       </section>
+       <div class="jb-wrap">${cartes}</div>`
+    ));
+  } catch (e) { console.error('[carrieres]', e.message); res.status(500).send('Erreur serveur.'); }
+});
+
+// --- Page publique : detail d'une offre + formulaire ---
+app.get('/carrieres/:slug', async (req, res) => {
+  try {
+    const j = await Job.findOne({ slug: sanitize(req.params.slug, 200), status: 'publie' }).lean();
+    if (!j) return res.redirect('/carrieres');
+
+    const liste = (titre, items) => (items && items.length) ? `
+      <h2>${titre}</h2><ul class="jd-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>` : '';
+
+    res.send(blogShell(
+      `<title>${escapeHtml(j.title)} — Carrières Pirabel Labs</title>
+       <meta name="description" content="${escapeHtml((j.excerpt || j.title).slice(0, 155))}">
+       <link rel="canonical" href="https://www.pirabellabs.com/carrieres/${escapeHtml(j.slug)}">
+       <style>
+       .jd{max-width:52rem;margin:0 auto;padding:clamp(2.5rem,6vw,4rem) var(--px-page) 5rem;}
+       .jd h1{font-size:clamp(1.8rem,4.5vw,2.6rem);margin:.6rem 0 1rem;}
+       .jd__meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+       .jd__m{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.3rem .8rem;font-size:.8rem;color:var(--text-muted);}
+       .jd h2{font-size:1.15rem;margin:2rem 0 .8rem;color:var(--accent);}
+       .jd p{color:var(--text-muted);line-height:1.75;margin-bottom:1rem;}
+       .jd-list{list-style:none;padding:0;margin-bottom:1rem;}
+       .jd-list li{color:var(--text-muted);line-height:1.7;padding-left:1.4rem;position:relative;margin-bottom:.5rem;}
+       .jd-list li::before{content:'';position:absolute;left:0;top:.65rem;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+       .jf{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.8rem;margin-top:2.5rem;}
+       .jf h2{margin-top:0;}
+       .jf__row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+       @media(max-width:600px){.jf__row{grid-template-columns:1fr;}}
+       .jf label{display:block;font-size:.78rem;font-weight:600;color:var(--text-muted);margin-bottom:.35rem;}
+       .jf input,.jf textarea{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:10px;padding:.7rem .85rem;font-family:inherit;font-size:.92rem;outline:none;margin-bottom:.9rem;}
+       .jf input:focus,.jf textarea:focus{border-color:var(--accent);}
+       .jf textarea{min-height:7rem;resize:vertical;line-height:1.6;}
+       .jf__hint{font-size:.76rem;color:var(--text-faint);margin:-.6rem 0 .9rem;}
+       .jf__msg{padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.55;margin-bottom:1rem;display:none;}
+       .jf__msg.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--success);display:block;}
+       .jf__msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--danger);display:block;}
+       </style>`,
+      `<article class="jd">
+        <a href="/carrieres" style="font-size:.85rem;color:var(--text-faint);">← Toutes les offres</a>
+        <h1>${escapeHtml(j.title)}</h1>
+        <div class="jd__meta">
+          <span class="jd__m">${escapeHtml(CONTRATS[j.contract] || j.contract)}</span>
+          <span class="jd__m">${escapeHtml(j.location)}</span>
+          <span class="jd__m">${escapeHtml(PRESENCE[j.remote] || '')}</span>
+          ${j.experience ? `<span class="jd__m">${escapeHtml(j.experience)}</span>` : ''}
+          ${j.salary ? `<span class="jd__m">${escapeHtml(j.salary)}</span>` : ''}
+        </div>
+        ${j.content ? sanitizeSoft(j.content, 40000) : (j.excerpt ? `<p>${escapeHtml(j.excerpt)}</p>` : '')}
+        ${liste('Vos missions', j.missions)}
+        ${liste('Le profil que nous cherchons', j.profile)}
+        ${liste('Ce que nous offrons', j.advantages)}
+
+        <div class="jf" id="postuler">
+          <h2>Postuler</h2>
+          <div class="jf__msg" id="jfMsg"></div>
+          <form id="jfForm">
+            <div class="jf__row">
+              <div><label for="nom">Nom complet *</label><input id="nom" required maxlength="120"></div>
+              <div><label for="mail">E-mail *</label><input id="mail" type="email" required maxlength="200"></div>
+            </div>
+            <div class="jf__row">
+              <div><label for="tel">Téléphone / WhatsApp</label><input id="tel" maxlength="30"></div>
+              <div><label for="ville">Ville</label><input id="ville" maxlength="120"></div>
+            </div>
+            <label for="cv">Lien vers votre CV *</label>
+            <input id="cv" required maxlength="500" placeholder="https://drive.google.com/…">
+            <div class="jf__hint">Google Drive, Dropbox, LinkedIn ou tout lien consultable. Nous ne stockons aucun fichier.</div>
+            <div class="jf__row">
+              <div><label for="li">LinkedIn</label><input id="li" maxlength="300" placeholder="https://linkedin.com/in/…"></div>
+              <div><label for="pf">Portfolio / GitHub</label><input id="pf" maxlength="300"></div>
+            </div>
+            <label for="lm">Pourquoi vous ? *</label>
+            <textarea id="lm" required maxlength="6000" placeholder="Parlez-nous de votre parcours et de ce qui vous attire dans ce poste."></textarea>
+            <button class="btn btn--primary" type="submit" id="jfBtn">Envoyer ma candidature</button>
+            <p class="jf__hint" style="margin-top:.9rem;">Vos données servent uniquement à traiter votre candidature et sont conservées 2 ans maximum. Vous pouvez demander leur suppression à tout moment.</p>
+          </form>
+        </div>
+      </article>
+      <script>
+      document.getElementById('jfForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+        var b=document.getElementById('jfBtn'), m=document.getElementById('jfMsg');
+        b.disabled=true; b.textContent='Envoi…';
+        try{
+          var r=await fetch('/api/candidatures',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+            jobSlug:${JSON.stringify(j.slug)},
+            name:document.getElementById('nom').value, email:document.getElementById('mail').value,
+            phone:document.getElementById('tel').value, city:document.getElementById('ville').value,
+            cvUrl:document.getElementById('cv').value, linkedin:document.getElementById('li').value,
+            portfolio:document.getElementById('pf').value, coverLetter:document.getElementById('lm').value
+          })});
+          var d=await r.json();
+          if(!r.ok) throw new Error(d.error||'Erreur');
+          m.className='jf__msg ok'; m.textContent=d.message||'Candidature envoyée.';
+          document.getElementById('jfForm').reset();
+        }catch(err){ m.className='jf__msg err'; m.textContent=(err&&err.message)||'Envoi impossible.'; }
+        b.disabled=false; b.textContent='Envoyer ma candidature';
+      });
+      </script>`
+    ));
+  } catch (e) { console.error('[carrieres.detail]', e.message); res.status(500).send('Erreur serveur.'); }
+});
+
+// --- Depot d'une candidature ---
+app.post('/api/candidatures', candidatureLimiter, limitBody(20), async (req, res) => {
+  try {
+    const job = await Job.findOne({ slug: sanitize(req.body.jobSlug || '', 200), status: 'publie' });
+    if (!job) return res.status(404).json({ error: 'Cette offre n’est plus disponible.' });
+
+    const name = sanitize(req.body.name || '', 120);
+    const email = sanitizeEmail(req.body.email || '');
+    const cvUrl = sanitize(req.body.cvUrl || '', 500);
+    const coverLetter = sanitize(req.body.coverLetter || '', 6000);
+    if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Adresse e-mail invalide.' });
+    if (!/^https?:\/\//i.test(cvUrl)) return res.status(400).json({ error: 'Le lien vers votre CV doit commencer par http:// ou https://' });
+    if (coverLetter.length < 30) return res.status(400).json({ error: 'Merci de détailler un peu votre motivation (30 caractères minimum).' });
+
+    const dejaCandidat = await Application.findOne({ jobId: job._id, email });
+    if (dejaCandidat) return res.status(409).json({ error: 'Vous avez déjà postulé à cette offre. Nous revenons vers vous rapidement.' });
+
+    const app_ = await Application.create({
+      jobId: job._id, jobTitle: job.title,
+      name, email, cvUrl, coverLetter,
+      phone: sanitize(req.body.phone || '', 30), city: sanitize(req.body.city || '', 120),
+      linkedin: sanitize(req.body.linkedin || '', 300), portfolio: sanitize(req.body.portfolio || '', 300),
+      ipHash: crypto.createHash('sha256').update((req.ip || '') + (process.env.JWT_SECRET || '')).digest('hex').slice(0, 32),
+    });
+    await Job.updateOne({ _id: job._id }, { $inc: { applicationsCount: 1 } });
+
+    // Ayaba evalue la candidature avant que l'equipe ne la lise.
+    await analyserCandidature(app_, job).catch(e => console.error('[candidature.ia]', e.message));
+
+    await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Recrutement] ${name} — ${job.title}${app_.aiFit ? ` [${app_.aiFit}/100]` : ''}`,
+      newApplicationAdminEmail({
+        name, email, phone: app_.phone, linkedin: app_.linkedin, portfolio: app_.portfolio,
+        cvUrl, cvFilename: 'Voir le CV',
+        coverLetter: coverLetter + (app_.aiSummary ? `\n\n— Analyse d'Ayaba —\n${app_.aiSummary}` : ''),
+      }, { title: job.title }), { replyTo: email }
+    ).catch(e => console.error('[candidature] mail admin:', e.message));
+
+    await sendEmail(email, `Candidature reçue — ${job.title} | Pirabel Labs`,
+      applicationConfirmationEmail(name, job.title)
+    ).catch(e => console.error('[candidature] mail candidat:', e.message));
+
+    res.json({ success: true, message: 'Candidature envoyée. Nous revenons vers vous sous 7 jours ouvrés.' });
+  } catch (e) { console.error('[candidatures]', e.message); res.status(500).json({ error: 'Erreur serveur.' }); }
+});
+
+// Evaluation d'une candidature par Ayaba : synthese et adequation au poste.
+async function analyserCandidature(cand, job) {
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) return;
+  const system = `Tu es Ayaba, assistante de Pirabel Labs (agence web et marketing, Benin).
+Tu evalues une candidature. Reponds UNIQUEMENT par un objet JSON valide :
+{"resume":"3 phrases : qui est ce candidat et ce qu'il apporte","adequation":0,
+"points_forts":"ce qui correspond vraiment au poste","reserves":"ce qui manque ou interroge"}
+adequation : entier de 0 a 100 mesurant la correspondance au poste decrit.
+Sois honnete et exigeant : un candidat hors sujet doit avoir une note basse. N'invente
+aucune experience non mentionnee. Francais impeccable, sans caractere de mise en forme.`;
+  const contenu = `POSTE : ${job.title}\n${job.excerpt || ''}\n` +
+    (job.profile && job.profile.length ? `Profil recherche : ${job.profile.join(' ; ')}\n` : '') +
+    `\nCANDIDAT : ${cand.name}\nVille : ${cand.city || 'non precisee'}\n` +
+    `CV : ${cand.cvUrl}\nLinkedIn : ${cand.linkedin || 'non fourni'}\nPortfolio : ${cand.portfolio || 'non fourni'}\n` +
+    `\nMotivation :\n${cand.coverLetter}`;
+
+  const { ok, data } = await AI.callOpenRouter({
+    apiKey, model: AI.MODEL_FAST,
+    messages: [{ role: 'system', content: system }, { role: 'user', content: contenu }],
+    maxTokens: 600, temperature: 0.3, timeoutMs: 18000,
+  });
+  if (!ok) return;
+  const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
+  const m = raw.match(/\{[\s\S]*\}/);
+  if (!m) return;
+  let a; try { a = JSON.parse(m[0]); } catch (e) { return; }
+  cand.aiSummary = sanitize(a.resume || '', 1500);
+  cand.aiFit = Math.max(0, Math.min(100, parseInt(a.adequation, 10) || 0));
+  cand.aiStrengths = sanitize(a.points_forts || '', 600);
+  cand.aiConcerns = sanitize(a.reserves || '', 600);
+  cand.aiProcessedAt = new Date();
+  await cand.save();
+}
 
 // ========================================================================
 // === ESPACE CLIENT (connexion par lien magique, sans mot de passe) ===

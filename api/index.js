@@ -1548,6 +1548,20 @@ const SENSITIVE_TOOLS = new Set([
 const HIGH_RISK_TOOLS = new Set(['supprimer_devis', 'supprimer_facture', 'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'publier_article',
   'supprimer_rendez_vous', 'supprimer_prospect']);
 
+// Consigne au journal des e-mails un envoi effectue par un agent. Sans cela, les
+// messages partis par Ayaba n'apparaissaient nulle part dans l'administration.
+async function journaliserEmail({ to, toName, subject, body, ok, leadId, agent }) {
+  try {
+    await SentEmail.create({
+      type: 'individuel', to: String(to || '').slice(0, 200), toName: String(toName || '').slice(0, 120),
+      subject: String(subject || '').slice(0, 300), body: String(body || '').slice(0, 20000),
+      status: ok ? 'envoye' : 'echec', sentCount: ok ? 1 : 0, failedCount: ok ? 0 : 1,
+      leadId: leadId || undefined,
+      sentByName: 'Ayaba' + (agent ? ' · ' + agent : ''),
+    });
+  } catch (e) { console.error('[journal.email]', e.message); }
+}
+
 // Résumé lisible d'une action sensible, affiché sur la carte de confirmation.
 function summarizeAction(name, input) {
   const r = input.reference || input.slug || '';
@@ -1776,6 +1790,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       });
       const sent = await sendEmail(doc.clientEmail, `${isQuote ? 'Votre devis' : 'Votre facture'} Pirabel Labs - ${doc.reference}`, html);
       if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
+      await journaliserEmail({ to: doc.clientEmail, toName: doc.clientName, subject: (isQuote ? 'Devis ' : 'Facture ') + doc.reference, body: doc.title, ok: true, leadId: doc.leadId, agent: opts.agentId });
       if (doc.status === 'brouillon') doc.status = isQuote ? 'envoye' : 'envoyee';
       doc.sentAt = new Date();
       await doc.save();
@@ -1793,6 +1808,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
         cta: 'Visiter pirabellabs.com', ctaUrl: 'https://www.pirabellabs.com' });
       const sent = await sendEmail(email, sanitize(input.subject || '', 200), html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
       if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
+      await journaliserEmail({ to: email, toName: lead.name, subject: input.subject, body: input.message, ok: true, leadId: lead._id, agent: opts.agentId });
       lead.lastEmailSentAt = new Date(); lead.emailsSentCount = (lead.emailsSentCount || 0) + 1;
       if (lead.status === 'nouveau') lead.status = 'lu';
       await lead.save();
@@ -1936,6 +1952,8 @@ async function executeAssistantTool(name, input, currentUser, opts) {
         cta: 'Consulter et régler la facture', ctaUrl: `https://www.pirabellabs.com/facture/${inv.publicToken}`,
       });
       const sent = await sendEmail(inv.clientEmail, `Relance — facture ${inv.reference}`, html);
+      await journaliserEmail({ to: inv.clientEmail, toName: inv.clientName, subject: `Relance — facture ${inv.reference}`,
+        body: input.message, ok: !!sent, leadId: inv.leadId, agent: opts.agentId });
       if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
       inv.internalNotes = ((inv.internalNotes || '') + `\n[Relance ${new Date().toISOString().slice(0, 10)}]`).slice(0, 5000);
       await inv.save();

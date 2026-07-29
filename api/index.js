@@ -52,6 +52,7 @@ const PendingAction = require('../app/models/PendingAction');
 const Project = require('../app/models/Project');
 const ClientMessage = require('../app/models/ClientMessage');
 const ChatSession = require('../app/models/ChatSession');
+const Expense = require('../app/models/Expense');
 const Job = require('../app/models/Job');
 const Application = require('../app/models/Application');
 const SentEmail = require('../app/models/SentEmail');
@@ -1529,6 +1530,17 @@ const ASSISTANT_TOOLS = [
   }, required: ['projetId'] } },
   { name: 'ouvrir_espace_client', description: "Activer l'accès à l'espace client pour un contact et lui envoyer son lien de connexion. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     email: { type: 'string', description: 'E-mail du client' } }, required: ['email'] } },
+  { name: 'bilan_comptable', description: "Obtenir la synthèse comptable complète : chiffre d'affaires encaissé, charges, résultat, marge, créances à recouvrer, pipeline des devis acceptés, répartition des charges par poste et évolution sur 12 mois. Utilise-le pour toute question sur la santé financière.", input_schema: { type: 'object', properties: {
+    periode: { type: 'string', description: "Période au format AAAA-MM pour un mois, AAAA pour une année, ou vide pour tout l'historique" } } } },
+  { name: 'enregistrer_depense', description: "Enregistrer une charge dans la comptabilité (abonnement, sous-traitance, hébergement, matériel…). Indispensable pour que le résultat soit juste : sans charges, seul le chiffre d'affaires est connu.", input_schema: { type: 'object', properties: {
+    label: { type: 'string', description: 'Libellé de la dépense' },
+    amount: { type: 'number', description: 'Montant' },
+    category: { type: 'string', enum: ['outils', 'sous_traitance', 'salaires', 'marketing', 'hebergement', 'materiel', 'deplacement', 'banque', 'impots', 'autre'] },
+    currency: { type: 'string', enum: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'] },
+    supplier: { type: 'string', description: 'Fournisseur (optionnel)' },
+    recurring: { type: 'boolean', description: 'Vrai si la charge revient chaque mois' },
+    date: { type: 'string', description: "Date de l'opération au format AAAA-MM-JJ (aujourd'hui par défaut)" },
+  }, required: ['label', 'amount'] } },
   { name: 'requalifier_factures_en_retard', description: "Passer automatiquement au statut « en_retard » toutes les factures envoyées ou consultées dont la date d'échéance est dépassée. Fais-le toi-même au lieu de conseiller une vérification manuelle. Action interne et réversible : exécutée immédiatement.", input_schema: { type: 'object', properties: {} } },
   { name: 'relancer_facture', description: "Préparer et envoyer une relance de paiement au client pour une facture impayée. Rédige toi-même un message courtois et ferme, adapté au retard. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     reference: { type: 'string', description: 'Référence de la facture, ex : FACT-2026-1234' },
@@ -1923,6 +1935,23 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       if (!sent) return { ok: false, message: "Espace activé mais l'e-mail n'a pas pu partir." };
       return { ok: true, message: `Espace client ouvert pour ${lead.name} et lien de connexion envoyé à ${email}.` };
     }
+    if (name === 'bilan_comptable') {
+      const b = await synthetiseComptabilite(input.periode);
+      return { ok: true, comptabilite: b };
+    }
+    if (name === 'enregistrer_depense') {
+      const montant = Number(input.amount);
+      if (!(montant > 0)) return { ok: false, message: 'Montant invalide.' };
+      const d = await Expense.create({
+        label: sanitize(input.label || '', 200), amount: Math.round(montant * 100) / 100,
+        category: CATEGORIES_CHARGES.includes(input.category) ? input.category : 'autre',
+        currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(input.currency) ? input.currency : 'EUR',
+        supplier: sanitize(input.supplier || '', 160), recurring: !!input.recurring,
+        date: input.date ? new Date(input.date) : new Date(),
+        createdBy: currentUser && currentUser._id ? currentUser._id : undefined,
+      });
+      return { ok: true, message: `Charge enregistrée : ${d.label} — ${d.amount} ${d.currency}${d.recurring ? ' (récurrente)' : ''}.` };
+    }
     if (name === 'requalifier_factures_en_retard') {
       const r = await Invoice.updateMany(
         { status: { $in: ['envoyee', 'consultee'] }, dueDate: { $lt: new Date() } },
@@ -2175,6 +2204,191 @@ app.post('/api/admin/candidatures/:id/statut', auth, adminOnly, limitBody(10), a
     }
     res.json({ success: true, statut, candidatPrevenu: prevenu });
   } catch (e) { console.error('[candidature.statut]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// ========================================================================
+// === COMPTABILITÉ ===
+// ========================================================================
+// Principe retenu : le chiffre d'affaires est constaté à l'ENCAISSEMENT (facture
+// passée à « payée »), pas à l'émission. C'est la comptabilité de trésorerie, la
+// plus juste pour une structure de cette taille. Les factures émises non réglées
+// sont donc des créances, pas du chiffre d'affaires.
+const CATEGORIES_CHARGES = ['outils', 'sous_traitance', 'salaires', 'marketing', 'hebergement',
+  'materiel', 'deplacement', 'banque', 'impots', 'autre'];
+
+// Bornes d'une période : « 2026-07 » (mois), « 2026 » (année), ou tout par défaut.
+function bornesPeriode(p) {
+  const s = String(p || '').trim();
+  let m;
+  if ((m = s.match(/^(\d{4})-(\d{2})$/))) {
+    const debut = new Date(Date.UTC(+m[1], +m[2] - 1, 1));
+    return { debut, fin: new Date(Date.UTC(+m[1], +m[2], 1)), libelle: s };
+  }
+  if ((m = s.match(/^(\d{4})$/))) {
+    return { debut: new Date(Date.UTC(+m[1], 0, 1)), fin: new Date(Date.UTC(+m[1] + 1, 0, 1)), libelle: s };
+  }
+  return { debut: null, fin: null, libelle: 'depuis le début' };
+}
+
+async function synthetiseComptabilite(periode) {
+  const { debut, fin, libelle } = bornesPeriode(periode);
+  const dansPeriode = (champ) => (debut ? { [champ]: { $gte: debut, $lt: fin } } : {});
+
+  const [payees, emises, devis, charges] = await Promise.all([
+    // CA encaissé : factures réglées, datées par leur date de paiement.
+    Invoice.find(Object.assign({ status: 'payee' }, dansPeriode('paidAt')))
+      .select('reference clientName total currency paidAt paymentMethod').sort({ paidAt: -1 }).lean(),
+    // Créances : émises, consultées ou en retard — encaissement attendu.
+    Invoice.find({ status: { $in: ['envoyee', 'consultee', 'en_retard'] } })
+      .select('reference clientName total currency dueDate status').sort({ dueDate: 1 }).lean(),
+    // Pipeline : devis acceptés (chiffre d'affaires probable, pas encore facturé).
+    Quote.find({ status: 'accepte' }).select('reference clientName total currency acceptedAt').lean(),
+    Expense.find(dansPeriode('date')).select('label category amount currency date supplier recurring').sort({ date: -1 }).lean(),
+  ]);
+
+  // Les devises ne s'additionnent pas : on ventile.
+  const parDevise = {};
+  const init = (d) => (parDevise[d] = parDevise[d] || { ca: 0, charges: 0, resultat: 0, creances: 0, pipeline: 0 });
+  payees.forEach(i => { init(i.currency).ca += i.total; });
+  charges.forEach(c => { init(c.currency).charges += c.amount; });
+  emises.forEach(i => { init(i.currency).creances += i.total; });
+  devis.forEach(q => { init(q.currency).pipeline += q.total; });
+  Object.values(parDevise).forEach(v => {
+    v.ca = Math.round(v.ca * 100) / 100;
+    v.charges = Math.round(v.charges * 100) / 100;
+    v.creances = Math.round(v.creances * 100) / 100;
+    v.pipeline = Math.round(v.pipeline * 100) / 100;
+    v.resultat = Math.round((v.ca - v.charges) * 100) / 100;
+    v.marge = v.ca > 0 ? Math.round((v.resultat / v.ca) * 100) : 0;
+  });
+
+  // Répartition des charges par poste, pour voir où part l'argent.
+  const parCategorie = {};
+  charges.forEach(c => {
+    parCategorie[c.category] = parCategorie[c.category] || { montant: 0, nombre: 0, devise: c.currency };
+    parCategorie[c.category].montant += c.amount;
+    parCategorie[c.category].nombre++;
+  });
+  Object.values(parCategorie).forEach(v => { v.montant = Math.round(v.montant * 100) / 100; });
+
+  // Évolution mensuelle sur 12 mois : la tendance compte plus que l'instantané.
+  const ilYaUnAn = new Date(); ilYaUnAn.setMonth(ilYaUnAn.getMonth() - 11); ilYaUnAn.setDate(1);
+  const [caMois, chargesMois] = await Promise.all([
+    Invoice.aggregate([
+      { $match: { status: 'payee', paidAt: { $gte: ilYaUnAn } } },
+      { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$paidAt' } }, total: { $sum: '$total' } } },
+    ]),
+    Expense.aggregate([
+      { $match: { date: { $gte: ilYaUnAn } } },
+      { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$date' } }, total: { $sum: '$amount' } } },
+    ]),
+  ]);
+  const mois = {};
+  caMois.forEach(m => { mois[m._id] = mois[m._id] || { ca: 0, charges: 0 }; mois[m._id].ca = Math.round(m.total); });
+  chargesMois.forEach(m => { mois[m._id] = mois[m._id] || { ca: 0, charges: 0 }; mois[m._id].charges = Math.round(m.total); });
+  const evolution = Object.keys(mois).sort().map(k => ({ mois: k, ca: mois[k].ca, charges: mois[k].charges, resultat: mois[k].ca - mois[k].charges }));
+
+  const enRetard = emises.filter(i => i.dueDate && new Date(i.dueDate) < new Date());
+  const chargesRecurrentes = charges.filter(c => c.recurring);
+
+  return {
+    periode: libelle,
+    parDevise,
+    resume: {
+      facturesPayees: payees.length,
+      creancesOuvertes: emises.length,
+      creancesEnRetard: enRetard.length,
+      devisAcceptes: devis.length,
+      nombreCharges: charges.length,
+      chargesRecurrentes: chargesRecurrentes.length,
+    },
+    chargesParCategorie: parCategorie,
+    evolution,
+    encaissements: payees.slice(0, 40).map(i => ({
+      ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency,
+      le: i.paidAt, moyen: i.paymentMethod || '',
+    })),
+    creances: emises.slice(0, 40).map(i => ({
+      ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency,
+      echeance: i.dueDate, statut: i.status,
+      retard: i.dueDate && new Date(i.dueDate) < new Date() ? Math.floor((Date.now() - new Date(i.dueDate)) / 86400000) : 0,
+    })),
+    depenses: charges.slice(0, 40).map(c => ({
+      libelle: c.label, categorie: c.category, montant: c.amount, devise: c.currency,
+      le: c.date, fournisseur: c.supplier || '', recurrente: c.recurring,
+    })),
+    note: 'Chiffre d’affaires constaté à l’encaissement. Les montants ne sont jamais additionnés entre devises différentes.',
+  };
+}
+
+app.get('/api/admin/comptabilite', auth, adminOnly, async (req, res) => {
+  try { res.json(await synthetiseComptabilite(req.query.periode)); }
+  catch (e) { console.error('[compta]', e.message); res.status(500).json({ error: 'Erreur : ' + e.message }); }
+});
+
+// --- Charges : saisie et suivi ---
+app.get('/api/admin/depenses', auth, adminOnly, async (req, res) => {
+  try {
+    const f = {};
+    if (CATEGORIES_CHARGES.includes(req.query.categorie)) f.category = req.query.categorie;
+    const list = await Expense.find(f).sort({ date: -1 }).limit(200).lean();
+    res.json({ depenses: list });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+app.post('/api/admin/depenses', auth, adminOnly, limitBody(20), async (req, res) => {
+  try {
+    const label = sanitize(req.body.label || '', 200);
+    const amount = Number(req.body.amount);
+    if (!label || label.length < 2) return res.status(400).json({ error: 'Libellé requis.' });
+    if (!(amount > 0)) return res.status(400).json({ error: 'Montant invalide.' });
+    const d = await Expense.create({
+      label, amount: Math.round(amount * 100) / 100,
+      category: CATEGORIES_CHARGES.includes(req.body.category) ? req.body.category : 'autre',
+      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(req.body.currency) ? req.body.currency : 'EUR',
+      recurring: !!req.body.recurring,
+      supplier: sanitize(req.body.supplier || '', 160),
+      paymentMethod: sanitize(req.body.paymentMethod || '', 80),
+      reference: sanitize(req.body.reference || '', 80),
+      notes: sanitize(req.body.notes || '', 2000),
+      date: req.body.date ? new Date(req.body.date) : new Date(),
+      createdBy: req.user._id,
+    });
+    res.json({ success: true, depense: d });
+  } catch (e) { console.error('[depense.create]', e.message); res.status(500).json({ error: 'Erreur : ' + e.message }); }
+});
+
+app.delete('/api/admin/depenses/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const d = await Expense.findByIdAndDelete(req.params.id);
+    if (!d) return res.status(404).json({ error: 'Charge introuvable.' });
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// Export comptable : format ouvert, lisible par tout tableur ou expert-comptable.
+app.get('/api/admin/comptabilite/export', auth, adminOnly, async (req, res) => {
+  try {
+    const { debut, fin } = bornesPeriode(req.query.periode);
+    const dans = (c) => (debut ? { [c]: { $gte: debut, $lt: fin } } : {});
+    const [payees, charges] = await Promise.all([
+      Invoice.find(Object.assign({ status: 'payee' }, dans('paidAt'))).select('reference clientName total currency paidAt paymentMethod title').sort({ paidAt: 1 }).lean(),
+      Expense.find(dans('date')).select('label category amount currency date supplier reference').sort({ date: 1 }).lean(),
+    ]);
+    const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const lignes = [['Date', 'Type', 'Categorie', 'Libelle', 'Tiers', 'Reference', 'Recette', 'Depense', 'Devise'].join(';')];
+    payees.forEach(i => lignes.push([
+      new Date(i.paidAt).toISOString().slice(0, 10), 'Recette', 'Prestation',
+      esc(i.title), esc(i.clientName), esc(i.reference), i.total, '', i.currency,
+    ].join(';')));
+    charges.forEach(c => lignes.push([
+      new Date(c.date).toISOString().slice(0, 10), 'Depense', c.category,
+      esc(c.label), esc(c.supplier), esc(c.reference), '', c.amount, c.currency,
+    ].join(';')));
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="comptabilite-${req.query.periode || 'complet'}.csv"`);
+    res.send('﻿' + lignes.join('\n'));   // BOM : accents corrects dans Excel
+  } catch (e) { console.error('[compta.export]', e.message); res.status(500).json({ error: 'Erreur export.' }); }
 });
 
 // --- Actions en attente de validation humaine ---

@@ -149,7 +149,7 @@ const AGENTS = {
     tools: ['creer_tache', 'modifier_tache', 'lister_taches', 'lister_equipe', 'rechercher_prospects', 'enregistrer_prospect', 'lister_devis', 'lister_factures', 'stats_revenus',
       'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'envoyer_email', 'lister_articles', 'supprimer_prospect',
       'requalifier_factures_en_retard', 'relancer_facture',
-      'creer_projet', 'lister_projets', 'modifier_projet', 'ouvrir_espace_client'],
+      'creer_projet', 'lister_projets', 'modifier_projet', 'ouvrir_espace_client', 'bilan_comptable', 'enregistrer_depense'],
     prompt: `CASQUETTE ACTIVE : pilotage et coordination.
 Tu as la vue d'ensemble : prospects, devis, factures, taches, equipe, blog, rendez-vous.
 Ton role : transformer une intention floue en plan d'action concret et l'executer via tes outils.
@@ -169,7 +169,7 @@ Sois direct, structure et chiffre quand les donnees le permettent. Pas de blabla
       'envoyer_devis', 'envoyer_facture', 'envoyer_email', 'supprimer_devis', 'supprimer_facture', 'marquer_facture_payee',
       'lister_rendez_vous', 'modifier_rendez_vous', 'supprimer_rendez_vous', 'supprimer_prospect',
       'requalifier_factures_en_retard', 'relancer_facture',
-      'creer_projet', 'lister_projets', 'ouvrir_espace_client'],
+      'creer_projet', 'lister_projets', 'ouvrir_espace_client', 'bilan_comptable'],
     prompt: `CASQUETTE ACTIVE : developpement commercial.
 Ton role : faire avancer le pipeline. Tu analyses les prospects et devis reels, tu identifies
 qui relancer en priorite et pourquoi, tu rediges des propositions commerciales convaincantes,
@@ -246,7 +246,7 @@ Tu crees toujours des BROUILLONS : la publication reste une decision du dirigean
     tagline: 'Revenus, performance, reporting',
     scope: 'admin',
     model: MODEL_PRO,
-    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee', 'requalifier_factures_en_retard', 'relancer_facture', 'creer_tache', 'lister_projets', 'enregistrer_prospect', 'envoyer_email'],
+    tools: ['stats_revenus', 'lister_devis', 'lister_factures', 'rechercher_prospects', 'lister_taches', 'lister_rendez_vous', 'marquer_facture_payee', 'requalifier_factures_en_retard', 'relancer_facture', 'creer_tache', 'lister_projets', 'enregistrer_prospect', 'envoyer_email', 'bilan_comptable', 'enregistrer_depense'],
     prompt: `CASQUETTE ACTIVE : analyse de gestion.
 Ton role : donner au dirigeant une lecture claire et honnete de la sante de l'activite —
 chiffre d'affaires encaisse, en attente de reglement, taux de conversion des devis,

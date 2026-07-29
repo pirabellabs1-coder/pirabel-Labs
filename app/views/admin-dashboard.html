@@ -497,7 +497,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <h1 id="pageTitle">Tableau de bord</h1>
         <div class="topbar__sub" id="pageSub">Vue d'ensemble en temps reel</div>
       </div>
-      <div class="topbar__actions">
+      <div class="topbar__actions" id="topbarActions">
         <a href="/" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">open_in_new</span> Voir le site</a>
         <button class="btn btn--sm" onclick="openCompose()"><span class="material-symbols-outlined">edit</span> Écrire un email</button>
         <button class="btn btn--sm" id="refreshBtn"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
@@ -1192,9 +1192,20 @@ function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
   const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'], appointments: ['Rendez-vous', 'Demandes de RDV depuis le site — relances et suivi'] };
+  // Titres des écrans ajoutés après la version initiale.
+  Object.assign(titles, {
+    invoices: ['Factures', 'Émission, envoi et suivi des règlements'],
+    conversations: ['Conversations site', 'Échanges tenus avec Ayaba sur le site public'],
+    recrutement: ['Recrutement', 'Offres d\'emploi et candidatures reçues'],
+    comptabilite: ['Comptabilité', 'Chiffre d\'affaires, charges, résultat et créances'],
+  });
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSub').textContent = t[1];
+  // La barre d'actions générales n'a de sens que sur la vue d'ensemble : sur les
+  // autres écrans, chacun porte déjà ses propres boutons.
+  var actions = document.getElementById('topbarActions');
+  if (actions) actions.style.display = (view === 'dashboard') ? '' : 'none';
   if (view === 'analytics' && STATE.stats) setTimeout(renderAnalyticsCharts, 50);
   if (view === 'leads' && !STATE.leads.length) loadLeads();
   if (view === 'livres-blancs') { loadLivresBlancsCMS(); loadLivresBlancs(); }

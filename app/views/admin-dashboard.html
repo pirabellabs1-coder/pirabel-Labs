@@ -472,6 +472,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <a class="sidebar__link" data-view="assistant" data-label="Ayaba — assistante de l&#39;agence"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Ayaba</span></a>
       <a class="sidebar__link" data-view="conversations" data-label="Conversations site"><span class="material-symbols-outlined">chat</span><span class="sidebar__link-text">Conversations site</span> <span id="csBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="recrutement" data-label="Recrutement"><span class="material-symbols-outlined">badge</span><span class="sidebar__link-text">Recrutement</span> <span id="rcBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
+      <a class="sidebar__link" data-view="comptabilite" data-label="Comptabilité"><span class="material-symbols-outlined">account_balance</span><span class="sidebar__link-text">Comptabilité</span></a>
       <a class="sidebar__link" data-view="team" data-label="Équipe"><span class="material-symbols-outlined">groups</span><span class="sidebar__link-text">Équipe</span></a>
       <a class="sidebar__link" data-view="tasks" data-label="Tâches"><span class="material-symbols-outlined">checklist</span><span class="sidebar__link-text">Tâches</span></a>
     </nav>
@@ -971,6 +972,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div id="rcContenu" style="display:grid;gap:1rem;"></div>
     </div>
 
+    <!-- COMPTABILITÉ -->
+    <div class="view" data-view="comptabilite">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <label style="font-size:.78rem;color:var(--text-muted);">Période</label>
+          <select id="cpPeriode" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.5rem .8rem;border-radius:8px;font-size:.85rem;"></select>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="btn btn--ghost btn--sm" id="cpExport"><span class="material-symbols-outlined">download</span> Export comptable</button>
+          <button class="btn btn--sm" id="cpNewDep"><span class="material-symbols-outlined">add</span> Saisir une charge</button>
+        </div>
+      </div>
+      <div id="cpContenu"><div class="empty" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</div></div>
+    </div>
+
     <!-- ÉQUIPE VIEW -->
     <div class="view" data-view="team">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
@@ -1191,6 +1207,7 @@ function setView(view) {
   if (view === 'invoices') loadInvoices();
   if (view === 'conversations') loadChatSessions();
   if (view === 'recrutement') loadRecrutement();
+  if (view === 'comptabilite') loadComptabilite();
   if (view === 'reviews') loadReviews();
   if (view === 'gallery') loadGallery();
   if (view === 'assistant') initAssistant();
@@ -1853,6 +1870,303 @@ function openNewQuoteModal(preLeadId) {
   } else {
     toast('Modal devis indisponible, rechargez la page', 'error');
   }
+}
+
+// ============ COMPTABILITÉ ============
+var CP_CATS = { outils:'Outils & logiciels', sous_traitance:'Sous-traitance', salaires:'Salaires', marketing:'Marketing',
+  hebergement:'Hébergement', materiel:'Matériel', deplacement:'Déplacement', banque:'Frais bancaires', impots:'Impôts & taxes', autre:'Autre' };
+
+function cpMontant(v, d) { return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0)+' '+(d||'EUR'); }
+function cpDate(d) { try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e){ return '—'; } }
+
+function cpRemplirPeriodes() {
+  var sel = document.getElementById('cpPeriode');
+  if (!sel || sel.options.length) return;
+  var now = new Date(), opts = ['<option value="">Depuis le début</option>'];
+  opts.push('<option value="' + now.getFullYear() + '">Année ' + now.getFullYear() + '</option>');
+  for (var i = 0; i < 12; i++) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var v = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    opts.push('<option value="' + v + '">' + d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}) + '</option>');
+  }
+  sel.innerHTML = opts.join('');
+  sel.onchange = loadComptabilite;
+}
+
+async function loadComptabilite() {
+  cpRemplirPeriodes();
+  var box = document.getElementById('cpContenu');
+  var per = (document.getElementById('cpPeriode') || {}).value || '';
+  box.innerHTML = '<div class="empty" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</div>';
+  try {
+    var c = await api('/api/admin/comptabilite' + (per ? '?periode=' + per : ''));
+    var devises = Object.keys(c.parDevise || {});
+    if (!devises.length) {
+      box.innerHTML = '<div class="card"><div class="empty" style="padding:2.5rem;text-align:center;color:var(--text-muted);">'
+        + '<span class="material-symbols-outlined" style="font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5;">account_balance</span>'
+        + 'Aucun mouvement sur cette période.</div></div>';
+      return;
+    }
+    var html = '';
+
+    devises.forEach(function(d){
+      var v = c.parDevise[d];
+      html += '<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:1.2rem;">'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + cpMontant(v.ca,d) + '</div><div class="kpi__label">Chiffre d\'affaires encaissé</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">trending_down</span></div></div><div class="kpi__value">' + cpMontant(v.charges,d) + '</div><div class="kpi__label">Charges</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">savings</span></div></div><div class="kpi__value" style="color:' + (v.resultat>=0?'var(--success)':'var(--danger)') + ';">' + cpMontant(v.resultat,d) + '</div><div class="kpi__label">Résultat · ' + v.marge + '% de marge</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule</span></div></div><div class="kpi__value">' + cpMontant(v.creances,d) + '</div><div class="kpi__label">Créances à recouvrer</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">target</span></div></div><div class="kpi__value">' + cpMontant(v.pipeline,d) + '</div><div class="kpi__label">Pipeline (devis acceptés)</div></div>'
+        + '</div>';
+    });
+
+    if (c.parDevise[devises[0]] && c.parDevise[devises[0]].charges === 0) {
+      html += '<div class="card" style="border-color:rgba(251,191,36,.35);margin-bottom:1.2rem;"><div style="display:flex;gap:.6rem;align-items:flex-start;">'
+        + '<span class="material-symbols-outlined" style="color:var(--warning);">info</span>'
+        + '<div style="font-size:.88rem;line-height:1.6;color:var(--text-muted);"><strong style="color:var(--text);">Aucune charge saisie.</strong> '
+        + 'Le résultat affiché est donc surévalué : il ne tient compte d\'aucune dépense. Saisissez vos abonnements '
+        + '(hébergement, base de données, e-mail, IA) pour obtenir un résultat réel.</div></div></div>';
+    }
+
+    // Évolution mensuelle
+    if (c.evolution && c.evolution.length) {
+      var max = Math.max.apply(null, c.evolution.map(function(m){ return Math.max(m.ca, m.charges); })) || 1;
+      html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Évolution sur 12 mois</div></div></div>'
+        + '<div style="display:flex;align-items:flex-end;gap:.5rem;height:150px;padding:1rem .3rem 0;overflow-x:auto;">'
+        + c.evolution.map(function(m){
+            return '<div style="flex:1;min-width:38px;display:flex;flex-direction:column;align-items:center;gap:.25rem;">'
+              + '<div style="display:flex;gap:2px;align-items:flex-end;height:110px;">'
+              + '<div title="CA : ' + m.ca + '" style="width:12px;background:var(--success);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.ca/max)*110) + 'px;"></div>'
+              + '<div title="Charges : ' + m.charges + '" style="width:12px;background:var(--warning);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.charges/max)*110) + 'px;"></div>'
+              + '</div><span style="font-size:.62rem;color:var(--text-faint);">' + m.mois.slice(5) + '/' + m.mois.slice(2,4) + '</span></div>';
+          }).join('')
+        + '</div><div style="display:flex;gap:1.2rem;font-size:.75rem;color:var(--text-muted);padding:.6rem .3rem 0;">'
+        + '<span><i style="display:inline-block;width:9px;height:9px;background:var(--success);border-radius:2px;"></i> Chiffre d\'affaires</span>'
+        + '<span><i style="display:inline-block;width:9px;height:9px;background:var(--warning);border-radius:2px;"></i> Charges</span></div></div>';
+    }
+
+    // Charges par poste
+    var cats = Object.keys(c.chargesParCategorie || {});
+    if (cats.length) {
+      html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Répartition des charges</div></div></div><div style="display:grid;gap:.5rem;">'
+        + cats.sort(function(a,b){ return c.chargesParCategorie[b].montant - c.chargesParCategorie[a].montant; }).map(function(k){
+            var v = c.chargesParCategorie[k];
+            return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--surface);border-radius:8px;">'
+              + '<span style="font-size:.88rem;">' + escape(CP_CATS[k]||k) + ' <span style="color:var(--text-faint);font-size:.78rem;">(' + v.nombre + ')</span></span>'
+              + '<strong style="font-size:.9rem;">' + cpMontant(v.montant, v.devise) + '</strong></div>';
+          }).join('') + '</div></div>';
+    }
+
+    // Créances
+    if (c.creances && c.creances.length) {
+      html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Créances à recouvrer</div></div></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">'
+        + '<thead><tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Référence</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Client</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Échéance</th><th style="text-align:right;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Montant</th></tr></thead><tbody>'
+        + c.creances.map(function(x){
+            return '<tr style="border-bottom:1px solid var(--border);"><td style="padding:.75rem .5rem;font-family:monospace;font-size:.8rem;color:var(--accent);">' + escape(x.ref) + '</td>'
+              + '<td style="padding:.75rem .5rem;font-size:.85rem;">' + escape(x.client) + '</td>'
+              + '<td style="padding:.75rem .5rem;font-size:.82rem;color:' + (x.retard>0?'var(--danger)':'var(--text-muted)') + ';">' + cpDate(x.echeance) + (x.retard>0?' · +'+x.retard+' j':'') + '</td>'
+              + '<td style="padding:.75rem .5rem;text-align:right;font-weight:700;font-size:.88rem;">' + cpMontant(x.montant,x.devise) + '</td></tr>';
+          }).join('') + '</tbody></table></div></div>';
+    }
+
+    // Dernières charges
+    html += '<div class="card"><div class="card__header"><div><div class="card__title">Charges enregistrées</div></div></div>';
+    if (!c.depenses || !c.depenses.length) {
+      html += '<div class="empty" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucune charge sur cette période.</div>';
+    } else {
+      html += '<div style="display:grid;gap:.5rem;">' + c.depenses.map(function(x){
+        return '<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem .85rem;background:var(--surface);border-radius:8px;flex-wrap:wrap;">'
+          + '<div><div style="font-size:.9rem;font-weight:600;">' + escape(x.libelle) + (x.recurrente?' <span class="badge badge--info" style="font-size:.6rem;">récurrente</span>':'') + '</div>'
+          + '<div style="font-size:.75rem;color:var(--text-faint);">' + escape(CP_CATS[x.categorie]||x.categorie) + ' · ' + cpDate(x.le) + (x.fournisseur?' · '+escape(x.fournisseur):'') + '</div></div>'
+          + '<strong style="font-size:.9rem;color:var(--warning);">− ' + cpMontant(x.montant,x.devise) + '</strong></div>';
+      }).join('') + '</div>';
+    }
+    html += '</div>';
+
+    html += '<div style="margin-top:1rem;font-size:.78rem;color:var(--text-faint);line-height:1.6;">' + escape(c.note || '') + '</div>';
+    box.innerHTML = html;
+  } catch(e) {
+    box.innerHTML = '<div class="card"><div class="empty" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape((e&&e.message)||'') + '</div></div>';
+  }
+}
+
+function cpSaisirCharge() {
+  showFormModal('Saisir une charge', [
+    { id:'label', label:'Libellé', required:true, placeholder:'Abonnement Vercel Pro' },
+    { id:'amount', label:'Montant', type:'number', required:true, step:'0.01' },
+    { id:'category', label:'Poste', type:'select', options:Object.keys(CP_CATS).map(function(k){return {v:k,t:CP_CATS[k]};}) },
+    { id:'currency', label:'Devise', type:'select', options:['EUR','USD','CAD','XOF','XAF','MAD','TND','CHF'].map(function(x){return {v:x,t:x};}) },
+    { id:'supplier', label:'Fournisseur', placeholder:'Optionnel' },
+    { id:'date', label:'Date de l\'opération', type:'date' },
+    { id:'recurring', label:'Charge récurrente (chaque mois)', type:'checkbox' },
+  ], async function(vals){
+    await api('/api/admin/depenses', { method:'POST', body: JSON.stringify(vals) });
+    toast('Charge enregistrée', 'success');
+    loadComptabilite();
+  });
+}
+
+// Petit formulaire modal générique, réutilisé par la comptabilité et le recrutement.
+function showFormModal(titre, champs, onValider) {
+  var old = document.getElementById('formModal'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'formModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
+  var inputs = champs.map(function(c){
+    var base = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.7rem .85rem;border-radius:8px;font-family:inherit;font-size:.9rem;';
+    if (c.type === 'checkbox') return '<label style="display:flex;gap:.5rem;align-items:center;font-size:.85rem;margin-bottom:.9rem;"><input type="checkbox" id="fm_'+c.id+'"> '+escape(c.label)+'</label>';
+    if (c.type === 'select') return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
+      + '<select id="fm_'+c.id+'" style="'+base+'margin-bottom:.9rem;">'+c.options.map(function(o){return '<option value="'+o.v+'">'+escape(o.t)+'</option>';}).join('')+'</select>';
+    if (c.type === 'textarea') return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
+      + '<textarea id="fm_'+c.id+'" rows="3" placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;resize:vertical;"></textarea>';
+    return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+(c.required?' *':'')+'</label>'
+      + '<input id="fm_'+c.id+'" type="'+(c.type||'text')+'"'+(c.step?' step="'+c.step+'"':'')+' placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;">';
+  }).join('');
+  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:32rem;width:100%;max-height:90vh;overflow-y:auto;">'
+    + '<div style="padding:1.3rem 1.6rem;border-bottom:1px solid var(--border);font-family:var(--font-display);font-weight:800;font-size:1.1rem;">'+escape(titre)+'</div>'
+    + '<div style="padding:1.3rem 1.6rem;">'+inputs+'<div id="fmErr" style="color:var(--danger);font-size:.83rem;margin-bottom:.8rem;display:none;"></div>'
+    + '<div style="display:flex;gap:.6rem;justify-content:flex-end;"><button class="btn btn--ghost btn--sm" id="fmNon">Annuler</button><button class="btn btn--sm" id="fmOui">Enregistrer</button></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click', function(e){ if (e.target === m) m.remove(); });
+  m.querySelector('#fmNon').onclick = function(){ m.remove(); };
+  m.querySelector('#fmOui').onclick = async function(){
+    var vals = {}, err = m.querySelector('#fmErr');
+    for (var i=0;i<champs.length;i++) {
+      var c = champs[i], el = m.querySelector('#fm_'+c.id);
+      var v = c.type === 'checkbox' ? el.checked : el.value.trim();
+      if (c.required && !v) { err.textContent = c.label + ' est requis.'; err.style.display='block'; return; }
+      if (c.type === 'number' && v) v = parseFloat(v);
+      if (v !== '' && v !== false) vals[c.id] = v;
+    }
+    try { await onValider(vals); m.remove(); }
+    catch(e){ err.textContent = (e&&e.message)||'Erreur.'; err.style.display='block'; }
+  };
+}
+
+// ============ RECRUTEMENT ============
+var RC_ONGLET = 'candidats';
+var RC_ETAPES = { nouveau:['Nouveau','badge--new'], en_revue:['En revue','badge--info'], preselectionne:['Présélectionné','badge--warning'],
+  entretien:['Entretien','badge--warning'], test:['Test technique','badge--info'], accepte:['Accepté','badge--won'], refuse:['Refusé','badge--lost'] };
+
+async function loadRecrutement() {
+  var box = document.getElementById('rcContenu');
+  box.innerHTML = '<div class="empty" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</div>';
+  try {
+    if (RC_ONGLET === 'offres') return rcAfficherOffres(box);
+    var d = await api('/api/admin/candidatures');
+    var s = d.parStatut || {};
+    document.getElementById('rcKpis').innerHTML =
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">group</span></div></div><div class="kpi__value">' + d.candidatures.length + '</div><div class="kpi__label">Candidatures</div></div>'
+      + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">mark_email_unread</span></div></div><div class="kpi__value">' + (d.nonLues||0) + '</div><div class="kpi__label">Non lues</div></div>'
+      + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">interpreter_mode</span></div></div><div class="kpi__value">' + ((s.entretien||0)+(s.test||0)) + '</div><div class="kpi__label">En entretien</div></div>'
+      + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">how_to_reg</span></div></div><div class="kpi__value">' + (s.accepte||0) + '</div><div class="kpi__label">Acceptés</div></div>';
+    rcBadge(d.nonLues||0);
+
+    if (!d.candidatures.length) {
+      box.innerHTML = '<div class="card"><div class="empty" style="padding:2.5rem;text-align:center;color:var(--text-muted);">'
+        + '<span class="material-symbols-outlined" style="font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5;">person_search</span>'
+        + 'Aucune candidature. Publiez une offre pour commencer à en recevoir.</div></div>';
+      return;
+    }
+    box.innerHTML = d.candidatures.map(function(c){
+      var e = RC_ETAPES[c.statut] || [c.statut,''];
+      var opts = Object.keys(RC_ETAPES).map(function(k){ return '<option value="'+k+'"'+(k===c.statut?' selected':'')+'>'+RC_ETAPES[k][0]+'</option>'; }).join('');
+      return '<div class="card"' + (c.lu?'':' style="border-color:rgba(255,85,0,.35);"') + '>'
+        + '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.7rem;">'
+          + '<div><div style="font-family:var(--font-display);font-weight:700;font-size:1rem;">' + escape(c.nom) + (c.lu?'':' <span style="background:#FF5500;color:#190800;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:999px;">NOUVEAU</span>') + '</div>'
+          + '<div style="font-size:.78rem;color:var(--text-faint);">' + escape(c.poste) + ' · ' + escape(c.email) + (c.ville?' · '+escape(c.ville):'') + '</div></div>'
+          + '<div style="text-align:right;"><span class="badge ' + e[1] + '">' + e[0] + '</span>'
+          + (c.adequation ? '<div style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">adéquation ' + c.adequation + '/100</div>' : '') + '</div>'
+        + '</div>'
+        + (c.resume ? '<div style="font-size:.87rem;line-height:1.6;color:var(--text-muted);margin-bottom:.6rem;">' + escape(c.resume) + '</div>' : '')
+        + (c.pointsForts ? '<div style="font-size:.82rem;color:var(--success);margin-bottom:.3rem;">+ ' + escape(c.pointsForts) + '</div>' : '')
+        + (c.reserves ? '<div style="font-size:.82rem;color:var(--warning);margin-bottom:.6rem;">! ' + escape(c.reserves) + '</div>' : '')
+        + '<div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-top:.8rem;">'
+          + (c.cv ? '<a class="btn btn--ghost btn--sm" href="'+escape(c.cv)+'" target="_blank" rel="noopener"><span class="material-symbols-outlined">description</span> CV</a>' : '')
+          + (c.linkedin ? '<a class="btn btn--ghost btn--sm" href="'+escape(c.linkedin)+'" target="_blank" rel="noopener">LinkedIn</a>' : '')
+          + (c.portfolio ? '<a class="btn btn--ghost btn--sm" href="'+escape(c.portfolio)+'" target="_blank" rel="noopener">Portfolio</a>' : '')
+          + '<button class="btn btn--ghost btn--sm" onclick="rcVoirMotivation(\''+c.id+'\')">Motivation</button>'
+          + '<select onchange="rcChangerEtape(\''+c.id+'\',this.value)" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.4rem .6rem;border-radius:8px;font-size:.8rem;margin-left:auto;">'+opts+'</select>'
+        + '</div></div>';
+    }).join('');
+    window.__RC = d.candidatures;
+  } catch(e) {
+    box.innerHTML = '<div class="card"><div class="empty" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape((e&&e.message)||'') + '</div></div>';
+  }
+}
+
+function rcBadge(n){ var b=document.getElementById('rcBadge'); if(!b) return; if(n>0){b.textContent=n;b.style.display='';}else b.style.display='none'; }
+
+function rcVoirMotivation(id) {
+  var c = (window.__RC||[]).find(function(x){ return x.id===id; });
+  if (!c) return;
+  showInfoModal('Motivation — ' + escape(c.nom),
+    '<div style="white-space:pre-wrap;font-size:.9rem;line-height:1.7;color:var(--text-muted);">' + escape(c.motivation||'(vide)') + '</div>');
+}
+
+async function rcChangerEtape(id, statut) {
+  var prevenir = confirm('Faire passer ce candidat à « ' + (RC_ETAPES[statut]||[statut])[0] + ' » ?\n\nOK : le candidat reçoit l\'e-mail correspondant.\nAnnuler : changement sans notification.');
+  try {
+    var r = await api('/api/admin/candidatures/' + id + '/statut', { method:'POST', body: JSON.stringify({ status: statut, prevenirCandidat: prevenir }) });
+    toast(r.candidatPrevenu ? 'Étape mise à jour, candidat prévenu' : 'Étape mise à jour', 'success');
+    loadRecrutement();
+  } catch(e) { toast('Erreur : ' + ((e&&e.message)||''), 'error'); }
+}
+
+async function rcAfficherOffres(box) {
+  var d = await api('/api/admin/jobs');
+  var jobs = d.jobs || [];
+  document.getElementById('rcKpis').innerHTML =
+    '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">work</span></div></div><div class="kpi__value">' + jobs.length + '</div><div class="kpi__label">Offres</div></div>'
+    + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">public</span></div></div><div class="kpi__value">' + jobs.filter(function(j){return j.status==='publie';}).length + '</div><div class="kpi__label">En ligne</div></div>';
+  if (!jobs.length) {
+    box.innerHTML = '<div class="card"><div class="empty" style="padding:2.5rem;text-align:center;color:var(--text-muted);">'
+      + '<span class="material-symbols-outlined" style="font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5;">work_off</span>'
+      + 'Aucune offre. Cliquez sur « Nouvelle offre » pour publier votre premier poste.</div></div>';
+    return;
+  }
+  var ST = { brouillon:['Brouillon','badge--new'], publie:['En ligne','badge--won'], pourvu:['Pourvu','badge--info'], archive:['Archivée','badge--lost'] };
+  box.innerHTML = jobs.map(function(j){
+    var s = ST[j.status] || [j.status,''];
+    return '<div class="card"><div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem;">'
+      + '<div><div style="font-family:var(--font-display);font-weight:700;font-size:1rem;">' + escape(j.title) + '</div>'
+      + '<div style="font-size:.78rem;color:var(--text-faint);">' + escape(j.location||'') + ' · ' + escape(j.contract||'') + ' · ' + (j.applicationsCount||0) + ' candidature(s)</div></div>'
+      + '<span class="badge ' + s[1] + '">' + s[0] + '</span></div>'
+      + (j.excerpt ? '<div style="font-size:.87rem;color:var(--text-muted);line-height:1.6;margin-bottom:.7rem;">' + escape(j.excerpt) + '</div>' : '')
+      + '<div style="display:flex;gap:.4rem;flex-wrap:wrap;">'
+      + (j.status==='publie' ? '<a class="btn btn--ghost btn--sm" href="/carrieres/'+escape(j.slug)+'" target="_blank"><span class="material-symbols-outlined">visibility</span> Voir</a>' : '')
+      + '<button class="btn btn--sm" onclick="rcPublier(\''+j._id+'\',\''+(j.status==='publie'?'archive':'publie')+'\')">' + (j.status==='publie'?'Retirer':'Publier') + '</button>'
+      + '<button class="btn btn--ghost btn--sm" style="color:var(--danger);" onclick="rcSupprimerOffre(\''+j._id+'\',\''+escape(j.title)+'\')"><span class="material-symbols-outlined">delete</span></button>'
+      + '</div></div>';
+  }).join('');
+}
+
+async function rcPublier(id, statut) {
+  try { await api('/api/admin/jobs/'+id, { method:'PATCH', body: JSON.stringify({ status: statut }) });
+    toast(statut==='publie'?'Offre en ligne':'Offre retirée','success'); loadRecrutement(); }
+  catch(e){ toast('Erreur','error'); }
+}
+
+async function rcSupprimerOffre(id, titre) {
+  if (!confirm('Supprimer l\'offre « ' + titre + ' » ?\n\nLes candidatures reçues pour ce poste seront également supprimées.')) return;
+  try { await api('/api/admin/jobs/'+id, { method:'DELETE' }); toast('Offre supprimée','success'); loadRecrutement(); }
+  catch(e){ toast('Erreur','error'); }
+}
+
+function rcNouvelleOffre() {
+  showFormModal('Nouvelle offre d\'emploi', [
+    { id:'title', label:'Intitulé du poste', required:true, placeholder:'Développeur Next.js' },
+    { id:'department', label:'Pôle', placeholder:'Développement' },
+    { id:'contract', label:'Contrat', type:'select', options:[{v:'cdi',t:'CDI'},{v:'cdd',t:'CDD'},{v:'stage',t:'Stage'},{v:'alternance',t:'Alternance'},{v:'freelance',t:'Freelance'}] },
+    { id:'remote', label:'Présence', type:'select', options:[{v:'hybride',t:'Hybride'},{v:'sur_site',t:'Sur site'},{v:'full_remote',t:'Télétravail complet'}] },
+    { id:'location', label:'Lieu', placeholder:'Abomey-Calavi, Bénin' },
+    { id:'experience', label:'Expérience', placeholder:'2 à 4 ans' },
+    { id:'excerpt', label:'Accroche', type:'textarea', placeholder:'Une ou deux phrases affichées dans la liste.' },
+  ], async function(vals){
+    await api('/api/admin/jobs', { method:'POST', body: JSON.stringify(vals) });
+    toast('Offre créée en brouillon','success');
+    RC_ONGLET = 'offres'; loadRecrutement();
+  });
 }
 
 // ============ CONVERSATIONS DU CHATBOT ============
@@ -4107,6 +4421,20 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#invoiceModal').addEventListener('click', e => { if (e.target.id === 'invoiceModal') hideInvoiceModal(); });
   document.getElementById('ivRefresh')?.addEventListener('click', loadInvoices);
   document.getElementById('csRefresh')?.addEventListener('click', loadChatSessions);
+  document.getElementById('cpExport')?.addEventListener('click', function(){
+    var p = (document.getElementById('cpPeriode')||{}).value || '';
+    window.open('/api/admin/comptabilite/export' + (p ? '?periode=' + p : ''), '_blank');
+  });
+  document.getElementById('cpNewDep')?.addEventListener('click', cpSaisirCharge);
+  document.getElementById('rcRefresh')?.addEventListener('click', loadRecrutement);
+  document.getElementById('rcNewJob')?.addEventListener('click', rcNouvelleOffre);
+  document.querySelectorAll('#rcOnglets button').forEach(function(b){
+    b.addEventListener('click', function(){
+      RC_ONGLET = b.dataset.o;
+      document.querySelectorAll('#rcOnglets button').forEach(function(x){ x.className = 'btn btn--sm' + (x===b?'':' btn--ghost'); });
+      loadRecrutement();
+    });
+  });
   document.querySelectorAll('#csFilters button').forEach(function(b){
     b.addEventListener('click', function(){
       CS_FILTER = b.dataset.q || '';

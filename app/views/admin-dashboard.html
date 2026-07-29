@@ -78,6 +78,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
 /* Navigation */
 .sidebar__nav { display: flex; flex-direction: column; gap: 0.1rem; padding: 0 0.6rem; }
+.sidebar__group { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--text-faint); padding: 1.1rem .9rem .35rem; user-select: none; }
+.sidebar__group:first-child { padding-top: .3rem; }
+.sidebar.is-collapsed .sidebar__group { opacity: 0; height: 0; padding: 0; overflow: hidden; }
 .sidebar__link {
   display: flex; align-items: center; gap: 0.75rem;
   padding: 0.6rem 0.75rem; border-radius: 9px;
@@ -448,18 +451,23 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </div>
     <div class="sidebar__section">Pilotage</div>
     <nav class="sidebar__nav">
+      <div class="sidebar__group">Pilotage</div>
       <a class="sidebar__link is-active" data-view="dashboard" data-label="Tableau de bord"><span class="material-symbols-outlined">dashboard</span><span class="sidebar__link-text">Tableau de bord</span></a>
+      <div class="sidebar__group">Commercial</div>
       <a class="sidebar__link" data-view="leads" data-label="Prospects (CRM)"><span class="material-symbols-outlined">person_search</span><span class="sidebar__link-text">Prospects (CRM)</span></a>
       <a class="sidebar__link" data-view="clients" data-label="Clients"><span class="material-symbols-outlined">verified_user</span><span class="sidebar__link-text">Clients</span></a>
       <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
       <a class="sidebar__link" data-view="invoices" data-label="Factures"><span class="material-symbols-outlined">receipt_long</span><span class="sidebar__link-text">Factures</span></a>
       <a class="sidebar__link" data-view="appointments" data-label="Rendez-vous"><span class="material-symbols-outlined">event</span><span class="sidebar__link-text">Rendez-vous</span> <span id="apptBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
+      <div class="sidebar__group">Contenu & vitrine</div>
       <a class="sidebar__link" data-view="reviews" data-label="Avis clients"><span class="material-symbols-outlined">reviews</span><span class="sidebar__link-text">Avis clients</span></a>
       <a class="sidebar__link" data-view="livres-blancs" data-label="Livres blancs"><span class="material-symbols-outlined">menu_book</span><span class="sidebar__link-text">Livres blancs</span></a>
       <a class="sidebar__link" data-view="blog" data-label="Blog"><span class="material-symbols-outlined">article</span><span class="sidebar__link-text">Blog</span></a>
       <a class="sidebar__link" data-view="comments" data-label="Commentaires"><span class="material-symbols-outlined">forum</span><span class="sidebar__link-text">Commentaires</span> <span id="cmBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
+      <div class="sidebar__group">Communication</div>
       <a class="sidebar__link" data-view="bulk-email" data-label="Envoi email masse"><span class="material-symbols-outlined">campaign</span><span class="sidebar__link-text">Envoi email masse</span></a>
       <a class="sidebar__link" data-view="emails" data-label="E-mails envoyés"><span class="material-symbols-outlined">outgoing_mail</span><span class="sidebar__link-text">E-mails envoyés</span></a>
+      <div class="sidebar__group">Analyse & réalisations</div>
       <a class="sidebar__link" data-view="analytics" data-label="Analytics"><span class="material-symbols-outlined">analytics</span><span class="sidebar__link-text">Analytics</span></a>
     </nav>
     <div class="sidebar__section">Contenu</div>
@@ -469,15 +477,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
     </nav>
     <div class="sidebar__section">Équipe &amp; IA</div>
     <nav class="sidebar__nav">
+      <div class="sidebar__group">Ayaba</div>
       <a class="sidebar__link" data-view="assistant" data-label="Ayaba — assistante de l&#39;agence"><span class="material-symbols-outlined">smart_toy</span><span class="sidebar__link-text">Ayaba</span></a>
       <a class="sidebar__link" data-view="conversations" data-label="Conversations site"><span class="material-symbols-outlined">chat</span><span class="sidebar__link-text">Conversations site</span> <span id="csBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
+      <div class="sidebar__group">Recrutement & finances</div>
       <a class="sidebar__link" data-view="recrutement" data-label="Recrutement"><span class="material-symbols-outlined">badge</span><span class="sidebar__link-text">Recrutement</span> <span id="rcBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
       <a class="sidebar__link" data-view="comptabilite" data-label="Comptabilité"><span class="material-symbols-outlined">account_balance</span><span class="sidebar__link-text">Comptabilité</span></a>
+      <div class="sidebar__group">Équipe</div>
       <a class="sidebar__link" data-view="team" data-label="Équipe"><span class="material-symbols-outlined">groups</span><span class="sidebar__link-text">Équipe</span></a>
       <a class="sidebar__link" data-view="tasks" data-label="Tâches"><span class="material-symbols-outlined">checklist</span><span class="sidebar__link-text">Tâches</span></a>
     </nav>
     <div class="sidebar__section">Compte</div>
     <nav class="sidebar__nav">
+      <div class="sidebar__group">Réglages</div>
       <a class="sidebar__link" data-view="settings" data-label="Paramètres"><span class="material-symbols-outlined">settings</span><span class="sidebar__link-text">Paramètres</span></a>
     </nav>
     <div class="sidebar__footer">

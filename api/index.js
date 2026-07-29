@@ -2042,7 +2042,9 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     const ctx = await gatherBusinessContext();
     const system = AI.buildSystemPrompt(agent, JSON.stringify(ctx));
     const model = process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || agent.model;
-    const tools = assistantToolsOpenAI(agent.tools);
+    // Les casquettes internes ont acces a TOUS les outils : la specialisation guide
+    // le comportement via le prompt, elle ne doit pas brider ce que l'agent peut faire.
+    const tools = assistantToolsOpenAI(ASSISTANT_TOOLS.map(t => t.name));
     const convo = [{ role: 'system', content: system }].concat(history);
     const actionsLog = [];
     const pendingList = [];

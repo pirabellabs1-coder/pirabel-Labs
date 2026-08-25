@@ -447,3 +447,106 @@ h1,h2,h3{text-wrap:balance;}
    Masque en CSS (et non retire en JS apres chargement) pour eviter que
    l'ancien bouton n'apparaisse une fraction de seconde au chargement. --- */
 .wa-float{display:none !important;}
+
+/* ==========================================================================
+   COUCHE ANIMATION PREMIUM (elan6)
+   --------------------------------------------------------------------------
+   Reveal au scroll + micro-interactions. Tokens de motion cales sur un
+   feeling haut de gamme (ease-out doux, stagger court).
+
+   GARDE-FOU : tout est porte par la classe .anim-on sur <html>, posee par un
+   petit script en <head> UNIQUEMENT si IntersectionObserver est dispo ET si
+   prefers-reduced-motion = no-preference. Consequence :
+     - sans JS            -> pas de .anim-on -> aucun contenu masque.
+     - mouvement reduit   -> pas de .anim-on -> aucune animation, contenu visible.
+   Zero risque d'accessibilite, zero contenu invisible pour Googlebot.
+   Animation = transform + opacity uniquement (GPU, pas de reflow).
+   ========================================================================== */
+:root{
+  --ease-premium: cubic-bezier(.22, 1, .36, 1);   /* atterrissage doux */
+  --reveal-dur: 0.72s;
+  --reveal-shift: 24px;
+}
+
+/* --- Reveal de base (translateY) --- */
+.anim-on [data-reveal]{
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-shift), 0);
+  transition: opacity var(--reveal-dur) var(--ease-premium),
+              transform var(--reveal-dur) var(--ease-premium);
+  transition-delay: calc(var(--i, 0) * 0.07s);   /* stagger pilote par le JS */
+}
+.anim-on [data-reveal].is-in{
+  opacity: 1;
+  transform: none;
+}
+/* Variantes directionnelles (data-reveal="left|right|scale") */
+.anim-on [data-reveal="left"]{ transform: translate3d(calc(-1 * var(--reveal-shift)), 0, 0); }
+.anim-on [data-reveal="right"]{ transform: translate3d(var(--reveal-shift), 0, 0); }
+.anim-on [data-reveal="scale"]{ transform: scale(.965); }
+.anim-on [data-reveal="left"].is-in,
+.anim-on [data-reveal="right"].is-in,
+.anim-on [data-reveal="scale"].is-in{ transform: none; }
+
+/* --- Barre de progression de lecture (fine, en haut) --- */
+.anim-on .scroll-progress{
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 9999;
+  transform: scaleX(var(--sp, 0)); transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px var(--accent-glow);
+  pointer-events: none; will-change: transform;
+}
+
+/* --- Nav : ombre/blur renforces des qu'on scrolle (elegance discrete) --- */
+.nav-mega__inner{ transition: box-shadow var(--t), background var(--t), border-color var(--t); }
+.anim-on #nav.is-scrolled .nav-mega__inner{
+  background: rgba(14,14,14,0.96);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+  border-color: var(--border-2);
+}
+
+/* --- Micro-interaction boutons : leger balayage lumineux au survol --- */
+.anim-on .btn--primary, .anim-on .nav-mega__cta, .anim-on .ctaf__b--p{
+  position: relative; overflow: hidden;
+}
+.anim-on .btn--primary::after, .anim-on .nav-mega__cta::after, .anim-on .ctaf__b--p::after{
+  content: ""; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-18deg); pointer-events: none;
+  transition: left .6s var(--ease-premium);
+}
+.anim-on .btn--primary:hover::after, .anim-on .nav-mega__cta:hover::after,
+.anim-on .ctaf__b--p:hover::after{ left: 130%; }
+
+/* --- Cartes : easing premium sur le lift au survol --- */
+.anim-on .card, .anim-on .service-card, .anim-on .prest, .anim-on .type-card,
+.anim-on .reason{ transition: border-color var(--t), transform .35s var(--ease-premium), box-shadow .35s var(--ease-premium); }
+.anim-on .service-card:hover, .anim-on .card--hover:hover{ box-shadow: 0 18px 44px rgba(0,0,0,0.35); }
+
+/* --- Hero : lente derive de l'aureole (transform only, tres subtil) --- */
+.anim-on .hero::before,
+.anim-on .h-hero::before,
+.anim-on .s-hero::before{
+  animation: heroDrift 22s ease-in-out infinite alternate;
+}
+@keyframes heroDrift{
+  from{ transform: translate3d(0, 0, 0) scale(1); }
+  to  { transform: translate3d(2.5%, 1.5%, 0) scale(1.07); }
+}
+
+/* --- Fleches pointillees : ne s'animent que lorsqu'elles apparaissent --- */
+.anim-on .dot-arrow .df{ animation-play-state: paused; }
+.anim-on .dot-arrow.is-in .df{ animation-play-state: running; }
+
+/* --- Compteurs de stats : evite le clignotement pendant l'incrementation --- */
+.anim-on [data-count]{ font-variant-numeric: tabular-nums; }
+
+/* Securite ultime : si quelqu'un force le mouvement reduit apres coup,
+   on neutralise tout mouvement et on revele le contenu. */
+@media (prefers-reduced-motion: reduce){
+  .anim-on [data-reveal]{ opacity: 1 !important; transform: none !important; transition: none !important; }
+  .anim-on .hero::before, .anim-on .h-hero::before, .anim-on .s-hero::before{ animation: none !important; }
+  .anim-on .scroll-progress{ display: none !important; }
+  .anim-on .dot-arrow .df{ animation: none !important; }
+}
+

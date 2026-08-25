@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
+<script data-pl="pl-anim-on">(function(){try{if(("IntersectionObserver" in window)&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("anim-on");}}catch(e){}})();</script>
 <!-- Google tag (gtag.js) GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("consent","default",{analytics_storage:"denied",ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",wait_for_update:500});try{if(localStorage.getItem("pl_consent")==="granted"){gtag("consent","update",{analytics_storage:"granted"});}}catch(e){}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>
@@ -474,6 +475,109 @@ h1,h2,h3{text-wrap:balance;}
    Masque en CSS (et non retire en JS apres chargement) pour eviter que
    l'ancien bouton n'apparaisse une fraction de seconde au chargement. --- */
 .wa-float{display:none !important;}
+
+/* ==========================================================================
+   COUCHE ANIMATION PREMIUM (elan6)
+   --------------------------------------------------------------------------
+   Reveal au scroll + micro-interactions. Tokens de motion cales sur un
+   feeling haut de gamme (ease-out doux, stagger court).
+
+   GARDE-FOU : tout est porte par la classe .anim-on sur <html>, posee par un
+   petit script en <head> UNIQUEMENT si IntersectionObserver est dispo ET si
+   prefers-reduced-motion = no-preference. Consequence :
+     - sans JS            -> pas de .anim-on -> aucun contenu masque.
+     - mouvement reduit   -> pas de .anim-on -> aucune animation, contenu visible.
+   Zero risque d'accessibilite, zero contenu invisible pour Googlebot.
+   Animation = transform + opacity uniquement (GPU, pas de reflow).
+   ========================================================================== */
+:root{
+  --ease-premium: cubic-bezier(.22, 1, .36, 1);   /* atterrissage doux */
+  --reveal-dur: 0.72s;
+  --reveal-shift: 24px;
+}
+
+/* --- Reveal de base (translateY) --- */
+.anim-on [data-reveal]{
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-shift), 0);
+  transition: opacity var(--reveal-dur) var(--ease-premium),
+              transform var(--reveal-dur) var(--ease-premium);
+  transition-delay: calc(var(--i, 0) * 0.07s);   /* stagger pilote par le JS */
+}
+.anim-on [data-reveal].is-in{
+  opacity: 1;
+  transform: none;
+}
+/* Variantes directionnelles (data-reveal="left|right|scale") */
+.anim-on [data-reveal="left"]{ transform: translate3d(calc(-1 * var(--reveal-shift)), 0, 0); }
+.anim-on [data-reveal="right"]{ transform: translate3d(var(--reveal-shift), 0, 0); }
+.anim-on [data-reveal="scale"]{ transform: scale(.965); }
+.anim-on [data-reveal="left"].is-in,
+.anim-on [data-reveal="right"].is-in,
+.anim-on [data-reveal="scale"].is-in{ transform: none; }
+
+/* --- Barre de progression de lecture (fine, en haut) --- */
+.anim-on .scroll-progress{
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 9999;
+  transform: scaleX(var(--sp, 0)); transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px var(--accent-glow);
+  pointer-events: none; will-change: transform;
+}
+
+/* --- Nav : ombre/blur renforces des qu'on scrolle (elegance discrete) --- */
+.nav-mega__inner{ transition: box-shadow var(--t), background var(--t), border-color var(--t); }
+.anim-on #nav.is-scrolled .nav-mega__inner{
+  background: rgba(14,14,14,0.96);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+  border-color: var(--border-2);
+}
+
+/* --- Micro-interaction boutons : leger balayage lumineux au survol --- */
+.anim-on .btn--primary, .anim-on .nav-mega__cta, .anim-on .ctaf__b--p{
+  position: relative; overflow: hidden;
+}
+.anim-on .btn--primary::after, .anim-on .nav-mega__cta::after, .anim-on .ctaf__b--p::after{
+  content: ""; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-18deg); pointer-events: none;
+  transition: left .6s var(--ease-premium);
+}
+.anim-on .btn--primary:hover::after, .anim-on .nav-mega__cta:hover::after,
+.anim-on .ctaf__b--p:hover::after{ left: 130%; }
+
+/* --- Cartes : easing premium sur le lift au survol --- */
+.anim-on .card, .anim-on .service-card, .anim-on .prest, .anim-on .type-card,
+.anim-on .reason{ transition: border-color var(--t), transform .35s var(--ease-premium), box-shadow .35s var(--ease-premium); }
+.anim-on .service-card:hover, .anim-on .card--hover:hover{ box-shadow: 0 18px 44px rgba(0,0,0,0.35); }
+
+/* --- Hero : lente derive de l'aureole (transform only, tres subtil) --- */
+.anim-on .hero::before,
+.anim-on .h-hero::before,
+.anim-on .s-hero::before{
+  animation: heroDrift 22s ease-in-out infinite alternate;
+}
+@keyframes heroDrift{
+  from{ transform: translate3d(0, 0, 0) scale(1); }
+  to  { transform: translate3d(2.5%, 1.5%, 0) scale(1.07); }
+}
+
+/* --- Fleches pointillees : ne s'animent que lorsqu'elles apparaissent --- */
+.anim-on .dot-arrow .df{ animation-play-state: paused; }
+.anim-on .dot-arrow.is-in .df{ animation-play-state: running; }
+
+/* --- Compteurs de stats : evite le clignotement pendant l'incrementation --- */
+.anim-on [data-count]{ font-variant-numeric: tabular-nums; }
+
+/* Securite ultime : si quelqu'un force le mouvement reduit apres coup,
+   on neutralise tout mouvement et on revele le contenu. */
+@media (prefers-reduced-motion: reduce){
+  .anim-on [data-reveal]{ opacity: 1 !important; transform: none !important; transition: none !important; }
+  .anim-on .hero::before, .anim-on .h-hero::before, .anim-on .s-hero::before{ animation: none !important; }
+  .anim-on .scroll-progress{ display: none !important; }
+  .anim-on .dot-arrow .df{ animation: none !important; }
+}
+
 </style>
 <style>
 /* ===== METHODOLOGIE PAGE STYLES ===== */
@@ -1658,5 +1762,6 @@ h1,h2,h3{text-wrap:balance;}
 
 <a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>
 <div id="pl-ck" class="pl-ck" hidden role="dialog" aria-label="Gestion des cookies"><p>Nous utilisons des cookies de mesure d'audience (Google Analytics) pour am&eacute;liorer le site. <a href="/politique-confidentialite">En savoir plus</a></p><div class="pl-ck__btns"><button type="button" id="plcA" class="pl-ck__b pl-ck__b--a">Accepter</button><button type="button" id="plcR" class="pl-ck__b pl-ck__b--r">Refuser</button></div></div><script>(function(){var c=null;try{c=localStorage.getItem("pl_consent")}catch(e){}if(c)return;var b=document.getElementById("pl-ck");if(!b)return;b.hidden=false;function set(v){try{localStorage.setItem("pl_consent",v)}catch(e){}if(v==="granted"&&window.gtag){gtag("consent","update",{analytics_storage:"granted"});}b.hidden=true;}document.getElementById("plcA").addEventListener("click",function(){set("granted")});document.getElementById("plcR").addEventListener("click",function(){set("denied")});})();</script><script src="/js/chat-widget.js?v=elan5" defer></script>
+<script defer src="/js/anim.js?v=elan6"></script>
 </body>
 </html>

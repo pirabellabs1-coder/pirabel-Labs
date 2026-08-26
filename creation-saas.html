@@ -555,17 +555,6 @@ h1,h2,h3{text-wrap:balance;}
 .anim-on .reason{ transition: border-color var(--t), transform .35s var(--ease-premium), box-shadow .35s var(--ease-premium); }
 .anim-on .service-card:hover, .anim-on .card--hover:hover{ box-shadow: 0 18px 44px rgba(0,0,0,0.35); }
 
-/* --- Hero : lente derive de l'aureole (transform only, tres subtil) --- */
-.anim-on .hero::before,
-.anim-on .h-hero::before,
-.anim-on .s-hero::before{
-  animation: heroDrift 22s ease-in-out infinite alternate;
-}
-@keyframes heroDrift{
-  from{ transform: translate3d(0, 0, 0) scale(1); }
-  to  { transform: translate3d(2.5%, 1.5%, 0) scale(1.07); }
-}
-
 /* --- Fleches pointillees : ne s'animent que lorsqu'elles apparaissent --- */
 .anim-on .dot-arrow .df{ animation-play-state: paused; }
 .anim-on .dot-arrow.is-in .df{ animation-play-state: running; }
@@ -577,7 +566,6 @@ h1,h2,h3{text-wrap:balance;}
    on neutralise tout mouvement et on revele le contenu. */
 @media (prefers-reduced-motion: reduce){
   .anim-on [data-reveal]{ opacity: 1 !important; transform: none !important; transition: none !important; }
-  .anim-on .hero::before, .anim-on .h-hero::before, .anim-on .s-hero::before{ animation: none !important; }
   .anim-on .scroll-progress{ display: none !important; }
   .anim-on .dot-arrow .df{ animation: none !important; }
 }

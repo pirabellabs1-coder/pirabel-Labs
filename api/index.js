@@ -124,7 +124,7 @@ async function seedCaseStudies() {
 
 // === Correctifs ponctuels de réalisations existantes (app/seed/case-patches.json) ===
 // Chaque correctif s'exécute une seule fois (ids mémorisés dans Setting) et seulement si sa condition tient :
-// `whenEmpty` (champ encore vide) ou `whenEqual` (valeur connue, ex. lien mort). Une fiche retouchée depuis l'admin n'est jamais écrasée.
+// `whenEmpty` (champ encore vide) ou `whenEqual` (valeur connue ou liste de valeurs acceptées, ex. lien mort). Une fiche retouchée depuis l'admin n'est jamais écrasée.
 const CASE_PATCHES_KEY = 'seed.casePatches.applied';
 async function patchCaseStudies() {
   const patches = require('../app/seed/case-patches.json');
@@ -145,7 +145,7 @@ async function patchCaseStudies() {
     if (!doc) continue; // fiche absente : on réessaiera au prochain démarrage
     done.add(p.id);
     if (p.whenEmpty && !isEmpty(doc[p.whenEmpty])) continue;
-    if (p.whenEqual && !Object.entries(p.whenEqual).every(([k, v]) => norm(doc[k]) === norm(v))) continue;
+    if (p.whenEqual && !Object.entries(p.whenEqual).every(([k, v]) => (Array.isArray(v) ? v : [v]).some((x) => norm(doc[k]) === norm(x)))) continue;
     doc.set(p.set);
     changed.add(doc);
     console.log('[seed.casePatches] appliqué :', p.id);

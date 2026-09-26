@@ -1,0 +1,65 @@
+---
+/** Page introuvable : servie par Vercel pour toute adresse inconnue (statut 404, non indexée). */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+import '../styles/blocks.css';
+
+const suggestions = [
+  { href: '/creation-site-web', icon: 'code', title: 'Création de site web', text: 'Sites sur mesure, WordPress, Webflow, SaaS' },
+  { href: '/seo', icon: 'search', title: 'SEO et référencement', text: 'Un trafic organique qualifié qui convertit' },
+  { href: '/automatisation-marketing', icon: 'workflow', title: 'Automatisation marketing', text: 'Make, n8n, Zapier, agents IA' },
+  { href: '/realisations', icon: 'images', title: 'Nos réalisations', text: 'Des projets livrés, des résultats mesurés' },
+  { href: '/blog', icon: 'newspaper', title: 'Le blog', text: 'Guides et conseils pour les PME' },
+  { href: '/tarifs', icon: 'wallet', title: 'Nos tarifs', text: 'Une grille claire, par région' },
+];
+---
+<BaseLayout
+  title="Page introuvable — Pirabel Labs"
+  description="La page que vous recherchez n’existe pas ou a été déplacée. Retrouvez nos services, nos réalisations et nos tarifs."
+  path="/404"
+  noindex
+  breadcrumb={false}
+  showFooterCta={false}
+>
+  <section class="b-hero err" aria-labelledby="page-title">
+    <div class="container err__inner">
+      <p class="chip b-hero__eyebrow"><Icon name="compass" size={16} />Erreur 404</p>
+      <p class="err__num" aria-hidden="true"><span>4</span><span class="err__zero glass glass--blur"><Icon name="search" size={44} /></span><span>4</span></p>
+      <h1 id="page-title">Cette page n’existe pas <span class="grad">(ou plus)</span>.</h1>
+      <p class="b-hero__lead">Le lien que vous avez suivi est peut-être obsolète, ou l’adresse a été mal saisie. Pas d’inquiétude : voici quelques pistes pour retrouver votre chemin.</p>
+      <div class="b-hero__actions">
+        <a href="/" class="btn btn--lg btn--primary" data-magnetic><Icon name="home" size={18} />Retour à l’accueil</a>
+        <a href="/contact" class="btn btn--lg btn--glass">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+  <section class="b-sec b-sec--tight">
+    <div class="container">
+      <h2 class="err__h2">Les pages les plus consultées</h2>
+      <ul class="b-grid" data-stagger>
+        {suggestions.map((s) => (
+          <li data-reveal>
+            <a href={s.href} class="b-link glass glass--flat spot">
+              <span class="b-ico"><Icon name={s.icon} size={18} /></span>
+              <span><b>{s.title}</b><small>{s.text}</small></span>
+              <Icon name="arrow-up-right" size={16} class="b-link__arrow" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .err { padding-top: 120px; text-align: center; }
+  .err__inner { display: flex; flex-direction: column; align-items: center; }
+  .err__inner .b-hero__lead { margin-inline: auto; }
+  .err__inner .b-hero__actions { justify-content: center; }
+  .err__num { display: flex; align-items: center; gap: clamp(8px, 2vw, 20px); margin: 8px 0 18px; font-family: var(--font-display); font-weight: 800; font-size: clamp(5rem, 3rem + 10vw, 11rem); line-height: 1; letter-spacing: -0.05em; color: transparent; background: linear-gradient(160deg, var(--text), rgba(var(--text-rgb), 0.35)); -webkit-background-clip: text; background-clip: text; }
+  .err__zero { display: grid; place-items: center; width: 0.78em; aspect-ratio: 1; border-radius: 50%; color: var(--accent-2); box-shadow: inset 0 0 0 1px rgba(255, 140, 80, 0.4), 0 30px 60px -30px rgba(255, 85, 0, 0.6); animation: err-float 6s ease-in-out infinite; }
+  .err h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.2rem); line-height: 1.08; letter-spacing: -0.03em; max-width: 18ch; }
+  .err__h2 { margin-bottom: 22px; font-size: 1.2rem; text-align: center; }
+  @keyframes err-float { 50% { transform: translate3d(0, -10px, 0); } }
+  @media (prefers-reduced-motion: reduce) { .err__zero { animation: none; } }
+</style>

@@ -1,0 +1,104 @@
+---
+// En-tête flottant en verre : méga-menus (desktop) + tiroir en accordéon (mobile).
+// Accessible au clavier : boutons aria-expanded, Échap ferme, focus rendu au déclencheur.
+import Icon from '../ui/Icon.astro';
+import LogoMark from '../ui/LogoMark.astro';
+import { NAV, SITE } from '../../data/site';
+
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+---
+<header class="site-header" data-header>
+  <div class="site-header__bar">
+    <!-- Couche de verre séparée : un parent avec backdrop-filter empêcherait le flou des méga-menus -->
+    <span class="site-header__glass glass glass--strong glass--keep" aria-hidden="true"></span>
+    <a href="/" class="brand" aria-label="Pirabel Labs, retour à l’accueil">
+      <LogoMark size={34} />
+      <span class="brand__name">Pirabel Labs</span>
+    </a>
+
+    <nav class="mnav" aria-label="Navigation principale">
+      <ul class="mnav__list">
+        {NAV.map((item) => (
+          <li class="mnav__item" data-mnav-item>
+            <button class="mnav__trigger" type="button" aria-expanded="false" aria-controls={`mega-${item.id}`} data-mnav-trigger>
+              {item.label}
+              <Icon name="chevron-down" size={15} class="mnav__chev" />
+            </button>
+            <div class={`mega mega--${item.layout} glass glass--strong glass--keep`} id={`mega-${item.id}`} data-mnav-panel>
+              <div class="mega__grid">
+                {item.groups.map((g) => (
+                  <div class="mega__group">
+                    {g.title && <p class="mega__title">{g.title}</p>}
+                    <ul class="mega__links">
+                      {g.links.map((l) => (
+                        <li>
+                          <a href={l.href} class="mega__link" aria-current={current === l.href ? 'page' : undefined}>
+                            {l.icon && <span class="mega__icon"><Icon name={l.icon} size={17} /></span>}
+                            <span class="mega__text">
+                              <span class="mega__label">{l.label}</span>
+                              {l.desc && <span class="mega__desc">{l.desc}</span>}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              {item.footer && (
+                <a href={item.footer.href} class="mega__footer link-arrow">
+                  {item.footer.label} <Icon name="arrow-right" size={16} />
+                </a>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <div class="lang-switch notranslate" translate="no" role="group" aria-label="Langue du site">
+        <button type="button" data-l="fr" aria-pressed="true">FR</button>
+        <button type="button" data-l="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Passer en thème clair" title="Changer de thème">
+        <Icon name="sun" size={18} class="theme-toggle__sun" />
+        <Icon name="moon" size={18} class="theme-toggle__moon" />
+      </button>
+      <a href="/contact" class="btn btn--primary btn--sm site-header__cta">Démarrer un projet</a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu" data-burger>
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="drawer" id="mobile-menu" data-drawer hidden>
+    <div class="drawer__panel glass glass--strong glass--keep" data-lenis-prevent>
+      <nav aria-label="Navigation mobile">
+        {NAV.map((item) => (
+          <details class="drawer__group">
+            <summary>{item.label}<Icon name="chevron-down" size={18} /></summary>
+            <ul class="drawer__links">
+              {item.groups.flatMap((g) => g.links).map((l) => (
+                <li><a href={l.href}>{l.label}</a></li>
+              ))}
+              {item.footer && <li><a href={item.footer.href} class="drawer__all">{item.footer.label} →</a></li>}
+            </ul>
+          </details>
+        ))}
+      </nav>
+      <div class="lang-switch lang-switch--drawer notranslate" translate="no" role="group" aria-label="Langue du site">
+        <button type="button" data-l="fr" aria-pressed="true">Français</button>
+        <button type="button" data-l="en" aria-pressed="false">English</button>
+      </div>
+      <a href="/contact" class="btn btn--primary btn--lg drawer__cta">Démarrer un projet <Icon name="arrow-right" size={18} class="icon--end" /></a>
+      <div class="drawer__contact">
+        <a href={SITE.whatsapp} target="_blank" rel="noopener"><Icon name="whatsapp" size={18} /> WhatsApp</a>
+        <a href={`mailto:${SITE.email}`}><Icon name="mail" size={18} /> {SITE.email}</a>
+      </div>
+    </div>
+  </div>
+</header>

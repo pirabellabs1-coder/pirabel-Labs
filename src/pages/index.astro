@@ -1,0 +1,475 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Orbit from '../components/home/Orbit.astro';
+import Icon from '../components/ui/Icon.astro';
+import Split from '../components/ui/Split.astro';
+import '../styles/home.css';
+import { SITE } from '../data/site';
+import {
+  TOOLS, QUICK_START, EXPERTISES, SERVICES, AUDIT_POINTS, CASES, COMMITMENTS, STEPS,
+  RESULTS, PRICING, COMPARISON, TESTIMONIALS, SECTORS, CITIES, INSIGHTS, FAQ,
+} from '../data/home';
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': ['Organization', 'ProfessionalService'],
+  '@id': SITE.url + '/#organisation',
+  name: 'Pirabel Labs',
+  alternateName: 'Pirabel Labs — Agence web et marketing digital',
+  url: SITE.url,
+  logo: SITE.url + '/img/logo.png?v=elan2',
+  image: SITE.ogImage,
+  description: 'Agence marketing digital 360 spécialisée dans la création de sites web, applications, WordPress, SEO, Google Business Profile, community management, vidéo, tunnels de vente, automatisation marketing, e-mail marketing et conseil. Basée à Abomey-Calavi (Bénin).',
+  email: SITE.email,
+  telephone: '+2290168884534',
+  priceRange: '€€',
+  foundingDate: '2020',
+  founder: { '@type': 'Person', name: 'Lissanon Gildas', jobTitle: 'Fondateur & CEO' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Abomey-Calavi', addressRegion: 'Atlantique', addressCountry: 'BJ' },
+  areaServed: ['BJ', 'CI', 'SN', 'TG', 'BF', 'ML', 'CM', 'FR', 'BE', 'CH', 'CA', 'MA', 'TN'],
+  contactPoint: [
+    { '@type': 'ContactPoint', telephone: '+2290168884534', contactType: 'customer service', areaServed: 'BJ', availableLanguage: 'fr' },
+    { '@type': 'ContactPoint', telephone: '+16139273067', contactType: 'customer service', availableLanguage: ['fr', 'en'] },
+  ],
+  sameAs: [SITE.facebook, SITE.instagram, SITE.linkedin],
+  knowsLanguage: 'fr',
+};
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': SITE.url + '/#site',
+  url: SITE.url + '/',
+  name: 'Pirabel Labs',
+  inLanguage: 'fr',
+  publisher: { '@id': SITE.url + '/#organisation' },
+};
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<BaseLayout
+  title="Pirabel Labs — Agence marketing digital 360 au Bénin et en France"
+  description="Agence marketing digital 360° à Abomey-Calavi : sites web, applications, SEO, tunnels de vente, réseaux sociaux, vidéo et automatisation. Devis ferme sous 48 h."
+  path="/"
+  ogTitle="Pirabel Labs — Agence marketing digital 360"
+  ogDescription="Sites web, applications, SEO, tunnels de vente, community management, vidéo, automatisation, e-mail marketing et conseil. Devis ferme sous 48 h."
+  jsonLd={[org, website, faqLd]}
+  verification
+>
+  <Hero />
+
+  <!-- Outils -->
+  <section class="tools" aria-labelledby="tools-title">
+    <div class="container tools__head">
+      <h2 id="tools-title" class="tools__title">Les outils que nous maîtrisons</h2>
+      <button class="marquee-toggle" type="button" data-marquee-toggle="tools-marquee" aria-pressed="false">
+        <span class="sr-only">Mettre en pause le défilement des outils</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="marquee" id="tools-marquee" style="--marquee-dur: 55s" data-marquee>
+      <div class="marquee__track">
+        {[0, 1].map((k) => (
+          <ul class="marquee__copy" aria-hidden={k === 1 ? 'true' : undefined}>
+            {TOOLS.map((t) => <li class="tool-pill">{t}</li>)}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Point d'entrée vers la qualification -->
+  <section class="section quick" aria-labelledby="quick-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Votre projet</p>
+        <h2 id="quick-title" data-reveal="title"><Split>Par quoi commence-t-on&nbsp;?</Split></h2>
+        <p>Choisissez votre besoin : le formulaire s’adapte à vos réponses et, en deux minutes, nous savons exactement comment vous aider.</p>
+      </div>
+      <ul class="quick__grid" data-stagger>
+        {QUICK_START.map((q) => (
+          <li data-reveal>
+            <a href={`/contact?projet=${q.id}`} class="quick__card glass glass--flat spot">
+              <span class="card__icon"><Icon name={q.icon} size={22} /></span>
+              <span class="quick__label">{q.label}</span>
+              <span class="quick__hint">{q.hint}</span>
+              <Icon name="arrow-up-right" size={18} class="quick__arrow" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="quick__more"><a href="/contact" class="link-arrow">Un autre besoin ? Décrivez-le-nous <Icon name="arrow-right" size={16} /></a></p>
+    </div>
+  </section>
+
+  <!-- Expertises : cartes empilées -->
+  <section class="section expertise" aria-labelledby="expertise-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Quatre pôles, une seule équipe</p>
+        <h2 id="expertise-title" data-reveal="title"><Split>Un studio complet, du premier clic à la vente.</Split></h2>
+      </div>
+      <div class="stack" data-stack>
+        {EXPERTISES.map((e, i) => (
+          <article class="stack__card glass" data-stack-card data-inview style={`--i:${i}`}>
+            <span class="stack__shade" aria-hidden="true" data-stack-shade></span>
+            <div class="stack__text">
+              <p class="stack__kicker">{e.kicker}</p>
+              <h3>{e.title}</h3>
+              <p>{e.text}</p>
+              <p class="stack__combo"><Icon name="sparkles" size={16} /> {e.combo}</p>
+              <a href={e.href} class="link-arrow">{e.cta} <Icon name="arrow-up-right" size={16} /></a>
+            </div>
+            <div class={`stack__visual viz viz--${e.visual}`} aria-hidden="true">
+              {e.visual === 'site' && (
+                <div class="viz-browser">
+                  <div class="viz-browser__bar"><i></i><i></i><i></i><span>votre-marque.com</span></div>
+                  <div class="viz-browser__hero"><span></span><span></span><em></em></div>
+                  <div class="viz-browser__cols"><span></span><span></span><span></span></div>
+                  <div class="viz-badge"><b>98</b> Lighthouse</div>
+                </div>
+              )}
+              {e.visual === 'seo' && (
+                <div class="viz-serp">
+                  <div class="viz-serp__q"><Icon name="search" size={14} /> agence marketing digital</div>
+                  {['votre-marque.com', 'votre-marque.com/blog', 'votre-marque.com/services'].map((u, k) => (
+                    <div class="viz-serp__r" style={`--k:${k}`}><b>{k + 1}</b><span>{u}</span></div>
+                  ))}
+                  <div class="viz-badge"><Icon name="trending" size={14} /> +187 % de trafic</div>
+                </div>
+              )}
+              {e.visual === 'ads' && (
+                <div class="viz-funnel">
+                  {[['Visiteurs', '12 480', 100], ['Leads', '1 240', 64], ['Clients', '187', 34]].map(([l, v, w]) => (
+                    <div class="viz-funnel__row" style={`--w:${w}%`}><span>{l}</span><b>{v}</b></div>
+                  ))}
+                </div>
+              )}
+              {e.visual === 'social' && (
+                <div class="viz-phone">
+                  <div class="viz-phone__head"><span class="viz-phone__av"></span>votremarque</div>
+                  <div class="viz-phone__media"><Icon name="play" size={26} /></div>
+                  <div class="viz-phone__meta">♥ 12 480 J’aime</div>
+                  <div class="viz-badge">+148 k abonnés</div>
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Nos services</p>
+        <h2 id="services-title" data-reveal="title"><Split>Toute la chaîne du marketing digital, sous un seul toit.</Split></h2>
+        <p>Un seul interlocuteur pour le site, la visibilité, l’acquisition et l’automatisation.</p>
+      </div>
+      <ul class="grid grid--3 services" data-stagger>
+        {SERVICES.map((s) => (
+          <li data-reveal>
+            <a href={s.href} class="card glass glass--flat spot service">
+              <span class="card__icon"><Icon name={s.icon} size={22} /></span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+              <span class="service__more">Découvrir <Icon name="arrow-right" size={16} /></span>
+            </a>
+          </li>
+        ))}
+        <li data-reveal>
+          <a href="/services" class="card glass glass--tint spot service service--all">
+            <h3>Voir tous nos services</h3>
+            <p>Plus de 40 expertises : Webflow, Shopify, HubSpot, n8n, TikTok, netlinking…</p>
+            <span class="service__more">Tous les services <Icon name="arrow-right" size={16} /></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Audit gratuit -->
+  <section class="section section--tight" id="audit-gratuit" aria-labelledby="audit-title">
+    <div class="container">
+      <div class="audit glass glass--tint spot" data-reveal="scale">
+        <div class="audit__text">
+          <p class="eyebrow">Gratuit · sous 24 h</p>
+          <h2 id="audit-title">Recevez votre audit marketing personnalisé.</h2>
+          <p class="muted">Nous analysons votre présence digitale et vous envoyons un plan d’action concret : 5 à 10 recommandations chiffrées et priorisées. Sans engagement, sans relance commerciale.</p>
+        </div>
+        <div class="audit__side">
+          <ul class="checklist">
+            {AUDIT_POINTS.map((p) => <li><Icon name="check" size={18} />{p}</li>)}
+          </ul>
+          <a href="/contact?projet=consulting&utm=audit-gratuit" class="btn btn--primary btn--lg" data-magnetic>Demander mon audit gratuit <Icon name="arrow-right" size={18} class="icon--end" /></a>
+          <p class="audit__note"><Icon name="lock" size={14} /> Vos données ne sont jamais revendues.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Réalisations -->
+  <section class="section" id="realisations" aria-labelledby="cases-title">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Réalisations</p>
+          <h2 id="cases-title" data-reveal="title"><Split>Des projets livrés, pas des maquettes.</Split></h2>
+        </div>
+        <a href="/realisations" class="btn btn--glass">Toutes nos réalisations <Icon name="arrow-right" size={18} class="icon--end" /></a>
+      </div>
+      <ul class="grid grid--3 cases" data-stagger>
+        {CASES.map((c) => (
+          <li data-reveal>
+            <a href={c.href} class="case glass glass--flat spot">
+              <div class="case__cover" style={`--h:${c.hue}`} aria-hidden="true">
+                <span class="case__initial">{c.title.charAt(0)}</span>
+              </div>
+              <div class="case__body">
+                <p class="case__tag">{c.tag}</p>
+                <h3>{c.title}</h3>
+                <p>{c.text}</p>
+                <dl class="case__stats">
+                  {c.stats.map((s) => <div><dt>{s.k}</dt><dd>{s.v}</dd></div>)}
+                </dl>
+                <span class="link-arrow">Lire le cas <Icon name="arrow-up-right" size={16} /></span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <Orbit />
+    </div>
+  </section>
+
+  <!-- Engagements : défilement horizontal épinglé (desktop) -->
+  <section class="commit" id="confiance" data-hscroll aria-labelledby="commit-title">
+    <div class="container commit__head">
+      <p class="eyebrow">Pourquoi nous faire confiance</p>
+      <h2 id="commit-title">Quatre engagements écrits dans chaque devis.</h2>
+    </div>
+    <div class="commit__viewport">
+      <ol class="commit__track" data-hscroll-track>
+        {COMMITMENTS.map((c) => (
+          <li class="commit__card glass glass--keep spot">
+            <div class="commit__top">
+              <span class="commit__n">{c.n}</span>
+              <span class="card__icon"><Icon name={c.icon} size={22} /></span>
+            </div>
+            <p class="commit__kicker">{c.kicker}</p>
+            <h3>{c.title}</h3>
+            <p class="muted">{c.text}</p>
+            <ul class="checklist checklist--sm">
+              {c.points.map((p) => <li><Icon name="check" size={16} />{p}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Méthode -->
+  <section class="section" id="methodologie" aria-labelledby="method-title">
+    <div class="container method">
+      <div class="method__intro">
+        <p class="eyebrow">Méthode</p>
+        <h2 id="method-title" data-reveal="title"><Split>J’ai un projet, comment ça se passe&nbsp;?</Split></h2>
+        <p class="muted">Une méthode simple en quatre étapes, du premier échange à la mise en ligne.</p>
+        <a href="/methodologie" class="link-arrow">Notre méthodologie détaillée <Icon name="arrow-up-right" size={16} /></a>
+      </div>
+      <div class="steps" data-steps>
+        <span class="steps__rail" aria-hidden="true"><span class="steps__line" data-steps-line></span></span>
+        <ol class="steps__list">
+        {STEPS.map((s) => (
+          <li class="step" data-step>
+            <span class="step__dot" aria-hidden="true">{s.n}</span>
+            <div class="step__card glass glass--flat">
+              <p class="step__meta"><Icon name="clock" size={14} /> {s.meta}</p>
+              <h3>Étape {Number(s.n)} · {s.title}</h3>
+              <p class="muted">{s.text}</p>
+            </div>
+          </li>
+        ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Résultats -->
+  <section class="section section--tight" aria-labelledby="results-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Résultats</p>
+        <h2 id="results-title" data-reveal="title"><Split>Les résultats que nous générons.</Split></h2>
+        <p>Chiffres agrégés sur l’ensemble de nos projets. Demandez des références précises lors de l’appel découverte.</p>
+      </div>
+      <ul class="grid grid--4 results" data-stagger>
+        {RESULTS.map((r) => (
+          <li class="result glass glass--flat" data-reveal>
+            <p class="result__value"><span>{r.prefix}</span><span data-count={r.value} data-decimals={r.decimals}>{r.value.toLocaleString('fr-FR', { minimumFractionDigits: r.decimals })}</span><span>{r.suffix}</span></p>
+            <p class="result__label">{r.label}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Tarifs -->
+  <section class="section" id="tarifs" aria-labelledby="pricing-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Tarifs</p>
+        <h2 id="pricing-title" data-reveal="title"><Split>Votre investissement, clairement.</Split></h2>
+        <p>Trois formules adaptées à chaque besoin. Paiement en EUR ou en FCFA, par virement, carte bancaire ou Mobile Money.</p>
+      </div>
+      <ul class="grid grid--3 pricing" data-stagger>
+        {PRICING.map((p) => (
+          <li data-reveal>
+            <article class:list={['price glass spot', p.featured ? 'price--featured glass--keep' : 'glass--flat']}>
+              {p.featured && <p class="price__badge">Le plus populaire</p>}
+              <h3>{p.name}</h3>
+              <p class="price__amount"><small>{p.unit}</small> <b>{p.price}</b> <small>{p.period}</small></p>
+              {p.alt && <p class="price__alt">soit {p.alt}</p>}
+              <ul class="checklist checklist--sm">
+                {p.points.map((pt) => <li><Icon name="check" size={16} />{pt}</li>)}
+              </ul>
+              <a href={p.href} class:list={['btn', p.featured ? 'btn--primary' : 'btn--glass']}>{p.cta}</a>
+            </article>
+          </li>
+        ))}
+      </ul>
+      <p class="pricing__more"><a href="/tarifs" class="link-arrow">Voir la grille tarifaire complète <Icon name="arrow-up-right" size={16} /></a></p>
+    </div>
+  </section>
+
+  <!-- Comparatif -->
+  <section class="section section--tight" aria-labelledby="compare-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Comparatif</p>
+        <h2 id="compare-title" data-reveal="title"><Split>Comparons vos options.</Split></h2>
+      </div>
+      <div class="compare glass glass--flat" data-reveal>
+        <table>
+          <caption class="sr-only">Comparaison entre un freelance, un recrutement, une autre agence et Pirabel Labs</caption>
+          <thead>
+            <tr><th scope="col"><span class="sr-only">Critère</span></th>{COMPARISON.cols.map((c, i) => <th scope="col" class:list={{ 'is-us': i === 3 }}>{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {COMPARISON.rows.map((r) => (
+              <tr><th scope="row">{r.label}</th>{r.values.map((v, i) => <td class:list={{ 'is-us': i === 3 }}>{v}</td>)}</tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avis -->
+  <section class="section" id="avis" aria-labelledby="reviews-title">
+    <div class="container reviews__head">
+      <div class="section-head">
+        <p class="eyebrow">Avis clients</p>
+        <h2 id="reviews-title" data-reveal="title"><Split>Ce que nos clients en pensent.</Split></h2>
+        <p>Avis recueillis auprès de nos clients en France, au Bénin, en Côte d’Ivoire et au Sénégal.</p>
+      </div>
+      <button class="marquee-toggle" type="button" data-marquee-toggle="reviews-marquee" aria-pressed="false">
+        <span class="sr-only">Mettre en pause le défilement des avis</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="marquee marquee--reviews" id="reviews-marquee" style="--marquee-dur: 70s" data-marquee>
+      <div class="marquee__track">
+      {[0, 1].map((k) => (
+        <ul class="marquee__copy" aria-hidden={k === 1 ? 'true' : undefined}>
+          {TESTIMONIALS.map((t) => (
+            <li>
+              <figure class="review glass glass--flat">
+                <p class="review__stars"><span class="sr-only">Note : 5 sur 5</span><span aria-hidden="true">★★★★★</span></p>
+                <blockquote>« {t.quote} »</blockquote>
+                <figcaption><span class="review__av" aria-hidden="true">{t.name.split(' ').map((w) => w[0]).join('').replace('.', '')}</span><span><b>{t.name}</b><small>{t.role}</small></span></figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Secteurs & villes -->
+  <section class="section" id="villes" aria-labelledby="cities-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Implantations locales</p>
+        <h2 id="cities-title" data-reveal="title"><Split>Basés à Abomey-Calavi, actifs dans toute la francophonie.</Split></h2>
+        <p>Notre siège est au Bénin, et nous accompagnons des entreprises dans les principaux marchés francophones d’Afrique et d’Europe. Choisissez votre ville pour découvrir notre offre dédiée.</p>
+      </div>
+      <ul class="cities" data-stagger>
+        {CITIES.map((c) => (
+          <li data-reveal>
+            <a href={c.href} class:list={['city glass glass--flat spot', { 'city--hq': c.hq }]}>
+              <Icon name="pin" size={18} />
+              <span><b>{c.city}</b><small>{c.meta}</small></span>
+              <Icon name="arrow-up-right" size={16} class="city__arrow" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="sectors" data-reveal>
+        <p class="sectors__title">Nos secteurs d’expertise</p>
+        <ul>{SECTORS.map((s) => <li class="chip">{s}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container faq">
+      <div class="faq__intro">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title" data-reveal="title"><Split>Vos questions, nos réponses.</Split></h2>
+        <p class="muted">Une autre question ? Écrivez-nous, le fondateur vous répond en personne.</p>
+        <a href="/faq" class="link-arrow">Toutes les questions fréquentes <Icon name="arrow-up-right" size={16} /></a>
+      </div>
+      <div class="faq__list">
+        {FAQ.map((f, i) => (
+          <details class="faq__item glass glass--flat" name="faq-accueil" open={i === 0}>
+            <summary><span>{f.q}</span><span class="faq__icon" aria-hidden="true"><Icon name="plus" size={18} /></span></summary>
+            <div class="faq__a"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section class="section section--tight" aria-labelledby="insights-title">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Insights</p>
+          <h2 id="insights-title" data-reveal="title"><Split>Guides et retours d’expérience.</Split></h2>
+        </div>
+        <a href="/blog" class="btn btn--glass">Tous les articles <Icon name="arrow-right" size={18} class="icon--end" /></a>
+      </div>
+      <ul class="grid grid--3" data-stagger>
+        {INSIGHTS.map((a) => (
+          <li data-reveal>
+            <a href={a.href} class="card glass glass--flat spot insight">
+              <p class="case__tag">{a.tag}</p>
+              <h3>{a.title}</h3>
+              <p>{a.text}</p>
+              <span class="insight__meta">{a.read} · <span class="link-arrow">Lire l’article <Icon name="arrow-right" size={14} /></span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

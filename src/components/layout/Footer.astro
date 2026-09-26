@@ -1,0 +1,69 @@
+---
+import Icon from '../ui/Icon.astro';
+import Split from '../ui/Split.astro';
+import LogoMark from '../ui/LogoMark.astro';
+import { FOOTER_COLS, SITE } from '../../data/site';
+
+interface Props {
+  showCta?: boolean;
+  /** Appel à l'action de fin de page personnalisé (titre, texte, lien principal) */
+  cta?: { title?: string; text?: string; href?: string; label?: string };
+}
+const { showCta = true, cta = {} } = Astro.props;
+const ctaTitle = cta.title || 'Prêt à lancer votre&nbsp;projet&nbsp;?';
+const ctaText = cta.text || 'Deux minutes pour décrire votre besoin, un devis ferme sous 48&nbsp;h après notre échange. Sans engagement.';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  {showCta && (
+    <section class="site-footer__cta container" aria-labelledby="footer-cta-title">
+      <div class="sf-cta glass glass--tint spot" data-reveal="scale" data-spot>
+        <div class="sf-cta__glow" aria-hidden="true"></div>
+        <p class="eyebrow">Réponse sous 24&nbsp;h</p>
+        <h2 id="footer-cta-title" class="sf-cta__title" data-reveal="title"><Split><Fragment set:html={ctaTitle} /></Split></h2>
+        <p class="sf-cta__text" set:html={ctaText} />
+        <div class="sf-cta__actions">
+          <a href={cta.href || '/contact'} class="btn btn--primary btn--lg" data-magnetic>{cta.label || 'Démarrer mon projet'} <Icon name="arrow-right" size={18} class="icon--end" /></a>
+          <a href={SITE.whatsapp} class="btn btn--glass btn--lg" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} /> Écrire sur WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="container site-footer__main">
+    <div class="site-footer__brand">
+      <a href="/" class="brand" aria-label="Pirabel Labs, retour à l’accueil">
+        <LogoMark size={34} />
+        <span class="brand__name">Pirabel Labs</span>
+      </a>
+      <p>Agence marketing digital francophone pour PME ambitieuses. Sites web, SEO, réseaux sociaux, vidéo, automatisation, IA et SaaS, sous le même toit.</p>
+      <ul class="site-footer__social" aria-label="Réseaux et contact">
+        <li><a href={SITE.whatsapp} target="_blank" rel="noopener" aria-label="WhatsApp"><Icon name="whatsapp" size={18} /></a></li>
+        <li><a href={SITE.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Icon name="facebook" size={18} /></a></li>
+        <li><a href={SITE.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icon name="instagram" size={17} /></a></li>
+        <li><a href={SITE.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn"><Icon name="linkedin" size={17} /></a></li>
+        <li><a href={`mailto:${SITE.email}`} aria-label="E-mail"><Icon name="mail" size={18} /></a></li>
+        <li><a href={SITE.phoneBJHref} aria-label={`Téléphone Bénin ${SITE.phoneBJ}`}><Icon name="phone" size={17} /></a></li>
+      </ul>
+    </div>
+    {FOOTER_COLS.map((col) => (
+      <nav class="site-footer__col" aria-label={col.title}>
+        <p class="site-footer__title">{col.title}</p>
+        <ul>
+          {col.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+    ))}
+  </div>
+
+  <div class="site-footer__word" aria-hidden="true" data-parallax="-0.08">PIRABEL LABS</div>
+
+  <div class="container site-footer__bottom">
+    <span>© {year} Pirabel Labs · Tous droits réservés · <a href={`mailto:${SITE.email}`}>{SITE.email}</a> · {SITE.city}</span>
+    <span class="site-footer__links">
+      <a href="/mentions-legales">Mentions légales</a>
+      <a href="/politique-confidentialite">Confidentialité</a>
+      <button type="button" class="motion-switch" data-motion-switch hidden>Activer toutes les animations</button>
+    </span>
+  </div>
+</footer>

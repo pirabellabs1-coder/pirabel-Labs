@@ -11,7 +11,7 @@
     var c = d.comments || [];
     if (head) head.textContent = 'Commentaires (' + c.length + ')';
     if (!list) return;
-    if (!c.length) { list.innerHTML = '<p style="color:rgba(229,226,225,0.45);">Soyez le premier à commenter cet article.</p>'; return; }
+    if (!c.length) { list.innerHTML = '<p style="color:var(--text-3);">Soyez le premier à commenter cet article.</p>'; return; }
     list.innerHTML = c.map(function (x) {
       return '<div class="bx-cm"><div class="bx-cm__h"><strong>' + esc(x.author) + '</strong><span>' + fmt(x.createdAt) + '</span></div><p>' + esc(x.content) + '</p></div>';
     }).join('');
@@ -28,9 +28,9 @@
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ author: f.author.value, email: f.email.value, content: f.content.value, cm_check_hp: (f.cm_check_hp ? f.cm_check_hp.value : '') })
     }).then(function (r) { return r.json(); }).then(function (d) {
-      if (d.success) { msg.style.color = '#4ade80'; msg.textContent = d.message; f.reset(); }
-      else { msg.style.color = '#f87171'; msg.textContent = d.error || 'Une erreur est survenue.'; }
+      if (d.success) { msg.style.color = 'var(--success, #4ade80)'; msg.textContent = d.message; f.reset(); }
+      else { msg.style.color = 'var(--danger, #f87171)'; msg.textContent = d.error || 'Une erreur est survenue.'; }
       b.disabled = false; b.textContent = 'Publier mon commentaire';
-    }).catch(function () { msg.style.color = '#f87171'; msg.textContent = 'Erreur réseau.'; b.disabled = false; b.textContent = 'Publier mon commentaire'; });
+    }).catch(function () { msg.style.color = 'var(--danger, #f87171)'; msg.textContent = 'Erreur réseau.'; b.disabled = false; b.textContent = 'Publier mon commentaire'; });
   });
 })();

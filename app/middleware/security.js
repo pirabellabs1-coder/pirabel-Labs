@@ -59,10 +59,26 @@ function rateLimit({ windowMs = 60000, max = 10, message = 'Trop de requetes. Re
 
 // --- INPUT SANITIZATION ---
 // Strict : pour donnees affichees (commentaires, noms, etc) hors champs riches.
+// Retire les balises « <…> » en temps LINÉAIRE (même effet que /<[^>]*>/g, dont le coût
+// devenait quadratique sur une chaîne remplie de « < » sans « > » : ReDoS possible).
+function stripTags(str) {
+  let out = '';
+  let i = 0;
+  while (i < str.length) {
+    const lt = str.indexOf('<', i);
+    if (lt < 0) { out += str.slice(i); break; }
+    const gt = str.indexOf('>', lt + 1);
+    if (gt < 0) { out += str.slice(i); break; } // plus aucun « > » : inutile de chercher plus loin
+    out += str.slice(i, lt);
+    i = gt + 1;
+  }
+  return out;
+}
+
 function sanitize(str, maxLen = 500) {
   if (typeof str !== 'string') return '';
-  return str
-    .replace(/<[^>]*>/g, '')           // Strip HTML tags
+  // Borne le travail avant tout traitement (le résultat est de toute façon tronqué à maxLen).
+  return stripTags(str.slice(0, maxLen * 2 + 200))  // Strip HTML tags
     .replace(/javascript:/gi, '')       // Block javascript: protocol
     .replace(/on\w+\s*=/gi, '')         // Block inline event handlers
     .trim()
@@ -133,23 +149,27 @@ function globalSanitize(req, res, next) {
     return next();
   }
   // Anti NoSQL injection : strip operateurs Mongo si l'objet contient $...
-  const stripMongo = (obj) => {
+  // Profondeur bornée : un JSON imbriqué sur des milliers de niveaux ferait déborder la pile.
+  const MAX_DEPTH = 20;
+  const stripMongo = (obj, depth = 0) => {
     if (!obj || typeof obj !== 'object') return obj;
     for (const k of Object.keys(obj)) {
       if (k.startsWith('$') || k.includes('.')) {
         delete obj[k];
       } else if (typeof obj[k] === 'object') {
-        stripMongo(obj[k]);
+        if (depth >= MAX_DEPTH) delete obj[k];
+        else stripMongo(obj[k], depth + 1);
       }
     }
     return obj;
   };
-  const sanitizeValue = (val) => {
+  const sanitizeValue = (val, depth = 0) => {
     if (typeof val === 'string') return sanitize(val, 10000);
     if (val && typeof val === 'object') {
+      if (depth >= MAX_DEPTH) return undefined;
       stripMongo(val);
       for (let k in val) {
-        val[k] = sanitizeValue(val[k]);
+        val[k] = sanitizeValue(val[k], depth + 1);
       }
     }
     return val;
@@ -162,6 +182,7 @@ function globalSanitize(req, res, next) {
 }
 
 module.exports = {
+  stripTags,
   securityHeaders,
   rateLimit,
   sanitize,

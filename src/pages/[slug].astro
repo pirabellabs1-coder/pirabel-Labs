@@ -1,0 +1,91 @@
+---
+/**
+ * Pages issues de l'ancien site (src/legacy/*.html).
+ * - Gabarit « agence » (369 pages : services, agences, villes) : contenu extrait en blocs
+ *   (src/lib/blocks/parse.ts) et rendu en composants natifs (Blocks.astro).
+ * - Pages uniques restantes : servies dans le nouvel habillage (src/lib/legacy.ts),
+ *   en attendant leur version native dédiée.
+ * SEO conservé : title, description, canonical, Open Graph, JSON-LD (accents corrigés).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Blocks from '../components/blocks/Blocks.astro';
+import { listLegacySlugs, loadLegacy } from '../lib/legacy';
+import { parseBlocks, type Block } from '../lib/blocks/parse';
+import { fixText } from '../lib/blocks/fr';
+import { PRICE_OVERRIDES } from '../data/price-overrides';
+
+export function getStaticPaths() {
+  return listLegacySlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const page = loadLegacy(slug as string);
+const native = page.body.includes('class="s-hero"');
+const blocks: Block[] = native ? parseBlocks(page.body) : [];
+// Grille tarifaire révisée : remplace les prix historiques des blocs « tarifs » de la page.
+const prices = PRICE_OVERRIDES[slug as string];
+if (prices) {
+  const pricing = blocks.find((b) => b.kind === 'pricing') as Extract<Block, { kind: 'pricing' }> | undefined;
+  pricing?.items.forEach((it, i) => { if (prices[i]) it.price = prices[i]; });
+}
+
+// JSON-LD : mêmes corrections de français que le texte visible (FAQ identiques aux données structurées).
+const fixLd = (raw: string) => {
+  try {
+    const walk = (v: unknown): unknown => typeof v === 'string' ? fixText(v) : Array.isArray(v) ? v.map(walk) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k.startsWith('@') || /url|image|logo|item|sameAs|telephone|email/i.test(k) ? x : walk(x)])) : v;
+    return JSON.stringify(walk(JSON.parse(raw)));
+  } catch { return raw; }
+};
+const jsonLd = native ? page.jsonLd.map(fixLd) : page.jsonLd;
+
+// Appel à l'action final : titre de la page + lien principal du hero (formulaire pré-rempli).
+const final = blocks.find((b) => b.kind === 'final') as Extract<Block, { kind: 'final' }> | undefined;
+const hero = blocks.find((b) => b.kind === 'hero') as Extract<Block, { kind: 'hero' }> | undefined;
+const mainHref = hero?.ctas.find((c) => c.href.startsWith('/contact'))?.href || '/contact';
+const footerCta = final ? { title: final.title, text: final.text, href: mainHref, label: 'Démarrer mon projet' } : undefined;
+const hasRaw = blocks.some((b) => b.kind === 'raw');
+---
+{native ? (
+  <BaseLayout
+    title={fixText(page.title)}
+    description={fixText(page.description)}
+    path={page.path}
+    ogTitle={page.ogTitle && fixText(page.ogTitle)}
+    ogDescription={page.ogDescription && fixText(page.ogDescription)}
+    ogImage={page.ogImage}
+    ogType={page.ogType}
+    robots={page.robots}
+    jsonLdRaw={jsonLd}
+    breadcrumb={!page.hasBreadcrumbLd}
+    footerCta={footerCta}
+  >
+    {hasRaw && <Fragment slot="head"><style is:inline set:html={page.iconFontCss}></style><style is:inline set:html={page.css}></style></Fragment>}
+    <Blocks blocks={blocks} />
+  </BaseLayout>
+) : (
+  <BaseLayout
+    title={page.title}
+    description={page.description}
+    path={page.path}
+    ogTitle={page.ogTitle}
+    ogDescription={page.ogDescription}
+    ogImage={page.ogImage}
+    ogType={page.ogType}
+    robots={page.robots}
+    jsonLdRaw={page.jsonLd}
+    breadcrumb={!page.hasBreadcrumbLd}
+    showFooterCta={false}
+  >
+    <Fragment slot="head">
+      <script is:inline>(function(){try{if(("IntersectionObserver" in window)&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("anim-on")}}catch(e){}})();</script>
+      <style is:inline set:html={page.iconFontCss}></style>
+      <style is:inline set:html={page.css}></style>
+    </Fragment>
+    <div class="lg">
+      <Fragment set:html={page.body} />
+    </div>
+    <Fragment slot="end">
+      <Fragment set:html={page.scripts} />
+    </Fragment>
+  </BaseLayout>
+)}

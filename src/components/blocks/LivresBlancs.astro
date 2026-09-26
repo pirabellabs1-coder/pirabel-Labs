@@ -1,0 +1,252 @@
+---
+/**
+ * Bibliothèque de livres blancs : liste statique (repli, indexable) remplacée par la liste
+ * publiée depuis l'admin (/api/livres-blancs) si elle existe. Téléchargement via une boîte de
+ * dialogue native (<dialog>) qui appelle /api/livre-blanc/request (pot de miel conservé).
+ */
+import Icon from '../ui/Icon.astro';
+import Split from '../ui/Split.astro';
+
+export interface Guide { slug: string; title: string; description: string; pages: number; icon: string; category: string; toc?: string[] }
+interface Props { guides: Guide[] }
+const { guides } = Astro.props;
+---
+<section class="b-sec" id="guides" aria-labelledby="lb-title">
+  <div class="container">
+    <div class="b-head b-head--center">
+      <p class="eyebrow">Bibliothèque</p>
+      <h2 id="lb-title" data-reveal="title"><Split>Nos guides <span class="grad">à télécharger</span></Split></h2>
+      <p class="b-head__lead">Choisissez un guide : le PDF arrive dans votre boîte mail en moins d’une minute.</p>
+    </div>
+
+    <div class="lbx__tools" data-lb-tools hidden>
+      <div class="lbx__pills" role="group" aria-label="Filtrer par thème" data-lb-pills></div>
+      <label class="lbx__search glass glass--flat">
+        <Icon name="search" size={16} />
+        <span class="sr-only">Rechercher un guide</span>
+        <input type="search" placeholder="Rechercher un guide…" data-lb-q />
+      </label>
+    </div>
+
+    <ul class="lbx__grid" data-lb-grid>
+      {guides.map((g) => (
+        <li>
+          <article class="lbx__card glass glass--flat spot">
+            <div class="lbx__cover" aria-hidden="true">
+              <span class="lbx__pages">{g.pages} pages</span>
+              <span class="lbx__ico"><Icon name={g.icon} size={34} /></span>
+              <span class="lbx__brand">Pirabel Labs · Livre blanc</span>
+            </div>
+            <div class="lbx__body">
+              <p class="b-card__tag">{g.category}</p>
+              <h3>{g.title}</h3>
+              <p>{g.description}</p>
+              <a href={`/contact?service=livre-blanc&guide=${g.slug}`} class="btn btn--glass lbx__cta" data-lb-open data-slug={g.slug} data-title={g.title}>
+                <Icon name="download" size={16} />Télécharger gratuitement
+              </a>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+    <p class="lbx__empty" data-lb-empty hidden>Aucun guide ne correspond à votre recherche.</p>
+  </div>
+</section>
+
+<dialog class="lbx__dlg glass glass--strong" aria-labelledby="lbx-dlg-title" data-lb-dialog>
+  <form method="dialog" class="lbx__close-form"><button class="lbx__close" aria-label="Fermer"><Icon name="x" size={18} /></button></form>
+  <p class="eyebrow">Livre blanc gratuit</p>
+  <h2 id="lbx-dlg-title" data-lb-dtitle>Recevez votre livre blanc par e-mail</h2>
+  <p class="lbx__dlg-lead">Le PDF arrive dans votre boîte mail en moins de 60 secondes. Pas de spam : vous gardez le contrôle.</p>
+  <form class="lbx__form" data-lb-form novalidate>
+    <input type="hidden" name="slug" data-lb-slug />
+    <div class="lbx__hp" aria-hidden="true"><label>Ne pas remplir <input type="text" name="lb_check_hp" tabindex="-1" autocomplete="off" /></label></div>
+    <div class="lbx__row">
+      <label for="lb-name">Nom complet <span aria-hidden="true">*</span></label>
+      <input id="lb-name" name="name" type="text" required minlength="2" maxlength="120" autocomplete="name" />
+    </div>
+    <div class="lbx__row">
+      <label for="lb-email">E-mail professionnel <span aria-hidden="true">*</span></label>
+      <input id="lb-email" name="email" type="email" required maxlength="200" autocomplete="email" />
+    </div>
+    <div class="lbx__row lbx__row--half">
+      <div>
+        <label for="lb-company">Entreprise</label>
+        <input id="lb-company" name="company" type="text" maxlength="120" autocomplete="organization" />
+      </div>
+      <div>
+        <label for="lb-phone">Téléphone / WhatsApp</label>
+        <input id="lb-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" />
+      </div>
+    </div>
+    <label class="lbx__check"><input type="checkbox" name="newsletter" /> <span>Recevoir de temps en temps nos conseils marketing (1 à 2 e-mails par mois, désinscription en un clic).</span></label>
+    <p class="lbx__msg" role="status" aria-live="polite" data-lb-msg></p>
+    <button type="submit" class="btn btn--primary btn--lg lbx__submit" data-lb-submit><Icon name="download" size={18} />Recevoir le livre blanc</button>
+    <p class="lbx__legal">En validant, vous acceptez que vos données soient utilisées pour vous envoyer ce guide. <a href="/politique-confidentialite">Politique de confidentialité</a>.</p>
+  </form>
+</dialog>
+
+<script>
+  import { mapIcon } from '../../lib/blocks/icon-map';
+
+  type Api = { slug: string; title: string; description?: string; pages?: number; icon?: string; category?: string; downloads?: number };
+  const grid = document.querySelector<HTMLUListElement>('[data-lb-grid]');
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lb-dialog]');
+  const form = document.querySelector<HTMLFormElement>('[data-lb-form]');
+  const msg = document.querySelector<HTMLElement>('[data-lb-msg]');
+  const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const ico = (n: string, s = 18) => `<svg class="icon" width="${s}" height="${s}" aria-hidden="true"><use href="#i-${esc(n)}"/></svg>`;
+  let all: Api[] = [];
+  let state = { cat: '', q: '' };
+
+  const card = (g: Api) => `<li><article class="lbx__card glass glass--flat spot">
+    <div class="lbx__cover" aria-hidden="true"><span class="lbx__pages">${g.pages ? esc(g.pages) + ' pages' : 'Guide PDF'}</span>
+    <span class="lbx__ico">${ico(mapIcon(g.icon || 'menu_book'), 34)}</span><span class="lbx__brand">Pirabel Labs · Livre blanc</span></div>
+    <div class="lbx__body"><p class="b-card__tag">${esc(g.category || 'Guide')}</p><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p>
+    <button type="button" class="btn btn--glass lbx__cta" data-lb-open data-slug="${esc(g.slug)}" data-title="${esc(g.title)}">${ico('download', 16)}Télécharger gratuitement</button></div>
+  </article></li>`;
+
+  function render() {
+    if (!grid) return;
+    const q = state.q.trim().toLowerCase();
+    const rows = all.filter((g) => (!state.cat || (g.category || 'Guide') === state.cat)
+      && (!q || `${g.title} ${g.description ?? ''} ${g.category ?? ''}`.toLowerCase().includes(q)));
+    grid.innerHTML = rows.map(card).join('');
+    document.querySelector('[data-lb-empty]')?.toggleAttribute('hidden', rows.length > 0);
+  }
+
+  function tools() {
+    const box = document.querySelector<HTMLElement>('[data-lb-tools]');
+    const pills = document.querySelector<HTMLElement>('[data-lb-pills]');
+    if (!box || !pills) return;
+    const cats = [...new Set(all.map((g) => g.category || 'Guide'))].sort((a, b) => a.localeCompare(b, 'fr'));
+    pills.innerHTML = ['', ...cats].map((c) => `<button type="button" class="lbx__pill" aria-pressed="${state.cat === c}" data-cat="${esc(c)}">${c ? esc(c) : 'Tous'}</button>`).join('');
+    pills.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.addEventListener('click', () => {
+      state.cat = b.dataset.cat || '';
+      pills.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      render();
+    }));
+    box.hidden = cats.length < 2 && all.length < 6;
+  }
+
+  // Liste publiée depuis l'admin : remplace la liste de repli si elle n'est pas vide.
+  fetch('/api/livres-blancs').then((r) => (r.ok ? r.json() : null)).then((d) => {
+    const list: Api[] = Array.isArray(d?.livresBlancs) ? d.livresBlancs.filter((g: Api) => g && g.slug && g.title) : [];
+    if (!list.length) return;
+    all = list;
+    tools();
+    render();
+  }).catch(() => {});
+  document.querySelector<HTMLInputElement>('[data-lb-q]')?.addEventListener('input', (e) => { state.q = (e.target as HTMLInputElement).value; render(); });
+
+  // Ouverture de la boîte de dialogue (délégation : fonctionne aussi après le rendu dynamique).
+  let opener: HTMLElement | null = null;
+  document.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('[data-lb-open]');
+    if (!b || !dlg || !form) return;
+    e.preventDefault();
+    opener = b;
+    (form.querySelector('[data-lb-slug]') as HTMLInputElement).value = b.dataset.slug || '';
+    const t = document.querySelector('[data-lb-dtitle]');
+    if (t) t.textContent = b.dataset.title || 'Recevez votre livre blanc par e-mail';
+    if (msg) { msg.textContent = ''; msg.className = 'lbx__msg'; }
+    dlg.showModal();
+    (form.querySelector('#lb-name') as HTMLInputElement)?.focus();
+  });
+  // Retour du focus sur le bouton d'origine (retrouvé par son slug si la grille a été redessinée).
+  dlg?.addEventListener('close', () => {
+    const slug = opener?.dataset.slug || '';
+    const target = opener?.isConnected ? opener : document.querySelector<HTMLElement>(`[data-lb-open][data-slug="${CSS.escape(slug)}"]`);
+    target?.focus({ preventScroll: true });
+  });
+  // Fermeture au clic sur le fond seulement (pas sur la marge intérieure du dialogue).
+  dlg?.addEventListener('click', (e) => {
+    if (e.target !== dlg) return;
+    const r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!msg) return;
+    const fd = new FormData(form);
+    const name = String(fd.get('name') || '').trim();
+    const email = String(fd.get('email') || '').trim();
+    if (name.length < 2) { msg.textContent = 'Indiquez votre nom (2 caractères minimum).'; msg.className = 'lbx__msg is-err'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = 'Indiquez une adresse e-mail valide.'; msg.className = 'lbx__msg is-err'; return; }
+    const btn = form.querySelector<HTMLButtonElement>('[data-lb-submit]');
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+    msg.textContent = 'Envoi en cours…'; msg.className = 'lbx__msg';
+    try {
+      const r = await fetch('/api/livre-blanc/request', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, company: fd.get('company') || '', phone: fd.get('phone') || '', slug: fd.get('slug') || '', newsletter: fd.get('newsletter') === 'on', lb_check_hp: fd.get('lb_check_hp') || '' }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || 'Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.');
+      // Lien direct seulement s'il pointe vers nos fichiers (jamais d'URL arbitraire).
+      const pdf = typeof d.pdfUrl === 'string' && /^\/downloads\/[\w.-]+\.pdf$/.test(d.pdfUrl) ? d.pdfUrl : '';
+      msg.className = 'lbx__msg is-ok';
+      msg.innerHTML = `C’est envoyé ! Vérifiez votre boîte mail.${pdf ? ` Vous pouvez aussi <a href="${pdf}" download>télécharger le PDF maintenant</a>.` : ''}`;
+      form.reset();
+    } catch (err) {
+      msg.textContent = (err as Error).message; msg.className = 'lbx__msg is-err';
+    } finally {
+      if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
+    }
+  });
+</script>
+
+<style>
+  .lbx__tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 26px; }
+  .lbx__tools[hidden] { display: none; }
+  .lbx__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lbx__pills :global(.lbx__pill) { padding: 8px 14px; border: 0; border-radius: 999px; font: 600 0.86rem/1 var(--font-ui); color: var(--text-2); background: rgba(var(--ink), 0.06); cursor: pointer; }
+  .lbx__pills :global(.lbx__pill[aria-pressed='true']) { color: var(--on-accent); background: linear-gradient(145deg, #ff7a33, #ff5500); }
+  .lbx__search { display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 999px; min-width: min(100%, 280px); color: var(--text-3); }
+  .lbx__search input { flex: 1; min-width: 0; padding: 11px 0; border: 0; background: transparent; color: var(--text); font: inherit; outline: none; }
+  .lbx__search:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
+  .lbx__grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+  .lbx__grid > :global(li) { display: flex; }
+  .lbx__grid :global(.lbx__card) { display: flex; flex-direction: column; width: 100%; border-radius: var(--r-lg); overflow: hidden; transition: transform 0.5s var(--ease-out); }
+  .lbx__grid :global(.lbx__card:hover) { transform: translateY(-4px); }
+  .lbx__grid :global(.lbx__cover) { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; background: radial-gradient(120% 90% at 20% 10%, rgba(255, 122, 51, 0.55), transparent 55%), linear-gradient(150deg, #1c1511, #0f0f0f 70%); color: #fff; }
+  .lbx__grid :global(.lbx__cover::after) { content: ''; position: absolute; inset: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.12); }
+  .lbx__grid :global(.lbx__ico) { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 22px; background: linear-gradient(145deg, #ff7a33, #ff5500); box-shadow: 0 20px 44px -16px rgba(255, 85, 0, 0.8); color: #1a0d05; }
+  .lbx__grid :global(.lbx__pages) { position: absolute; top: 24px; right: 24px; padding: 5px 10px; border-radius: 999px; font: 700 0.72rem/1 var(--font-ui); letter-spacing: 0.04em; background: rgba(255, 255, 255, 0.12); }
+  .lbx__grid :global(.lbx__brand) { position: absolute; left: 26px; bottom: 22px; font: 600 0.72rem/1 var(--font-ui); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+  .lbx__grid :global(.lbx__body) { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 24px; }
+  .lbx__grid :global(.lbx__body h3) { font-size: var(--fs-h3); line-height: 1.25; }
+  .lbx__grid :global(.lbx__body p:not(.b-card__tag)) { color: var(--text-2); font-size: 0.95rem; }
+  .lbx__grid :global(.lbx__cta) { align-self: flex-start; margin-top: auto; }
+  .lbx__empty { padding: 40px 0; text-align: center; color: var(--text-3); }
+
+  /* position fixe explicite : .glass (position: relative) écraserait celle du dialogue modal. */
+  .lbx__dlg { position: fixed; inset: 0; margin: auto; height: fit-content; width: min(560px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: clamp(22px, 4vw, 36px); border: 0; border-radius: var(--r-xl); color: var(--text); overflow: auto; }
+  .lbx__dlg::backdrop { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); }
+  .lbx__dlg[open] { animation: lbx-in 0.35s var(--ease-out); }
+  @keyframes lbx-in { from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.98); } }
+  .lbx__close-form { position: absolute; top: 14px; right: 14px; }
+  .lbx__close { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; color: var(--text); background: rgba(var(--ink), 0.08); cursor: pointer; }
+  .lbx__dlg h2 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem); padding-right: 40px; }
+  .lbx__dlg-lead { margin-top: 8px; color: var(--text-2); font-size: 0.95rem; }
+  .lbx__form { display: grid; gap: 14px; margin-top: 22px; }
+  .lbx__row { display: grid; gap: 6px; }
+  .lbx__row--half { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .lbx__row--half > div { display: grid; gap: 6px; }
+  .lbx__form label { font: 600 0.86rem/1.3 var(--font-ui); }
+  .lbx__row label span { color: var(--accent-2); }
+  .lbx__form input[type='text'], .lbx__form input[type='email'], .lbx__form input[type='tel'] { width: 100%; padding: 12px 14px; border: 1px solid rgba(var(--ink), 0.14); border-radius: 12px; background: rgba(var(--ink), 0.04); color: var(--text); font: inherit; }
+  .lbx__form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .lbx__check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400 !important; font-size: 0.86rem !important; color: var(--text-2); }
+  .lbx__check input { margin-top: 3px; accent-color: var(--accent); }
+  .lbx__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .lbx__msg { min-height: 1.2em; font-size: 0.92rem; }
+  .lbx__msg.is-ok { color: var(--success); }
+  .lbx__msg.is-err { color: var(--danger); }
+  .lbx__msg :global(a) { color: inherit; text-decoration: underline; }
+  .lbx__submit { justify-content: center; }
+  .lbx__legal { font-size: 0.78rem; color: var(--text-3); }
+  .lbx__legal a { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { .lbx__dlg[open] { animation: none; } }
+</style>

@@ -1,0 +1,140 @@
+import type { PageData } from '../../components/blocks/BlockPage.astro';
+
+const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
+
+export const page: PageData = {
+  path: '/services',
+  title: 'Nos services : site web, SEO, IA, automatisation | Pirabel Labs',
+  description: 'Site web, SEO, réseaux sociaux, vidéo, tunnels de vente, e-mail, automatisation, IA et consulting : une seule équipe, un seul interlocuteur.',
+  legacyLd: 'services',
+  footerCta: {
+    title: 'Vous ne savez pas par où commencer ?',
+    text: 'Réservez un audit gratuit de 15 minutes : nous regardons votre situation et vous proposons une feuille de route honnête avec 3 priorités chiffrées. Que l’on travaille ensemble ou non, vous repartez avec un plan.',
+    href: '/contact',
+    label: 'Réserver l’audit gratuit',
+  },
+  blocks: [
+    { kind: 'breadcrumb', items: [{ href: '/', label: 'Accueil' }, { label: 'Services' }] },
+    {
+      kind: 'hero',
+      eyebrow: 'Tous nos services',
+      eyebrowIcon: 'layers',
+      title: 'Le marketing digital <span class="grad">de A à Z</span>, sous le même toit.',
+      lead: 'Site web, SEO, réseaux sociaux, vidéo, tunnels de vente, automatisation, e-mail marketing, IA et consulting : 11 expertises, une seule équipe, un seul interlocuteur. Aucun sous-traitant caché.',
+      ctas: [
+        { href: '/contact', label: 'Demander un audit gratuit', primary: true },
+        { href: WA, label: 'WhatsApp direct', external: true },
+      ],
+      icons: ['code', 'rocket', 'search'],
+      caption: '11 expertises intégrées',
+      chips: [
+        { icon: 'users', text: 'Un seul interlocuteur' },
+        { icon: 'clock', text: 'Réponse sous 24 h' },
+        { icon: 'badge-check', text: 'Devis ferme sous 48 h' },
+      ],
+    },
+    {
+      kind: 'anchors', label: 'Catégories de services',
+      links: [
+        { href: '#creation-web', label: 'Création web', icon: 'code' },
+        { href: '#seo-visibilite', label: 'SEO & visibilité', icon: 'search' },
+        { href: '#social-video', label: 'Social & vidéo', icon: 'message' },
+        { href: '#conversion', label: 'Conversion & automatisation', icon: 'funnel' },
+        { href: '#ia-produits', label: 'IA & produits', icon: 'bot' },
+        { href: '#technologies', label: 'Technologies', icon: 'layers' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'services', id: 'creation-web',
+      head: { eyebrow: 'Création web', title: 'Construire un site qui <span class="grad">convertit</span>', lead: 'Sites vitrines, e-commerce, applications sur mesure. WordPress, Webflow, Next.js. Performance, SEO et design haut de gamme inclus.' },
+      items: [
+        { icon: 'code', title: 'Sites sur mesure', text: 'Next.js, React, Webflow. Performance maximale, design unique, 100 % personnalisé. Pour les marques exigeantes.', href: '/creation-site-web' },
+        { icon: 'layout', title: 'Sites WordPress', text: 'Elementor et WooCommerce. Des sites professionnels rapides à lancer, évolutifs et faciles à maintenir en interne.', href: '/creation-site-wordpress' },
+        { icon: 'building', title: 'Site vitrine', text: 'Une présence claire et crédible qui génère des demandes de devis, optimisée pour Google dès la mise en ligne.', href: '/agence-site-vitrine' },
+        { icon: 'cart', title: 'E-commerce', text: 'Boutiques Shopify, WooCommerce ou PrestaShop, paiement Mobile Money et carte, catalogue et logistique pensés pour vendre.', href: '/agence-ecommerce' },
+        { icon: 'terminal', title: 'Applications web', text: 'SaaS, MVP, plateformes métier. Next.js, Node, PostgreSQL. Code documenté, évolutif, conforme au RGPD.', href: '/creation-application-web' },
+        { icon: 'refresh', title: 'Refonte de site', text: 'Audit et refonte complète : migration technique, rédaction SEO, performance Core Web Vitals, sans perte de trafic.', href: '/refonte-site-web' },
+        { icon: 'cloud', title: 'Hébergement web', text: 'Serveurs rapides, CDN, sauvegardes automatiques, certificats SSL. Disponibilité garantie à 99,9 %.', href: '/hebergement-web' },
+        { icon: 'wrench', title: 'Maintenance', text: 'Mises à jour, sécurité, sauvegardes et support, pour dormir tranquille pendant que votre site travaille.', href: '/maintenance-site-web' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'services', id: 'seo-visibilite',
+      head: { eyebrow: 'SEO & visibilité', title: 'Gagner du trafic <span class="grad">organique</span>', lead: 'SEO technique, contenu, netlinking, fiche Google Business : un trafic qualifié qui se transforme en chiffre d’affaires.' },
+      items: [
+        { icon: 'search', title: 'SEO et référencement', text: 'Audit technique, stratégie de contenu, netlinking éthique. Un trafic qualifié qui convertit, mesurable mois après mois.', href: '/seo' },
+        { icon: 'target', title: 'SEO local', text: 'Pack local Google Maps, optimisation par ville, fiche Google Business, avis vérifiés. Pour les commerces et services de proximité.', href: '/seo-local' },
+        { icon: 'chart', title: 'Audit SEO', text: 'Diagnostic complet : technique, contenu, backlinks, concurrence. Plan d’action chiffré et priorisé sur 60 jours.', href: '/audit-seo' },
+        { icon: 'link', title: 'Netlinking', text: 'Backlinks éthiques, articles invités, partenariats. Autorité de domaine et signaux E-E-A-T renforcés durablement.', href: '/agence-netlinking' },
+        { icon: 'pin', title: 'Google Business Profile', text: 'Optimisation de la fiche, photos, publications hebdomadaires, gestion des avis et des questions. Objectif : le top 3 local.', href: '/fiche-google-business' },
+        { icon: 'star', title: 'Gestion des avis', text: 'Collecte automatique d’avis, réponses professionnelles aux avis négatifs, e-réputation maîtrisée.', href: '/gestion-avis-google' },
+      ],
+    },
+    { kind: 'cta', variant: 'inline', title: 'Un projet, une question ?', text: 'Devis gratuit et réponse sous 24 h — sans engagement.', ctas: [{ href: '/contact', label: 'Demander un devis' }, { href: WA, label: 'WhatsApp', external: true }] },
+    {
+      kind: 'cards', variant: 'services', id: 'social-video',
+      head: { eyebrow: 'Social média & vidéo', title: 'Animer votre <span class="grad">communauté</span>', lead: 'Instagram, TikTok, LinkedIn, Facebook. Stratégie éditoriale, contenu, animation, vidéo : un engagement réel et une audience qualifiée.' },
+      items: [
+        { icon: 'message', title: 'Community management', text: 'Stratégie, contenus et animation Facebook, Instagram, LinkedIn et TikTok. Ligne éditoriale, calendrier, reporting.', href: '/community-management' },
+        { icon: 'camera', title: 'Instagram', text: 'Publications, stories, Reels, carrousels. Charte visuelle forte, hashtags stratégiques, collaborations avec des créateurs.', href: '/community-instagram' },
+        { icon: 'play', title: 'TikTok', text: 'Vidéos courtes pensées pour l’algorithme, veille des tendances, accroches scénarisées. Une portée organique massive.', href: '/community-tiktok' },
+        { icon: 'briefcase', title: 'LinkedIn', text: 'Personal branding et page entreprise. Publications pertinentes, génération de leads B2B, social selling.', href: '/community-linkedin' },
+        { icon: 'video', title: 'Montage vidéo', text: 'Reels, TikTok, YouTube Shorts, formats longs. Production complète avec sous-titres, motion design et voix off.', href: '/montage-video' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'services', id: 'conversion',
+      head: { eyebrow: 'Conversion & automatisation', title: 'Transformer le trafic en <span class="grad">clients</span>', lead: 'Tunnels de vente, landing pages, e-mail marketing et automatisation : pour faire grandir votre acquisition sans alourdir votre équipe.' },
+      items: [
+        { icon: 'funnel', title: 'Tunnels de vente', text: 'Landing pages à forte conversion, tunnels de génération de leads, tests A/B, intégration CRM.', href: '/tunnels-de-vente' },
+        { icon: 'flag', title: 'Landing pages', text: 'Des pages à forte conversion pour vos campagnes publicitaires. Design orienté conversion, tests A/B, suivi impeccable.', href: '/landing-page-conversion' },
+        { icon: 'mail', title: 'E-mail marketing & CRM', text: 'HubSpot, Brevo, Mailchimp. Séquences automatisées, scoring, segmentation, délivrabilité et reporting.', href: '/email-marketing-crm' },
+        { icon: 'workflow', title: 'Automatisation marketing', text: 'Make, n8n, Zapier. Workflows complexes, intégrations CRM, chatbots WhatsApp, agents IA personnalisés.', href: '/automatisation-marketing' },
+        { icon: 'headset', title: 'Agents IA & chatbots', text: 'Chatbots WhatsApp, agents Claude et GPT, automatisation du service client. Des réponses instantanées, 24 h/24.', href: '/agents-ia-chatbots' },
+        { icon: 'brain', title: 'Consulting marketing', text: 'Audit, stratégie, feuille de route, direction marketing externalisée. Pour structurer votre acquisition et piloter votre croissance.', href: '/consulting-marketing' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'services', id: 'ia-produits',
+      head: { eyebrow: 'IA & produits', title: 'L’IA et le logiciel <span class="grad">au service de votre croissance</span>', lead: 'Des solutions concrètes, mesurables et documentées : de l’agent conversationnel au SaaS complet.' },
+      items: [
+        { icon: 'sparkles', title: 'Agence IA', text: 'Intégrer l’IA dans vos processus : cas d’usage priorisés, agents, recherche documentaire, automatisations intelligentes.', href: '/agence-ia' },
+        { icon: 'lightbulb', title: 'Solutions IA sur mesure', text: 'Des outils IA conçus pour votre métier, reliés à vos données, avec un retour sur investissement mesuré.', href: '/solutions-ia' },
+        { icon: 'layers', title: 'Création de SaaS', text: 'Du MVP au produit en production : architecture, abonnements, tableau de bord, sécurité et évolutivité.', href: '/creation-saas' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'related', id: 'technologies',
+      head: { eyebrow: 'Technologies', title: 'Les outils que nous <span class="grad">maîtrisons</span>', lead: 'Une agence certifiée ou experte sur chaque outil : nous choisissons la technologie adaptée à votre besoin, jamais l’inverse.' },
+      items: [
+        { icon: 'layout', title: 'Webflow', href: '/agence-webflow' },
+        { icon: 'layout', title: 'Elementor', href: '/agence-elementor' },
+        { icon: 'cart', title: 'Shopify', href: '/agence-shopify' },
+        { icon: 'cart', title: 'WooCommerce', href: '/agence-woocommerce' },
+        { icon: 'store', title: 'PrestaShop', href: '/agence-prestashop' },
+        { icon: 'shield', title: 'Maintenance WordPress', href: '/maintenance-wordpress' },
+        { icon: 'lock', title: 'Sécurité WordPress', href: '/securite-wordpress' },
+        { icon: 'workflow', title: 'Make', href: '/agence-make' },
+        { icon: 'workflow', title: 'n8n', href: '/agence-n8n' },
+        { icon: 'zap', title: 'Zapier', href: '/agence-zapier' },
+        { icon: 'users', title: 'HubSpot', href: '/agence-hubspot' },
+        { icon: 'mail', title: 'Brevo', href: '/agence-brevo' },
+        { icon: 'mail', title: 'Mailchimp', href: '/agence-mailchimp' },
+        { icon: 'mail', title: 'Klaviyo', href: '/agence-klaviyo' },
+        { icon: 'briefcase', title: 'Pipedrive', href: '/agence-pipedrive' },
+        { icon: 'funnel', title: 'Systeme.io', href: '/agence-systeme-io' },
+        { icon: 'funnel', title: 'ClickFunnels', href: '/agence-clickfunnels' },
+      ],
+    },
+    {
+      kind: 'steps', variant: 'compact',
+      head: { eyebrow: 'Notre méthode', title: 'Comment nous <span class="grad">travaillons ensemble</span>', lead: 'Un cadre simple et transparent, détaillé sur notre page <a href="/methodologie">méthodologie</a>.' },
+      items: [
+        { title: 'Découverte', text: '<p>Un appel gratuit de 30 minutes pour comprendre vos objectifs, votre marché et vos contraintes.</p>' },
+        { title: 'Devis ferme sous 48 h', text: '<p>Périmètre, planning, livrables et prix ligne par ligne. Aucune surprise en cours de route.</p>' },
+        { title: 'Production en sprints', text: '<p>Démonstrations hebdomadaires : vous voyez le projet avancer et validez chaque étape.</p>' },
+        { title: 'Lancement et suivi', text: '<p>Mise en ligne, formation, suivi de 30 jours et pilotage des résultats dans la durée.</p>' },
+      ],
+    },
+  ],
+};

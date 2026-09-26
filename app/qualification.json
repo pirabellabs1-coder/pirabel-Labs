@@ -1,0 +1,1241 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "id": "site",
+      "label": "Site web",
+      "hint": "Vitrine, WordPress, sur mesure",
+      "service": "site-web"
+    },
+    {
+      "id": "ecommerce",
+      "label": "Boutique en ligne",
+      "hint": "Shopify, WooCommerce, Mobile Money",
+      "service": "ecommerce"
+    },
+    {
+      "id": "app",
+      "label": "Application web ou SaaS",
+      "hint": "Plateforme, MVP, outil métier",
+      "service": "application-web"
+    },
+    {
+      "id": "seo",
+      "label": "Référencement Google",
+      "hint": "SEO, SEO local, fiche Google",
+      "service": "seo"
+    },
+    {
+      "id": "ads",
+      "label": "Publicité en ligne",
+      "hint": "Google Ads, Meta Ads, TikTok Ads",
+      "service": "publicite-en-ligne"
+    },
+    {
+      "id": "social",
+      "label": "Réseaux sociaux",
+      "hint": "Community management, contenus",
+      "service": "community-management"
+    },
+    {
+      "id": "funnel",
+      "label": "Tunnel de vente",
+      "hint": "Landing pages, génération de leads",
+      "service": "tunnels-de-vente"
+    },
+    {
+      "id": "automation",
+      "label": "Automatisation et IA",
+      "hint": "Make, n8n, chatbots, agents IA",
+      "service": "automatisation-marketing"
+    },
+    {
+      "id": "email",
+      "label": "E-mail marketing et CRM",
+      "hint": "Brevo, HubSpot, séquences",
+      "service": "email-marketing-crm"
+    },
+    {
+      "id": "video",
+      "label": "Montage vidéo",
+      "hint": "Réels, TikTok, YouTube, corporate",
+      "service": "montage-video"
+    },
+    {
+      "id": "consulting",
+      "label": "Conseil et stratégie",
+      "hint": "Audit, accompagnement, CMO externalisé",
+      "service": "consulting-marketing"
+    },
+    {
+      "id": "autre",
+      "label": "Autre ou je ne sais pas",
+      "hint": "On vous aide à y voir clair",
+      "service": "autre"
+    }
+  ],
+  "maxProjects": 3,
+  "details": {
+    "site": {
+      "title": "Votre site web",
+      "questions": [
+        {
+          "id": "situation",
+          "label": "Il s’agit…",
+          "short": "Nature",
+          "type": "single",
+          "options": [
+            {
+              "id": "creation",
+              "label": "D’un nouveau site"
+            },
+            {
+              "id": "refonte",
+              "label": "D’une refonte"
+            }
+          ]
+        },
+        {
+          "id": "kind",
+          "label": "Quel type de site ?",
+          "short": "Type",
+          "type": "single",
+          "options": [
+            {
+              "id": "vitrine",
+              "label": "Site vitrine"
+            },
+            {
+              "id": "catalogue",
+              "label": "Catalogue ou portfolio"
+            },
+            {
+              "id": "blog",
+              "label": "Blog ou média"
+            },
+            {
+              "id": "surmesure",
+              "label": "Plateforme sur mesure"
+            }
+          ]
+        },
+        {
+          "id": "size",
+          "label": "Combien de pages environ ?",
+          "short": "Pages",
+          "type": "single",
+          "options": [
+            {
+              "id": "p1",
+              "label": "1 à 5"
+            },
+            {
+              "id": "p2",
+              "label": "6 à 15"
+            },
+            {
+              "id": "p3",
+              "label": "16 à 40"
+            },
+            {
+              "id": "p4",
+              "label": "Plus de 40"
+            },
+            {
+              "id": "nsp",
+              "label": "Je ne sais pas"
+            }
+          ]
+        },
+        {
+          "id": "features",
+          "label": "Fonctionnalités souhaitées",
+          "short": "Fonctionnalités",
+          "type": "multi",
+          "optional": true,
+          "options": [
+            {
+              "id": "devis",
+              "label": "Formulaire de devis"
+            },
+            {
+              "id": "rdv",
+              "label": "Prise de rendez-vous"
+            },
+            {
+              "id": "multilingue",
+              "label": "Multilingue"
+            },
+            {
+              "id": "blog",
+              "label": "Blog"
+            },
+            {
+              "id": "membre",
+              "label": "Espace membre"
+            },
+            {
+              "id": "paiement",
+              "label": "Paiement en ligne"
+            },
+            {
+              "id": "crm",
+              "label": "Connexion à un CRM"
+            }
+          ]
+        }
+      ]
+    },
+    "ecommerce": {
+      "title": "Votre boutique en ligne",
+      "questions": [
+        {
+          "id": "situation",
+          "label": "Il s’agit…",
+          "short": "Nature",
+          "type": "single",
+          "options": [
+            {
+              "id": "creation",
+              "label": "D’une nouvelle boutique"
+            },
+            {
+              "id": "refonte",
+              "label": "D’une refonte"
+            },
+            {
+              "id": "migration",
+              "label": "D’un changement de plateforme"
+            }
+          ]
+        },
+        {
+          "id": "catalogue",
+          "label": "Taille du catalogue",
+          "short": "Catalogue",
+          "type": "single",
+          "options": [
+            {
+              "id": "c1",
+              "label": "Moins de 50 produits"
+            },
+            {
+              "id": "c2",
+              "label": "50 à 500 produits"
+            },
+            {
+              "id": "c3",
+              "label": "Plus de 500 produits"
+            },
+            {
+              "id": "nsp",
+              "label": "Je ne sais pas"
+            }
+          ]
+        },
+        {
+          "id": "payments",
+          "label": "Moyens de paiement",
+          "short": "Paiements",
+          "type": "multi",
+          "options": [
+            {
+              "id": "mobilemoney",
+              "label": "Mobile Money"
+            },
+            {
+              "id": "carte",
+              "label": "Carte bancaire"
+            },
+            {
+              "id": "livraison",
+              "label": "Paiement à la livraison"
+            },
+            {
+              "id": "paypal",
+              "label": "PayPal"
+            },
+            {
+              "id": "virement",
+              "label": "Virement"
+            }
+          ]
+        },
+        {
+          "id": "platform",
+          "label": "Plateforme préférée",
+          "short": "Plateforme",
+          "type": "single",
+          "options": [
+            {
+              "id": "shopify",
+              "label": "Shopify"
+            },
+            {
+              "id": "woocommerce",
+              "label": "WooCommerce"
+            },
+            {
+              "id": "prestashop",
+              "label": "PrestaShop"
+            },
+            {
+              "id": "surmesure",
+              "label": "Sur mesure"
+            },
+            {
+              "id": "aucune",
+              "label": "Pas de préférence"
+            }
+          ]
+        }
+      ]
+    },
+    "app": {
+      "title": "Votre application",
+      "questions": [
+        {
+          "id": "kind",
+          "label": "Quel type d’application ?",
+          "short": "Type",
+          "type": "single",
+          "options": [
+            {
+              "id": "saas",
+              "label": "SaaS ou logiciel en ligne"
+            },
+            {
+              "id": "marketplace",
+              "label": "Marketplace ou plateforme"
+            },
+            {
+              "id": "interne",
+              "label": "Outil interne ou métier"
+            },
+            {
+              "id": "mobile",
+              "label": "Application mobile"
+            }
+          ]
+        },
+        {
+          "id": "stage",
+          "label": "Où en est le projet ?",
+          "short": "Avancement",
+          "type": "single",
+          "options": [
+            {
+              "id": "idee",
+              "label": "Idée à valider"
+            },
+            {
+              "id": "cdc",
+              "label": "Cahier des charges prêt"
+            },
+            {
+              "id": "maquettes",
+              "label": "Maquettes prêtes"
+            },
+            {
+              "id": "existant",
+              "label": "Produit existant à faire évoluer"
+            }
+          ]
+        },
+        {
+          "id": "users",
+          "label": "Utilisateurs attendus la première année",
+          "short": "Utilisateurs",
+          "type": "single",
+          "options": [
+            {
+              "id": "u1",
+              "label": "Moins de 100"
+            },
+            {
+              "id": "u2",
+              "label": "100 à 1 000"
+            },
+            {
+              "id": "u3",
+              "label": "Plus de 1 000"
+            },
+            {
+              "id": "nsp",
+              "label": "Je ne sais pas"
+            }
+          ]
+        }
+      ]
+    },
+    "seo": {
+      "title": "Votre référencement",
+      "questions": [
+        {
+          "id": "scope",
+          "label": "Quelle zone visez-vous ?",
+          "short": "Zone",
+          "type": "single",
+          "options": [
+            {
+              "id": "local",
+              "label": "Ma ville ou ma région"
+            },
+            {
+              "id": "national",
+              "label": "Tout le pays"
+            },
+            {
+              "id": "international",
+              "label": "Plusieurs pays"
+            }
+          ]
+        },
+        {
+          "id": "needs",
+          "label": "Ce dont vous avez besoin",
+          "short": "Besoins",
+          "type": "multi",
+          "options": [
+            {
+              "id": "audit",
+              "label": "Audit SEO"
+            },
+            {
+              "id": "technique",
+              "label": "Optimisation technique"
+            },
+            {
+              "id": "contenu",
+              "label": "Rédaction de contenus"
+            },
+            {
+              "id": "netlinking",
+              "label": "Netlinking"
+            },
+            {
+              "id": "gbp",
+              "label": "Fiche Google Business"
+            },
+            {
+              "id": "avis",
+              "label": "Gestion des avis"
+            }
+          ]
+        }
+      ]
+    },
+    "ads": {
+      "title": "Votre publicité en ligne",
+      "questions": [
+        {
+          "id": "platforms",
+          "label": "Sur quelles plateformes ?",
+          "short": "Plateformes",
+          "type": "multi",
+          "options": [
+            {
+              "id": "google",
+              "label": "Google Ads"
+            },
+            {
+              "id": "meta",
+              "label": "Facebook et Instagram"
+            },
+            {
+              "id": "tiktok",
+              "label": "TikTok Ads"
+            },
+            {
+              "id": "linkedin",
+              "label": "LinkedIn Ads"
+            },
+            {
+              "id": "nsp",
+              "label": "À définir ensemble"
+            }
+          ]
+        },
+        {
+          "id": "experience",
+          "label": "Avez-vous déjà lancé des campagnes ?",
+          "short": "Expérience publicitaire",
+          "type": "single",
+          "options": [
+            {
+              "id": "jamais",
+              "label": "Jamais"
+            },
+            {
+              "id": "seul",
+              "label": "Oui, par moi-même"
+            },
+            {
+              "id": "prestataire",
+              "label": "Oui, avec un prestataire"
+            }
+          ]
+        }
+      ]
+    },
+    "social": {
+      "title": "Vos réseaux sociaux",
+      "questions": [
+        {
+          "id": "networks",
+          "label": "Quels réseaux ?",
+          "short": "Réseaux",
+          "type": "multi",
+          "options": [
+            {
+              "id": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "id": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "id": "tiktok",
+              "label": "TikTok"
+            },
+            {
+              "id": "linkedin",
+              "label": "LinkedIn"
+            },
+            {
+              "id": "youtube",
+              "label": "YouTube"
+            }
+          ]
+        },
+        {
+          "id": "scope",
+          "label": "Ce que vous attendez de nous",
+          "short": "Prestations",
+          "type": "multi",
+          "options": [
+            {
+              "id": "strategie",
+              "label": "Stratégie et ligne éditoriale"
+            },
+            {
+              "id": "visuels",
+              "label": "Création de visuels"
+            },
+            {
+              "id": "videos",
+              "label": "Vidéos courtes"
+            },
+            {
+              "id": "animation",
+              "label": "Publication et animation"
+            },
+            {
+              "id": "pub",
+              "label": "Publicité sociale"
+            }
+          ]
+        },
+        {
+          "id": "frequency",
+          "label": "Rythme de publication",
+          "short": "Rythme",
+          "type": "single",
+          "options": [
+            {
+              "id": "f1",
+              "label": "2 à 3 par semaine"
+            },
+            {
+              "id": "f2",
+              "label": "4 à 5 par semaine"
+            },
+            {
+              "id": "f3",
+              "label": "Tous les jours"
+            },
+            {
+              "id": "nsp",
+              "label": "À définir ensemble"
+            }
+          ]
+        }
+      ]
+    },
+    "funnel": {
+      "title": "Votre tunnel de vente",
+      "questions": [
+        {
+          "id": "kind",
+          "label": "Quel dispositif ?",
+          "short": "Type",
+          "type": "single",
+          "options": [
+            {
+              "id": "landing",
+              "label": "Une landing page"
+            },
+            {
+              "id": "tunnel",
+              "label": "Un tunnel complet (capture → vente)"
+            },
+            {
+              "id": "webinaire",
+              "label": "Webinaire ou formation en ligne"
+            },
+            {
+              "id": "optimisation",
+              "label": "Optimiser un tunnel existant"
+            }
+          ]
+        },
+        {
+          "id": "tool",
+          "label": "Outil préféré",
+          "short": "Outil",
+          "type": "single",
+          "options": [
+            {
+              "id": "systemeio",
+              "label": "Systeme.io"
+            },
+            {
+              "id": "clickfunnels",
+              "label": "ClickFunnels"
+            },
+            {
+              "id": "wordpress",
+              "label": "WordPress"
+            },
+            {
+              "id": "aucun",
+              "label": "Pas de préférence"
+            }
+          ]
+        }
+      ]
+    },
+    "automation": {
+      "title": "Votre automatisation",
+      "questions": [
+        {
+          "id": "processes",
+          "label": "Quels processus automatiser ?",
+          "short": "Processus",
+          "type": "multi",
+          "options": [
+            {
+              "id": "prospection",
+              "label": "Prospection et relances"
+            },
+            {
+              "id": "support",
+              "label": "Service client ou chatbot"
+            },
+            {
+              "id": "facturation",
+              "label": "Devis et facturation"
+            },
+            {
+              "id": "reporting",
+              "label": "Reporting et tableaux de bord"
+            },
+            {
+              "id": "leads",
+              "label": "Gestion des leads (CRM)"
+            },
+            {
+              "id": "admin",
+              "label": "Tâches administratives"
+            }
+          ]
+        },
+        {
+          "id": "tools",
+          "label": "Outils déjà utilisés",
+          "short": "Outils en place",
+          "type": "multi",
+          "optional": true,
+          "options": [
+            {
+              "id": "google",
+              "label": "Google Workspace"
+            },
+            {
+              "id": "microsoft",
+              "label": "Microsoft 365"
+            },
+            {
+              "id": "whatsapp",
+              "label": "WhatsApp Business"
+            },
+            {
+              "id": "hubspot",
+              "label": "HubSpot"
+            },
+            {
+              "id": "make",
+              "label": "Make, n8n ou Zapier"
+            },
+            {
+              "id": "aucun",
+              "label": "Aucun en particulier"
+            }
+          ]
+        }
+      ]
+    },
+    "email": {
+      "title": "Votre e-mail marketing",
+      "questions": [
+        {
+          "id": "situation",
+          "label": "Votre point de départ",
+          "short": "Nature",
+          "type": "single",
+          "options": [
+            {
+              "id": "zero",
+              "label": "Je pars de zéro"
+            },
+            {
+              "id": "liste",
+              "label": "J’ai une liste de contacts"
+            },
+            {
+              "id": "outil",
+              "label": "J’ai déjà un outil à optimiser"
+            }
+          ]
+        },
+        {
+          "id": "listSize",
+          "label": "Taille de votre liste",
+          "short": "Taille de liste",
+          "type": "single",
+          "options": [
+            {
+              "id": "l0",
+              "label": "Aucun contact"
+            },
+            {
+              "id": "l1",
+              "label": "Moins de 1 000"
+            },
+            {
+              "id": "l2",
+              "label": "1 000 à 10 000"
+            },
+            {
+              "id": "l3",
+              "label": "Plus de 10 000"
+            }
+          ]
+        },
+        {
+          "id": "needs",
+          "label": "Vos besoins",
+          "short": "Besoins",
+          "type": "multi",
+          "options": [
+            {
+              "id": "newsletter",
+              "label": "Newsletter"
+            },
+            {
+              "id": "sequences",
+              "label": "Séquences automatiques"
+            },
+            {
+              "id": "crm",
+              "label": "Mise en place d’un CRM"
+            },
+            {
+              "id": "segmentation",
+              "label": "Segmentation et scoring"
+            }
+          ]
+        }
+      ]
+    },
+    "video": {
+      "title": "Vos vidéos",
+      "questions": [
+        {
+          "id": "formats",
+          "label": "Quels formats ?",
+          "short": "Formats",
+          "type": "multi",
+          "options": [
+            {
+              "id": "reels",
+              "label": "Réels et TikTok"
+            },
+            {
+              "id": "youtube",
+              "label": "YouTube"
+            },
+            {
+              "id": "corporate",
+              "label": "Vidéo d’entreprise"
+            },
+            {
+              "id": "pub",
+              "label": "Publicité vidéo"
+            },
+            {
+              "id": "motion",
+              "label": "Motion design"
+            }
+          ]
+        },
+        {
+          "id": "rushes",
+          "label": "Les images existent-elles ?",
+          "short": "Images",
+          "type": "single",
+          "options": [
+            {
+              "id": "oui",
+              "label": "Oui, j’ai mes rushes"
+            },
+            {
+              "id": "tournage",
+              "label": "Non, il faut tourner"
+            }
+          ]
+        },
+        {
+          "id": "volume",
+          "label": "Volume",
+          "short": "Volume",
+          "type": "single",
+          "options": [
+            {
+              "id": "ponctuel",
+              "label": "Une vidéo ponctuelle"
+            },
+            {
+              "id": "v1",
+              "label": "4 à 8 par mois"
+            },
+            {
+              "id": "v2",
+              "label": "Plus de 8 par mois"
+            }
+          ]
+        }
+      ]
+    },
+    "consulting": {
+      "title": "Votre accompagnement",
+      "questions": [
+        {
+          "id": "kind",
+          "label": "Quelle forme ?",
+          "short": "Type",
+          "type": "single",
+          "options": [
+            {
+              "id": "audit",
+              "label": "Audit ponctuel"
+            },
+            {
+              "id": "mensuel",
+              "label": "Accompagnement mensuel"
+            },
+            {
+              "id": "cmo",
+              "label": "Directeur marketing externalisé"
+            },
+            {
+              "id": "formation",
+              "label": "Formation de mon équipe"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "goals": [
+    {
+      "id": "leads",
+      "label": "Trouver plus de clients"
+    },
+    {
+      "id": "sales",
+      "label": "Vendre en ligne"
+    },
+    {
+      "id": "brand",
+      "label": "Gagner en notoriété et en crédibilité"
+    },
+    {
+      "id": "time",
+      "label": "Gagner du temps, automatiser"
+    },
+    {
+      "id": "launch",
+      "label": "Lancer une nouvelle activité"
+    },
+    {
+      "id": "modernize",
+      "label": "Moderniser l’existant"
+    }
+  ],
+  "companySizes": [
+    {
+      "id": "solo",
+      "label": "Indépendant"
+    },
+    {
+      "id": "tpe",
+      "label": "2 à 10 personnes"
+    },
+    {
+      "id": "pme",
+      "label": "11 à 50 personnes"
+    },
+    {
+      "id": "eti",
+      "label": "Plus de 50 personnes"
+    },
+    {
+      "id": "asso",
+      "label": "Association ou ONG"
+    }
+  ],
+  "maturity": [
+    {
+      "id": "creation",
+      "label": "En création"
+    },
+    {
+      "id": "jeune",
+      "label": "Lancée depuis moins de 2 ans"
+    },
+    {
+      "id": "etablie",
+      "label": "Établie"
+    }
+  ],
+  "sectors": [
+    {
+      "id": "commerce",
+      "label": "Commerce et e-commerce"
+    },
+    {
+      "id": "restauration",
+      "label": "Restauration et hôtellerie"
+    },
+    {
+      "id": "sante",
+      "label": "Santé et bien-être"
+    },
+    {
+      "id": "immobilier",
+      "label": "Immobilier et BTP"
+    },
+    {
+      "id": "education",
+      "label": "Éducation et formation"
+    },
+    {
+      "id": "b2b",
+      "label": "Services B2B et conseil"
+    },
+    {
+      "id": "juridique",
+      "label": "Juridique et finance"
+    },
+    {
+      "id": "beaute",
+      "label": "Beauté et mode"
+    },
+    {
+      "id": "tech",
+      "label": "Tech et SaaS"
+    },
+    {
+      "id": "tourisme",
+      "label": "Tourisme et événementiel"
+    },
+    {
+      "id": "industrie",
+      "label": "Industrie et agriculture"
+    },
+    {
+      "id": "autre",
+      "label": "Autre secteur"
+    }
+  ],
+  "countries": [
+    {
+      "code": "BJ",
+      "label": "Bénin",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "CI",
+      "label": "Côte d’Ivoire",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "SN",
+      "label": "Sénégal",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "TG",
+      "label": "Togo",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "BF",
+      "label": "Burkina Faso",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "ML",
+      "label": "Mali",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "NE",
+      "label": "Niger",
+      "currency": "XOF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "GN",
+      "label": "Guinée",
+      "currency": "GNF",
+      "group": "Afrique de l’Ouest"
+    },
+    {
+      "code": "CM",
+      "label": "Cameroun",
+      "currency": "XAF",
+      "group": "Afrique centrale"
+    },
+    {
+      "code": "GA",
+      "label": "Gabon",
+      "currency": "XAF",
+      "group": "Afrique centrale"
+    },
+    {
+      "code": "CG",
+      "label": "Congo",
+      "currency": "XAF",
+      "group": "Afrique centrale"
+    },
+    {
+      "code": "CD",
+      "label": "RD Congo",
+      "currency": "USD",
+      "group": "Afrique centrale"
+    },
+    {
+      "code": "MA",
+      "label": "Maroc",
+      "currency": "MAD",
+      "group": "Maghreb"
+    },
+    {
+      "code": "TN",
+      "label": "Tunisie",
+      "currency": "TND",
+      "group": "Maghreb"
+    },
+    {
+      "code": "FR",
+      "label": "France",
+      "currency": "EUR",
+      "group": "Europe et Amérique du Nord"
+    },
+    {
+      "code": "BE",
+      "label": "Belgique",
+      "currency": "EUR",
+      "group": "Europe et Amérique du Nord"
+    },
+    {
+      "code": "CH",
+      "label": "Suisse",
+      "currency": "CHF",
+      "group": "Europe et Amérique du Nord"
+    },
+    {
+      "code": "CA",
+      "label": "Canada",
+      "currency": "CAD",
+      "group": "Europe et Amérique du Nord"
+    },
+    {
+      "code": "XX",
+      "label": "Autre pays",
+      "currency": "EUR",
+      "group": "Autre"
+    }
+  ],
+  "budgetTypes": [
+    {
+      "id": "projet",
+      "label": "Un projet ponctuel"
+    },
+    {
+      "id": "mensuel",
+      "label": "Un accompagnement mensuel"
+    }
+  ],
+  "budgetTiers": [
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5"
+  ],
+  "budgetLabels": {
+    "EUR": [
+      "Moins de 1 000 €",
+      "1 000 à 3 000 €",
+      "3 000 à 7 000 €",
+      "7 000 à 15 000 €",
+      "Plus de 15 000 €"
+    ],
+    "XOF": [
+      "Moins de 650 000 FCFA",
+      "650 000 à 2 millions FCFA",
+      "2 à 4,5 millions FCFA",
+      "4,5 à 10 millions FCFA",
+      "Plus de 10 millions FCFA"
+    ],
+    "XAF": [
+      "Moins de 650 000 FCFA",
+      "650 000 à 2 millions FCFA",
+      "2 à 4,5 millions FCFA",
+      "4,5 à 10 millions FCFA",
+      "Plus de 10 millions FCFA"
+    ],
+    "CHF": [
+      "Moins de 1 000 CHF",
+      "1 000 à 3 000 CHF",
+      "3 000 à 7 000 CHF",
+      "7 000 à 15 000 CHF",
+      "Plus de 15 000 CHF"
+    ],
+    "CAD": [
+      "Moins de 1 500 $ CA",
+      "1 500 à 4 500 $ CA",
+      "4 500 à 10 000 $ CA",
+      "10 000 à 22 000 $ CA",
+      "Plus de 22 000 $ CA"
+    ],
+    "MAD": [
+      "Moins de 10 000 MAD",
+      "10 000 à 30 000 MAD",
+      "30 000 à 75 000 MAD",
+      "75 000 à 160 000 MAD",
+      "Plus de 160 000 MAD"
+    ],
+    "TND": [
+      "Moins de 3 500 TND",
+      "3 500 à 10 000 TND",
+      "10 000 à 24 000 TND",
+      "24 000 à 50 000 TND",
+      "Plus de 50 000 TND"
+    ],
+    "GNF": [
+      "Moins de 9 millions GNF",
+      "9 à 28 millions GNF",
+      "28 à 65 millions GNF",
+      "65 à 140 millions GNF",
+      "Plus de 140 millions GNF"
+    ],
+    "USD": [
+      "Moins de 1 100 $",
+      "1 100 à 3 300 $",
+      "3 300 à 7 500 $",
+      "7 500 à 16 000 $",
+      "Plus de 16 000 $"
+    ]
+  },
+  "budgetUnknown": {
+    "id": "nsp",
+    "label": "Je ne sais pas encore, j’ai besoin de conseils"
+  },
+  "timelines": [
+    {
+      "id": "asap",
+      "label": "Dès que possible"
+    },
+    {
+      "id": "1m",
+      "label": "D’ici un mois"
+    },
+    {
+      "id": "3m",
+      "label": "Dans 1 à 3 mois"
+    },
+    {
+      "id": "later",
+      "label": "Dans plus de 3 mois"
+    },
+    {
+      "id": "explore",
+      "label": "Je me renseigne pour l’instant"
+    }
+  ],
+  "assets": [
+    {
+      "id": "site",
+      "label": "Un site web"
+    },
+    {
+      "id": "logo",
+      "label": "Un logo ou une charte graphique"
+    },
+    {
+      "id": "contenus",
+      "label": "Des textes et des photos"
+    },
+    {
+      "id": "domaine",
+      "label": "Un nom de domaine"
+    },
+    {
+      "id": "reseaux",
+      "label": "Des réseaux sociaux actifs"
+    },
+    {
+      "id": "rien",
+      "label": "Rien pour l’instant"
+    }
+  ],
+  "channels": [
+    {
+      "id": "whatsapp",
+      "label": "WhatsApp"
+    },
+    {
+      "id": "telephone",
+      "label": "Appel téléphonique"
+    },
+    {
+      "id": "email",
+      "label": "E-mail"
+    },
+    {
+      "id": "visio",
+      "label": "Visioconférence"
+    }
+  ]
+}

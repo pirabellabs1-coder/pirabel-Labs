@@ -25,7 +25,7 @@ const leadSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 120 },
   // Optionnel : les prospects importés (prospection à froid) n'ont souvent qu'un téléphone.
   // Les formulaires publics valident l'e-mail côté API avant création.
-  email: { type: String, default: '', lowercase: true, trim: true, maxlength: 200 },
+  email: { type: String, default: '', lowercase: true, trim: true, maxlength: 254 },
   phone: { type: String, default: '', trim: true, maxlength: 30 },
   company: { type: String, default: '', trim: true, maxlength: 120 },
 
@@ -80,6 +80,12 @@ const leadSchema = new mongoose.Schema({
   aiSummary: { type: String, default: '', maxlength: 1500 },
   aiNextAction: { type: String, default: '', maxlength: 400 },
   aiProcessedAt: { type: Date },
+
+  // Formulaire en étapes (/contact) : réponses structurées validées par
+  // app/qualification.js + score calculé côté serveur (indépendant de l'IA).
+  qualification: { type: mongoose.Schema.Types.Mixed, default: undefined },
+  qualificationScore: { type: Number, min: 0, max: 100 },
+  qualificationLabel: { type: String, enum: ['froid', 'tiede', 'chaud'] },
 
   // Espace client : connexion par lien magique (aucun mot de passe stocke).
   // Le jeton est a usage unique et expire au bout de 30 minutes.

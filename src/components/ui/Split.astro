@@ -1,0 +1,28 @@
+---
+/**
+ * Découpe un titre en mots au moment de la compilation, pour une révélation
+ * mot par mot en CSS pur (aucun calcul JS au chargement, texte intact pour le SEO).
+ * Usage : <h2 data-reveal="title"><Split>Mon titre&nbsp;?</Split></h2>
+ * Les espaces insécables (&nbsp;) restent collés au mot ; une balise interne
+ * (ex. <span class="grad">…</span>) est traitée comme un seul mot.
+ */
+const html = (await Astro.slots.render('default')).trim();
+
+// Jetons : balises complètes (avec leur contenu) ou texte brut.
+const tokens = html.match(/<([a-z0-9]+)\b[^>]*>[\s\S]*?<\/\1>|<[^>]+>|[^<]+/gi) ?? [];
+// Mots = suites de jetons sans espace entre eux (« <span>utile</span>, » reste un seul mot :
+// la virgule ne peut pas passer seule à la ligne).
+const parts: string[] = [];
+const push = (piece: string) => {
+  if (piece === ' ') { if (parts.length && parts[parts.length - 1] !== ' ') parts.push(' '); return; }
+  if (parts.length && parts[parts.length - 1] !== ' ') parts[parts.length - 1] += piece;
+  else parts.push(piece);
+};
+for (const t of tokens) {
+  if (t.startsWith('<')) { push(t); continue; }
+  for (const part of t.split(/( +)/)) { if (part) push(/^ +$/.test(part) ? ' ' : part); }
+}
+let i = 0;
+const out = parts.map((w) => (w === ' ' ? ' ' : `<span class="w"><span class="wi" style="--wi:${i++}">${w}</span></span>`)).join('');
+---
+<Fragment set:html={out} />

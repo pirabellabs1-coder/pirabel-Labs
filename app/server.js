@@ -16,8 +16,11 @@ const apiApp = require('../api/index');
 
 const app = express();
 
-// Serve static files (HTML, CSS, JS, images) from project root
-const ROOT = path.join(__dirname, '..');
+// Fichiers statiques : le site compilé par Astro (`npm run build` → dist/),
+// sinon les pages pas encore migrées de public/.
+const fs = require('fs');
+const DIST = path.join(__dirname, '..', 'dist');
+const ROOT = fs.existsSync(DIST) ? DIST : path.join(__dirname, '..', 'public');
 app.use(express.static(ROOT, {
   extensions: ['html'],
   index: 'index.html',

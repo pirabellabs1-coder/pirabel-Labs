@@ -390,7 +390,9 @@ async function sendEmail(to, subject, html, opts = {}) {
       return false;
     }
 
-    console.log(`[email] OK to=${to} subject="${subject}" id=${body.id}`);
+    // Journal sans données personnelles : adresse masquée, pas d'objet (il peut contenir un nom).
+    const masked = String(to).replace(/^(.).*?(@.*)$/, '$1***$2');
+    console.log(`[email] OK to=${masked} id=${body.id}`);
     return opts.returnInfo
       ? { messageId: body.id, accepted: toArray, rejected: [], resend: body }
       : true;

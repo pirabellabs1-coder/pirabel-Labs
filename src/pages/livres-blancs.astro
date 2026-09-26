@@ -1,0 +1,64 @@
+---
+import BlockPage from '../components/blocks/BlockPage.astro';
+import LivresBlancs, { type Guide } from '../components/blocks/LivresBlancs.astro';
+import type { PageData } from '../components/blocks/BlockPage.astro';
+
+// Liste de repli (guides historiques) : visible sans JavaScript et indexable ;
+// remplacée au chargement par les livres blancs publiés depuis l'admin.
+const guides: Guide[] = [
+  { slug: 'seo-pme-francophones-2026', title: 'Le guide complet du SEO pour PME francophones en 2026', pages: 62, icon: 'search', category: 'SEO', description: 'Méthodologie SEO complète : audit technique en 60 points, recherche de mots-clés, contenu E-E-A-T, netlinking éthique.' },
+  { slug: 'ia-pme-cas-usage-roi', title: 'Intégrer l’IA dans votre PME : cas d’usage et ROI mesurables', pages: 78, icon: 'bot', category: 'IA & automatisation', description: '20 cas d’usage concrets de l’IA pour les PME : chatbots WhatsApp, agents IA, automatisation, RAG.' },
+  { slug: 'tunnels-vente-cro-3x-conversion', title: 'Tunnels de vente : passer de 1 % à 5 % de conversion en 90 jours', pages: 54, icon: 'funnel', category: 'Conversion', description: 'Méthodologie complète d’optimisation : analyse des comportements, landing pages, tests A/B, paiements optimisés.' },
+  { slug: 'ecommerce-afrique-paiement-mobile-money', title: 'E-commerce en Afrique francophone : Mobile Money, logistique, conversion', pages: 68, icon: 'cart', category: 'E-commerce', description: 'Le guide complet pour lancer ou faire grandir un e-commerce en Afrique francophone.' },
+  { slug: 'refonte-site-checklist-complete', title: 'Refonte de site web : la checklist en 60 points pour éviter les pièges', pages: 48, icon: 'refresh', category: 'Site web', description: 'Une checklist en 60 points couvrant tous les pièges techniques, SEO, UX et business d’une refonte.' },
+];
+
+const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20une%20question';
+const page: PageData = {
+  path: '/livres-blancs',
+  title: 'Livres blancs gratuits : SEO, IA, e-commerce | Pirabel Labs',
+  description: 'Téléchargez nos livres blancs marketing gratuits : SEO, IA et automatisation, tunnels de vente, e-commerce, refonte. 50 à 100 pages d’expertise.',
+  legacyLd: 'livres-blancs',
+  footerCta: {
+    title: 'Vos questions méritent une vraie réponse',
+    text: 'Nos livres blancs sont une excellente base, mais rien ne remplace un échange direct sur votre projet. Réservez un appel découverte gratuit de 30 minutes avec le fondateur.',
+    href: '/contact',
+    label: 'Réserver mon appel',
+  },
+  blocks: [
+    { kind: 'breadcrumb', items: [{ href: '/', label: 'Accueil' }, { label: 'Livres blancs' }] },
+    {
+      kind: 'hero',
+      eyebrow: 'Ressources gratuites',
+      eyebrowIcon: 'book',
+      title: 'Téléchargez gratuitement nos <span class="grad">livres blancs</span> marketing.',
+      lead: 'Des guides experts de 50 à 100 pages, écrits par notre fondateur : SEO, automatisation et IA, tunnels de vente, e-commerce, refonte de site. Une expertise actionnable, des exemples concrets, des méthodes reproductibles. 100 % gratuit.',
+      ctas: [
+        { href: '#guides', label: 'Voir les guides', primary: true },
+        { href: WA, label: 'Poser une question', external: true },
+      ],
+      icons: ['book', 'download', 'lightbulb'],
+      caption: 'PDF envoyé en moins d’une minute',
+      chips: [
+        { icon: 'file', text: '50 à 100 pages' },
+        { icon: 'badge-check', text: 'Écrits par le fondateur' },
+        { icon: 'lock', text: 'Sans spam' },
+      ],
+    },
+  ],
+  after: [
+    {
+      kind: 'cards', variant: 'promises',
+      head: { eyebrow: 'Pourquoi les lire', title: 'Une expertise <span class="grad">directement applicable</span>' },
+      items: [
+        { icon: 'lightbulb', title: 'Des méthodes, pas des généralités', text: 'Chaque guide détaille une méthode pas à pas, avec des modèles et des checklists que vous pouvez appliquer dès la lecture.' },
+        { icon: 'globe', title: 'Pensés pour les PME francophones', text: 'Exemples, outils et moyens de paiement adaptés aux marchés d’Afrique francophone et d’Europe.' },
+      ],
+    },
+    { kind: 'cta', variant: 'inline', title: 'Un projet, une question ?', text: 'Devis gratuit et réponse sous 24 h — sans engagement.', ctas: [{ href: '/contact', label: 'Demander un devis' }, { href: WA, label: 'WhatsApp', external: true }] },
+  ],
+};
+---
+<BlockPage page={page}>
+  <LivresBlancs guides={guides} />
+</BlockPage>

@@ -1,0 +1,99 @@
+---
+/**
+ * Page native construite à partir de données (src/data/pages/*) : même rendu que les
+ * pages de service (Blocks.astro), SEO complet, FAQPage JSON-LD généré depuis les FAQ
+ * visibles (données structurées toujours identiques au contenu affiché).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Blocks from './Blocks.astro';
+import type { Block } from '../../lib/blocks/parse';
+import { SITE } from '../../data/site';
+import { loadLegacy, decodeEntities } from '../../lib/legacy';
+import { fixText, fixHtml } from '../../lib/blocks/fr';
+
+export interface PageData {
+  path: string;
+  title: string;
+  description: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  robots?: string;
+  noindex?: boolean;
+  jsonLd?: object[];
+  /** Génère un FAQPage à partir des blocs FAQ de la page (vrai par défaut). */
+  faqLd?: boolean;
+  blocks: Block[];
+  /** Blocs rendus après le contenu propre à la page (slot par défaut). */
+  after?: Block[];
+  /** Reprend les données structurées de l'ancienne page (Organization, Person, Service…),
+   *  sans la FAQ ni le fil d'Ariane, régénérés ici. */
+  legacyLd?: string;
+  footerCta?: { title?: string; text?: string; href?: string; label?: string };
+}
+interface Props { page: PageData }
+const { page: raw } = Astro.props;
+
+// Même typographie que le contenu historique (espaces insécables, guillemets, points de suspension)
+// appliquée aux textes écrits à la main ; les liens, icônes et identifiants ne sont jamais touchés.
+const KEEP = /^(kind|variant|href|icon|icons|eyebrowIcon|id|src|visual|currency|service|path|legacyLd)$/;
+// Champs rendus en HTML (set:html) : fixHtml ; tous les autres sont rendus en texte : fixText
+// (sinon « & » serait échappé deux fois et s'afficherait « &amp; »).
+// Les pastilles du hero (chips[].text) sont rendues en texte malgré leur clé « text ».
+const HTML = /^(title|lead|text|html|a|bio|price|note|rows)$/;
+const typo = (v: unknown, k = '', parent = ''): unknown => typeof v === 'string'
+  ? (KEEP.test(k) ? v : HTML.test(k) && parent !== 'chips' ? fixHtml(v) : fixText(v))
+  : Array.isArray(v) ? v.map((x) => typo(x, k, k)) : v && typeof v === 'object'
+    ? Object.fromEntries(Object.entries(v).map(([kk, x]) => [kk, typo(x, kk, parent)])) : v;
+const page: PageData = { ...raw, blocks: typo(raw.blocks) as Block[], after: raw.after && (typo(raw.after) as Block[]), footerCta: raw.footerCta && (typo(raw.footerCta) as PageData['footerCta']) };
+
+const plain = (html: string) => decodeEntities(html.replace(/<br\s*\/?>/g, ' ').replace(/<\/(p|li)>/g, ' ').replace(/<[^>]+>/g, '')).replace(/[ \t\r\n]+/g, ' ').trim();
+// Données structurées historiques : textes corrigés, FAQPage/BreadcrumbList retirés (régénérés).
+const DROP = new Set(['FAQPage', 'BreadcrumbList']);
+const SKIP_KEY = /url|image|logo|item|sameAs|telephone|email|@/i;
+const walk = (v: unknown): unknown => typeof v === 'string' ? fixText(v) : Array.isArray(v) ? v.map(walk)
+  : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, SKIP_KEY.test(k) ? x : walk(x)])) : v;
+const legacyLd: object[] = [];
+if (page.legacyLd) {
+  for (const raw of loadLegacy(page.legacyLd).jsonLd) {
+    try {
+      const j = JSON.parse(raw);
+      if (Array.isArray(j['@graph'])) {
+        const g = j['@graph'].filter((x: { '@type'?: string }) => !DROP.has(String(x['@type'])));
+        if (g.length) legacyLd.push(walk({ ...j, '@graph': g }) as object);
+      } else if (!DROP.has(String(j['@type']))) legacyLd.push(walk(j) as object);
+    } catch { /* bloc illisible ignoré */ }
+  }
+}
+// Fil d'Ariane JSON-LD identique au fil visible (bloc « breadcrumb »), au lieu du titre de la page.
+const crumbs = page.blocks.find((b) => b.kind === 'breadcrumb') as Extract<Block, { kind: 'breadcrumb' }> | undefined;
+const crumbLd = crumbs ? [{
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.label, item: SITE.url + (it.href ?? page.path) })),
+}] : [];
+const faqs = page.faqLd === false ? [] : [...page.blocks, ...(page.after ?? [])].flatMap((b) => (b.kind === 'faq' ? b.items : []));
+const faqLd = faqs.length ? [{
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  url: SITE.url + page.path,
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: plain(f.q), acceptedAnswer: { '@type': 'Answer', text: plain(f.a) } })),
+}] : [];
+---
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  path={page.path}
+  ogTitle={page.ogTitle}
+  ogDescription={page.ogDescription}
+  robots={page.robots}
+  noindex={page.noindex}
+  jsonLd={[...legacyLd, ...(page.jsonLd ?? []), ...faqLd, ...crumbLd]}
+  breadcrumb={!crumbs}
+  footerCta={page.footerCta}
+>
+  <slot name="head" slot="head" />
+  <Blocks blocks={page.blocks} />
+  <slot />
+  {page.after && <Blocks blocks={page.after} />}
+  <slot name="end" slot="end" />
+</BaseLayout>

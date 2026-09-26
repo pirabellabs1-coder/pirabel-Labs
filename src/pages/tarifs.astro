@@ -1,0 +1,13 @@
+---
+import BlockPage from '../components/blocks/BlockPage.astro';
+import PricingTabs from '../components/blocks/PricingTabs.astro';
+import { page, regions } from '../data/pages/tarifs';
+---
+<BlockPage page={page}>
+  <PricingTabs
+    eyebrow="Grille tarifaire"
+    title="Sélectionnez votre <span class='grad'>région</span>"
+    lead="Nos tarifs s’adaptent au pouvoir d’achat de chaque marché. Prix indicatifs « à partir de », confirmés par un devis ferme sous 48 h."
+    regions={regions}
+  />
+</BlockPage>

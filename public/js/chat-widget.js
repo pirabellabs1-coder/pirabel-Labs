@@ -29,7 +29,7 @@
   // ---------- Styles ----------
   var css = document.createElement('style');
   css.textContent = [
-    '.plc-launch{position:fixed;right:18px;bottom:18px;z-index:9000;display:flex;align-items:center;gap:.55rem;padding:.7rem 1.05rem .7rem .8rem;border:0;border-radius:999px;background:#FF5500;color:#fff;font-family:inherit;font-weight:700;font-size:.92rem;cursor:pointer;box-shadow:0 8px 26px rgba(255,85,0,.38);transition:transform .18s,box-shadow .18s}',
+    '.plc-launch{position:fixed;right:18px;bottom:18px;z-index:9000;display:flex;align-items:center;gap:.55rem;padding:.7rem 1.05rem .7rem .8rem;border:0;border-radius:999px;background:#FF5500;color:#140700;font-family:inherit;font-weight:700;font-size:.92rem;cursor:pointer;box-shadow:0 8px 26px rgba(255,85,0,.38);transition:transform .18s,box-shadow .18s}',
     '.plc-launch:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,85,0,.5)}',
     '.plc-launch svg{width:22px;height:22px;flex:0 0 auto}',
     '.plc-launch.is-hidden{display:none}',

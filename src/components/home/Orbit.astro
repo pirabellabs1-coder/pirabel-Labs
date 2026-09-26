@@ -1,0 +1,58 @@
+---
+/**
+ * « Projets en orbite » : les autres réalisations gravitent autour du symbole Pirabel.
+ * Régulièrement, le projet qui passe au premier plan quitte l'orbite, se pose dans le
+ * panneau « À la une », puis y retourne. Survol / focus clavier = choisir un projet.
+ * Sans JS ou en mouvement réduit : grille statique de projets (même HTML, mêmes liens).
+ * Moteur : src/scripts/orbit.ts (chargé quand la section approche de l'écran).
+ */
+import LogoMark from '../ui/LogoMark.astro';
+import Icon from '../ui/Icon.astro';
+import { ORBIT_PROJECTS } from '../../data/orbit';
+
+const first = ORBIT_PROJECTS[0];
+const hue = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+---
+<div class="orbit" data-orbit aria-labelledby="orbit-title">
+  <div class="orbit__head">
+    <div>
+      <p class="eyebrow">Et bien d’autres</p>
+      <h3 id="orbit-title" class="orbit__title">Plus de vingt projets en orbite.</h3>
+    </div>
+    <button class="marquee-toggle" type="button" data-orbit-toggle aria-pressed="false">
+      <span class="sr-only">Mettre en pause la rotation des projets</span>
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /><path class="i-play" d="M7 4.5v15l12-7.5z" fill="currentColor" /></svg>
+    </button>
+  </div>
+
+  <div class="orbit__layout">
+    <div class="orbit__stage" data-orbit-stage>
+      <div class="orbit__ring" aria-hidden="true"></div>
+      <div class="orbit__core" aria-hidden="true"><LogoMark size={64} /></div>
+      <ul class="orbit__list" data-orbit-list>
+        {ORBIT_PROJECTS.map((p) => (
+          <li class="orbit__item" data-title={p.title} data-sector={p.sector} data-text={p.text}>
+            <a class="orbit__screen" href={p.href}>
+              <span class="orbit__shot" style={`--h:${hue(p.title)}`}>
+                <span class="orbit__bar" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="orbit__initial" aria-hidden="true">{p.title.charAt(0)}</span>
+                <span class="orbit__label" aria-hidden="true"><b>{p.title}</b><small>{p.sector}</small></span>
+              </span>
+              <span class="orbit__name">{p.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <aside class="orbit__spot glass" data-orbit-spot aria-label="Projet à la une">
+      <div class="orbit__dock" data-orbit-dock aria-hidden="true"></div>
+      <div class="orbit__info" data-spot-info aria-live="polite">
+        <p class="orbit__sector" data-spot-sector>{first.sector}</p>
+        <p class="orbit__spot-title" data-spot-title>{first.title}</p>
+        <p class="orbit__text" data-spot-text>{first.text}</p>
+        <a class="link-arrow" href={first.href} data-spot-link>Voir l’étude de cas <Icon name="arrow-up-right" size={16} /></a>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+---
+// Hero de l'accueil. Le H1 (élément LCP) est affiché immédiatement, jamais animé.
+// Les cartes de verre flottantes sont décoratives (aria-hidden) et suivent la souris.
+import Icon from '../ui/Icon.astro';
+import { HERO_PROOF } from '../../data/home';
+---
+<section class="hero" data-hero-scene aria-labelledby="hero-title">
+  <div class="hero__elan" aria-hidden="true">
+    <svg viewBox="0 0 120 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M30 78 L48 60 L30 42" />
+      <path d="M52 84 L74 62 L52 40" />
+      <path d="M76 90 L102 64 L76 38" />
+    </svg>
+  </div>
+
+  <div class="container hero__inner">
+    <p class="hero__badge chip"><span class="hero__pulse" aria-hidden="true"></span>Agence marketing digital 360°</p>
+    <h1 id="hero-title" class="hero__title">
+      Transformez votre présence en ligne en véritable moteur de <span class="grad hero__accent">croissance</span>.
+    </h1>
+    <p class="hero__lead">
+      Pirabel Labs accompagne les entreprises ambitieuses grâce à ses expertises en <strong>acquisition</strong> et en <strong>création digitale</strong>. Nous imaginons et déployons votre stratégie avec une logique de performance et de rentabilité, avec un seul interlocuteur du brief à la mise en ligne.
+    </p>
+    <div class="hero__actions">
+      <a href="/contact" class="btn btn--primary btn--lg" data-magnetic>Démarrer mon projet <Icon name="arrow-right" size={18} class="icon--end" /></a>
+      <a href="/realisations" class="btn btn--glass btn--lg">Voir nos réalisations</a>
+    </div>
+    <ul class="hero__proof" aria-label="Nos engagements en bref">
+      {HERO_PROOF.map((p) => (
+        <li class="chip"><Icon name={p.icon} size={16} />{p.text}</li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="hero__float" aria-hidden="true">
+    <div class="fcard fcard--a" data-depth="0.55">
+      <div class="fcard__body glass glass--blur glass--keep">
+        <div class="fcard__row"><span class="fcard__label">Trafic organique</span><span class="fcard__pill">+187 %</span></div>
+        <svg class="fcard__chart" viewBox="0 0 160 56" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="hg-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff5500" stop-opacity=".45" /><stop offset="1" stop-color="#ff5500" stop-opacity="0" /></linearGradient>
+          </defs>
+          <path d="M0 50 C18 48 26 42 40 40 S62 36 74 30 S98 24 110 18 S140 10 160 4 L160 56 L0 56Z" fill="url(#hg-fill)" />
+          <path class="fcard__line" d="M0 50 C18 48 26 42 40 40 S62 36 74 30 S98 24 110 18 S140 10 160 4" fill="none" stroke="#ff7a33" stroke-width="2.2" />
+        </svg>
+      </div>
+    </div>
+    <div class="fcard fcard--b" data-depth="-0.35">
+      <div class="fcard__body glass glass--blur glass--keep">
+        <div class="fcard__search"><Icon name="search" size={14} /> agence web cotonou</div>
+        <div class="fcard__serp"><b>1</b><span>votre-marque.com</span></div>
+        <div class="fcard__serp is-dim"><b>2</b><span>concurrent-a.com</span></div>
+      </div>
+    </div>
+    <div class="fcard fcard--c" data-depth="0.3">
+      <div class="fcard__body glass glass--blur glass--keep">
+        <span class="fcard__avatar">AK</span>
+        <span><b>Nouvelle demande de devis</b><small>Site e-commerce · il y a 2 min</small></span>
+      </div>
+    </div>
+    <div class="fcard fcard--d" data-depth="-0.6">
+      <div class="fcard__body glass glass--blur glass--keep">
+        <svg class="fcard__gauge" viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r="18" style="stroke: rgba(var(--ink), .12)" stroke-width="4" fill="none" />
+          <circle class="fcard__arc" cx="22" cy="22" r="18" stroke="#4ade80" stroke-width="4" fill="none" stroke-linecap="round" pathLength="100" stroke-dasharray="98 100" transform="rotate(-90 22 22)" />
+          <text x="22" y="26.5" text-anchor="middle">98</text>
+        </svg>
+        <span><b>Performance</b><small>Score Lighthouse</small></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .hero {
+    position: relative;
+    min-height: min(100svh, 980px);
+    display: grid; place-items: center;
+    padding: 150px 0 90px;
+    overflow: clip;
+  }
+  .hero__inner { position: relative; z-index: 2; text-align: center; }
+  .hero__badge { margin: 0 auto 26px; animation: hero-rise 0.9s var(--ease-out) 0.05s both; }
+  .hero__pulse { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .hero__pulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--accent); animation: hero-pulse 2.4s var(--ease-out) 3; }
+  .hero__title {
+    max-width: 17ch; margin-inline: auto;
+    font-family: var(--font-display); font-size: var(--fs-display); font-weight: 800;
+    line-height: 1.02; letter-spacing: -0.035em;
+  }
+  .hero__lead {
+    max-width: 680px; margin: 26px auto 0;
+    color: var(--text-2); font-size: var(--fs-lead);
+    animation: hero-rise 0.9s var(--ease-out) 0.2s both;
+  }
+  .hero__lead strong { color: var(--text); font-weight: 600; }
+  .hero__actions {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px;
+    animation: hero-rise 0.9s var(--ease-out) 0.32s both;
+  }
+  .hero__proof { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 44px; }
+  .hero__proof li { animation: hero-rise 0.8s var(--ease-out) both; }
+  .hero__proof li:nth-child(1) { animation-delay: 0.45s; }
+  .hero__proof li:nth-child(2) { animation-delay: 0.52s; }
+  .hero__proof li:nth-child(3) { animation-delay: 0.59s; }
+  .hero__proof li:nth-child(4) { animation-delay: 0.66s; }
+
+  .hero__elan {
+    position: absolute; z-index: 0; top: 50%; left: 50%;
+    width: min(1100px, 140vw); aspect-ratio: 1;
+    transform: translate(-50%, -52%);
+    pointer-events: none;
+  }
+  .hero__elan svg { width: 100%; height: 100%; }
+  .hero__elan path { stroke: rgba(255, 110, 40, 0.07); stroke-width: 9; }
+  .hero__elan path:nth-child(2) { stroke: rgba(255, 110, 40, 0.1); }
+  .hero__elan path:nth-child(3) { stroke: rgba(255, 110, 40, 0.14); }
+
+  .hero__float { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: none; }
+  .fcard { position: absolute; }
+  .fcard__body {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 14px 16px; border-radius: 18px;
+    font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-2);
+    animation: hero-float-in 1.1s var(--ease-out) both;
+  }
+  .fcard--a { top: 22%; left: 5%; width: 210px; }
+  .fcard--a .fcard__body { animation-delay: 0.55s; }
+  .fcard--b { top: 17%; right: 5%; width: 230px; }
+  .fcard--b .fcard__body { animation-delay: 0.7s; }
+  .fcard--c { bottom: 13%; left: 4%; }
+  .fcard--c .fcard__body { flex-direction: row; align-items: center; gap: 12px; animation-delay: 0.85s; }
+  .fcard--d { bottom: 15%; right: 4%; }
+  .fcard--d .fcard__body { flex-direction: row; align-items: center; gap: 12px; animation-delay: 1s; }
+  .fcard__row { display: flex; align-items: center; justify-content: space-between; }
+  .fcard__label { color: var(--text-3); }
+  .fcard__pill { padding: 2px 8px; border-radius: 999px; background: rgba(74, 222, 128, 0.14); color: var(--success); font-weight: 600; }
+  .fcard__chart { width: 100%; height: 56px; }
+  .fcard__line { stroke-dasharray: 260; stroke-dashoffset: 260; animation: hero-draw 1.6s var(--ease-out) 1s forwards; }
+  .fcard__search { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; background: rgba(var(--ink), 0.06); color: var(--text-2); }
+  .fcard__serp { display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .fcard__body .fcard__serp b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: var(--accent); color: var(--on-accent); font-size: 0.72rem; }
+  .fcard__serp.is-dim { opacity: 0.45; }
+  .fcard__body .fcard__serp.is-dim b { background: rgba(var(--ink), 0.12); color: var(--text); }
+  .fcard__avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ff7a33, #ff5500); color: var(--on-accent); font-weight: 700; }
+  .fcard__body b { display: block; color: var(--text); font-weight: 600; }
+  .fcard__body small { display: block; color: var(--text-3); font-size: 0.74rem; }
+  .fcard__gauge { width: 44px; height: 44px; }
+  .fcard__gauge text { fill: var(--text); font: 700 12px var(--font-ui); }
+  .fcard__arc { stroke-dashoffset: 98; animation: hero-gauge 1.4s var(--ease-out) 1.2s forwards; }
+
+  @media (min-width: 1180px) { .hero__float { display: block; } }
+  @media (max-width: 640px) {
+    .hero { padding-top: 124px; min-height: auto; }
+    .hero__actions .btn { width: 100%; }
+  }
+
+  @keyframes hero-rise { from { opacity: 0; transform: translate3d(0, 22px, 0); } }
+  @keyframes hero-float-in { from { opacity: 0; transform: translate3d(0, 26px, 0) scale(0.94); } }
+  @keyframes hero-draw { to { stroke-dashoffset: 0; } }
+  @keyframes hero-gauge { from { stroke-dashoffset: 98; } to { stroke-dashoffset: 0; } }
+  @keyframes hero-pulse { from { transform: scale(1); opacity: 0.7; } to { transform: scale(3.2); opacity: 0; } }
+</style>

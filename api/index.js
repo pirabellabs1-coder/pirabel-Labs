@@ -34,6 +34,11 @@ const {
 } = require('../app/middleware/security');
 const { auth, adminOnly } = require('../app/middleware/auth');
 const siteNav = require('../app/nav'); // en-tête de site partagé (mega menu) pour blog/réalisations/témoignages
+const {
+  validateQualification, scoreQualification, summarizeQualification,
+  budgetLabel: qualificationBudgetLabel, primaryService: qualificationPrimaryService,
+  projectLabels: qualificationProjectLabels, timelineLabel: qualificationTimelineLabel,
+} = require('../app/qualification'); // formulaire en étapes de /contact
 const AI = require('../app/agents'); // registre des agents IA (rôles, prompts, modèles) + client OpenRouter
 const User = require('../app/models/User');
 const Lead = require('../app/models/Lead');
@@ -247,6 +252,106 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
   }
 });
 
+// === PUBLIC : Formulaire de qualification en étapes (page /contact) ===
+// Validation + score côté serveur dans app/qualification.js (le navigateur ne fait jamais foi).
+// Honeypot `qf_hp` : champ display:none + readonly côté page (jamais auto-rempli).
+const qualificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, max: 5,
+  message: 'Trop de demandes. Réessayez dans 15 minutes.',
+  keyPrefix: 'qualif',
+});
+app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), limitBody(20), async (req, res) => {
+  try {
+    const { ok, error, data } = validateQualification(req.body);
+    if (!ok) return res.status(400).json({ error });
+
+    const sc = scoreQualification(data);
+    const message = summarizeQualification(data, sc);
+    const service = qualificationPrimaryService(data);
+    const ipHash = crypto.createHash('sha256')
+      .update((req.ip || '') + (process.env.JWT_SECRET || ''))
+      .digest('hex').slice(0, 32);
+
+    const lead = await Lead.create({
+      name: data.contact.name,
+      email: data.contact.email,
+      phone: data.contact.phone,
+      company: data.contact.company,
+      service,
+      message: message.slice(0, 5000),
+      clientData: { city: data.city, country: data.country, website: data.websiteUrl },
+      qualification: data,
+      qualificationScore: sc.score,
+      qualificationLabel: sc.label,
+      source: 'site_qualification',
+      userAgent: (req.headers['user-agent'] || '').slice(0, 500),
+      ipHash,
+    });
+
+    // Anti-abus : une seule confirmation (et un seul appel IA) par adresse et par 24 h.
+    // Le lead et l'e-mail admin sont toujours créés ; seuls les envois « sortants » sont limités.
+    const recentForEmail = await Lead.countDocuments({
+      email: data.contact.email, createdAt: { $gt: new Date(Date.now() - 24 * 3600 * 1000) },
+    }).catch(() => 1);
+    const firstRequest = recentForEmail <= 1; // inclut le lead qui vient d'être créé
+
+    // Ayaba enrichit la fiche (résumé + brouillon de réponse). Bonus, jamais bloquant.
+    if (firstRequest) {
+      await traiterFormulaire(lead).catch(e => console.error('[qualification] traitement IA:', e.message));
+    }
+
+    const safe = (s) => escapeHtml(s).replace(/\n/g, '<br>');
+    const tag = { chaud: 'CHAUD', tiede: 'TIÈDE', froid: 'FROID' }[sc.label];
+    await sendEmail(
+      process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
+      `[Pirabel Labs] Demande qualifiée ${tag} ${sc.score}/100 — ${data.contact.name}`,
+      newOrderEmail({
+        name: escapeHtml(data.contact.name), email: escapeHtml(data.contact.email),
+        phone: escapeHtml(data.contact.phone), company: escapeHtml(data.contact.company),
+        service: escapeHtml(service), budget: escapeHtml(qualificationBudgetLabel(data)),
+        message: safe(message + (lead.aiSummary ? '\n\n— Analyse d’Ayaba —\n' + lead.aiSummary : '')),
+      }),
+      { replyTo: data.contact.email }
+    ).catch(e => console.error('[qualification] admin email error:', e.message));
+
+    // E-mail de confirmation : AUCUN texte libre du visiteur (nom exotique, description, URL…),
+    // sinon le formulaire servirait de relais de phishing signé pirabellabs.com vers n'importe quelle adresse.
+    // Seuls des libellés de la liste blanche sont repris.
+    if (firstRequest) {
+      const fn = data.contact.name.split(' ')[0];
+      const firstName = /^[\p{L}' -]{1,30}$/u.test(fn) ? escapeHtml(fn) : '';
+      const recap = [
+        'Projet : ' + qualificationProjectLabels(data),
+        'Budget : ' + qualificationBudgetLabel(data),
+        'Démarrage : ' + qualificationTimelineLabel(data),
+      ].map(escapeHtml).join('<br>');
+      const confirmHtml = masterTemplate({
+        headerType: 'hero',
+        preheader: 'Votre demande est bien reçue : réponse sous 24 h ouvrées',
+        title: firstName ? 'Bonjour ' + firstName + ',' : 'Bonjour,',
+        subtitle: 'Votre projet est entre de bonnes mains',
+        body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d’avoir pris le temps de décrire votre projet. Grâce à vos réponses, nous arrivons à l’appel découverte avec une première lecture de votre besoin.</p>' +
+          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">En résumé&nbsp;:</p>' +
+          '<div style="border-left:3px solid #FF5500;padding:16px 20px;background:#0e0e0e;margin:20px 0;font-size:14px;line-height:1.7;color:rgba(229,226,225,0.8);">' + recap + '</div>' +
+          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous <strong style="color:#e5e2e1;">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
+          '<p style="font-size:14px;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
+          '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">À très vite,<br><strong style="color:#e5e2e1;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+        cta: 'Choisir un créneau',
+        ctaUrl: 'https://www.pirabellabs.com/rdv',
+        ctaSecondary: 'Voir nos réalisations',
+        ctaSecondaryUrl: 'https://www.pirabellabs.com/realisations',
+      });
+      await sendEmail(data.contact.email, 'Pirabel Labs — Votre demande est bien reçue', confirmHtml)
+        .catch(e => console.error('[qualification] confirm email error:', e.message));
+    }
+
+    res.json({ success: true, level: sc.label, confirmationSent: firstRequest });
+  } catch (err) {
+    console.error('[qualification] error:', err && err.message, err && err.name);
+    res.status(500).json({ error: 'Erreur serveur. Réessayez ou écrivez-nous à contact@pirabellabs.com.' });
+  }
+});
+
 // === PUBLIC : Prise de rendez-vous (depuis la page contact) ===
 app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10), async (req, res) => {
   try {
@@ -314,90 +419,118 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
 
 // === PUBLIC : le client gère son rendez-vous (replanifier / annuler) ===
 const RDV_CHAN = { visio: 'Visioconférence', telephone: 'Téléphone', whatsapp: 'Appel WhatsApp', presentiel: 'En personne (Abomey-Calavi)' };
+const RDV_HOURS = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
+const rdvHour = (v) => v.replace(':', '\u00a0h\u00a0'); // « 09 h 00 »
+// Styles communs aux deux pages de rendez-vous (formulaire en verre, jetons de thème).
+const RDV_CSS = '<style>' +
+  '.rdv{display:grid;gap:clamp(28px,4vw,56px);align-items:start;padding-top:clamp(120px,13vw,160px);}' +
+  '@media(min-width:1024px){.rdv{grid-template-columns:.9fr 1.1fr;}}' +
+  '.rdv__intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2rem,1.3rem + 2.8vw,3.4rem);line-height:1.05;letter-spacing:-.035em;}' +
+  '.rdv__intro .px-hero__lead{margin:18px 0 0;}' +
+  '.rdv__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;}' +
+  '.rdv__contact{display:grid;gap:10px;margin-top:28px;}' +
+  '.rdv__contact a{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r-md);transition:transform .4s var(--ease-out);}' +
+  '.rdv__contact a:hover{transform:translateX(4px);}' +
+  '.rdv__contact b{display:block;font-family:var(--font-ui);font-weight:600;}' +
+  '.rdv__contact small{color:var(--text-3);font-size:.85rem;}' +
+  '.rdv__form{display:grid;gap:16px;padding:clamp(22px,3.5vw,36px);border-radius:var(--r-xl);background:var(--panel-bg);}' +
+  '.rdv__form .btn{justify-self:start;}' +
+  '.px-field select{appearance:none;-webkit-appearance:none;padding-right:40px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 15px) 55%;background-size:5px 5px;background-repeat:no-repeat;}' +
+  '.rdv__foot{font-size:.88rem;color:var(--text-3);}' +
+  '.rdv__foot a{color:var(--accent-3);text-decoration:underline;text-underline-offset:2px;}' +
+  '.rdv-card{max-width:640px;margin:0 auto;padding:clamp(24px,4vw,40px);border-radius:var(--r-xl);background:var(--panel-bg);}' +
+  '.rdv-wrap{padding-top:clamp(120px,13vw,160px);}' +
+  '.rdv-card h1{margin:0 0 12px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,1.3rem + 1.8vw,2.5rem);line-height:1.08;letter-spacing:-.03em;}' +
+  '.rdv-card>p{color:var(--text-2);line-height:1.65;}' +
+  '.rdv-card a:not(.btn){color:var(--accent-3);text-decoration:underline;text-underline-offset:2px;}' +
+  '.rdv-card form,.rdv-card .rdv-form{display:grid;gap:16px;margin-top:22px;}' +
+  '.rdv-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}' +
+  '.btn--danger:where(:not(.lg *)){color:var(--danger);background:rgba(255,138,138,.08);box-shadow:inset 0 0 0 1px rgba(255,138,138,.4);}' +
+  '.btn--danger:where(:not(.lg *)):hover{background:rgba(255,138,138,.14);}' +
+  '.btn--danger-solid:where(:not(.lg *)){color:#1a0505;background:#f87171;}' +
+  '.rdv-cancel{display:grid;gap:10px;padding:16px 18px;border-radius:var(--r-md);background:rgba(255,138,138,.08);box-shadow:inset 0 0 0 1px rgba(255,138,138,.35);}' +
+  '.rdv-cancel strong{color:var(--danger);}' +
+  '.rdv-cancel p{margin:0;color:var(--text-2);font-size:.9rem;}' +
+  '@media(max-width:520px){.rdv__form .btn,.rdv-actions .btn{width:100%;}}' +
+  '</style>';
+
 // === PUBLIC : page de prise de rendez-vous (lien court partageable pirabellabs.com/rdv) ===
 app.get('/rdv', (req, res) => {
-  const S = 'width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit;box-sizing:border-box;';
-  const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow">' +
-    '<title>Prendre rendez-vous — Pirabel Labs</title>' +
-    '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined&display=swap">' +
-    '<style>*{box-sizing:border-box;margin:0}body{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,85,0,.12),transparent 60%),#0e0e0e;color:#e5e2e1;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}' +
-    '.card{background:#161616;border:1px solid rgba(229,226,225,.1);border-radius:18px;padding:clamp(1.5rem,4vw,2.4rem);max-width:36rem;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5)}' +
-    '.b{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,85,0,.12);color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}' +
-    'h1{font-family:Space Grotesk,sans-serif;font-size:clamp(1.4rem,3.5vw,1.9rem);margin-bottom:.4rem;color:#fff}p.lead{color:rgba(229,226,225,.65);line-height:1.6;margin-bottom:1.2rem}' +
-    'label{display:block;font-size:.78rem;font-weight:600;color:rgba(229,226,225,.6);margin:.9rem 0 .35rem}.row{display:flex;gap:.8rem;flex-wrap:wrap}.row>div{flex:1;min-width:9rem}' +
-    '.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:999px;padding:.9rem 1.6rem;font-weight:700;font-size:.92rem;cursor:pointer;font-family:Space Grotesk,sans-serif;background:#FF5500;color:#190800;width:100%;margin-top:1.4rem;box-shadow:0 10px 30px rgba(255,85,0,.28)}' +
-    '.btn:disabled{opacity:.6}.msg{margin:1rem 0 0;padding:.95rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.5;display:none}.hp{position:absolute;left:-9999px}.material-symbols-outlined{font-size:1.15rem;vertical-align:middle}' +
-    '.foot{margin-top:1.1rem;font-size:.82rem;color:rgba(229,226,225,.5);text-align:center}.foot a{color:#FF5500;text-decoration:none}</style></head><body><div class="card">' +
-    '<span class="b"><span class="material-symbols-outlined" style="font-size:1rem">event</span> Pirabel Labs</span>' +
-    '<h1>Réservez votre rendez-vous</h1>' +
-    '<p class="lead">Choisissez un créneau : un échange de 30&nbsp;minutes avec l\'équipe Pirabel Labs, gratuit et sans engagement. Confirmation sous 24&nbsp;h ouvrées.</p>' +
-    '<div id="msg" class="msg"></div><form id="f" autocomplete="on">' +
-    '<input type="text" name="website_url" class="hp" tabindex="-1" autocomplete="off">' +
-    '<label>Nom complet *</label><input id="name" style="' + S + '" required>' +
-    '<div class="row"><div><label>E-mail *</label><input id="email" type="email" style="' + S + '" required></div>' +
-    '<div><label>Téléphone / WhatsApp</label><input id="phone" type="tel" style="' + S + '"></div></div>' +
-    '<label>Entreprise (optionnel)</label><input id="company" style="' + S + '">' +
-    '<div class="row"><div><label>Date souhaitée *</label><input id="date" type="date" style="' + S + '" required></div>' +
-    '<div><label>Heure</label><select id="time" style="' + S + '">' + ['', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map(v => '<option value="' + v + '">' + (v || 'Indifférent') + '</option>').join('') + '</select></div></div>' +
-    '<label>Comment&nbsp;?</label><select id="channel" style="' + S + '"><option value="visio">Visioconférence</option><option value="whatsapp">Appel WhatsApp</option><option value="telephone">Téléphone</option><option value="presentiel">En personne (Abomey-Calavi)</option></select>' +
-    '<label>Votre projet en quelques mots (optionnel)</label><textarea id="message" rows="3" style="' + S + 'resize:vertical"></textarea>' +
-    '<button class="btn" id="go" type="submit"><span class="material-symbols-outlined">calendar_month</span> Demander mon rendez-vous</button>' +
-    '</form><div class="foot">Une question&nbsp;? <a href="https://wa.me/16139273067">WhatsApp</a> · <a href="/contact">Contact</a></div>' +
-    '<script>(function(){var f=document.getElementById("f"),d=document.getElementById("date");' +
+  const head = '<title>Prendre rendez-vous — Pirabel Labs</title>' +
+    '<meta name="description" content="Réservez un échange de 30 minutes avec Pirabel Labs : gratuit, sans engagement, confirmation sous 24 h ouvrées.">' +
+    '<meta name="robots" content="noindex,follow">' + RDV_CSS;
+  const body = '<div class="px-wrap"><section class="rdv">' +
+    '<div class="rdv__intro"><p class="eyebrow">Rendez-vous</p>' +
+    '<h1>Réservez votre <span class="grad">rendez-vous</span></h1>' +
+    '<p class="px-hero__lead">Choisissez un créneau : un échange de 30&nbsp;minutes avec l’équipe Pirabel Labs, gratuit et sans engagement. Confirmation sous 24&nbsp;h ouvrées.</p>' +
+    '<ul class="rdv__chips"><li class="chip">' + ic('clock', 16) + ' 30&nbsp;minutes</li><li class="chip">' + ic('handshake', 16) + ' Gratuit et sans engagement</li><li class="chip">' + ic('check', 16) + ' Confirmation sous 24&nbsp;h</li></ul>' +
+    '<div class="rdv__contact">' +
+    '<a href="' + escapeHtml(siteNav.SITE.whatsapp) + '" target="_blank" rel="noopener" class="glass glass--flat spot"><span class="card__icon">' + ic('whatsapp', 20) + '</span><span><b>WhatsApp</b><small>Réponse rapide</small></span></a>' +
+    '<a href="mailto:' + escapeHtml(siteNav.SITE.email) + '" class="glass glass--flat spot"><span class="card__icon">' + ic('mail', 20) + '</span><span><b>' + escapeHtml(siteNav.SITE.email) + '</b><small>Pour un brief détaillé</small></span></a>' +
+    '</div></div>' +
+    '<form class="rdv__form glass" id="f" autocomplete="on" novalidate aria-labelledby="rdvFormTitle">' +
+    '<h2 id="rdvFormTitle" class="sr-only">Formulaire de demande de rendez-vous</h2>' +
+    // Pot de miel anti-robots : hors écran, jamais tabulable ni lu par les lecteurs d'écran.
+    '<div class="px-hp" aria-hidden="true"><label for="website_url">Ne pas remplir</label><input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off"></div>' +
+    '<div class="px-field"><label for="name">Nom complet <span aria-hidden="true">*</span></label><input id="name" required maxlength="120" autocomplete="name"></div>' +
+    '<div class="px-grid2"><div class="px-field"><label for="email">E-mail <span aria-hidden="true">*</span></label><input id="email" type="email" required maxlength="200" autocomplete="email"></div>' +
+    '<div class="px-field"><label for="phone">Téléphone ou WhatsApp</label><input id="phone" type="tel" maxlength="30" autocomplete="tel"></div></div>' +
+    '<div class="px-field"><label for="company">Entreprise <span class="px-opt">(facultatif)</span></label><input id="company" maxlength="120" autocomplete="organization"></div>' +
+    '<div class="px-grid2"><div class="px-field"><label for="date">Date souhaitée <span aria-hidden="true">*</span></label><input id="date" type="date" required></div>' +
+    '<div class="px-field"><label for="time">Heure</label><select id="time"><option value="">Indifférente</option>' + RDV_HOURS.map(v => '<option value="' + v + '">' + rdvHour(v) + '</option>').join('') + '</select></div></div>' +
+    '<div class="px-field"><label for="channel">Comment&nbsp;?</label><select id="channel"><option value="visio">Visioconférence</option><option value="whatsapp">Appel WhatsApp</option><option value="telephone">Téléphone</option><option value="presentiel">En personne (Abomey-Calavi)</option></select></div>' +
+    '<div class="px-field"><label for="message">Votre projet en quelques mots <span class="px-opt">(facultatif)</span></label><textarea id="message" rows="3" maxlength="3000"></textarea></div>' +
+    '<div id="msg" class="px-msg" role="status" aria-live="polite"></div>' +
+    '<button class="btn btn--primary btn--lg" id="go" type="submit">' + ic('calendar', 18) + ' <span>Demander mon rendez-vous</span></button>' +
+    '<p class="rdv__foot">Une question&nbsp;? <a href="https://wa.me/16139273067">WhatsApp</a> · <a href="/contact">Contact</a></p>' +
+    '</form></section></div>' +
+    '<script>(function(){var f=document.getElementById("f"),d=document.getElementById("date"),g=document.getElementById("go"),lbl=g.querySelector("span");' +
     'var t=new Date();t.setDate(t.getDate()+1);d.min=t.toISOString().slice(0,10);' +
-    'function show(ok,h){var m=document.getElementById("msg");m.style.cssText="margin:1rem 0 0;padding:.95rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.5;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=h;m.scrollIntoView({behavior:"smooth",block:"center"});}' +
-    'f.addEventListener("submit",async function(e){e.preventDefault();var g=document.getElementById("go");var v=function(id){return (document.getElementById(id).value||"").trim();};' +
-    'if(!v("name")||!v("email")||!v("date")){show(false,"Merci de renseigner votre nom, e-mail et la date souhaitée.");return;}' +
-    'g.disabled=true;g.innerHTML="<span class=\\u0027material-symbols-outlined\\u0027>hourglass_top</span> Envoi…";' +
-    'try{var r=await fetch("/api/rdv",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("name"),email:v("email"),phone:v("phone"),company:v("company"),date:v("date"),time:document.getElementById("time").value,channel:document.getElementById("channel").value,message:v("message"),website_url:document.querySelector("[name=website_url]").value})});' +
-    'var j=await r.json();if(r.ok&&j.success!==false){f.style.display="none";show(true,"<strong>C\\u0027est envoyé&nbsp;!</strong> Votre demande de rendez-vous est bien reçue. Pirabel Labs vous confirme le créneau sous 24&nbsp;h ouvrées (vérifiez vos e-mails, pensez aux indésirables).");}else{show(false,j.error||"Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}}catch(err){show(false,"Erreur réseau. Vérifiez votre connexion et réessayez.");g.disabled=false;g.innerHTML="Demander mon rendez-vous";}});})();<\/script>' +
-    '</div></body></html>';
-  res.set('Content-Type', 'text/html; charset=utf-8').send(html);
+    'function show(ok,txt,strong){var m=document.getElementById("msg");m.className="px-msg "+(ok?"is-ok":"is-err");m.textContent="";if(strong){var s=document.createElement("strong");s.textContent=strong+" ";m.appendChild(s);}m.appendChild(document.createTextNode(txt));m.scrollIntoView({behavior:"smooth",block:"center"});}' +
+    'f.addEventListener("submit",async function(e){e.preventDefault();var v=function(id){return (document.getElementById(id).value||"").trim();};' +
+    'if(!v("name")||!v("email")||!v("date")){show(false,"Merci de renseigner votre nom, votre e-mail et la date souhaitée.");return;}' +
+    'g.disabled=true;lbl.textContent="Envoi…";' +
+    'try{var r=await fetch("/api/rdv",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("name"),email:v("email"),phone:v("phone"),company:v("company"),date:v("date"),time:document.getElementById("time").value,channel:document.getElementById("channel").value,message:v("message"),website_url:document.getElementById("website_url").value})});' +
+    'var j=await r.json();if(r.ok&&j.success!==false){[].forEach.call(f.querySelectorAll(".px-field,.px-grid2,#go"),function(x){x.hidden=true;});show(true,"Votre demande de rendez-vous est bien reçue. Pirabel Labs vous confirme le créneau sous 24\u00a0h ouvrées (vérifiez vos e-mails, pensez aux indésirables).","C’est envoyé\u00a0!");}else{show(false,j.error||"Une erreur est survenue. Réessayez ou écrivez à contact@pirabellabs.com.");g.disabled=false;lbl.textContent="Demander mon rendez-vous";}}catch(err){show(false,"Erreur réseau. Vérifiez votre connexion et réessayez.");g.disabled=false;lbl.textContent="Demander mon rendez-vous";}});})();</script>';
+  res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { showCta: false }));
 });
 app.get('/rdv/:token', async (req, res) => {
   try {
     const token = String(req.params.token || '').slice(0, 80);
+    // L'URL porte un jeton qui permet de modifier le rendez-vous : ni cache, ni référent, ni mesure tierce.
+    res.set({ 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' });
     const a = await Appointment.findOne({ publicToken: token }).lean();
-    const page = (inner) => '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">' +
-      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined&display=swap">' +
-      '<title>Mon rendez-vous — Pirabel Labs</title><style>*{box-sizing:border-box;margin:0}body{background:#0e0e0e;color:#e5e2e1;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}' +
-      '.card{background:#161616;border:1px solid rgba(229,226,225,.1);border-radius:16px;padding:2rem;max-width:34rem;width:100%}.b{display:inline-block;background:rgba(255,85,0,.12);color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}' +
-      'h1{font-family:Space Grotesk,"Space Grotesk Fallback",sans-serif;font-size:1.5rem;margin-bottom:.4rem}p{color:rgba(229,226,225,.65);line-height:1.6}label{display:block;font-size:.78rem;font-weight:600;color:rgba(229,226,225,.6);margin:1rem 0 .35rem}' +
-      'input,select{width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit}' +
-      '.row{display:flex;gap:.8rem;flex-wrap:wrap}.row>div{flex:1;min-width:9rem}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border:0;border-radius:999px;padding:.8rem 1.4rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:Space Grotesk,"Space Grotesk Fallback",sans-serif}' +
-      '.btn--p{background:#FF5500;color:#fff}.btn--g{background:transparent;border:1px solid rgba(229,226,225,.2);color:#e5e2e1}.msg{margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:none}' +
-      '.material-symbols-outlined{font-size:1.1rem;vertical-align:middle}</style></head><body><div class="card">' + inner + '</div></body></html>';
-    if (!a) return res.status(404).set('Content-Type', 'text/html; charset=utf-8').send(page('<span class="b">Pirabel Labs</span><h1>Lien introuvable</h1><p>Ce rendez-vous n\'existe pas ou le lien a expiré. Écrivez-nous à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500">contact@pirabellabs.com</a>.</p>'));
-    if (a.status === 'annule') return res.set('Content-Type', 'text/html; charset=utf-8').send(page('<span class="b">Pirabel Labs</span><h1>Rendez-vous annulé</h1><p>Ce rendez-vous a été annulé. Pour en reprendre un, <a href="/contact#rdv" style="color:#FF5500">cliquez ici</a>.</p>'));
-    const opt = (v, sel) => '<option' + (v === sel ? ' selected' : '') + '>' + v + '</option>';
+    const page = (inner) => blogShell('<title>Mon rendez-vous — Pirabel Labs</title><meta name="robots" content="noindex">' + RDV_CSS,
+      '<div class="px-wrap rdv-wrap"><div class="rdv-card glass">' + inner + '</div></div>', { showCta: false, tracking: false });
+    if (!a) return res.status(404).set('Content-Type', 'text/html; charset=utf-8').send(page('<p class="eyebrow">Rendez-vous</p><h1>Lien introuvable</h1><p>Ce rendez-vous n’existe pas ou le lien a expiré. Écrivez-nous à <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a>.</p>'));
+    if (a.status === 'annule') return res.set('Content-Type', 'text/html; charset=utf-8').send(page('<p class="eyebrow">Rendez-vous</p><h1>Rendez-vous annulé</h1><p>Ce rendez-vous a été annulé. Pour en reprendre un, <a href="/contact#rdv">réservez un nouveau créneau</a>.</p>'));
     const chanOpt = (k) => '<option value="' + k + '"' + (a.channel === k ? ' selected' : '') + '>' + RDV_CHAN[k] + '</option>';
-    const inner = '<span class="b">Pirabel Labs</span><h1>Votre rendez-vous</h1>' +
-      '<p>Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ', vous pouvez déplacer ce rendez-vous ou l\'annuler. Pirabel Labs est prévenu automatiquement.</p>' +
-      '<div id="msg" class="msg"></div>' +
-      '<div id="form">' +
-      '<label>Date souhaitée</label><input id="d" type="date" value="' + escapeHtml(a.preferredDate || '') + '">' +
-      '<div class="row"><div><label>Heure</label><select id="t">' + ['', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map(v => '<option' + (v === a.preferredTime ? ' selected' : '') + '>' + (v || 'Indifférent') + '</option>').join('') + '</select></div>' +
-      '<div><label>Comment&nbsp;?</label><select id="c">' + ['visio', 'whatsapp', 'telephone', 'presentiel'].map(chanOpt).join('') + '</select></div></div>' +
-      '<label>Motif <span style="color:#FF5500">*</span> <span style="font-weight:400;color:rgba(229,226,225,.45)">(obligatoire pour déplacer ou annuler)</span></label>' +
-      '<textarea id="r" rows="2" placeholder="Ex. imprévu, conflit d\'agenda, besoin d\'un autre créneau…" style="width:100%;background:#1a1a1a;border:1px solid rgba(229,226,225,.18);color:#e5e2e1;padding:.7rem .85rem;border-radius:9px;font-size:.95rem;font-family:inherit;resize:vertical"></textarea>' +
-      '<div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.4rem"><button class="btn btn--p" id="save"><span class="material-symbols-outlined">event_available</span> Enregistrer le changement</button>' +
-      '<button class="btn btn--g" id="cancel" style="color:#f87171;border-color:rgba(248,113,113,.4)"><span class="material-symbols-outlined">cancel</span> Annuler le rendez-vous</button></div>' +
+    const inner = '<p class="eyebrow">Rendez-vous</p><h1>Votre rendez-vous</h1>' +
+      '<p>Bonjour ' + escapeHtml(String(a.name || '').split(' ')[0]) + ', vous pouvez déplacer ce rendez-vous ou l’annuler. Pirabel Labs est prévenu automatiquement.</p>' +
+      '<div id="msg" class="px-msg" role="status" aria-live="polite" style="margin-top:18px"></div>' +
+      '<div id="form" class="rdv-form">' +
+      '<div class="px-grid2"><div class="px-field"><label for="d">Date souhaitée</label><input id="d" type="date" value="' + escapeHtml(a.preferredDate || '') + '"></div>' +
+      '<div class="px-field"><label for="t">Heure</label><select id="t"><option value=""' + (a.preferredTime ? '' : ' selected') + '>Indifférente</option>' + RDV_HOURS.map(v => '<option value="' + v + '"' + (v === a.preferredTime ? ' selected' : '') + '>' + rdvHour(v) + '</option>').join('') + '</select></div></div>' +
+      '<div class="px-field"><label for="c">Comment&nbsp;?</label><select id="c">' + ['visio', 'whatsapp', 'telephone', 'presentiel'].map(chanOpt).join('') + '</select></div>' +
+      '<div class="px-field"><label for="r">Motif <span aria-hidden="true">*</span> <span class="px-opt">(obligatoire pour déplacer ou annuler)</span></label>' +
+      '<textarea id="r" rows="2" maxlength="1000" placeholder="Ex. imprévu, conflit d’agenda, besoin d’un autre créneau…"></textarea></div>' +
+      '<div class="rdv-actions"><button type="button" class="btn btn--primary" id="save">' + ic('check', 18) + ' Enregistrer le changement</button>' +
+      '<button type="button" class="btn btn--danger" id="cancel">' + ic('x', 18) + ' Annuler le rendez-vous</button></div>' +
       // Bloc de confirmation d'annulation (inline, masqué) — pas de pop-up navigateur
-      '<div id="cancelBox" style="display:none;margin-top:1.2rem;padding:1.1rem 1.2rem;border:1px solid rgba(248,113,113,.35);background:rgba(248,113,113,.08);border-radius:12px;">' +
-        '<div style="font-weight:700;color:#f87171;margin-bottom:.4rem;">Confirmer l\'annulation&nbsp;?</div>' +
-        '<p style="margin:0 0 .6rem;font-size:.88rem;">Indiquez le motif ci-dessus, puis confirmez. Cette action est définitive.</p>' +
-        '<div style="display:flex;gap:.6rem;flex-wrap:wrap;"><button class="btn btn--g" id="cancelBack">Garder le rendez-vous</button>' +
-        '<button class="btn" id="cancelYes" style="background:#f87171;color:#0e0e0e"><span class="material-symbols-outlined">delete</span> Oui, annuler</button></div>' +
+      '<div id="cancelBox" class="rdv-cancel" hidden>' +
+        '<strong>Confirmer l’annulation&nbsp;?</strong>' +
+        '<p>Indiquez le motif ci-dessus, puis confirmez. Cette action est définitive.</p>' +
+        '<div class="rdv-actions"><button type="button" class="btn btn--glass btn--sm" id="cancelBack">Garder le rendez-vous</button>' +
+        '<button type="button" class="btn btn--danger-solid btn--sm" id="cancelYes">' + ic('x', 16) + ' Oui, annuler</button></div>' +
       '</div>' +
       '</div>' +
-      '<script>var T="' + token + '";function show(ok,t){var m=document.getElementById("msg");m.style.display="block";m.style.cssText="margin:1rem 0 0;padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;display:block;"+(ok?"background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80":"background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.35);color:#f87171");m.innerHTML=t;m.scrollIntoView({behavior:"smooth",block:"center"});}' +
+      '<script>var T=' + jsStr(token) + ';function show(ok,txt,strong){var m=document.getElementById("msg");m.className="px-msg "+(ok?"is-ok":"is-err");m.textContent="";if(strong){var s=document.createElement("strong");s.textContent=strong+" ";m.appendChild(s);}m.appendChild(document.createTextNode(txt));m.scrollIntoView({behavior:"smooth",block:"center"});}' +
       'function reason(){return (document.getElementById("r").value||"").trim();}' +
-      'async function post(b){return (await fetch("/api/rdv/"+T,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)})).json();}' +
-      'document.getElementById("save").onclick=async function(){if(reason().length<3){show(false,"Merci d\\u0027indiquer un motif (au moins quelques mots) pour ce changement.");return;}this.disabled=true;try{var r=await post({action:"reschedule",date:document.getElementById("d").value,time:document.getElementById("t").value==="Indifférent"?"":document.getElementById("t").value,channel:document.getElementById("c").value,reason:reason()});if(r.success)show(true,"<strong>C\\u0027est noté&nbsp;!</strong> Votre nouveau créneau a été enregistré et transmis à Pirabel Labs.");else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}this.disabled=false;};' +
-      'document.getElementById("cancel").onclick=function(){document.getElementById("cancelBox").style.display="block";document.getElementById("cancelBox").scrollIntoView({behavior:"smooth",block:"center"});};' +
-      'document.getElementById("cancelBack").onclick=function(){document.getElementById("cancelBox").style.display="none";};' +
-      'document.getElementById("cancelYes").onclick=async function(){if(reason().length<3){show(false,"Merci d\\u0027indiquer le motif de l\\u0027annulation dans le champ ci-dessus.");return;}this.disabled=true;try{var r=await post({action:"cancel",reason:reason()});if(r.success){document.getElementById("form").style.display="none";show(true,"<strong>Rendez-vous annulé.</strong> Merci de nous avoir prévenus. Vous pouvez en reprendre un quand vous le souhaitez sur pirabellabs.com/contact.");}else{show(false,r.error||"Erreur.");this.disabled=false;}}catch(e){show(false,"Erreur réseau.");this.disabled=false;}};<\/script>';
+      'async function post(b){return (await fetch("/api/rdv/"+encodeURIComponent(T),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)})).json();}' +
+      'document.getElementById("save").onclick=async function(){if(reason().length<3){show(false,"Merci d’indiquer un motif (au moins quelques mots) pour ce changement.");return;}this.disabled=true;try{var r=await post({action:"reschedule",date:document.getElementById("d").value,time:document.getElementById("t").value,channel:document.getElementById("c").value,reason:reason()});if(r.success)show(true,"Votre nouveau créneau a été enregistré et transmis à Pirabel Labs.","C’est noté\u00a0!");else show(false,r.error||"Erreur.");}catch(e){show(false,"Erreur réseau.");}this.disabled=false;};' +
+      'document.getElementById("cancel").onclick=function(){var b=document.getElementById("cancelBox");b.hidden=false;b.scrollIntoView({behavior:"smooth",block:"center"});};' +
+      'document.getElementById("cancelBack").onclick=function(){document.getElementById("cancelBox").hidden=true;};' +
+      'document.getElementById("cancelYes").onclick=async function(){if(reason().length<3){show(false,"Merci d’indiquer le motif de l’annulation dans le champ ci-dessus.");return;}this.disabled=true;try{var r=await post({action:"cancel",reason:reason()});if(r.success){document.getElementById("form").hidden=true;show(true,"Merci de nous avoir prévenus. Vous pouvez en reprendre un quand vous le souhaitez sur pirabellabs.com/contact.","Rendez-vous annulé.");}else{show(false,r.error||"Erreur.");this.disabled=false;}}catch(e){show(false,"Erreur réseau.");this.disabled=false;}};<\/script>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(page(inner));
   } catch (e) { console.error('[rdv.page]', e.message); res.status(500).send('Erreur'); }
 });
@@ -489,14 +622,18 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
     const company = sanitize(req.body.company || '', 120);
     const phone = sanitize(req.body.phone || '', 30);
     const slug = sanitize(req.body.slug || '', 100);
-    const newsletterOptIn = req.body.newsletter !== false; // default true
+    const newsletterOptIn = req.body.newsletter === true; // consentement explicite (case non pré-cochée)
 
     if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
     // Cherche d'abord en base (CMS), repli sur les livres blancs historiques codés.
+    // Slug strict (jamais « constructor », « __proto__ »…) et repli uniquement sur les clés propres.
+    if (!/^[a-z0-9-]{1,100}$/.test(slug)) return res.status(400).json({ error: 'Livre blanc inconnu.' });
     let lb = await LivreBlanc.findOne({ slug, status: 'publie' }).lean();
-    if (!lb) lb = LIVRES_BLANCS[slug];
+    if (!lb && Object.prototype.hasOwnProperty.call(LIVRES_BLANCS, slug)) lb = LIVRES_BLANCS[slug];
     if (!lb) return res.status(400).json({ error: 'Livre blanc inconnu.' });
+    // Lien PDF : uniquement un fichier de /downloads (évite « https://www.pirabellabs.com@autre-site »).
+    if (!/^\/downloads\/[\w.-]+\.pdf$/.test(lb.pdfUrl || '')) return res.status(400).json({ error: 'Livre blanc indisponible.' });
     if (lb._id) LivreBlanc.updateOne({ _id: lb._id }, { $inc: { downloads: 1 } }).catch(() => {});
 
     const ipHash = crypto.createHash('sha256')
@@ -522,7 +659,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       '[Pirabel Labs] Nouveau telechargement livre blanc - ' + lb.title,
-      newOrderEmail({ name, email, phone, company, service: 'Livre blanc : ' + lb.title, message: `Lead : ${name} <${email}>\nLivre blanc telecharge : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}` }),
+      newOrderEmail({ name: escapeHtml(name), email: escapeHtml(email), phone: escapeHtml(phone), company: escapeHtml(company), service: escapeHtml('Livre blanc : ' + lb.title), message: escapeHtml(`Lead : ${name} <${email}>\nLivre blanc telecharge : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}`).replace(/\n/g, '<br>') }),
       { replyTo: email }
     ).catch(e => console.error('[livre-blanc] admin email error:', e.message));
 
@@ -530,7 +667,8 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
     const downloadHtml = masterTemplate({
       headerType: 'hero',
       preheader: 'Votre livre blanc est pret a telecharger',
-      title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
+      // Prénom affiché seulement s'il ressemble à un prénom (aucun texte arbitraire relayé par e-mail).
+      title: /^[\p{L}' -]{1,30}$/u.test(name.split(' ')[0]) ? 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',' : 'Bonjour,',
       subtitle: 'Voici votre livre blanc Pirabel Labs',
       body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d&apos;avoir telecharge notre livre blanc :</p>' +
         '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
@@ -959,120 +1097,266 @@ async function uniqueSlug(base, excludeId) {
 }
 const SITE = () => (process.env.SITE_URL || 'https://www.pirabellabs.com').replace(/\/$/, '');
 
-// Coquille HTML a la charte Pirabel Labs (reutilise /css/global.css)
-function blogShell(headExtra, bodyHtml) {
-  return '<!doctype html><html lang="fr"><head>' +
-    '<script async src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>' +
-    '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<meta name="msvalidate.01" content="EB6FCB92F9E0D2E3264DE2FFBE2EEA94" />' +
-    '<link rel="icon" type="image/png" href="/img/favicon.png?v=elan">' +
-    '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
-    '<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2">' +
-    '<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2">' +
-    '<style id="ms-css">@font-face{font-family:"Material Symbols Outlined";font-style:normal;font-weight:400;font-display:block;src:url(https://fonts.gstatic.com/s/materialsymbolsoutlined/v355/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOej.woff2) format("woff2");}.material-symbols-outlined{font-family:"Material Symbols Outlined";font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:"liga";-webkit-font-smoothing:antialiased;}</style>' +
-    '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional">' +
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional" media="print" onload="this.media=\'all\'">' +
-    '<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=optional"></noscript>' +
-    '<link rel="stylesheet" href="/css/global.css?v=elan9">' + (headExtra || '') +
-    '<style>' +
-    '.bx-top{display:flex;align-items:center;justify-content:space-between;padding:1rem clamp(1.25rem,4vw,3rem);border-bottom:1px solid rgba(229,226,225,0.1);position:sticky;top:0;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);z-index:20;}' +
-    '.bx-top a.bx-logo{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:800;font-size:1.15rem;color:#e5e2e1;text-decoration:none;letter-spacing:-.02em;}' +
-    '.bx-top a.bx-logo span{color:#FF5500;}' +
-    '.bx-top nav a{margin-left:1.4rem;font-size:.9rem;font-weight:600;color:rgba(229,226,225,0.65);text-decoration:none;}' +
-    '.bx-top nav a:hover{color:#FF5500;}' +
-    '.bx-wrap{max-width:74rem;margin:0 auto;padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,4vw,3rem) 4rem;}' +
-    '.bx-hero{text-align:center;max-width:48rem;margin:0 auto 3rem;}' +
-    '.bx-hero h1{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.4rem);line-height:1.06;letter-spacing:-.035em;margin:0 0 1rem;color:#fff;}' +
-    '.bx-hero p{color:rgba(229,226,225,0.65);font-size:1.05rem;line-height:1.6;}' +
-    '.bx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:1.5rem;}' +
-    '.bx-card{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:14px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .2s,border-color .2s;}' +
-    '.bx-card:hover{transform:translateY(-4px);border-color:#FF5500;}' +
-    '.bx-card__img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:linear-gradient(135deg,rgba(255,85,0,0.2),rgba(14,14,14,1));}' +
-    '.bx-card__b{padding:1.1rem 1.2rem 1.4rem;}' +
-    '.bx-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}' +
-    '.bx-card h2{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:1.15rem;margin:.5rem 0;line-height:1.25;color:#fff;}' +
-    '.bx-card p{color:rgba(229,226,225,0.6);font-size:.9rem;line-height:1.5;margin:0;}' +
-    '.bx-article{max-width:none;margin:0;min-width:0;}.bx-layout{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:2.5rem;align-items:start;}.bx-side{position:sticky;top:1.5rem;display:flex;flex-direction:column;gap:1.1rem;}.bx-toc{background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem 1.1rem;max-height:72vh;overflow:auto;}.bx-toc strong{display:block;color:#fff;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}.bx-toc a{display:block;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.84rem;line-height:1.3;padding:.32rem 0 .32rem .6rem;border-left:2px solid rgba(229,226,225,0.12);}.bx-toc a:hover{color:#FF5500;border-left-color:#FF5500;}.bx-side__author{display:flex;gap:.7rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1rem;}.bx-side__cta{background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:12px;padding:1.1rem;text-align:center;}.bx-side__cta a{display:inline-block;background:#FF5500;color:#190800;font-weight:700;padding:.55rem 1.1rem;border-radius:999px;text-decoration:none;font-size:.82rem;margin-top:.6rem;}.bx-cover{margin:0 0 2rem;border-radius:16px;overflow:hidden;border:1px solid rgba(229,226,225,0.08);}.bx-cover svg{display:block;width:100%;height:auto;}.bx-comments{margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(229,226,225,0.12);}.bx-comments h2{font-size:1.5rem;margin-bottom:1.4rem;}.bx-cmlist{display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;}.bx-cm{background:#161616;border:1px solid rgba(229,226,225,0.08);border-radius:12px;padding:1rem 1.2rem;}.bx-cm__h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.4rem;}.bx-cm__h strong{color:#fff;font-size:.95rem;}.bx-cm__h span{color:rgba(229,226,225,0.4);font-size:.78rem;white-space:nowrap;}.bx-cm p{margin:0;color:rgba(229,226,225,0.75);font-size:.95rem;line-height:1.6;white-space:pre-wrap;}.bx-cmform{background:#141313;border:1px solid rgba(229,226,225,0.1);border-radius:14px;padding:1.5rem;}.bx-cmform h3{font-size:1.15rem;margin:0 0 .2rem;color:#fff;}.bx-cmnote{color:rgba(229,226,225,0.5);font-size:.85rem;margin:.2rem 0 1.1rem;}.bx-cmform input,.bx-cmform textarea{width:100%;background:#0e0e0e;border:1px solid rgba(229,226,225,0.15);border-radius:8px;padding:.7rem .9rem;color:#fff;font-family:inherit;font-size:.95rem;margin-bottom:.8rem;box-sizing:border-box;}.bx-cmform input:focus,.bx-cmform textarea:focus{outline:none;border-color:#FF5500;}.bx-cmform textarea{resize:vertical;}.bx-hp{position:absolute!important;left:-9999px!important;height:0!important;width:0!important;opacity:0!important;}.bx-cmmsg{font-size:.88rem;margin:.2rem 0 .6rem;}.bx-cmbtn{background:#FF5500;color:#190800;font-weight:700;border:none;border-radius:999px;padding:.7rem 1.6rem;font-size:.92rem;cursor:pointer;font-family:inherit;}.bx-cmbtn:disabled{opacity:.6;cursor:default;}@media(max-width:900px){.bx-layout{grid-template-columns:1fr;}.bx-side{display:none;}}' +
-    '.bx-article .bx-cat{display:inline-block;margin-bottom:.6rem;}' +
-    '.bx-article h1{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(1.9rem,4.5vw,2.9rem);line-height:1.1;letter-spacing:-.03em;margin:.3rem 0 1rem;color:#fff;}' +
-    '.bx-meta{color:rgba(229,226,225,0.4);font-size:.85rem;margin-bottom:1.6rem;}' +
-    '.bx-heroimg{width:100%;border-radius:16px;margin:0 0 2rem;display:block;}' +
-    '.bx-content{font-size:1.13rem;line-height:1.85;color:rgba(229,226,225,0.92);}' +
-    '.bx-content h2{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;color:#fff;font-size:1.55rem;margin:2.2rem 0 .8rem;}' +
-    '.bx-content h3{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;color:#fff;font-size:1.25rem;margin:1.6rem 0 .5rem;}' +
-    '.bx-content p{margin:0 0 1.1rem;}.bx-content img{max-width:100%;border-radius:12px;margin:1rem 0;}' +
-    '.bx-content a{color:#FF5500;}.bx-content ul,.bx-content ol{padding-left:1.3rem;margin:0 0 1.1rem;}.bx-content li{margin:.3rem 0;}' +
-    '.bx-back{display:inline-flex;align-items:center;gap:.4rem;color:rgba(229,226,225,0.6);text-decoration:none;font-size:.9rem;margin-bottom:1.5rem;}' +
-    '.bx-cta{margin-top:3rem;text-align:center;background:linear-gradient(135deg,rgba(255,85,0,0.14),#161616);border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:2.2rem;}' +
-    '.bx-cta__sub{color:rgba(229,226,225,0.7);font-size:.98rem;line-height:1.55;margin:.5rem auto 0;max-width:34rem;}' +
-    '.bx-cta__btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.3rem;}' +
-    '.bx-cta a{display:inline-flex;align-items:center;gap:.5rem;background:#FF5500;color:#190800;font-weight:700;padding:.85rem 1.8rem;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .2s,border-color .2s,color .2s;box-shadow:0 10px 30px rgba(255,85,0,.26);}' +
-    '.bx-cta a:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(255,85,0,.42);}' +
-    '.bx-cta a .material-symbols-outlined{font-size:1.1rem;}' +
-    '.bx-cta a.bx-cta__g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
-    '.bx-cta a.bx-cta__g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
-    '@media(max-width:560px){.bx-cta__btns a{width:100%;justify-content:center;box-sizing:border-box;}}' +
-    '.bx-foot{text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(229,226,225,0.1);color:rgba(229,226,225,0.5);font-size:.85rem;}.bx-foot a{color:#FF5500;text-decoration:none;}' +
-    '.art-pullquote{border-left:3px solid #FF5500;background:rgba(255,85,0,0.05);padding:1.2rem 1.4rem;margin:1.8rem 0;display:flex;gap:1rem;align-items:flex-start;border-radius:0 10px 10px 0;}' +
-    '.art-pullquote__icon{color:#FF5500;font-size:1.8rem;flex-shrink:0;}.art-pullquote__text{font-style:italic;color:#fff;font-size:1.1rem;line-height:1.6;}' +
-    '.art-stat-box{display:flex;gap:1.2rem;align-items:center;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1.4rem;margin:1.8rem 0;}' +
-    '.art-stat-box__num{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:2.4rem;color:#FF5500;line-height:1;flex-shrink:0;}' +
-    '.art-stat-box__label{color:#fff;font-weight:700;margin-bottom:.3rem;}.art-stat-box__desc{color:rgba(229,226,225,0.6);font-size:.92rem;line-height:1.5;}' +
-    '.art-author{display:flex;gap:1rem;align-items:flex-start;background:#161616;border:1px solid rgba(229,226,225,0.1);border-radius:12px;padding:1.4rem;margin:2.5rem 0 0;}' +
-    '.art-author__avatar{width:54px;height:54px;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:800;font-size:1.2rem;flex-shrink:0;}' +
-    '.art-author__label{font-size:.72rem;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:.1em;}.art-author__name{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-weight:700;color:#fff;font-size:1.05rem;}.art-author__role{color:#FF5500;font-size:.85rem;margin-bottom:.4rem;}.art-author__bio{color:rgba(229,226,225,0.6);font-size:.88rem;line-height:1.5;margin:0;}' +
-    '.bx-empty{text-align:center;color:rgba(229,226,225,0.5);padding:4rem 1rem;}' +
-    // --- menu mobile (hamburger via case à cocher, sans JS) ---
-    '.bx-navtoggle{position:absolute;left:-9999px;opacity:0;}' +
-    '.bx-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;margin-left:auto;}' +
-    '.bx-burger span{display:block;width:24px;height:2px;background:#e5e2e1;border-radius:2px;}' +
-    // --- conteneur d\'image des cartes (img réelle OU svg) ---
-    '.bx-card__img img,.bx-card__img svg{width:100%;height:100%;object-fit:cover;display:block;}' +
-    // --- barre filtres + recherche ---
-    '.bx-toolbar{display:flex;gap:1rem;align-items:center;margin:0 0 2.2rem;}' +
-    '.bx-filters{display:flex;flex-wrap:nowrap;gap:.5rem;overflow-x:auto;flex:1;min-width:0;padding:.15rem .1rem .55rem;scrollbar-width:none;-ms-overflow-style:none;}' +
-    '.bx-filters::-webkit-scrollbar{display:none;height:0;}' +
-    '.bx-filters a{font-size:.8rem;font-weight:600;color:rgba(229,226,225,0.7);background:#161616;border:1px solid rgba(229,226,225,0.12);padding:.42rem .9rem;border-radius:999px;text-decoration:none;white-space:nowrap;transition:.15s;}' +
-    '.bx-filters a:hover{border-color:#FF5500;color:#fff;}.bx-filters a.is-active{background:#FF5500;color:#190800;border-color:#FF5500;}' +
-    '.bx-search{display:flex;gap:.4rem;flex-shrink:0;}' +
-    '.bx-search input{background:#161616;border:1px solid rgba(229,226,225,0.15);border-radius:999px;padding:.5rem 1rem;color:#fff;font-family:inherit;font-size:.85rem;min-width:11rem;}' +
-    '.bx-search input:focus{outline:none;border-color:#FF5500;}' +
-    '.bx-search button{background:#FF5500;color:#190800;border:none;border-radius:999px;width:2.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}' +
-    '.bx-search button .material-symbols-outlined{font-size:1.2rem;}' +
-    // --- article vedette (le plus lu) ---
-    '.bx-feat{display:grid;grid-template-columns:1.1fr 1fr;gap:0;background:#161616;border:1px solid rgba(229,226,225,0.12);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;margin:0 0 2.6rem;transition:border-color .2s;}' +
-    '.bx-feat:hover{border-color:#FF5500;}' +
-    '.bx-feat__img{position:relative;min-height:280px;overflow:hidden;background:linear-gradient(135deg,rgba(255,85,0,0.2),#0e0e0e);}' +
-    '.bx-feat__img img,.bx-feat__img svg{width:100%;height:100%;object-fit:cover;display:block;}' +
-    '.bx-feat__b{padding:clamp(1.4rem,3vw,2.4rem);display:flex;flex-direction:column;justify-content:center;}' +
-    '.bx-feat__star{display:inline-flex;align-items:center;gap:.35rem;color:#FF5500;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}' +
-    '.bx-feat__star .material-symbols-outlined{font-size:1rem;}' +
-    '.bx-feat h2{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:800;font-size:clamp(1.4rem,2.8vw,2.05rem);line-height:1.13;color:#fff;margin:.2rem 0 .7rem;}' +
-    '.bx-feat p{color:rgba(229,226,225,0.65);font-size:.98rem;line-height:1.6;margin:0 0 1rem;}' +
-    '.bx-feat__more{display:inline-flex;align-items:center;gap:.4rem;color:#FF5500;font-weight:700;font-size:.9rem;}' +
-    '.bx-feat__more .material-symbols-outlined{font-size:1.1rem;}' +
-    // --- compteur de vues ---
-    '.bx-views{display:inline-flex;align-items:center;gap:.3rem;color:rgba(229,226,225,0.45);font-size:.78rem;}' +
-    '.bx-views .material-symbols-outlined{font-size:1rem;}' +
-    '.bx-card__meta{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;}' +
-    // --- pagination ---
-    '.bx-pager{display:flex;justify-content:center;align-items:center;gap:.4rem;flex-wrap:wrap;margin:3rem 0 0;}' +
-    '.bx-pager a,.bx-pager span{min-width:2.4rem;height:2.4rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .7rem;border-radius:10px;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid rgba(229,226,225,0.14);color:rgba(229,226,225,0.75);}' +
-    '.bx-pager a:hover{border-color:#FF5500;color:#fff;}.bx-pager .is-active{background:#FF5500;color:#190800;border-color:#FF5500;}.bx-pager .is-disabled{opacity:.35;}' +
-    // --- articles similaires ---
-    '.bx-related{margin-top:3.5rem;}.bx-related h2{font-size:1.4rem;color:#fff;margin:0 0 1.2rem;}' +
-    '.bx-related__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1.1rem;}' +
-    // --- responsive ---
-    '@media(max-width:760px){.bx-burger{display:flex;}.bx-top{flex-wrap:wrap;}.bx-top .bx-nav{display:none;flex-basis:100%;flex-direction:column;margin-top:.4rem;}.bx-top .bx-nav a{margin:0;padding:.75rem .2rem;border-top:1px solid rgba(229,226,225,0.08);font-size:.95rem;}.bx-navtoggle:checked~.bx-nav{display:flex;}.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:190px;}.bx-toolbar{flex-direction:column;align-items:stretch;gap:.8rem;}.bx-search{flex:1;order:-1;}.bx-search input{min-width:0;width:100%;flex:1;}}' +
-    '@media(max-width:600px){.bx-content{font-size:1rem;line-height:1.72;}.bx-content h2{font-size:1.28rem;}.bx-content h3{font-size:1.08rem;}.bx-article h1{font-size:1.55rem;line-height:1.18;}.bx-hero h1{font-size:1.85rem;}.bx-hero p{font-size:.95rem;}.art-pullquote{padding:1rem 1.1rem;}.art-pullquote__text{font-size:1rem;}.art-stat-box{flex-direction:column;align-items:flex-start;gap:.6rem;padding:1.1rem;}.art-stat-box__num{font-size:2rem;}.bx-content ul,.bx-content ol{padding-left:1.1rem;}}' +
-    '</style></head><body style="background:#0a0a0a;color:#e5e2e1;font-family:Inter,sans-serif;margin:0;">' +
-    siteNav.html +
-    bodyHtml +
-    '<footer class="bx-foot">&copy; ' + new Date().getFullYear() + ' Pirabel Labs &middot; <a href="/">pirabellabs.com</a> &middot; <a href="https://wa.me/16139273067">WhatsApp</a></footer>' +
-    siteNav.js +
-    '<a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20discuter%20de%20mon%20projet" class="wa-float" target="_blank" rel="noopener" aria-label="Discuter sur WhatsApp" translate="no"><svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 .6C7.5.6.6 7.5.6 16c0 2.8.7 5.4 2.1 7.8L.5 31.5l7.9-2.1c2.3 1.3 4.9 1.9 7.6 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.6 16 .6zm0 28.2c-2.5 0-4.8-.7-6.9-1.9l-.5-.3-4.7 1.2 1.3-4.5-.3-.5c-1.3-2.1-2-4.6-2-7.1C2.8 8.6 8.7 2.8 16 2.8S29.2 8.6 29.2 16 23.3 28.8 16 28.8zm8.3-9.9c-.5-.2-2.7-1.3-3.1-1.5-.4-.1-.7-.2-1 .2-.3.5-1.1 1.5-1.4 1.7-.3.2-.5.3-.9.1-.5-.2-1.9-.7-3.7-2.3-1.4-1.2-2.3-2.7-2.5-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8-.1-.2-1-2.4-1.4-3.3-.4-.9-.7-.7-1-.8h-.8c-.3 0-.7.1-1.1.5-.4.4-1.5 1.4-1.5 3.4s1.5 4 1.7 4.3c.2.3 3 4.6 7.3 6.4 1 .4 1.8.7 2.4.9 1 .3 1.9.3 2.6.2.8-.1 2.7-1.1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.9-.5z"/></svg></a>' +
-    '<script defer src="/js/track.js"></script>' +
-    '<script defer src="/js/chat-widget.js?v=elan5"></script></body></html>';
+// ========================================================================
+// Habillage des pages publiques rendues par le serveur (blog, réalisations,
+// témoignages, carrières, rendez-vous) : même en-tête, pied de page, thèmes
+// clair/sombre et jetons de design que les pages Astro (app/nav.js + /css/site.css).
+// ========================================================================
+const ASSET_V = siteNav.VER; // ?v= des ressources /css, /js, /img (cache d'un an)
+const ic = (name, size, cls) => siteNav.icon(name, size, cls, ASSET_V);
+// JSON-LD sûr dans un <script> : « < » échappé, aucune chaîne ne peut fermer la balise.
+const ldJson = (o) => '<script type="application/ld+json">' + JSON.stringify(o).replace(/</g, '\\u003c') + '</script>';
+// Texte saisi dans l'admin, échappé puis mis aux normes typographiques françaises :
+// espace insécable avant « : ; ! ? » et à l'intérieur des guillemets (pas de « : » orphelin en début de ligne).
+const NBSP = String.fromCharCode(160);
+const frt = (s) => escapeHtml(s).replace(/ ([:;!?»])/g, NBSP + '$1').replace(/« /g, '«' + NBSP);
+// Même règle appliquée au texte visible d'un fragment HTML (gabarits et contenu) : seuls les
+// nœuds texte sont touchés, jamais les balises, attributs, scripts, styles, code ni zones de saisie.
+// Découpage d'un fragment HTML en jetons : bloc brut (script, style, pre, code, textarea,
+// laissé intact), balise, ou texte. Le « < » isolé d'un texte reste un jeton neutre.
+const HTML_TOKENS = /<(script|style|pre|code|textarea)\b[\s\S]*?<\/\1\s*>|<[^>]*>|[^<]+|</gi;
+function frTypoHtml(html) {
+  return String(html || '').replace(HTML_TOKENS, (tok, raw) =>
+    (raw || tok[0] === '<') ? tok : tok.replace(/ ([:;!?»])/g, NBSP + '$1').replace(/« /g, '«' + NBSP));
+}
+// Valeur JS sûre dans un <script> inline.
+const jsStr = (v) => JSON.stringify(String(v == null ? '' : v)).replace(/</g, '\\u003c');
+
+// Fil d'Ariane visible + JSON-LD BreadcrumbList. items : [{ name, path }] (le dernier = page courante).
+function crumbs(items) {
+  const all = [{ name: 'Accueil', path: '/' }].concat(items);
+  const html = '<nav class="px-crumbs" aria-label="Fil d’Ariane"><ol>' + all.map((it, i) =>
+    i === all.length - 1
+      ? '<li><span aria-current="page">' + frt(it.name) + '</span></li>'
+      : '<li><a href="' + escapeHtml(it.path) + '">' + escapeHtml(it.name) + '</a></li>').join('') + '</ol></nav>';
+  const ld = ldJson({
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: all.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: SITE() + (it.path === '/' ? '/' : it.path) })),
+  });
+  return { html, ld };
+}
+
+// Contenu HTML saisi dans l'admin (articles, études de cas) : les couleurs en dur des
+// attributs style (anciens gabarits sombres) sont converties en jetons de thème, pour que
+// le thème clair reste lisible. Les tableaux sont enveloppés pour défiler sur mobile.
+function themeContent(html) {
+  const theme = (css) => css
+    .replace(/(^|;)\s*color\s*:\s*(#fff(?:fff)?|white|#e5e2e1)\b/gi, '$1color:var(--text)')
+    .replace(/(^|;)\s*color\s*:\s*#ff5500\b/gi, '$1color:var(--accent-3)')
+    .replace(/rgba\(\s*(?:229\s*,\s*226\s*,\s*225|255\s*,\s*255\s*,\s*255)\s*,/gi, 'rgba(var(--ink),')
+    .replace(/(background(?:-color)?\s*:\s*)(#0a0a0a|#0e0e0e|#0e0d0d|#111|#111111|#131313|#141313|#141414|#151414|#161515|#161616|#1a1a1a)\b/gi, '$1var(--flat-bg)')
+    .replace(/(border(?:-[a-z]+)?\s*:[^;]*?)(#161616|#1a1a1a|#222|#222222)\b/gi, '$1rgba(var(--ink),.12)');
+  // Seules les vraies balises sont modifiées : ni le texte, ni les blocs pre/code/script/style.
+  return String(html || '').replace(HTML_TOKENS, (tok, raw) => {
+    if (raw || tok[0] !== '<' || tok.length < 3) return tok;
+    let t = tok.replace(/\sstyle="([^"]*)"/gi, (m, css) => ' style="' + theme(css) + '"');
+    if (/^<table\b/i.test(t)) t = '<div class="px-table">' + t; // tableau défilant sur mobile
+    else if (/^<\/table\s*>$/i.test(t)) t += '</div>';
+    return t;
+  });
+}
+
+// Décode les entités HTML courantes d'un texte extrait du contenu (réécrit ensuite par escapeHtml).
+const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: String.fromCharCode(160), rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', laquo: '«', raquo: '»', hellip: '…', ndash: '–', mdash: '—', eacute: 'é', egrave: 'è', ecirc: 'ê', agrave: 'à', ccedil: 'ç', oelig: 'œ', Eacute: 'É', Egrave: 'È', Ecirc: 'Ê', Agrave: 'À', Ccedil: 'Ç', OElig: 'Œ', acirc: 'â', icirc: 'î', ocirc: 'ô', ucirc: 'û', ugrave: 'ù', euml: 'ë', iuml: 'ï', uuml: 'ü', euro: '€', middot: '·', rarr: '→', times: '×' };
+function decodeEnt(s) {
+  return String(s || '').replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === '#') { const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10); try { return String.fromCodePoint(n); } catch (x) { return ' '; } }
+    return Object.prototype.hasOwnProperty.call(ENT, e) ? ENT[e] : ' ';
+  });
+}
+
+// Styles communs des pages publiques rendues par le serveur (jetons de /css/site.css).
+const PUB_CSS = `
+main [hidden]{display:none!important;}
+.px-wrap{width:100%;max-width:var(--container);margin-inline:auto;padding:0 var(--gutter) clamp(48px,6vw,88px);}
+.px-hero{max-width:860px;margin-inline:auto;padding:clamp(128px,14vw,170px) 0 clamp(30px,4vw,48px);text-align:center;}
+main p.eyebrow{max-width:none;margin:0 0 18px;color:var(--accent-3);font-size:.78rem;}
+.px-hero .eyebrow{justify-content:center;}
+.px-hero h1,.px-title{font-family:var(--font-display);font-weight:800;font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);letter-spacing:-.035em;line-height:1.05;}
+.px-hero__lead{max-width:660px;margin:20px auto 0;color:var(--text-2);font-size:var(--fs-lead);text-wrap:pretty;}
+.px-hero__ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px;}
+.px-hero .eyebrow,.px-hero__lead,.px-hero__ctas{animation:px-rise .9s var(--ease-out) both;}
+.px-hero__lead{animation-delay:.12s;}.px-hero__ctas{animation-delay:.22s;}
+@keyframes px-rise{from{opacity:0;transform:translate3d(0,18px,0);}}
+.px-crumbs{padding-top:clamp(106px,11vw,128px);margin-bottom:26px;font-family:var(--font-ui);font-size:.86rem;color:var(--text-3);}
+.px-crumbs ol{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;}
+.px-crumbs li{display:inline-flex;align-items:center;min-width:0;}
+.px-crumbs li+li::before{content:"›";margin:0 10px;opacity:.6;}
+.px-crumbs a{color:var(--text-2);transition:color var(--dur-fast);}
+.px-crumbs a:hover{color:var(--accent-3);}
+.px-crumbs [aria-current]{color:var(--text);max-width:46ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.px-back{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-ui);font-weight:600;font-size:.9rem;color:var(--text-2);transition:color var(--dur-fast);}
+.px-back:hover{color:var(--accent-3);}
+.px-empty{max-width:640px;margin-inline:auto;padding:clamp(140px,16vw,190px) var(--gutter) clamp(40px,6vw,80px);text-align:center;}
+.px-empty .eyebrow{justify-content:center;}
+.px-empty p{margin:16px 0 28px;color:var(--text-2);font-size:var(--fs-lead);}
+.px-note{padding:48px 24px;text-align:center;color:var(--text-2);border-radius:var(--r-lg);}
+.px-kicker{font-family:var(--font-ui);font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-3);}
+.px-field{display:grid;gap:8px;}
+.px-field label{font-family:var(--font-ui);font-weight:600;font-size:.9rem;}
+.px-field .px-opt{font-weight:400;color:var(--text-3);}
+.px-field input,.px-field textarea,.px-field select,.px-input{width:100%;padding:13px 16px;border:0;border-radius:14px;background:var(--field-bg);color:var(--text);box-shadow:inset 0 0 0 1px rgba(var(--ink),.14);font-size:1rem;line-height:1.5;transition:box-shadow .2s;}
+.px-field textarea{resize:vertical;min-height:120px;}
+.px-field input::placeholder,.px-field textarea::placeholder,.px-input::placeholder{color:rgba(var(--text-rgb),.42);}
+.px-field input:focus,.px-field textarea:focus,.px-field select:focus,.px-input:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px rgba(255,85,0,.18);}
+.px-hint{font-size:.8rem;color:var(--text-3);}
+.px-grid2{display:grid;gap:16px;}
+@media(min-width:640px){.px-grid2{grid-template-columns:1fr 1fr;}}
+.px-msg{padding:13px 16px;border-radius:12px;font-size:.92rem;line-height:1.55;}
+.px-msg:empty{display:none;}
+.px-msg.is-ok{color:var(--success);background:rgba(74,222,128,.08);box-shadow:inset 0 0 0 1px rgba(74,222,128,.32);}
+.px-msg.is-err{color:var(--danger);background:rgba(255,138,138,.08);box-shadow:inset 0 0 0 1px rgba(255,138,138,.32);}
+.px-hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;}
+.px-table{max-width:100%;overflow-x:auto;margin:1.6em 0;border-radius:var(--r-md);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}
+.px-table table{width:100%;min-width:520px;border-collapse:collapse;font-size:.94rem;line-height:1.55;}
+.px-table th,.px-table td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(var(--ink),.08);}
+.px-table th{font-family:var(--font-ui);font-weight:600;color:var(--text);background:rgba(var(--ink),.05);}
+.px-table tr:last-child td{border-bottom:0;}
+/* ---- Blog : liste ---- */
+.bx-toolbar{display:flex;gap:14px;align-items:center;margin:0 0 30px;}
+.bx-filters{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;flex:1;min-width:0;padding:4px 2px 8px;scrollbar-width:none;}
+.bx-filters::-webkit-scrollbar{display:none;}
+.bx-filters a{flex-shrink:0;padding:8px 15px;border-radius:999px;font-family:var(--font-ui);font-size:.86rem;font-weight:500;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);white-space:nowrap;transition:color var(--dur-fast),box-shadow var(--dur-fast),background-color var(--dur-fast);}
+.bx-filters a:hover{color:var(--text);box-shadow:inset 0 0 0 1px rgba(255,140,80,.45);}
+.bx-filters a.is-active{background:var(--accent);color:var(--on-accent);box-shadow:none;font-weight:600;}
+.bx-search{display:flex;align-items:center;gap:6px;flex-shrink:0;padding:4px;border-radius:999px;background:var(--field-bg);box-shadow:inset 0 0 0 1px rgba(var(--ink),.14);transition:box-shadow .2s;}
+.bx-search:focus-within{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px rgba(255,85,0,.18);}
+.bx-search input{min-width:13rem;padding:8px 6px 8px 14px;border:0;background:transparent;color:var(--text);font-size:.92rem;}
+.bx-search input:focus{outline:none;}
+.bx-search input::placeholder{color:rgba(var(--text-rgb),.45);}
+.bx-search button{display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:var(--accent);color:var(--on-accent);}
+.bx-count{margin:-12px 0 26px;text-align:center;color:var(--text-3);font-size:.9rem;}
+.bx-count a{color:var(--accent-3);text-decoration:underline;text-underline-offset:2px;}
+.bx-grid{display:grid;gap:clamp(16px,1.8vw,24px);grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr));}
+.bx-card{display:flex;flex-direction:column;overflow:hidden;border-radius:var(--r-lg);color:var(--text);transition:transform .5s var(--ease-out);}
+.bx-card:hover{transform:translateY(-4px);}
+.bx-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--shade);}
+.bx-card__img>img,.bx-card__img>svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s var(--ease-out);}
+.bx-card:hover .bx-card__img>img,.bx-card:hover .bx-card__img>svg{transform:scale(1.04);}
+.bx-card__b{display:flex;flex-direction:column;gap:8px;flex:1;padding:20px 22px 22px;}
+.bx-cat{font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-3);}
+.bx-card h2,.bx-card h3{font-size:1.14rem;line-height:1.3;letter-spacing:-.01em;}
+.bx-card p{color:var(--text-2);font-size:.93rem;line-height:1.6;}
+.bx-card__meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:6px;}
+.bx-views{display:inline-flex;align-items:center;gap:6px;color:var(--text-3);font-size:.8rem;}
+.bx-feat{display:grid;grid-template-columns:1.1fr 1fr;overflow:hidden;margin:0 0 clamp(28px,4vw,44px);border-radius:var(--r-xl);color:var(--text);transition:transform .5s var(--ease-out);}
+.bx-feat:hover{transform:translateY(-3px);}
+.bx-feat__img{position:relative;min-height:300px;overflow:hidden;background:var(--shade);}
+.bx-feat__img>img,.bx-feat__img>svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease-out);}
+.bx-feat:hover .bx-feat__img>img,.bx-feat:hover .bx-feat__img>svg{transform:scale(1.03);}
+.bx-feat__b{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:clamp(24px,3.6vw,48px);}
+.bx-feat__star{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-ui);font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-3);}
+.bx-feat h2{font-family:var(--font-display);font-weight:800;font-size:clamp(1.45rem,1rem + 1.5vw,2.15rem);line-height:1.12;letter-spacing:-.025em;}
+.bx-feat p{color:var(--text-2);line-height:1.65;}
+.bx-feat .link-arrow{margin-top:4px;}
+.bx-pager{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;margin:clamp(32px,4vw,52px) 0 0;}
+.bx-pager a,.bx-pager span{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 14px;border-radius:999px;font-family:var(--font-ui);font-size:.9rem;font-weight:600;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);transition:color var(--dur-fast),box-shadow var(--dur-fast);}
+.bx-pager a:hover{color:var(--text);box-shadow:inset 0 0 0 1px rgba(255,140,80,.45);}
+.bx-pager .is-active{background:var(--accent);color:var(--on-accent);box-shadow:none;}
+.bx-pager .is-disabled{opacity:.4;}
+/* ---- Blog : article ---- */
+.bx-layout{display:grid;grid-template-columns:minmax(0,780px) 280px;justify-content:space-between;gap:clamp(32px,4vw,56px);align-items:start;}
+.bx-article{min-width:0;}
+.bx-preview{display:flex;align-items:center;gap:10px;margin:0 0 22px;padding:12px 16px;border-radius:12px;font-weight:600;color:var(--text);background:rgba(251,191,36,.14);box-shadow:inset 0 0 0 1px rgba(251,191,36,.5);}
+.bx-preview b{padding:3px 10px;border-radius:999px;background:var(--warning);color:#1a1200;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;}
+.bx-head .bx-cat{display:inline-flex;padding:6px 12px;border-radius:999px;background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.3);}
+.bx-head h1{margin:16px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.95rem,1.3rem + 2.4vw,3.05rem);line-height:1.08;letter-spacing:-.03em;}
+.bx-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-bottom:28px;color:var(--text-3);font-size:.9rem;}
+.bx-meta strong{color:var(--text-2);font-weight:600;}
+.bx-meta .icon{color:var(--accent-2);}
+.bx-cover{margin:0 0 clamp(28px,4vw,40px);padding:6px;border-radius:var(--r-lg);}
+.bx-cover>img,.bx-cover>svg{display:block;width:100%;height:auto;border-radius:calc(var(--r-lg) - 6px);}
+.bx-content{max-width:72ch;font-size:1.09rem;line-height:1.8;color:rgba(var(--text-rgb),.86);overflow-wrap:break-word;}
+.bx-content>:first-child{margin-top:0;}
+.bx-content h2{margin:2.3em 0 .7em;font-size:clamp(1.4rem,1.1rem + .9vw,1.75rem);line-height:1.2;color:var(--text);}
+.bx-content h3{margin:1.8em 0 .5em;font-size:1.25rem;line-height:1.3;color:var(--text);}
+.bx-content h4{margin:1.5em 0 .4em;font-size:1.08rem;color:var(--text);}
+.bx-content p{margin:0 0 1.15em;}
+.bx-content strong,.bx-content b{color:var(--text);font-weight:650;}
+.bx-content a{color:var(--accent-3);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;}
+.bx-content a:hover{color:var(--accent-2);}
+.bx-content ul,.bx-content ol{margin:0 0 1.2em;padding-left:1.35em;}
+.bx-content ul{list-style:disc;}.bx-content ol{list-style:decimal;}
+.bx-content li{margin:.35em 0;padding-left:.2em;}
+.bx-content li::marker{color:var(--accent-2);}
+.bx-content img{max-width:100%;height:auto;margin:1.4em 0;border-radius:var(--r-md);}
+.bx-content blockquote{margin:1.6em 0;padding:4px 0 4px 20px;border-left:3px solid var(--accent);color:var(--text);font-style:italic;}
+.bx-content code{padding:.12em .4em;border-radius:6px;font-size:.9em;background:rgba(var(--ink),.08);color:var(--text);}
+.bx-content pre{overflow-x:auto;padding:16px 18px;border-radius:var(--r-md);background:rgba(var(--ink),.06);}
+.bx-content pre code{padding:0;background:none;}
+.bx-content hr{margin:2.4em 0;border:0;border-top:1px solid rgba(var(--ink),.1);}
+.bx-content .article-intro{font-size:1.18em;line-height:1.7;color:var(--text);}
+.bx-content nav[aria-label]{margin:0 0 2em;padding:18px 22px;border-radius:var(--r-md);background:var(--flat-bg)!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}
+.bx-content nav[aria-label] ul,.bx-content nav[aria-label] ol{margin:.6em 0 0;}
+.bx-content .material-symbols-outlined{font-size:0!important;}
+.art-pullquote{display:flex;gap:16px;align-items:flex-start;margin:1.9em 0;padding:20px 22px;border-left:3px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;background:linear-gradient(90deg,rgba(255,85,0,.1),rgba(255,85,0,.02));}
+.art-pullquote__icon{flex-shrink:0;color:var(--accent-2);line-height:1;}
+.art-pullquote__icon::before{content:"\\201C";display:block;font-family:var(--font-display);font-weight:800;font-size:3rem;line-height:.9;}
+.art-pullquote__text{font-style:italic;color:var(--text);font-size:1.1rem;line-height:1.65;}
+.art-stat-box{display:flex;gap:20px;align-items:center;margin:1.9em 0;padding:22px 24px;border-radius:var(--r-md);background:var(--flat-bg);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}
+.art-stat-box__num{flex-shrink:0;font-family:var(--font-display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--accent-2);}
+.art-stat-box__label{margin-bottom:4px;font-family:var(--font-ui);font-weight:600;color:var(--text);}
+.art-stat-box__desc{color:var(--text-2);font-size:.93rem;line-height:1.55;}
+.art-author{display:flex;gap:16px;align-items:flex-start;margin:2.6rem 0 0;padding:22px;border-radius:var(--r-lg);}
+.art-author__avatar{display:grid;place-items:center;flex-shrink:0;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#ff6a1a,var(--accent));color:var(--on-accent);font-family:var(--font-ui);font-weight:700;font-size:1.15rem;}
+.art-author__label{font-family:var(--font-ui);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);}
+.art-author__name{font-family:var(--font-ui);font-weight:600;font-size:1.05rem;color:var(--text);}
+.art-author__role{margin-bottom:6px;color:var(--accent-3);font-size:.86rem;}
+.art-author__bio{margin:0;color:var(--text-2);font-size:.9rem;line-height:1.55;}
+.bx-cta{position:relative;overflow:hidden;margin-top:clamp(36px,5vw,56px);padding:clamp(28px,4vw,44px);border-radius:var(--r-xl);text-align:center;}
+.bx-cta__t{font-family:var(--font-display);font-weight:800;font-size:clamp(1.4rem,1.1rem + 1vw,1.85rem);letter-spacing:-.02em;}
+.bx-cta__sub{max-width:34rem;margin:10px auto 0;color:var(--text-2);line-height:1.6;}
+.bx-cta__btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:24px;}
+.bx-side{position:sticky;top:96px;display:flex;flex-direction:column;gap:14px;}
+.bx-toc{max-height:calc(100vh - 330px);overflow:auto;padding:18px 16px 14px;border-radius:var(--r-md);overscroll-behavior:contain;}
+.bx-toc strong{display:block;margin:0 0 10px 4px;font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);}
+.bx-toc a{display:block;padding:6px 10px;border-left:2px solid rgba(var(--ink),.1);color:var(--text-2);font-size:.86rem;line-height:1.35;transition:color var(--dur-fast),border-color var(--dur-fast);}
+.bx-toc a:hover{color:var(--text);border-left-color:var(--accent);}
+.bx-side__author{display:flex;gap:12px;align-items:center;padding:14px;border-radius:var(--r-md);}
+.bx-side__author .art-author__avatar{width:44px;height:44px;font-size:.95rem;}
+.bx-side__name{font-family:var(--font-ui);font-weight:600;font-size:.92rem;}
+.bx-side__role{color:var(--accent-3);font-size:.78rem;}
+.bx-side__cta{padding:20px 18px;border-radius:var(--r-md);text-align:center;}
+.bx-side__cta b{display:block;font-family:var(--font-ui);font-size:1rem;}
+.bx-side__cta p{margin:6px 0 14px;color:var(--text-2);font-size:.85rem;}
+.bx-related{margin-top:clamp(44px,6vw,72px);}
+.bx-related>h2,.bx-comments>h2{margin:0 0 20px;font-size:clamp(1.35rem,1.1rem + .8vw,1.7rem);}
+.bx-related__grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,14rem),1fr));}
+.bx-related .bx-card h3{font-size:1rem;}
+.bx-comments{margin-top:clamp(44px,6vw,72px);padding-top:clamp(28px,4vw,40px);border-top:1px solid rgba(var(--ink),.1);}
+.bx-cmlist{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;color:var(--text-3);}
+.bx-cm{padding:16px 18px;border-radius:var(--r-md);background:var(--flat-bg);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}
+.bx-cm__h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:6px;}
+.bx-cm__h strong{font-family:var(--font-ui);color:var(--text);font-size:.95rem;}
+.bx-cm__h span{color:var(--text-3);font-size:.8rem;white-space:nowrap;}
+.bx-cm p{margin:0;color:var(--text-2);font-size:.95rem;line-height:1.6;white-space:pre-wrap;}
+.bx-cmform{display:grid;gap:14px;padding:clamp(20px,3vw,30px);border-radius:var(--r-lg);background:var(--panel-bg);}
+.bx-cmform h3{font-size:1.2rem;}
+.bx-cmnote{margin-top:-8px;color:var(--text-3);font-size:.88rem;}
+.bx-cmmsg{font-size:.9rem;}
+.bx-cmmsg:empty{display:none;}
+.bx-cmform .btn{justify-self:start;}
+@media(max-width:1023px){.bx-layout{grid-template-columns:minmax(0,1fr);}.bx-side{display:none;}.bx-content{max-width:none;}}
+@media(max-width:760px){.bx-feat{grid-template-columns:1fr;}.bx-feat__img{min-height:200px;}.bx-toolbar{flex-direction:column;align-items:stretch;gap:12px;}.bx-search{order:-1;}.bx-search input{min-width:0;flex:1;}}
+@media(max-width:600px){.bx-content{font-size:1.02rem;line-height:1.74;}.art-pullquote{padding:16px 18px;}.art-pullquote__text{font-size:1rem;}.art-stat-box{flex-direction:column;align-items:flex-start;gap:10px;padding:18px;}.art-stat-box__num{font-size:2rem;}.bx-cta__btns .btn{width:100%;}}
+`;
+
+// Coquille HTML commune : en-tête, pied de page, thèmes et scripts partagés (app/nav.js).
+// headExtra : balises de la page (title, meta, canonical, JSON-LD) suivies de ses <style> éventuels.
+// opts : { current: '/blog', showCta: true|false }
+function blogShell(headExtra, bodyHtml, opts) {
+  const h = String(headExtra || '');
+  const cut = h.indexOf('<style');
+  const meta = cut === -1 ? h : h.slice(0, cut);
+  const pageCss = cut === -1 ? '' : h.slice(cut);
+  // Image de partage par défaut (comme les pages Astro) quand la page n'en fournit pas.
+  const ogDefault = (meta.includes('og:image') ? '' : '<meta property="og:image" content="' + escapeHtml(siteNav.SITE.ogImage) + '">') +
+    (meta.includes('twitter:card') ? '' : '<meta name="twitter:card" content="summary_large_image">');
+  return siteNav.page(
+    meta + ogDefault + '<meta name="msvalidate.01" content="EB6FCB92F9E0D2E3264DE2FFBE2EEA94">' + '<style>' + PUB_CSS + '</style>' + pageCss,
+    frTypoHtml(bodyHtml),
+    Object.assign({ ver: ASSET_V }, opts || {})
+  );
 }
 function fmtFr(d) {
   try { return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; }
@@ -2460,113 +2744,111 @@ app.get('/carrieres', async (req, res) => {
   try {
     const jobs = await Job.find({ status: 'publie' }).sort({ publishedAt: -1 }).lean();
     const cartes = jobs.length ? jobs.map(j => `
-      <a class="jb" href="/carrieres/${escapeHtml(j.slug)}">
+      <a class="jb glass glass--flat spot" href="/carrieres/${escapeHtml(j.slug)}" data-reveal>
         <div class="jb__top">
           <span class="jb__tag">${escapeHtml(CONTRATS[j.contract] || j.contract)}</span>
           ${j.department ? `<span class="jb__dep">${escapeHtml(j.department)}</span>` : ''}
         </div>
-        <h2 class="jb__t">${escapeHtml(j.title)}</h2>
-        ${j.excerpt ? `<p class="jb__x">${escapeHtml(j.excerpt)}</p>` : ''}
+        <h3 class="jb__t">${frt(j.title)}</h3>
+        ${j.excerpt ? `<p class="jb__x">${frt(j.excerpt)}</p>` : ''}
         <div class="jb__meta">
-          <span>${escapeHtml(j.location)}</span>
-          <span>${escapeHtml(PRESENCE[j.remote] || '')}</span>
-          ${j.experience ? `<span>${escapeHtml(j.experience)}</span>` : ''}
+          <span>${ic('pin', 15)}${escapeHtml(j.location)}</span>
+          ${PRESENCE[j.remote] ? `<span>${ic('globe', 15)}${escapeHtml(PRESENCE[j.remote])}</span>` : ''}
+          ${j.experience ? `<span>${ic('briefcase', 15)}${escapeHtml(j.experience)}</span>` : ''}
         </div>
-        <span class="jb__go">Voir l'offre <span class="material-symbols-outlined">arrow_forward</span></span>
+        <span class="jb__go link-arrow">Voir l’offre ${ic('arrow-right', 16)}</span>
       </a>`).join('') : `
-      <div class="jb-empty">
-        <span class="material-symbols-outlined">work_off</span>
-        <h2>Aucun poste ouvert pour le moment</h2>
-        <p>Nous n'avons pas d'offre en cours, mais nous étudions toujours les candidatures spontanées.
+      <div class="jb-empty glass glass--flat">
+        <span class="card__icon">${ic('briefcase', 22)}</span>
+        <h3>Aucun poste ouvert pour le moment</h3>
+        <p>Nous n’avons pas d’offre en cours, mais nous étudions toujours les candidatures spontanées.
         Écrivez-nous à <a href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a> en présentant votre profil.</p>
       </div>`;
+    const bc = crumbs([{ name: 'Carrières', path: '/carrieres' }]);
+    const faq = [
+      ['Le télétravail est-il possible&nbsp;?', 'Oui, selon le poste. Chaque offre précise le mode : sur site, hybride ou télétravail complet. Nous travaillons déjà avec des personnes réparties sur plusieurs pays.'],
+      ['Acceptez-vous les profils juniors&nbsp;?', 'Oui, quand l’offre le mentionne. Nous regardons ce que vous avez réellement construit, pas seulement les diplômes. Un portfolio ou un dépôt de code vaut mieux qu’un long CV.'],
+      ['Je n’ai pas de CV formel, puis-je postuler&nbsp;?', 'Un profil LinkedIn à jour, un portfolio ou un GitHub suffisent. L’important est que nous puissions voir votre travail.'],
+      ['Combien de temps conservez-vous ma candidature&nbsp;?', 'Deux ans au maximum, uniquement pour traiter votre candidature et vous recontacter si un poste correspond. Vous pouvez demander sa suppression à tout moment en écrivant à contact@pirabellabs.com.'],
+      ['Recevrai-je une réponse même si c’est non&nbsp;?', 'Oui, systématiquement. Rester sans nouvelle est la pire expérience pour un candidat, et nous nous y refusons.'],
+    ];
 
     res.send(blogShell(
       `<title>Carrières — rejoindre Pirabel Labs</title>
        <meta name="description" content="Postes ouverts chez Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin). Développement, marketing, design, IA.">
        <link rel="canonical" href="https://www.pirabellabs.com/carrieres">
+       <meta property="og:title" content="Carrières — rejoindre Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="https://www.pirabellabs.com/carrieres">
+       <meta property="og:description" content="Postes ouverts chez Pirabel Labs : développement, marketing, design, IA. Abomey-Calavi (Bénin), télétravail possible.">
+       ${bc.ld}
        <style>
-       .jb-hero{padding:clamp(3rem,7vw,5rem) var(--px-page) 2rem;max-width:64rem;margin:0 auto;}
-       .jb-hero h1{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem;}
-       .jb-hero p{font-size:1.05rem;color:var(--text-muted);line-height:1.7;max-width:44rem;}
-       .jb-wrap{max-width:64rem;margin:0 auto;padding:0 var(--px-page) 5rem;display:grid;gap:1.1rem;}
-       .jb{display:block;background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.6rem;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s;}
-       .jb:hover{border-color:var(--accent);transform:translateY(-2px);opacity:1;}
-       .jb__top{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap;}
-       .jb__tag{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(255,85,0,.3);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.25rem .65rem;border-radius:999px;}
-       .jb__dep{font-size:.78rem;color:var(--text-faint);}
-       .jb__t{font-size:1.3rem;margin-bottom:.5rem;}
-       .jb__x{color:var(--text-muted);font-size:.95rem;line-height:1.6;margin-bottom:.9rem;}
-       .jb__meta{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:.82rem;color:var(--text-faint);margin-bottom:1rem;}
-       .jb__go{display:inline-flex;align-items:center;gap:.35rem;color:var(--accent);font-weight:700;font-size:.85rem;}
-       .jb-empty{text-align:center;padding:4rem 1.5rem;background:var(--bg-2);border:1px solid var(--border);border-radius:16px;}
-       .jb-empty .material-symbols-outlined{font-size:2.6rem;color:var(--text-faint);margin-bottom:1rem;}
-       .jb-empty h2{font-size:1.3rem;margin-bottom:.7rem;}
-       .jb-empty p{color:var(--text-muted);line-height:1.7;max-width:34rem;margin:0 auto;}
-
-       .jb-stats{display:flex;gap:2.2rem;flex-wrap:wrap;margin-top:2rem;padding-top:1.6rem;border-top:1px solid var(--border);}
-       .jb-st strong{display:block;font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--accent);}
-       .jb-st span{font-size:.82rem;color:var(--text-faint);}
-       .jb-sec{max-width:64rem;margin:0 auto;padding:2.6rem var(--px-page);}
-       .jb-h2{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.7rem;}
-       .jb-lead{color:var(--text-muted);line-height:1.7;max-width:44rem;margin-bottom:1.8rem;}
-       .jb-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.1rem;margin-top:1.4rem;}
-       .jb-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.1rem;margin-top:1.4rem;}
-       .jb-card{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.5rem;}
-       .jb-card .material-symbols-outlined{color:var(--accent);font-size:1.9rem;margin-bottom:.7rem;}
-       .jb-card h3{font-size:1.05rem;margin-bottom:.5rem;}
-       .jb-card p{color:var(--text-muted);font-size:.92rem;line-height:1.65;margin-bottom:1rem;}
-       .jb-card .btn{margin-top:.2rem;}
-       .jb-steps{list-style:none;padding:0;margin:0;counter-reset:s;}
-       .jb-steps li{display:flex;gap:1.1rem;padding-bottom:1.5rem;position:relative;}
-       .jb-steps li:last-child{padding-bottom:0;}
-       .jb-steps li::before{content:'';position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--border-2);}
-       .jb-steps li:last-child::before{display:none;}
-       .jb-num{flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;z-index:1;}
-       .jb-steps strong{display:block;font-family:var(--font-display);font-size:1rem;margin-bottom:.25rem;padding-top:.4rem;}
-       .jb-steps p{color:var(--text-muted);font-size:.92rem;line-height:1.65;}
-       .jb-faq details{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.7rem;}
-       .jb-faq summary{cursor:pointer;font-weight:600;font-size:.95rem;list-style:none;}
-       .jb-faq summary::-webkit-details-marker{display:none;}
-       .jb-faq summary::after{content:'+';float:right;color:var(--accent);font-weight:700;}
-       .jb-faq details[open] summary::after{content:'−';}
-       .jb-faq p{color:var(--text-muted);font-size:.92rem;line-height:1.7;margin-top:.7rem;}
-       .jb-cta{max-width:64rem;margin:1rem auto 4rem;padding:2.6rem var(--px-page);text-align:center;}
-       .jb-cta h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:.6rem;}
-       .jb-cta p{color:var(--text-muted);margin-bottom:1.4rem;}
-       .jb-cta__b{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;}
-       @media(max-width:600px){.jb-stats{gap:1.2rem;}}
+       .jb-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:28px;animation:px-rise .9s var(--ease-out) .22s both;}
+       .jb-st{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 18px;border-radius:var(--r-md);text-align:left;}
+       .jb-st strong{font-family:var(--font-ui);font-weight:600;font-size:1rem;color:var(--text);}
+       .jb-st span{font-size:.82rem;color:var(--text-3);}
+       .jb-sec{padding-block:clamp(36px,5vw,64px);}
+       .jb-sec .section-head{margin-bottom:clamp(24px,3vw,36px);}
+       .jb-list{display:grid;gap:14px;}
+       .jb{display:block;padding:clamp(20px,2.6vw,28px);border-radius:var(--r-lg);color:var(--text);transition:transform .5s var(--ease-out);}
+       .jb.is-in:hover{transform:translateY(-3px);}
+       .jb__top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px;}
+       .jb__tag{padding:5px 12px;border-radius:999px;font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-3);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.3);}
+       .jb__dep{font-size:.84rem;color:var(--text-3);}
+       .jb__t{font-size:clamp(1.2rem,1rem + .6vw,1.45rem);margin-bottom:8px;}
+       .jb__x{color:var(--text-2);line-height:1.65;margin-bottom:14px;}
+       .jb__meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:14px;font-size:.86rem;color:var(--text-3);}
+       .jb__meta span{display:inline-flex;align-items:center;gap:6px;}
+       .jb__meta .icon{color:var(--accent-2);}
+       .jb-empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:clamp(36px,5vw,56px) 24px;border-radius:var(--r-lg);text-align:center;}
+       .jb-empty h3{font-size:1.3rem;}
+       .jb-empty p{max-width:36rem;color:var(--text-2);line-height:1.7;}
+       .jb-empty a{color:var(--accent-3);text-decoration:underline;text-underline-offset:2px;}
+       .jb-card{display:flex;flex-direction:column;gap:12px;padding:clamp(22px,2.4vw,30px);border-radius:var(--r-lg);}
+       .jb-card h3{font-size:var(--fs-h3);}
+       .jb-card p{color:var(--text-2);font-size:.96rem;line-height:1.65;}
+       .jb-card .btn{align-self:flex-start;margin-top:auto;}
+       .jb-steps{display:grid;gap:12px;max-width:820px;counter-reset:s;}
+       .jb-steps li{position:relative;display:flex;gap:16px;padding:18px 20px;border-radius:var(--r-md);}
+       .jb-num{display:grid;place-items:center;flex-shrink:0;width:38px;height:38px;border-radius:50%;font-family:var(--font-display);font-weight:800;color:var(--accent-2);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.4);}
+       .jb-steps strong{display:block;margin:6px 0 4px;font-family:var(--font-ui);font-weight:600;font-size:1.02rem;}
+       .jb-steps p{color:var(--text-2);font-size:.94rem;line-height:1.65;}
+       .jb-faq{display:grid;gap:10px;max-width:880px;}
+       .jb-cta{position:relative;overflow:hidden;margin-top:clamp(24px,4vw,48px);padding:clamp(36px,5vw,64px) clamp(22px,5vw,64px);border-radius:var(--r-xl);text-align:center;}
+       .jb-cta h2{font-size:var(--fs-h2);}
+       .jb-cta p{margin:12px auto 26px;color:var(--text-2);font-size:var(--fs-lead);}
+       .jb-cta__b{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+       @media(max-width:520px){.jb-cta__b .btn{width:100%;}}
        </style>`,
-      `<section class="jb-hero">
-         <span class="eyebrow">Carrières</span>
-         <h1>Construire des produits qui <em style="color:var(--accent);font-style:normal;">servent vraiment</em></h1>
-         <p>Pirabel Labs conçoit des sites, des applications et des automatisations pour des entreprises
-         d'Afrique de l'Ouest et d'Europe. Nous cherchons des personnes rigoureuses et autonomes, qui
+      `<div class="px-wrap">
+       <header class="px-hero">
+         <p class="eyebrow">Carrières</p>
+         <h1>Construire des produits qui <span class="grad">servent vraiment</span></h1>
+         <p class="px-hero__lead">Pirabel Labs conçoit des sites, des applications et des automatisations pour des entreprises
+         d’Afrique de l’Ouest et d’Europe. Nous cherchons des personnes rigoureuses et autonomes, qui
          préfèrent livrer une chose solide plutôt que beaucoup de choses à moitié.</p>
          <div class="jb-stats">
-           <div class="jb-st"><strong>Abomey-Calavi</strong><span>Bénin, avec télétravail possible</span></div>
-           <div class="jb-st"><strong>Web, IA, marketing</strong><span>Nos trois domaines</span></div>
-           <div class="jb-st"><strong>7 jours ouvrés</strong><span>Notre délai de réponse</span></div>
+           <div class="jb-st glass glass--flat"><strong>Abomey-Calavi</strong><span>Bénin, avec télétravail possible</span></div>
+           <div class="jb-st glass glass--flat"><strong>Web, IA, marketing</strong><span>Nos trois domaines</span></div>
+           <div class="jb-st glass glass--flat"><strong>7 jours ouvrés</strong><span>Notre délai de réponse</span></div>
          </div>
-       </section>
+       </header>
 
-       <section class="jb-sec">
-         <h2 class="jb-h2">Travailler ici</h2>
-         <div class="jb-grid3">
-           <div class="jb-card">
-             <span class="material-symbols-outlined">visibility</span>
+       <section class="jb-sec" aria-labelledby="jbIci">
+         <div class="section-head"><p class="eyebrow">Culture</p><h2 id="jbIci">Travailler ici</h2></div>
+         <div class="grid grid--3" data-stagger>
+           <div class="jb-card glass glass--flat spot" data-reveal>
+             <span class="card__icon">${ic('target', 20)}</span>
              <h3>Vous voyez le résultat</h3>
              <p>Nous sommes une structure courte. Ce que vous produisez part en production et sert de vrais
              clients, souvent en quelques semaines. Pas de travail qui dort dans un tiroir.</p>
            </div>
-           <div class="jb-card">
-             <span class="material-symbols-outlined">school</span>
+           <div class="jb-card glass glass--flat spot" data-reveal>
+             <span class="card__icon">${ic('book', 20)}</span>
              <h3>On apprend en construisant</h3>
              <p>Next.js, automatisation, agents IA, référencement : les sujets sont variés et les outils
              récents. Vous montez en compétence sur des projets réels, pas sur des exercices.</p>
            </div>
-           <div class="jb-card">
-             <span class="material-symbols-outlined">handshake</span>
+           <div class="jb-card glass glass--flat spot" data-reveal>
+             <span class="card__icon">${ic('handshake', 20)}</span>
              <h3>Un cadre franc</h3>
              <p>Objectifs clairs, retours directs, pas de réunions inutiles. On dit ce qui va et ce qui ne va
              pas, dans les deux sens.</p>
@@ -2574,84 +2856,72 @@ app.get('/carrieres', async (req, res) => {
          </div>
        </section>
 
-       <section class="jb-sec" id="offres">
-         <h2 class="jb-h2">Nos postes ouverts</h2>
-         <div class="jb-wrap">${cartes}</div>
+       <section class="jb-sec" id="offres" aria-labelledby="jbOffres">
+         <div class="section-head"><p class="eyebrow">Recrutement</p><h2 id="jbOffres">Nos postes ouverts</h2></div>
+         <div class="jb-list" data-stagger>${cartes}</div>
        </section>
 
-       <section class="jb-sec">
-         <h2 class="jb-h2">Comment se passe le recrutement</h2>
-         <p class="jb-lead">Cinq étapes, sans zone d'ombre. Vous savez à chaque instant où vous en êtes,
-         et vous recevez une réponse même en cas de refus.</p>
-         <ol class="jb-steps">
-           <li><span class="jb-num">1</span><div><strong>Votre candidature</strong>
-             <p>Vous remplissez le formulaire de l'offre avec le lien vers votre CV. Vous recevez
+       <section class="jb-sec" aria-labelledby="jbProcess">
+         <div class="section-head"><p class="eyebrow">Processus</p><h2 id="jbProcess">Comment se passe le recrutement</h2>
+         <p>Cinq étapes, sans zone d’ombre. Vous savez à chaque instant où vous en êtes,
+         et vous recevez une réponse même en cas de refus.</p></div>
+         <ol class="jb-steps" data-stagger>
+           <li class="glass glass--flat" data-reveal><span class="jb-num">1</span><div><strong>Votre candidature</strong>
+             <p>Vous remplissez le formulaire de l’offre avec le lien vers votre CV. Vous recevez
              immédiatement un accusé de réception par e-mail.</p></div></li>
-           <li><span class="jb-num">2</span><div><strong>Examen du dossier — sous 7 jours ouvrés</strong>
-             <p>Nous lisons chaque candidature. Si votre profil correspond, nous passons à l'étape
-             suivante ; sinon, vous recevez une réponse claire plutôt qu'un silence.</p></div></li>
-           <li><span class="jb-num">3</span><div><strong>Premier échange — 30 minutes</strong>
+           <li class="glass glass--flat" data-reveal><span class="jb-num">2</span><div><strong>Examen du dossier, sous 7 jours ouvrés</strong>
+             <p>Nous lisons chaque candidature. Si votre profil correspond, nous passons à l’étape
+             suivante ; sinon, vous recevez une réponse claire plutôt qu’un silence.</p></div></li>
+           <li class="glass glass--flat" data-reveal><span class="jb-num">3</span><div><strong>Premier échange de 30 minutes</strong>
              <p>Une visio pour faire connaissance, comprendre votre parcours et répondre à vos questions
              sur le poste, le rythme et la rémunération.</p></div></li>
-           <li><span class="jb-num">4</span><div><strong>Mise en situation</strong>
+           <li class="glass glass--flat" data-reveal><span class="jb-num">4</span><div><strong>Mise en situation</strong>
              <p>Un exercice court et concret, proche de ce que vous feriez réellement. Il reste
              raisonnable en temps : nous ne demandons pas de travail gratuit déguisé.</p></div></li>
-           <li><span class="jb-num">5</span><div><strong>Décision et intégration</strong>
-             <p>Retour sous 5 jours ouvrés. Si c'est un oui, nous convenons ensemble de la date de
+           <li class="glass glass--flat" data-reveal><span class="jb-num">5</span><div><strong>Décision et intégration</strong>
+             <p>Retour sous 5 jours ouvrés. Si c’est un oui, nous convenons ensemble de la date de
              démarrage et des modalités.</p></div></li>
          </ol>
        </section>
 
-       <section class="jb-sec">
-         <h2 class="jb-h2">Postuler</h2>
-         <div class="jb-grid2">
-           <div class="jb-card">
+       <section class="jb-sec" aria-labelledby="jbPostuler">
+         <div class="section-head"><p class="eyebrow">Candidater</p><h2 id="jbPostuler">Postuler</h2></div>
+         <div class="grid grid--2">
+           <div class="jb-card glass glass--flat">
              <h3>À un poste ouvert</h3>
-             <p>Ouvrez l'offre qui vous intéresse et remplissez le formulaire en bas de page. Prévoyez un
+             <p>Ouvrez l’offre qui vous intéresse et remplissez le formulaire en bas de page. Prévoyez un
              lien vers votre CV : Google Drive, Dropbox, LinkedIn ou tout lien consultable.
              Nous ne stockons aucun fichier sur nos serveurs.</p>
              <a class="btn btn--primary" href="#offres">Voir les offres</a>
            </div>
-           <div class="jb-card">
+           <div class="jb-card glass glass--flat">
              <h3>Candidature spontanée</h3>
-             <p>Aucune offre ne correspond, mais vous pensez avoir votre place ici ? Écrivez-nous en
+             <p>Aucune offre ne correspond, mais vous pensez avoir votre place ici&nbsp;? Écrivez-nous en
              présentant ce que vous savez faire et ce que vous cherchez. Nous lisons tout, et nous
              gardons les profils qui nous marquent.</p>
-             <a class="btn btn--ghost" href="mailto:contact@pirabellabs.com?subject=Candidature%20spontan%C3%A9e">Nous écrire</a>
+             <a class="btn btn--glass" href="mailto:contact@pirabellabs.com?subject=Candidature%20spontan%C3%A9e">${ic('mail', 18)} Nous écrire</a>
            </div>
          </div>
        </section>
 
-       <section class="jb-sec">
-         <h2 class="jb-h2">Questions fréquentes</h2>
+       <section class="jb-sec" aria-labelledby="jbFaq">
+         <div class="section-head"><p class="eyebrow">FAQ</p><h2 id="jbFaq">Questions fréquentes</h2></div>
          <div class="jb-faq">
-           <details><summary>Le télétravail est-il possible ?</summary>
-             <p>Oui, selon le poste. Chaque offre précise le mode : sur site, hybride ou télétravail
-             complet. Nous travaillons déjà avec des personnes réparties sur plusieurs pays.</p></details>
-           <details><summary>Acceptez-vous les profils juniors ?</summary>
-             <p>Oui, quand l'offre le mentionne. Nous regardons ce que vous avez réellement construit,
-             pas seulement les diplômes. Un portfolio ou un dépôt de code vaut mieux qu'un long CV.</p></details>
-           <details><summary>Je n'ai pas de CV formel, puis-je postuler ?</summary>
-             <p>Un profil LinkedIn à jour, un portfolio ou un GitHub suffisent. L'important est que nous
-             puissions voir votre travail.</p></details>
-           <details><summary>Combien de temps conservez-vous ma candidature ?</summary>
-             <p>Deux ans au maximum, uniquement pour traiter votre candidature et vous recontacter si un
-             poste correspond. Vous pouvez demander sa suppression à tout moment en écrivant à
-             contact@pirabellabs.com.</p></details>
-           <details><summary>Recevrai-je une réponse même si c'est non ?</summary>
-             <p>Oui, systématiquement. Rester sans nouvelle est la pire expérience pour un candidat, et
-             nous nous y refusons.</p></details>
+           ${faq.map(f => `<details class="faq__item glass glass--flat"><summary>${f[0]}<span class="faq__icon" aria-hidden="true">${ic('plus', 16)}</span></summary><p class="faq__a">${f[1]}</p></details>`).join('')}
          </div>
        </section>
 
-       <section class="jb-cta">
-         <h2>Une question avant de postuler&nbsp;?</h2>
-         <p>Écrivez-nous, nous répondons sous 24 h ouvrées.</p>
+       <section class="jb-cta glass glass--tint spot" data-reveal="scale" aria-labelledby="jbCta"><div class="sf-cta__glow" aria-hidden="true"></div>
+         <p class="eyebrow">Réponse sous 24&nbsp;h ouvrées</p>
+         <h2 id="jbCta">Une question avant de postuler&nbsp;?</h2>
+         <p>Écrivez-nous, nous répondons sous 24&nbsp;h ouvrées.</p>
          <div class="jb-cta__b">
-           <a class="btn btn--primary" href="mailto:contact@pirabellabs.com">contact@pirabellabs.com</a>
-           <a class="btn btn--ghost" href="https://wa.me/16139273067" target="_blank" rel="noopener">WhatsApp</a>
+           <a class="btn btn--primary btn--lg" href="mailto:contact@pirabellabs.com">${ic('mail', 18)} contact@pirabellabs.com</a>
+           <a class="btn btn--glass btn--lg" href="https://wa.me/16139273067" target="_blank" rel="noopener">${ic('whatsapp', 18)} WhatsApp</a>
          </div>
-       </section>`
+       </section>
+       </div>`,
+      { current: '/carrieres', showCta: false }
     ));
   } catch (e) { console.error('[carrieres]', e.message); res.status(500).send('Erreur serveur.'); }
 });
@@ -2664,75 +2934,81 @@ app.get('/carrieres/:slug', async (req, res) => {
 
     const liste = (titre, items) => (items && items.length) ? `
       <h2>${titre}</h2><ul class="jd-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>` : '';
+    const bc = crumbs([{ name: 'Carrières', path: '/carrieres' }, { name: j.title, path: '/carrieres/' + j.slug }]);
 
     res.send(blogShell(
       `<title>${escapeHtml(j.title)} — Carrières Pirabel Labs</title>
        <meta name="description" content="${escapeHtml((j.excerpt || j.title).slice(0, 155))}">
        <link rel="canonical" href="https://www.pirabellabs.com/carrieres/${escapeHtml(j.slug)}">
+       <meta property="og:title" content="${escapeHtml(j.title)} — Carrières Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="https://www.pirabellabs.com/carrieres/${escapeHtml(j.slug)}">
+       ${bc.ld}
        <style>
-       .jd{max-width:52rem;margin:0 auto;padding:clamp(2.5rem,6vw,4rem) var(--px-page) 5rem;}
-       .jd h1{font-size:clamp(1.8rem,4.5vw,2.6rem);margin:.6rem 0 1rem;}
-       .jd__meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.8rem;}
-       .jd__m{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:.3rem .8rem;font-size:.8rem;color:var(--text-muted);}
-       .jd h2{font-size:1.15rem;margin:2rem 0 .8rem;color:var(--accent);}
-       .jd p{color:var(--text-muted);line-height:1.75;margin-bottom:1rem;}
-       .jd-list{list-style:none;padding:0;margin-bottom:1rem;}
-       .jd-list li{color:var(--text-muted);line-height:1.7;padding-left:1.4rem;position:relative;margin-bottom:.5rem;}
-       .jd-list li::before{content:'';position:absolute;left:0;top:.65rem;width:6px;height:6px;border-radius:50%;background:var(--accent);}
-       .jf{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.8rem;margin-top:2.5rem;}
-       .jf h2{margin-top:0;}
-       .jf__row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-       @media(max-width:600px){.jf__row{grid-template-columns:1fr;}}
-       .jf label{display:block;font-size:.78rem;font-weight:600;color:var(--text-muted);margin-bottom:.35rem;}
-       .jf input,.jf textarea{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);border-radius:10px;padding:.7rem .85rem;font-family:inherit;font-size:.92rem;outline:none;margin-bottom:.9rem;}
-       .jf input:focus,.jf textarea:focus{border-color:var(--accent);}
-       .jf textarea{min-height:7rem;resize:vertical;line-height:1.6;}
-       .jf__hint{font-size:.76rem;color:var(--text-faint);margin:-.6rem 0 .9rem;}
-       .jf__msg{padding:.9rem 1.1rem;border-radius:10px;font-size:.9rem;line-height:1.55;margin-bottom:1rem;display:none;}
-       .jf__msg.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--success);display:block;}
-       .jf__msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--danger);display:block;}
+       .jd{max-width:820px;margin-inline:auto;}
+       .jd h1{margin:14px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.9rem,1.25rem + 2.4vw,3rem);line-height:1.08;letter-spacing:-.03em;}
+       .jd__meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(24px,3vw,36px);}
+       .jd__m{padding:7px 14px;border-radius:999px;font-family:var(--font-ui);font-size:.84rem;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.12);}
+       .jd__m--c{color:var(--accent-3);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.3);font-weight:600;}
+       .jd__body{font-size:1.05rem;line-height:1.75;color:rgba(var(--text-rgb),.86);}
+       .jd__body h2{margin:2em 0 .7em;font-size:clamp(1.25rem,1.05rem + .7vw,1.5rem);color:var(--text);}
+       .jd__body h3{margin:1.6em 0 .5em;font-size:1.15rem;color:var(--text);}
+       .jd__body p{margin:0 0 1em;}
+       .jd__body strong{color:var(--text);}
+       .jd__body a{color:var(--accent-3);text-decoration:underline;text-underline-offset:3px;}
+       .jd__body ul:not(.jd-list),.jd__body ol{margin:0 0 1em;padding-left:1.3em;list-style:disc;}
+       .jd-list{display:grid;gap:8px;margin:0 0 1em;}
+       .jd-list li{position:relative;padding-left:22px;}
+       .jd-list li::before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;border-radius:50%;background:var(--accent);}
+       .jf{display:grid;gap:16px;margin-top:clamp(36px,5vw,56px);padding:clamp(22px,3.5vw,36px);border-radius:var(--r-xl);background:var(--panel-bg);scroll-margin-top:96px;}
+       .jf>h2{font-size:clamp(1.4rem,1.1rem + 1vw,1.85rem);}
+       .jf form{display:grid;gap:16px;}
+       .jf .btn{justify-self:start;}
+       @media(max-width:520px){.jf .btn{width:100%;}}
        </style>`,
-      `<article class="jd">
-        <a href="/carrieres" style="font-size:.85rem;color:var(--text-faint);">← Toutes les offres</a>
-        <h1>${escapeHtml(j.title)}</h1>
+      `<div class="px-wrap">${bc.html}
+      <article class="jd">
+        <p class="eyebrow">Offre d’emploi</p>
+        <h1>${frt(j.title)}</h1>
         <div class="jd__meta">
-          <span class="jd__m">${escapeHtml(CONTRATS[j.contract] || j.contract)}</span>
+          <span class="jd__m jd__m--c">${escapeHtml(CONTRATS[j.contract] || j.contract)}</span>
           <span class="jd__m">${escapeHtml(j.location)}</span>
-          <span class="jd__m">${escapeHtml(PRESENCE[j.remote] || '')}</span>
+          ${PRESENCE[j.remote] ? `<span class="jd__m">${escapeHtml(PRESENCE[j.remote])}</span>` : ''}
           ${j.experience ? `<span class="jd__m">${escapeHtml(j.experience)}</span>` : ''}
           ${j.salary ? `<span class="jd__m">${escapeHtml(j.salary)}</span>` : ''}
         </div>
-        ${j.content ? sanitizeSoft(j.content, 40000) : (j.excerpt ? `<p>${escapeHtml(j.excerpt)}</p>` : '')}
+        <div class="jd__body">
+        ${j.content ? themeContent(sanitizeSoft(j.content, 40000)) : (j.excerpt ? `<p>${escapeHtml(j.excerpt)}</p>` : '')}
         ${liste('Vos missions', j.missions)}
         ${liste('Le profil que nous cherchons', j.profile)}
         ${liste('Ce que nous offrons', j.advantages)}
-
-        <div class="jf" id="postuler">
-          <h2>Postuler</h2>
-          <div class="jf__msg" id="jfMsg"></div>
-          <form id="jfForm">
-            <div class="jf__row">
-              <div><label for="nom">Nom complet *</label><input id="nom" required maxlength="120"></div>
-              <div><label for="mail">E-mail *</label><input id="mail" type="email" required maxlength="200"></div>
-            </div>
-            <div class="jf__row">
-              <div><label for="tel">Téléphone / WhatsApp</label><input id="tel" maxlength="30"></div>
-              <div><label for="ville">Ville</label><input id="ville" maxlength="120"></div>
-            </div>
-            <label for="cv">Lien vers votre CV *</label>
-            <input id="cv" required maxlength="500" placeholder="https://drive.google.com/…">
-            <div class="jf__hint">Google Drive, Dropbox, LinkedIn ou tout lien consultable. Nous ne stockons aucun fichier.</div>
-            <div class="jf__row">
-              <div><label for="li">LinkedIn</label><input id="li" maxlength="300" placeholder="https://linkedin.com/in/…"></div>
-              <div><label for="pf">Portfolio / GitHub</label><input id="pf" maxlength="300"></div>
-            </div>
-            <label for="lm">Pourquoi vous ? *</label>
-            <textarea id="lm" required maxlength="6000" placeholder="Parlez-nous de votre parcours et de ce qui vous attire dans ce poste."></textarea>
-            <button class="btn btn--primary" type="submit" id="jfBtn">Envoyer ma candidature</button>
-            <p class="jf__hint" style="margin-top:.9rem;">Vos données servent uniquement à traiter votre candidature et sont conservées 2 ans maximum. Vous pouvez demander leur suppression à tout moment.</p>
-          </form>
         </div>
+
+        <section class="jf glass" id="postuler" aria-labelledby="jfTitle">
+          <h2 id="jfTitle">Postuler</h2>
+          <div class="px-msg" id="jfMsg" role="status" aria-live="polite"></div>
+          <form id="jfForm">
+            <div class="px-grid2">
+              <div class="px-field"><label for="nom">Nom complet <span aria-hidden="true">*</span></label><input id="nom" required maxlength="120" autocomplete="name"></div>
+              <div class="px-field"><label for="mail">E-mail <span aria-hidden="true">*</span></label><input id="mail" type="email" required maxlength="200" autocomplete="email"></div>
+            </div>
+            <div class="px-grid2">
+              <div class="px-field"><label for="tel">Téléphone ou WhatsApp</label><input id="tel" type="tel" maxlength="30" autocomplete="tel"></div>
+              <div class="px-field"><label for="ville">Ville</label><input id="ville" maxlength="120" autocomplete="address-level2"></div>
+            </div>
+            <div class="px-field"><label for="cv">Lien vers votre CV <span aria-hidden="true">*</span></label>
+              <input id="cv" required maxlength="500" placeholder="https://drive.google.com/…" aria-describedby="cvHint">
+              <span class="px-hint" id="cvHint">Google Drive, Dropbox, LinkedIn ou tout lien consultable. Nous ne stockons aucun fichier.</span></div>
+            <div class="px-grid2">
+              <div class="px-field"><label for="li">LinkedIn</label><input id="li" maxlength="300" placeholder="https://linkedin.com/in/…"></div>
+              <div class="px-field"><label for="pf">Portfolio ou GitHub</label><input id="pf" maxlength="300"></div>
+            </div>
+            <div class="px-field"><label for="lm">Pourquoi vous&nbsp;? <span aria-hidden="true">*</span></label>
+              <textarea id="lm" required maxlength="6000" placeholder="Parlez-nous de votre parcours et de ce qui vous attire dans ce poste."></textarea></div>
+            <button class="btn btn--primary btn--lg" type="submit" id="jfBtn">Envoyer ma candidature</button>
+            <p class="px-hint">Vos données servent uniquement à traiter votre candidature et sont conservées 2&nbsp;ans maximum. Vous pouvez demander leur suppression à tout moment.</p>
+          </form>
+        </section>
       </article>
+      </div>
       <script>
       document.getElementById('jfForm').addEventListener('submit', async function(e){
         e.preventDefault();
@@ -2740,7 +3016,7 @@ app.get('/carrieres/:slug', async (req, res) => {
         b.disabled=true; b.textContent='Envoi…';
         try{
           var r=await fetch('/api/candidatures',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-            jobSlug:${JSON.stringify(j.slug)},
+            jobSlug:${jsStr(j.slug)},
             name:document.getElementById('nom').value, email:document.getElementById('mail').value,
             phone:document.getElementById('tel').value, city:document.getElementById('ville').value,
             cvUrl:document.getElementById('cv').value, linkedin:document.getElementById('li').value,
@@ -2748,12 +3024,14 @@ app.get('/carrieres/:slug', async (req, res) => {
           })});
           var d=await r.json();
           if(!r.ok) throw new Error(d.error||'Erreur');
-          m.className='jf__msg ok'; m.textContent=d.message||'Candidature envoyée.';
+          m.className='px-msg is-ok'; m.textContent=d.message||'Candidature envoyée.';
           document.getElementById('jfForm').reset();
-        }catch(err){ m.className='jf__msg err'; m.textContent=(err&&err.message)||'Envoi impossible.'; }
+        }catch(err){ m.className='px-msg is-err'; m.textContent=(err&&err.message)||'Envoi impossible.'; }
+        m.scrollIntoView({behavior:'smooth',block:'center'});
         b.disabled=false; b.textContent='Envoyer ma candidature';
       });
-      </script>`
+      </script>`,
+      { current: '/carrieres', showCta: false }
     ));
   } catch (e) { console.error('[carrieres.detail]', e.message); res.status(500).send('Erreur serveur.'); }
 });
@@ -3140,6 +3418,12 @@ identifiable mais flou. froid = demande vague, hors sujet, ou candidature sponta
   await lead.save();
 
   // La réponse rédigée n'est jamais envoyée seule : elle attend la validation.
+  // Le message du prospect est non fiable (injection de prompt possible) : on retire du
+  // brouillon tout lien qui ne pointe pas vers nos propres domaines.
+  if (a.reponse) {
+    a.reponse = String(a.reponse).replace(/\bhttps?:\/\/[^\s<>"')]+/gi, (u) =>
+      /^https?:\/\/((www\.)?pirabellabs\.com|wa\.me)(\/|$)/i.test(u) ? u : '[lien retiré]');
+  }
   if (a.reponse && a.objet) {
     const admin = await User.findOne({ role: 'admin' }).select('_id').lean();
     if (admin) {
@@ -3585,45 +3869,49 @@ app.get('/blog', async (req, res) => {
     const totalPages = Math.max(1, Math.ceil(total / PAGE));
     const safePage = Math.min(page, totalPages);
     const arts = await Article.find(listFilter).sort({ publishedAt: -1 }).skip((safePage - 1) * PAGE).limit(PAGE).lean();
-    const cardImg = a => '<div class="bx-card__img">' + (a.featuredImage ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" loading="lazy">' : coverSvg(a.title, a.category)) + '</div>';
-    const card = a => '<a class="bx-card" href="/blog/' + escapeHtml(a.slug) + '">' + cardImg(a) +
+    const cardImg = a => '<div class="bx-card__img">' + (a.featuredImage ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" loading="lazy" decoding="async">' : coverSvg(a.title, a.category)) + '</div>';
+    const card = a => '<a class="bx-card glass glass--flat spot" href="/blog/' + escapeHtml(a.slug) + '">' + cardImg(a) +
       '<div class="bx-card__b"><span class="bx-cat">' + escapeHtml(a.category || 'Marketing') + '</span>' +
-      '<h2>' + escapeHtml(a.title) + '</h2><p>' + escapeHtml(a.excerpt || '') + '</p>' +
-      '<div class="bx-card__meta">' + (a.readTime ? '<span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min</span>' : '<span></span>') + ((a.views || 0) >= 100 ? '<span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span>' : '<span></span>') + '</div></div></a>';
-    const cards = arts.length ? arts.map(card).join('') : '<div class="bx-empty">Aucun article ne correspond à votre recherche.</div>';
+      '<h2>' + frt(a.title) + '</h2><p>' + frt(a.excerpt || '') + '</p>' +
+      '<div class="bx-card__meta">' + (a.readTime ? '<span class="bx-views">' + ic('clock', 15) + escapeHtml(a.readTime) + '&nbsp;min de lecture</span>' : '<span></span>') + ((a.views || 0) >= 100 ? '<span class="bx-views">' + ic('trending', 15) + fmtViews(a.views) + '&nbsp;vues</span>' : '<span></span>') + '</div></div></a>';
+    const cards = arts.length ? arts.map(card).join('') : '<div class="px-note glass glass--flat" style="grid-column:1/-1">Aucun article ne correspond à votre recherche.</div>';
     // vedette
     const featHtml = (featured && safePage === 1) ?
-      '<a class="bx-feat" href="/blog/' + escapeHtml(featured.slug) + '"><div class="bx-feat__img">' +
-        (featured.featuredImage ? '<img src="' + escapeHtml(featured.featuredImage) + '" alt="' + escapeHtml(featured.imageAlt || featured.title) + '">' : coverSvg(featured.title, featured.category)) +
-        '</div><div class="bx-feat__b"><span class="bx-feat__star"><span class="material-symbols-outlined">local_fire_department</span>Article le plus lu</span>' +
-        '<h2>' + escapeHtml(featured.title) + '</h2><p>' + escapeHtml(featured.excerpt || '') + '</p>' +
-        '<span class="bx-feat__more">Lire l\'article <span class="material-symbols-outlined">arrow_forward</span></span></div></a>' : '';
+      '<a class="bx-feat glass glass--flat spot" href="/blog/' + escapeHtml(featured.slug) + '"><div class="bx-feat__img">' +
+        (featured.featuredImage ? '<img src="' + escapeHtml(featured.featuredImage) + '" alt="' + escapeHtml(featured.imageAlt || featured.title) + '" fetchpriority="high" decoding="async">' : coverSvg(featured.title, featured.category)) +
+        '</div><div class="bx-feat__b"><span class="bx-feat__star">' + ic('star', 15) + 'Article le plus lu</span>' +
+        '<h2>' + frt(featured.title) + '</h2><p>' + frt(featured.excerpt || '') + '</p>' +
+        '<span class="link-arrow">Lire l’article ' + ic('arrow-right', 16) + '</span></div></a>' : '';
     // filtres + recherche
-    const pills = '<div class="bx-filters"><a href="/blog"' + (!cat ? ' class="is-active"' : '') + '>Tous</a>' +
-      cats.map(c => '<a href="/blog?cat=' + encodeURIComponent(c) + '"' + (cat && cat.toLowerCase() === c.toLowerCase() ? ' class="is-active"' : '') + '>' + escapeHtml(c) + '</a>').join('') + '</div>';
-    const search = '<form class="bx-search" action="/blog" method="get">' + (cat ? '<input type="hidden" name="cat" value="' + escapeHtml(cat) + '">' : '') +
-      '<input type="search" name="q" value="' + escapeHtml(q) + '" placeholder="Rechercher un article…" aria-label="Rechercher"><button type="submit" aria-label="Rechercher"><span class="material-symbols-outlined">search</span></button></form>';
+    const pills = '<nav class="bx-filters" aria-label="Catégories du blog"><a href="/blog"' + (!cat ? ' class="is-active" aria-current="page"' : '') + '>Tous</a>' +
+      cats.map(c => '<a href="/blog?cat=' + encodeURIComponent(c) + '"' + (cat && cat.toLowerCase() === c.toLowerCase() ? ' class="is-active" aria-current="page"' : '') + '>' + escapeHtml(c) + '</a>').join('') + '</nav>';
+    const search = '<form class="bx-search" action="/blog" method="get" role="search">' + (cat ? '<input type="hidden" name="cat" value="' + escapeHtml(cat) + '">' : '') +
+      '<input type="search" name="q" value="' + escapeHtml(q) + '" placeholder="Rechercher un article…" aria-label="Rechercher un article"><button type="submit" aria-label="Lancer la recherche">' + ic('search', 17) + '</button></form>';
     const toolbar = '<div class="bx-toolbar">' + pills + search + '</div>';
-    const note = isFiltered ? '<p style="text-align:center;color:rgba(229,226,225,0.5);font-size:.9rem;margin:-.4rem 0 1.6rem;">' + total + ' article' + (total > 1 ? 's' : '') + (cat ? ' dans « ' + escapeHtml(cat) + ' »' : '') + (q ? ' pour « ' + escapeHtml(q) + ' »' : '') + ' &middot; <a href="/blog" style="color:#FF5500;">tout afficher</a></p>' : '';
+    const note = isFiltered ? '<p class="bx-count">' + total + ' article' + (total > 1 ? 's' : '') + (cat ? ' dans « ' + escapeHtml(cat) + ' »' : '') + (q ? ' pour « ' + escapeHtml(q) + ' »' : '') + ' · <a href="/blog">tout afficher</a></p>' : '';
     // pagination (préserve cat + q)
-    const qs = p => { const a = []; if (cat) a.push('cat=' + encodeURIComponent(cat)); if (q) a.push('q=' + encodeURIComponent(q)); if (p > 1) a.push('page=' + p); return a.length ? ('?' + a.join('&')) : ''; };
+    const qs = p => { const a = []; if (cat) a.push('cat=' + encodeURIComponent(cat)); if (q) a.push('q=' + encodeURIComponent(q)); if (p > 1) a.push('page=' + p); return a.length ? ('?' + a.join('&amp;')) : ''; };
     let pager = '';
     if (totalPages > 1) {
       let nums = '';
-      for (let p = 1; p <= totalPages; p++) nums += (p === safePage) ? '<span class="is-active">' + p + '</span>' : '<a href="/blog' + qs(p) + '">' + p + '</a>';
+      for (let p = 1; p <= totalPages; p++) nums += (p === safePage) ? '<span class="is-active" aria-current="page">' + p + '</span>' : '<a href="/blog' + qs(p) + '">' + p + '</a>';
       pager = '<nav class="bx-pager" aria-label="Pagination">' +
         (safePage > 1 ? '<a href="/blog' + qs(safePage - 1) + '">‹ Précédent</a>' : '<span class="is-disabled">‹ Précédent</span>') + nums +
         (safePage < totalPages ? '<a href="/blog' + qs(safePage + 1) + '">Suivant ›</a>' : '<span class="is-disabled">Suivant ›</span>') + '</nav>';
     }
     const canon = SITE() + '/blog' + (safePage > 1 ? '?page=' + safePage : '');
+    const bc = crumbs([{ name: 'Blog', path: '/blog' }]);
     const head = '<title>Blog Pirabel Labs — Marketing digital, SEO, sites web' + (safePage > 1 ? ' (page ' + safePage + ')' : '') + '</title>' +
       '<meta name="description" content="Conseils marketing digital, SEO, sites web et stratégie pour PME francophones — par Pirabel Labs.">' +
       '<link rel="canonical" href="' + canon + '">' +
-      '<meta property="og:title" content="Blog Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/blog">';
-    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Le Blog Pirabel Labs</h1>' +
-      '<p>Conseils marketing digital, SEO, sites web et stratégie pour PME francophones.</p></div>' +
-      toolbar + note + featHtml + '<div class="bx-grid">' + cards + '</div>' + pager + '</main>';
-    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+      '<meta property="og:title" content="Blog Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/blog">' +
+      '<meta property="og:description" content="Conseils marketing digital, SEO, sites web et stratégie pour PME francophones — par Pirabel Labs.">' +
+      bc.ld;
+    const body = '<div class="px-wrap">' +
+      '<header class="px-hero"><p class="eyebrow">Ressources</p><h1>Le blog <span class="grad">Pirabel Labs</span></h1>' +
+      '<p class="px-hero__lead">Conseils marketing digital, SEO, sites web et stratégie pour PME francophones.</p></header>' +
+      toolbar + note + featHtml + '<div class="bx-grid">' + cards + '</div>' + pager + '</div>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/blog' }));
   } catch (e) { console.error('[blog]', e.message); res.status(500).send('Erreur'); }
 });
 
@@ -3636,26 +3924,30 @@ app.get('/blog/:slug', async (req, res) => {
       try { jwt.verify((req.cookies || {}).token || '', process.env.JWT_SECRET, { algorithms: ['HS256'], issuer: 'pirabel-labs' }); return true; } catch (e) { return false; }
     })();
     const a = await Article.findOne(previewAdmin ? { slug } : { slug, status: 'publie' }).lean();
-    if (!a) return res.status(404).send(blogShell('<title>Article introuvable</title>',
-      '<main class="bx-wrap"><div class="bx-empty"><h1 style="color:#fff;">404</h1><p>Cet article n\'existe pas ou n\'est plus publié.</p><a class="bx-back" href="/blog">&larr; Retour au blog</a></div></main>'));
+    if (!a) return res.status(404).send(blogShell('<title>Article introuvable — Pirabel Labs</title><meta name="robots" content="noindex">',
+      '<section class="px-empty"><p class="eyebrow">Erreur 404</p><h1 class="px-title">Article introuvable</h1><p>Cet article n’existe pas ou n’est plus publié.</p>' +
+      '<a class="btn btn--primary" href="/blog">' + ic('arrow-left', 18) + ' Retour au blog</a></section>', { current: '/blog' }));
+    if (previewAdmin) res.set('Cache-Control', 'private, no-store'); // aperçu admin : jamais en cache partagé
     Article.updateOne({ _id: a._id }, { $inc: { views: 1 } }).catch(() => {});
     const metaTitle = escapeHtml(a.seoTitle || a.title);
     const metaDesc = escapeHtml(a.metaDescription || a.excerpt || '');
     const url = SITE() + '/blog/' + encodeURIComponent(a.slug);
-    const ogImg = a.featuredImage ? (a.featuredImage.startsWith('http') ? a.featuredImage : SITE() + a.featuredImage) : (SITE() + '/img/og-blog.jpg');
+    const ogImg = a.featuredImage ? (a.featuredImage.startsWith('http') ? a.featuredImage : SITE() + a.featuredImage) : (SITE() + '/img/og-image.png?v=elan');
+    const bc = crumbs([{ name: 'Blog', path: '/blog' }, { name: a.title, path: '/blog/' + encodeURIComponent(a.slug) }]);
     const head = '<title>' + metaTitle + '</title>' +
       '<meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
+      (a.status !== 'publie' ? '<meta name="robots" content="noindex, nofollow">' : '') +
       '<meta name="author" content="' + escapeHtml(a.author || 'Pirabel Labs') + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '">' +
       '<meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '">' +
       '<meta name="twitter:card" content="summary_large_image">' +
-      '<script type="application/ld+json">' + JSON.stringify({
+      ldJson({
         '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title,
         description: a.metaDescription || a.excerpt || '', image: ogImg, datePublished: a.publishedAt,
         dateModified: a.updatedAt, author: { '@type': 'Person', name: a.author || 'Lissanon Gildas' },
         publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
-      }) + '</script>';
+      }) + bc.ld;
     const authorName = escapeHtml(a.author || 'Lissanon Gildas');
     const catLabel = escapeHtml(a.category || 'Marketing');
     // Sommaire auto : injecte des id sur les H2 et collecte le sommaire
@@ -3664,21 +3956,23 @@ app.get('/blog/:slug', async (req, res) => {
       attrs = attrs || '';
       const idm = attrs.match(/id="([^"]+)"/);
       let id = idm ? idm[1] : '';
-      const txt = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').trim();
-      if (!id) { id = (txt.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48)) || ('s' + toc.length); attrs += ' id="' + id + '"'; }
+      const plain = inner.replace(/<[^>]+>/g, '');
+      const txt = decodeEnt(plain).trim(); // libellé du sommaire
+      const slugSrc = plain.replace(/&[a-z]+;/gi, ' ').trim(); // base des id (inchangée : liens profonds existants)
+      if (!id) { id = (slugSrc.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48)) || ('s' + toc.length); attrs += ' id="' + id + '"'; }
       toc.push({ id, txt });
       return '<h2' + attrs + '>' + inner + '</h2>';
     });
     // Couverture : image fournie, sinon couverture SVG générée (légère, sur-mesure)
-    const cover = a.featuredImage
-      ? '<img class="bx-heroimg" src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '">'
-      : '<div class="bx-cover">' + coverSvg(a.title, a.category) + '</div>';
+    const cover = '<figure class="bx-cover glass glass--flat">' + (a.featuredImage
+      ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" fetchpriority="high" decoding="async">'
+      : coverSvg(a.title, a.category)) + '</figure>';
     const authorCard = (a.content || '').includes('art-author') ? '' :
-      '<aside class="art-author"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Fondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l\'IA.</p></div></aside>';
-    const tocHtml = toc.length >= 2 ? '<nav class="bx-toc"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + t.id + '">' + escapeHtml(t.txt) + '</a>').join('') + '</nav>' : '';
+      '<aside class="art-author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Fondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l’IA.</p></div></aside>';
+    const tocHtml = toc.length >= 2 ? '<nav class="bx-toc glass glass--flat" aria-label="Sommaire de l’article"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + escapeHtml(t.id) + '">' + frt(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
-      '<div class="bx-side__author"><div class="art-author__avatar" style="width:46px;height:46px;font-size:1rem;">LG</div><div><div style="font-weight:700;color:#fff;font-size:.92rem;">' + authorName + '</div><div style="color:#FF5500;font-size:.78rem;">Fondateur &amp; CEO, Pirabel Labs</div></div></div>' +
-      '<div class="bx-side__cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;font-size:.98rem;">Un projet digital&nbsp;?</div><div style="color:rgba(229,226,225,0.6);font-size:.82rem;margin:.3rem 0 0;">Audit gratuit, réponse sous 24&nbsp;h.</div><a href="/contact">Demander un audit</a></div>' +
+      '<div class="bx-side__author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="bx-side__name">' + authorName + '</div><div class="bx-side__role">Fondateur &amp; CEO, Pirabel Labs</div></div></div>' +
+      '<div class="bx-side__cta glass glass--tint"><b>Un projet digital&nbsp;?</b><p>Audit gratuit, réponse sous 24&nbsp;h.</p><a class="btn btn--primary btn--sm" href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents
     const related = await Article.find({ status: 'publie', _id: { $ne: a._id }, category: a.category }).sort({ views: -1, publishedAt: -1 }).limit(3).lean();
@@ -3687,33 +3981,35 @@ app.get('/blog/:slug', async (req, res) => {
       const extra = await Article.find({ status: 'publie', _id: { $nin: have } }).sort({ publishedAt: -1 }).limit(3 - related.length).lean();
       related.push(...extra);
     }
-    const relCard = r => '<a class="bx-card" href="/blog/' + escapeHtml(r.slug) + '"><div class="bx-card__img">' + (r.featuredImage ? '<img src="' + escapeHtml(r.featuredImage) + '" alt="' + escapeHtml(r.imageAlt || r.title) + '" loading="lazy">' : coverSvg(r.title, r.category)) + '</div><div class="bx-card__b"><span class="bx-cat">' + escapeHtml(r.category || 'Marketing') + '</span><h2>' + escapeHtml(r.title) + '</h2></div></a>';
-    const relatedHtml = related.length ? '<section class="bx-related"><h2>Articles similaires</h2><div class="bx-related__grid">' + related.map(relCard).join('') + '</div></section>' : '';
-    const body = '<main class="bx-wrap"><div class="bx-layout"><article class="bx-article">' +
-      (a.status !== 'publie' ? '<div style="background:#fbbf24;color:#190800;padding:.6rem 1rem;border-radius:8px;margin-bottom:1.2rem;font-weight:700;">⚠ APERÇU — brouillon non publié (visible uniquement par vous, admin connecté)</div>' : '') +
-      '<a class="bx-back" href="/blog"><span class="material-symbols-outlined">arrow_back</span> Retour au blog</a>' +
-      '<span class="bx-cat">' + catLabel + '</span>' +
-      '<h1>' + escapeHtml(a.title) + '</h1>' +
-      '<div class="bx-meta">Par ' + authorName + ' &middot; ' + fmtFr(a.publishedAt || a.createdAt) + (a.readTime ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">schedule</span>' + a.readTime + ' min de lecture</span>' : '') + ((a.views || 0) >= 100 ? ' &middot; <span class="bx-views"><span class="material-symbols-outlined">visibility</span>' + fmtViews(a.views) + ' vues</span>' : '') + '</div>' +
+    const relCard = r => '<a class="bx-card glass glass--flat spot" href="/blog/' + escapeHtml(r.slug) + '"><div class="bx-card__img">' + (r.featuredImage ? '<img src="' + escapeHtml(r.featuredImage) + '" alt="' + escapeHtml(r.imageAlt || r.title) + '" loading="lazy" decoding="async">' : coverSvg(r.title, r.category)) + '</div><div class="bx-card__b"><span class="bx-cat">' + escapeHtml(r.category || 'Marketing') + '</span><h3>' + frt(r.title) + '</h3></div></a>';
+    const relatedHtml = related.length ? '<section class="bx-related" aria-labelledby="relTitle"><h2 id="relTitle">Articles similaires</h2><div class="bx-related__grid">' + related.map(relCard).join('') + '</div></section>' : '';
+    const meta = '<div class="bx-meta"><span>Par <strong>' + authorName + '</strong></span>' +
+      '<span class="bx-views">' + ic('calendar', 15) + fmtFr(a.publishedAt || a.createdAt) + '</span>' +
+      (a.readTime ? '<span class="bx-views">' + ic('clock', 15) + escapeHtml(a.readTime) + '&nbsp;min de lecture</span>' : '') +
+      ((a.views || 0) >= 100 ? '<span class="bx-views">' + ic('trending', 15) + fmtViews(a.views) + '&nbsp;vues</span>' : '') + '</div>';
+    const body = '<div class="px-wrap">' + bc.html + '<div class="bx-layout"><article class="bx-article">' +
+      (a.status !== 'publie' ? '<div class="bx-preview" role="status"><b>Aperçu</b> Brouillon non publié, visible uniquement par vous (administrateur connecté).</div>' : '') +
+      '<header class="bx-head"><span class="bx-cat">' + catLabel + '</span>' +
+      '<h1>' + frt(a.title) + '</h1>' + meta + '</header>' +
       cover +
-      '<div class="bx-content">' + contentHtml + '</div>' +
+      '<div class="bx-content">' + themeContent(contentHtml) + '</div>' +
       authorCard +
-      '<div class="bx-cta"><div style="font-family:Space Grotesk,sans-serif;font-weight:800;font-size:1.35rem;color:#fff;">Un projet en tête ?</div>' +
-      '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit — parlez-en directement au fondateur.</p>' +
-      '<div class="bx-cta__btns"><a href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="bx-cta__g" href="/realisations">Voir nos réalisations <span class="material-symbols-outlined">arrow_outward</span></a></div></div>' +
+      '<div class="bx-cta glass glass--tint spot"><p class="bx-cta__t">Un projet en tête&nbsp;?</p>' +
+      '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit : parlez-en directement au fondateur.</p>' +
+      '<div class="bx-cta__btns"><a class="btn btn--primary" href="/contact#rdv">Discutons de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a><a class="btn btn--glass" href="/realisations">Voir nos réalisations ' + ic('arrow-up-right', 18) + '</a></div></div>' +
       relatedHtml +
-      '<section class="bx-comments"><h2 id="cmTitle">Commentaires</h2>' +
-      '<div id="cmList" class="bx-cmlist"><p style="color:rgba(229,226,225,0.45);">Chargement…</p></div>' +
-      '<form id="cmForm" class="bx-cmform"><h3>Laisser un commentaire</h3>' +
-      '<p class="bx-cmnote">Votre commentaire sera publié après modération. L\'email n\'est jamais affiché.</p>' +
-      '<input name="author" placeholder="Votre nom *" required maxlength="80">' +
-      '<input name="email" type="email" placeholder="Email (non publié, optionnel)" maxlength="200">' +
-      '<textarea name="content" rows="4" placeholder="Votre commentaire *" required maxlength="3000"></textarea>' +
-      '<input name="cm_check_hp" tabindex="-1" autocomplete="off" readonly aria-hidden="true" class="bx-hp" style="display:none;">' +
-      '<div id="cmMsg" class="bx-cmmsg"></div>' +
-      '<button type="submit" class="bx-cmbtn">Publier mon commentaire</button></form></section>' +
-      '</article>' + side + '</div></main><script src="/js/comments.js" defer></script>';
-    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+      '<section class="bx-comments" aria-labelledby="cmTitle"><h2 id="cmTitle">Commentaires</h2>' +
+      '<div id="cmList" class="bx-cmlist" aria-live="polite"><p>Chargement…</p></div>' +
+      '<form id="cmForm" class="bx-cmform glass"><h3>Laisser un commentaire</h3>' +
+      '<p class="bx-cmnote">Votre commentaire sera publié après modération. L’adresse e-mail n’est jamais affichée.</p>' +
+      '<div class="px-grid2"><div class="px-field"><label for="cmAuthor">Votre nom <span aria-hidden="true">*</span></label><input id="cmAuthor" name="author" required maxlength="80" autocomplete="name"></div>' +
+      '<div class="px-field"><label for="cmEmail">E-mail <span class="px-opt">(facultatif, non publié)</span></label><input id="cmEmail" name="email" type="email" maxlength="200" autocomplete="email"></div></div>' +
+      '<div class="px-field"><label for="cmContent">Votre commentaire <span aria-hidden="true">*</span></label><textarea id="cmContent" name="content" rows="4" required maxlength="3000"></textarea></div>' +
+      '<input name="cm_check_hp" tabindex="-1" autocomplete="off" readonly aria-hidden="true" class="px-hp" style="display:none;">' +
+      '<div id="cmMsg" class="bx-cmmsg" role="status"></div>' +
+      '<button type="submit" class="btn btn--primary">Publier mon commentaire</button></form></section>' +
+      '</article>' + side + '</div></div><script src="/js/comments.js?v=' + ASSET_V + '" defer></script>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/blog' }));
   } catch (e) { console.error('[blog.slug]', e.message); res.status(500).send('Erreur'); }
 });
 
@@ -3805,7 +4101,7 @@ function casePlaceholder(c, i) {
     '<text x="48" y="300" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#ffffff" opacity="0.82">' + tag + '</text>' +
     '<text x="596" y="334" text-anchor="end" font-family="Space Grotesk,Arial,sans-serif" font-weight="700" font-size="16" fill="#FF5500">Pirabel Labs</text></svg>';
 }
-// Flèches pointillées décoratives réutilisables (utilisent .dot-arrow de global.css).
+// Flèches pointillées décoratives réutilisables (styles .dot-arrow dans la page de l’étude de cas).
 const DOT_VARIANTS = [
   ['M14 20 C 150 20 90 94 208 94', 'M194 80 L212 95 L192 104'],
   ['M10 62 C 60 22 110 100 160 62 C 196 34 216 78 234 60', 'M222 48 L236 60 L222 72'],
@@ -3820,6 +4116,29 @@ function pageArrow(i) {
     '<path class="df" d="' + v[0] + '" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 15" opacity="0.55"/>' +
     '<path d="' + v[1] + '" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>';
 }
+// === PUBLIC : réalisations publiées en JSON (orbite de la page d'accueil) ===
+// Lecture seule, champs publics uniquement, mis en cache au CDN 10 min.
+app.get('/api/realisations', async (req, res) => {
+  try {
+    const limit = Math.min(24, Math.max(1, parseInt(req.query.limit, 10) || 16));
+    const cs = await CaseStudy.find({ status: 'publie' })
+      .select('title slug sector location excerpt featuredImage imageAlt metric1Value metric1Label inProgress featured publishedAt')
+      .sort({ featured: -1, publishedAt: -1 }).limit(limit).lean();
+    res.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+    res.json({
+      items: cs.map(c => ({
+        title: c.title, slug: c.slug, sector: c.sector || '', location: c.location || '',
+        excerpt: String(c.excerpt || '').slice(0, 220),
+        image: c.featuredImage ? pubImg(c.featuredImage) : '', imageAlt: c.imageAlt || c.title,
+        metric: c.metric1Value ? (c.metric1Value + (c.metric1Label ? ' ' + c.metric1Label : '')) : '',
+        inProgress: !!c.inProgress,
+      })),
+    });
+  } catch (e) {
+    res.status(500).json({ items: [] });
+  }
+});
+
 app.get('/realisations', async (req, res) => {
   try {
     const cs = await CaseStudy.find({ status: 'publie' }).sort({ featured: -1, publishedAt: -1 }).limit(60).lean();
@@ -3827,13 +4146,13 @@ app.get('/realisations', async (req, res) => {
     const RZ_CATS = [
       ['web', 'Sites web', /site|vitrine|\bweb\b|wordpress|marque personnelle/i],
       ['ecommerce', 'E-commerce', /e-?commerce|\bcommerce\b|boutique|\bmode\b|lifestyle/i],
-      ['saas', 'SaaS & apps', /\bsaas\b|application|plateforme|logiciel/i],
+      ['saas', 'SaaS et applications', /\bsaas\b|application|plateforme|logiciel/i],
       ['ia', 'IA', /\bia\b|intelligence artificielle|\bai\b|vocal|\bvoix\b/i],
-      ['fintech', 'Fintech & Web3', /fintech|crypto|web3|blockchain/i],
-      ['marketing', 'Marketing & SEO', /marketing|\bseo\b|acquisition|publicit/i],
+      ['fintech', 'Fintech et Web3', /fintech|crypto|web3|blockchain/i],
+      ['marketing', 'Marketing et SEO', /marketing|\bseo\b|acquisition|publicit/i],
       ['graphisme', 'Graphisme', /graphisme|\bdesign\b|branding|identit[ée] visuelle|\blogo\b/i],
       ['automatisation', 'Automatisation', /automatisation|automation|workflow|no-?code/i],
-      ['rh', 'RH & recrutement', /ressources humaines|recrutement|talent|emploi/i],
+      ['rh', 'RH et recrutement', /ressources humaines|recrutement|talent|emploi/i],
       ['immobilier', 'Immobilier', /immobilier|proptech/i],
     ];
     const catsOf = (c) => RZ_CATS.filter(k => k[2].test(String(c.sector || '') + ' ' + String(c.title || ''))).map(k => k[0]);
@@ -3841,282 +4160,274 @@ app.get('/realisations', async (req, res) => {
     cs.forEach(c => catsOf(c).forEach(x => present.add(x)));
     const cards = cs.length ? cs.map((c, i) => {
       const img = c.featuredImage
-        ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy">'
+        ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" loading="lazy" decoding="async">'
         : casePlaceholder(c, i);
       const pill = (v, l) => v ? '<span class="rz-pill"><strong>' + escapeHtml(v) + '</strong>' + (l ? ' ' + escapeHtml(l) : '') + '</span>' : '';
       const metrics = (c.metric1Value || c.metric2Value) ? '<div class="rz-pills">' + pill(c.metric1Value, c.metric1Label) + pill(c.metric2Value, c.metric2Label) + '</div>' : '';
       const sub = escapeHtml([c.sector, c.location].filter(Boolean).join(' · '));
       const visit = c.confidential
-        ? '<span class="rz-priv"><span class="material-symbols-outlined">lock</span> Projet privé</span>'
+        ? '<span class="rz-priv">' + ic('lock', 14) + ' Projet privé</span>'
         : ((c.projectUrl && /^https?:\/\//i.test(c.projectUrl))
-          ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '');
-      const wip = c.inProgress ? '<span class="rz-wip"' + (c.featured ? ' style="top:2.9rem;"' : '') + '><span class="material-symbols-outlined">construction</span> En cours</span>' : '';
-      const star = c.featured ? '<span class="rz-star" title="En vedette" aria-label="En vedette"><span class="material-symbols-outlined">star</span></span>' : '';
-      return '<div class="rz-card' + (c.featured ? ' rz-card--feat' : '') + '" data-cats="' + catsOf(c).join(' ') + '" style="animation-delay:' + ((i % 9) * 70) + 'ms">' +
-        '<div class="rz-card__img">' + img + star + wip + visit + '<span class="rz-card__eye"><span class="material-symbols-outlined">arrow_outward</span></span></div>' +
+          ? '<a class="rz-visit" href="' + escapeHtml(c.projectUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site ' + ic('arrow-up-right', 14) + '</a>' : '');
+      const wip = c.inProgress ? '<span class="rz-wip' + (c.featured ? ' rz-wip--low' : '') + '">' + ic('clock', 13) + ' En cours</span>' : '';
+      const star = c.featured ? '<span class="rz-star" title="En vedette"><span class="sr-only">Projet en vedette</span>' + ic('star', 16) + '</span>' : '';
+      return '<div class="rz-card glass glass--flat spot' + (c.featured ? ' rz-card--feat' : '') + '" data-cats="' + catsOf(c).join(' ') + '" data-reveal>' +
+        '<div class="rz-card__img">' + img + star + wip + visit + '<span class="rz-card__eye" aria-hidden="true">' + ic('arrow-up-right', 18) + '</span></div>' +
         '<div class="rz-card__b">' + (sub ? '<span class="rz-cat">' + sub + '</span>' : '') +
-        '<h3><a class="rz-stretch" href="/realisations/' + escapeHtml(c.slug) + '">' + escapeHtml(c.title) + '</a></h3><p>' + escapeHtml(c.excerpt || '') + '</p>' + metrics +
-        '<span class="rz-more">Voir l\'étude de cas <span class="material-symbols-outlined">arrow_forward</span></span></div></div>';
-    }).join('') : '<div class="bx-empty">Études de cas à venir.</div>';
+        '<h3><a class="rz-stretch" href="/realisations/' + escapeHtml(c.slug) + '">' + frt(c.title) + '</a></h3><p>' + frt(c.excerpt || '') + '</p>' + metrics +
+        '<span class="rz-more link-arrow" aria-hidden="true">Voir l’étude de cas ' + ic('arrow-right', 16) + '</span></div></div>';
+    }).join('') : '<div class="px-note glass glass--flat" style="grid-column:1/-1">Études de cas à venir.</div>';
     const filterBar = present.size > 1
-      ? '<div class="rz-filters" id="rzFilters"><button class="rz-fbtn is-active" data-cat="all">Tous</button>' +
-        RZ_CATS.filter(k => present.has(k[0])).map(k => '<button class="rz-fbtn" data-cat="' + k[0] + '">' + escapeHtml(k[1]) + '</button>').join('') + '</div>'
+      ? '<div class="rz-filters" id="rzFilters" role="group" aria-label="Filtrer les projets"><button type="button" class="rz-fbtn is-active" data-cat="all" aria-pressed="true">Tous</button>' +
+        RZ_CATS.filter(k => present.has(k[0])).map(k => '<button type="button" class="rz-fbtn" data-cat="' + k[0] + '" aria-pressed="false">' + escapeHtml(k[1]) + '</button>').join('') + '</div>' +
+        '<p class="sr-only" id="rzCount" aria-live="polite"></p>'
       : '';
     const dotArrow = (mirror) => '<div class="rz-arrow' + (mirror ? ' rz-arrow--r' : '') + '" aria-hidden="true"><svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="rz-flow" d="M14 22 C 150 22 90 96 210 96" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 15" opacity="0.55"/><path d="M196 82 L214 97 L194 106" stroke="#FF5500" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>';
+    const bc = crumbs([{ name: 'Réalisations', path: '/realisations' }]);
 
     const head = '<title>Réalisations & études de cas — Pirabel Labs</title>' +
       '<meta name="description" content="Nos réalisations : sites web, boutiques en ligne, plateformes SaaS, applications IA et SEO — des produits livrés et en production, au Bénin, en Afrique et en Europe.">' +
       '<link rel="canonical" href="' + SITE() + '/realisations">' +
-      '<meta property="og:title" content="Réalisations & études de cas — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/realisations"><meta property="og:image" content="' + SITE() + '/img/og-blog.jpg">' +
+      '<meta property="og:title" content="Réalisations & études de cas — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/realisations"><meta property="og:image" content="' + SITE() + '/img/og-image.png?v=elan">' +
+      '<meta property="og:description" content="Sites web, boutiques en ligne, plateformes SaaS, applications IA et SEO : des produits livrés et en production.">' +
+      bc.ld +
       '<style>' +
-      'html{scroll-behavior:smooth;}#projets{scroll-margin-top:5rem;}' +
-      '.rz-wrap{max-width:78rem;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem) 4rem;}' +
-      '.rz-hero{text-align:center;max-width:52rem;margin:0 auto;padding:clamp(2.5rem,6vw,4.5rem) 0 2.6rem;}' +
-      '.rz-eyebrow{display:inline-flex;align-items:center;gap:.45rem;color:#FF5500;font-weight:700;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(255,85,0,.3);background:rgba(255,85,0,.07);padding:.42rem .95rem;border-radius:999px;margin-bottom:1.4rem;}' +
-      '.rz-hero h1{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.08;letter-spacing:-.03em;margin:0 0 1.1rem;color:#fff;}' +
-      '.rz-hero h1 em{font-style:normal;color:#FF5500;}' +
-      '.rz-lead{color:rgba(229,226,225,.72);font-size:clamp(1rem,2vw,1.18rem);line-height:1.65;max-width:44rem;margin:0 auto 1.9rem;}' +
-      '.rz-lead strong{color:#fff;font-weight:600;}' +
-      '.rz-ctas{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}' +
-      '.rz-btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;padding:.85rem 1.7rem;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .2s,background .2s,border-color .2s,color .2s;}' +
-      '.rz-btn .material-symbols-outlined{font-size:1.15rem;transition:transform .2s;}' +
-      '.rz-btn:hover .material-symbols-outlined{transform:translateX(4px);}' +
-      '.rz-btn--p{background:#FF5500;color:#190800;box-shadow:0 10px 32px rgba(255,85,0,.28);}' +
-      '.rz-btn--p:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,85,0,.45);}' +
-      '.rz-btn--g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.22);}' +
-      '.rz-btn--g:hover{border-color:#FF5500;color:#fff;}' +
-      '.rz-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem 2.6rem;margin:2.7rem auto 0;padding-top:2rem;border-top:1px solid rgba(229,226,225,.1);max-width:46rem;}' +
-      '.rz-stat b{display:block;font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:1.8rem;color:#fff;line-height:1;}' +
-      '.rz-stat span{color:rgba(229,226,225,.55);font-size:.82rem;}' +
-      '.rz-two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;margin:clamp(3rem,7vw,5.5rem) 0;}' +
-      '.rz-kick{color:#FF5500;font-weight:700;font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;}' +
-      '.rz-two__t h2{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:800;font-size:clamp(1.6rem,3.5vw,2.4rem);line-height:1.12;color:#fff;margin:.6rem 0 1rem;letter-spacing:-.02em;}' +
-      '.rz-two__t p{color:rgba(229,226,225,.68);font-size:1.02rem;line-height:1.7;margin:0 0 1rem;}' +
-      '.rz-deliver{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}' +
-      '.rz-deliver div{background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:14px;padding:1.1rem;transition:border-color .2s,transform .2s;}' +
-      '.rz-deliver div:hover{border-color:#FF5500;transform:translateY(-3px);}' +
-      '.rz-deliver .material-symbols-outlined{color:#FF5500;font-size:1.55rem;}' +
-      '.rz-deliver b{display:block;color:#fff;font-size:.98rem;margin:.4rem 0 .2rem;}' +
-      '.rz-deliver small{color:rgba(229,226,225,.55);font-size:.82rem;line-height:1.4;}' +
-      '.rz-head{text-align:center;max-width:42rem;margin:0 auto 2.4rem;}' +
-      '.rz-head h2{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:800;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .6rem;letter-spacing:-.025em;}' +
-      '.rz-head p{color:rgba(229,226,225,.6);font-size:1rem;line-height:1.6;margin:0;}' +
-      '.rz-filters{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:0 0 2rem;}' +
-      '.rz-fbtn{font-family:inherit;font-size:.82rem;font-weight:600;color:rgba(229,226,225,.72);background:#161616;border:1px solid rgba(229,226,225,.14);padding:.5rem 1.05rem;border-radius:999px;cursor:pointer;transition:.18s;}' +
-      '.rz-fbtn:hover{border-color:#FF5500;color:#fff;}' +
-      '.rz-fbtn.is-active{background:#FF5500;color:#190800;border-color:#FF5500;}' +
-      '.rz-arrow{display:flex;justify-content:center;margin:.6rem 0 -.4rem;pointer-events:none;}' +
+      '#projets{scroll-margin-top:96px;}' +
+      '.rz-hero h1 em{font-style:normal;}' +
+      '.rz-hero__lead strong{color:var(--text);font-weight:600;}' +
+      '.rz-two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px);align-items:center;margin:clamp(48px,7vw,96px) 0;}' +
+      '.rz-two__t h2{margin:14px 0 16px;font-size:clamp(1.65rem,1.1rem + 1.9vw,2.5rem);}' +
+      '.rz-two__t p{margin:0 0 14px;color:var(--text-2);font-size:1.03rem;line-height:1.7;}' +
+      '.rz-two__t .btn{margin-top:10px;}' +
+      '.rz-deliver{display:grid;grid-template-columns:1fr 1fr;gap:12px;}' +
+      '.rz-deliver>div{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:var(--r-md);transition:transform .5s var(--ease-out);}' +
+      '.rz-deliver>div:hover{transform:translateY(-3px);}' +
+      '.rz-deliver .card__icon{width:40px;height:40px;border-radius:12px;}' +
+      '.rz-deliver b{font-family:var(--font-ui);font-weight:600;font-size:.98rem;}' +
+      '.rz-deliver small{color:var(--text-2);font-size:.85rem;line-height:1.45;}' +
+      '.rz-head{max-width:680px;margin:0 auto 28px;text-align:center;}' +
+      '.rz-head .eyebrow{justify-content:center;}' +
+      '.rz-head h2{font-size:var(--fs-h2);}' +
+      '.rz-head p{margin-top:14px;color:var(--text-2);font-size:1.02rem;}' +
+      '.rz-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 30px;}' +
+      '.rz-fbtn{padding:9px 16px;border:0;border-radius:999px;font-family:var(--font-ui);font-size:.86rem;font-weight:500;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);transition:color var(--dur-fast),box-shadow var(--dur-fast),background-color var(--dur-fast);}' +
+      '.rz-fbtn:hover{color:var(--text);box-shadow:inset 0 0 0 1px rgba(255,140,80,.45);}' +
+      '.rz-fbtn.is-active{background:var(--accent);color:var(--on-accent);box-shadow:none;font-weight:600;}' +
+      '.rz-arrow{display:flex;justify-content:center;margin:8px 0 -6px;pointer-events:none;}' +
       '.rz-arrow svg{width:min(230px,55%);height:auto;overflow:visible;}' +
       '.rz-arrow--r svg{transform:scaleX(-1);}' +
       '.rz-arrow .rz-flow{animation:rzFlow 1.4s linear infinite;}' +
       '@keyframes rzFlow{to{stroke-dashoffset:-30.4;}}' +
-      '@media(max-width:560px){.rz-arrow{display:none;}}' +
-      '.rz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem;}' +
-      '.rz-card{position:relative;isolation:isolate;background:#151414;border:1px solid rgba(229,226,225,.1);border-radius:18px;overflow:hidden;text-decoration:none;color:#e5e2e1;display:flex;flex-direction:column;transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;opacity:0;transform:translateY(18px);animation:rzUp .55s forwards;}' +
-      '.rz-stretch{color:inherit;text-decoration:none;}' +
+      '.rz-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2vw,26px);}' +
+      '.rz-card{display:flex;flex-direction:column;overflow:hidden;border-radius:var(--r-lg);color:var(--text);}' +
+      '.motion-ok .rz-card[data-reveal].is-in{transition:opacity var(--dur-reveal) var(--ease-out),transform .5s var(--ease-out);}' +
+      '.rz-card.is-in:hover{transform:translateY(-6px);}' +
+      '.rz-card--feat{box-shadow:var(--glass-shadow),0 0 0 1px rgba(255,110,40,.45);}' +
+      '.rz-stretch{color:inherit;}' +
       '.rz-stretch::after{content:"";position:absolute;inset:0;z-index:1;}' +
-      '.rz-visit{position:absolute;left:.75rem;bottom:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,85,0,.96);color:#190800;font-weight:700;font-size:.78rem;padding:.42rem .8rem;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .2s,background .2s;}' +
-      '.rz-visit:hover{transform:translateY(-2px);background:#FF5500;}' +
-      '.rz-visit .material-symbols-outlined{font-size:.95rem;}' +
-      '.rz-wip{position:absolute;top:.75rem;left:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.28rem;background:rgba(251,191,36,.95);color:#1a1400;font-weight:700;font-size:.72rem;padding:.32rem .7rem .32rem .55rem;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.4);}' +
-      '.rz-wip .material-symbols-outlined{font-size:.9rem;}' +
-      '.rz-star{position:absolute;top:.75rem;left:.75rem;z-index:3;display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;background:#FF5500;color:#190800;border-radius:50%;box-shadow:0 6px 16px rgba(255,85,0,.45);}' +
-      '.rz-star .material-symbols-outlined{font-size:1.15rem;}' +
-      '.rz-card--feat{border-color:rgba(255,85,0,.45);box-shadow:0 0 0 1px rgba(255,85,0,.25),0 14px 40px rgba(0,0,0,.45);}' +
-      '.rz-card--feat:hover{border-color:#FF5500;}' +
-      '.rz-priv{position:absolute;left:.75rem;bottom:.75rem;z-index:3;display:inline-flex;align-items:center;gap:.35rem;background:rgba(14,14,14,.9);color:rgba(229,226,225,.75);border:1px solid rgba(229,226,225,.2);font-weight:600;font-size:.74rem;padding:.42rem .78rem;border-radius:999px;backdrop-filter:blur(4px);}' +
-      '.rz-priv .material-symbols-outlined{font-size:.9rem;}' +
-      '@keyframes rzUp{to{opacity:1;transform:translateY(0);}}' +
-      '.rz-card:hover{transform:translateY(-8px);border-color:rgba(255,85,0,.55);box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,85,0,.22);}' +
-      '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0e0e0e;}' +
-      '.rz-card__img img,.rz-card__img svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1);}' +
-      '.rz-card:hover .rz-card__img img,.rz-card:hover .rz-card__img svg{transform:scale(1.07);}' +
-      '.rz-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(21,20,20,.85),transparent 55%);pointer-events:none;}' +
-      '.rz-card__eye{position:absolute;top:.8rem;right:.8rem;z-index:2;width:2.2rem;height:2.2rem;border-radius:50%;background:#FF5500;color:#190800;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-6px);transition:.25s;}' +
-      '.rz-card:hover .rz-card__eye{opacity:1;transform:translateY(0);}' +
-      '.rz-card__eye .material-symbols-outlined{font-size:1.2rem;}' +
-      '.rz-card__b{padding:1.2rem 1.3rem 1.4rem;display:flex;flex-direction:column;flex:1;}' +
-      '.rz-cat{color:#FF5500;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;line-height:1.45;}' +
-      '.rz-card h3{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:1.18rem;line-height:1.25;color:#fff;margin:.5rem 0;}' +
-      '.rz-card p{color:rgba(229,226,225,.6);font-size:.9rem;line-height:1.55;margin:0 0 .95rem;flex:1;}' +
-      '.rz-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}' +
-      '.rz-pill{font-size:.75rem;color:rgba(229,226,225,.62);background:#0e0e0e;border:1px solid rgba(229,226,225,.1);border-radius:999px;padding:.35rem .7rem;}' +
-      '.rz-pill strong{color:#FF5500;font-weight:700;}' +
-      '.rz-more{display:inline-flex;align-items:center;gap:.35rem;color:#fff;font-weight:700;font-size:.85rem;margin-top:auto;}' +
-      '.rz-more .material-symbols-outlined{font-size:1.05rem;color:#FF5500;transition:transform .25s;}' +
-      '.rz-card:hover .rz-more .material-symbols-outlined{transform:translateX(5px);}' +
-      '.rz-steps{display:flex;flex-direction:column;gap:.9rem;}' +
-      '.rz-step{display:flex;gap:1rem;align-items:flex-start;background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:14px;padding:1.1rem 1.2rem;transition:border-color .2s,transform .2s;}' +
-      '.rz-step:hover{border-color:#FF5500;transform:translateX(4px);}' +
-      '.rz-step .n{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:1.35rem;color:#FF5500;line-height:1;min-width:2rem;}' +
-      '.rz-step .t{display:block;color:#fff;font-size:1rem;margin-bottom:.2rem;font-weight:700;}' +
-      '.rz-step small{color:rgba(229,226,225,.6);font-size:.88rem;line-height:1.5;}' +
-      '.rz-final{text-align:center;background:linear-gradient(135deg,rgba(255,85,0,.16),#151414);border:1px solid rgba(255,85,0,.3);border-radius:22px;padding:clamp(2.4rem,5vw,3.6rem);margin:clamp(3rem,6vw,5rem) 0 0;}' +
-      '.rz-final h2{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.6rem);color:#fff;margin:0 0 .8rem;letter-spacing:-.025em;}' +
-      '.rz-final p{color:rgba(229,226,225,.72);font-size:1.05rem;line-height:1.6;max-width:38rem;margin:0 auto 1.6rem;}' +
-      '@media(max-width:820px){.rz-two{grid-template-columns:1fr;}}' +
-      '@media(max-width:680px){.rz-grid{grid-template-columns:1fr;}}' +
-      '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.rz-stats{gap:1.2rem 1.8rem;}.rz-stat b{font-size:1.5rem;}}' +
-      '@media(prefers-reduced-motion:reduce){.rz-card{animation:none;opacity:1;transform:none;}.rz-arrow .rz-flow{animation:none;}html{scroll-behavior:auto;}}' +
+      '.rz-stretch:focus-visible{outline:none;}' +
+      '.rz-card:has(.rz-stretch:focus-visible){outline:2px solid var(--accent-2);outline-offset:3px;}' +
+      '.rz-card__img{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--shade);}' +
+      '.rz-card__img>img,.rz-card__img>svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform .7s var(--ease-out);}' +
+      '.rz-card:hover .rz-card__img>img,.rz-card:hover .rz-card__img>svg{transform:scale(1.05);}' +
+      '.rz-card__img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.34),transparent 45%);pointer-events:none;}' +
+      '.rz-visit,.rz-priv,.rz-wip{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:6px;border-radius:999px;font-family:var(--font-ui);font-weight:600;white-space:nowrap;}' +
+      '.rz-visit{left:12px;bottom:12px;padding:7px 13px;font-size:.8rem;color:var(--on-accent);background:var(--accent);box-shadow:0 8px 20px -8px rgba(255,85,0,.7);transition:transform var(--dur-base) var(--ease-out);}' +
+      '.rz-visit:hover{transform:translateY(-2px);}' +
+      '.rz-priv{left:12px;bottom:12px;z-index:2;padding:7px 12px;font-size:.76rem;color:var(--text);background:var(--bar-bg);box-shadow:inset 0 0 0 1px rgba(var(--ink),.14);}' +
+      '.rz-wip{top:12px;left:12px;z-index:2;padding:5px 11px 5px 9px;font-size:.74rem;color:#1a1200;background:#fbbf24;}' +
+      '.rz-wip--low{top:54px;}' +
+      '.rz-star{position:absolute;top:12px;left:12px;z-index:2;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;color:var(--on-accent);background:var(--accent);box-shadow:0 8px 20px -8px rgba(255,85,0,.8);}' +
+      '.rz-card__eye{position:absolute;top:12px;right:12px;z-index:2;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:var(--on-accent);background:var(--accent);opacity:0;transform:translateY(-6px);transition:opacity var(--dur-base),transform var(--dur-base) var(--ease-out);}' +
+      '.rz-card:hover .rz-card__eye{opacity:1;transform:none;}' +
+      '.rz-card__b{display:flex;flex-direction:column;flex:1;gap:8px;padding:20px 22px 22px;}' +
+      '.rz-cat{font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-3);line-height:1.45;}' +
+      '.rz-card h3{font-size:1.2rem;line-height:1.28;}' +
+      '.rz-card p{flex:1;color:var(--text-2);font-size:.93rem;line-height:1.6;}' +
+      '.rz-pills{display:flex;flex-wrap:wrap;gap:8px;}' +
+      '.rz-pill{padding:6px 11px;border-radius:999px;font-size:.78rem;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}' +
+      '.rz-pill strong{color:var(--accent-3);font-weight:700;}' +
+      '.rz-more{margin-top:6px;font-size:.9rem;}' +
+      '.rz-steps{display:flex;flex-direction:column;gap:12px;}' +
+      '.rz-step{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border-radius:var(--r-md);transition:transform .5s var(--ease-out);}' +
+      '.rz-step:hover{transform:translateX(4px);}' +
+      '.rz-step .n{min-width:2.2rem;font-family:var(--font-display);font-weight:800;font-size:1.5rem;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(255,120,60,.75);}' +
+      '.rz-step .t{display:block;margin-bottom:4px;font-family:var(--font-ui);font-weight:600;font-size:1.02rem;}' +
+      '.rz-step small{color:var(--text-2);font-size:.9rem;line-height:1.55;}' +
+      '.rz-final{position:relative;overflow:hidden;margin:clamp(48px,7vw,96px) 0 0;padding:clamp(40px,6vw,80px) clamp(22px,5vw,72px);border-radius:var(--r-xl);text-align:center;}' +
+      '.rz-final h2{max-width:18ch;margin:0 auto;font-size:var(--fs-h2);}' +
+      '.rz-final p{max-width:560px;margin:16px auto 28px;color:var(--text-2);font-size:var(--fs-lead);}' +
+      '@media(max-width:860px){.rz-two{grid-template-columns:1fr;}}' +
+      '@media(max-width:700px){.rz-grid{grid-template-columns:1fr;}}' +
+      '@media(max-width:560px){.rz-arrow{display:none;}}' +
+      '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.px-hero__ctas .btn{width:100%;}}' +
+      '@media(prefers-reduced-motion:reduce){.rz-arrow .rz-flow{animation:none;}}' +
       '</style>';
 
-    const body = '<main class="rz-wrap">' +
-      '<section class="rz-hero">' +
-        '<span class="rz-eyebrow"><span class="material-symbols-outlined" style="font-size:1rem;">workspace_premium</span> Portfolio · Études de cas</span>' +
-        '<h1>Des produits web qui <em>travaillent</em> vraiment</h1>' +
-        '<p class="rz-lead">Sites vitrines, boutiques en ligne, plateformes SaaS, applications métier, agents IA… Voici des projets <strong>livrés et en production</strong>, conçus sur mesure pour des clients au Bénin, en Afrique et en Europe.</p>' +
-        '<div class="rz-ctas"><a class="rz-btn rz-btn--p" href="/contact#rdv">Démarrer mon projet <span class="material-symbols-outlined">arrow_forward</span></a><a class="rz-btn rz-btn--g" href="#projets">Voir les projets</a></div>' +
-      '</section>' +
+    const body = '<div class="px-wrap">' +
+      '<header class="px-hero rz-hero">' +
+        '<p class="eyebrow">Portfolio · Études de cas</p>' +
+        '<h1>Des produits web qui <span class="grad">travaillent</span> vraiment</h1>' +
+        '<p class="px-hero__lead rz-hero__lead">Sites vitrines, boutiques en ligne, plateformes SaaS, applications métier, agents IA… Voici des projets <strong>livrés et en production</strong>, conçus sur mesure pour des clients au Bénin, en Afrique et en Europe.</p>' +
+        '<div class="px-hero__ctas"><a class="btn btn--primary btn--lg" href="/contact#rdv">Démarrer mon projet ' + ic('arrow-right', 18, 'icon--end') + '</a><a class="btn btn--glass btn--lg" href="#projets">Voir les projets</a></div>' +
+      '</header>' +
 
       dotArrow(false) +
 
-      '<section class="rz-two">' +
-        '<div class="rz-two__t"><span class="rz-kick">Notre savoir-faire</span>' +
-          '<h2>Un partenaire technique, du premier croquis à la mise en production</h2>' +
-          '<p>Nous ne livrons pas des maquettes : nous concevons, développons et déployons des produits complets, pensés pour convertir et pour durer. Chaque projet est optimisé pour la vitesse, le référencement et les usages locaux — Mobile Money, multidevise, multilingue.</p>' +
+      '<section class="rz-two" aria-labelledby="rzSavoir">' +
+        '<div class="rz-two__t"><p class="eyebrow">Notre savoir-faire</p>' +
+          '<h2 id="rzSavoir">Un partenaire technique, du premier croquis à la mise en production</h2>' +
+          '<p>Nous ne livrons pas des maquettes : nous concevons, développons et déployons des produits complets, pensés pour convertir et pour durer. Chaque projet est optimisé pour la vitesse, le référencement et les usages locaux (Mobile Money, multidevise, multilingue).</p>' +
           '<p>Une seule équipe, un seul interlocuteur, une exécution de bout en bout.</p></div>' +
-        '<div class="rz-deliver">' +
-          '<div><span class="material-symbols-outlined">language</span><b>Sites vitrines</b><small>Rapides, élégants, optimisés SEO.</small></div>' +
-          '<div><span class="material-symbols-outlined">shopping_bag</span><b>E-commerce</b><small>Boutiques avec paiement local.</small></div>' +
-          '<div><span class="material-symbols-outlined">dashboard</span><b>Plateformes SaaS</b><small>Produits web à abonnement.</small></div>' +
-          '<div><span class="material-symbols-outlined">smart_toy</span><b>IA & agents</b><small>Assistants et agents vocaux.</small></div>' +
-          '<div><span class="material-symbols-outlined">build</span><b>Applications métier</b><small>Outils de gestion sur mesure.</small></div>' +
-          '<div><span class="material-symbols-outlined">trending_up</span><b>SEO & acquisition</b><small>Référencement et conversion.</small></div>' +
+        '<div class="rz-deliver" data-stagger>' +
+          [['globe', 'Sites vitrines', 'Rapides, élégants, optimisés SEO.'],
+            ['cart', 'E-commerce', 'Boutiques avec paiement local.'],
+            ['layout', 'Plateformes SaaS', 'Produits web à abonnement.'],
+            ['bot', 'IA et agents', 'Assistants et agents vocaux.'],
+            ['briefcase', 'Applications métier', 'Outils de gestion sur mesure.'],
+            ['trending', 'SEO et acquisition', 'Référencement et conversion.']]
+            .map(d => '<div class="glass glass--flat" data-reveal><span class="card__icon">' + ic(d[0], 20) + '</span><b>' + d[1] + '</b><small>' + d[2] + '</small></div>').join('') +
         '</div>' +
       '</section>' +
 
-      '<section id="projets">' +
-        '<div class="rz-head"><h2>Études de cas</h2><p>Filtrez par type de projet, puis cliquez pour lire l\'étude complète — problématique, solution et stack technique.</p></div>' +
+      '<section id="projets" aria-labelledby="rzCases">' +
+        '<div class="rz-head"><p class="eyebrow">Portfolio</p><h2 id="rzCases">Études de cas</h2><p>Filtrez par type de projet, puis cliquez pour lire l’étude complète : problématique, solution et stack technique.</p></div>' +
         filterBar +
-        '<div class="rz-grid">' + cards + '</div>' +
+        '<div class="rz-grid" data-stagger>' + cards + '</div>' +
       '</section>' +
 
       dotArrow(true) +
 
-      '<section class="rz-two">' +
-        '<div class="rz-steps">' +
-          '<div class="rz-step"><span class="n">01</span><div><span class="t">Audit & cadrage</span><small>On comprend votre marché, vos objectifs et vos utilisateurs avant d\'écrire la moindre ligne de code.</small></div></div>' +
-          '<div class="rz-step"><span class="n">02</span><div><span class="t">Conception & design</span><small>Maquettes, parcours et identité : un produit clair, crédible et orienté conversion.</small></div></div>' +
-          '<div class="rz-step"><span class="n">03</span><div><span class="t">Développement</span><small>Un code moderne, rapide et évolutif, testé et pensé pour le référencement.</small></div></div>' +
-          '<div class="rz-step"><span class="n">04</span><div><span class="t">Lancement & suivi</span><small>Mise en ligne, mesure des résultats et accompagnement dans la durée.</small></div></div>' +
+      '<section class="rz-two" aria-labelledby="rzMethode">' +
+        '<div class="rz-steps" data-stagger>' +
+          '<div class="rz-step glass glass--flat" data-reveal><span class="n">01</span><div><span class="t">Audit et cadrage</span><small>On comprend votre marché, vos objectifs et vos utilisateurs avant d’écrire la moindre ligne de code.</small></div></div>' +
+          '<div class="rz-step glass glass--flat" data-reveal><span class="n">02</span><div><span class="t">Conception et design</span><small>Maquettes, parcours et identité : un produit clair, crédible et orienté conversion.</small></div></div>' +
+          '<div class="rz-step glass glass--flat" data-reveal><span class="n">03</span><div><span class="t">Développement</span><small>Un code moderne, rapide et évolutif, testé et pensé pour le référencement.</small></div></div>' +
+          '<div class="rz-step glass glass--flat" data-reveal><span class="n">04</span><div><span class="t">Lancement et suivi</span><small>Mise en ligne, mesure des résultats et accompagnement dans la durée.</small></div></div>' +
         '</div>' +
-        '<div class="rz-two__t"><span class="rz-kick">Notre méthode</span>' +
-          '<h2>Une exécution carrée, à chaque étape</h2>' +
-          '<p>De l\'idée au produit en ligne, nous suivons un processus éprouvé qui limite les mauvaises surprises et maximise l\'impact. Vous savez toujours où en est votre projet.</p>' +
-          '<a class="rz-btn rz-btn--g" href="/contact#rdv">Discuter de votre projet <span class="material-symbols-outlined">arrow_forward</span></a></div>' +
+        '<div class="rz-two__t"><p class="eyebrow">Notre méthode</p>' +
+          '<h2 id="rzMethode">Une exécution carrée, à chaque étape</h2>' +
+          '<p>De l’idée au produit en ligne, nous suivons un processus éprouvé qui limite les mauvaises surprises et maximise l’impact. Vous savez toujours où en est votre projet.</p>' +
+          '<a class="btn btn--glass" href="/contact#rdv">Discuter de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a></div>' +
       '</section>' +
 
-      '<section class="rz-final">' +
-        '<h2>Votre projet mérite la même exigence</h2>' +
-        '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable — et comment.</p>' +
-        '<a class="rz-btn rz-btn--p" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' +
-      '</section>' +
-      '<script>(function(){var bar=document.getElementById("rzFilters");if(!bar)return;var cards=[].slice.call(document.querySelectorAll(".rz-grid .rz-card"));bar.addEventListener("click",function(e){var b=e.target.closest("[data-cat]");if(!b)return;bar.querySelectorAll("[data-cat]").forEach(function(x){x.classList.toggle("is-active",x===b);});var cat=b.getAttribute("data-cat");cards.forEach(function(c){var ok=cat==="all"||((" "+(c.getAttribute("data-cats")||"")+" ").indexOf(" "+cat+" ")>-1);c.style.display=ok?"":"none";});});})();</script>' +
-      '</main>';
-    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+      '<section class="rz-final glass glass--tint spot" data-reveal="scale" aria-labelledby="rzFinal"><div class="sf-cta__glow" aria-hidden="true"></div>' +
+        '<p class="eyebrow">Réponse sous 24&nbsp;h</p>' +
+        '<h2 id="rzFinal">Votre projet mérite la même exigence</h2>' +
+        '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable et comment.</p>' +
+        '<a class="btn btn--primary btn--lg" href="/contact#rdv">Discutons de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a>' +
+      '</section></div>' +
+      '<script>(function(){var bar=document.getElementById("rzFilters");if(!bar)return;var out=document.getElementById("rzCount");var cards=[].slice.call(document.querySelectorAll(".rz-grid .rz-card"));bar.addEventListener("click",function(e){var b=e.target.closest("[data-cat]");if(!b)return;bar.querySelectorAll("[data-cat]").forEach(function(x){var on=x===b;x.classList.toggle("is-active",on);x.setAttribute("aria-pressed",on?"true":"false");});var cat=b.getAttribute("data-cat"),n=0;cards.forEach(function(c){var ok=cat==="all"||((" "+(c.getAttribute("data-cats")||"")+" ").indexOf(" "+cat+" ")>-1);c.style.display=ok?"":"none";if(ok){n++;c.classList.add("is-in");}});if(out)out.textContent=n+(n>1?" projets affichés":" projet affiché");});})();</script>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/realisations', showCta: false }));
   } catch (e) { console.error('[realisations]', e.message); res.status(500).send('Erreur'); }
 });
 app.get('/realisations/:slug', async (req, res) => {
   try {
     const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
     const c = await CaseStudy.findOne({ slug, status: 'publie' }).lean();
-    if (!c) return res.status(404).send(blogShell('<title>Réalisation introuvable</title>', '<main class="bx-wrap"><div class="bx-empty"><h1 style="color:#fff;">404</h1><p>Cette réalisation n\'existe pas.</p><a class="bx-back" href="/realisations">&larr; Toutes les réalisations</a></div></main>'));
+    if (!c) return res.status(404).send(blogShell('<title>Réalisation introuvable — Pirabel Labs</title><meta name="robots" content="noindex">',
+      '<section class="px-empty"><p class="eyebrow">Erreur 404</p><h1 class="px-title">Réalisation introuvable</h1><p>Cette réalisation n’existe pas ou n’est plus en ligne.</p>' +
+      '<a class="btn btn--primary" href="/realisations">' + ic('arrow-left', 18) + ' Toutes les réalisations</a></section>', { current: '/realisations' }));
     const metaTitle = escapeHtml(c.seoTitle || c.title);
     const metaDesc = escapeHtml(c.metaDescription || c.excerpt || '');
     const url = SITE() + '/realisations/' + encodeURIComponent(c.slug);
-    const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + pubImg(c.featuredImage)) : (SITE() + '/img/og-blog.jpg');
+    const ogImg = c.featuredImage ? (c.featuredImage.startsWith('http') ? c.featuredImage : SITE() + pubImg(c.featuredImage)) : (SITE() + '/img/og-image.png?v=elan');
     const sub = [c.sector, c.location].filter(Boolean).join(' · ');
     // Détecte les technologies citées dans le contenu -> badges (dot coloré + nom).
+    // « var(--text) » : pastille neutre qui suit le thème (Next.js, Vercel…).
     const TECHS = [
-      ['Next.js', '#e5e2e1', /next\.?\s?js/i], ['React', '#61DAFB', /\breact\b/i], ['Astro', '#FF5D01', /\bastro\b/i],
+      ['Next.js', 'var(--text)', /next\.?\s?js/i], ['React', '#61DAFB', /\breact\b/i], ['Astro', '#FF5D01', /\bastro\b/i],
       ['Vue.js', '#42B883', /\bvue(\.js)?\b/i], ['Node.js', '#3C873A', /node\.?\s?js/i], ['TypeScript', '#3178C6', /typescript/i],
       ['JavaScript', '#F7DF1E', /javascript/i], ['HTML5', '#E34F26', /\bhtml5?\b/i], ['CSS3', '#1572B6', /\bcss3?\b/i],
       ['Tailwind CSS', '#38BDF8', /tailwind/i], ['WordPress', '#3aa0d6', /wordpress/i], ['Vite', '#646CFF', /\bvite\b/i],
       ['Supabase', '#3ECF8E', /supabase/i], ['PostgreSQL', '#6a8fe0', /postgre/i], ['MongoDB', '#47A248', /mongodb/i],
-      ['Vercel', '#e5e2e1', /\bvercel\b/i], ['Cloudflare', '#F38020', /cloudflare/i], ['Cloudinary', '#5a6ff0', /cloudinary/i],
+      ['Vercel', 'var(--text)', /\bvercel\b/i], ['Cloudflare', '#F38020', /cloudflare/i], ['Cloudinary', '#5a6ff0', /cloudinary/i],
       ['Stripe', '#8b83ff', /\bstripe\b/i], ['CinetPay', '#00A95C', /cinetpay/i], ['PayPal', '#3b7bbf', /paypal/i],
-      ['PWA', '#a06cf0', /\bpwa\b/i], ['Chart.js', '#FF6384', /chart\.?\s?js/i], ['Tesseract.js', '#e5e2e1', /tesseract/i],
-      ['jsPDF', '#e5e2e1', /jspdf/i], ['Web3', '#F16822', /\bweb3\b/i], ['Mobile Money', '#FFCC00', /mobile\s?money/i],
+      ['PWA', '#a06cf0', /\bpwa\b/i], ['Chart.js', '#FF6384', /chart\.?\s?js/i], ['Tesseract.js', 'var(--text)', /tesseract/i],
+      ['jsPDF', 'var(--text)', /jspdf/i], ['Web3', '#F16822', /\bweb3\b/i], ['Mobile Money', '#FFCC00', /mobile\s?money/i],
       ['Google Analytics', '#E37400', /google analytics|analytics\s?4|\bga4\b/i], ['IA / LLM', '#10A37F', /\bllm\b|intelligence artificielle|mod[èe]les? de langage|\bgpt\b|assistant ia|agent vocal/i],
       ['SEO', '#4CAF50', /\bseo\b|r[ée]f[ée]rencement/i],
     ];
     const hay = String(c.content || '') + ' ' + String(c.sector || '');
     const foundTechs = TECHS.filter(t => t[2].test(hay)).slice(0, 14);
-    const techSection = foundTechs.length ? '<section class="cd-tech"><div class="cd-tech__h">Technologies utilisées</div><div class="cd-badges">' +
-      foundTechs.map(t => '<span class="cd-badge"><i style="background:' + t[1] + '"></i>' + escapeHtml(t[0]) + '</span>').join('') + '</div></section>' : '';
+    const techSection = foundTechs.length ? '<section class="cd-tech glass glass--flat" aria-labelledby="cdTech"><h2 class="cd-tech__h" id="cdTech">Technologies utilisées</h2><ul class="cd-badges">' +
+      foundTechs.map(t => '<li class="cd-badge"><i style="background:' + t[1] + '"></i>' + escapeHtml(t[0]) + '</li>').join('') + '</ul></section>' : '';
 
     const cdStyle = '<style>' +
-      '.cd-wrap{max-width:66rem;margin:0 auto;padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,4vw,3rem) 4rem;}' +
-      '.cd-back{display:inline-flex;align-items:center;gap:.4rem;color:rgba(229,226,225,.6);text-decoration:none;font-size:.9rem;margin-bottom:1.6rem;transition:color .2s;}' +
-      '.cd-back:hover{color:#FF5500;}.cd-back .material-symbols-outlined{font-size:1.1rem;}' +
-      '.cd-head{max-width:52rem;margin:0 auto 2rem;text-align:center;}' +
-      '.cd-tags{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:center;margin-bottom:1rem;}' +
-      '.cd-cat{display:inline-block;color:#FF5500;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;}' +
-      '.cd-wip{display:inline-flex;align-items:center;gap:.35rem;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:.32rem .75rem;border-radius:999px;}' +
-      '.cd-wip .material-symbols-outlined{font-size:.95rem;}' +
-      '.cd-priv{display:inline-flex;align-items:center;gap:.35rem;background:rgba(229,226,225,.08);color:rgba(229,226,225,.72);border:1px solid rgba(229,226,225,.2);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:.32rem .75rem;border-radius:999px;}' +
-      '.cd-priv .material-symbols-outlined{font-size:.95rem;}' +
-      '.cd-head h1{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.2vw,2.25rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 1rem;}' +
-      '.cd-lead{color:rgba(229,226,225,.72);font-size:clamp(1.02rem,2vw,1.2rem);line-height:1.6;margin:0;}' +
-      '.cd-hero{width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(229,226,225,.1);margin:0 0 2.2rem;background:#0e0e0e;box-shadow:0 30px 70px rgba(0,0,0,.45);}' +
-      '.cd-hero img,.cd-hero svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}' +
-      '.cd-hero--photo{aspect-ratio:auto;display:flex;justify-content:center;align-items:flex-start;}' +
-      '.cd-hero--photo img{width:auto;height:auto;max-width:100%;max-height:80vh;object-fit:contain;object-position:top center;}' +
-      '.cd-metrics{display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 1.8rem;}' +
-      '.cd-metric{flex:1;min-width:13rem;background:linear-gradient(135deg,rgba(255,85,0,.12),rgba(255,85,0,.02));border:1px solid rgba(255,85,0,.28);border-radius:16px;padding:1.4rem 1.6rem;}' +
-      '.cd-metric b{display:block;font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:2.1rem;color:#FF5500;line-height:1;}' +
-      '.cd-metric span{display:block;color:rgba(229,226,225,.72);font-size:.9rem;margin-top:.45rem;line-height:1.45;}' +
-      '.cd-tech{background:#141313;border:1px solid rgba(229,226,225,.1);border-radius:16px;padding:1.4rem 1.5rem;margin:0 0 2.6rem;}' +
-      '.cd-tech__h{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:rgba(229,226,225,.55);margin:0 0 .95rem;}' +
-      '.cd-badges{display:flex;flex-wrap:wrap;gap:.6rem;}' +
-      '.cd-badge{display:inline-flex;align-items:center;gap:.5rem;background:#0e0e0e;border:1px solid rgba(229,226,225,.14);border-radius:10px;padding:.5rem .85rem;font-size:.86rem;font-weight:600;color:#fff;transition:border-color .2s,transform .2s;}' +
-      '.cd-badge:hover{border-color:#FF5500;transform:translateY(-2px);}' +
-      '.cd-badge i{width:.7rem;height:.7rem;border-radius:50%;flex-shrink:0;}' +
-      '.cd-body{max-width:52rem;margin:0 auto;}' +
-      '.cd-body .cs-intro{font-size:1.22rem;line-height:1.7;color:#fff;font-weight:500;border-left:3px solid #FF5500;padding-left:1.25rem;margin:0 0 2.6rem;}' +
-      '.cd-body h2{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:1.5rem;color:#fff;margin:2.8rem 0 1.1rem;display:flex;align-items:center;gap:.65rem;line-height:1.2;}' +
-      '.cd-body h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;flex-shrink:0;}' +
-      '.cd-body p{color:rgba(229,226,225,.84);line-height:1.8;margin:0 0 1.1rem;font-size:1.05rem;}' +
-      '.cd-body ul{list-style:none;padding:0;margin:.6rem 0 1.3rem;display:grid;gap:.7rem;}' +
-      '.cd-body .cs-stack{grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));}' +
-      '.cd-body li{position:relative;padding:.95rem 1.15rem .95rem 2.6rem;background:#161515;border:1px solid rgba(229,226,225,.1);border-radius:12px;line-height:1.55;color:rgba(229,226,225,.85);}' +
-      '.cd-body li::before{content:"\\2713";position:absolute;left:.95rem;top:.9rem;color:#FF5500;font-weight:800;}' +
-      '.cd-body li strong{color:#fff;font-weight:700;}.cd-body a{color:#FF5500;}' +
-      '.cd-cta{text-align:center;background:linear-gradient(135deg,rgba(255,85,0,.16),#151414);border:1px solid rgba(255,85,0,.3);border-radius:22px;padding:clamp(2.2rem,5vw,3.2rem);margin:3.4rem auto 0;max-width:52rem;}' +
-      '.cd-cta h2{font-family:"Montserrat","Montserrat Fallback",sans-serif;font-weight:900;font-size:clamp(1.5rem,3.5vw,2.2rem);color:#fff;margin:0 0 .7rem;}' +
-      '.cd-cta p{color:rgba(229,226,225,.72);font-size:1.02rem;line-height:1.6;margin:0 auto 1.5rem;max-width:34rem;}' +
-      '.cd-btn{display:inline-flex;align-items:center;gap:.5rem;background:#FF5500;color:#190800;font-weight:700;font-size:.98rem;padding:.9rem 1.9rem;border-radius:999px;text-decoration:none;box-shadow:0 10px 32px rgba(255,85,0,.28);transition:transform .15s,box-shadow .2s;}' +
-      '.cd-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,85,0,.45);}.cd-btn .material-symbols-outlined{font-size:1.15rem;}' +
-      '.cd-btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}' +
-      '.cd-btn--g{background:transparent;color:#e5e2e1;border:1px solid rgba(229,226,225,.25);box-shadow:none;}' +
-      '.cd-btn--g:hover{border-color:#FF5500;color:#fff;box-shadow:none;}' +
-      '.cd-eyebrow{display:inline-block;color:#FF5500;font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.9rem;border:1px solid rgba(255,85,0,.3);background:rgba(255,85,0,.06);padding:.35rem .85rem;border-radius:999px;}' +
-      '.cd-gwrap{max-width:60rem;margin:3.2rem auto 0;}' +
-      '.cd-gwrap>h2{font-family:"Space Grotesk","Space Grotesk Fallback",sans-serif;font-size:1.5rem;color:#fff;margin:0 0 .4rem;display:flex;align-items:center;gap:.65rem;line-height:1.2;}' +
-      '.cd-gwrap>h2::before{content:"";width:.5rem;height:1.35rem;background:#FF5500;border-radius:3px;}' +
-      '.cd-gwrap>p{color:rgba(229,226,225,.6);font-size:.95rem;margin:0 0 1.4rem;}' +
-      '.cd-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,21rem),1fr));gap:1rem;}' +
-      '.cd-shot{display:block;border-radius:14px;overflow:hidden;border:1px solid rgba(229,226,225,.12);background:#0e0e0e;cursor:zoom-in;box-shadow:0 12px 30px rgba(0,0,0,.35);transition:transform .25s,border-color .25s;}' +
-      '.cd-shot:hover{transform:translateY(-4px);border-color:#FF5500;box-shadow:0 18px 40px rgba(0,0,0,.5);}' +
-      '.cd-shot img{display:block;width:100%;height:auto;}' +
-      '.cd-lb{position:fixed;inset:0;background:rgba(0,0,0,.93);display:none;align-items:center;justify-content:center;z-index:9999;padding:clamp(1rem,4vw,3rem);cursor:zoom-out;}' +
+      '.cd-head{max-width:860px;margin:0 auto clamp(28px,4vw,40px);text-align:center;}' +
+      '.cd-head .eyebrow{justify-content:center;margin-bottom:14px;}' +
+      '.cd-tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:18px;}' +
+      '.cd-cat{font-family:var(--font-ui);font-size:.76rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-3);}' +
+      '.cd-wip,.cd-priv{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}' +
+      '.cd-wip{color:var(--warning);background:rgba(251,191,36,.12);box-shadow:inset 0 0 0 1px rgba(251,191,36,.42);}' +
+      '.cd-priv{color:var(--text-2);background:rgba(var(--ink),.06);box-shadow:inset 0 0 0 1px rgba(var(--ink),.16);}' +
+      '.cd-head h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.2rem + 2.4vw,3rem);line-height:1.08;letter-spacing:-.03em;}' +
+      '.cd-lead{max-width:680px;margin:18px auto 0;color:var(--text-2);font-size:var(--fs-lead);line-height:1.6;}' +
+      '.cd-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px;}' +
+      '.cd-hero{max-width:1100px;margin:0 auto clamp(28px,4vw,44px);padding:6px;border-radius:var(--r-xl);}' +
+      '.cd-hero__in{aspect-ratio:16/9;overflow:hidden;border-radius:calc(var(--r-xl) - 6px);background:var(--shade);}' +
+      '.cd-hero__in>img,.cd-hero__in>svg{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}' +
+      '.cd-hero--photo .cd-hero__in{aspect-ratio:auto;display:flex;justify-content:center;align-items:flex-start;}' +
+      '.cd-hero--photo .cd-hero__in img{width:auto;height:auto;max-width:100%;max-height:80vh;object-fit:contain;}' +
+      '.cd-metrics{display:flex;flex-wrap:wrap;gap:14px;max-width:1100px;margin:0 auto 18px;}' +
+      '.cd-metric{flex:1;min-width:13rem;padding:22px 24px;border-radius:var(--r-lg);}' +
+      '.cd-metric b{display:block;font-family:var(--font-display);font-weight:800;font-size:2.2rem;line-height:1;color:var(--accent-2);}' +
+      '.cd-metric span{display:block;margin-top:8px;color:var(--text-2);font-size:.92rem;line-height:1.45;}' +
+      '.cd-tech{max-width:1100px;margin:0 auto clamp(36px,5vw,56px);padding:20px 22px;border-radius:var(--r-lg);}' +
+      '.cd-tech__h{margin:0 0 14px;font-family:var(--font-ui);font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);}' +
+      '.cd-badges{display:flex;flex-wrap:wrap;gap:8px;}' +
+      '.cd-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:12px;font-family:var(--font-ui);font-size:.86rem;font-weight:500;color:var(--text);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.12);}' +
+      '.cd-badge i{width:9px;height:9px;border-radius:50%;flex-shrink:0;}' +
+      '.cd-body{max-width:72ch;margin:0 auto;font-size:1.06rem;line-height:1.8;color:rgba(var(--text-rgb),.86);}' +
+      '.cd-body .cs-intro{margin:0 0 2.4em;padding-left:20px;border-left:3px solid var(--accent);font-size:1.2rem;line-height:1.7;color:var(--text);font-weight:500;}' +
+      '.cd-body h2{display:flex;align-items:center;gap:12px;margin:2.4em 0 .9em;font-size:clamp(1.35rem,1.1rem + .8vw,1.65rem);line-height:1.2;color:var(--text);}' +
+      '.cd-body h2::before{content:"";flex-shrink:0;width:8px;height:1.3em;border-radius:3px;background:linear-gradient(180deg,#ff7a33,var(--accent));}' +
+      '.cd-body p{margin:0 0 1.1em;}' +
+      '.cd-body strong{color:var(--text);font-weight:650;}' +
+      '.cd-body a{color:var(--accent-3);text-decoration:underline;text-underline-offset:3px;}' +
+      '.cd-body ul{display:grid;gap:10px;margin:.6em 0 1.4em;padding:0;list-style:none;}' +
+      '.cd-body .cs-stack{grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));}' +
+      '.cd-body li{position:relative;padding:14px 16px 14px 44px;border-radius:var(--r-sm);line-height:1.55;color:var(--text-2);background:var(--flat-bg);box-shadow:inset 0 0 0 1px rgba(var(--ink),.1);}' +
+      '.cd-body li::before{content:"";position:absolute;left:16px;top:17px;width:16px;height:16px;border-radius:50%;background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.45);}' +
+      '.cd-body li::after{content:"";position:absolute;left:21px;top:21px;width:6px;height:4px;border-left:2px solid var(--accent-2);border-bottom:2px solid var(--accent-2);transform:rotate(-45deg);}' +
+      '.cd-body code{padding:.1em .4em;border-radius:6px;font-size:.9em;background:rgba(var(--ink),.08);}' +
+      '.dot-arrow{display:flex;justify-content:center;align-items:center;margin:1.2rem 0;pointer-events:none;overflow:hidden;}' +
+      '.dot-arrow svg{width:min(230px,52%);height:auto;overflow:visible;}' +
+      '.dot-arrow--r svg{transform:scaleX(-1);}' +
+      '.dot-arrow .df{animation:dotFlow 1.5s linear infinite;}' +
+      '@keyframes dotFlow{to{stroke-dashoffset:-30.4;}}' +
+      '.cd-gwrap{max-width:1100px;margin:clamp(40px,6vw,64px) auto 0;}' +
+      '.cd-gwrap>h2{display:flex;align-items:center;gap:12px;font-size:clamp(1.35rem,1.1rem + .8vw,1.65rem);}' +
+      '.cd-gwrap>h2::before{content:"";width:8px;height:1.3em;border-radius:3px;background:linear-gradient(180deg,#ff7a33,var(--accent));}' +
+      '.cd-gwrap>p{margin:8px 0 20px;color:var(--text-2);font-size:.95rem;}' +
+      '.cd-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,21rem),1fr));gap:14px;}' +
+      '.cd-shot{display:block;padding:5px;border-radius:var(--r-md);cursor:zoom-in;transition:transform .5s var(--ease-out);}' +
+      '.cd-shot:hover{transform:translateY(-4px);}' +
+      '.cd-shot img{display:block;width:100%;height:auto;border-radius:calc(var(--r-md) - 5px);}' +
+      '.cd-lb{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px);background:rgba(8,8,8,.9);cursor:zoom-out;}' +
       '.cd-lb.is-open{display:flex;}' +
-      '.cd-lb img{max-width:100%;max-height:92vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);}' +
-      '.cd-lb__x{position:absolute;top:1rem;right:1.3rem;color:#fff;font-size:2.2rem;background:none;border:none;cursor:pointer;line-height:1;}' +
-      '@media(max-width:560px){.cd-btns .cd-btn{width:100%;justify-content:center;box-sizing:border-box;}}' +
-      '@media(max-width:600px){.cd-body p{font-size:1rem;}.cd-body h2{font-size:1.28rem;}.cd-metric b{font-size:1.8rem;}}' +
+      '.cd-lb img{max-width:100%;max-height:92vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6);}' +
+      '.cd-lb__x{position:absolute;top:14px;right:16px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;color:#fff;background:rgba(255,255,255,.12);font-size:1.8rem;line-height:1;}' +
+      '.cd-cta{position:relative;overflow:hidden;max-width:1100px;margin:clamp(44px,6vw,72px) auto 0;padding:clamp(36px,5vw,64px) clamp(22px,5vw,64px);border-radius:var(--r-xl);text-align:center;}' +
+      '.cd-cta h2{font-size:var(--fs-h2);}' +
+      '.cd-cta p{max-width:560px;margin:14px auto 0;color:var(--text-2);font-size:var(--fs-lead);}' +
+      '@media(max-width:560px){.cd-btns .btn{width:100%;}}' +
+      '@media(max-width:600px){.cd-body{font-size:1rem;}.cd-metric b{font-size:1.85rem;}.dot-arrow{display:none;}}' +
+      '@media(prefers-reduced-motion:reduce){.dot-arrow .df{animation:none;}}' +
       '</style>';
+    const bc = crumbs([{ name: 'Réalisations', path: '/realisations' }, { name: c.title, path: '/realisations/' + encodeURIComponent(c.slug) }]);
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
-      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' + cdStyle;
+      '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '"><meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '"><meta name="twitter:card" content="summary_large_image">' +
+      bc.ld + cdStyle;
     const visitUrl = (!c.confidential && c.projectUrl && /^https?:\/\//i.test(c.projectUrl)) ? c.projectUrl : '';
-    const visitBtn = visitUrl ? '<a class="cd-btn" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
-    const visitBtnG = visitUrl ? '<a class="cd-btn cd-btn--g" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site <span class="material-symbols-outlined">open_in_new</span></a>' : '';
-    const heroInner = c.featuredImage ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '">' : casePlaceholder(c, 0);
-    const mb = (v, l) => v ? '<div class="cd-metric"><b>' + escapeHtml(v) + '</b><span>' + escapeHtml(l) + '</span></div>' : '';
+    const visitBtn = visitUrl ? '<a class="btn btn--primary" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site ' + ic('arrow-up-right', 18) + '</a>' : '';
+    const visitBtnG = visitUrl ? '<a class="btn btn--glass btn--lg" href="' + escapeHtml(visitUrl) + '" target="_blank" rel="noopener nofollow">Visiter le site ' + ic('arrow-up-right', 18) + '</a>' : '';
+    const heroInner = c.featuredImage ? '<img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || c.title) + '" fetchpriority="high" decoding="async">' : casePlaceholder(c, 0);
+    const mb = (v, l) => v ? '<div class="cd-metric glass glass--tint"><b>' + escapeHtml(v) + '</b><span>' + escapeHtml(l) + '</span></div>' : '';
     const metrics = (c.metric1Value || c.metric2Value) ? '<div class="cd-metrics">' + mb(c.metric1Value, c.metric1Label) + mb(c.metric2Value, c.metric2Label) + '</div>' : '';
     // Met en valeur la liste de la stack technique (grille de puces)
-    const contentHtml = String(c.content || '').replace(/(<h2>[^<]*[Ss]tack[^<]*<\/h2>\s*)<ul>/, '$1<ul class="cs-stack">');
+    const contentHtml = themeContent(String(c.content || '').replace(/(<h2>[^<]*[Ss]tack[^<]*<\/h2>\s*)<ul>/, '$1<ul class="cs-stack">'));
     // Flèches décoratives entre les sections du contenu (avant chaque <h2> sauf le premier)
     let _sec = 0;
     const contentArrowed = contentHtml.replace(/<h2/g, function () { _sec++; return _sec === 1 ? '<h2' : pageArrow(_sec) + '<h2'; });
@@ -4124,28 +4435,26 @@ app.get('/realisations/:slug', async (req, res) => {
     // Galerie de captures d'écran (études de cas SEO, aperçus)
     const gallery = Array.isArray(c.gallery) ? c.gallery.filter(Boolean) : [];
     const gallerySection = gallery.length
-      ? '<section class="cd-gwrap"><h2>Aperçus du projet</h2><p>Cliquez sur une image pour l\'agrandir.</p><div class="cd-gallery">' +
-        gallery.map((g, i) => '<a class="cd-shot" href="' + escapeHtml(pubImg(g)) + '" data-full="' + escapeHtml(pubImg(g)) + '"><img src="' + escapeHtml(pubImg(g)) + '" alt="Aperçu ' + (i + 1) + ' — ' + escapeHtml(c.title) + '" loading="lazy"></a>').join('') +
+      ? '<section class="cd-gwrap" aria-labelledby="cdGal"><h2 id="cdGal">Aperçus du projet</h2><p>Cliquez sur une image pour l’agrandir.</p><div class="cd-gallery">' +
+        gallery.map((g, i) => '<a class="cd-shot glass glass--flat" href="' + escapeHtml(pubImg(g)) + '" data-full="' + escapeHtml(pubImg(g)) + '"><img src="' + escapeHtml(pubImg(g)) + '" alt="Aperçu ' + (i + 1) + ' — ' + escapeHtml(c.title) + '" loading="lazy" decoding="async"></a>').join('') +
         '</div></section>'
       : '';
     const preCtaArrow = (hasBody || gallery.length) ? pageArrow(9) : '';
-    const lightbox = gallery.length ? '<script>(function(){var s=document.querySelectorAll(".cd-shot");if(!s.length)return;var lb=document.createElement("div");lb.className="cd-lb";lb.innerHTML=\'<button class="cd-lb__x" aria-label="Fermer">&times;</button><img alt="">\';document.body.appendChild(lb);var im=lb.querySelector("img");function op(u){im.src=u;lb.classList.add("is-open");}function cl(){lb.classList.remove("is-open");im.src="";}s.forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();op(a.getAttribute("data-full")||a.getAttribute("href"));});});lb.addEventListener("click",function(e){if(e.target===lb||e.target.classList.contains("cd-lb__x"))cl();});document.addEventListener("keydown",function(e){if(e.key==="Escape")cl();});})();</script>' : '';
-    const body = '<main class="cd-wrap">' +
-      '<a class="cd-back" href="/realisations"><span class="material-symbols-outlined">arrow_back</span> Toutes les réalisations</a>' +
+    const lightbox = gallery.length ? '<script>(function(){var s=document.querySelectorAll(".cd-shot");if(!s.length)return;var lb=document.createElement("div");lb.className="cd-lb";lb.setAttribute("role","dialog");lb.setAttribute("aria-modal","true");lb.setAttribute("aria-label","Aperçu agrandi");lb.innerHTML=\'<button type="button" class="cd-lb__x" aria-label="Fermer">&times;</button><img alt="">\';document.body.appendChild(lb);var im=lb.querySelector("img"),x=lb.querySelector(".cd-lb__x"),from=null;function op(a){from=a;im.src=a.getAttribute("data-full")||a.getAttribute("href");var t=a.querySelector("img");im.alt=t?t.alt:"";lb.classList.add("is-open");x.focus();}function cl(){if(!lb.classList.contains("is-open"))return;lb.classList.remove("is-open");im.src="";if(from)from.focus();}s.forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();op(a);});});lb.addEventListener("click",function(e){if(e.target===lb||e.target===x)cl();});document.addEventListener("keydown",function(e){if(e.key==="Escape")cl();});})();</script>' : '';
+    const body = '<div class="px-wrap">' + bc.html +
       '<header class="cd-head">' +
-      '<div class="cd-eyebrow">Étude de cas</div>' +
-      '<div class="cd-tags">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') + (c.inProgress ? '<span class="cd-wip"><span class="material-symbols-outlined">construction</span> En cours</span>' : '') + (c.confidential ? '<span class="cd-priv"><span class="material-symbols-outlined">lock</span> Projet confidentiel</span>' : '') + '</div>' +
-      '<h1>' + escapeHtml(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + escapeHtml(c.excerpt) + '</p>' : '') +
+      '<p class="eyebrow">Étude de cas</p>' +
+      '<div class="cd-tags">' + (sub ? '<span class="cd-cat">' + escapeHtml(sub) + '</span>' : '') + (c.inProgress ? '<span class="cd-wip">' + ic('clock', 14) + ' En cours</span>' : '') + (c.confidential ? '<span class="cd-priv">' + ic('lock', 14) + ' Projet confidentiel</span>' : '') + '</div>' +
+      '<h1>' + frt(c.title) + '</h1>' + (c.excerpt ? '<p class="cd-lead">' + frt(c.excerpt) + '</p>' : '') +
       (visitBtn ? '<div class="cd-btns">' + visitBtn + '</div>' : '') + '</header>' +
-      '<div class="cd-hero' + (c.featuredImage ? ' cd-hero--photo' : '') + '">' + heroInner + '</div>' +
+      '<figure class="cd-hero glass glass--flat' + (c.featuredImage ? ' cd-hero--photo' : '') + '"><div class="cd-hero__in">' + heroInner + '</div></figure>' +
       metrics + techSection +
       (hasBody ? '<div class="cd-body">' + contentArrowed + '</div>' : '') +
       gallerySection +
       preCtaArrow +
-      '<section class="cd-cta"><h2>Un projet similaire ?</h2><p>Parlez-nous de votre besoin : on étudie votre projet et on vous dit franchement ce qui est faisable — et comment.</p><div class="cd-btns"><a class="cd-btn" href="/contact#rdv">Discutons de votre projet <span class="material-symbols-outlined">arrow_forward</span></a>' + visitBtnG + '</div></section>' +
-      lightbox +
-      '</main>';
-    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+      '<section class="cd-cta glass glass--tint spot" data-reveal="scale" aria-labelledby="cdCta"><div class="sf-cta__glow" aria-hidden="true"></div><p class="eyebrow">Réponse sous 24&nbsp;h</p><h2 id="cdCta">Un projet similaire&nbsp;?</h2><p>Parlez-nous de votre besoin : on étudie votre projet et on vous dit franchement ce qui est faisable, et comment.</p><div class="cd-btns"><a class="btn btn--primary btn--lg" href="/contact#rdv">Discutons de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a>' + visitBtnG + '</div></section>' +
+      '</div>' + lightbox;
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/realisations', showCta: false }));
   } catch (e) { console.error('[realisations.slug]', e.message); res.status(500).send('Erreur'); }
 });
 
@@ -4205,20 +4514,39 @@ app.get('/temoignages', async (req, res) => {
     let reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
     if (!reviews.length) reviews = SEED_REVIEWS;
     const cards = reviews.length ? reviews.map(r => {
-      const stars = '&#9733;'.repeat(Math.max(1, Math.min(5, r.rating || 5))) + '<span style="color:rgba(229,226,225,0.2);">' + '&#9733;'.repeat(5 - Math.max(1, Math.min(5, r.rating || 5))) + '</span>';
+      const n = Math.max(1, Math.min(5, r.rating || 5));
+      const stars = '<div class="tm-stars" role="img" aria-label="Note : ' + n + ' sur 5">' + '&#9733;'.repeat(n) + '<span>' + '&#9733;'.repeat(5 - n) + '</span></div>';
       const sub = [r.clientRole, r.clientCompany, r.clientCity].filter(Boolean).join(' · ');
-      return '<div class="bx-card" style="cursor:default;"><div class="bx-card__b">' +
-        '<div style="color:#FF5500;font-size:1.15rem;margin-bottom:.6rem;">' + stars + '</div>' +
-        '<p style="color:#e5e2e1;font-style:italic;line-height:1.6;margin:0 0 1rem;">&laquo;&nbsp;' + escapeHtml(r.comment) + '&nbsp;&raquo;</p>' +
-        '<div style="font-family:Space Grotesk,sans-serif;font-weight:700;color:#fff;">' + escapeHtml(r.clientName) + '</div>' +
-        (sub || r.serviceUsed ? '<div style="color:rgba(229,226,225,0.5);font-size:.82rem;">' + escapeHtml(sub) + (r.serviceUsed ? (sub ? ' — ' : '') + escapeHtml(r.serviceUsed) : '') + '</div>' : '') +
-        '</div></div>';
-    }).join('') : '<div class="bx-empty">Les premiers avis clients arrivent bientôt.</div>';
+      const initials = String(r.clientName || '?').replace(/[^\p{L} ]/gu, ' ').trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
+      return '<figure class="tm-card glass glass--flat spot" data-reveal>' + stars +
+        '<blockquote class="tm-quote"><p>«&nbsp;' + frt(r.comment) + '&nbsp;»</p></blockquote>' +
+        '<figcaption class="tm-who"><span class="tm-avatar" aria-hidden="true">' + escapeHtml(initials) + '</span><span><span class="tm-name">' + escapeHtml(r.clientName) + '</span>' +
+        (sub || r.serviceUsed ? '<span class="tm-role">' + escapeHtml(sub) + (r.serviceUsed ? (sub ? ' — ' : '') + escapeHtml(r.serviceUsed) : '') + '</span>' : '') +
+        '</span></figcaption></figure>';
+    }).join('') : '<div class="px-note glass glass--flat" style="grid-column:1/-1">Les premiers avis clients arrivent bientôt.</div>';
+    const bc = crumbs([{ name: 'Avis clients', path: '/temoignages' }]);
     const head = '<title>Avis clients — Pirabel Labs</title>' +
       '<meta name="description" content="Ce que disent nos clients : avis vérifiés sur les services de Pirabel Labs.">' +
-      '<link rel="canonical" href="' + SITE() + '/temoignages"><meta property="og:title" content="Avis clients — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/temoignages">';
-    const body = '<main class="bx-wrap"><div class="bx-hero"><h1>Ils nous font confiance</h1><p>Les avis de nos clients sur leur collaboration avec Pirabel Labs.</p></div><div class="bx-grid">' + cards + '</div></main>';
-    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body));
+      '<link rel="canonical" href="' + SITE() + '/temoignages"><meta property="og:title" content="Avis clients — Pirabel Labs"><meta property="og:type" content="website"><meta property="og:url" content="' + SITE() + '/temoignages">' +
+      '<meta property="og:description" content="Ce que disent nos clients : avis vérifiés sur les services de Pirabel Labs.">' +
+      bc.ld +
+      '<style>' +
+      '.tm-grid{columns:3 20rem;column-gap:clamp(16px,1.8vw,24px);}' +
+      '.tm-card{display:flex;flex-direction:column;gap:16px;margin:0 0 clamp(16px,1.8vw,24px);padding:clamp(22px,2.4vw,30px);border-radius:var(--r-lg);break-inside:avoid;}' +
+      '.tm-stars{color:var(--accent-2);font-size:1.1rem;letter-spacing:2px;line-height:1;}' +
+      '.tm-stars span{color:rgba(var(--ink),.18);}' +
+      '.tm-quote{margin:0;}' +
+      '.tm-quote p{color:var(--text);font-size:1.02rem;line-height:1.65;}' +
+      '.tm-who{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(var(--ink),.08);}' +
+      '.tm-avatar{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:50%;font-family:var(--font-ui);font-weight:700;font-size:.9rem;color:var(--accent-2);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.35);}' +
+      '.tm-name{display:block;font-family:var(--font-ui);font-weight:600;}' +
+      '.tm-role{display:block;color:var(--text-3);font-size:.84rem;line-height:1.4;}' +
+      '</style>';
+    const body = '<div class="px-wrap"><header class="px-hero"><p class="eyebrow">Avis clients</p><h1>Ils nous font <span class="grad">confiance</span></h1>' +
+      '<p class="px-hero__lead">Les avis de nos clients sur leur collaboration avec Pirabel Labs.</p>' +
+      '<div class="px-hero__ctas"><a class="btn btn--primary" href="/contact">Démarrer mon projet ' + ic('arrow-right', 18, 'icon--end') + '</a><a class="btn btn--glass" href="/realisations">Voir nos réalisations</a></div></header>' +
+      '<div class="tm-grid">' + cards + '</div></div>';
+    res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/temoignages' }));
   } catch (e) { console.error('[temoignages]', e.message); res.status(500).send('Erreur'); }
 });
 
@@ -4247,7 +4575,7 @@ app.post('/api/blog/:slug/comments', commentLimiter, honeypotCheck('cm_check_hp'
     await Comment.create({ articleSlug: slug, articleTitle: article.title, author, email, content, status: 'en_attente', ipHash });
     await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com', '[Blog] Nouveau commentaire à modérer — ' + article.title,
       masterTemplate({ title: 'Nouveau commentaire', subtitle: article.title, body: '<p style="font-size:15px;color:rgba(229,226,225,0.8);"><strong>' + escapeHtml(author) + '</strong> a écrit&nbsp;:</p><div style="border-left:3px solid #FF5500;padding:12px 16px;background:#0e0e0e;color:rgba(229,226,225,0.7);">' + escapeHtml(content) + '</div>', cta: "Modérer dans l'admin", ctaUrl: SITE() + '/admin/dashboard' })).catch(() => {});
-    res.json({ success: true, message: 'Merci ! Votre commentaire sera publié après modération.' });
+    res.json({ success: true, message: 'Merci\u00a0! Votre commentaire sera publié après modération.' });
   } catch (e) { console.error('[comment]', e.message); res.status(500).json({ error: 'Erreur serveur.' }); }
 });
 
@@ -4281,7 +4609,7 @@ app.delete('/api/admin/comments/:id', auth, adminOnly, async (req, res) => {
 app.get('/sitemap.xml', async (req, res) => {
   try {
     const fs = require('fs');
-    const root = path.join(__dirname, '..');
+    const root = path.join(__dirname, '..', 'public');
     let pages = [];
     try { pages = require('../app/sitemap-pages.json'); } catch (e) {}
     if (!pages || !pages.length) {

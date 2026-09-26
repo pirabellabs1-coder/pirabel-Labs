@@ -1,0 +1,512 @@
+---
+/**
+ * Rendu natif des blocs extraits (src/lib/blocks/parse.ts), dans le langage visuel de
+ * l'accueil. H1 dans le hero (jamais animé), H2 par section, H3 pour les cartes.
+ */
+import Icon from '../ui/Icon.astro';
+import Split from '../ui/Split.astro';
+import LogoMark from '../ui/LogoMark.astro';
+import type { Block, Head } from '../../lib/blocks/parse';
+import '../../styles/blocks.css';
+
+interface Props { blocks: Block[] }
+const { blocks } = Astro.props;
+
+// Sur-titre par défaut selon le type de bloc (le contenu historique n'en avait pas).
+const EYEBROW: Record<string, string> = {
+  reasons: 'Pourquoi nous', services: 'Nos services', synergies: 'Aussi à voir', related: 'Aussi à voir', insights: 'À savoir',
+  expertises: 'Expertises', pillars: 'Méthode', tools: 'Outils', stats: 'En chiffres', promises: 'Engagements', features: 'En détail',
+  compare: 'Comparatif', detailed: 'Méthode', compact: 'En pratique', pricing: 'Tarifs', testimonials: 'Avis clients',
+  main: 'FAQ', secondary: 'Questions fréquentes', advantages: 'Nos atouts', links: 'Près de chez vous',
+};
+const eyebrowOf = (b: Block, h?: Head) => h?.eyebrow || EYEBROW[(b as { variant?: string }).variant ?? b.kind] || EYEBROW[b.kind] || '';
+const initials = (s = '') => s.replace(/[^\p{L}\s.-]/gu, '').split(/[\s.]+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+const isExt = (href = '') => /^https?:/.test(href) && !href.includes('pirabellabs.com');
+
+// Fond alterné sur les sections principales (pas sur le hero, le fil d'Ariane ni les bandeaux).
+const SKIP_ALT = new Set(['breadcrumb', 'hero', 'sticky', 'final', 'cta', 'anchors', 'legal']);
+let alt = false;
+const withAlt = blocks.map((b) => { if (SKIP_ALT.has(b.kind)) return { b, alt: false }; alt = !alt; return { b, alt }; });
+---
+{withAlt.map(({ b, alt }, bi) => {
+  const secCls = `b-sec${alt ? ' b-sec--alt' : ''}`;
+  const bid = (b as { id?: string }).id;
+
+  if (b.kind === 'breadcrumb') return (
+    <nav class="container b-crumbs" aria-label="Fil d’Ariane">
+      <ol>{b.items.map((it, i) => (
+        <li>{it.href && i < b.items.length - 1 ? <a href={it.href}>{it.label}</a> : <span aria-current="page">{it.label}</span>}</li>
+      ))}</ol>
+    </nav>
+  );
+
+  if (b.kind === 'hero') return (
+    <section class="b-hero" data-hero-scene aria-labelledby="page-title">
+      <div class="container b-hero__grid">
+        <div>
+          {b.eyebrow && <p class="chip b-hero__eyebrow"><Icon name={b.eyebrowIcon ?? 'pin'} size={16} />{b.eyebrow}</p>}
+          <h1 id="page-title" set:html={b.title} />
+          {b.tagline && <p class="b-hero__tagline">{b.tagline}</p>}
+          {b.lead && <p class="b-hero__lead" set:html={b.lead} />}
+          <div class="b-hero__actions">
+            {b.ctas.map((c, i) => (
+              <a href={c.href} class:list={['btn btn--lg', i === 0 ? 'btn--primary' : 'btn--glass']} data-magnetic={i === 0 ? '' : undefined}
+                target={isExt(c.href) ? '_blank' : undefined} rel={isExt(c.href) ? 'noopener' : undefined}>
+                {i > 0 && /wa\.me/.test(c.href) && <Icon name="whatsapp" size={18} />}
+                {c.label}
+                {i === 0 && <Icon name="arrow-right" size={18} class="icon--end" />}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div class="b-orb" aria-hidden="true">
+          <span class="b-orb__ring"></span><span class="b-orb__ring b-orb__ring--2"></span><span class="b-orb__glow"></span>
+          <div class="b-orb__icons">
+            {(b.icons.length ? b.icons : ['sparkles', 'rocket', 'trending']).map((ic, i) => (
+              <span class:list={['b-orb__bubble', i === 1 ? 'b-orb__bubble--main' : 'glass glass--blur']} data-depth={i === 1 ? '0.2' : '-0.3'}><Icon name={ic} size={i === 1 ? 40 : 24} /></span>
+            ))}
+          </div>
+          {b.caption && <span class="chip b-orb__caption"><Icon name="badge-check" size={15} />{b.caption}</span>}
+          {b.chips.slice(0, 3).map((c, i) => (
+            <span class={`b-orb__chip b-orb__chip--${i + 1} glass glass--blur glass--keep`} data-depth={String(0.4 - i * 0.3)}><Icon name={c.icon} size={16} />{c.text}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  const renderHead = (h: Head, center = false) => (h.title || h.lead) ? (
+    <div class:list={['b-head', { 'b-head--center': center }]}>
+      {eyebrowOf(b, h) && <p class="eyebrow">{eyebrowOf(b, h)}</p>}
+      {h.title && <h2 data-reveal="title"><Split><Fragment set:html={h.title} /></Split></h2>}
+      {h.lead && <p class="b-head__lead" set:html={h.lead} />}
+    </div>
+  ) : null;
+
+  if (b.kind === 'cards') {
+    const v = b.variant;
+    const short = b.items.every((it) => (it.text || '').replace(/<[^>]+>/g, '').length < 90);
+    if (v === 'related' || (v === 'synergies' && short)) return (
+      <section class={secCls} id={bid}><div class="container">
+        {renderHead(b.head)}
+        <ul class="b-grid b-grid--4" data-stagger>
+          {b.items.map((it) => (
+            <li data-reveal>
+              {it.href ? (
+                <a href={it.href} class="b-link glass glass--flat spot">
+                  <span class="b-ico"><Icon name={it.icon ?? 'arrow-up-right'} size={18} /></span>
+                  <span><b set:html={it.title} />{it.text && <small set:html={it.text} />}</span>
+                  <Icon name="arrow-up-right" size={16} class="b-link__arrow" />
+                </a>
+              ) : (
+                <div class="b-link glass glass--flat"><span class="b-ico"><Icon name={it.icon ?? 'sparkles'} size={18} /></span><span><b set:html={it.title} />{it.text && <small set:html={it.text} />}</span></div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div></section>
+    );
+    if (v === 'tools') return (
+      <section class={secCls} id={bid}><div class="container">
+        {renderHead(b.head)}
+        <ul class="b-tools" data-stagger>{b.items.map((it) => (
+          <li class="b-tool glass glass--flat" data-reveal><span class="b-ico"><Icon name={it.icon ?? 'sparkles'} size={18} /></span><span><b set:html={it.title} />{(it.tag || it.text) && <small set:html={it.tag || it.text} />}</span></li>
+        ))}</ul>
+      </div></section>
+    );
+    if (v === 'stats') return (
+      <section class={secCls} id={bid}><div class="container">
+        {renderHead(b.head, true)}
+        <ul class="b-grid b-grid--4" data-stagger>{b.items.map((it) => (
+          <li data-reveal><div class="b-stat glass glass--flat"><p class="b-stat__v">{it.stat || it.title}</p>{it.text && <p class="b-stat__l" set:html={it.text} />}</div></li>
+        ))}</ul>
+      </div></section>
+    );
+    const cols = v === 'promises' ? 'b-grid b-grid--2' : v === 'insights' || v === 'features' && b.items.length === 4 ? 'b-grid b-grid--4' : 'b-grid';
+    return (
+      <section class={secCls} id={bid}><div class="container">
+        {renderHead(b.head)}
+        <ul class={cols} data-stagger>
+          {b.items.map((it) => {
+            const inner = (
+              <>
+                {(it.icon || it.num) && (
+                  <div class="b-card__top">
+                    {it.icon && <span class="b-ico"><Icon name={it.icon} size={22} /></span>}
+                    {it.num && <span class="b-card__num">{it.num}</span>}
+                  </div>
+                )}
+                {it.tag && <span class="b-card__tag">{it.tag}</span>}
+                {it.stat && <p class="b-card__stat">{it.stat}</p>}
+                {it.title && <h3 set:html={it.title} />}
+                {it.text && <div class="b-card__text" set:html={it.text} />}
+                {it.features && (
+                  <ul class="b-list">{it.features.map((f) => <li><Icon name="check" size={16} />{f}</li>)}</ul>
+                )}
+                {it.href && <span class="b-card__more">{it.cta || 'Découvrir'} <Icon name="arrow-up-right" size={16} /></span>}
+              </>
+            );
+            return (
+              <li data-reveal>
+                {it.href
+                  ? <a href={it.href} class="b-card glass glass--flat spot">{inner}</a>
+                  : <div class="b-card glass glass--flat spot">{inner}</div>}
+              </li>
+            );
+          })}
+        </ul>
+      </div></section>
+    );
+  }
+
+  if (b.kind === 'compare') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <div class="b-compare glass glass--flat" data-reveal>
+        <table>
+          <thead><tr>{b.headers.map((h, i) => <th scope="col" class:list={{ 'is-featured': i === b.featured }}>{h}</th>)}</tr></thead>
+          <tbody>{b.rows.map((r) => <tr>{r.map((cell, i) => <td class:list={{ 'is-featured': i === b.featured }} set:html={cell} />)}</tr>)}</tbody>
+        </table>
+      </div>
+      <p class="b-scroll-hint">Faites glisser le tableau horizontalement pour tout voir.</p>
+    </div></section>
+  );
+
+  if (b.kind === 'steps' && b.variant === 'detailed') return (
+    <section class={secCls} id={bid}><div class="container b-steps-wrap">
+      {renderHead(b.head)}
+      <div class="b-steps" data-steps>
+        <span class="b-steps__rail" aria-hidden="true"><span class="b-steps__line" data-steps-line></span></span>
+        <ol class="b-steps__list">
+          {b.items.map((it, i) => (
+            <li class="b-step" data-step>
+              <span class="b-step__dot" aria-hidden="true">{it.num || String(i + 1).padStart(2, '0')}</span>
+              <div class="b-step__card glass glass--flat">
+                {it.tag && <span class="b-card__tag">{it.tag}</span>}
+                {it.title && <h3 set:html={it.title} />}
+                {it.text && <div set:html={it.text} />}
+                {it.meta && <p class="b-step__meta"><Icon name="clock" size={14} /> {it.meta}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div></section>
+  );
+
+  if (b.kind === 'steps') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <ol class="b-mini" data-stagger>
+        {b.items.map((it, i) => (
+          <li class="b-mini__item glass glass--flat" data-reveal>
+            <span class="b-mini__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            {it.title && <h3 set:html={it.title} />}
+            {it.text && <div set:html={it.text} />}
+          </li>
+        ))}
+      </ol>
+    </div></section>
+  );
+
+  if (b.kind === 'pricing') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head, true)}
+      <ul class="b-prices" data-stagger>
+        {b.items.map((it) => (
+          <li data-reveal>
+            <article class:list={['b-price glass spot', it.featured ? 'b-price--featured' : 'glass--flat']}>
+              {it.badge && <p class="b-price__badge">{it.badge}</p>}
+              {it.icon && <span class="b-ico"><Icon name={it.icon} size={22} /></span>}
+              {it.title && <h3 set:html={it.title} />}
+              {it.text && <p class="b-price__lead" set:html={it.text} />}
+              {it.price && <div class="b-price__amount" set:html={it.price} />}
+              {it.features && <ul class="b-list">{it.features.map((f) => <li><Icon name="check" size={16} />{f}</li>)}</ul>}
+              <a href={it.href || '/contact'} class:list={['btn', it.featured ? 'btn--primary' : 'btn--glass']}>{it.cta || 'Demander un devis'}</a>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div></section>
+  );
+
+  if (b.kind === 'testimonials') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <ul class="b-grid" data-stagger>
+        {b.items.map((it) => (
+          <li data-reveal>
+            <figure class="b-review glass glass--flat">
+              <p class="b-review__stars"><span class="sr-only">Note : 5 sur 5</span><span aria-hidden="true">★★★★★</span></p>
+              <blockquote set:html={`« ${it.text} »`} />
+              <figcaption><span class="b-review__av" aria-hidden="true">{initials(it.author)}</span><span><b>{it.author}</b>{it.role && <small>{it.role}</small>}</span></figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div></section>
+  );
+
+  if (b.kind === 'faq') {
+    const items = b.items.map((f, i) => (
+      <details class="faq__item glass glass--flat" name={`faq-${bi}`} open={b.variant === 'main' && i === 0}>
+        <summary><span>{f.q}</span><span class="faq__icon" aria-hidden="true"><Icon name="plus" size={18} /></span></summary>
+        <div class="faq__a" set:html={/<(p|ul|ol)[\s>]/.test(f.a) ? f.a : `<p>${f.a}</p>`} />
+      </details>
+    ));
+    if (b.variant === 'secondary') return (
+      <section class={secCls} id={bid}><div class="container">
+        {renderHead(b.head, true)}
+        <div class="b-faq__cols">{items}</div>
+      </div></section>
+    );
+    return (
+      <section class={secCls} id={b.id ?? (b.variant === 'main' ? 'faq' : undefined)}><div class="container b-faq">
+        {renderHead(b.head)}
+        <div class="b-faq__list">{items}</div>
+      </div></section>
+    );
+  }
+
+  if (b.kind === 'cta' && b.variant === 'inline') return (
+    <div class="container b-sec--tight">
+      <div class="b-inline glass glass--flat" data-reveal>
+        <div><b set:html={b.title} />{b.text && <span set:html={b.text} />}</div>
+        <div class="b-inline__actions">
+          {b.ctas.map((c, i) => (
+            <a href={c.href} class:list={['btn btn--sm', i === 0 ? 'btn--primary' : 'btn--glass']} target={isExt(c.href) ? '_blank' : undefined} rel={isExt(c.href) ? 'noopener' : undefined}>
+              {/wa\.me/.test(c.href) && <Icon name="whatsapp" size={16} />}{c.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  if (b.kind === 'cta' && b.variant === 'parent') return (
+    <section class="b-sec b-sec--tight"><div class="container">
+      <a href={b.ctas[0]?.href || '/services'} class="b-parent glass glass--tint spot" data-reveal>
+        <span class="b-ico"><Icon name={b.icon ?? 'layers'} size={22} /></span>
+        <span><h2 set:html={b.title} />{b.text && <p set:html={b.text} />}</span>
+        <Icon name="arrow-up-right" size={22} class="b-link__arrow" />
+      </a>
+    </div></section>
+  );
+
+  if (b.kind === 'cta') return (
+    <section class="b-sec b-sec--tight"><div class="container">
+      <div class="b-cta glass glass--tint spot" data-reveal="scale">
+        <span class="b-cta__glow" aria-hidden="true"></span>
+        <div>
+          <h2 set:html={b.title} />
+          {b.text && <p set:html={b.text} />}
+        </div>
+        <div class="b-cta__actions">
+          {b.ctas.map((c) => <a href={c.href} class="btn btn--primary btn--lg" data-magnetic>{c.label} <Icon name="arrow-right" size={18} class="icon--end" /></a>)}
+        </div>
+      </div>
+    </div></section>
+  );
+
+  if (b.kind === 'quote') return (
+    <section class={secCls} id={bid}><div class="container">
+      <figure class="b-quote glass glass--flat" data-reveal="scale">
+        <span class="b-quote__mark"><Icon name="quote" size={34} /></span>
+        <blockquote set:html={b.text} />
+        {b.author && <figcaption><b>{b.author}</b>{b.role && <small>{b.role}</small>}</figcaption>}
+      </figure>
+    </div></section>
+  );
+
+  if (b.kind === 'split') return (
+    <section class={secCls} id={bid}><div class:list={['container b-split', { 'b-split--rev': b.reverse }]}>
+      <div>
+        {b.eyebrow && <p class="eyebrow">{b.eyebrow}</p>}
+        <h2 data-reveal="title"><Split><Fragment set:html={b.title} /></Split></h2>
+        <div class="b-prose" set:html={b.html} />
+      </div>
+      {b.visual === 'brand' ? (
+        <div class="b-split__media b-vis b-vis--brand glass glass--flat" role="img" aria-label={b.image?.alt} data-reveal="scale">
+          <div class="b-vis__bar" aria-hidden="true"><i></i><i></i><i></i><span>{b.image?.alt}</span></div>
+          <div class="b-vis__stage" aria-hidden="true">
+            <span class="b-vis__halo"></span>
+            <span class="b-vis__mark"><LogoMark size={132} /></span>
+            {b.points.length > 0 ? (
+              <ul class="b-vis__points">{b.points.slice(0, 3).map((p, i) => <li class={`glass glass--flat b-vis__pt b-vis__pt--${i + 1}`}><Icon name="check" size={15} />{p}</li>)}</ul>
+            ) : (
+              <span class="b-vis__skel"><i></i><i></i></span>
+            )}
+          </div>
+        </div>
+      ) : b.visual === 'growth' ? (
+        <div class="b-split__media b-vis b-vis--growth glass glass--flat" role="img" aria-label={b.image?.alt} data-reveal="scale">
+          <div class="b-vis__bar" aria-hidden="true"><i></i><i></i><i></i><span>{b.image?.alt}</span></div>
+          <div class="b-vis__chart" aria-hidden="true">
+            <div class="b-vis__bars">{[0.34, 0.5, 0.66, 0.9].map((h, i) => <span style={`--h:${h};--i:${i}`}></span>)}</div>
+            <svg viewBox="0 0 400 200" preserveAspectRatio="none" class="b-vis__svg">
+              <path class="b-vis__area" d="M0 168 C 70 150, 120 128, 170 112 S 290 60, 400 22 L400 200 L0 200 Z" />
+              <path class="b-vis__line" pathLength="1" d="M0 168 C 70 150, 120 128, 170 112 S 290 60, 400 22" />
+            </svg>
+            <span class="b-vis__kpi glass glass--flat"><Icon name="trending" size={16} />Croissance mesurée</span>
+          </div>
+          {b.points.length > 0 && (
+            <ol class="b-vis__steps" aria-hidden="true">{b.points.slice(0, 4).map((p, i) => <li><b>{String(i + 1).padStart(2, '0')}</b><span>{p}</span></li>)}</ol>
+          )}
+        </div>
+      ) : b.image && (
+        <div class="b-split__media glass glass--flat" data-reveal="scale">
+          <img src={b.image.src} alt={b.image.alt} width="800" height="560" loading="lazy" decoding="async" />
+        </div>
+      )}
+    </div></section>
+  );
+
+  if (b.kind === 'prose') return (
+    <section class={secCls} id={b.id}><div class="container">
+      {(b.title || b.lead) && renderHead({ title: b.title, lead: b.lead })}
+      <div class="b-prose" set:html={b.html} data-reveal="fade" />
+    </div></section>
+  );
+
+  if (b.kind === 'links') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <ul class="b-links">
+        {b.links.map((l) => <li><a href={l.href} class="glass glass--flat">{l.label}<Icon name="arrow-right" size={16} /></a></li>)}
+      </ul>
+    </div></section>
+  );
+
+  if (b.kind === 'sticky') return (
+    <div class="b-sticky glass glass--strong glass--keep" data-sticky-cta>
+      <span class="b-sticky__txt" set:html={b.text} />
+      <a href={b.cta.href} class="btn btn--primary btn--sm">{b.cta.label}</a>
+    </div>
+  );
+
+  if (b.kind === 'profile') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <article class="b-profile glass glass--flat spot" data-reveal="scale">
+        <div class="b-profile__id">
+          <span class="b-profile__av" aria-hidden="true"><span class="b-profile__ring"></span>{initials(b.name)}</span>
+          <div>
+            <h3>{b.name}</h3>
+            <p class="b-profile__role">{b.role}</p>
+          </div>
+        </div>
+        <div class="b-profile__body">
+          <p class="b-profile__bio" set:html={b.bio} />
+          <ul class="b-profile__tags">{b.tags.map((t) => <li class="chip">{t}</li>)}</ul>
+          {b.facts.length > 0 && <ul class="b-profile__facts">{b.facts.map((f) => <li><Icon name={f.icon} size={18} /><span set:html={f.text} /></li>)}</ul>}
+        </div>
+      </article>
+    </div></section>
+  );
+
+  if (b.kind === 'zones') return (
+    <section class={secCls} id={bid}><div class="container b-split">
+      <div>
+        {renderHead(b.head)}
+        <div class="b-prose" set:html={b.html} data-reveal="fade" />
+      </div>
+      <div class="b-zones" data-stagger>
+        {b.zones.map((z) => (
+          <div class="b-zone glass glass--flat" data-reveal>
+            <p class="b-zone__title"><Icon name={z.icon} size={18} /><span set:html={z.title} /></p>
+            <ul>{z.items.map((it) => <li>{it}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </div></section>
+  );
+
+  if (b.kind === 'anchors') return (
+    <nav class="b-anchors" aria-label={b.label}>
+      <div class="container"><ul>
+        {b.links.map((l) => <li><a href={l.href}>{l.icon && <Icon name={l.icon} size={16} />}{l.label}</a></li>)}
+      </ul></div>
+    </nav>
+  );
+
+  if (b.kind === 'legal') return (
+    <section class="b-sec"><div class="container b-legal">
+      <nav class="b-legal__toc glass glass--flat" aria-label="Sommaire">
+        <p class="eyebrow">Sommaire</p>
+        <ol>{b.sections.map((x) => <li><a href={`#${x.id}`} set:html={x.title} /></li>)}</ol>
+        {b.updated && <p class="b-legal__upd"><Icon name="clock" size={14} /> Mise à jour : {b.updated}</p>}
+      </nav>
+      <div class="b-legal__body">
+        {b.sections.map((x) => (
+          <section id={x.id} class="b-legal__sec">
+            <h2 set:html={x.title} />
+            <div class="b-prose" set:html={x.html} />
+          </section>
+        ))}
+      </div>
+    </div></section>
+  );
+
+  if (b.kind === 'gantt') return (
+    <section class={secCls} id={bid}><div class="container">
+      {renderHead(b.head)}
+      <div class="b-gantt glass glass--flat" data-inview style={`--weeks:${b.weeks}`} tabindex="0" role="region" aria-label="Planning semaine par semaine (défilement horizontal)">
+        <div class="b-gantt__row b-gantt__row--head" aria-hidden="true">
+          <span class="b-gantt__label">Phase</span>
+          {Array.from({ length: b.weeks }, (_, i) => <span class="b-gantt__wk">S{i + 1}</span>)}
+        </div>
+        <ol class="b-gantt__rows">
+          {b.rows.map((r, i) => (
+            <li class="b-gantt__row">
+              <span class="b-gantt__label"><Icon name={r.icon} size={16} />{r.label}</span>
+              <span class="b-gantt__bar" style={`grid-column:${r.from + 1} / ${r.to + 2};--i:${i}`}>
+                <span aria-hidden="true">{r.from === r.to ? `S${r.from}` : `S${r.from}–S${r.to}`}</span>
+                <span class="sr-only">{r.from === r.to ? `semaine ${r.from}` : `semaines ${r.from} à ${r.to}`}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <p class="b-scroll-hint">Faites glisser le planning horizontalement pour tout voir.</p>
+      {b.note && <p class="b-gantt__note" set:html={b.note} />}
+    </div></section>
+  );
+
+  if (b.kind === 'raw') return <div class="container lg" set:html={b.html} />;
+  return null;
+})}
+
+<script>
+  // Barre d'action mobile : visible après le hero, masquée près du pied de page.
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const hero = document.querySelector('.b-hero');
+  const foot = document.querySelector('.site-footer');
+  if (bar && hero && 'IntersectionObserver' in window) {
+    let pastHero = false, nearFoot = false;
+    const sync = () => {
+      const on = pastHero && !nearFoot;
+      bar.classList.toggle('is-visible', on);
+      document.documentElement.classList.toggle('b-sticky-on', on);
+    };
+    new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; sync(); }).observe(hero);
+    if (foot) new IntersectionObserver(([e]) => { nearFoot = e.isIntersecting; sync(); }).observe(foot);
+  }
+</script>
+
+<script>
+  // Barre d'ancres : met en évidence la section en cours de lecture (aria-current) et la garde visible.
+  const bar = document.querySelector<HTMLElement>('.b-anchors');
+  if (bar && 'IntersectionObserver' in window) {
+    const links = [...bar.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
+    const setCurrent = (a?: HTMLAnchorElement) => {
+      links.forEach((l) => (l === a ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
+      if (a) { const ul = a.closest('ul'); if (ul) ul.scrollTo({ left: a.offsetLeft - ul.clientWidth / 2 + a.clientWidth / 2, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+    };
+    const io = new IntersectionObserver((entries) => {
+      const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (vis) setCurrent(byId.get(vis.target.id));
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    byId.forEach((_a, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+  }
+</script>

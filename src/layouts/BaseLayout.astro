@@ -1,0 +1,164 @@
+---
+/**
+ * Gabarit commun des pages migrées vers Astro.
+ * - <head> SEO complet (canonical, hreflang, Open Graph, Twitter, JSON-LD)
+ * - Polices auto-hébergées (latin) préchargées + replis à métriques calées (anti-CLS)
+ * - Consentement Google Analytics (mode par défaut « refusé »), traduction FR/EN,
+ *   suivi maison /js/track.js et assistant /js/chat-widget.js conservés.
+ * - Moteur d'animation (src/scripts/motion.ts) en module différé.
+ */
+import '../styles/global.css';
+import '../styles/chrome.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { SITE } from '../data/site';
+import { spriteSvg } from '../data/icons';
+import { assetVersion } from '../lib/asset-version';
+import montserratUrl from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import groteskUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Chemin canonique, ex. "/contact" (l'accueil = "/") */
+  path: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  jsonLd?: object[];
+  /** JSON-LD déjà sérialisé (pages historiques) */
+  jsonLdRaw?: string[];
+  /** Fil d'Ariane JSON-LD automatique (désactivé si la page fournit le sien) */
+  breadcrumb?: boolean;
+  robots?: string;
+  noindex?: boolean;
+  /** Balises de vérification (Bing, Facebook…) — utiles sur l'accueil uniquement */
+  verification?: boolean;
+  showFooterCta?: boolean;
+  footerCta?: { title?: string; text?: string; href?: string; label?: string };
+}
+
+const {
+  title, description, path, ogTitle, ogDescription,
+  ogImage = SITE.ogImage, ogType = 'website', jsonLd = [], jsonLdRaw = [], breadcrumb = true, robots, noindex = false,
+  verification = false, showFooterCta = true, footerCta,
+} = Astro.props;
+
+const canonical = SITE.url + (path === '/' ? '/' : path);
+
+const breadcrumbLd = path === '/' || !breadcrumb ? null : {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: title.split(' | ')[0].split(' — ')[0], item: canonical },
+  ],
+};
+const ldBlocks = [...jsonLd, ...(breadcrumbLd ? [breadcrumbLd] : [])];
+// Échappe « < » pour qu'aucune chaîne ne puisse fermer la balise <script>.
+const ld = (o: object) => JSON.stringify(o).replace(/</g, '\\u003c');
+
+const fontFaces = `
+@font-face{font-family:'Montserrat Variable';font-style:normal;font-display:optional;font-weight:100 900;src:url(${montserratUrl}) format('woff2-variations');}
+@font-face{font-family:'Space Grotesk Variable';font-style:normal;font-display:optional;font-weight:300 700;src:url(${groteskUrl}) format('woff2-variations');}
+@font-face{font-family:'Inter Variable';font-style:normal;font-display:optional;font-weight:100 900;src:url(${interUrl}) format('woff2-variations');}
+@font-face{font-family:'Space Grotesk Fallback';src:local('Arial');size-adjust:103.4%;ascent-override:95%;descent-override:29%;line-gap-override:0%;}
+@font-face{font-family:'Inter Fallback';src:local('Arial');size-adjust:107.4%;ascent-override:90.2%;descent-override:22.5%;line-gap-override:0%;}
+@font-face{font-family:'Montserrat Fallback';src:local('Arial');size-adjust:110.5%;ascent-override:88%;descent-override:22.8%;line-gap-override:0%;}`;
+---
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0E0E0E" />
+  <!-- Thème appliqué avant le premier affichage (pas de flash) : choix mémorisé, sinon préférence du système. -->
+  <script is:inline>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pl_theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==="light"?"#F6F3EF":"#0E0E0E"})();</script>
+  <!-- Animations : complètes par défaut ; si le système demande moins de mouvement, mode « doux »
+       (fondus sans déplacement), sauf si le visiteur a choisi « toutes les animations » (pl_motion).
+       Filet de sécurité : si le moteur ne démarre pas en 3,5 s, tout le contenu s'affiche. -->
+  <script is:inline>(function(){var d=document.documentElement;try{var r=matchMedia("(prefers-reduced-motion: reduce)").matches,f=null;try{f=localStorage.getItem("pl_motion")}catch(e){}if(r){d.classList.add(f==="full"?"motion-full":"motion-soft")}if("IntersectionObserver" in window){d.classList.add("motion-ok");setTimeout(function(){if(!window.__motionReady){d.classList.remove("motion-ok")}},3500)}}catch(e){}})();</script>
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="fr" href={canonical} />
+  <link rel="alternate" hreflang="x-default" href={canonical} />
+  <meta name="robots" content={robots || (noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1')} />
+  <link rel="icon" type="image/png" href={SITE.logo} />
+  <link rel="apple-touch-icon" href={SITE.logo} />
+
+  <meta property="og:type" content={ogType} />
+  <meta property="og:title" content={ogTitle ?? title} />
+  <meta property="og:description" content={ogDescription ?? description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:site_name" content="Pirabel Labs" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={ogTitle ?? title} />
+  <meta name="twitter:description" content={ogDescription ?? description} />
+  <meta name="twitter:image" content={ogImage} />
+  {verification && (
+    <>
+      <meta name="msvalidate.01" content="EB6FCB92F9E0D2E3264DE2FFBE2EEA94" />
+      <meta name="facebook-domain-verification" content="8khwczmgr9xzjdc63ie31tl93gf0wx" />
+      <meta name="linkmania" content="7b901f759a1701c" />
+    </>
+  )}
+
+  <link rel="preload" as="font" type="font/woff2" href={montserratUrl} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={groteskUrl} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
+  <style is:inline set:html={fontFaces}></style>
+
+  <!-- Google Analytics 4 : consentement refusé par défaut (RGPD), activé après accord.
+       La bibliothèque est chargée au premier geste ou 5 s après le chargement (les événements sont mis en file d'ici là). -->
+  <script is:inline>(function(){var done=false,ev=["scroll","pointerdown","keydown","touchstart"];function f(){if(done)return;done=true;ev.forEach(function(e){removeEventListener(e,f)});var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id=G-H0ZTTRYBQ7";document.head.appendChild(s)}ev.forEach(function(e){addEventListener(e,f,{once:true,passive:true})});addEventListener("load",function(){setTimeout(f,5000)})})();</script>
+  <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("consent","default",{analytics_storage:"denied",ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",wait_for_update:500});try{if(localStorage.getItem("pl_consent")==="granted"){gtag("consent","update",{analytics_storage:"granted"});}}catch(e){}gtag("js",new Date());gtag("config","G-H0ZTTRYBQ7");</script>
+
+  {ldBlocks.map((o) => <script type="application/ld+json" set:html={ld(o)} />)}
+  {jsonLdRaw.map((raw) => <script type="application/ld+json" set:html={raw.replace(/<\/script/gi, '<\\/script')} />)}
+  <slot name="head" />
+</head>
+<body>
+  <Fragment set:html={spriteSvg()} />
+  <a class="skip-link" href="#main">Aller au contenu</a>
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient__grid"></div>
+    <div class="ambient__orb ambient__orb--a" data-parallax="0.25"></div>
+    <div class="ambient__orb ambient__orb--b"></div>
+    <div class="ambient__grain"></div>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <Header current={path} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer showCta={showFooterCta} cta={footerCta} />
+
+  <!-- Consentement cookies -->
+  <div id="pl-ck" class="pl-ck glass glass--strong glass--keep" hidden role="dialog" aria-label="Gestion des cookies">
+    <p>Nous utilisons des cookies de mesure d’audience (Google Analytics) pour améliorer le site. <a href="/politique-confidentialite">En savoir plus</a></p>
+    <div class="pl-ck__btns">
+      <button type="button" id="plcA" class="btn btn--primary btn--sm">Accepter</button>
+      <button type="button" id="plcR" class="btn btn--glass btn--sm">Refuser</button>
+    </div>
+  </div>
+  <script is:inline>(function(){var c=null;try{c=localStorage.getItem("pl_consent")}catch(e){}if(c)return;var b=document.getElementById("pl-ck");if(!b)return;b.hidden=false;function set(v){try{localStorage.setItem("pl_consent",v)}catch(e){}if(v==="granted"&&window.gtag){gtag("consent","update",{analytics_storage:"granted"});}b.hidden=true;}document.getElementById("plcA").addEventListener("click",function(){set("granted")});document.getElementById("plcR").addEventListener("click",function(){set("denied")});})();</script>
+
+  <!-- Traduction FR/EN dans la page (widget Google, chargé seulement si l'anglais est demandé) -->
+  <div id="google_translate_element" style="display:none"></div>
+  <script is:inline>function pirabelSetLang(l){var hn=location.hostname,reg=hn.split(".").slice(-2).join(".");function del(){var e="; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";["","; domain="+hn,"; domain=."+hn,"; domain="+reg,"; domain=."+reg].forEach(function(d){document.cookie="googtrans="+e+d;});}del();if(l!=="fr"){document.cookie="googtrans=/fr/"+l+"; path=/";document.cookie="googtrans=/fr/"+l+"; path=/; domain=."+reg;}location.reload();}function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:"fr",includedLanguages:"en,fr",autoDisplay:false},"google_translate_element");}(function(){var en=document.cookie.indexOf("/fr/en")>-1;if(en){var s=document.createElement("style");s.id="gtflash";s.textContent="body{opacity:0!important}";(document.head||document.documentElement).appendChild(s);var rv=function(){var x=document.getElementById("gtflash");if(x)x.remove();};var iv=setInterval(function(){if(/translated/.test(document.documentElement.className)){clearInterval(iv);setTimeout(rv,120);}},80);setTimeout(function(){clearInterval(iv);rv();},2500);var g=document.createElement("script");g.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";g.defer=true;document.head.appendChild(g);}document.querySelectorAll(".lang-switch button").forEach(function(b){b.setAttribute("aria-pressed",((b.getAttribute("data-l")==="en")===en)?"true":"false");b.addEventListener("click",function(){pirabelSetLang(b.getAttribute("data-l"))});});})();</script>
+
+  <slot name="end" />
+  <script is:inline defer src={`/js/site-chrome.js?v=${assetVersion('public/js/site-chrome.js')}`}></script>
+  <script is:inline defer src="/js/track.js"></script>
+  <script is:inline defer src={`/js/chat-widget.js?v=${assetVersion('public/js/chat-widget.js')}`}></script>
+  <script>
+    import '../scripts/motion.ts';
+  </script>
+</body>
+</html>

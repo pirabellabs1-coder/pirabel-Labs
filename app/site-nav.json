@@ -1,0 +1,528 @@
+{
+  "SITE": {
+    "name": "Pirabel Labs",
+    "url": "https://www.pirabellabs.com",
+    "email": "contact@pirabellabs.com",
+    "phoneBJ": "+229 01 68 88 45 34",
+    "phoneBJHref": "tel:+2290168884534",
+    "phoneIntlHref": "tel:+16139273067",
+    "whatsapp": "https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%27ai%20un%20projet",
+    "facebook": "https://www.facebook.com/pirabellabs",
+    "instagram": "https://www.instagram.com/pirabellabs",
+    "linkedin": "https://www.linkedin.com/company/pirabel-labs",
+    "city": "Abomey-Calavi, Bénin",
+    "ogImage": "https://www.pirabellabs.com/img/og-image.png?v=elan",
+    "logo": "/img/logo.png?v=elan2",
+    "gaId": "G-H0ZTTRYBQ7"
+  },
+  "NAV": [
+    {
+      "label": "Expertises",
+      "id": "expertises",
+      "layout": "wide",
+      "groups": [
+        {
+          "title": "Web et visibilité",
+          "links": [
+            {
+              "href": "/creation-site-web",
+              "label": "Création de site web",
+              "desc": "Sites, e-commerce, applications",
+              "icon": "code"
+            },
+            {
+              "href": "/seo",
+              "label": "SEO et référencement",
+              "desc": "Trafic organique qualifié",
+              "icon": "search"
+            },
+            {
+              "href": "/community-management",
+              "label": "Community management",
+              "desc": "Instagram, TikTok, LinkedIn",
+              "icon": "message"
+            },
+            {
+              "href": "/tunnels-de-vente",
+              "label": "Tunnels de vente",
+              "desc": "Landing pages qui convertissent",
+              "icon": "funnel"
+            }
+          ]
+        },
+        {
+          "title": "IA, SaaS et automatisation",
+          "links": [
+            {
+              "href": "/agence-ia",
+              "label": "Agence IA",
+              "desc": "Chatbots, agents IA, ChatGPT",
+              "icon": "bot"
+            },
+            {
+              "href": "/creation-saas",
+              "label": "Création de SaaS",
+              "desc": "MVP en 8 à 12 semaines",
+              "icon": "rocket"
+            },
+            {
+              "href": "/solutions-ia",
+              "label": "Solutions IA sur mesure",
+              "desc": "RAG, fine-tuning, agents",
+              "icon": "sparkles"
+            },
+            {
+              "href": "/automatisation-marketing",
+              "label": "Automatisation",
+              "desc": "Make, n8n, agents IA",
+              "icon": "workflow"
+            }
+          ]
+        }
+      ],
+      "footer": {
+        "href": "/services",
+        "label": "Voir tous nos services"
+      }
+    },
+    {
+      "label": "Agences",
+      "id": "agences",
+      "layout": "cols",
+      "groups": [
+        {
+          "title": "Sites et e-commerce",
+          "links": [
+            {
+              "href": "/agence-webflow",
+              "label": "Agence Webflow",
+              "icon": "layout"
+            },
+            {
+              "href": "/agence-elementor",
+              "label": "Agence Elementor",
+              "icon": "layers"
+            },
+            {
+              "href": "/agence-woocommerce",
+              "label": "Agence WooCommerce",
+              "icon": "cart"
+            },
+            {
+              "href": "/agence-prestashop",
+              "label": "Agence PrestaShop",
+              "icon": "store"
+            },
+            {
+              "href": "/agence-ecommerce",
+              "label": "Agence e-commerce",
+              "icon": "cart"
+            },
+            {
+              "href": "/agence-site-vitrine",
+              "label": "Agence site vitrine",
+              "icon": "layout"
+            },
+            {
+              "href": "/creation-site-wordpress",
+              "label": "Site WordPress",
+              "icon": "globe"
+            }
+          ]
+        },
+        {
+          "title": "Automatisation et IA",
+          "links": [
+            {
+              "href": "/agence-ia",
+              "label": "Agence IA",
+              "icon": "bot"
+            },
+            {
+              "href": "/agence-make",
+              "label": "Agence Make",
+              "icon": "workflow"
+            },
+            {
+              "href": "/agence-n8n",
+              "label": "Agence n8n",
+              "icon": "workflow"
+            },
+            {
+              "href": "/agents-ia-chatbots",
+              "label": "Agents IA et chatbots",
+              "icon": "message"
+            },
+            {
+              "href": "/creation-application-web",
+              "label": "Application web",
+              "icon": "code"
+            },
+            {
+              "href": "/agence-systeme-io",
+              "label": "Agence Systeme.io",
+              "icon": "funnel"
+            }
+          ]
+        },
+        {
+          "title": "E-mail, social, vidéo",
+          "links": [
+            {
+              "href": "/agence-hubspot",
+              "label": "Agence HubSpot",
+              "icon": "target"
+            },
+            {
+              "href": "/agence-brevo",
+              "label": "Agence Brevo",
+              "icon": "mail"
+            },
+            {
+              "href": "/community-instagram",
+              "label": "Agence Instagram",
+              "icon": "camera"
+            },
+            {
+              "href": "/community-tiktok",
+              "label": "Agence TikTok",
+              "icon": "video"
+            },
+            {
+              "href": "/community-linkedin",
+              "label": "Agence LinkedIn",
+              "icon": "briefcase"
+            },
+            {
+              "href": "/agence-netlinking",
+              "label": "Agence netlinking",
+              "icon": "link"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Villes",
+      "id": "villes",
+      "layout": "cols",
+      "groups": [
+        {
+          "title": "Afrique de l’Ouest",
+          "links": [
+            {
+              "href": "/agence-marketing-abomey-calavi",
+              "label": "Abomey-Calavi"
+            },
+            {
+              "href": "/agence-marketing-cotonou",
+              "label": "Cotonou"
+            },
+            {
+              "href": "/agence-marketing-porto-novo",
+              "label": "Porto-Novo"
+            },
+            {
+              "href": "/agence-web-abidjan",
+              "label": "Abidjan"
+            },
+            {
+              "href": "/agence-web-dakar",
+              "label": "Dakar"
+            },
+            {
+              "href": "/agence-web-lome",
+              "label": "Lomé"
+            },
+            {
+              "href": "/agence-web-bamako",
+              "label": "Bamako"
+            },
+            {
+              "href": "/agence-web-ouagadougou",
+              "label": "Ouagadougou"
+            },
+            {
+              "href": "/agence-web-conakry",
+              "label": "Conakry"
+            }
+          ]
+        },
+        {
+          "title": "Afrique centrale et Maghreb",
+          "links": [
+            {
+              "href": "/agence-web-yaounde",
+              "label": "Yaoundé"
+            },
+            {
+              "href": "/agence-web-douala",
+              "label": "Douala"
+            },
+            {
+              "href": "/agence-web-casablanca",
+              "label": "Casablanca"
+            },
+            {
+              "href": "/agence-web-tunis",
+              "label": "Tunis"
+            }
+          ]
+        },
+        {
+          "title": "Europe et Amérique du Nord",
+          "links": [
+            {
+              "href": "/agence-web-paris",
+              "label": "Paris"
+            },
+            {
+              "href": "/agence-web-lyon",
+              "label": "Lyon"
+            },
+            {
+              "href": "/agence-web-marseille",
+              "label": "Marseille"
+            },
+            {
+              "href": "/agence-web-bordeaux",
+              "label": "Bordeaux"
+            },
+            {
+              "href": "/agence-web-toulouse",
+              "label": "Toulouse"
+            },
+            {
+              "href": "/agence-web-nice",
+              "label": "Nice"
+            },
+            {
+              "href": "/agence-web-nantes",
+              "label": "Nantes"
+            },
+            {
+              "href": "/agence-web-lille",
+              "label": "Lille"
+            },
+            {
+              "href": "/agence-web-montpellier",
+              "label": "Montpellier"
+            },
+            {
+              "href": "/agence-web-bruxelles",
+              "label": "Bruxelles"
+            },
+            {
+              "href": "/agence-web-geneve",
+              "label": "Genève"
+            },
+            {
+              "href": "/agence-web-montreal",
+              "label": "Montréal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Ressources",
+      "id": "ressources",
+      "layout": "compact",
+      "groups": [
+        {
+          "links": [
+            {
+              "href": "/blog",
+              "label": "Blog",
+              "desc": "Articles d’experts",
+              "icon": "newspaper"
+            },
+            {
+              "href": "/realisations",
+              "label": "Réalisations",
+              "desc": "Nos cas clients",
+              "icon": "images"
+            },
+            {
+              "href": "/methodologie",
+              "label": "Méthodologie",
+              "desc": "Notre processus en 7 étapes",
+              "icon": "route"
+            },
+            {
+              "href": "/livres-blancs",
+              "label": "Livres blancs",
+              "desc": "Guides gratuits",
+              "icon": "book"
+            },
+            {
+              "href": "/tarifs",
+              "label": "Tarifs",
+              "desc": "Grille complète",
+              "icon": "wallet"
+            },
+            {
+              "href": "/faq",
+              "label": "FAQ",
+              "desc": "Vos questions",
+              "icon": "help"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "À propos",
+      "id": "a-propos",
+      "layout": "compact",
+      "groups": [
+        {
+          "links": [
+            {
+              "href": "/a-propos",
+              "label": "L’agence et l’équipe",
+              "icon": "users"
+            },
+            {
+              "href": "/carrieres",
+              "label": "Carrières",
+              "icon": "idcard"
+            },
+            {
+              "href": "/contact",
+              "label": "Contact",
+              "icon": "mail"
+            },
+            {
+              "href": "/mentions-legales",
+              "label": "Mentions légales",
+              "icon": "scale"
+            },
+            {
+              "href": "/politique-confidentialite",
+              "label": "Confidentialité",
+              "icon": "shield"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "FOOTER_COLS": [
+    {
+      "title": "Expertises",
+      "links": [
+        {
+          "href": "/creation-site-web",
+          "label": "Création de site web"
+        },
+        {
+          "href": "/seo",
+          "label": "SEO et référencement"
+        },
+        {
+          "href": "/community-management",
+          "label": "Community management"
+        },
+        {
+          "href": "/tunnels-de-vente",
+          "label": "Tunnels de vente"
+        },
+        {
+          "href": "/agence-ia",
+          "label": "Agence IA"
+        },
+        {
+          "href": "/creation-saas",
+          "label": "Création de SaaS"
+        },
+        {
+          "href": "/automatisation-marketing",
+          "label": "Automatisation"
+        },
+        {
+          "href": "/services",
+          "label": "Tous nos services"
+        }
+      ]
+    },
+    {
+      "title": "Villes",
+      "links": [
+        {
+          "href": "/agence-marketing-cotonou",
+          "label": "Cotonou"
+        },
+        {
+          "href": "/agence-web-abidjan",
+          "label": "Abidjan"
+        },
+        {
+          "href": "/agence-web-dakar",
+          "label": "Dakar"
+        },
+        {
+          "href": "/agence-web-casablanca",
+          "label": "Casablanca"
+        },
+        {
+          "href": "/agence-web-tunis",
+          "label": "Tunis"
+        },
+        {
+          "href": "/agence-web-paris",
+          "label": "Paris"
+        },
+        {
+          "href": "/agence-web-bruxelles",
+          "label": "Bruxelles"
+        },
+        {
+          "href": "/agence-web-geneve",
+          "label": "Genève"
+        },
+        {
+          "href": "/agence-web-montreal",
+          "label": "Montréal"
+        }
+      ]
+    },
+    {
+      "title": "Pirabel Labs",
+      "links": [
+        {
+          "href": "/a-propos",
+          "label": "À propos"
+        },
+        {
+          "href": "/methodologie",
+          "label": "Méthodologie"
+        },
+        {
+          "href": "/realisations",
+          "label": "Réalisations"
+        },
+        {
+          "href": "/blog",
+          "label": "Blog"
+        },
+        {
+          "href": "/livres-blancs",
+          "label": "Livres blancs"
+        },
+        {
+          "href": "/tarifs",
+          "label": "Tarifs"
+        },
+        {
+          "href": "/faq",
+          "label": "FAQ"
+        },
+        {
+          "href": "/contact",
+          "label": "Contact"
+        }
+      ]
+    }
+  ]
+}

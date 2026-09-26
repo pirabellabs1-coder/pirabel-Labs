@@ -1,0 +1,136 @@
+---
+/**
+ * Grille tarifaire par région : onglets accessibles (rôles ARIA, flèches du clavier).
+ * Sans JavaScript, toutes les régions restent affichées les unes sous les autres.
+ */
+import Icon from '../ui/Icon.astro';
+import Split from '../ui/Split.astro';
+import { fixHtml, fixText } from '../../lib/blocks/fr';
+
+export interface Offer {
+  icon: string; title: string; text: string; eur?: number; fcfa?: number; monthly?: boolean; meta: string;
+  features: string[]; service: string; badge?: string;
+}
+export interface Region { id: string; label: string; short: string; currency: 'XOF' | 'XAF' | 'GNF' | 'EUR'; note: string; offers: Offer[] }
+interface Props { eyebrow: string; title: string; lead: string; regions: Region[] }
+const props = Astro.props;
+const eyebrow = fixText(props.eyebrow), title = fixHtml(props.title), lead = fixHtml(props.lead);
+// Textes rendus en texte brut (Astro échappe) : fixText, jamais fixHtml (double échappement).
+const regions = props.regions.map((r) => ({ ...r, label: fixText(r.label), short: fixText(r.short), note: fixText(r.note),
+  offers: r.offers.map((o) => ({ ...o, title: fixText(o.title), text: fixText(o.text), meta: fixText(o.meta), badge: o.badge && fixText(o.badge), features: o.features.map(fixText) })) }));
+
+// Parité fixe du franc CFA : 1 € = 655,957 FCFA. Zones FCFA : prix en FCFA, équivalent en euros arrondi à 5 €.
+const nb = (n: number) => n.toLocaleString('fr-FR').replace(/ /g, ' ');
+const eurOf = (fcfa: number) => Math.round(fcfa / 655.957 / 5) * 5;
+---
+<section class="b-sec" id="grille">
+  <div class="container">
+    <div class="b-head b-head--center">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 data-reveal="title"><Split><Fragment set:html={title} /></Split></h2>
+      <p class="b-head__lead" set:html={lead} />
+    </div>
+
+    <div class="ptabs" data-ptabs>
+      <div class="ptabs__list glass glass--flat" role="tablist" aria-label="Choisir votre région" hidden data-ptabs-list>
+        {regions.map((r, i) => (
+          <button type="button" role="tab" id={`tab-${r.id}`} aria-controls={`panel-${r.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            {r.short}
+          </button>
+        ))}
+      </div>
+
+      {regions.map((r) => (
+        <div class="ptabs__panel" id={`panel-${r.id}`} data-labelledby={`tab-${r.id}`}>
+          <h3 class="ptabs__title">{r.label}</h3>
+          <p class="ptabs__note"><Icon name="info" size={16} />{r.note}</p>
+          <ul class="b-prices">
+            {r.offers.map((o) => (
+              <li>
+                <article class:list={['b-price glass spot', o.badge ? 'b-price--featured' : 'glass--flat']}>
+                  {o.badge && <p class="b-price__badge">{o.badge}</p>}
+                  <span class="b-ico"><Icon name={o.icon} size={22} /></span>
+                  <h4 class="b-price__name">{o.title}</h4>
+                  <p class="b-price__lead">{o.text}</p>
+                  <div class="b-price__amount">
+                    <small>à partir de</small>
+                    {o.fcfa ? (
+                      <>
+                        <strong>{nb(o.fcfa)}{' '}FCFA{o.monthly && <span> / mois</span>}</strong>
+                        <em>soit ≈ {nb(eurOf(o.fcfa))}{' '}€{o.monthly ? ' / mois' : ''}</em>
+                      </>
+                    ) : (
+                      <strong>{nb(o.eur ?? 0)}{' '}€{o.monthly && <span> / mois</span>}</strong>
+                    )}
+                    {r.currency === 'GNF' && <em>facturable en GNF au taux du jour</em>}
+                  </div>
+                  <p class="b-price__meta"><Icon name="clock" size={14} /> {o.meta}</p>
+                  <ul class="b-list">{o.features.map((f) => <li><Icon name="check" size={16} />{f}</li>)}</ul>
+                  <a href={`/contact?service=${o.service}`} class:list={['btn', o.badge ? 'btn--primary' : 'btn--glass']}>Demander un devis</a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Onglets : activation au clic et aux flèches (motif ARIA « tabs », activation automatique).
+  document.querySelectorAll<HTMLElement>('[data-ptabs]').forEach((root) => {
+    const list = root.querySelector<HTMLElement>('[data-ptabs-list]');
+    if (!list) return;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls') || ''));
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        const on = i === j;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (panels[j]) panels[j]!.hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    };
+    list.hidden = false;
+    root.classList.add('is-tabs');
+    // Rôles d'onglets ajoutés seulement quand les onglets existent (sans JS : simple suite de sections).
+    panels.forEach((p) => { if (!p) return; p.setAttribute('role', 'tabpanel'); p.tabIndex = 0; p.setAttribute('aria-labelledby', p.dataset.labelledby || ''); });
+    // Région pré-sélectionnée via l'ancre (#tarifs-europe) si elle existe.
+    const fromHash = tabs.findIndex((t) => location.hash === '#' + t.id.replace('tab-', 'tarifs-'));
+    select(fromHash >= 0 ? fromHash : 0);
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (k === 'ArrowRight' || k === 'ArrowLeft' || k === 'Home' || k === 'End') {
+          e.preventDefault();
+          const n = k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : (i + (k === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+          select(n, true);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .ptabs__list { display: flex; gap: 6px; width: max-content; max-width: 100%; margin: 0 auto 36px; padding: 6px; border-radius: 999px; overflow-x: auto; scrollbar-width: none; }
+  .ptabs__list[hidden] { display: none; }
+  .ptabs__list button { flex: none; padding: 10px 18px; border: 0; border-radius: 999px; font: 600 0.92rem/1 var(--font-ui); color: var(--text-2); background: transparent; cursor: pointer; transition: color var(--dur-fast), background var(--dur-fast); }
+  .ptabs__list button:hover { color: var(--text); }
+  .ptabs__list button[aria-selected='true'] { color: var(--on-accent); background: linear-gradient(145deg, #ff7a33, #ff5500); box-shadow: 0 10px 24px -10px rgba(255, 85, 0, 0.7); }
+  .ptabs__panel + .ptabs__panel { margin-top: 56px; }
+  .is-tabs .ptabs__panel + .ptabs__panel { margin-top: 0; }
+  .ptabs__panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 8px; border-radius: 12px; }
+  .ptabs__title { margin-bottom: 8px; font-size: 1.2rem; text-align: center; }
+  .is-tabs .ptabs__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .ptabs__note { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto 28px; max-width: 720px; text-align: center; font-size: 0.92rem; color: var(--text-3); }
+  .ptabs__note :global(.icon) { flex: none; color: var(--accent-2); }
+  .b-price__name { font-size: var(--fs-h3); }
+  .b-price__amount small { display: block; font-size: 0.8rem; color: var(--text-3); }
+  .b-price__amount strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 1.3rem + 1vw, 2.2rem); letter-spacing: -0.02em; color: var(--text); }
+  .b-price__amount strong span { font-size: 0.55em; font-weight: 600; color: var(--text-2); }
+  .b-price__amount em { display: block; margin-top: 4px; font-style: normal; font-size: 0.84rem; color: var(--accent-3); }
+  .b-price__meta { display: flex; align-items: center; gap: 6px; font-size: 0.86rem; color: var(--text-3); }
+</style>

@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+import Split from '../components/ui/Split.astro';
+import QualifyWizard from '../components/qualify/QualifyWizard.tsx';
+import '../styles/qualify.css';
+import '../styles/contact.css';
+import { SITE } from '../data/site';
+
+const AFTER = [
+  { time: 'Sous 4 h ouvrées', icon: 'zap', title: 'Réception et accusé', text: 'Confirmation immédiate par e-mail avec le récapitulatif de votre demande. Le fondateur la lit et la classe par urgence et par nature.' },
+  { time: 'Sous 24 h', icon: 'target', title: 'Préqualification', text: 'Analyse rapide de la faisabilité et de l’adéquation. Si nous ne sommes pas le bon partenaire, nous vous le disons honnêtement et vous orientons vers une alternative.' },
+  { time: 'Sous 48 à 72 h', icon: 'video', title: 'Appel découverte (30 min)', text: 'Visio avec le fondateur : objectifs business, périmètre, contraintes. Gratuit, sans engagement et sans discours commercial.' },
+  { time: 'Sous 48 h après l’appel', icon: 'file', title: 'Devis ferme', text: 'Proposition chiffrée précise : prix, périmètre, planning sprint par sprint, livrables. Pas de « selon devis ». Vous réfléchissez, validez ou ajustez.' },
+];
+
+const FAQ = [
+  { q: 'Sous combien de temps recevrai-je une réponse à ma demande ?', a: 'Vous recevez un accusé de réception automatique dès l’envoi du formulaire. Ensuite, le fondateur de Pirabel Labs vous répond personnellement sous 24 à 48 heures ouvrées, du lundi au vendredi (fuseau Afrique de l’Ouest, GMT+1). Si votre demande est urgente, écrivez-nous directement sur WhatsApp. Après l’appel découverte de 30 minutes, le devis ferme est émis sous 48 h.' },
+  { q: 'L’appel découverte et le devis sont-ils gratuits ?', a: 'Oui, totalement. L’appel découverte de 30 minutes en visio (Google Meet ou Zoom) est gratuit et sans engagement. Le devis qui suit est également gratuit, fermé, détaillé sprint par sprint, et valable 30 jours. Vous prenez le temps de comparer et de réfléchir : aucune relance commerciale insistante. Si le moment n’est pas le bon, nous restons simplement joignables.' },
+  { q: 'Quels modes de paiement acceptez-vous après signature ?', a: 'En Europe : virement SEPA, carte bancaire via Stripe ou virement international. Au Bénin et en Afrique de l’Ouest : virement bancaire local (UBA, Ecobank, BOA), Mobile Money (MTN, Moov) ou Wave. Échelonnement standard 30 / 30 / 40 : 30 % à la signature, 30 % à la validation de la maquette, 40 % à la mise en ligne. Au-delà de 15 000 €, des échéances mensuelles sur 3 à 6 mois sont possibles.' },
+  { q: 'Que faites-vous de mes données personnelles ?', a: 'Nous respectons le RGPD pour nos clients européens et les mêmes bonnes pratiques pour tous les autres. Vos réponses sont stockées uniquement dans notre outil interne, accessibles aux seules personnes en charge de votre dossier. Aucune revente, aucun partage avec des tiers, aucune campagne non sollicitée. Vous pouvez demander leur suppression à tout moment en écrivant à contact@pirabellabs.com : traitement sous 7 jours.' },
+  { q: 'Comment suivre l’avancement de mon projet ?', a: 'Si l’appel découverte débouche sur un devis accepté, vous accédez à un tableau Notion partagé : avancement sprint par sprint, livrables validés, décisions en attente. Démo chaque vendredi sur un environnement de prévisualisation. Un interlocuteur unique reste votre point de contact, joignable sur WhatsApp pour les questions courtes et en visio pour les revues hebdomadaires.' },
+  { q: 'Acceptez-vous tous les projets ? Y a-t-il un budget minimum ?', a: 'Nous acceptons les projets pour lesquels nous pouvons réellement apporter de la valeur. Repères : sites vitrines professionnels à partir de 2 500 € HT, e-commerce et plateformes à partir de 6 000 € HT, SaaS sur mesure à partir de 15 000 € HT, SEO à partir de 800 € par mois, automatisation à partir de 1 200 € de mise en place. Si votre budget est plus serré, dites-le franchement : nous regardons s’il existe une formule plus légère ou une mise en place progressive.' },
+];
+
+const contactLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact et demande de devis — Pirabel Labs',
+  url: SITE.url + '/contact',
+  about: { '@id': SITE.url + '/#organisation' },
+};
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<BaseLayout
+  title="Contact et demande de devis — Pirabel Labs | Réponse sous 24 h"
+  description="Décrivez votre projet en 2 minutes et recevez un devis ferme sous 48 h : sites web, applications, SEO, publicité, automatisation. Bénin, France, Afrique."
+  path="/contact"
+  ogTitle="Contact et demande de devis — Pirabel Labs"
+  ogDescription="Devis ferme sous 48 h. Agence marketing digital 360 pour PME francophones : sites, applications, SEO, automatisation."
+  jsonLd={[contactLd, faqLd]}
+  showFooterCta={false}
+>
+  <section class="c-hero" aria-labelledby="c-title">
+    <div class="container c-hero__inner">
+      <p class="eyebrow">Démarrer un projet</p>
+      <h1 id="c-title" class="c-hero__title">Parlez-nous de votre <span class="grad">projet</span>.</h1>
+      <p class="c-hero__lead">Quelques questions, deux minutes : à la fin, nous savons exactement ce dont vous avez besoin et arrivons à l’appel avec de vraies propositions.</p>
+      <ul class="c-hero__trust">
+        <li class="chip"><Icon name="clock" size={16} /> Réponse sous 24 h</li>
+        <li class="chip"><Icon name="file" size={16} /> Devis ferme sous 48 h</li>
+        <li class="chip"><Icon name="handshake" size={16} /> Sans engagement</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="c-wizard container" aria-label="Formulaire de demande de projet">
+    <QualifyWizard client:load />
+    <noscript>
+      <p class="c-noscript">Le formulaire nécessite JavaScript. Écrivez-nous à <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ou sur <a href={SITE.whatsapp}>WhatsApp</a>.</p>
+    </noscript>
+  </section>
+
+  <section class="section" id="rdv" aria-labelledby="rdv-title">
+    <div class="container c-direct">
+      <div class="c-direct__intro">
+        <p class="eyebrow">Vous préférez échanger directement&nbsp;?</p>
+        <h2 id="rdv-title" data-reveal="title"><Split>Réservez un appel de 30 minutes.</Split></h2>
+        <p class="muted">Un échange gratuit et sans engagement pour comprendre vos enjeux. Choisissez un créneau : Lissanon Gildas vous le confirme (ou en propose un proche) sous 24&nbsp;h.</p>
+        <ul class="c-channels">
+          <li><a href={SITE.whatsapp} target="_blank" rel="noopener" class="c-channel glass glass--flat spot"><span class="card__icon"><Icon name="whatsapp" size={20} /></span><span><b>WhatsApp</b><small>Réponse rapide</small></span></a></li>
+          <li><a href={SITE.phoneBJHref} class="c-channel glass glass--flat spot"><span class="card__icon"><Icon name="phone" size={20} /></span><span><b>{SITE.phoneBJ}</b><small>Abomey-Calavi, GMT+1</small></span></a></li>
+          <li><a href={`mailto:${SITE.email}?subject=Demande%20-%20Projet%20digital`} class="c-channel glass glass--flat spot"><span class="card__icon"><Icon name="mail" size={20} /></span><span><b>{SITE.email}</b><small>Brief détaillé, pièces jointes</small></span></a></li>
+          <li><div class="c-channel glass glass--flat"><span class="card__icon"><Icon name="pin" size={20} /></span><span><b>Abomey-Calavi, Bénin</b><small>Siège · clients en Afrique et en Europe</small></span></div></li>
+        </ul>
+      </div>
+
+      <form class="c-rdv glass" id="rdvForm" novalidate data-reveal="scale">
+        <div class="c-rdv__grid">
+          <div class="qz-field"><label for="rdvName">Nom complet <span aria-hidden="true">*</span></label><input id="rdvName" name="name" autocomplete="name" required maxlength="120" /></div>
+          <div class="qz-field"><label for="rdvEmail">E-mail <span aria-hidden="true">*</span></label><input id="rdvEmail" name="email" type="email" autocomplete="email" required maxlength="200" /></div>
+          <div class="qz-field"><label for="rdvPhone">Téléphone ou WhatsApp</label><input id="rdvPhone" name="phone" type="tel" autocomplete="tel" maxlength="30" /></div>
+          <div class="qz-field"><label for="rdvCompany">Entreprise</label><input id="rdvCompany" name="company" autocomplete="organization" maxlength="120" /></div>
+          <div class="qz-field"><label for="rdvDate">Date souhaitée <span aria-hidden="true">*</span></label><input id="rdvDate" name="date" type="date" required /></div>
+          <div class="qz-field"><label for="rdvTime">Heure souhaitée</label>
+            <select id="rdvTime" name="time">
+              <option value="">Indifférente</option>
+              {['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map((t) => <option value={t}>{t.replace(':', ' h ')}</option>)}
+            </select>
+          </div>
+          <div class="qz-field"><label for="rdvChannel">Comment&nbsp;?</label>
+            <select id="rdvChannel" name="channel">
+              <option value="visio">Visioconférence (Zoom ou Meet)</option>
+              <option value="whatsapp">Appel WhatsApp</option>
+              <option value="telephone">Téléphone</option>
+              <option value="presentiel">En personne (Abomey-Calavi)</option>
+            </select>
+          </div>
+          <div class="qz-field"><label for="rdvSubject">Objet</label><input id="rdvSubject" name="subject" maxlength="200" placeholder="Ex. audit gratuit, présentation de projet" /></div>
+        </div>
+        <div class="qz-field"><label for="rdvMessage">Quelques mots <span class="qz-optional">(facultatif)</span></label><textarea id="rdvMessage" name="message" rows="3" maxlength="1500"></textarea></div>
+        <label class="qz-consent"><input type="checkbox" id="rdvRgpd" required /><span>J’accepte d’être contacté par Pirabel Labs au sujet de ce rendez-vous, conformément à la <a href="/politique-confidentialite">politique de confidentialité</a>. <span aria-hidden="true">*</span></span></label>
+        <p class="qz-error qz-error--block" id="rdvMsg" role="alert" hidden></p>
+        <button type="submit" class="btn btn--primary btn--lg"><Icon name="calendar" size={18} /> Demander ce rendez-vous</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="after-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Après l’envoi</p>
+        <h2 id="after-title" data-reveal="title"><Split>Pas de boîte noire.</Split></h2>
+        <p>Les quatre étapes entre votre demande et la signature d’un devis ferme. Aucune surprise sur le délai ni sur le prix.</p>
+      </div>
+      <ol class="grid grid--4 c-after" data-stagger>
+        {AFTER.map((s, i) => (
+          <li class="card glass glass--flat" data-reveal>
+            <span class="c-after__n">0{i + 1}</span>
+            <p class="c-after__time"><Icon name={s.icon} size={15} /> {s.time}</p>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="c-faq-title">
+    <div class="container c-faq">
+      <div class="section-head">
+        <p class="eyebrow">Questions fréquentes</p>
+        <h2 id="c-faq-title" data-reveal="title"><Split>Avant de vous lancer.</Split></h2>
+      </div>
+      <div class="c-faq__list">
+        {FAQ.map((f, i) => (
+          <details class="faq__item glass glass--flat" name="faq-contact" open={i === 0}>
+            <summary><span>{f.q}</span><span class="faq__icon" aria-hidden="true"><Icon name="plus" size={18} /></span></summary>
+            <div class="faq__a"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Sur mobile, le bouton flottant du chat recouvrirait la barre « Continuer » du formulaire :
+  // on le retire tant que le formulaire est à l'écran.
+  const wizard = document.querySelector('.c-wizard');
+  if (wizard && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      document.documentElement.classList.toggle('qz-active', entry.isIntersecting);
+    }, { rootMargin: '0px 0px -120px 0px' }).observe(wizard);
+  }
+
+  // Formulaire de rendez-vous (POST /api/rdv, validé côté serveur).
+  const form = document.getElementById('rdvForm') as HTMLFormElement | null;
+  const msg = document.getElementById('rdvMsg');
+  const date = document.getElementById('rdvDate') as HTMLInputElement | null;
+  if (date) {
+    const t = new Date(); t.setDate(t.getDate() + 1);
+    date.min = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+  }
+  const show = (text: string, ok = false) => {
+    if (!msg) return;
+    msg.hidden = false;
+    msg.textContent = text;
+    msg.classList.toggle('is-ok', ok);
+  };
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const v = (id: string) => ((document.getElementById(id) as HTMLInputElement | null)?.value || '').trim();
+    const consent = (document.getElementById('rdvRgpd') as HTMLInputElement | null)?.checked;
+    if (v('rdvName').length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v('rdvEmail')) || !v('rdvDate')) {
+      show('Merci d’indiquer votre nom, une adresse e-mail valide et la date souhaitée.');
+      return;
+    }
+    if (v('rdvChannel') !== 'visio' && !v('rdvPhone')) { show('Indiquez un numéro de téléphone pour un appel WhatsApp ou téléphonique.'); return; }
+    if (!consent) { show('Cochez la case d’accord pour que nous puissions vous recontacter.'); return; }
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.textContent = 'Envoi en cours…'; }
+    try {
+      const res = await fetch('/api/rdv', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: v('rdvName'), email: v('rdvEmail'), phone: v('rdvPhone'), company: v('rdvCompany'), date: v('rdvDate'), time: v('rdvTime'), channel: v('rdvChannel'), subject: v('rdvSubject'), message: v('rdvMessage') }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success === false) throw new Error(data.error || 'Envoi impossible pour le moment.');
+      form.reset();
+      show('C’est envoyé ! Votre demande de rendez-vous est bien reçue : confirmation sous 24 h ouvrées.', true);
+    } catch (err) {
+      show((err instanceof Error ? err.message : 'Envoi impossible.') + ' Vous pouvez aussi nous écrire sur WhatsApp.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = btn.dataset.label || btn.innerHTML; }
+    }
+  });
+</script>

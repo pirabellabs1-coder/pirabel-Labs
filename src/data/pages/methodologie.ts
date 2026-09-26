@@ -1,0 +1,153 @@
+import type { PageData } from '../../components/blocks/BlockPage.astro';
+
+const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
+const step = (desc: string, deliverables: string[]) =>
+  `<p>${desc}</p><p class="b-deliv-t">Livrables</p><ul class="b-deliv">${deliverables.map((d) => `<li>${d}</li>`).join('')}</ul>`;
+
+export const page: PageData = {
+  path: '/methodologie',
+  title: 'Notre méthodologie projet en 7 étapes | Pirabel Labs',
+  description: 'Découverte, devis ferme sous 48 h, stratégie, design, sprints, lancement et suivi : une méthode transparente, éprouvée sur plus de 80 projets.',
+  legacyLd: 'methodologie',
+  footerCta: {
+    title: 'Commençons par un appel découverte gratuit',
+    text: '30 minutes en visio ou sur WhatsApp pour comprendre votre projet, regarder votre situation et vous proposer 3 priorités chiffrées. Aucun engagement, aucune pression.',
+    href: '/contact',
+    label: 'Réserver l’appel découverte',
+  },
+  blocks: [
+    { kind: 'breadcrumb', items: [{ href: '/', label: 'Accueil' }, { label: 'Méthodologie' }] },
+    {
+      kind: 'hero',
+      eyebrow: 'Méthodologie projet',
+      eyebrowIcon: 'route',
+      title: 'Notre méthodologie en <span class="grad">7 étapes</span>.',
+      lead: 'Une méthode claire, transparente, éprouvée sur plus de 80 projets francophones. De l’appel découverte aux optimisations mensuelles, chaque étape est cadrée, documentée et alignée sur vos objectifs business. Vous savez à chaque instant où en est votre projet, ce qui arrive ensuite et combien cela coûte.',
+      ctas: [
+        { href: '/contact', label: 'Réserver un appel découverte', primary: true },
+        { href: WA, label: 'WhatsApp direct', external: true },
+      ],
+      icons: ['compass', 'route', 'rocket'],
+      caption: 'Sans sous-traitant caché',
+      chips: [
+        { icon: 'badge-check', text: 'Devis ferme sous 48 h' },
+        { icon: 'zap', text: 'Réponse sous 4 h ouvrées' },
+        { icon: 'shield', text: 'Garantie de 30 jours' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'stats',
+      head: { eyebrow: 'En bref', title: 'Un cadre <span class="grad">qui tient ses promesses</span>' },
+      items: [
+        { stat: '7', text: 'étapes balisées' },
+        { stat: '48 h', text: 'pour un devis ferme' },
+        { stat: '4 h', text: 'délai de réponse' },
+        { stat: '30 j', text: 'de garantie après livraison' },
+      ],
+    },
+    {
+      kind: 'steps', variant: 'detailed', id: 'processus',
+      head: { eyebrow: 'Le processus complet', title: 'De l’idée à la <span class="grad">croissance durable</span>', lead: 'Chaque projet suit cette même trame, adaptée à votre contexte. Vous savez ce qui arrive, qui fait quoi, à quelle date, et quel livrable arrive dans votre boîte mail.' },
+      items: [
+        { num: '01', tag: 'Phase 1 sur 7', title: 'Découverte', meta: '30 minutes · gratuit', text: step('Tout commence par un appel gratuit de 30 minutes, en visio ou sur WhatsApp. Nous écoutons votre projet, vos objectifs, votre marché, vos contraintes, et regardons votre site, vos comptes sociaux et votre positionnement. Vous repartez avec un premier diagnostic honnête, même si nous ne travaillons pas ensemble.', ['Compte rendu écrit de l’appel', 'Premier diagnostic visuel', 'Liste de recommandations rapides']) },
+        { num: '02', tag: 'Phase 2 sur 7', title: 'Cadrage et devis', meta: '48 heures · sans engagement', text: step('Dans les 48 heures qui suivent l’appel, vous recevez un devis ferme, un périmètre écrit ligne par ligne, un planning sprint par sprint et nos conditions générales. Tout est chiffré et daté. Si vous validez, nous bloquons notre planning et démarrons ; sinon, le devis reste valable 30 jours.', ['Devis ferme en PDF', 'Cahier des charges écrit', 'Planning détaillé par sprint', 'Conditions générales claires']) },
+        { num: '03', tag: 'Phase 3 sur 7', title: 'Stratégie et atelier', meta: '1 semaine · atelier inclus', text: step('Un atelier de 2 à 4 heures, en visio ou en présentiel à Abomey-Calavi, pour creuser le projet. Nous construisons ensemble vos personas, vos parcours utilisateur, votre positionnement et vos objectifs SMART. À la sortie, vous savez ce que nous allons produire, pourquoi, et comment nous mesurerons le succès.', ['Personas documentés', 'Parcours utilisateur cartographiés', 'Objectifs SMART chiffrés', 'Feuille de route éditoriale ou produit']) },
+        { num: '04', tag: 'Phase 4 sur 7', title: 'Design et maquettage', meta: '2 à 3 semaines · 2 cycles de retours inclus', text: step('Nous démarrons par des wireframes basse fidélité pour figer la structure, puis concevons les maquettes haute fidélité sur Figma, avec votre charte ou une charte refondue. Vous commentez directement dans Figma et nous itérons en 48 h. Deux cycles de retours sont inclus, avec des retouches illimitées sur les détails.', ['Wireframes complets', 'Maquettes haute fidélité Figma', 'Design system documenté', 'Prototype cliquable']) },
+        { num: '05', tag: 'Phase 5 sur 7', title: 'Production et développement', meta: '3 à 8 semaines · démo hebdomadaire', text: step('L’équipe technique entre en jeu : sprints hebdomadaires, démonstration à la fin de chaque sprint, environnement de préproduction accessible 24 h/24. Relecture de code systématique, tests automatisés, Core Web Vitals contrôlés. Vous voyez l’avancée concrète semaine après semaine, sans grand dévoilement final stressant.', ['Environnement de préproduction', 'Démonstrations hebdomadaires enregistrées', 'Code source documenté sur GitHub', 'Rapports de tests automatisés']) },
+        { num: '06', tag: 'Phase 6 sur 7', title: 'Lancement', meta: '1 semaine · formation incluse', text: step('Recette approfondie sur tous les supports (mobile, tablette, ordinateur, navigateurs majeurs). Mise en production avec sauvegarde, certificat SSL et surveillance de disponibilité. Formation en visio sur le CMS, l’administration et le reporting, documentation complète remise par écrit : vous repartez autonome.', ['Recette qualité documentée', 'Site ou outil mis en production', 'Documentation utilisateur en PDF', 'Session de formation enregistrée', 'Tous les accès remis']) },
+        { num: '07', tag: 'Phase 7 sur 7', title: 'Suivi et itération', meta: 'Mensuel · support sous 4 h', text: step('La livraison n’est pas la fin, c’est le début du vrai travail : reporting mensuel détaillé (trafic, conversions, performances, ROI), optimisations fondées sur les données réelles, tests A/B réguliers, support technique sous 4 heures ouvrées. C’est cette phase qui transforme un projet réussi en croissance durable.', ['Rapport mensuel chiffré', 'Tableau de bord Looker Studio', 'Recommandations d’optimisation', 'Support technique prioritaire']) },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'features',
+      head: { eyebrow: 'Outils et stack', title: 'Notre boîte à <span class="grad">outils professionnels</span>', lead: 'Des outils éprouvés, modernes et transparents. Vous avez accès en lecture à tous nos espaces de travail pendant le projet : aucune dépendance cachée, tout est documenté.' },
+      items: [
+        { icon: 'palette', tag: 'Design', title: 'Figma', text: 'Maquettes, prototypes interactifs, design systems, commentaires en temps réel. Vous gardez l’accès final.' },
+        { icon: 'code', tag: 'Développement', title: 'Next.js et React', text: 'Sites sur mesure haute performance, déployés sur Vercel ou sur serveur dédié. Code propre et évolutif.' },
+        { icon: 'layout', tag: 'CMS', title: 'WordPress et Webflow', text: 'Pour des sites modifiables en autonomie : Elementor, WooCommerce, ACF Pro, extensions premium incluses.' },
+        { icon: 'file', tag: 'Documentation', title: 'Notion', text: 'Espace projet partagé : comptes rendus, brief, feuille de route, base de connaissances. Vous gardez l’accès.' },
+        { icon: 'message', tag: 'Communication', title: 'Slack et WhatsApp', text: 'Un canal dédié à votre projet, réponses sous 4 heures ouvrées. WhatsApp pour les vraies urgences.' },
+        { icon: 'chart', tag: 'Analyse', title: 'Google Analytics 4', text: 'Suivi des événements, conversions et parcours. Configuration conforme au RGPD, adresses IP anonymisées.' },
+        { icon: 'gauge', tag: 'Reporting', title: 'Looker Studio', text: 'Tableaux de bord visuels personnalisés, mis à jour automatiquement, accessibles à votre équipe.' },
+        { icon: 'mail', tag: 'E-mail marketing', title: 'Brevo et HubSpot', text: 'Séquences automatisées, segmentation, lead scoring, délivrabilité. CRM intégré au site.' },
+        { icon: 'search', tag: 'SEO', title: 'Ahrefs et Semrush', text: 'Recherche de mots-clés, audit technique, suivi des positions, analyse des backlinks concurrents.' },
+        { icon: 'workflow', tag: 'Automatisation', title: 'Make et n8n', text: 'Workflows complexes, intégrations CRM, agents IA, chatbots WhatsApp, collecte de données légale.' },
+        { icon: 'database', tag: 'Versionnage', title: 'GitHub', text: 'Code source versionné, une branche par sprint, relectures systématiques, historique complet remis.' },
+        { icon: 'images', tag: 'Création visuelle', title: 'Adobe Creative Cloud', text: 'Photoshop, Illustrator, Premiere Pro, After Effects : visuels, vidéos et motion design professionnels.' },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'promises',
+      head: { eyebrow: 'Nos engagements', title: '4 engagements <span class="grad">contractuels</span>, écrits noir sur blanc', lead: 'Ils figurent dans chacun de nos devis et dans nos conditions générales. Ce ne sont pas des promesses marketing : ce sont des clauses signées.' },
+      items: [
+        { icon: 'file', title: 'Devis ferme sous 48 h', text: 'Chiffrage écrit, périmètre détaillé, planning par sprint, livrables listés. Le prix annoncé est le prix final : aucune surprise en cours de route, aucun avenant caché.' },
+        { icon: 'zap', title: 'Réactivité : 4 heures ouvrées', text: 'Réponse garantie à toute question ou demande dans les 4 heures ouvrées, quel que soit le canal (Slack, WhatsApp, e-mail). Vous n’attendez jamais une semaine.' },
+        { icon: 'key', title: 'Le code vous appartient à 100 %', text: 'Code source, designs, contenus produits, accès : tout devient votre propriété intellectuelle à la livraison finale. Aucune dépendance à notre agence.' },
+        { icon: 'shield', title: 'Garantie de 30 jours après livraison', text: 'Pendant 30 jours après la mise en production, tout bogue, ajustement mineur ou correction est pris en charge gratuitement. Vous démarrez sereinement.' },
+      ],
+    },
+    { kind: 'cta', variant: 'inline', title: 'Un projet, une question ?', text: 'Devis gratuit et réponse sous 24 h — sans engagement.', ctas: [{ href: '/contact', label: 'Demander un devis' }, { href: WA, label: 'WhatsApp', external: true }] },
+    {
+      kind: 'gantt', id: 'calendrier',
+      head: { eyebrow: 'Calendrier type', title: 'Une <span class="grad">refonte web</span> en 12 semaines', lead: 'Le planning réel d’une refonte de site vitrine professionnel : chaque barre représente une phase, chaque colonne une semaine. C’est la trame qui nous permet de tenir nos délais dans 95 % des cas.' },
+      weeks: 12,
+      rows: [
+        { label: 'Découverte', icon: 'compass', from: 1, to: 1 },
+        { label: 'Cadrage', icon: 'file', from: 2, to: 2 },
+        { label: 'Stratégie', icon: 'brain', from: 2, to: 3 },
+        { label: 'Design Figma', icon: 'palette', from: 3, to: 5 },
+        { label: 'Rédaction SEO', icon: 'pen', from: 4, to: 6 },
+        { label: 'Développement', icon: 'code', from: 5, to: 8 },
+        { label: 'Intégration des contenus', icon: 'layers', from: 8, to: 9 },
+        { label: 'Recette qualité', icon: 'check-circle', from: 10, to: 10 },
+        { label: 'Mise en production', icon: 'rocket', from: 11, to: 11 },
+        { label: 'Formation client', icon: 'graduation', from: 11, to: 11 },
+        { label: 'Suivi initial', icon: 'trending', from: 12, to: 12 },
+      ],
+    },
+    {
+      kind: 'compare',
+      head: { eyebrow: 'Comparatif honnête', title: 'Pirabel Labs face aux <span class="grad">autres options</span>', lead: 'Trois options s’offrent à vous pour un projet digital : un freelance, une grande agence parisienne ou une agence francophone comme Pirabel Labs. Voici un comparatif honnête pour vous aider à choisir.' },
+      headers: ['Critère', 'Freelance', 'Pirabel Labs', 'Grande agence'],
+      featured: 2,
+      rows: [
+        ['Devis ferme sous 48 h', 'Oui', 'Oui, garanti', '1 à 3 semaines'],
+        ['Réactivité du support', 'Variable', '4 h ouvrées garanties', '24 à 72 h selon le ticket'],
+        ['Couverture des expertises', '1 à 2 expertises', '11 expertises complètes', 'Toutes les expertises'],
+        ['Continuité en cas d’absence', 'Risque réel', 'Relais assuré', 'Équipe nombreuse'],
+        ['Tarif d’un site vitrine professionnel', '800 à 3 000 €', 'Dès 200 000 FCFA en Afrique, 1 200 € en Europe', '15 000 à 60 000 €'],
+        ['Interlocuteur unique', 'Oui', 'Chef de projet dédié', '3 à 5 personnes'],
+        ['Sous-traitance cachée', 'Aucune', 'Aucune', 'Fréquente'],
+        ['Propriété du code et des contenus', 'Selon contrat', '100 % à la livraison', 'Selon contrat, parfois limitée'],
+        ['Reporting mensuel chiffré', 'Rare ou payant', 'Inclus dès le premier mois', 'Souvent payant en option'],
+        ['Garantie après livraison', 'Variable, 0 à 15 jours', '30 jours écrits', '15 à 30 jours selon contrat'],
+        ['Ancrage francophone', 'Variable', 'Bénin et toute l’Afrique francophone', 'Souvent la France uniquement'],
+        ['Idéal pour', 'Très petits budgets', 'PME, scale-ups, marques ambitieuses', 'Grands comptes, budgets de 50 k€ et plus'],
+      ],
+    },
+    {
+      kind: 'testimonials',
+      head: { eyebrow: 'Témoignages', title: 'Ce que nos clients disent <span class="grad">de la méthode</span>', lead: 'Au-delà des résultats chiffrés, voici ce que nos clients retiennent de notre façon de travailler au quotidien.' },
+      items: [
+        { text: 'Ce qui m’a marquée, c’est la rigueur du cadrage. En 48 heures, j’avais un devis ferme, un planning sprint par sprint et un cahier des charges qui correspondait exactement à ce dont j’avais parlé pendant l’appel. Aucune zone grise, aucune surprise pendant les 3 mois de production. Le site a été livré à la date promise, au prix promis.', author: 'Aïssatou K.', role: 'Fondatrice, marque de cosmétiques, Dakar' },
+        { text: 'Les démos hebdomadaires changent tout. Au lieu de stresser pendant 3 mois en attendant le résultat final, je voyais l’avancée chaque vendredi. Je pouvais ajuster une couleur, changer un texte, valider une fonctionnalité. À la fin, le résultat correspondait à 100 % à ce que j’avais en tête.', author: 'Marc D.', role: 'Directeur général, PME logistique, Abidjan' },
+        { text: 'Ce qui me bluffe encore aujourd’hui, c’est le suivi mensuel. Le rapport arrive le 5 de chaque mois, propre, chiffré, avec les recommandations pour le mois suivant. Le ROI est mesurable, les arbitrages budgétaires sont rationnels. Nous avons doublé notre trafic en 8 mois grâce à cette discipline.', author: 'Fatou S.', role: 'Responsable marketing, école supérieure, Cotonou' },
+      ],
+    },
+    { kind: 'cta', variant: 'parent', title: 'Une grille tarifaire transparente', text: 'Site vitrine, e-commerce, SEO, community management, automatisation : consultez nos tarifs indicatifs par région, confirmés par un devis ferme sous 48 h.', ctas: [{ href: '/tarifs', label: 'Voir nos tarifs' }], icon: 'wallet' },
+    {
+      kind: 'faq', variant: 'main',
+      head: { eyebrow: 'Questions méthodologie', title: 'Vos questions, <span class="grad">nos réponses</span>', lead: 'Les 8 questions que nos clients posent le plus souvent sur notre façon de travailler. Si la vôtre n’y est pas, <a href="/contact">contactez-nous directement</a>.' },
+      items: [
+        { q: 'Pourquoi travailler en sprints hebdomadaires ?', a: 'Les sprints hebdomadaires permettent de livrer du concret chaque semaine, d’ajuster le tir tôt et d’éviter l’effet tunnel des projets de 3 à 6 mois où l’on ne voit rien avant la fin. À la fin de chaque sprint, vous avez une démonstration, vous validez, nous continuons. C’est la méthode des équipes produit modernes : moins de stress, moins de retours en arrière, plus de satisfaction finale.' },
+        { q: 'Comment validez-vous concrètement les livrables ?', a: 'Chaque livrable est partagé sur le support adapté : Figma pour les maquettes, Notion pour les documents stratégiques, un environnement de préproduction pour le code, Google Drive pour les contenus. Vous commentez directement sur le support et nous itérons en 48 heures maximum. Deux cycles de retours sont inclus par livrable, et la validation finale se fait par e-mail pour garder une trace de l’accord.' },
+        { q: 'Qu’est-ce qu’un livrable, exactement ?', a: 'Un livrable est un élément concret et utilisable que nous vous remettons à une étape précise du projet : les wireframes et les maquettes Figma en phase 4, l’environnement de préproduction en phase 5, le code source GitHub en phase 6, le rapport mensuel en phase 7. Chaque livrable est listé dans le devis initial avec sa date prévisionnelle.' },
+        { q: 'Que se passe-t-il si je ne suis pas satisfait du résultat ?', a: 'Première mesure : la garantie de 30 jours après la livraison couvre tout bogue, ajustement mineur ou correction, sans frais. Deuxième mesure : les deux cycles de retours inclus à chaque livrable permettent d’ajuster en cours de route. Troisième mesure : si le résultat ne correspond toujours pas, nous proposons une session de cadrage gratuite pour identifier l’écart et reprendre la partie concernée.' },
+        { q: 'Combien de temps prend un projet en moyenne ?', a: 'Cela dépend du type de projet : 4 à 6 semaines pour un site vitrine professionnel, 8 à 12 semaines pour un site sur mesure Next.js, 10 à 14 semaines pour un e-commerce, 3 mois pour une refonte SEO complète, 12 à 24 semaines pour une application web métier. Le planning précis vous est annoncé lors du cadrage, et si un retard survient de notre côté, vous êtes prévenu sous 48 heures avec un plan de rattrapage.' },
+        { q: 'Travaillez-vous au forfait ou en régie ?', a: 'Au forfait pour les projets définis et bornés : création de site, refonte, identité graphique, tunnel de vente, application MVP. Le périmètre est figé, le prix est fixe. En abonnement mensuel pour les prestations récurrentes : SEO, community management, maintenance, direction marketing externalisée. Nous vous conseillons honnêtement le format le plus pertinent.' },
+        { q: 'Qui est mon interlocuteur au quotidien ?', a: 'Dès le lancement de la phase 3, un chef de projet dédié vous est attribué. Il centralise les échanges, les validations, le reporting et l’organisation des démonstrations hebdomadaires. Pour les sujets pointus, il mobilise l’expert concerné (designer, développeur, rédacteur SEO…) et fait le lien : une seule porte d’entrée, simple et efficace.' },
+        { q: 'Et après le lancement, vous disparaissez ?', a: 'Non, c’est notre fierté. Le suivi mensuel de la phase 7 comprend un reporting chiffré, un support technique sous 4 heures ouvrées, des optimisations continues fondées sur les données réelles et un point stratégique trimestriel. Vous restez libre : aucun engagement contractuel ne vous empêche de partir, et vous gardez 100 % de votre propriété.' },
+      ],
+    },
+  ],
+};

@@ -93,6 +93,7 @@ export const CASES = [
     text: 'Plateforme immobilière Next.js et Supabase pour l’Afrique de l’Ouest : annonces vérifiées, paiements sécurisés par séquestre et contrats numériques.',
     stats: [{ k: 'Séquestre', v: 'paiements protégés' }, { k: '3 profils', v: 'propriétaires, locataires, étudiants' }],
     href: '/realisations/kaza-la-plateforme-immobiliere-qui-securise-la-location-en-afrique-de-l-ouest',
+    image: '/media/6a4536c88a05af5e91c7ff69',
     hue: 18,
   },
   {
@@ -101,6 +102,7 @@ export const CASES = [
     text: 'Place de marché bilingue et multidevise : profils vérifiés, messagerie en temps réel et paiement sous séquestre (Stripe, Mobile Money, crypto).',
     stats: [{ k: 'Séquestre', v: 'transactions protégées' }, { k: 'Multidevise', v: 'EUR · FCFA · USD · GBP' }],
     href: '/realisations/freelancehigh-la-marketplace-freelance-qui-securise-chaque-transaction',
+    image: '/media/6a4539c5c3cc3ca6d4457bb8',
     hue: 32,
   },
   {
@@ -109,6 +111,7 @@ export const CASES = [
     text: 'Marketplace no-code pour les créateurs d’Afrique francophone : formations, e-books et coachings, paiement Mobile Money et assistant IA intégré.',
     stats: [{ k: '10 %', v: 'de commission, zéro abonnement' }, { k: 'Mobile Money', v: 'Wave · Orange · MTN' }],
     href: '/realisations/novakou-vendre-ses-formations-et-produits-digitaux-en-afrique-francophone',
+    image: '/media/6a452a9022a010ccdcf037d3',
     hue: 8,
   },
 ];

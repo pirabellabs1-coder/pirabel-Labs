@@ -227,8 +227,10 @@ const faqLd = {
         {CASES.map((c) => (
           <li data-reveal>
             <a href={c.href} class="case glass glass--flat spot">
-              <div class="case__cover" style={`--h:${c.hue}`} aria-hidden="true">
-                <span class="case__initial">{c.title.charAt(0)}</span>
+              <div class:list={['case__cover', { 'case__cover--img': c.image }]} style={`--h:${c.hue}`}>
+                {c.image
+                  ? <img class="case__img" src={c.image} alt={`Aperçu du projet ${c.title}`} width="1200" height="750" loading="lazy" decoding="async" onerror="this.remove()" />
+                  : <span class="case__initial" aria-hidden="true">{c.title.charAt(0)}</span>}
               </div>
               <div class="case__body">
                 <p class="case__tag">{c.tag}</p>

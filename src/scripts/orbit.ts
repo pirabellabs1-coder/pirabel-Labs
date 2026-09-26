@@ -104,28 +104,10 @@ export async function initOrbit(root: HTMLElement) {
   const soft = document.documentElement.classList.contains('motion-soft');
   const lis = () => Array.from(list.querySelectorAll<HTMLLIElement>('.orbit__item'));
 
-  // Mode doux : pas d'orbite, mais le projet « À la une » change en fondu toutes les 6 s
-  // (pause au survol, au focus, hors écran ou onglet masqué).
-  if (soft) {
-    root.classList.add('is-static');
-    let idx = 0, hold = false, onScreen = false;
-    const mark = (li: HTMLLIElement) => lis().forEach((x) => x.classList.toggle('is-current', x === li));
-    const pick = (li: HTMLLIElement, user: boolean) => { showInfo(li, user); mark(li); idx = lis().indexOf(li); };
-    list.addEventListener('pointerover', (e) => { const li = (e.target as HTMLElement).closest<HTMLLIElement>('.orbit__item'); if (li) { hold = true; pick(li, true); } });
-    list.addEventListener('pointerleave', () => { hold = false; });
-    list.addEventListener('focusin', (e) => { const li = (e.target as HTMLElement).closest<HTMLLIElement>('.orbit__item'); if (li) { hold = true; pick(li, true); } });
-    list.addEventListener('focusout', () => { hold = false; });
-    new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; }).observe(root);
-    const first = lis()[0];
-    if (first) pick(first, false);
-    window.setInterval(() => {
-      const all = lis();
-      if (hold || !onScreen || document.hidden || all.length < 2) return;
-      pick(all[(idx + 1) % all.length], false);
-    }, 6000);
-    if (toggle) toggle.hidden = true;
-    return;
-  }
+  // Mode doux (système qui réduit les animations) : l'orbite tourne quand même, 1,6 fois plus lentement,
+  // et reste suspendable par le bouton pause (WCAG 2.2.2).
+  const turnMs = soft ? TURN_MS * 1.6 : TURN_MS;
+  const dockEvery = soft ? DOCK_EVERY * 1.3 : DOCK_EVERY;
 
   root.classList.add('is-orbiting');
   const items: Item[] = lis().map((el, i, arr) => ({ el, base: (i / arr.length) * Math.PI * 2, docked: false, flying: false, x: 0, y: 0, s: 1, z: 0 }));
@@ -153,7 +135,7 @@ export async function initOrbit(root: HTMLElement) {
   };
 
   const orbitPos = (it: Item, time: number) => {
-    const a = it.base + (time / TURN_MS) * Math.PI * 2;
+    const a = it.base + (time / turnMs) * Math.PI * 2;
     const depth = (Math.sin(a) + 1) / 2; // 0 = derrière, 1 = devant
     return {
       x: cx + Math.cos(a) * rx - w0 / 2,
@@ -222,7 +204,7 @@ export async function initOrbit(root: HTMLElement) {
       it.el.style.opacity = p.o.toFixed(2);
       if (p.z !== it.z) { it.z = p.z; it.el.style.zIndex = String(p.z); }
     }
-    if (running() && sinceDock > DOCK_EVERY) {
+    if (running() && sinceDock > dockEvery) {
       const front = items.filter((i) => !i.docked && !i.flying).sort((a, b) => orbitPos(b, t).depth - orbitPos(a, t).depth)[0];
       if (front) dock(front);
     }

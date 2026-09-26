@@ -99,9 +99,25 @@ async function ensureDB() {
   if (!dbReady) {
     dbReady = connectDB().then(async () => {
       try { await bootstrapAdmin(); } catch (e) { console.error('[bootstrap] failed:', e.message); }
+      try { await seedCaseStudies(); } catch (e) { console.error('[seed.cases] failed:', e.message); }
     });
   }
   return dbReady;
+}
+
+// === Réalisations versionnées dans le dépôt (app/seed/case-studies.json) ===
+// Ajoutées à la base au premier démarrage si leur slug n'existe pas encore. Jamais de mise à jour :
+// une fiche modifiée ou supprimée depuis l'admin n'est pas écrasée (suppression = retirer aussi du fichier).
+async function seedCaseStudies() {
+  const seeds = require('../app/seed/case-studies.json');
+  if (!Array.isArray(seeds) || !seeds.length) return;
+  const slugs = seeds.map((c) => c.slug).filter(Boolean);
+  const existing = new Set((await CaseStudy.find({ slug: { $in: slugs } }).select('slug').lean()).map((c) => c.slug));
+  for (const c of seeds) {
+    if (!c.slug || existing.has(c.slug)) continue;
+    await CaseStudy.create({ ...c, status: c.status || 'publie', publishedAt: new Date() });
+    console.log('[seed.cases] ajoutée :', c.slug);
+  }
 }
 
 // === Auto-create admin on first boot if env vars are set ===
@@ -425,7 +441,7 @@ const rdvHour = (v) => v.replace(':', '\u00a0h\u00a0'); // « 09 h 00 »
 const RDV_CSS = '<style>' +
   '.rdv{display:grid;gap:clamp(28px,4vw,56px);align-items:start;padding-top:clamp(120px,13vw,160px);}' +
   '@media(min-width:1024px){.rdv{grid-template-columns:.9fr 1.1fr;}}' +
-  '.rdv__intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2rem,1.3rem + 2.8vw,3.4rem);line-height:1.05;letter-spacing:-.035em;}' +
+  '.rdv__intro h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.1rem + 2.2vw,2.9rem);line-height:1.05;letter-spacing:-.035em;}' +
   '.rdv__intro .px-hero__lead{margin:18px 0 0;}' +
   '.rdv__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;}' +
   '.rdv__contact{display:grid;gap:10px;margin-top:28px;}' +
@@ -1172,7 +1188,7 @@ main [hidden]{display:none!important;}
 .px-hero{max-width:860px;margin-inline:auto;padding:clamp(128px,14vw,170px) 0 clamp(30px,4vw,48px);text-align:center;}
 main p.eyebrow{max-width:none;margin:0 0 18px;color:var(--accent-3);font-size:.78rem;}
 .px-hero .eyebrow{justify-content:center;}
-.px-hero h1,.px-title{font-family:var(--font-display);font-weight:800;font-size:clamp(2.1rem,1.25rem + 3.4vw,3.9rem);letter-spacing:-.035em;line-height:1.05;}
+.px-hero h1,.px-title{font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.1rem + 2.2vw,2.9rem);letter-spacing:-.035em;line-height:1.05;}
 .px-hero__lead{max-width:660px;margin:20px auto 0;color:var(--text-2);font-size:var(--fs-lead);text-wrap:pretty;}
 .px-hero__ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px;}
 .px-hero .eyebrow,.px-hero__lead,.px-hero__ctas{animation:px-rise .9s var(--ease-out) both;}
@@ -1260,7 +1276,7 @@ main p.eyebrow{max-width:none;margin:0 0 18px;color:var(--accent-3);font-size:.7
 .bx-preview{display:flex;align-items:center;gap:10px;margin:0 0 22px;padding:12px 16px;border-radius:12px;font-weight:600;color:var(--text);background:rgba(251,191,36,.14);box-shadow:inset 0 0 0 1px rgba(251,191,36,.5);}
 .bx-preview b{padding:3px 10px;border-radius:999px;background:var(--warning);color:#1a1200;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;}
 .bx-head .bx-cat{display:inline-flex;padding:6px 12px;border-radius:999px;background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.3);}
-.bx-head h1{margin:16px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.95rem,1.3rem + 2.4vw,3.05rem);line-height:1.08;letter-spacing:-.03em;}
+.bx-head h1{margin:16px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.1rem + 2.2vw,2.9rem);line-height:1.08;letter-spacing:-.03em;}
 .bx-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-bottom:28px;color:var(--text-3);font-size:.9rem;}
 .bx-meta strong{color:var(--text-2);font-weight:600;}
 .bx-meta .icon{color:var(--accent-2);}
@@ -2944,7 +2960,7 @@ app.get('/carrieres/:slug', async (req, res) => {
        ${bc.ld}
        <style>
        .jd{max-width:820px;margin-inline:auto;}
-       .jd h1{margin:14px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.9rem,1.25rem + 2.4vw,3rem);line-height:1.08;letter-spacing:-.03em;}
+       .jd h1{margin:14px 0 18px;font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.1rem + 2.2vw,2.9rem);line-height:1.08;letter-spacing:-.03em;}
        .jd__meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(24px,3vw,36px);}
        .jd__m{padding:7px 14px;border-radius:999px;font-family:var(--font-ui);font-size:.84rem;color:var(--text-2);background:rgba(var(--ink),.05);box-shadow:inset 0 0 0 1px rgba(var(--ink),.12);}
        .jd__m--c{color:var(--accent-3);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.3);font-weight:600;}
@@ -4361,7 +4377,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-wip,.cd-priv{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-family:var(--font-ui);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}' +
       '.cd-wip{color:var(--warning);background:rgba(251,191,36,.12);box-shadow:inset 0 0 0 1px rgba(251,191,36,.42);}' +
       '.cd-priv{color:var(--text-2);background:rgba(var(--ink),.06);box-shadow:inset 0 0 0 1px rgba(var(--ink),.16);}' +
-      '.cd-head h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.2rem + 2.4vw,3rem);line-height:1.08;letter-spacing:-.03em;}' +
+      '.cd-head h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.85rem,1.1rem + 2.2vw,2.9rem);line-height:1.08;letter-spacing:-.03em;}' +
       '.cd-lead{max-width:680px;margin:18px auto 0;color:var(--text-2);font-size:var(--fs-lead);line-height:1.6;}' +
       '.cd-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px;}' +
       '.cd-hero{max-width:1100px;margin:0 auto clamp(28px,4vw,44px);padding:6px;border-radius:var(--r-xl);}' +

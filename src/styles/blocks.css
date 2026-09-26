@@ -35,7 +35,7 @@
 .b-hero__grid { display: grid; gap: 48px; align-items: center; }
 @media (min-width: 1024px) { .b-hero__grid { grid-template-columns: 1.08fr 0.92fr; } }
 .b-hero__eyebrow { margin-bottom: 22px; animation: hero-rise 0.9s var(--ease-out) both; }
-.b-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 1.3rem + 3.6vw, 4.1rem); line-height: 1.04; letter-spacing: -0.035em; }
+.b-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.85rem, 1.1rem + 2.2vw, 2.9rem); line-height: 1.08; text-wrap: balance; letter-spacing: -0.035em; }
 .b-hero__tagline { margin-top: 18px; font-family: var(--font-ui); font-weight: 600; font-size: 1rem; color: var(--accent-3); animation: hero-rise 0.9s var(--ease-out) 0.1s both; }
 .b-hero__lead { margin-top: 18px; max-width: 640px; color: var(--text-2); font-size: var(--fs-lead); animation: hero-rise 0.9s var(--ease-out) 0.18s both; }
 .b-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; animation: hero-rise 0.9s var(--ease-out) 0.28s both; }

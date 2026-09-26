@@ -18,7 +18,7 @@ const FLIGHT_MS = 950;
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 const hue = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
-const safeImage = (u: string) => (/^(\/media\/[\w-]+|https:\/\/[^\s"'<>]+)$/.test(u) ? u : '');
+const safeImage = (u: string) => (/^(\/media\/[\w-]+|\/img\/realisations\/[\w.-]+\.(webp|jpe?g|png|avif)|https:\/\/[^\s"'<>]+)$/.test(u) ? u : '');
 
 async function loadLive(list: HTMLUListElement): Promise<void> {
   const ctrl = new AbortController();

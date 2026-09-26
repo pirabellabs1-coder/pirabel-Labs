@@ -16,7 +16,7 @@ import { HERO_PROOF } from '../../data/home';
   <div class="container hero__inner">
     <p class="hero__badge chip"><span class="hero__pulse" aria-hidden="true"></span>Agence marketing digital 360°</p>
     <h1 id="hero-title" class="hero__title">
-      Transformez votre présence en ligne en véritable moteur de <span class="grad hero__accent">croissance</span>.
+      <span class="hero__line">Transformez votre présence en ligne</span> <span class="hero__line">en véritable moteur</span> <span class="hero__line">de <span class="grad hero__accent">croissance</span>.</span>
     </h1>
     <p class="hero__lead">
       Pirabel Labs accompagne les entreprises ambitieuses grâce à ses expertises en <strong>acquisition</strong> et en <strong>création digitale</strong>. Nous imaginons et déployons votre stratégie avec une logique de performance et de rentabilité, avec un seul interlocuteur du brief à la mise en ligne.
@@ -83,10 +83,14 @@ import { HERO_PROOF } from '../../data/home';
   .hero__badge { margin: 0 auto 26px; animation: hero-rise 0.9s var(--ease-out) 0.05s both; }
   .hero__pulse { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
   .hero__pulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--accent); animation: hero-pulse 2.4s var(--ease-out) 3; }
+  /* Titre en triangle inversé : 3 lignes au plus (la plus longue en haut) sur tablette et ordinateur. */
   .hero__title {
-    max-width: 19ch; margin-inline: auto;
-    font-family: var(--font-display); font-size: clamp(2.1rem, 1.25rem + 3.2vw, 3.85rem); font-weight: 800;
-    line-height: 1.02; letter-spacing: -0.035em;
+    margin-inline: auto;
+    font-family: var(--font-display); font-size: clamp(2rem, 0.95rem + 3vw, 3.4rem); font-weight: 800;
+    line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance;
+  }
+  @media (min-width: 900px) {
+    .hero__line { display: block; white-space: nowrap; }
   }
   .hero__lead {
     max-width: 680px; margin: 26px auto 0;
@@ -124,9 +128,9 @@ import { HERO_PROOF } from '../../data/home';
     font-family: var(--font-ui); font-size: 0.8rem; color: var(--text-2);
     animation: hero-float-in 1.1s var(--ease-out) both;
   }
-  .fcard--a { top: 22%; left: 5%; width: 210px; }
+  .fcard--a { top: 49%; left: 4%; width: 210px; }
   .fcard--a .fcard__body { animation-delay: 0.55s; }
-  .fcard--b { top: 17%; right: 5%; width: 230px; }
+  .fcard--b { top: 46%; right: 4%; width: 230px; }
   .fcard--b .fcard__body { animation-delay: 0.7s; }
   .fcard--c { bottom: 13%; left: 4%; }
   .fcard--c .fcard__body { flex-direction: row; align-items: center; gap: 12px; animation-delay: 0.85s; }

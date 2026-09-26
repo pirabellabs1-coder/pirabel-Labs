@@ -1,7 +1,7 @@
 /* Page contact */
 .c-hero { padding: 150px 0 40px; text-align: center; }
 .c-hero .eyebrow { justify-content: center; }
-.c-hero__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 1.4rem + 3.6vw, 4.2rem); letter-spacing: -0.035em; line-height: 1.04; }
+.c-hero__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.85rem, 1.1rem + 2.2vw, 2.9rem); letter-spacing: -0.035em; line-height: 1.04; }
 .c-hero__lead { max-width: 640px; margin: 20px auto 0; color: var(--text-2); font-size: var(--fs-lead); }
 .c-hero__trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 28px; }
 .c-hero .eyebrow, .c-hero__lead, .c-hero__trust { animation: hero-rise 0.9s var(--ease-out) both; }

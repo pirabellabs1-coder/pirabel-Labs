@@ -100,6 +100,7 @@ async function ensureDB() {
     dbReady = connectDB().then(async () => {
       try { await bootstrapAdmin(); } catch (e) { console.error('[bootstrap] failed:', e.message); }
       try { await seedCaseStudies(); } catch (e) { console.error('[seed.cases] failed:', e.message); }
+      try { await patchCaseStudies(); } catch (e) { console.error('[seed.casePatches] failed:', e.message); }
       try { await seedArticles(); } catch (e) { console.error('[seed.articles] failed:', e.message); }
     });
   }
@@ -119,6 +120,38 @@ async function seedCaseStudies() {
     await CaseStudy.create({ ...c, status: c.status || 'publie', publishedAt: new Date() });
     console.log('[seed.cases] ajoutée :', c.slug);
   }
+}
+
+// === Correctifs ponctuels de réalisations existantes (app/seed/case-patches.json) ===
+// Chaque correctif s'exécute une seule fois (ids mémorisés dans Setting) et seulement si sa condition tient :
+// `whenEmpty` (champ encore vide) ou `whenEqual` (valeur connue, ex. lien mort). Une fiche retouchée depuis l'admin n'est jamais écrasée.
+const CASE_PATCHES_KEY = 'seed.casePatches.applied';
+async function patchCaseStudies() {
+  const patches = require('../app/seed/case-patches.json');
+  if (!Array.isArray(patches) || !patches.length) return;
+  const row = await Setting.findOne({ key: CASE_PATCHES_KEY }).lean();
+  let applied = [];
+  try { applied = JSON.parse((row && row.value) || '[]'); } catch (e) { applied = []; }
+  const done = new Set(Array.isArray(applied) ? applied : []);
+  const todo = patches.filter((p) => p && p.id && p.slug && p.set && !done.has(p.id));
+  if (!todo.length) return;
+  const docs = await CaseStudy.find({ slug: { $in: [...new Set(todo.map((p) => p.slug))] } });
+  const bySlug = new Map(docs.map((d) => [d.slug, d]));
+  const isEmpty = (v) => v == null || v === '' || (Array.isArray(v) && v.length === 0);
+  const norm = (v) => String(v || '').trim().replace(/\/+$/, '').toLowerCase();
+  const changed = new Set();
+  for (const p of todo) {
+    const doc = bySlug.get(p.slug);
+    if (!doc) continue; // fiche absente : on réessaiera au prochain démarrage
+    done.add(p.id);
+    if (p.whenEmpty && !isEmpty(doc[p.whenEmpty])) continue;
+    if (p.whenEqual && !Object.entries(p.whenEqual).every(([k, v]) => norm(doc[k]) === norm(v))) continue;
+    doc.set(p.set);
+    changed.add(doc);
+    console.log('[seed.casePatches] appliqué :', p.id);
+  }
+  for (const doc of changed) await doc.save();
+  await Setting.updateOne({ key: CASE_PATCHES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
 }
 
 // === Articles de blog versionnés (app/seed/articles.json) : ajoutés en BROUILLON si leur slug n'existe pas ===

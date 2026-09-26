@@ -1,0 +1,119 @@
+[
+  {
+    "id": "2026-09-afblock-image",
+    "slug": "afblock-l-ecosysteme-web3-pense-pour-l-afrique",
+    "whenEmpty": "featuredImage",
+    "set": {
+      "featuredImage": "/img/realisations/afblock-1.webp",
+      "imageAlt": "Visuel illustratif de la page d’accueil d’Afblock : portefeuille crypto multi-actifs et dépôt Mobile Money"
+    }
+  },
+  {
+    "id": "2026-09-afblock-lien-mort",
+    "slug": "afblock-l-ecosysteme-web3-pense-pour-l-afrique",
+    "whenEqual": { "projectUrl": "https://afblock.com" },
+    "set": { "projectUrl": "" }
+  },
+  {
+    "id": "2026-09-goscale-finance-image",
+    "slug": "goscale-finance-l-application-de-gestion-financiere-personnelle",
+    "whenEmpty": "featuredImage",
+    "set": {
+      "featuredImage": "/img/realisations/goscale-finance-1.webp",
+      "imageAlt": "Visuel illustratif du tableau de bord de GoScale Finance : revenus, dépenses et statistiques du budget"
+    }
+  },
+  {
+    "id": "2026-09-pirabel-academy-image",
+    "slug": "pirabel-academy-la-plateforme-de-formation-a-l-automatisation-et-a-l-ia",
+    "whenEmpty": "featuredImage",
+    "set": {
+      "featuredImage": "/img/realisations/pirabel-academy-1.webp",
+      "imageAlt": "Visuel illustratif de la page d’accueil de Pirabel Academy : cours n8n, Make, Zapier et GoHighLevel, atelier de workflows"
+    }
+  },
+  {
+    "id": "2026-09-pirabel-academy-galerie",
+    "slug": "pirabel-academy-la-plateforme-de-formation-a-l-automatisation-et-a-l-ia",
+    "whenEmpty": "gallery",
+    "set": { "gallery": ["/img/realisations/pirabel-academy-2.webp"] }
+  },
+  {
+    "id": "2026-09-ultimauto-app-image",
+    "slug": "ultimauto-app-l-application-de-facturation-de-gestion-de-garage",
+    "whenEmpty": "featuredImage",
+    "set": {
+      "featuredImage": "/img/realisations/ultimauto-app-1.webp",
+      "imageAlt": "Visuel illustratif du tableau de bord d’Ultimauto App : devis, factures et interventions de l’atelier"
+    }
+  },
+  {
+    "id": "2026-09-garage-boost-manager-image",
+    "slug": "garage-boost-manager-facturation-gestion-tout-en-un-pour-garages",
+    "whenEmpty": "featuredImage",
+    "set": {
+      "featuredImage": "/img/realisations/garage-boost-manager-1.webp",
+      "imageAlt": "Visuel illustratif de Garage Boost Manager : tableau de bord de l’atelier et rapport d’intervention sur mobile"
+    }
+  },
+  {
+    "id": "2026-09-goscale-studio-galerie",
+    "slug": "goscale-studio-l-automatisation-et-l-ia-au-service-de-la-croissance-des-entrepri",
+    "whenEmpty": "gallery",
+    "set": {
+      "gallery": [
+        "/img/realisations/goscale-studio-2.webp",
+        "/img/realisations/goscale-studio-3.webp",
+        "/img/realisations/goscale-studio-4.webp"
+      ]
+    }
+  },
+  {
+    "id": "2026-09-goscale-studio-lien",
+    "slug": "goscale-studio-l-automatisation-et-l-ia-au-service-de-la-croissance-des-entrepri",
+    "whenEqual": { "projectUrl": "https://goscalestudio.com" },
+    "set": { "projectUrl": "https://goscale-app-phi.vercel.app/" }
+  },
+  {
+    "id": "2026-09-pirabel-one-galerie",
+    "slug": "pirabel-one-la-boutique-en-ligne-d-une-maison-de-mode-beninoise",
+    "whenEmpty": "gallery",
+    "set": {
+      "gallery": [
+        "/img/realisations/pirabel-one-2.webp",
+        "/img/realisations/pirabel-one-3.webp",
+        "/img/realisations/pirabel-one-4.webp"
+      ]
+    }
+  },
+  {
+    "id": "2026-09-pirabel-one-lien",
+    "slug": "pirabel-one-la-boutique-en-ligne-d-une-maison-de-mode-beninoise",
+    "whenEqual": { "projectUrl": "https://pirabel-one.store" },
+    "set": { "projectUrl": "https://pirabel-market.vercel.app/" }
+  },
+  {
+    "id": "2026-09-callpme-galerie",
+    "slug": "callpme-l-agent-vocal-ia-qui-repond-a-vos-appels-24h-24",
+    "whenEmpty": "gallery",
+    "set": {
+      "gallery": [
+        "/img/realisations/callpme-2.webp",
+        "/img/realisations/callpme-3.webp",
+        "/img/realisations/callpme-4.webp"
+      ]
+    }
+  },
+  {
+    "id": "2026-09-omonlola-vitrine-lien-mort",
+    "slug": "omonlola-agossou-site-vitrine-de-marque-personnelle",
+    "whenEqual": { "projectUrl": "https://omonlola.goscalestudio.com" },
+    "set": { "projectUrl": "" }
+  },
+  {
+    "id": "2026-09-eopsai-lien-mort",
+    "slug": "eopsai-le-site-vitrine-d-une-agence-ia-pense-comme-un-produit",
+    "whenEqual": { "projectUrl": "https://agence.eopsai.com" },
+    "set": { "projectUrl": "" }
+  }
+]

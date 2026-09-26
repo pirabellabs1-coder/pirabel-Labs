@@ -155,7 +155,12 @@ async function patchCaseStudies() {
 }
 
 // === Articles de blog versionnés (app/seed/articles.json) : ajoutés en BROUILLON si leur slug n'existe pas ===
-// Le fondateur les relit et les publie depuis l'admin. Jamais de mise à jour d'un article existant.
+// Jamais de mise à jour du contenu d'un article existant.
+// Publication groupée unique (lot mémorisé dans Setting) : la série SaaS paraît d'un bloc, car ses articles se citent
+// entre eux (demande du fondateur, 2026-09-26). Seuls les brouillons passent en ligne ; l'ordre du fichier donne l'ordre
+// d'affichage (le guide pilier en tête), avec une minute d'écart entre deux articles.
+const ARTICLES_PUBLISH_KEY = 'seed.articles.published';
+const ARTICLES_PUBLISH_BATCH = 'saas-2026-09';
 async function seedArticles() {
   const seeds = require('../app/seed/articles.json');
   if (!Array.isArray(seeds) || !seeds.length) return;
@@ -166,6 +171,16 @@ async function seedArticles() {
     await Article.create({ ...a, author: 'Lissanon Gildas', status: 'brouillon' });
     console.log('[seed.articles] brouillon ajouté :', a.slug);
   }
+  const batch = await Setting.findOne({ key: ARTICLES_PUBLISH_KEY }).lean();
+  if (batch && batch.value === ARTICLES_PUBLISH_BATCH) return;
+  const now = Date.now();
+  let published = 0;
+  for (const [i, slug] of slugs.entries()) {
+    const r = await Article.updateOne({ slug, status: 'brouillon' }, { $set: { status: 'publie', publishedAt: new Date(now - i * 60000), updatedAt: new Date(now) } });
+    published += r.modifiedCount || 0;
+  }
+  await Setting.updateOne({ key: ARTICLES_PUBLISH_KEY }, { $set: { value: ARTICLES_PUBLISH_BATCH, updatedAt: new Date() } }, { upsert: true });
+  console.log('[seed.articles] lot ' + ARTICLES_PUBLISH_BATCH + ' publié :', published, 'article(s)');
 }
 
 // === Auto-create admin on first boot if env vars are set ===

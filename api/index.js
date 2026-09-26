@@ -3418,7 +3418,8 @@ const chatLimiter = rateLimit({
 app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
   try {
     const apiKey = await getOpenRouterKey();
-    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', reply: "L'assistant n'est pas disponible pour le moment. Écrivez-nous à contact@pirabellabs.com, nous répondons vite." });
+    const groqKey = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
+    if (!apiKey && !groqKey) return res.status(503).json({ error: 'NO_KEY', reply: "L'assistant n'est pas disponible pour le moment. Écrivez-nous à contact@pirabellabs.com, nous répondons vite." });
 
     const agent = AI.PUBLIC_AGENT;
     // Historique volontairement court : chaque message renvoie tout le contexte au modèle.
@@ -3436,8 +3437,19 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
     let captured = false;
 
     // Boucle courte : le chatbot doit répondre vite (2 tours d'outils maximum).
+    // Fournisseur : OpenRouter, puis Groq en relais si OpenRouter refuse (crédit épuisé, surcharge, panne).
+    let useGroq = !apiKey;
+    const groqModel = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
+    const ask = () => useGroq
+      ? AI.callGroq({ apiKey: groqKey, model: groqModel, messages: convo, tools, maxTokens: 400, temperature: 0.6, timeoutMs: 15000 })
+      : AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 400, temperature: 0.6, timeoutMs: 18000 });
     for (let turn = 0; turn < 3; turn++) {
-      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 400, temperature: 0.6, timeoutMs: 18000 });
+      let { ok, status, data } = await ask().catch((e) => ({ ok: false, status: 0, data: { error: e.name } }));
+      if (!ok && !useGroq && groqKey && [0, 402, 408, 429, 500, 502, 503, 504].includes(status)) {
+        console.error('[chat.public] OpenRouter', status, '→ relais Groq');
+        useGroq = true;
+        ({ ok, status, data } = await ask().catch((e) => ({ ok: false, status: 0, data: { error: e.name } })));
+      }
       if (!ok) {
         console.error('[chat.public]', status, JSON.stringify(data).slice(0, 200));
         return res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous directement à contact@pirabellabs.com ou sur WhatsApp, l'équipe vous répondra rapidement." });

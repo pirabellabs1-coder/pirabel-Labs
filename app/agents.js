@@ -368,13 +368,23 @@ N'invente jamais d'identifiant : appelle d'abord les outils de lecture pour obte
 // ---------------------------------------------------------------------------
 // Appel OpenRouter (API compatible OpenAI)
 // ---------------------------------------------------------------------------
-async function callOpenRouter({ apiKey, model, messages, tools, maxTokens = 4000, temperature = 0.5, timeoutMs = 22000 }) {
+async function callOpenRouter(opts) {
+  return callChatCompletions(OPENROUTER_ENDPOINT, opts);
+}
+
+// Relais Groq (API compatible OpenAI) : utilisé quand OpenRouter refuse (crédit épuisé, surcharge, panne).
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+async function callGroq(opts) {
+  return callChatCompletions(GROQ_ENDPOINT, opts);
+}
+
+async function callChatCompletions(endpoint, { apiKey, model, messages, tools, maxTokens = 4000, temperature = 0.5, timeoutMs = 22000 }) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     const body = { model, messages, max_tokens: maxTokens, temperature };
     if (tools && tools.length) { body.tools = tools; body.tool_choice = 'auto'; }
-    const r = await fetch(OPENROUTER_ENDPOINT, {
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -395,6 +405,6 @@ async function callOpenRouter({ apiKey, model, messages, tools, maxTokens = 4000
 module.exports = {
   AGENTS, ADMIN_AGENTS, PUBLIC_AGENT,
   AGENCY_KNOWLEDGE, QUALITY_RULES, VALIDATION_RULE,
-  buildSystemPrompt, callOpenRouter,
+  buildSystemPrompt, callOpenRouter, callGroq,
   MODEL_PRO, MODEL_FAST,
 };

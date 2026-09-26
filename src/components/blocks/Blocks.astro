@@ -24,7 +24,7 @@ const initials = (s = '') => s.replace(/[^\p{L}\s.-]/gu, '').split(/[\s.]+/).fil
 const isExt = (href = '') => /^https?:/.test(href) && !href.includes('pirabellabs.com');
 
 // Fond alterné sur les sections principales (pas sur le hero, le fil d'Ariane ni les bandeaux).
-const SKIP_ALT = new Set(['breadcrumb', 'hero', 'sticky', 'final', 'cta', 'anchors', 'legal']);
+const SKIP_ALT = new Set(['breadcrumb', 'hero', 'sticky', 'final', 'cta', 'anchors', 'legal', 'brief']);
 let alt = false;
 const withAlt = blocks.map((b) => { if (SKIP_ALT.has(b.kind)) return { b, alt: false }; alt = !alt; return { b, alt }; });
 ---
@@ -422,7 +422,7 @@ const withAlt = blocks.map((b) => { if (SKIP_ALT.has(b.kind)) return { b, alt: f
   );
 
   if (b.kind === 'anchors') return (
-    <nav class="b-anchors" aria-label={b.label}>
+    <nav class:list={['b-anchors', { 'b-anchors--static': b.sticky === false }]} aria-label={b.label}>
       <div class="container"><ul>
         {b.links.map((l) => <li><a href={l.href}>{l.icon && <Icon name={l.icon} size={16} />}{l.label}</a></li>)}
       </ul></div>
@@ -469,6 +469,66 @@ const withAlt = blocks.map((b) => { if (SKIP_ALT.has(b.kind)) return { b, alt: f
       </div>
       <p class="b-scroll-hint">Faites glisser le planning horizontalement pour tout voir.</p>
       {b.note && <p class="b-gantt__note" set:html={b.note} />}
+    </div></section>
+  );
+
+  if (b.kind === 'brief') return (
+    <section class="b-sec b-sec--brief" id={bid} aria-labelledby={`brief-${bi}`}>
+      <div class="container">
+        <div class="b-brief glass glass--flat spot" data-reveal="scale">
+          <div class="b-brief__main">
+            <p class="eyebrow">L’essentiel</p>
+            <h2 id={`brief-${bi}`} set:html={b.title} />
+            <div class="b-brief__text" set:html={b.html} />
+          </div>
+          <aside class="b-brief__side">
+            {b.points.length > 0 && (
+              <>
+                <p class="b-brief__label">Les points clés</p>
+                <ul class="b-list">{b.points.map((p) => <li><Icon name="check" size={16} />{p}</li>)}</ul>
+              </>
+            )}
+            {b.cta && <a href={b.cta.href} class="btn btn--primary">{b.cta.label} <Icon name="arrow-right" size={16} class="icon--end" /></a>}
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (b.kind === 'more') return (
+    <section class={secCls} id={bid}>
+      <div class="container">
+        {renderHead(b.head)}
+        <div class="b-more">
+          {b.sections.map((s) => (
+            <details class="b-more__item glass glass--flat">
+              <summary><h3 class="b-more__title" set:html={s.title} /><span class="faq__icon" aria-hidden="true"><Icon name="plus" size={18} /></span></summary>
+              <div class="b-more__body"><Astro.self blocks={[s.block]} /></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  if (b.kind === 'showcase') return (
+    <section class={secCls} id={bid}><div class="container">
+      <div class="b-row">{renderHead(b.head)}{b.cta && <a href={b.cta.href} class="btn btn--glass b-showcase__all">{b.cta.label} <Icon name="arrow-right" size={16} class="icon--end" /></a>}</div>
+      <ul class="b-showcase" data-stagger>
+        {b.items.map((it) => (
+          <li data-reveal>
+            <a href={it.href} class="b-show glass glass--flat spot">
+              <div class="b-show__img">{it.image ? <img src={it.image} alt={`Aperçu du projet ${it.title}`} width="1200" height="840" loading="lazy" decoding="async" onerror="this.remove()" /> : <span aria-hidden="true">{it.title.charAt(0)}</span>}</div>
+              <div class="b-show__body">
+                {it.tag && <p class="b-card__tag">{it.tag}</p>}
+                <h3 set:html={it.title} />
+                <p set:html={it.text} />
+                <span class="b-card__more">Voir le projet <Icon name="arrow-up-right" size={16} /></span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div></section>
   );
 

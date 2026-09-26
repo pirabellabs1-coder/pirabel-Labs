@@ -35,9 +35,13 @@ export type Block =
   // Pages uniques (données écrites à la main, src/data/pages/*)
   | { kind: 'profile'; head: Head; name: string; role: string; bio: string; tags: string[]; facts: { icon: string; text: string }[] }
   | { kind: 'zones'; head: Head; html: string; zones: { title: string; icon: string; items: string[] }[] }
-  | { kind: 'anchors'; label: string; links: { href: string; label: string; icon?: string }[] }
+  | { kind: 'anchors'; label: string; links: { href: string; label: string; icon?: string }[]; sticky?: boolean }
   | { kind: 'legal'; updated?: string; sections: { id: string; title: string; html: string }[] }
-  | { kind: 'gantt'; head: Head; weeks: number; rows: { label: string; icon: string; from: number; to: number }[]; note?: string };
+  | { kind: 'gantt'; head: Head; weeks: number; rows: { label: string; icon: string; from: number; to: number }[]; note?: string }
+  // Restructuration (src/lib/blocks/restructure.ts) : réponse directe sous le hero, contenus longs repliés.
+  | { kind: 'brief'; title: string; html: string; points: string[]; cta?: Cta; id?: string }
+  | { kind: 'more'; head: Head; sections: { title: string; block: Block }[]; id?: string }
+  | { kind: 'showcase'; head: Head; items: { title: string; text: string; href: string; image?: string; tag?: string }[]; cta?: Cta; id?: string };
 
 /* ---------------------------------------------------------------- Aides -- */
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();

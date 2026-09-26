@@ -13,6 +13,7 @@ import { listLegacySlugs, loadLegacy } from '../lib/legacy';
 import { parseBlocks, type Block } from '../lib/blocks/parse';
 import { fixText } from '../lib/blocks/fr';
 import { PRICE_OVERRIDES } from '../data/price-overrides';
+import { restructure } from '../lib/blocks/restructure';
 
 export function getStaticPaths() {
   return listLegacySlugs().map((slug) => ({ params: { slug } }));
@@ -21,7 +22,10 @@ export function getStaticPaths() {
 const { slug } = Astro.params;
 const page = loadLegacy(slug as string);
 const native = page.body.includes('class="s-hero"');
-const blocks: Block[] = native ? parseBlocks(page.body) : [];
+// Nouvelle structure (parcours de conversion + SEO/GEO) : pilote sur quelques pages avant généralisation.
+const PILOT = new Set(['seo', 'creation-site-web-cotonou', 'agence-web-dakar', 'agence-shopify']);
+const parsed: Block[] = native ? parseBlocks(page.body) : [];
+const blocks: Block[] = PILOT.has(slug as string) ? restructure(parsed) : parsed;
 // Grille tarifaire révisée : remplace les prix historiques des blocs « tarifs » de la page.
 const prices = PRICE_OVERRIDES[slug as string];
 if (prices) {

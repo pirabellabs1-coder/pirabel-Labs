@@ -35,7 +35,7 @@ const { page: raw } = Astro.props;
 
 // Même typographie que le contenu historique (espaces insécables, guillemets, points de suspension)
 // appliquée aux textes écrits à la main ; les liens, icônes et identifiants ne sont jamais touchés.
-const KEEP = /^(kind|variant|href|icon|icons|eyebrowIcon|id|src|visual|currency|service|path|legacyLd)$/;
+const KEEP = /^(kind|variant|href|icon|icons|eyebrowIcon|id|src|image|visual|currency|service|path|legacyLd)$/;
 // Champs rendus en HTML (set:html) : fixHtml ; tous les autres sont rendus en texte : fixText
 // (sinon « & » serait échappé deux fois et s'afficherait « &amp; »).
 // Les pastilles du hero (chips[].text) sont rendues en texte malgré leur clé « text ».

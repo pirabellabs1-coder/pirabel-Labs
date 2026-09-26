@@ -375,3 +375,46 @@ a.b-card:hover .b-card__arrow { color: var(--accent-2); transform: translate(3px
 .b-price__amount small { display: block; font-size: 0.8rem; color: var(--text-3); }
 .b-legal > * { min-width: 0; }
 .b-price__amount em { display: block; margin-top: 4px; font-style: normal; font-size: 0.84rem; color: var(--accent-3); }
+
+/* « L'essentiel » : réponse directe sous le hero (lisible par les visiteurs pressés et les moteurs IA). */
+.b-sec--brief { padding-block: 8px clamp(28px, 4vw, 48px); }
+.b-brief { display: grid; gap: clamp(20px, 3vw, 44px); padding: clamp(24px, 3.2vw, 44px); border-radius: var(--r-xl); }
+@media (min-width: 960px) { .b-brief { grid-template-columns: 1.5fr 1fr; align-items: start; } }
+.b-brief h2 { font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.9rem); line-height: 1.2; }
+.b-brief__text { margin-top: 14px; color: var(--text-2); font-size: 1.02rem; line-height: 1.7; }
+.b-brief__text > * + * { margin-top: 12px; }
+.b-brief__text strong { color: var(--text); }
+.b-brief__side { display: grid; gap: 16px; align-content: start; padding: 20px; border-radius: var(--r-lg); background: rgba(var(--ink), 0.035); box-shadow: inset 0 0 0 1px rgba(var(--ink), 0.07); }
+.b-brief__label { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-3); }
+.b-brief__side .btn { justify-self: start; }
+
+/* « Pour aller plus loin » : contenus longs repliés (toujours présents dans la page pour le SEO). */
+.b-more { display: grid; gap: 12px; }
+.b-more__item { border-radius: var(--r-lg); }
+.b-more__item > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; cursor: pointer; list-style: none; }
+.b-more__item > summary::-webkit-details-marker { display: none; }
+.b-more__title { font-size: 1.05rem; line-height: 1.35; }
+.b-more__item[open] .faq__icon { transform: rotate(45deg); }
+.b-more__body .b-sec { padding-block: 0 22px; background: none; }
+.b-more__body .b-head { margin-bottom: 18px; }
+.b-more__body .b-head h2, .b-more__body .b-head .eyebrow, .b-more__body .b-split h2, .b-more__body .b-split .eyebrow { display: none; }
+.b-more__body .container { width: 100%; padding-inline: 22px; }
+.b-more__body .b-split { gap: 24px; }
+@media (min-width: 960px) { .b-more__body .b-split { grid-template-columns: 1.3fr 0.7fr; } }
+
+/* Sommaire de page (restructuration) : fixe, sous « L'essentiel », pour ne jamais masquer le contenu. */
+.b-anchors--static { position: static; padding-block: 0 8px; }
+
+/* Vitrine de projets (images) */
+.b-showcase { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.b-showcase > li { display: flex; }
+.b-show { display: flex; flex-direction: column; width: 100%; border-radius: var(--r-lg); overflow: hidden; transition: transform 0.5s var(--ease-out); }
+.b-show:hover { transform: translateY(-4px); }
+.b-show__img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: linear-gradient(150deg, #1c1511, #0f0f0f); display: grid; place-items: center; }
+.b-show__img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.8s var(--ease-out); }
+.b-show:hover .b-show__img img { transform: scale(1.04); }
+.b-show__img span { font-family: var(--font-display); font-weight: 800; font-size: 5rem; color: rgba(255, 110, 40, 0.35); }
+.b-show__body { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 22px; }
+.b-show__body h3 { font-size: var(--fs-h3); line-height: 1.25; }
+.b-show__body p:not(.b-card__tag) { color: var(--text-2); font-size: 0.95rem; }
+.b-showcase__all { align-self: flex-end; margin-bottom: clamp(32px, 4.5vw, 56px); }

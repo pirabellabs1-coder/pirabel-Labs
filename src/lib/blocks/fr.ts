@@ -63,7 +63,37 @@ export function fixText(t: string): string {
 
 const escapeText = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// Corrections dont la phrase est coupée par une balise de mise en forme (« Quelques <em>chiffrés</em> ») :
+// les mots sont remplacés un à un, les balises restent en place. Seulement si find/replace ont le même nombre de mots.
+const INLINE_GAP = '(?:[ \\u00a0\\u202f]|<\\/?(?:em|strong|b|i|span|a|mark|small)\\b[^>]*>)+';
+type Cross = { re: RegExp; to: string[] };
+const CROSS_INDEX = new Map<string, Cross[]>();
+for (const [from, to] of fixes as [string, string][]) {
+  const fw = from.replace(WS, ' ').trim().split(' ');
+  const tw = to.replace(WS, ' ').trim().split(' ');
+  if (fw.length < 2 || fw.length !== tw.length) continue;
+  const key = fw[0].match(/[\p{L}\p{N}]+/u)?.[0].toLowerCase();
+  if (!key) continue;
+  const src = (/^[\p{L}\p{N}]/u.test(fw[0]) ? '(?<![-/.@\\p{L}\\p{N}])' : '') + fw.map(escapeRe).join(INLINE_GAP) +
+    (/[\p{L}\p{N}]$/u.test(fw[fw.length - 1]) ? '(?![-/\\p{L}\\p{N}])' : '');
+  const list = CROSS_INDEX.get(key) ?? [];
+  list.push({ re: new RegExp(src, 'gu'), to: tw.map((w) => escapeText(w)) });
+  CROSS_INDEX.set(key, list);
+}
+function crossTagFixes(html: string): string {
+  if (!/<(em|strong|b|i|span|a|mark|small)\b/.test(html)) return html;
+  const words = new Set((decodeEntities(html.replace(/<[^>]+>/g, ' ')).match(WORD) ?? []).map((w) => w.toLowerCase()));
+  for (const w of words) {
+    const list = CROSS_INDEX.get(w);
+    if (!list) continue;
+    for (const c of list) {
+      html = html.replace(c.re, (m) => { let k = 0; return m.replace(/<[^>]+>|[^<\s  ]+/g, (tok) => (tok.startsWith('<') ? tok : c.to[k++] ?? tok)); });
+    }
+  }
+  return html;
+}
+
 /** Applique fixText au texte visible d'un fragment HTML (entre les balises) ; entités décodées puis ré-échappées. */
 export function fixHtml(html: string): string {
-  return html.replace(/(^|>)([^<]+)(?=<|$)/g, (_m, lead: string, text: string) => lead + escapeText(fixText(decodeEntities(text))));
+  return crossTagFixes(html.replace(/(^|>)([^<]+)(?=<|$)/g, (_m, lead: string, text: string) => lead + escapeText(fixText(decodeEntities(text)))));
 }

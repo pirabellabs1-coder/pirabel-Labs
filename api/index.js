@@ -4353,9 +4353,9 @@ app.get('/realisations/:slug', async (req, res) => {
     // « var(--text) » : pastille neutre qui suit le thème (Next.js, Vercel…).
     const TECHS = [
       ['Next.js', 'var(--text)', /next\.?\s?js/i], ['React', '#61DAFB', /\breact\b/i], ['Astro', '#FF5D01', /\bastro\b/i],
-      ['Vue.js', '#42B883', /\bvue(\.js)?\b/i], ['Node.js', '#3C873A', /node\.?\s?js/i], ['TypeScript', '#3178C6', /typescript/i],
+      ['Vue.js', '#42B883', /\bvue\.?js\b|\bVue 3\b/i], ['Node.js', '#3C873A', /node\.?\s?js/i], ['TypeScript', '#3178C6', /typescript/i],
       ['JavaScript', '#F7DF1E', /javascript/i], ['HTML5', '#E34F26', /\bhtml5?\b/i], ['CSS3', '#1572B6', /\bcss3?\b/i],
-      ['Tailwind CSS', '#38BDF8', /tailwind/i], ['WordPress', '#3aa0d6', /wordpress/i], ['Vite', '#646CFF', /\bvite\b/i],
+      ['Tailwind CSS', '#38BDF8', /tailwind/i], ['WordPress', '#3aa0d6', /wordpress/i], ['Vite', '#646CFF', /\bVite(?:\.js|JS)?\b(?! ?[,.])/],
       ['Supabase', '#3ECF8E', /supabase/i], ['PostgreSQL', '#6a8fe0', /postgre/i], ['MongoDB', '#47A248', /mongodb/i],
       ['Vercel', 'var(--text)', /\bvercel\b/i], ['Cloudflare', '#F38020', /cloudflare/i], ['Cloudinary', '#5a6ff0', /cloudinary/i],
       ['Stripe', '#8b83ff', /\bstripe\b/i], ['CinetPay', '#00A95C', /cinetpay/i], ['PayPal', '#3b7bbf', /paypal/i],

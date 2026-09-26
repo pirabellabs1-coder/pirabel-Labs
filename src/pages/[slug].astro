@@ -11,9 +11,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Blocks from '../components/blocks/Blocks.astro';
 import { listLegacySlugs, loadLegacy, decodeEntities } from '../lib/legacy';
 import { parseBlocks, type Block } from '../lib/blocks/parse';
-import { fixText } from '../lib/blocks/fr';
+import { fixText, fixHtml } from '../lib/blocks/fr';
 import { PRICE_OVERRIDES } from '../data/price-overrides';
-import { restructure } from '../lib/blocks/restructure';
+import { restructure, type LocalInsert } from '../lib/blocks/restructure';
+import { cityOf, cityProjects } from '../data/cities';
 import CONTENT_OVERRIDES from '../data/content-overrides.json';
 
 export function getStaticPaths() {
@@ -38,7 +39,16 @@ for (const o of fixes) {
 }
 // Nouvelle structure sur toutes les pages : parcours de conversion + SEO/GEO (src/lib/blocks/restructure.ts).
 const parsed: Block[] = native ? parseBlocks(page.body) : [];
-const blocks: Block[] = restructure(parsed);
+// Pages villes : contenu local vérifié (src/data/cities.ts) à la place des témoignages de modèle.
+const city = native ? cityOf(slug as string) : undefined;
+const cityItems = city ? cityProjects(city) : [];
+const local: LocalInsert | undefined = city ? {
+  label: city.name,
+  zones: { kind: 'zones', head: { eyebrow: fixText(city.area), title: fixHtml(city.title) }, html: fixHtml(city.intro), zones: city.zones.map((z) => ({ ...z, title: fixText(z.title), items: z.items.map(fixText) })) } as Block,
+  projects: cityItems.length ? { kind: 'showcase', head: { eyebrow: 'Preuves', title: fixHtml(city.projects.title), lead: fixText(city.projects.lead) }, items: cityItems.map((it) => ({ ...it, title: fixText(it.title), text: fixText(it.text) })), cta: { href: '/realisations', label: 'Toutes nos réalisations' } } as Block : undefined,
+  faq: city.faq.map((f) => ({ q: fixText(f.q), a: fixHtml(f.a) })),
+} : undefined;
+const blocks: Block[] = restructure(parsed, local);
 // Grille tarifaire révisée : remplace les prix historiques des blocs « tarifs » de la page.
 const prices = PRICE_OVERRIDES[slug as string];
 if (prices) {
@@ -53,7 +63,24 @@ const fixLd = (raw: string) => {
     return JSON.stringify(walk(JSON.parse(raw)));
   } catch { return raw; }
 };
-const jsonLd = native ? page.jsonLd.map(fixLd) : page.jsonLd;
+let jsonLd = native ? page.jsonLd.map(fixLd) : page.jsonLd;
+// FAQ locale ajoutée aux données structurées (mêmes questions que la FAQ visible).
+if (city) {
+  const qa = city.faq.map((f) => ({ '@type': 'Question', name: fixText(f.q), acceptedAnswer: { '@type': 'Answer', text: fixText(f.a) } }));
+  let done = false;
+  jsonLd = jsonLd.map((raw) => {
+    try {
+      const j = JSON.parse(raw);
+      if (j['@type'] === 'FAQPage' && Array.isArray(j.mainEntity)) { j.mainEntity = [...qa, ...j.mainEntity]; done = true; return JSON.stringify(j); }
+      if (Array.isArray(j['@graph'])) {
+        const f = j['@graph'].find((x: { '@type'?: string }) => x['@type'] === 'FAQPage');
+        if (f && Array.isArray(f.mainEntity)) { f.mainEntity = [...qa, ...f.mainEntity]; done = true; return JSON.stringify(j); }
+      }
+    } catch { /* bloc illisible conservé tel quel */ }
+    return raw;
+  });
+  if (!done) jsonLd.push(JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: qa }));
+}
 
 // Appel à l'action final : titre de la page + lien principal du hero (formulaire pré-rempli).
 const final = blocks.find((b) => b.kind === 'final') as Extract<Block, { kind: 'final' }> | undefined;

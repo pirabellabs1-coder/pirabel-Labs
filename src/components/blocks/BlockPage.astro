@@ -50,8 +50,10 @@ const plain = (html: string) => decodeEntities(html.replace(/<br\s*\/?>/g, ' ').
 // Données structurées historiques : textes corrigés, FAQPage/BreadcrumbList retirés (régénérés).
 const DROP = new Set(['FAQPage', 'BreadcrumbList']);
 const SKIP_KEY = /url|image|logo|item|sameAs|telephone|email|@/i;
+// Note et avis sans source vérifiable (ancien modèle) : retirés, ils exposent à une sanction de Google.
+const NO_KEYS = new Set(['aggregateRating', 'review']);
 const walk = (v: unknown): unknown => typeof v === 'string' ? fixText(v) : Array.isArray(v) ? v.map(walk)
-  : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, SKIP_KEY.test(k) ? x : walk(x)])) : v;
+  : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k]) => !NO_KEYS.has(k)).map(([k, x]) => [k, SKIP_KEY.test(k) ? x : walk(x)])) : v;
 const legacyLd: object[] = [];
 if (page.legacyLd) {
   for (const raw of loadLegacy(page.legacyLd).jsonLd) {

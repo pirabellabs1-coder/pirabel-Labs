@@ -318,8 +318,8 @@ a.b-card:hover .b-card__arrow { color: var(--accent-2); transform: translate(3px
 .b-zone__title { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-family: var(--font-ui); font-weight: 700; color: var(--text); }
 .b-zone__title .icon { color: var(--accent-2); }
 .b-zone ul { display: grid; gap: 8px; }
-.b-zone li { display: flex; align-items: center; gap: 10px; color: var(--text-2); font-size: 0.95rem; }
-.b-zone li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.14); }
+.b-zone li { display: flex; align-items: flex-start; gap: 10px; color: var(--text-2); font-size: 0.95rem; }
+.b-zone li::before { content: ''; flex: none; margin-top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.14); }
 
 /* Navigation par ancres (FAQ, tarifs) : collante sous l'en-tête, défilement horizontal sur mobile. */
 .b-anchors { position: sticky; top: 76px; z-index: 20; padding-block: 10px; }

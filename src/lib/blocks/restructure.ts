@@ -19,7 +19,10 @@ const OFFER = new Set(['services', 'expertises', 'features']);
 const WHY = new Set(['reasons', 'promises']);
 const PROOF = new Set(['stats']);
 
-export function restructure(blocks: Block[]): Block[] {
+/** Contenu local vérifié (pages villes) : remplace les témoignages génériques par des preuves réelles. */
+export type LocalInsert = { label: string; zones: Block; projects?: Block; faq: { q: string; a: string }[] };
+
+export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   const pool = [...blocks];
   const take = <K extends Block['kind']>(pred: (b: Block) => boolean): B<K> | undefined => {
     const i = pool.findIndex(pred);
@@ -74,7 +77,11 @@ export function restructure(blocks: Block[]): Block[] {
   const offer2 = take((b) => isCards(b, OFFER) && (b as B<'cards'>).items.length >= 3);
   const why = take((b) => isCards(b, WHY) && (b as B<'cards'>).variant === 'reasons') ?? take((b) => isCards(b, WHY));
   const stats = take((b) => isCards(b, PROOF));
-  const testimonials = take((b) => b.kind === 'testimonials');
+  const oldTestimonials = take((b) => b.kind === 'testimonials');
+  // Pages villes : témoignages de modèle (non vérifiables) remplacés par les projets réellement livrés.
+  const testimonials = local ? undefined : oldTestimonials;
+  const projects = local?.projects;
+  const localZones = local?.zones;
   const method = take((b) => b.kind === 'steps' && (b as B<'steps'>).variant === 'detailed')
     ?? take((b) => b.kind === 'cards' && (b as B<'cards'>).variant === 'pillars')
     ?? take((b) => b.kind === 'steps');
@@ -84,13 +91,15 @@ export function restructure(blocks: Block[]): Block[] {
   // FAQ unique : questions principales puis secondaires, sans doublon (toutes gardées : elles figurent dans les données structurées).
   const faqs = takeAll((b) => b.kind === 'faq' && (b as B<'faq'>).variant !== 'advantages') as B<'faq'>[];
   const seen = new Set<string>();
-  const faqItems = faqs.flatMap((f) => f.items).filter((it) => {
+  const faqItems = [...(local?.faq ?? []), ...faqs.flatMap((f) => f.items)].filter((it) => {
     const k = strip(it.q).toLowerCase().replace(/[^a-zà-ÿ0-9]+/g, ' ').trim();
     if (seen.has(k)) return false;
     seen.add(k);
     return true;
   });
-  const faq: Block | undefined = faqItems.length ? { ...faqs[0], variant: 'main', items: faqItems, id: 'faq' } : undefined;
+  const faq: Block | undefined = faqItems.length
+    ? { ...(faqs[0] ?? { kind: 'faq', head: { eyebrow: 'FAQ', title: 'Questions <span class="grad">fréquentes</span>' } }), variant: 'main', items: faqItems, id: 'faq' } as Block
+    : undefined;
 
   // Appels à l'action : le plus fort (audit gratuit, bandeau) + un bandeau court après les tarifs.
   const ctaFeature = take((b) => b.kind === 'cta' && ((b as B<'cta'>).variant === 'feature' || (b as B<'cta'>).variant === 'band'));
@@ -108,8 +117,8 @@ export function restructure(blocks: Block[]): Block[] {
 
   // Sommaire : uniquement les sections présentes.
   const ids: [Block | undefined, string, string][] = [
-    [offer, 'offre', 'Notre offre'], [why, 'pourquoi', 'Pourquoi nous'], [method, 'methode', 'Méthode'],
-    [pricing, 'tarifs', 'Tarifs'], [testimonials, 'avis', 'Avis'], [faq, 'faq', 'FAQ'], [more, 'details', 'En détail'],
+    [offer, 'offre', 'Notre offre'], [why, 'pourquoi', 'Pourquoi nous'], [localZones, 'local', local?.label ?? 'Près de chez vous'], [method, 'methode', 'Méthode'],
+    [pricing, 'tarifs', 'Tarifs'], [testimonials, 'avis', 'Avis'], [projects, 'projets', 'Projets'], [faq, 'faq', 'FAQ'], [more, 'details', 'En détail'],
   ];
   for (const [b, id] of ids) if (b) (b as { id?: string }).id = id;
   const present = ids.filter(([b]) => b);
@@ -119,8 +128,8 @@ export function restructure(blocks: Block[]): Block[] {
 
   const out: (Block | undefined)[] = [
     crumbs, hero, brief, toc,
-    offer, why, stats, offer2, ctaFeature,
-    method, compare, pricing, ctaInline, testimonials, faq,
+    offer, why, stats, localZones, offer2, ctaFeature,
+    method, compare, pricing, ctaInline, testimonials, projects, faq,
     parent, more, related, links, sticky, final,
   ];
   return out.filter((b): b is Block => Boolean(b));

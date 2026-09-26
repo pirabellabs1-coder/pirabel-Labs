@@ -11,8 +11,12 @@
   {
     "id": "2026-09-afblock-lien-mort",
     "slug": "afblock-l-ecosysteme-web3-pense-pour-l-afrique",
-    "whenEqual": { "projectUrl": "https://afblock.com" },
-    "set": { "projectUrl": "" }
+    "whenEqual": {
+      "projectUrl": "https://afblock.com"
+    },
+    "set": {
+      "projectUrl": ""
+    }
   },
   {
     "id": "2026-09-goscale-finance-image",
@@ -36,7 +40,11 @@
     "id": "2026-09-pirabel-academy-galerie",
     "slug": "pirabel-academy-la-plateforme-de-formation-a-l-automatisation-et-a-l-ia",
     "whenEmpty": "gallery",
-    "set": { "gallery": ["/img/realisations/pirabel-academy-2.webp"] }
+    "set": {
+      "gallery": [
+        "/img/realisations/pirabel-academy-2.webp"
+      ]
+    }
   },
   {
     "id": "2026-09-ultimauto-app-image",
@@ -71,8 +79,23 @@
   {
     "id": "2026-09-goscale-studio-lien",
     "slug": "goscale-studio-l-automatisation-et-l-ia-au-service-de-la-croissance-des-entrepri",
-    "whenEqual": { "projectUrl": "https://goscalestudio.com" },
-    "set": { "projectUrl": "https://goscale-app-phi.vercel.app/" }
+    "whenEqual": {
+      "projectUrl": "https://goscalestudio.com"
+    },
+    "set": {
+      "projectUrl": "https://goscale-app-phi.vercel.app/"
+    }
+  },
+  {
+    "id": "2026-09-goscale-studio-image-fr",
+    "slug": "goscale-studio-l-automatisation-et-l-ia-au-service-de-la-croissance-des-entrepri",
+    "whenEqual": {
+      "featuredImage": "/media/6a45357a8a05af5e91c7ff1e"
+    },
+    "set": {
+      "featuredImage": "/img/realisations/goscale-studio-1.webp",
+      "imageAlt": "Page d’accueil du site de GoScale Studio : « Automatisez. Déployez. Scalez. »"
+    }
   },
   {
     "id": "2026-09-pirabel-one-galerie",
@@ -89,8 +112,12 @@
   {
     "id": "2026-09-pirabel-one-lien",
     "slug": "pirabel-one-la-boutique-en-ligne-d-une-maison-de-mode-beninoise",
-    "whenEqual": { "projectUrl": "https://pirabel-one.store" },
-    "set": { "projectUrl": "https://pirabel-market.vercel.app/" }
+    "whenEqual": {
+      "projectUrl": "https://pirabel-one.store"
+    },
+    "set": {
+      "projectUrl": "https://pirabel-market.vercel.app/"
+    }
   },
   {
     "id": "2026-09-callpme-galerie",
@@ -107,13 +134,21 @@
   {
     "id": "2026-09-omonlola-vitrine-lien-mort",
     "slug": "omonlola-agossou-site-vitrine-de-marque-personnelle",
-    "whenEqual": { "projectUrl": "https://omonlola.goscalestudio.com" },
-    "set": { "projectUrl": "" }
+    "whenEqual": {
+      "projectUrl": "https://omonlola.goscalestudio.com"
+    },
+    "set": {
+      "projectUrl": ""
+    }
   },
   {
     "id": "2026-09-eopsai-lien-mort",
     "slug": "eopsai-le-site-vitrine-d-une-agence-ia-pense-comme-un-produit",
-    "whenEqual": { "projectUrl": "https://agence.eopsai.com" },
-    "set": { "projectUrl": "" }
+    "whenEqual": {
+      "projectUrl": "https://agence.eopsai.com"
+    },
+    "set": {
+      "projectUrl": ""
+    }
   }
 ]

@@ -135,6 +135,8 @@ const SKIP_GLOBAL_SANITIZE = [
   '/api/admin/media',      // upload image base64 (long) — sinon tronque a 10000 car. -> image corrompue
   '/api/admin/quotes',     // envoi de devis avec piece jointe base64 (meme piege que /media)
   '/api/admin/send-email', // message libre
+  '/api/admin/email-preview', // aperçu : même texte qu'à l'envoi (échappé ou sanitizeSoft dans la route)
+  '/api/admin/leads/bulk-email', // campagnes : HTML autorisé (sanitizeSoft dans la route)
   '/api/articles',         // markdown editorial
   '/api/email-templates',  // HTML templates
   '/api/case-studies',     // markdown

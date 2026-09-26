@@ -25,7 +25,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 const connectDB = require('../app/config/db');
-const { sendEmail, masterTemplate, newOrderEmail,
+const { sendEmail, masterTemplate, newOrderEmail, infoTable: emailInfoTable, EMAIL_STYLES: ES,
   newApplicationAdminEmail, applicationConfirmationEmail, applicationStatusEmail, STATUS_MESSAGES,
 } = require('../app/config/email');
 const {
@@ -35,7 +35,7 @@ const {
 const { auth, adminOnly } = require('../app/middleware/auth');
 const siteNav = require('../app/nav'); // en-tête de site partagé (mega menu) pour blog/réalisations/témoignages
 const {
-  validateQualification, scoreQualification, summarizeQualification,
+  validateQualification, scoreQualification, summarizeQualification, qualificationRows,
   budgetLabel: qualificationBudgetLabel, primaryService: qualificationPrimaryService,
   projectLabels: qualificationProjectLabels, timelineLabel: qualificationTimelineLabel,
 } = require('../app/qualification'); // formulaire en étapes de /contact
@@ -288,44 +288,39 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       { replyTo: email }
     ).catch(e => console.error('[contact] admin email error:', e.message));
 
-    // Email confirmation client (beau template Pirabel Labs)
+    // E-mail de confirmation client (charte claire Pirabel Labs)
+    const step = (t, d) => '<div style="' + ES.note + '"><strong style="' + ES.strong + '">' + t + '</strong><br><span style="font-size:14px;">' + d + '</span></div>';
     const confirmHtml = masterTemplate({
       headerType: 'hero',
-      preheader: 'Demande recue, reponse sous 24h',
+      preheader: 'Demande reçue : réponse sous 24 h ouvrées',
       title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
-      subtitle: 'Votre demande est entre nos mains',
-      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci de nous avoir contactes&nbsp;! Nous avons bien recu votre demande concernant <strong style="color:#FF5500;">' + escapeHtml(service) + '</strong>.</p>' +
-        '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Un membre de notre equipe (souvent le fondateur) vous repond sous <strong style="color:#e5e2e1;">24h ouvrees</strong> avec :</p>' +
-        '<table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">' +
-        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Une premiere estimation</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Budget realiste et planning indicatif</span></td></tr>' +
-        '<tr><td style="height:8px;"></td></tr>' +
-        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Une proposition d&apos;etape suivante</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Appel decouverte gratuit de 30 min ou devis ferme sous 48h</span></td></tr>' +
-        '<tr><td style="height:8px;"></td></tr>' +
-        '<tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;"><strong style="color:#e5e2e1;font-size:14px;">Aucune relance commerciale</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">On vous repond une fois, vous prenez le temps de reflechir</span></td></tr>' +
-        '</table>' +
-        '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:16px 20px;background:rgba(255,85,0,0.03);margin:24px 0;">' +
-        '<p style="margin:0;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;"><strong style="color:#e5e2e1;">Une urgence ?</strong> Joignez-nous directement sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a> ou repondez a cet email.</p>' +
-        '</div>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">A tres vite,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong><br>Lissanon Gildas, cofondateurs</p>',
-      cta: 'Visiter notre site',
-      ctaUrl: 'https://www.pirabellabs.com',
-      ctaSecondary: 'Voir nos realisations',
-      ctaSecondaryUrl: 'https://www.pirabellabs.com/realisations',
+      subtitle: 'Votre demande est entre de bonnes mains',
+      body: '<p style="' + ES.p + '">Merci de nous avoir contactés&nbsp;! Nous avons bien reçu votre demande concernant <strong style="' + ES.strong + '">' + escapeHtml(service) + '</strong>.</p>' +
+        '<p style="' + ES.p + '">Lissanon Gildas, fondateur de Pirabel Labs, vous répond sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec&nbsp;:</p>' +
+        step('Une première estimation', 'Un budget réaliste et un planning indicatif.') +
+        step('Une proposition d’étape suivante', 'Un appel découverte gratuit de 30 minutes, ou un devis ferme sous 48&nbsp;h.') +
+        step('Aucune relance insistante', 'Nous vous répondons, vous prenez le temps de réfléchir.') +
+        '<p style="' + ES.small + '"><strong style="' + ES.strong + '">Une urgence&nbsp;?</strong> Écrivez-nous sur <a href="https://wa.me/16139273067" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
+        '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+      cta: 'Voir nos réalisations',
+      ctaUrl: 'https://www.pirabellabs.com/realisations',
+      ctaSecondary: 'Choisir un créneau d’appel',
+      ctaSecondaryUrl: 'https://www.pirabellabs.com/rdv',
     });
 
     await sendEmail(
       email,
-      'Pirabel Labs - Demande recue, reponse sous 24h',
+      'Pirabel Labs — Demande reçue, réponse sous 24 h',
       confirmHtml
     ).catch(e => console.error('[contact] confirm email error:', e.message));
 
-    res.json({ success: true, message: 'Demande envoyee. Reponse sous 24h ouvres.' });
+    res.json({ success: true, message: 'Demande envoyée. Réponse sous 24 h ouvrées.' });
   } catch (err) {
     console.error('[contact] error:', err && err.message, err && err.name);
     // Toujours renvoyer une CHAINE (jamais l'objet d'erreur) pour eviter "[object Object]" cote client
-    var msg = 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com';
+    var msg = 'Erreur serveur. Réessayez ou écrivez-nous à contact@pirabellabs.com';
     if (err && err.name === 'ValidationError') {
-      msg = 'Donnees invalides. Verifiez les champs et reessayez.';
+      msg = 'Données invalides. Vérifiez les champs et réessayez.';
     }
     res.status(500).json({ error: msg });
   }
@@ -381,6 +376,10 @@ app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), lim
 
     const safe = (s) => escapeHtml(s).replace(/\n/g, '<br>');
     const tag = { chaud: 'CHAUD', tiede: 'TIÈDE', froid: 'FROID' }[sc.label];
+    const heat = { chaud: ['#15803d', '#ecfdf3', 'Prospect chaud'], tiede: ['#b45309', '#fff7e6', 'Prospect tiède'], froid: ['#475569', '#f1f5f9', 'Prospect froid'] }[sc.label];
+    const scoreHtml = '<p style="margin:0 0 18px;"><span style="display:inline-block;background:' + heat[1] + ';color:' + heat[0] + ';border:1px solid ' + heat[0] + '33;border-radius:999px;padding:6px 16px;font-size:15px;font-weight:800;">' +
+      heat[2] + ' · ' + sc.score + '/100</span></p>';
+    const qRows = qualificationRows(data, sc).filter((r) => !['Score', 'Budget'].includes(r[0])).map(([k, v]) => [escapeHtml(k), escapeHtml(v)]);
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Demande qualifiée ${tag} ${sc.score}/100 — ${data.contact.name}`,
@@ -388,7 +387,11 @@ app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), lim
         name: escapeHtml(data.contact.name), email: escapeHtml(data.contact.email),
         phone: escapeHtml(data.contact.phone), company: escapeHtml(data.contact.company),
         service: escapeHtml(service), budget: escapeHtml(qualificationBudgetLabel(data)),
-        message: safe(message + (lead.aiSummary ? '\n\n— Analyse d’Ayaba —\n' + lead.aiSummary : '')),
+        intro: scoreHtml,
+        extraHtml: '<p style="margin:0 0 8px;' + ES.label + '">Réponses au formulaire</p>' + emailInfoTable(qRows),
+        message: data.description || lead.aiSummary
+          ? safe((data.description ? data.description : '') + (lead.aiSummary ? (data.description ? '\n\n' : '') + '— Analyse d’Ayaba —\n' + lead.aiSummary : ''))
+          : '',
       }),
       { replyTo: data.contact.email }
     ).catch(e => console.error('[qualification] admin email error:', e.message));
@@ -399,22 +402,21 @@ app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), lim
     if (firstRequest) {
       const fn = data.contact.name.split(' ')[0];
       const firstName = /^[\p{L}' -]{1,30}$/u.test(fn) ? escapeHtml(fn) : '';
-      const recap = [
-        'Projet : ' + qualificationProjectLabels(data),
-        'Budget : ' + qualificationBudgetLabel(data),
-        'Démarrage : ' + qualificationTimelineLabel(data),
-      ].map(escapeHtml).join('<br>');
+      const recap = emailInfoTable([
+        ['Projet', escapeHtml(qualificationProjectLabels(data))],
+        ['Budget', escapeHtml(qualificationBudgetLabel(data))],
+        ['Démarrage', escapeHtml(qualificationTimelineLabel(data))],
+      ]);
       const confirmHtml = masterTemplate({
         headerType: 'hero',
         preheader: 'Votre demande est bien reçue : réponse sous 24 h ouvrées',
         title: firstName ? 'Bonjour ' + firstName + ',' : 'Bonjour,',
         subtitle: 'Votre projet est entre de bonnes mains',
-        body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d’avoir pris le temps de décrire votre projet. Grâce à vos réponses, nous arrivons à l’appel découverte avec une première lecture de votre besoin.</p>' +
-          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">En résumé&nbsp;:</p>' +
-          '<div style="border-left:3px solid #FF5500;padding:16px 20px;background:#0e0e0e;margin:20px 0;font-size:14px;line-height:1.7;color:rgba(229,226,225,0.8);">' + recap + '</div>' +
-          '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous <strong style="color:#e5e2e1;">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
-          '<p style="font-size:14px;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
-          '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">À très vite,<br><strong style="color:#e5e2e1;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+        body: '<p style="' + ES.p + '">Merci d’avoir pris le temps de décrire votre projet. Grâce à vos réponses, nous arrivons à l’appel découverte avec une première lecture de votre besoin.</p>' +
+          '<p style="margin:0 0 8px;' + ES.label + '">En résumé</p>' + recap +
+          '<p style="' + ES.p + '">Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
+          '<p style="' + ES.small + '">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
+          '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
         cta: 'Choisir un créneau',
         ctaUrl: 'https://www.pirabellabs.com/rdv',
         ctaSecondary: 'Voir nos réalisations',
@@ -737,28 +739,28 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
     // Email admin
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      '[Pirabel Labs] Nouveau telechargement livre blanc - ' + lb.title,
-      newOrderEmail({ name: escapeHtml(name), email: escapeHtml(email), phone: escapeHtml(phone), company: escapeHtml(company), service: escapeHtml('Livre blanc : ' + lb.title), message: escapeHtml(`Lead : ${name} <${email}>\nLivre blanc telecharge : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}`).replace(/\n/g, '<br>') }),
+      '[Pirabel Labs] Nouveau téléchargement de livre blanc — ' + lb.title,
+      newOrderEmail({ name: escapeHtml(name), email: escapeHtml(email), phone: escapeHtml(phone), company: escapeHtml(company), service: escapeHtml('Livre blanc : ' + lb.title), message: escapeHtml(`Lead : ${name} <${email}>\nLivre blanc téléchargé : ${lb.title}\nNewsletter opt-in : ${newsletterOptIn ? 'OUI' : 'NON'}`).replace(/\n/g, '<br>') }),
       { replyTo: email }
     ).catch(e => console.error('[livre-blanc] admin email error:', e.message));
 
     // Email client avec lien de telechargement
     const downloadHtml = masterTemplate({
       headerType: 'hero',
-      preheader: 'Votre livre blanc est pret a telecharger',
+      preheader: 'Votre livre blanc est prêt à télécharger',
       // Prénom affiché seulement s'il ressemble à un prénom (aucun texte arbitraire relayé par e-mail).
       title: /^[\p{L}' -]{1,30}$/u.test(name.split(' ')[0]) ? 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',' : 'Bonjour,',
       subtitle: 'Voici votre livre blanc Pirabel Labs',
-      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d&apos;avoir telecharge notre livre blanc :</p>' +
+      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci d’avoir téléchargé notre livre blanc&nbsp;:</p>' +
         '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
         '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Livre blanc &middot; ' + lb.pages + ' pages</div>' +
         '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:12px;">' + escapeHtml(lb.title) + '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">' + escapeHtml(lb.description) + '</p>' +
         '</div>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le telecharger en cliquant sur le bouton ci-dessous. Conservez cet email pour y revenir plus tard si besoin.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Si vous avez des questions apres lecture, ecrivez-nous directement : <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/16139273067" style="color:#FF5500;">+1 (613) 927-3067</a>.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">L&apos;equipe Pirabel Labs</strong></p>',
-      cta: 'Telecharger le PDF',
+        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le télécharger avec le bouton ci-dessous. Conservez cet e-mail pour y revenir plus tard.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Une question après lecture&nbsp;? Écrivez-nous directement&nbsp;: <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/16139273067" style="color:#FF5500;">+1 (613) 927-3067</a>.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+      cta: 'Télécharger le PDF',
       ctaUrl: pdfFullUrl,
       ctaSecondary: 'Voir tous nos livres blancs',
       ctaSecondaryUrl: 'https://www.pirabellabs.com/livres-blancs',
@@ -772,12 +774,12 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
 
     res.json({
       success: true,
-      message: 'Livre blanc envoye par email !',
+      message: 'Livre blanc envoyé par e-mail !',
       pdfUrl: lb.pdfUrl
     });
   } catch (err) {
     console.error('[livre-blanc] error:', err.message);
-    res.status(500).json({ error: 'Erreur serveur. Reessayez ou ecrivez a contact@pirabellabs.com' });
+    res.status(500).json({ error: 'Erreur serveur. Réessayez ou écrivez-nous à contact@pirabellabs.com' });
   }
 });
 
@@ -858,7 +860,17 @@ app.get('/api/admin/leads', auth, adminOnly, async (req, res) => {
       { $group: { _id: '$livreBlancSlug', count: { $sum: 1 }, title: { $first: '$livreBlancTitle' } } },
       { $sort: { count: -1 } }
     ]);
-    res.json({ leads, stats, byType, byLivreBlanc });
+    // Réponses du formulaire de qualification, prêtes à afficher (libellés lisibles) dans la fiche du tableau de bord.
+    const withRows = leads.map((l) => {
+      const o = l.toObject();
+      if (o.qualification) {
+        let flags = [];
+        try { flags = scoreQualification(o.qualification).flags; } catch (e) { flags = []; }
+        try { o.qualificationRows = qualificationRows(o.qualification, { score: o.qualificationScore, label: o.qualificationLabel, flags }); } catch (e) { o.qualificationRows = []; }
+      }
+      return o;
+    });
+    res.json({ leads: withRows, stats, byType, byLivreBlanc });
   } catch (err) {
     console.error('[leads] list error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
@@ -909,7 +921,7 @@ app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limit
   try {
     const ids = Array.isArray(req.body.ids) ? req.body.ids.filter(id => /^[a-f0-9]{24}$/i.test(id)) : [];
     const subject = sanitize(req.body.subject || '', 200);
-    const bodyHtml = String(req.body.bodyHtml || '').slice(0, 50000);
+    const bodyHtml = sanitizeSoft(String(req.body.bodyHtml || ''), 50000);
     const onlyOptIn = req.body.onlyOptIn !== false;
 
     if (!ids.length) return res.status(400).json({ error: 'Aucun lead selectionne.' });
@@ -920,26 +932,14 @@ app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limit
     if (onlyOptIn) query.newsletterOptIn = true;
 
     const leads = await Lead.find(query);
-    if (!leads.length) return res.status(404).json({ error: 'Aucun lead valide trouve (opt-in ?).' });
+    if (!leads.length) return res.status(404).json({ error: 'Aucun contact valide trouvé (consentement newsletter ?).' });
 
     let sent = 0, failed = 0;
     const errors = [];
 
     // Send sequentially to avoid Resend rate limits (1 email = ~150ms minimum)
     for (const lead of leads) {
-      const personalizedHtml = bodyHtml
-        .replace(/\{\{name\}\}/g, escapeHtml(lead.name))
-        .replace(/\{\{firstName\}\}/g, escapeHtml(lead.name.split(' ')[0]))
-        .replace(/\{\{company\}\}/g, escapeHtml(lead.company || ''));
-
-      const fullEmail = masterTemplate({
-        headerType: 'hero',
-        title: 'Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',',
-        body: personalizedHtml +
-          '<p style="margin-top:32px;font-size:12px;color:rgba(229,226,225,0.4);line-height:1.5;">Vous recevez cet email car vous avez interagi avec Pirabel Labs. Pour vous desinscrire, repondez avec "DESABONNEMENT".</p>',
-        cta: 'Visiter pirabellabs.com',
-        ctaUrl: 'https://www.pirabellabs.com',
-      });
+      const fullEmail = adminCampaignEmailHtml(bodyHtml, lead);
 
       try {
         await sendEmail(lead.email, subject, fullEmail);
@@ -965,7 +965,7 @@ app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limit
 
     res.json({
       success: true,
-      message: `${sent} email(s) envoye(s), ${failed} echec(s) sur ${leads.length} leads.`,
+      message: `${sent} e-mail(s) envoyé(s), ${failed} échec(s) sur ${leads.length} contacts.`,
       sent, failed, errors
     });
   } catch (err) {
@@ -978,7 +978,13 @@ app.get('/api/admin/leads/:id', auth, adminOnly, async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
     if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
-    res.json(lead);
+    const o = lead.toObject();
+    if (o.qualification) {
+      let flags = [];
+      try { flags = scoreQualification(o.qualification).flags; } catch (e) { flags = []; }
+      try { o.qualificationRows = qualificationRows(o.qualification, { score: o.qualificationScore, label: o.qualificationLabel, flags }); } catch (e) { o.qualificationRows = []; }
+    }
+    res.json(o);
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
   }
@@ -1051,6 +1057,64 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
 });
 
 // === REPONDRE / ECRIRE A UN CLIENT OU PROSPECT (envoi email individuel) ===
+// === E-mails écrits depuis le tableau de bord : même rendu à l'envoi et dans l'aperçu ===
+function adminSignatureHtml() {
+  return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 0;border-top:1px solid #ece5de;padding-top:18px;width:100%;"><tr>' +
+    '<td style="width:52px;vertical-align:middle;"><span style="display:inline-block;width:44px;height:44px;line-height:44px;border-radius:50%;background:#fff4ec;border:1px solid #ffd9c2;color:#B83A00;font-weight:800;text-align:center;font-size:15px;">LG</span></td>' +
+    '<td style="vertical-align:middle;font-size:14px;line-height:1.5;color:#4a413b;"><strong style="color:#17120f;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs · <a href="https://wa.me/16139273067" style="color:#B83A00;font-weight:600;">WhatsApp</a></td>' +
+    '</tr></table>';
+}
+function adminTextEmailHtml(message, firstName, subject) {
+  const para = ES.p;
+  const text = String(message || '');
+  const bodyHtml = '<p style="' + para + '">' +
+    escapeHtml(text).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>' +
+    (/lissanon[\s\S]{0,120}$/i.test(text.trim()) ? '' : adminSignatureHtml());
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: subject || '',
+    title: firstName ? 'Bonjour ' + escapeHtml(firstName) + ',' : 'Bonjour,',
+    body: bodyHtml,
+    cta: 'Voir nos réalisations',
+    ctaUrl: 'https://www.pirabellabs.com/realisations',
+  });
+}
+function adminCampaignEmailHtml(bodyHtml, lead) {
+  const first = String((lead && lead.name) || '').split(' ')[0];
+  let raw = String(bodyHtml || '');
+  // Texte sans balise : paragraphes et retours à la ligne, comme un e-mail individuel.
+  if (!/<[a-z][^>]*>/i.test(raw)) raw = '<p style="' + ES.p + '">' + escapeHtml(raw).replace(/\n\n+/g, '</p><p style="' + ES.p + '">').replace(/\n/g, '<br>') + '</p>';
+  const personalized = raw
+    .replace(/\{\{name\}\}/g, escapeHtml((lead && lead.name) || ''))
+    .replace(/\{\{firstName\}\}/g, escapeHtml(first))
+    .replace(/\{\{company\}\}/g, escapeHtml((lead && lead.company) || ''));
+  return masterTemplate({
+    headerType: 'hero',
+    title: first ? 'Bonjour ' + escapeHtml(first) + ',' : 'Bonjour,',
+    body: personalized +
+      '<p style="margin-top:32px;font-size:13px;color:#6b605a;line-height:1.5;">Vous recevez cet e-mail car vous avez échangé avec Pirabel Labs. Pour ne plus en recevoir, répondez simplement « DÉSABONNEMENT ».</p>',
+    cta: 'Voir nos réalisations',
+    ctaUrl: 'https://www.pirabellabs.com/realisations',
+  });
+}
+
+// Aperçu fidèle d'un e-mail avant envoi (ou d'un e-mail du journal) : rendu dans une iframe du tableau de bord.
+app.post('/api/admin/email-preview', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const b = req.body || {};
+    const leadId = sanitize(b.leadId || '', 30);
+    let lead = null;
+    if (leadId && /^[a-f0-9]{24}$/i.test(leadId)) lead = await Lead.findById(leadId).select('name company').lean().catch(() => null);
+    if (!lead && b.name) lead = { name: sanitize(b.name, 120), company: '' };
+    const html = b.mode === 'masse'
+      ? adminCampaignEmailHtml(sanitizeSoft(String(b.bodyHtml || ''), 60000), lead || { name: 'Aïcha Koné', company: 'Maison Koné' })
+      : adminTextEmailHtml(String(b.message || '').slice(0, 20000), lead ? String(lead.name || '').split(' ')[0] : '', sanitize(b.subject || '', 200));
+    res.set('Cache-Control', 'no-store').json({ html });
+  } catch (e) {
+    res.status(500).json({ error: 'Aperçu indisponible.' });
+  }
+});
+
 app.post('/api/admin/send-email', auth, adminOnly, limitBody(10), async (req, res) => {
   try {
     const leadId = sanitize(req.body && req.body.leadId || '', 30);
@@ -1067,23 +1131,11 @@ app.post('/api/admin/send-email', auth, adminOnly, limitBody(10), async (req, re
     if (!subject || subject.length < 2) return res.status(400).json({ error: 'Sujet requis.' });
     if (!message || message.trim().length < 2) return res.status(400).json({ error: 'Message requis.' });
 
-    // Texte libre -> HTML (paragraphes + retours ligne), echappe
-    const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
-    const bodyHtml = '<p style="' + para + '">' +
-      escapeHtml(message).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') +
-      '</p>';
-    const greeting = (lead && lead.name) ? ('Bonjour ' + escapeHtml(lead.name.split(' ')[0]) + ',') : 'Bonjour,';
-    const html = masterTemplate({
-      headerType: 'hero',
-      preheader: subject,
-      title: greeting,
-      body: bodyHtml,
-      cta: 'Visiter pirabellabs.com',
-      ctaUrl: 'https://www.pirabellabs.com',
-    });
+    // Texte libre -> HTML (paragraphes + retours à la ligne), échappé, avec signature
+    const html = adminTextEmailHtml(message, lead && lead.name ? lead.name.split(' ')[0] : '', subject);
 
     const ok = await sendEmail(to, subject, html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
-    if (!ok) return res.status(502).json({ error: "Envoi refuse. Verifiez que le domaine pirabellabs.com est verifie sur Resend (resend.com/domains)." });
+    if (!ok) return res.status(502).json({ error: "Envoi refusé. Vérifiez que le domaine pirabellabs.com est validé sur Resend (resend.com/domains)." });
 
     if (lead) {
       lead.lastEmailSentAt = new Date();
@@ -1099,7 +1151,7 @@ app.post('/api/admin/send-email', auth, adminOnly, limitBody(10), async (req, re
         leadId: lead ? lead._id : undefined, sentBy: req.user._id, sentByName: req.user.name || '',
       });
     } catch (logErr) { console.error('[send-email.log]', logErr.message); }
-    res.json({ success: true, message: 'Email envoye a ' + to });
+    res.json({ success: true, message: 'E-mail envoyé à ' + to });
   } catch (err) {
     console.error('[send-email]', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
@@ -1498,7 +1550,7 @@ app.patch('/api/admin/articles/:id', auth, adminOnly, limitBody(20), async (req,
     if (req.body.slug && slugify(req.body.slug) !== doc.slug) doc.slug = await uniqueSlug(req.body.slug, doc._id);
     await doc.save();
     res.json({ success: true, article: doc });
-  } catch (e) { console.error('[articles.update]', e.message); res.status(500).json({ error: 'Erreur mise a jour.' }); }
+  } catch (e) { console.error('[articles.update]', e.message); res.status(500).json({ error: 'Erreur de mise à jour.' }); }
 });
 app.delete('/api/admin/articles/:id', auth, adminOnly, async (req, res) => {
   try { await Article.findByIdAndDelete(req.params.id); res.json({ success: true }); }
@@ -2031,7 +2083,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       const lead = await Lead.findOne({ email: sanitizeEmail(input.clientEmail || '') });
       if (!lead) return { ok: false, message: `Aucun prospect avec l'e-mail ${input.clientEmail}. Utilise rechercher_prospects pour trouver le bon e-mail, ou enregistrer_prospect pour le créer d'abord.` };
       const rawItems = Array.isArray(input.items) ? input.items.filter(i => i && i.description && Number(i.unitPrice) >= 0) : [];
-      if (!rawItems.length) return { ok: false, message: 'Au moins une ligne valide (description + prix unitaire) est requise.' };
+      if (!rawItems.length) return { ok: false, message: 'Au moins une ligne complète (description + prix unitaire) est requise.' };
       const taxRate = Math.max(0, Number(input.taxRate) || 0);
       const totals = recalcQuote(rawItems, taxRate);
       const currency = ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(input.currency) ? input.currency : 'EUR';
@@ -2363,7 +2415,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       if (!lead) return { ok: false, message: `Aucune fiche avec l'e-mail ${input.email}.` };
       // Refus si la fiche porte un historique commercial : on ne casse pas une piste comptable.
       const [nq, ni] = await Promise.all([Quote.countDocuments({ leadId: lead._id }), Invoice.countDocuments({ leadId: lead._id })]);
-      if (nq || ni) return { ok: false, message: `Suppression refusée : ${lead.name} est rattaché à ${nq} devis et ${ni} facture(s). Supprime d'abord ces documents si c'est vraiment voulu.` };
+      if (nq || ni) return { ok: false, message: `Suppression refusée : ${lead.name} est rattaché à ${nq} devis et ${ni} facture(s). Supprimez d’abord ces documents si c’est vraiment voulu.` };
       await Lead.deleteOne({ _id: lead._id });
       return { ok: true, message: `Fiche de ${lead.name} (${email}) supprimée du CRM.` };
     }
@@ -2454,7 +2506,7 @@ app.post('/api/admin/_drop-legacy-index', auth, adminOnly, limitBody(5), async (
     const idx = String(req.body.index || '').slice(0, 80);
     if (!M || !/^[a-zA-Z0-9_]+$/.test(idx)) return res.status(400).json({ error: 'Collection ou index invalide.' });
     await M.collection.dropIndex(idx);
-    res.json({ success: true, message: `Index ${idx} supprime.` });
+    res.json({ success: true, message: `Index ${idx} supprimé.` });
   } catch (e) { res.json({ success: false, error: e.message }); }
 });
 
@@ -3175,7 +3227,7 @@ Sois honnete et exigeant : un candidat hors sujet doit avoir une note basse. N'i
 aucune experience non mentionnee. Francais impeccable, sans caractere de mise en forme.`;
   const contenu = `POSTE : ${job.title}\n${job.excerpt || ''}\n` +
     (job.profile && job.profile.length ? `Profil recherche : ${job.profile.join(' ; ')}\n` : '') +
-    `\nCANDIDAT : ${cand.name}\nVille : ${cand.city || 'non precisee'}\n` +
+    `\nCANDIDAT : ${cand.name}\nVille : ${cand.city || 'non précisée'}\n` +
     `CV : ${cand.cvUrl}\nLinkedIn : ${cand.linkedin || 'non fourni'}\nPortfolio : ${cand.portfolio || 'non fourni'}\n` +
     `\nMotivation :\n${cand.coverLetter}`;
 
@@ -3459,7 +3511,7 @@ Reponds UNIQUEMENT par un objet JSON valide, sans texte autour :
 {"resume":"2 phrases : ce que veut ce prospect et ce qui compte pour lui",
 "qualification":"chaud|tiede|froid","score":0,
 "prochaine_action":"l'action concrete que l'equipe doit mener ensuite",
-"objet":"objet de l'e-mail de reponse","reponse":"le corps de l'e-mail"}
+"objet":"objet de l'e-mail de réponse","reponse":"le corps de l'e-mail"}
 
 Regles pour le corps de la reponse :
 - Ne commence pas par « Bonjour X » : la formule d'appel est ajoutee automatiquement.
@@ -3474,7 +3526,7 @@ Regles pour le corps de la reponse :
 Qualification : chaud = projet precis avec budget ou echeance claire. tiede = besoin
 identifiable mais flou. froid = demande vague, hors sujet, ou candidature spontanee.`;
 
-  const demande = `Nom : ${lead.name}\nEntreprise : ${lead.company || 'non precisee'}\n` +
+  const demande = `Nom : ${lead.name}\nEntreprise : ${lead.company || 'non précisée'}\n` +
     `E-mail : ${lead.email}\nTelephone : ${lead.phone || 'non precise'}\n` +
     `Service demande : ${lead.service}\n\nMessage :\n${lead.message}`;
 
@@ -3527,7 +3579,7 @@ async function analyserConversation(session, apiKey) {
 Reponds UNIQUEMENT par un objet JSON valide, sans texte autour, avec exactement ces cles :
 {"resume":"3 phrases maximum decrivant ce que veut le visiteur et ou en est l'echange",
 "besoin":"le besoin en une phrase courte","service":"site web|e-commerce|SEO|automatisation|IA|community management|autre|indetermine",
-"budget":"le budget evoque tel quel, ou vide si non aborde","echeance":"le delai evoque, ou vide",
+"budget":"le budget evoque tel quel, ou vide si non aborde","echeance":"le délai évoqué, ou vide",
 "qualification":"chaud|tiede|froid","score":0,"prochaine_action":"la prochaine action concrete que l'equipe doit mener"}
 
 Regles de qualification :
@@ -3668,13 +3720,7 @@ app.post('/api/admin/appointments/:id/remind', auth, adminOnly, limitBody(10), a
     const subject = sanitize(req.body.subject || 'Rappel de votre rendez-vous — Pirabel Labs', 200);
     const message = String(req.body.message || '').slice(0, 8000);
     if (message.trim().length < 2) return res.status(400).json({ error: 'Message requis.' });
-    const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
-    const html = masterTemplate({
-      headerType: 'hero', preheader: subject,
-      title: 'Bonjour ' + escapeHtml(a.name.split(' ')[0]) + ',',
-      body: '<p style="' + para + '">' + escapeHtml(message).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>',
-      cta: 'Visiter pirabellabs.com', ctaUrl: 'https://www.pirabellabs.com',
-    });
+    const html = adminTextEmailHtml(message, String(a.name || '').split(' ')[0], subject);
     const ok = await sendEmail(a.email, subject, html, { replyTo: process.env.ADMIN_EMAIL || 'contact@pirabellabs.com' });
     if (!ok) return res.status(502).json({ error: "Envoi refusé (vérifiez la config e-mail)." });
     a.remindersSent = (a.remindersSent || 0) + 1; a.lastReminderAt = new Date(); await a.save();
@@ -3891,7 +3937,7 @@ app.patch('/api/admin/livres-blancs/:id', auth, adminOnly, limitBody(20), async 
     if (req.body.slug && slugify(req.body.slug) !== doc.slug) doc.slug = await uniqueSlug(req.body.slug, doc._id);
     await doc.save();
     res.json({ success: true, livreBlanc: doc });
-  } catch (e) { console.error('[lb.update]', e.message); res.status(500).json({ error: 'Erreur mise a jour.' }); }
+  } catch (e) { console.error('[lb.update]', e.message); res.status(500).json({ error: 'Erreur de mise à jour.' }); }
 });
 app.delete('/api/admin/livres-blancs/:id', auth, adminOnly, async (req, res) => {
   try { await LivreBlanc.findByIdAndDelete(req.params.id); res.json({ success: true }); }
@@ -4754,7 +4800,7 @@ app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
   try {
     const adminCount = await User.countDocuments({ role: 'admin' });
     if (adminCount > 0) {
-      return res.status(403).json({ error: 'Un compte administrateur existe deja.' });
+      return res.status(403).json({ error: 'Un compte administrateur existe déjà.' });
     }
     const name = sanitize(req.body.name || '', 120);
     const email = sanitizeEmail(req.body.email);
@@ -4766,7 +4812,7 @@ app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
     const user = new User({ name, email, password, role: 'admin', isActive: true });
     await user.save();
     console.log(`[setup] admin created via web setup: ${email} (id: ${user._id})`);
-    res.json({ success: true, message: 'Compte administrateur cree.' });
+    res.json({ success: true, message: 'Compte administrateur créé.' });
   } catch (err) {
     console.error('[setup]', err.message);
     res.status(500).json({ error: 'Erreur serveur. Reessayez.' });
@@ -5024,7 +5070,7 @@ app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, r
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
     if (quote.status === 'accepte' || quote.status === 'refuse') {
-      return res.status(403).json({ error: 'Devis verrouille (deja accepte/refuse).' });
+      return res.status(403).json({ error: 'Devis verrouillé (déjà accepté ou refusé).' });
     }
 
     const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'validUntil'];
@@ -5134,7 +5180,7 @@ app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
       $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' }
     });
 
-    res.json({ success: true, message: 'Devis envoye au client.', publicUrl });
+    res.json({ success: true, message: 'Devis envoyé au client.', publicUrl });
   } catch (err) {
     console.error('[quotes] send error:', err.message);
     res.status(500).json({ error: 'Erreur envoi : ' + err.message });
@@ -5181,8 +5227,8 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
   try {
     const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte') return res.json({ success: true, message: 'Devis deja accepte.' });
-    if (quote.status === 'refuse') return res.status(403).json({ error: 'Devis deja refuse.' });
+    if (quote.status === 'accepte') return res.json({ success: true, message: 'Devis déjà accepté.' });
+    if (quote.status === 'refuse') return res.status(403).json({ error: 'Devis déjà refusé.' });
 
     quote.status = 'accepte';
     quote.acceptedAt = new Date();
@@ -5203,10 +5249,10 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     // Email admin
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      `[Pirabel Labs] Devis ACCEPTE - ${quote.reference} (${quote.total} ${quote.currency})`,
+      `[Pirabel Labs] Devis ACCEPTÉ — ${quote.reference} (${quote.total} ${quote.currency})`,
       masterTemplate({
-        title: 'Devis accepte !',
-        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}) vient d'etre accepte par <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}).</p><p>Montant : <strong>${quote.total} ${quote.currency}</strong></p><p>Le lead a ete converti en client. Lancement du projet a planifier.</p>`,
+        title: 'Devis accepté !',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}) vient d’être accepté par <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}).</p><p>Montant : <strong>${quote.total} ${quote.currency}</strong></p><p>Le lead a ete converti en client. Lancement du projet a planifier.</p>`,
         cta: 'Ouvrir le dashboard',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
@@ -5215,16 +5261,16 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     // Email confirmation client
     await sendEmail(
       quote.clientEmail,
-      `Devis accepte - ${quote.reference}`,
+      `Devis accepté — ${quote.reference}`,
       masterTemplate({
         title: 'Merci ' + escapeHtml(quote.clientName.split(' ')[0]) + ' !',
-        body: `<p>Nous avons bien recu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Lissanon Gildas vous contactera sous 24h pour planifier le kick-off.</p><p>A tres vite,<br><strong>L'equipe Pirabel Labs</strong></p>`,
+        body: `<p>Nous avons bien reçu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Lissanon Gildas vous contacte sous 24 h pour planifier le lancement du projet.</p><p>À très vite,<br><strong>Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>`,
         cta: 'Visiter pirabellabs.com',
         ctaUrl: 'https://www.pirabellabs.com'
       })
     ).catch(e => console.error('[quotes] accept client email:', e.message));
 
-    res.json({ success: true, message: 'Devis accepte. Nous vous recontactons sous 24h.' });
+    res.json({ success: true, message: 'Devis accepté. Nous vous recontactons sous 24 h.' });
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
   }
@@ -5234,7 +5280,7 @@ app.post('/api/quotes/:token/refuse', async (req, res) => {
   try {
     const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte') return res.status(403).json({ error: 'Devis deja accepte.' });
+    if (quote.status === 'accepte') return res.status(403).json({ error: 'Devis déjà accepté.' });
 
     quote.status = 'refuse';
     quote.refusedAt = new Date();
@@ -5243,16 +5289,16 @@ app.post('/api/quotes/:token/refuse', async (req, res) => {
 
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      `[Pirabel Labs] Devis REFUSE - ${quote.reference}`,
+      `[Pirabel Labs] Devis REFUSÉ — ${quote.reference}`,
       masterTemplate({
-        title: 'Devis refuse',
-        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> vient d'etre refuse par <strong>${escapeHtml(quote.clientName)}</strong>.</p><p>Raison : ${escapeHtml(req.body?.reason || 'non precisee')}</p>`,
+        title: 'Devis refusé',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> vient d’être refusé par <strong>${escapeHtml(quote.clientName)}</strong>.</p><p>Raison : ${escapeHtml(req.body?.reason || 'non précisée')}</p>`,
         cta: 'Ouvrir le dashboard',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
     ).catch(() => {});
 
-    res.json({ success: true, message: 'Devis refuse. Merci pour votre retour.' });
+    res.json({ success: true, message: 'Devis refusé. Merci pour votre retour.' });
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
   }
@@ -5377,7 +5423,7 @@ app.patch('/api/admin/invoices/:id', auth, adminOnly, limitBody(50), async (req,
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
     if (invoice.status === 'payee' || invoice.status === 'annulee') {
-      return res.status(403).json({ error: 'Facture verrouillee (deja payee/annulee).' });
+      return res.status(403).json({ error: 'Facture verrouillée (déjà payée ou annulée).' });
     }
 
     const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'dueDate', 'paymentMethod', 'issuerBrand'];
@@ -5451,7 +5497,7 @@ app.post('/api/admin/invoices/:id/send', auth, adminOnly, async (req, res) => {
     invoice.sentAt = new Date();
     await invoice.save();
 
-    res.json({ success: true, message: 'Facture envoyee au client.', publicUrl });
+    res.json({ success: true, message: 'Facture envoyée au client.', publicUrl });
   } catch (err) {
     console.error('[invoices] send error:', err.message);
     res.status(500).json({ error: 'Erreur envoi : ' + err.message });
@@ -5463,7 +5509,7 @@ app.post('/api/admin/invoices/:id/mark-paid', auth, adminOnly, limitBody(5), asy
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
-    if (invoice.status === 'annulee') return res.status(403).json({ error: 'Facture annulee.' });
+    if (invoice.status === 'annulee') return res.status(403).json({ error: 'Facture annulée.' });
 
     invoice.status = 'payee';
     invoice.paidAt = new Date();
@@ -5566,7 +5612,7 @@ app.post('/api/admin/reviews/request', auth, adminOnly, limitBody(5), async (req
     lead.reviewRequestedAt = new Date();
     await lead.save();
 
-    res.json({ success: true, message: 'Demande d&apos;avis envoyee.', publicUrl });
+    res.json({ success: true, message: 'Demande d’avis envoyée.', publicUrl });
   } catch (err) {
     console.error('[reviews] request error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
@@ -5620,7 +5666,7 @@ app.delete('/api/admin/reviews/:id', auth, adminOnly, async (req, res) => {
 app.get('/api/reviews/:token', async (req, res) => {
   try {
     const review = await Review.findOne({ requestToken: req.params.token });
-    if (!review) return res.status(404).json({ error: 'Lien invalide ou expire.' });
+    if (!review) return res.status(404).json({ error: 'Lien invalide ou expiré.' });
     res.json({
       clientName: review.clientName,
       clientCompany: review.clientCompany,
@@ -5641,8 +5687,8 @@ const reviewSubmitLimiter = rateLimit({
 app.post('/api/reviews/:token', reviewSubmitLimiter, limitBody(5), async (req, res) => {
   try {
     const review = await Review.findOne({ requestToken: req.params.token });
-    if (!review) return res.status(404).json({ error: 'Lien invalide ou expire.' });
-    if (review.submittedAt) return res.status(403).json({ error: 'Avis deja soumis.' });
+    if (!review) return res.status(404).json({ error: 'Lien invalide ou expiré.' });
+    if (review.submittedAt) return res.status(403).json({ error: 'Avis déjà envoyé.' });
 
     const rating = Math.max(1, Math.min(5, parseInt(req.body.rating) || 0));
     const comment = sanitize(req.body.comment || '', 2000);
@@ -5679,7 +5725,7 @@ app.post('/api/reviews/:token', reviewSubmitLimiter, limitBody(5), async (req, r
       })
     ).catch(() => {});
 
-    res.json({ success: true, message: 'Merci pour votre avis ! Il sera publie apres moderation.' });
+    res.json({ success: true, message: 'Merci pour votre avis ! Il sera publié après modération.' });
   } catch (err) {
     console.error('[reviews] submit error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
@@ -5705,12 +5751,12 @@ app.post('/api/admin/leads-create', auth, adminOnly, limitBody(10), async (req, 
     if (!isValidEmail(email)) return res.status(400).json({ error: 'Email invalide.' });
 
     const existing = await Lead.findOne({ email });
-    if (existing) return res.status(409).json({ error: 'Un lead avec cet email existe deja.', existing });
+    if (existing) return res.status(409).json({ error: 'Un contact avec cet e-mail existe déjà.', existing });
 
     const lead = await Lead.create({
       type: 'contact', stage, status,
       name, email, phone, company,
-      service: '', message: 'Cree manuellement depuis le dashboard admin',
+      service: '', message: 'Créé manuellement depuis le tableau de bord',
       source: 'admin_manual',
       clientData: stage === 'client' ? { becameClientAt: new Date() } : undefined,
       newsletterOptIn: false
@@ -5728,7 +5774,7 @@ app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
     const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
     if (quote.status === 'accepte' || quote.status === 'refuse') {
-      return res.status(403).json({ error: 'Devis deja accepte ou refuse.' });
+      return res.status(403).json({ error: 'Devis déjà accepté ou refusé.' });
     }
     const message = sanitize(req.body.message || '', 2000);
     if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
@@ -5747,7 +5793,7 @@ app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
       })
     ).catch(() => {});
 
-    res.json({ success: true, message: 'Demande envoyee. Nous revenons vers vous sous 48h.' });
+    res.json({ success: true, message: 'Demande envoyée. Nous revenons vers vous sous 48 h.' });
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
   }
@@ -5832,7 +5878,7 @@ app.get('/api/admin/email-status', auth, adminOnly, (req, res) => {
     fromEmail: (process.env.FROM_EMAIL || '').trim() || 'contact@pirabellabs.com (defaut)',
     contactEmail: (process.env.CONTACT_EMAIL || '').trim() || 'contact@pirabellabs.com (defaut)',
     adminEmail: (process.env.ADMIN_EMAIL || '').trim() || null,
-    note: !key ? 'RESEND_API_KEY manquante : aucun email ne peut partir. Ajoutez-la dans Vercel > Settings > Environment Variables.' : 'Cle presente. Si les emails ne partent pas, verifiez que FROM_EMAIL est sur un domaine verifie chez Resend.'
+    note: !key ? 'RESEND_API_KEY manquante : aucun email ne peut partir. Ajoutez-la dans Vercel > Settings > Environment Variables.' : 'Clé présente. Si les e-mails ne partent pas, vérifiez que FROM_EMAIL utilise un domaine validé chez Resend.'
   });
 });
 
@@ -5850,7 +5896,7 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
     const from = '"Pirabel Labs" <' + ((process.env.FROM_EMAIL || '').trim() || 'contact@pirabellabs.com') + '>';
     const html = masterTemplate({
       title: 'Test email Pirabel Labs',
-      body: '<p>Ceci est un email de test envoye depuis le dashboard admin a ' + new Date().toISOString() + '.</p><p>Si vous recevez ce message, la configuration Resend fonctionne.</p>',
+      body: '<p>Ceci est un e-mail de test envoyé depuis le tableau de bord à ' + new Date().toISOString() + '.</p><p>Si vous recevez ce message, la configuration Resend fonctionne.</p>',
     });
 
     let resp, body;
@@ -5874,11 +5920,11 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
         to,
         hint: resp.status === 403 || resp.status === 422
           ? 'Domaine probablement non verifie OU FROM_EMAIL hors domaine verifie. Verifiez le domaine de FROM_EMAIL sur resend.com/domains.'
-          : 'Verifiez la cle API et le domaine sur resend.com.'
+          : 'Vérifiez la clé API et le domaine sur resend.com.'
       });
     }
 
-    res.json({ success: true, message: 'Email de test envoye a ' + to + '. Verifiez la boite (et les spams).', resendId: body.id, from });
+    res.json({ success: true, message: 'E-mail de test envoyé à ' + to + '. Verifiez la boite (et les spams).', resendId: body.id, from });
   } catch (err) {
     console.error('[test-email]', err.message);
     res.status(500).json({ error: 'Erreur serveur : ' + err.message });

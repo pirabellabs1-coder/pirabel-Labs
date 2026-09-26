@@ -778,6 +778,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Étape 3 : envoi</div><div class="card__sub">L'envoi peut prendre 1-2 minutes selon le nombre de destinataires.</div></div></div>
+        <button class="btn btn--ghost" id="bulkPreview" type="button" style="margin-top:1rem;margin-right:.5rem;"><span class="material-symbols-outlined">visibility</span> Aperçu</button>
         <button class="btn" id="bulkSend" style="margin-top:1rem;background:var(--accent);"><span class="material-symbols-outlined">send</span> Envoyer maintenant</button>
         <div id="bulkResult" style="margin-top:1rem;font-size:0.88rem;"></div>
       </div>
@@ -1251,6 +1252,44 @@ function emptyState(containerId, msg, html) {
   if (el) el.innerHTML = html || '<div style="padding:2rem;text-align:center;color:var(--text-muted);">' + msg + '</div>';
 }
 // ============ COMPOSER : répondre / ecrire un email a un client ou prospect ============
+// Qualification (formulaire en étapes de /contact) : badge dans la liste + bloc détaillé dans la fiche.
+var HEAT = { chaud: ['#15803d', 'rgba(21,128,61,.14)', 'Chaud'], tiede: ['#b45309', 'rgba(180,83,9,.14)', 'Tiède'], froid: ['#64748b', 'rgba(100,116,139,.16)', 'Froid'] };
+function heatBadge(l) {
+  var h = HEAT[l.qualificationLabel];
+  if (!h) return '';
+  return ' <span title="Score de qualification" style="display:inline-block;margin-left:.35rem;padding:.08rem .45rem;border-radius:999px;font-size:.68rem;font-weight:700;color:' + h[0] + ';background:' + h[1] + ';vertical-align:middle;">' + h[2] + (typeof l.qualificationScore === 'number' ? ' · ' + l.qualificationScore : '') + '</span>';
+}
+function qualificationBlock(l) {
+  var rows = (l.qualificationRows || []).filter(function(r){ return r[0] !== 'Score'; });
+  if (!rows.length) return '';
+  var h = HEAT[l.qualificationLabel] || ['#64748b', 'rgba(100,116,139,.16)', '—'];
+  return '<div class="detail__field"><div class="detail__label">Qualification du formulaire</div><div class="detail__value">' +
+    '<div style="display:inline-block;padding:.3rem .75rem;border-radius:999px;font-weight:800;font-size:.85rem;color:' + h[0] + ';background:' + h[1] + ';margin-bottom:.6rem;">Prospect ' + h[2].toLowerCase() + (typeof l.qualificationScore === 'number' ? ' · ' + l.qualificationScore + '/100' : '') + '</div>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:.84rem;">' + rows.map(function(r){
+      return '<tr><td style="padding:.38rem .6rem .38rem 0;color:var(--text-muted);vertical-align:top;width:42%;border-bottom:1px solid var(--border);">' + escape(r[0]) + '</td>' +
+        '<td style="padding:.38rem 0;vertical-align:top;border-bottom:1px solid var(--border);">' + (/^https?:\/\//.test(r[1]) ? '<a href="' + escape(r[1]) + '" target="_blank" rel="noopener noreferrer">' + escape(r[1]) + '</a>' : escape(r[1])) + '</td></tr>';
+    }).join('') + '</table></div></div>';
+}
+
+// Aperçu fidèle d'un e-mail (même modèle qu'à l'envoi), dans une iframe isolée.
+async function showEmailPreview(payload, title) {
+  try {
+    var d = await api('/api/admin/email-preview', { method: 'POST', body: payload });
+    var old = document.getElementById('emailPreviewModal'); if (old) old.remove();
+    var m = document.createElement('div'); m.id = 'emailPreviewModal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;width:min(820px,100%);height:min(92vh,1000px);display:flex;flex-direction:column;overflow:hidden;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;border-bottom:1px solid var(--border);"><strong>' + escape(title || 'Aperçu de l’e-mail') + '</strong>' +
+      '<button id="epClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+      '<iframe id="epFrame" title="Aperçu de l’e-mail" sandbox="" style="flex:1;width:100%;border:0;background:#f6f3ef;"></iframe></div>';
+    document.body.appendChild(m);
+    document.getElementById('epFrame').srcdoc = d.html || '';
+    function close(){ m.remove(); }
+    m.addEventListener('click', function(e){ if (e.target === m) close(); });
+    document.getElementById('epClose').addEventListener('click', close);
+  } catch (e) { toast(e.message || 'Aperçu indisponible', 'error'); }
+}
+
 function openCompose(prefill) {
   prefill = prefill || {};
   var old = document.getElementById('composeModal');
@@ -1269,9 +1308,10 @@ function openCompose(prefill) {
     '<input id="cmSubject" type="text" placeholder="Votre demande chez Pirabel Labs" value="' + escape(prefill.subject || '') + '" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.85rem;">' +
     '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Message</label>' +
     '<textarea id="cmMessage" rows="8" placeholder="Bonjour,&#10;&#10;Merci pour votre message..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.65rem 0.85rem;border-radius:8px;margin-bottom:0.4rem;font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>' +
-    '<p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;">Le message part dans un joli template Pirabel Labs. Les réponses du client arrivent sur ta boite contact@pirabellabs.com.</p>' +
+    '<p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;">Le message part dans le modèle Pirabel Labs (version claire, avec ta signature) : clique sur « Aperçu » pour le voir tel que le client le recevra. Les réponses du client arrivent sur ta boite contact@pirabellabs.com.</p>' +
     '<div style="display:flex;gap:0.5rem;justify-content:flex-end;">' +
       '<button id="cmCancel" class="btn btn--ghost btn--sm">Annuler</button>' +
+      '<button id="cmPreview" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">visibility</span> Aperçu</button>' +
       '<button id="cmSend" class="btn btn--sm"><span class="material-symbols-outlined">send</span> Envoyer</button>' +
     '</div></div>';
   document.body.appendChild(modal);
@@ -1281,6 +1321,11 @@ function openCompose(prefill) {
   modal.addEventListener('click', function(e){ if (e.target === modal) close(); });
   document.getElementById('cmClose').addEventListener('click', close);
   document.getElementById('cmCancel').addEventListener('click', close);
+  document.getElementById('cmPreview').addEventListener('click', function() {
+    var message = document.getElementById('cmMessage').value.trim();
+    if (!message) { toast('Écris d’abord le message', 'error'); return; }
+    showEmailPreview({ message: message, subject: document.getElementById('cmSubject').value.trim(), leadId: modal.dataset.leadId || '' }, 'Aperçu : ' + (document.getElementById('cmSubject').value.trim() || 'sans sujet'));
+  });
   document.getElementById('cmSend').addEventListener('click', async function() {
     var to = document.getElementById('cmTo').value.trim();
     var subject = document.getElementById('cmSubject').value.trim();
@@ -2657,6 +2702,13 @@ async function bulkPreview() {
   } catch(e) { console.error(e); }
 }
 
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest && ev.target.closest('#bulkPreview');
+  if (!b) return;
+  var body = (document.getElementById('bulkBody').value || '').trim();
+  if (!body) { toast('Écris d’abord le corps de l’e-mail', 'error'); return; }
+  showEmailPreview({ mode: 'masse', bodyHtml: body }, 'Aperçu : ' + ((document.getElementById('bulkSubject').value || '').trim() || 'campagne'));
+});
 async function bulkSend() {
   const subject = document.getElementById('bulkSubject').value.trim();
   const bodyHtml = document.getElementById('bulkBody').value.trim();
@@ -2785,7 +2837,7 @@ function renderLeadsTable() {
     var tel = l.phone ? (waDigits ? '<a href="https://wa.me/'+waDigits+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--accent);">' + escape(l.phone) + '</a>' : escape(l.phone)) : '<span style="color:var(--text-faint)">—</span>';
     var sub = (l.company && l.company !== l.name) ? l.company : (l.email || '');
     return '<tr data-id="' + l._id + '" style="cursor:pointer;">' +
-      '<td><strong>' + escape(l.name) + '</strong>' + (sub ? '<div style="font-size:.74rem;color:var(--text-muted);">' + escape(sub) + '</div>' : '') + '</td>' +
+      '<td><strong>' + escape(l.name) + '</strong>' + heatBadge(l) + (sub ? '<div style="font-size:.74rem;color:var(--text-muted);">' + escape(sub) + '</div>' : '') + '</td>' +
       '<td>' + (c.city ? escape(c.city) : '—') + '</td>' +
       '<td>' + (l.service ? '<span class="badge badge--nouveau">' + escape(l.service) + '</span>' : '—') + '</td>' +
       '<td>' + tel + '</td>' +
@@ -3050,14 +3102,18 @@ function openDetail(id) {
   STATE.currentLead = lead;
   document.getElementById('detailTitle').textContent = lead.name;
   const body = document.getElementById('detailBody');
-  body.innerHTML = prospectMessageBlock(lead) +
+  var qRows = (lead.qualificationRows || []).filter(function(r){ return r[0] !== 'Score'; });
+  var qDesc = lead.qualification && lead.qualification.description;
+  body.innerHTML = prospectMessageBlock(lead) + qualificationBlock(lead) +
     '<div class="detail__field"><div class="detail__label">Email</div><div class="detail__value"><a href="mailto:' + escape(lead.email) + '">' + escape(lead.email) + '</a></div></div>' +
     (lead.phone ? '<div class="detail__field"><div class="detail__label">Téléphone</div><div class="detail__value"><a href="tel:' + escape(lead.phone) + '">' + escape(lead.phone) + '</a></div></div>' : '') +
     (lead.company ? '<div class="detail__field"><div class="detail__label">Entreprise</div><div class="detail__value">' + escape(lead.company) + '</div></div>' : '') +
     '<div class="detail__field"><div class="detail__label">Service demande</div><div class="detail__value">' + escape(lead.service || '--') + '</div></div>' +
     '<div class="detail__field"><div class="detail__label">Source</div><div class="detail__value">' + escape(lead.source || 'direct') + '</div></div>' +
     '<div class="detail__field"><div class="detail__label">Date</div><div class="detail__value">' + fmtDateTime(lead.createdAt) + '</div></div>' +
-    '<div class="detail__field"><div class="detail__label">Message</div><div class="detail__value">' + escape(lead.message || '').replace(/\n/g, '<br>') + '</div></div>' +
+    (qRows.length
+      ? (qDesc ? '<div class="detail__field"><div class="detail__label">Description du projet</div><div class="detail__value">' + escape(qDesc).replace(/\n/g, '<br>') + '</div></div>' : '')
+      : '<div class="detail__field"><div class="detail__label">Message</div><div class="detail__value">' + escape(lead.message || '').replace(/\n/g, '<br>') + '</div></div>') +
     '<div class="detail__field"><div class="detail__label">Statut</div>' +
       '<select class="detail__select" id="detailStatus">' +
         Object.keys(STATUS_LABELS).map(function(k){ return '<option value="' + k + '"' + (lead.status === k ? ' selected' : '') + '>' + STATUS_LABELS[k] + '</option>'; }).join('') +
@@ -3667,9 +3723,14 @@ async function openEmail(id) {
       '</div>' +
       (e.errorMessage ? '<div style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.4);border-radius:8px;padding:0.6rem 0.8rem;font-size:0.8rem;color:var(--danger);margin-bottom:0.8rem;">' + escape(e.errorMessage) + '</div>' : '') +
       '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;font-size:0.9rem;color:var(--text);max-height:50vh;overflow:auto;">' + bodyHtml + '</div>' +
+      ((e.type === 'masse' || !/ayaba|assistant|automatique|syst/i.test(e.sentByName || '')) ? '<div style="margin-top:.8rem;"><button class="btn btn--ghost btn--sm" id="emFull"><span class="material-symbols-outlined">visibility</span> Reconstituer la mise en forme (modèle actuel)</button></div>' : '') +
       (e.to ? '<div style="margin-top:1rem;text-align:right;"><button class="btn btn--sm" onclick="document.getElementById(\'emailModal\').remove();openCompose({email:\'' + escape(e.to) + '\',subject:\'Re: ' + escape((e.subject||'').replace(/\'/g,"")) + '\'})"><span class="material-symbols-outlined">reply</span> Renvoyer / répondre</button></div>' : '') +
     '</div>';
     document.body.appendChild(mod);
+    var full = document.getElementById('emFull');
+    if (full) full.addEventListener('click', function(){
+      showEmailPreview(e.type === 'masse' ? { mode: 'masse', bodyHtml: e.body || '' } : { message: e.body || '', name: e.toName || '', subject: e.subject || '' }, e.subject || 'Aperçu');
+    });
   } catch(err) { toast(err.message || 'Erreur', 'error'); }
 }
 async function deleteEmail(ev, id) {

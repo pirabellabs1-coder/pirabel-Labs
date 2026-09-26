@@ -258,6 +258,46 @@ function summarizeQualification(d, sc) {
   return lines.join('\n');
 }
 
+// Réponses structurées « libellé → valeur » (texte brut, à échapper à l'affichage) :
+// e-mail admin et fiche prospect du tableau de bord. Tolérant aux anciennes fiches incomplètes.
+function qualificationRows(d, sc) {
+  if (!d || !Array.isArray(d.projects)) return [];
+  const lab = (map, id) => (map.get(id) || {}).label || '';
+  const rows = [];
+  if (sc && typeof sc.score === 'number') {
+    rows.push(['Score', `${sc.score}/100 (${{ chaud: 'chaud', tiede: 'tiède', froid: 'froid' }[sc.label] || sc.label || '—'})`]);
+    if (sc.flags && sc.flags.length) rows.push(['Points d’attention', sc.flags.join(' · ')]);
+  }
+  rows.push(['Projets', d.projects.map((p) => lab(PROJECTS, p)).filter(Boolean).join(', ')]);
+  for (const pid of d.projects) {
+    const def = Q.details[pid];
+    const ans = d.details && d.details[pid];
+    if (!def || !ans) continue;
+    for (const q of def.questions) {
+      if (!ans[q.id]) continue;
+      const v = Array.isArray(ans[q.id]) ? ans[q.id] : [ans[q.id]];
+      rows.push([`${lab(PROJECTS, pid)} · ${q.short}`, v.map((id) => optLabel(q.options, id)).filter(Boolean).join(', ')]);
+    }
+  }
+  rows.push(['Objectif', lab(GOALS, d.goal)]);
+  rows.push(['Taille', lab(SIZES, d.size)]);
+  rows.push(['Maturité', optLabel(Q.maturity, d.maturity)]);
+  rows.push(['Secteur', d.sector === 'autre' && d.sectorOther ? d.sectorOther : optLabel(Q.sectors, d.sector)]);
+  rows.push(['Localisation', [d.city, (COUNTRIES.get(d.country) || {}).label].filter(Boolean).join(', ')]);
+  const bl = d.budget ? budgetLabel(d) : '';
+  rows.push(['Budget', /^\s*\(/.test(bl) ? '' : bl]);
+  rows.push(['Démarrage', lab(TIMELINES, d.timeline)]);
+  if (Array.isArray(d.assets) && d.assets.length) rows.push(['Existant', d.assets.map((a) => optLabel(Q.assets, a)).filter(Boolean).join(', ')]);
+  if (d.websiteUrl) rows.push(['Site actuel', d.websiteUrl]);
+  if (d.contact && d.contact.channel) rows.push(['Canal préféré', lab(CHANNELS, d.contact.channel)]);
+  const ctx = d.context || {};
+  if (ctx.page) rows.push(['Page d’origine', ctx.page]);
+  const utm = [ctx.utmSource, ctx.utmMedium, ctx.utmCampaign].filter(Boolean).join(' / ');
+  if (utm) rows.push(['Campagne (UTM)', utm]);
+  if (ctx.referrer) rows.push(['Provenance', ctx.referrer]);
+  return rows.filter((r) => r[1]);
+}
+
 const projectLabels = (d) => d.projects.map((p) => PROJECTS.get(p).label).join(', ');
 const timelineLabel = (d) => TIMELINES.get(d.timeline).label;
 
@@ -266,6 +306,7 @@ module.exports = {
   validateQualification,
   scoreQualification,
   summarizeQualification,
+  qualificationRows,
   budgetLabel,
   projectLabels,
   timelineLabel,

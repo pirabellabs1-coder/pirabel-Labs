@@ -15,113 +15,162 @@ console.log(`[email] provider=Resend key=${RESEND_API_KEY ? RESEND_API_KEY.subst
 const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
 const SITE = () => clean(process.env.SITE_URL) || 'https://www.pirabellabs.com';
+const WHATSAPP = 'https://wa.me/16139273067';
 
 // ========================================
-// MASTER TEMPLATE — Premium Dark Theme
+// CHARTE E-MAIL — version claire du site (« version blanche »)
+// Contrastes vérifiés (WCAG AA) : texte #17120f / #4a413b sur blanc, liens #B83A00 (5,8:1),
+// boutons orange #FF5500 avec texte #140700 (6,2:1), comme les boutons du site.
+// ========================================
+const C = {
+  page: '#f6f3ef', card: '#ffffff', line: '#ece5de', lineSoft: '#f3eee9',
+  text: '#17120f', text2: '#4a413b', muted: '#6b605a', faint: '#8a7f78',
+  accent: '#FF5500', accentText: '#B83A00', onAccent: '#140700',
+  soft: '#fff4ec', softLine: '#ffd9c2', box: '#faf7f4',
+};
+const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
+
+// Styles réutilisables pour le contenu des e-mails (à utiliser dans les nouveaux modèles).
+const S = {
+  p: `margin:0 0 16px;font-size:16px;line-height:1.65;color:${C.text2};`,
+  small: `margin:0 0 12px;font-size:14px;line-height:1.6;color:${C.muted};`,
+  strong: `color:${C.text};`,
+  link: `color:${C.accentText};font-weight:600;`,
+  box: `background:${C.box};border:1px solid ${C.line};border-radius:14px;padding:20px 22px;margin:0 0 22px;`,
+  note: `background:${C.soft};border-left:4px solid ${C.accent};border-radius:0 12px 12px 0;padding:16px 20px;margin:0 0 22px;`,
+  label: `font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${C.muted};`,
+  badge: `display:inline-block;background:${C.soft};border:1px solid ${C.softLine};color:${C.accentText};border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;`,
+};
+
+// Les anciens corps d'e-mail (écrits pour le thème sombre) sont convertis vers la charte claire :
+// texte clair → texte foncé, encadrés noirs → encadrés crème, orange texte → orange lisible sur blanc.
+function toLight(html) {
+  if (!html) return '';
+  const grey = (a) => {
+    const x = parseFloat(a);
+    if (x >= 0.78) return C.text;
+    if (x >= 0.62) return C.text2;
+    if (x >= 0.45) return C.muted;
+    return C.faint;
+  };
+  return String(html)
+    .replace(/(^|[;"'\s])color:\s*rgba\(\s*229\s*,\s*226\s*,\s*225\s*,\s*([0-9.]+)\s*\)/gi, (m, pre, a) => `${pre}color:${grey(a)}`)
+    .replace(/(^|[;"'\s])color:\s*#e5e2e1/gi, `$1color:${C.text}`)
+    .replace(/(^|[;"'\s])color:\s*#ff5500/gi, `$1color:${C.accentText}`)
+    .replace(/(^|[;"'\s])color:\s*#5c1900/gi, `$1color:${C.onAccent}`)
+    .replace(/background:\s*#0e0e0e/gi, `background:${C.box};border-radius:12px`)
+    .replace(/background:\s*#1c1b1b/gi, `background:${C.card}`)
+    .replace(/background:\s*#141313/gi, `background:${C.page}`)
+    .replace(/background:\s*rgba\(0,\s*0,\s*0,\s*0\.2\)/gi, `background:${C.box}`)
+    .replace(/background:\s*rgba\(255,\s*255,\s*255,\s*0\.05\)/gi, `background:${C.card}`)
+    .replace(/background:\s*rgba\(255,\s*85,\s*0,\s*0\.0[0-9]\)/gi, `background:${C.soft}`)
+    .replace(/rgba\(\s*92\s*,\s*64\s*,\s*55\s*,\s*0?\.\d+\s*\)/gi, C.line)
+    .replace(/(border[a-z-]*:\s*[^;"]*?)rgba\(\s*229\s*,\s*226\s*,\s*225\s*,\s*[0-9.]+\s*\)/gi, `$1${C.line}`)
+    .replace(/background:\s*rgba\(\s*229\s*,\s*226\s*,\s*225\s*,\s*[0-9.]+\s*\)/gi, `background:${C.line}`);
+}
+
+// ========================================
+// GABARIT PRINCIPAL — clair, coloré, large (720 px), aligné à gauche
 // ========================================
 function masterTemplate(options = {}) {
-  const { preheader, headerType, title, subtitle, body, cta, ctaUrl, ctaSecondary, ctaSecondaryUrl, stats, testimonial, footer_extra } = options;
+  const { preheader, headerType, title, subtitle, cta, ctaUrl, ctaSecondary, ctaSecondaryUrl, stats, testimonial } = options;
+  const body = toLight(options.body);
+  const footerExtra = toLight(options.footer_extra);
+  const site = SITE();
+  const year = new Date().getFullYear();
 
-  const statsHTML = stats ? `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0;">
-      <tr>${stats.map(s => `
-        <td style="text-align:center;padding:16px;background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);">
-          <div style="font-size:28px;font-weight:800;color:#FF5500;letter-spacing:-1px;">${s.value}</div>
-          <div style="font-size:11px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:6px;">${s.label}</div>
+  const statsHTML = stats && stats.length ? `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 24px;border-collapse:separate;border-spacing:8px 0;">
+      <tr>${stats.map((s) => `
+        <td class="stat-cell" style="text-align:left;padding:16px 18px;background:${C.soft};border:1px solid ${C.softLine};border-radius:14px;">
+          <div style="font-size:26px;font-weight:800;color:${C.accentText};letter-spacing:-0.5px;">${s.value}</div>
+          <div style="font-size:12px;color:${C.muted};text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">${s.label}</div>
         </td>`).join('')}
       </tr>
     </table>` : '';
 
   const testimonialHTML = testimonial ? `
-    <div style="border-left:3px solid #FF5500;padding:16px 20px;margin:28px 0;background:rgba(255,85,0,0.03);">
-      <p style="font-style:italic;color:rgba(229,226,225,0.7);margin:0 0 8px;font-size:15px;">"${testimonial.quote}"</p>
-      <p style="font-size:12px;color:#FF5500;font-weight:700;margin:0;">${testimonial.author} — ${testimonial.role}</p>
+    <div style="${S.note}">
+      <p style="margin:0 0 8px;font-size:16px;line-height:1.6;color:${C.text};font-style:italic;">« ${testimonial.quote} »</p>
+      <p style="margin:0;font-size:13px;color:${C.accentText};font-weight:700;">${testimonial.author}${testimonial.role ? ' — ' + testimonial.role : ''}</p>
     </div>` : '';
 
   const ctaHTML = cta ? `
-    <div style="text-align:center;margin:32px 0 16px;">
-      <a href="${ctaUrl || SITE()}" style="display:inline-block;background:#FF5500;color:#5c1900;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;padding:16px 40px;text-decoration:none;mso-padding-alt:0;">${cta}</a>
-    </div>
-    ${ctaSecondary ? `<div style="text-align:center;margin:8px 0 24px;"><a href="${ctaSecondaryUrl || SITE()}" style="color:#FF5500;font-size:13px;text-decoration:underline;">${ctaSecondary}</a></div>` : ''}` : '';
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 8px;">
+      <tr><td style="border-radius:12px;background:${C.accent};background-image:linear-gradient(120deg,#ff6a1a,${C.accent} 45%,#ff7a33);">
+        <a href="${ctaUrl || site}" style="display:inline-block;padding:15px 30px;font-size:16px;font-weight:700;color:${C.onAccent};text-decoration:none;border-radius:12px;">${cta}&nbsp;&rarr;</a>
+      </td></tr>
+    </table>
+    ${ctaSecondary ? `<p style="margin:14px 0 0;font-size:15px;"><a href="${ctaSecondaryUrl || site}" style="${S.link}text-decoration:underline;">${ctaSecondary}</a></p>` : ''}` : '';
+
+  const hero = headerType === 'hero';
+  const heading = hero ? `
+<tr><td class="hero-cell" style="padding:40px 44px;background:${C.accent};background-image:linear-gradient(135deg,#FF5500 0%,#FF7A33 55%,#FFB088 100%);">
+  <h1 style="margin:0;font-size:30px;line-height:1.2;font-weight:800;color:${C.onAccent};letter-spacing:-0.5px;">${title || ''}</h1>
+  ${subtitle ? `<p style="margin:10px 0 0;font-size:18px;line-height:1.5;font-weight:600;color:#3a1600;">${subtitle}</p>` : ''}
+</td></tr>` : (title || subtitle) ? `
+<tr><td class="body-cell" style="padding:36px 44px 0;">
+  ${subtitle ? `<p style="margin:0 0 10px;"><span style="${S.badge}">${subtitle}</span></p>` : ''}
+  ${title ? `<h1 style="margin:0;font-size:28px;line-height:1.25;font-weight:800;color:${C.text};letter-spacing:-0.5px;">${title}</h1>` : ''}
+</td></tr>` : '';
 
   return `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark">
-${preheader ? `<span style="display:none;font-size:1px;color:#141313;max-height:0;overflow:hidden;">${preheader}</span>` : ''}
+<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
+<title>${String(title || 'Pirabel Labs').replace(/<[^>]+>/g, '')}</title>
 <style>
-body{margin:0;padding:0;background:#141313;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;}
-a{color:#FF5500;}
-@media(max-width:600px){
-  .wrap{width:100%!important;}
-  .body-cell{padding:28px 20px!important;}
-  .header-cell{padding:24px 20px!important;}
-  .footer-cell{padding:24px 20px!important;}
-  .stat-cell{display:block!important;width:100%!important;margin-bottom:8px;}
-  h1{font-size:22px!important;}
+body{margin:0;padding:0;background:${C.page};font-family:${FONT};-webkit-font-smoothing:antialiased;}
+a{color:${C.accentText};}
+@media (max-width:640px){
+  .outer{padding:12px 0!important;}
+  .wrap{width:100%!important;border-radius:0!important;}
+  .body-cell,.hero-cell,.header-cell,.footer-cell{padding-left:22px!important;padding-right:22px!important;}
+  .stat-cell{display:block!important;width:auto!important;margin-bottom:8px;}
+  h1{font-size:24px!important;}
 }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#141313;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#141313;">
-<tr><td align="center" style="padding:20px 16px;">
-<table class="wrap" width="600" cellpadding="0" cellspacing="0" style="background:#1c1b1b;max-width:600px;">
+<body style="margin:0;padding:0;background:${C.page};">
+${preheader ? `<div style="display:none;font-size:1px;color:${C.page};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${preheader}</div>` : ''}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.page};">
+<tr><td class="outer" align="center" style="padding:28px 12px;">
+<table role="presentation" class="wrap" width="720" cellpadding="0" cellspacing="0" style="width:100%;max-width:720px;background:${C.card};border:1px solid ${C.line};border-radius:18px;overflow:hidden;font-family:${FONT};">
 
-<!-- HEADER -->
-<tr><td class="header-cell" style="padding:32px 40px;background:#0e0e0e;border-bottom:2px solid #FF5500;text-align:center;">
-  <div style="font-size:26px;font-weight:900;color:#FF5500;letter-spacing:-1px;font-family:Georgia,serif;">PIRABEL LABS</div>
-  ${headerType === 'banner' ? '<div style="font-size:10px;color:rgba(229,226,225,0.3);text-transform:uppercase;letter-spacing:3px;margin-top:8px;">Agence Marketing Digital Premium</div>' : ''}
-</td></tr>
+<!-- Bandeau de couleur -->
+<tr><td style="height:6px;line-height:6px;font-size:0;background:${C.accent};background-image:linear-gradient(90deg,#FF5500,#FF7A33 50%,#FFB088);">&nbsp;</td></tr>
 
-${headerType === 'hero' ? `
-<!-- HERO BANNER -->
-<tr><td style="padding:0;">
-  <div style="background:linear-gradient(135deg,#FF5500,#FF7700);padding:48px 40px;text-align:center;">
-    <h1 style="margin:0;font-size:28px;font-weight:800;color:#5c1900;letter-spacing:-0.5px;">${title || ''}</h1>
-    ${subtitle ? `<p style="margin:12px 0 0;font-size:16px;color:rgba(92,25,0,0.7);">${subtitle}</p>` : ''}
-  </div>
+<!-- En-tête -->
+<tr><td class="header-cell" style="padding:22px 44px;border-bottom:1px solid ${C.lineSoft};">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td style="vertical-align:middle;">
+      <a href="${site}" style="text-decoration:none;">
+        <img src="${site}/img/logo.png" width="34" height="34" alt="" style="display:inline-block;vertical-align:middle;border:0;">
+        <span style="display:inline-block;vertical-align:middle;margin-left:10px;font-size:20px;font-weight:800;color:${C.text};letter-spacing:-0.3px;">Pirabel Labs</span>
+      </a>
+    </td>
+    <td align="right" style="vertical-align:middle;font-size:13px;color:${C.muted};">Sites web · SEO · IA</td>
+  </tr></table>
 </td></tr>
-<!-- BODY -->
-<tr><td class="body-cell" style="padding:40px;color:#e5e2e1;">
+${heading}
+<!-- Contenu -->
+<tr><td class="body-cell" style="padding:32px 44px 40px;font-size:16px;line-height:1.65;color:${C.text2};">
 ${body || ''}
 ${statsHTML}
 ${testimonialHTML}
 ${ctaHTML}
 </td></tr>
-` : `
-<!-- BODY -->
-<tr><td class="body-cell" style="padding:40px;color:#e5e2e1;">
-${title ? `<h1 style="margin:0 0 8px;font-size:26px;font-weight:800;color:#e5e2e1;letter-spacing:-0.5px;">${title}</h1>` : ''}
-${subtitle ? `<p style="margin:0 0 24px;font-size:14px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1px;">${subtitle}</p>` : ''}
-${body || ''}
-${statsHTML}
-${testimonialHTML}
-${ctaHTML}
-</td></tr>
-`}
 
-<!-- FOOTER -->
-<tr><td class="footer-cell" style="padding:32px 40px;background:#0e0e0e;border-top:1px solid rgba(92,64,55,0.15);">
-  ${footer_extra || ''}
-  <table width="100%" cellpadding="0" cellspacing="0">
-    <tr>
-      <td style="text-align:center;padding-bottom:16px;">
-        <a href="${SITE()}" style="color:#FF5500;text-decoration:none;font-size:12px;margin:0 8px;">Site web</a>
-        <span style="color:rgba(229,226,225,0.15);">|</span>
-        <a href="${SITE()}/agence-seo-referencement-naturel/" style="color:rgba(229,226,225,0.3);text-decoration:none;font-size:12px;margin:0 8px;">SEO</a>
-        <span style="color:rgba(229,226,225,0.15);">|</span>
-        <a href="${SITE()}/agence-creation-sites-web/" style="color:rgba(229,226,225,0.3);text-decoration:none;font-size:12px;margin:0 8px;">Sites Web</a>
-        <span style="color:rgba(229,226,225,0.15);">|</span>
-        <a href="${SITE()}/agence-ia-automatisation/" style="color:rgba(229,226,225,0.3);text-decoration:none;font-size:12px;margin:0 8px;">IA</a>
-      </td>
-    </tr>
-    <tr><td style="text-align:center;">
-      <p style="margin:0;font-size:11px;color:rgba(229,226,225,0.25);line-height:1.6;">
-        &copy; 2026 Pirabel Labs &mdash; Agence Marketing Digital Premium<br>
-        Paris &bull; Cotonou &bull; Casablanca &bull; Dakar &bull; Montr&eacute;al<br>
-        <a href="mailto:contact@pirabellabs.com" style="color:rgba(229,226,225,0.3);">contact@pirabellabs.com</a>
-      </p>
-    </td></tr>
-  </table>
+<!-- Pied de page -->
+<tr><td class="footer-cell" style="padding:28px 44px 32px;background:${C.box};border-top:1px solid ${C.line};">
+  ${footerExtra || ''}
+  <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:${C.text2};"><strong style="color:${C.text};">Pirabel Labs</strong> — agence web, SEO et IA basée à Abomey-Calavi (Bénin), au service des entreprises francophones d’Afrique, d’Europe et du Canada.</p>
+  <p style="margin:0 0 14px;font-size:14px;line-height:1.8;">
+    <a href="${site}/services" style="${S.link}text-decoration:none;">Nos services</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/realisations" style="${S.link}text-decoration:none;">Réalisations</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/blog" style="${S.link}text-decoration:none;">Blog</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/contact" style="${S.link}text-decoration:none;">Contact</a>
+  </p>
+  <p style="margin:0;font-size:13px;line-height:1.6;color:${C.muted};">
+    <a href="mailto:contact@pirabellabs.com" style="color:${C.muted};">contact@pirabellabs.com</a> · <a href="${WHATSAPP}" style="color:${C.muted};">WhatsApp</a><br>
+    © ${year} Pirabel Labs. Vous recevez cet e-mail suite à un échange avec Pirabel Labs ; répondez simplement pour nous écrire.
+  </p>
 </td></tr>
 
 </table>
@@ -129,198 +178,164 @@ ${ctaHTML}
 </body></html>`;
 }
 
+// Tableau « libellé → valeur » (valeurs déjà échappées par l'appelant).
+function infoTable(rows) {
+  const r = rows.filter((x) => x && x[1] !== undefined && x[1] !== null && String(x[1]).trim() !== '');
+  if (!r.length) return '';
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="${S.box}border-collapse:separate;">
+    ${r.map(([k, v], i) => `<tr>
+      <td style="padding:10px 0;${i < r.length - 1 ? `border-bottom:1px solid ${C.line};` : ''}vertical-align:top;width:34%;${S.label}">${k}</td>
+      <td style="padding:10px 0 10px 16px;${i < r.length - 1 ? `border-bottom:1px solid ${C.line};` : ''}vertical-align:top;font-size:15px;line-height:1.55;color:${C.text};">${v}</td>
+    </tr>`).join('')}
+  </table>`;
+}
+
 
 // ========================================
-// EMAIL TYPES
+// MODÈLES
 // ========================================
 
-// --- OTP CODE ---
+// --- CODE DE VÉRIFICATION ---
 function otpEmail(code) {
   return masterTemplate({
     preheader: `Votre code : ${code}`,
-    title: 'Code de V\u00e9rification',
-    subtitle: 'S\u00e9curit\u00e9 de votre compte',
+    title: 'Votre code de vérification',
+    subtitle: 'Sécurité du compte',
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Voici votre code de v\u00e9rification :</p>
-      <div style="text-align:center;margin:28px 0;">
-        <div style="display:inline-block;background:#0e0e0e;border:2px solid rgba(255,85,0,0.4);padding:20px 40px;font-size:40px;font-weight:900;color:#FF5500;letter-spacing:12px;font-family:monospace;">${code}</div>
-      </div>
-      <p style="font-size:14px;color:rgba(229,226,225,0.5);text-align:center;">Ce code expire dans <strong style="color:#e5e2e1;">5 minutes</strong>.</p>
-      <div style="height:1px;background:rgba(92,64,55,0.2);margin:28px 0;"></div>
-      <p style="font-size:13px;color:rgba(229,226,225,0.3);">Si vous n'avez pas demand\u00e9 ce code, ignorez cet email. Votre compte est en s\u00e9curit\u00e9.</p>
-    `
+      <p style="${S.p}">Voici votre code de vérification :</p>
+      <p style="margin:8px 0 22px;"><span style="display:inline-block;background:${C.soft};border:2px solid ${C.softLine};border-radius:14px;padding:16px 28px;font-size:36px;font-weight:800;color:${C.accentText};letter-spacing:10px;font-family:Consolas,Menlo,monospace;">${code}</span></p>
+      <p style="${S.p}">Ce code expire dans <strong style="${S.strong}">5 minutes</strong>.</p>
+      <p style="${S.small}">Si vous n’avez pas demandé ce code, ignorez cet e-mail : votre compte reste protégé.</p>`,
   });
 }
 
-// --- WELCOME NEW CLIENT ---
+// --- BIENVENUE (espace client) ---
 function welcomeEmail(name) {
   return masterTemplate({
     headerType: 'hero',
     preheader: `Bienvenue chez Pirabel Labs, ${name} !`,
     title: `Bienvenue, ${name} !`,
-    subtitle: 'Votre espace client est pr\u00eat.',
+    subtitle: 'Votre espace client est prêt.',
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Votre compte Pirabel Labs est maintenant actif. Voici ce que vous pouvez faire depuis votre espace client :</p>
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
-        <tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;margin-bottom:8px;">
-          <strong style="color:#e5e2e1;">Suivre vos projets</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Progression, \u00e9tapes, livrables — tout en temps r\u00e9el</span>
-        </td></tr>
-        <tr><td style="height:8px;"></td></tr>
-        <tr><td style="padding:12px 16px;border-left:3px solid #41e4c0;background:#0e0e0e;">
-          <strong style="color:#e5e2e1;">Consulter vos factures</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Historique, statuts de paiement, t\u00e9l\u00e9chargement</span>
-        </td></tr>
-        <tr><td style="height:8px;"></td></tr>
-        <tr><td style="padding:12px 16px;border-left:3px solid rgba(229,226,225,0.2);background:#0e0e0e;">
-          <strong style="color:#e5e2e1;">\u00c9changer avec votre \u00e9quipe</strong><br><span style="font-size:13px;color:rgba(229,226,225,0.5);">Messagerie directe avec votre chef de projet</span>
-        </td></tr>
-      </table>
-    `,
-    cta: 'Acc\u00e9der \u00e0 mon espace',
-    ctaUrl: `${SITE()}/espace-client-4p8w1n`
+      <p style="${S.p}">Votre compte Pirabel Labs est actif. Depuis votre espace client, vous pouvez :</p>
+      <div style="${S.note}"><strong style="${S.strong}">Suivre vos projets</strong><br><span style="font-size:14px;color:${C.muted};">Progression, étapes et livrables, en temps réel.</span></div>
+      <div style="${S.note}"><strong style="${S.strong}">Consulter vos factures</strong><br><span style="font-size:14px;color:${C.muted};">Historique, statut des paiements et téléchargement.</span></div>
+      <div style="${S.note}"><strong style="${S.strong}">Échanger avec nous</strong><br><span style="font-size:14px;color:${C.muted};">Une messagerie directe avec votre interlocuteur.</span></div>`,
+    cta: 'Accéder à mon espace',
+    ctaUrl: `${SITE()}/espace-client`,
   });
 }
 
-// --- NEW ORDER NOTIFICATION (admin) ---
+// --- NOUVELLE DEMANDE (admin) ---
+// Les valeurs reçues sont déjà échappées par l'appelant (api/index.js).
 function newOrderEmail(order) {
+  const rows = [
+    ['Nom', `<strong>${order.name}</strong>`],
+    ['E-mail', `<a href="mailto:${order.email}" style="${S.link}">${order.email}</a>`],
+    ['Téléphone', order.phone || 'Non renseigné'],
+    order.company ? ['Entreprise', order.company] : null,
+    ['Service', `<span style="${S.badge}">${order.service}</span>`],
+    ['Budget', order.budget || 'Non renseigné'],
+  ];
   return masterTemplate({
     preheader: `Nouvelle demande de ${order.name}`,
-    title: 'Nouvelle Demande',
-    subtitle: `Via le formulaire contact &mdash; ${new Date().toLocaleDateString('fr-FR')}`,
+    title: 'Nouvelle demande',
+    subtitle: `Formulaire du site · ${new Date().toLocaleDateString('fr-FR')}`,
     body: `
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:0 0 24px;">
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Nom</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:600;">${order.name}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Email</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><a href="mailto:${order.email}" style="color:#FF5500;">${order.email}</a></td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">T\u00e9l\u00e9phone</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${order.phone || 'Non renseign\u00e9'}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Service</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><span style="background:rgba(255,85,0,0.15);color:#FF5500;padding:3px 10px;font-size:12px;font-weight:700;">${order.service}</span></td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Budget</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${order.budget || 'Non renseign\u00e9'}</td></tr>
-        </table>
-      </div>
-      ${order.message ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;"><strong style="color:#e5e2e1;">Message :</strong><br>${order.message}</p></div>` : ''}
-    `,
-    cta: 'Voir dans l\'admin',
+      ${order.intro || ''}
+      ${infoTable(rows)}
+      ${order.extraHtml || ''}
+      ${order.message ? `<div style="${S.note}"><p style="margin:0 0 6px;${S.label}">Message</p><p style="margin:0;font-size:15px;line-height:1.65;color:${C.text};">${order.message}</p></div>` : ''}`,
+    cta: 'Ouvrir le tableau de bord',
     ctaUrl: `${SITE()}/admin/dashboard`,
-    ctaSecondary: 'R\u00e9pondre directement',
-    ctaSecondaryUrl: `mailto:${order.email}?subject=Re: Votre demande Pirabel Labs`
+    ctaSecondary: 'Répondre directement',
+    ctaSecondaryUrl: `mailto:${order.email}?subject=${encodeURIComponent('Re: Votre demande Pirabel Labs')}`,
   });
 }
 
-// --- PROJECT UPDATE (client) ---
+// --- MISE À JOUR DE PROJET (client) ---
 function projectUpdateEmail(clientName, projectName, update, progress) {
+  const pct = Math.max(0, Math.min(100, Number(progress) || 0));
   return masterTemplate({
-    preheader: `Mise \u00e0 jour : ${projectName}`,
-    title: `Mise \u00e0 Jour Projet`,
+    preheader: `Mise à jour : ${projectName}`,
+    title: 'Votre projet avance',
     subtitle: projectName,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${clientName},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Votre projet a \u00e9t\u00e9 mis \u00e0 jour :</p>
-      <div style="border-left:3px solid #FF5500;padding:16px 20px;background:#0e0e0e;margin:20px 0;">
-        <p style="margin:0;font-size:15px;color:rgba(229,226,225,0.8);line-height:1.6;">${update}</p>
-      </div>
+      <p style="${S.p}">Bonjour ${clientName},</p>
+      <p style="${S.p}">Voici la dernière mise à jour de votre projet :</p>
+      <div style="${S.note}"><p style="margin:0;font-size:15px;line-height:1.65;color:${C.text};">${update}</p></div>
       ${progress !== undefined ? `
-      <div style="margin:24px 0;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1px;">Progression</span>
-          <span style="font-size:14px;font-weight:700;color:#FF5500;">${progress}%</span>
-        </div>
-        <div style="background:#0e0e0e;height:8px;border-radius:4px;overflow:hidden;">
-          <div style="background:linear-gradient(to right,#FF5500,#FF7700);height:100%;width:${progress}%;border-radius:4px;"></div>
-        </div>
-      </div>` : ''}
-    `,
+      <p style="margin:0 0 8px;${S.label}">Progression · <span style="color:${C.accentText};">${pct}&nbsp;%</span></p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;"><tr>
+        <td style="height:10px;background:${C.accent};border-radius:10px 0 0 10px;width:${pct}%;font-size:0;">&nbsp;</td>
+        <td style="height:10px;background:${C.lineSoft};border-radius:0 10px 10px 0;font-size:0;">&nbsp;</td>
+      </tr></table>` : ''}`,
     cta: 'Voir mon projet',
-    ctaUrl: `${SITE()}/espace-client-4p8w1n`
+    ctaUrl: `${SITE()}/espace-client`,
   });
 }
 
-// --- INVOICE SENT (client) ---
+// --- FACTURE (client) ---
 function invoiceEmail(clientName, invoiceNumber, amount, dueDate) {
   return masterTemplate({
-    preheader: `Facture ${invoiceNumber} - ${amount}`,
-    title: 'Nouvelle Facture',
+    preheader: `Facture ${invoiceNumber} — ${amount}`,
+    title: 'Votre facture',
+    subtitle: invoiceNumber,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${clientName},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Veuillez trouver votre facture :</p>
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:28px;margin:24px 0;text-align:center;">
-        <div style="font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Facture</div>
-        <div style="font-size:20px;font-weight:700;color:#e5e2e1;margin-bottom:16px;">${invoiceNumber}</div>
-        <div style="font-size:36px;font-weight:900;color:#FF5500;letter-spacing:-1px;">${amount}</div>
-        ${dueDate ? `<div style="font-size:13px;color:rgba(229,226,225,0.4);margin-top:12px;">\u00c9ch\u00e9ance : ${dueDate}</div>` : ''}
-      </div>
-    `,
+      <p style="${S.p}">Bonjour ${clientName},</p>
+      <p style="${S.p}">Votre facture est disponible :</p>
+      ${infoTable([['Facture', invoiceNumber], ['Montant', `<strong style="font-size:20px;color:${C.accentText};">${amount}</strong>`], dueDate ? ['Échéance', dueDate] : null])}`,
     cta: 'Voir ma facture',
-    ctaUrl: `${SITE()}/espace-client-4p8w1n`
+    ctaUrl: `${SITE()}/espace-client`,
   });
 }
 
-// --- PROSPECTION / CAMPAIGN ---
+// --- PROSPECTION / CAMPAGNE ---
+// Aucun chiffre ni témoignage générique : seuls ceux fournis explicitement (et vérifiables) sont affichés.
 function prospectionEmail(recipientName, options = {}) {
-  const { headline, intro, services, offer, urgency } = options;
-
-  const servicesHTML = services ? `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
-      ${services.map(s => `
-      <tr><td style="padding:12px 16px;border-left:3px solid #FF5500;background:#0e0e0e;margin-bottom:8px;">
-        <strong style="color:#e5e2e1;font-size:15px;">${s.name}</strong><br>
-        <span style="font-size:13px;color:rgba(229,226,225,0.5);">${s.desc}</span>
-      </td></tr>
-      <tr><td style="height:6px;"></td></tr>`).join('')}
-    </table>` : '';
-
+  const { headline, intro, services, offer, urgency, stats, testimonial } = options;
+  const servicesHTML = services ? services.map((s) => `<div style="${S.note}"><strong style="${S.strong}">${s.name}</strong><br><span style="font-size:14px;color:${C.muted};">${s.desc}</span></div>`).join('') : '';
   return masterTemplate({
     headerType: 'hero',
-    preheader: headline || 'Une opportunit\u00e9 pour votre croissance digitale',
-    title: headline || 'Boostez Votre Croissance Digitale',
+    preheader: headline || 'Une opportunité pour votre croissance digitale',
+    title: headline || 'Faisons grandir votre activité en ligne',
     subtitle: offer || null,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${recipientName || 'cher client'},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${intro || 'Nous avons analys\u00e9 les tendances du march\u00e9 et identifi\u00e9 des opportunit\u00e9s concr\u00e8tes pour votre entreprise. Voici ce que nous pouvons faire ensemble :'}</p>
+      <p style="${S.p}">Bonjour ${recipientName || ''},</p>
+      <p style="${S.p}">${intro || 'Voici ce que nous pouvons faire ensemble, concrètement :'}</p>
       ${servicesHTML}
-      ${urgency ? `<div style="background:rgba(255,85,0,0.08);border:1px solid rgba(255,85,0,0.2);padding:16px 20px;margin:24px 0;text-align:center;"><p style="margin:0;color:#FF5500;font-weight:700;font-size:14px;">${urgency}</p></div>` : ''}
-    `,
+      ${urgency ? `<div style="${S.box}"><p style="margin:0;color:${C.accentText};font-weight:700;font-size:15px;">${urgency}</p></div>` : ''}`,
     cta: 'Demander un audit gratuit',
-    ctaUrl: `${SITE()}/contact.html`,
-    ctaSecondary: 'D\u00e9couvrir nos services',
-    ctaSecondaryUrl: `${SITE()}/services.html`,
-    stats: [
-      { value: '+347%', label: 'Trafic moyen' },
-      { value: '150+', label: 'Projets' },
-      { value: '98%', label: 'Satisfaction' }
-    ],
-    testimonial: {
-      quote: 'Pirabel Labs a transform\u00e9 notre visibilit\u00e9. En 6 mois, notre trafic a d\u00e9pass\u00e9 nos campagnes payantes.',
-      author: 'Jean D.',
-      role: 'CEO, InnovaCorp'
-    }
+    ctaUrl: `${SITE()}/contact`,
+    ctaSecondary: 'Voir nos réalisations',
+    ctaSecondaryUrl: `${SITE()}/realisations`,
+    stats: stats || null,
+    testimonial: testimonial || null,
   });
 }
 
 // --- NEWSLETTER ---
 function newsletterEmail(recipientName, options = {}) {
   const { subject_line, articles } = options;
-
-  const articlesHTML = articles ? articles.map(a => `
-    <div style="border-bottom:1px solid rgba(92,64,55,0.15);padding:20px 0;">
-      <span style="background:rgba(255,85,0,0.15);color:#FF5500;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">${a.tag}</span>
-      <h3 style="margin:10px 0 6px;font-size:18px;font-weight:700;color:#e5e2e1;">${a.title}</h3>
-      <p style="margin:0 0 10px;font-size:14px;color:rgba(229,226,225,0.6);line-height:1.5;">${a.excerpt}</p>
-      <a href="${a.url || SITE() + '/guides/'}" style="color:#FF5500;font-size:13px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;">Lire &rarr;</a>
+  const articlesHTML = articles ? articles.map((a) => `
+    <div style="border-bottom:1px solid ${C.line};padding:18px 0;">
+      <span style="${S.badge}font-size:11px;text-transform:uppercase;letter-spacing:.06em;">${a.tag}</span>
+      <h3 style="margin:10px 0 6px;font-size:19px;line-height:1.35;font-weight:700;color:${C.text};">${a.title}</h3>
+      <p style="margin:0 0 10px;font-size:15px;color:${C.text2};line-height:1.6;">${a.excerpt}</p>
+      <a href="${a.url || SITE() + '/blog'}" style="${S.link}text-decoration:none;">Lire l’article &rarr;</a>
     </div>`).join('') : '';
-
   return masterTemplate({
-    headerType: 'banner',
-    preheader: subject_line || 'Les derni\u00e8res tendances du digital',
-    title: subject_line || 'Les Tendances du Mois',
+    preheader: subject_line || 'Nos derniers conseils pour votre croissance en ligne',
+    title: subject_line || 'Les nouveautés du mois',
+    subtitle: 'Newsletter Pirabel Labs',
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${recipientName || 'cher abonn\u00e9'},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Voici notre s\u00e9lection de ressources pour booster votre croissance ce mois-ci :</p>
-      ${articlesHTML}
-    `,
-    cta: 'Voir tous nos guides',
-    ctaUrl: `${SITE()}/guides/`
+      <p style="${S.p}">Bonjour ${recipientName || ''},</p>
+      <p style="${S.p}">Voici notre sélection de ressources pour faire grandir votre activité ce mois-ci :</p>
+      ${articlesHTML}`,
+    cta: 'Voir tous nos articles',
+    ctaUrl: `${SITE()}/blog`,
   });
 }
-
 
 // ========================================
 // SEND FUNCTIONS
@@ -407,15 +422,11 @@ async function sendOTP(email, code) {
 }
 
 async function notifyNewOrder(order) {
-  return sendEmail(
-    ADMIN_EMAIL(),
-    `Nouvelle demande : ${order.name} - ${order.service}`,
-    newOrderEmail(order)
-  );
+  return sendEmail(ADMIN_EMAIL(), `Nouvelle demande : ${order.name} — ${order.service}`, newOrderEmail(order));
 }
 
 async function notifyProjectUpdate(clientEmail, clientName, projectName, update, progress) {
-  return sendEmail(clientEmail, `Mise \u00e0 jour : ${projectName}`, projectUpdateEmail(clientName, projectName, update, progress));
+  return sendEmail(clientEmail, `Mise à jour : ${projectName}`, projectUpdateEmail(clientName, projectName, update, progress));
 }
 
 async function sendInvoiceNotification(clientEmail, clientName, invoiceNumber, amount, dueDate) {
@@ -427,293 +438,228 @@ async function sendWelcome(email, name) {
 }
 
 async function sendProspection(email, name, options) {
-  return sendEmail(email, options.headline || 'Boostez votre croissance digitale', prospectionEmail(name, options));
+  return sendEmail(email, options.headline || 'Faisons grandir votre activité en ligne', prospectionEmail(name, options));
 }
 
 async function sendNewsletter(email, name, options) {
-  return sendEmail(email, options.subject_line || 'Pirabel Labs — Les tendances du mois', newsletterEmail(name, options));
+  return sendEmail(email, options.subject_line || 'Pirabel Labs — Les nouveautés du mois', newsletterEmail(name, options));
 }
 
-// --- RECRUITMENT: NEW APPLICATION (admin notification) ---
+// --- RECRUTEMENT : NOUVELLE CANDIDATURE (admin) ---
 function newApplicationAdminEmail(app, job) {
+  const link = (url, label) => (url ? `<a href="${url}" style="${S.link}">${label}</a>` : '—');
   return masterTemplate({
     preheader: `Nouvelle candidature de ${app.name} pour ${job.title}`,
-    title: 'Nouvelle Candidature',
-    subtitle: `Poste : ${job.title} — ${new Date().toLocaleDateString('fr-FR')}`,
+    title: 'Nouvelle candidature',
+    subtitle: `${job.title} · ${new Date().toLocaleDateString('fr-FR')}`,
     body: `
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:0 0 24px;">
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Candidat</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:700;color:#e5e2e1;">${app.name}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Email</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><a href="mailto:${app.email}" style="color:#FF5500;">${app.email}</a></td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Téléphone</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.phone || 'Non renseigné'}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">LinkedIn</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.linkedin ? `<a href="${app.linkedin}" style="color:#FF5500;">Voir profil</a>` : '-'}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Portfolio</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.portfolio ? `<a href="${app.portfolio}" style="color:#FF5500;">Voir portfolio</a>` : '-'}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">CV</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;">${app.cvUrl ? `<a href="${app.cvUrl}" style="color:#FF5500;">${app.cvFilename || 'Télécharger'}</a>` : 'Non fourni'}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Poste</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;"><span style="background:rgba(255,85,0,0.15);color:#FF5500;padding:3px 10px;font-size:12px;font-weight:700;">${job.title}</span></td></tr>
-        </table>
-      </div>
-      ${app.coverLetter ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1px;">Lettre de motivation</p><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.7);line-height:1.7;">${app.coverLetter.replace(/\n/g, '<br>')}</p></div>` : ''}
-    `,
-    cta: 'Voir dans l\'admin',
-    ctaUrl: `${SITE()}/candidates`,
+      ${infoTable([
+        ['Candidat', `<strong>${app.name}</strong>`],
+        ['E-mail', `<a href="mailto:${app.email}" style="${S.link}">${app.email}</a>`],
+        ['Téléphone', app.phone || 'Non renseigné'],
+        ['LinkedIn', link(app.linkedin, 'Voir le profil')],
+        ['Portfolio', link(app.portfolio, 'Voir le portfolio')],
+        ['CV', app.cvUrl ? link(app.cvUrl, app.cvFilename || 'Télécharger') : 'Non fourni'],
+        ['Poste', `<span style="${S.badge}">${job.title}</span>`],
+      ])}
+      ${app.coverLetter ? `<div style="${S.note}"><p style="margin:0 0 8px;${S.label}">Lettre de motivation</p><p style="margin:0;font-size:15px;line-height:1.7;color:${C.text};">${app.coverLetter.replace(/\n/g, '<br>')}</p></div>` : ''}`,
+    cta: 'Ouvrir le tableau de bord',
+    ctaUrl: `${SITE()}/admin/dashboard`,
     ctaSecondary: 'Répondre au candidat',
-    ctaSecondaryUrl: `mailto:${app.email}?subject=Re: Votre candidature - ${job.title}`
+    ctaSecondaryUrl: `mailto:${app.email}?subject=${encodeURIComponent('Re: Votre candidature — ' + job.title)}`,
   });
 }
 
-// --- RECRUITMENT: APPLICATION CONFIRMATION (to candidate) ---
+// --- RECRUTEMENT : ACCUSÉ DE RÉCEPTION (candidat) ---
 function applicationConfirmationEmail(candidateName, jobTitle) {
+  const step = (n, t) => `<tr><td style="padding:10px 0;vertical-align:top;width:40px;"><span style="display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;background:${C.soft};border:1px solid ${C.softLine};color:${C.accentText};font-weight:800;font-size:13px;">${n}</span></td><td style="padding:10px 0;font-size:15px;line-height:1.55;color:${C.text2};">${t}</td></tr>`;
   return masterTemplate({
     headerType: 'hero',
     preheader: `Candidature reçue pour ${jobTitle}`,
-    title: 'Candidature enregistrée !',
+    title: 'Candidature bien reçue !',
     subtitle: `Poste : ${jobTitle}`,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${candidateName},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous avons bien reçu votre candidature pour le poste de <strong style="color:#e5e2e1;">${jobTitle}</strong>. Merci de l'intérêt que vous portez à Pirabel Labs !</p>
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:24px 0;">
-        <div style="font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Prochaines étapes</div>
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:10px 0;border-bottom:1px solid rgba(92,64,55,0.1);">
-            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">1</div>
-            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Examen de votre dossier par notre équipe RH</span>
-          </td></tr>
-          <tr><td style="padding:10px 0;border-bottom:1px solid rgba(92,64,55,0.1);">
-            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">2</div>
-            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Présélection et retour sous 7 jours ouvrés</span>
-          </td></tr>
-          <tr><td style="padding:10px 0;">
-            <div style="display:inline-block;width:24px;height:24px;background:rgba(255,85,0,0.15);color:#FF5500;text-align:center;line-height:24px;font-weight:700;font-size:12px;margin-right:12px;">3</div>
-            <span style="font-size:14px;color:rgba(229,226,225,0.7);">Entretien avec notre équipe si votre profil est retenu</span>
-          </td></tr>
-        </table>
-      </div>
-      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Pour toute question, vous pouvez nous contacter directement à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p>
-    `,
+      <p style="${S.p}">Bonjour ${candidateName},</p>
+      <p style="${S.p}">Nous avons bien reçu votre candidature pour le poste de <strong style="${S.strong}">${jobTitle}</strong>. Merci de l’intérêt que vous portez à Pirabel Labs !</p>
+      <p style="margin:0 0 6px;${S.label}">Prochaines étapes</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
+        ${step(1, 'Examen de votre dossier par notre équipe')}
+        ${step(2, 'Présélection et réponse sous 7 jours ouvrés')}
+        ${step(3, 'Entretien si votre profil est retenu')}
+      </table>
+      <p style="${S.small}">Une question ? Écrivez-nous à <a href="mailto:contact@pirabellabs.com" style="${S.link}">contact@pirabellabs.com</a>.</p>`,
     cta: 'Découvrir Pirabel Labs',
-    ctaUrl: `${SITE()}/a-propos.html`
+    ctaUrl: `${SITE()}/a-propos`,
   });
 }
 
-// --- RECRUITMENT: STATUS CHANGE (to candidate) ---
+// --- RECRUTEMENT : CHANGEMENT DE STATUT (candidat) ---
 const STATUS_MESSAGES = {
   en_revue: {
-    subject: 'Votre candidature est en cours d\'examen',
-    headline: 'En cours d\'examen',
-    color: '#9b59b6',
-    message: 'Bonne nouvelle ! Notre équipe RH examine actuellement votre candidature avec attention. Vous recevrez une réponse dans les prochains jours.'
+    subject: 'Votre candidature est en cours d’examen',
+    headline: 'En cours d’examen',
+    color: '#7c3aed',
+    message: 'Bonne nouvelle : notre équipe examine actuellement votre candidature avec attention. Vous recevrez une réponse dans les prochains jours.',
   },
   preselectionne: {
     subject: 'Vous êtes présélectionné(e) !',
-    headline: 'Félicitations — Présélectionné(e) !',
-    color: '#e67e22',
-    message: 'Excellente nouvelle ! Votre profil a été présélectionné parmi de nombreux candidats. Notre équipe vous contactera très prochainement pour la suite du processus.'
+    headline: 'Félicitations, vous êtes présélectionné(e) !',
+    color: '#c2410c',
+    message: 'Excellente nouvelle : votre profil a été présélectionné. Nous vous contacterons très prochainement pour la suite du processus.',
   },
   entretien: {
     subject: 'Invitation à un entretien — Pirabel Labs',
     headline: 'Invitation à un entretien',
     color: '#FF5500',
-    message: 'Nous avons le plaisir de vous inviter à un entretien avec notre équipe. Vous serez contacté(e) dans les 24h pour convenir d\'un créneau.'
+    message: 'Nous avons le plaisir de vous inviter à un entretien. Nous vous contacterons sous 24 h pour convenir d’un créneau.',
   },
   test: {
     subject: 'Exercice technique — Pirabel Labs',
     headline: 'Phase de test technique',
-    color: '#1abc9c',
-    message: 'Votre candidature progresse ! Nous vous envoyons un exercice technique pour évaluer vos compétences. Consultez votre boîte mail pour les instructions détaillées.'
+    color: '#0f766e',
+    message: 'Votre candidature progresse ! Nous vous envoyons un exercice technique pour évaluer vos compétences : les instructions détaillées suivent par e-mail.',
   },
   accepte: {
     subject: '🎉 Votre candidature est acceptée !',
-    headline: 'Bienvenue dans l\'équipe !',
-    color: '#2ecc71',
-    message: 'Félicitations ! Nous avons le grand plaisir de vous informer que votre candidature a été sélectionnée. Notre équipe RH vous contactera dans les prochaines 24h pour finaliser les modalités d\'intégration.'
+    headline: 'Bienvenue dans l’équipe !',
+    color: '#15803d',
+    message: 'Félicitations ! Votre candidature a été retenue. Nous vous contacterons dans les prochaines 24 h pour organiser votre arrivée.',
   },
   refuse: {
     subject: 'Suite de votre candidature — Pirabel Labs',
     headline: 'Réponse à votre candidature',
-    color: 'rgba(229,226,225,0.5)',
-    message: 'Nous vous remercions sincèrement pour l\'intérêt que vous portez à Pirabel Labs et pour le temps consacré à votre candidature. Après examen attentif de votre dossier, nous ne sommes malheureusement pas en mesure de donner une suite favorable à votre candidature pour ce poste. Nous conservons votre profil et reviendrons vers vous pour de futures opportunités.'
-  }
+    color: '#8a7f78',
+    message: 'Merci sincèrement pour l’intérêt que vous portez à Pirabel Labs et pour le temps consacré à votre candidature. Après examen attentif, nous ne pouvons malheureusement pas y donner une suite favorable pour ce poste. Nous conservons votre profil et reviendrons vers vous pour de futures opportunités.',
+  },
 };
 
 function applicationStatusEmail(candidateName, jobTitle, status, customNote) {
-  const cfg = STATUS_MESSAGES[status] || {
-    subject: 'Mise à jour de votre candidature',
-    headline: 'Mise à jour',
-    color: '#FF5500',
-    message: 'Votre candidature a été mise à jour.'
-  };
-
+  const cfg = STATUS_MESSAGES[status] || { subject: 'Mise à jour de votre candidature', headline: 'Mise à jour', color: '#FF5500', message: 'Votre candidature a été mise à jour.' };
   return masterTemplate({
     preheader: cfg.subject,
     title: cfg.headline,
     subtitle: `Poste : ${jobTitle}`,
     body: `
-      <div style="border-left:4px solid ${cfg.color};padding:16px 20px;background:rgba(0,0,0,0.2);margin:0 0 24px;">
-        <p style="margin:0;font-size:12px;color:rgba(229,226,225,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Mise à jour candidature</p>
-        <p style="margin:0;font-size:18px;font-weight:700;color:#e5e2e1;">${cfg.headline}</p>
+      <div style="border-left:4px solid ${cfg.color};background:${C.box};border-radius:0 12px 12px 0;padding:14px 20px;margin:0 0 22px;">
+        <p style="margin:0 0 4px;${S.label}">Mise à jour de votre candidature</p>
+        <p style="margin:0;font-size:18px;font-weight:700;color:${C.text};">${cfg.headline}</p>
       </div>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${candidateName},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${cfg.message}</p>
-      ${customNote ? `<div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.8);line-height:1.6;"><strong style="color:#e5e2e1;">Note de notre équipe :</strong><br>${customNote.replace(/\n/g, '<br>')}</p></div>` : ''}
-      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Pour toute question, contactez-nous à <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a></p>
-    `,
-    cta: status === 'accepte' ? 'Commencer l\'aventure' : 'Voir nos autres offres',
-    ctaUrl: status === 'accepte' ? `${SITE()}/carrieres.html` : `${SITE()}/carrieres.html`,
-    footer_extra: `<div style="background:rgba(255,85,0,0.05);border:1px solid rgba(255,85,0,0.1);padding:12px 16px;margin-bottom:16px;text-align:center;"><span style="font-size:11px;color:rgba(229,226,225,0.4);">Candidature • ${jobTitle} • Pirabel Labs</span></div>`
+      <p style="${S.p}">Bonjour ${candidateName},</p>
+      <p style="${S.p}">${cfg.message}</p>
+      ${customNote ? `<div style="${S.note}"><p style="margin:0 0 6px;${S.label}">Note de notre équipe</p><p style="margin:0;font-size:15px;line-height:1.65;color:${C.text};">${customNote.replace(/\n/g, '<br>')}</p></div>` : ''}
+      <p style="${S.small}">Une question ? Écrivez-nous à <a href="mailto:contact@pirabellabs.com" style="${S.link}">contact@pirabellabs.com</a>.</p>`,
+    cta: status === 'accepte' ? 'Découvrir l’équipe' : 'Voir nos autres offres',
+    ctaUrl: status === 'accepte' ? `${SITE()}/a-propos` : `${SITE()}/carrieres`,
+    footer_extra: `<p style="margin:0 0 14px;"><span style="${S.badge}">Candidature · ${jobTitle}</span></p>`,
   });
 }
 
-// Send functions for recruitment
 async function notifyNewApplication(app, job) {
-  const adminEmail = ADMIN_EMAIL();
-  return sendEmail(
-    adminEmail,
-    `🔔 Nouvelle candidature : ${app.name} — ${job.title}`,
-    newApplicationAdminEmail(app, job)
-  );
+  return sendEmail(ADMIN_EMAIL(), `🔔 Nouvelle candidature : ${app.name} — ${job.title}`, newApplicationAdminEmail(app, job));
 }
 
 async function sendApplicationConfirmation(candidateEmail, candidateName, jobTitle) {
-  return sendEmail(
-    candidateEmail,
-    `Candidature reçue — ${jobTitle} | Pirabel Labs`,
-    applicationConfirmationEmail(candidateName, jobTitle)
-  );
+  return sendEmail(candidateEmail, `Candidature reçue — ${jobTitle} | Pirabel Labs`, applicationConfirmationEmail(candidateName, jobTitle));
 }
 
 async function sendApplicationStatusUpdate(candidateEmail, candidateName, jobTitle, status, note) {
   const cfg = STATUS_MESSAGES[status];
-  if (!cfg) return false; // Don't send for 'nouveau' status (initial)
-  return sendEmail(
-    candidateEmail,
-    cfg.subject + ` — Pirabel Labs`,
-    applicationStatusEmail(candidateName, jobTitle, status, note)
-  );
+  if (!cfg) return false; // pas d'envoi pour le statut initial « nouveau »
+  return sendEmail(candidateEmail, cfg.subject + ' — Pirabel Labs', applicationStatusEmail(candidateName, jobTitle, status, note));
 }
 
-// --- ORDERS: ADVANCED AUTOMATION ---
+// --- DEMANDES : SUIVI AUTOMATIQUE ---
 async function sendOrderStatusUpdate(order, newStatus) {
-  let subject = "Mise à jour concernant votre demande — Pirabel Labs";
-  let content = "Le statut de votre demande a évolué.";
-  
+  let subject; let content;
   if (newStatus === 'en_traitement') {
-    subject = "Votre demande est en cours d'analyse — Pirabel Labs";
-    content = `Nous vous confirmons la bonne réception de votre demande concernant <strong>${order.service}</strong>.<br><br>Notre équipe étudie actuellement vos besoins avec une grande attention et reviendra vers vous très prochainement avec une proposition adaptée.`;
+    subject = 'Votre demande est en cours d’analyse — Pirabel Labs';
+    content = `Nous avons bien reçu votre demande concernant <strong style="${S.strong}">${order.service}</strong>. Nous étudions vos besoins avec attention et revenons vers vous très vite avec une proposition adaptée.`;
   } else if (newStatus === 'acceptee') {
-    subject = "Bienvenue chez Pirabel Labs !";
-    content = `Nous sommes ravis de vous compter parmi nos clients ! Votre demande pour <strong>${order.service}</strong> est officiellement validée.<br><br>Un expert va prendre contact avec vous rapidement pour organiser le lancement stratégique du projet.`;
+    subject = 'Bienvenue chez Pirabel Labs !';
+    content = `Nous sommes ravis de vous compter parmi nos clients ! Votre demande pour <strong style="${S.strong}">${order.service}</strong> est validée : nous vous contactons rapidement pour organiser le lancement du projet.`;
   } else if (newStatus === 'refusee') {
-    subject = "Suite à votre demande — Pirabel Labs";
-    content = `Après étude approfondie de votre demande pour <strong>${order.service}</strong>, nous sommes au regret de vous informer que nous ne pourrons pas y donner suite actuellement, car notre charge de travail ou l'adéquation du projet ne nous permet pas de vous garantir le niveau d'excellence exigé par Pirabel Labs.<br><br>Nous vous remercions sincèrement pour l'intérêt que vous nous avez porté et vous souhaitons de belles réussites.`;
+    subject = 'Suite à votre demande — Pirabel Labs';
+    content = `Après étude de votre demande pour <strong style="${S.strong}">${order.service}</strong>, nous ne pouvons malheureusement pas y donner suite pour le moment : notre planning ne nous permet pas de vous garantir le niveau de qualité que vous méritez. Merci sincèrement pour votre confiance, et belle réussite pour votre projet.`;
   } else {
     return false;
   }
-  
   const html = masterTemplate({
-    title: subject,
-    body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p><p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">${content}</p>`,
-    cta: 'Voir le site',
-    ctaUrl: SITE()
+    title: subject.replace(/ — Pirabel Labs$/, ''),
+    body: `<p style="${S.p}">Bonjour ${order.name},</p><p style="${S.p}">${content}</p>`,
+    cta: 'Voir nos réalisations',
+    ctaUrl: `${SITE()}/realisations`,
   });
-  
   return sendEmail(order.email, subject, html);
 }
 
 async function sendQuoteInteraction(order) {
-  const subject = `Votre devis pour ${order.service} est prêt !`;
-  const urlRdv = `${SITE()}/rendez-vous`;
-  const urlModif = `${SITE()}/modifier-devis.html?id=${order._id}`;
-  
+  const subject = `Votre devis pour ${order.service} est prêt`;
+  const urlRdv = `${SITE()}/rdv`;
+  const urlModif = `mailto:contact@pirabellabs.com?subject=${encodeURIComponent('Modification de mon devis — ' + order.service)}`;
   const html = masterTemplate({
     headerType: 'hero',
-    preheader: "Proposition commerciale Pirabel Labs",
-    title: "Votre Devis Sur-Mesure",
+    preheader: 'Votre proposition Pirabel Labs',
+    title: 'Votre devis sur mesure',
     subtitle: `Projet : ${order.service}`,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${order.name},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Suite à notre analyse de votre besoin pour la prestation <strong>${order.service}</strong>, nous avons le plaisir de vous faire parvenir notre proposition détaillée.</p>
-      
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:24px 0;text-align:center;">
-        <h3 style="color:#e5e2e1;font-size:18px;margin-top:0;">Comment souhaitez-vous procéder ?</h3>
-        <p style="color:rgba(229,226,225,0.5);font-size:14px;margin-bottom:20px;">Choisissez l'option qui vous convient le mieux :</p>
-        
-        <a href="${urlRdv}" style="display:inline-block;padding:12px 24px;background:#FF5500;color:#000;text-decoration:none;font-weight:700;font-size:14px;border-radius:2px;margin:0 10px 10px 0;white-space:nowrap;">📅 Planifier un Appel (Validation)</a>
-        
-        <a href="${urlModif}" style="display:inline-block;padding:12px 24px;background:rgba(255,255,255,0.05);color:#e5e2e1;text-decoration:none;font-weight:700;font-size:14px;border:1px solid rgba(229,226,225,0.2);margin:0 10px 10px 0;white-space:nowrap;">✏️ Demander une modification</a>
+      <p style="${S.p}">Bonjour ${order.name},</p>
+      <p style="${S.p}">Suite à l’analyse de votre besoin pour <strong style="${S.strong}">${order.service}</strong>, voici notre proposition détaillée.</p>
+      <div style="${S.box}">
+        <p style="margin:0 0 6px;font-size:17px;font-weight:700;color:${C.text};">Comment souhaitez-vous continuer ?</p>
+        <p style="margin:0;font-size:15px;color:${C.text2};">Planifiez un appel pour valider ensemble, ou demandez une modification.</p>
       </div>
-      
-      <p style="font-size:14px;color:rgba(229,226,225,0.5);">Vous trouverez en PJ (ou prochainement envoyé par un conseiller) le détail financier exact.</p>
-    `,
-    cta: 'Planifier un Appel',
+      <p style="${S.small}">Le détail financier est joint à cet e-mail ou vous sera envoyé par votre interlocuteur.</p>`,
+    cta: 'Planifier un appel',
     ctaUrl: urlRdv,
     ctaSecondary: 'Demander une modification',
-    ctaSecondaryUrl: urlModif
+    ctaSecondaryUrl: urlModif,
   });
-  
   return sendEmail(order.email, subject, html);
 }
 
 async function sendMeetingReminder(appointment) {
-  const subject = `Rappel : Appel Pirabel Labs dans 30 minutes`;
+  const where = appointment.meetingLink || appointment.location || 'voir votre agenda';
   const html = masterTemplate({
-    title: "Votre RDV approche",
-    subtitle: `Sujet : ${appointment.title}`,
+    title: 'Votre rendez-vous approche',
+    subtitle: appointment.title ? `Sujet : ${appointment.title}` : null,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour ${appointment.with?.name || ''},</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Ceci est un simple rappel de notre appel prévu dans 30 minutes.</p>
-      <div style="border-left:3px solid #FF5500;padding:16px 20px;background:rgba(255,85,0,0.03);margin:20px 0;">
-        <p style="margin:0;font-size:14px;color:#e5e2e1;"><strong>Lien / Lieu :</strong> ${appointment.meetingLink || appointment.location || 'Voir agenda'}</p>
-      </div>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">À tout de suite !</p>
-    `,
-    cta: 'Rejoindre la réunion',
-    ctaUrl: appointment.meetingLink || SITE()
+      <p style="${S.p}">Bonjour ${(appointment.with && appointment.with.name) || ''},</p>
+      <p style="${S.p}">Petit rappel : notre appel commence dans 30 minutes.</p>
+      ${infoTable([['Lien ou lieu', where]])}
+      <p style="${S.p}">À tout de suite !</p>`,
+    cta: appointment.meetingLink ? 'Rejoindre la réunion' : null,
+    ctaUrl: appointment.meetingLink || SITE(),
   });
-  return sendEmail(appointment.with?.email, subject, html);
+  return sendEmail(appointment.with && appointment.with.email, 'Rappel : notre appel dans 30 minutes', html);
 }
 
-// --- APPOINTMENTS: CONFIRMATION & MANAGEMENT ---
+// --- RENDEZ-VOUS : CONFIRMATION ---
 function appointmentConfirmationEmail(appt) {
-  const manageUrl = `${SITE()}/gerer-rendez-vous.html?token=${appt.secretToken}`;
-  const dateStr = new Date(appt.date).toLocaleString('fr-FR', { 
-    weekday: 'long', 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric', 
-    hour: '2-digit', 
-    minute: '2-digit',
-    timeZone: 'Europe/Paris'
+  const token = appt.publicToken || appt.secretToken || '';
+  const manageUrl = token ? `${SITE()}/rdv/${encodeURIComponent(token)}` : `${SITE()}/contact#rdv`;
+  const dateStr = new Date(appt.date).toLocaleString('fr-FR', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris',
   });
-
   return masterTemplate({
     headerType: 'hero',
-    preheader: `Confirmation de votre rendez-vous chez Pirabel Labs`,
-    title: 'Rendez-vous Confirmé',
+    preheader: 'Votre rendez-vous avec Pirabel Labs est confirmé',
+    title: 'Rendez-vous confirmé',
     subtitle: appt.title,
     body: `
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Bonjour <strong>${appt.with?.name}</strong>,</p>
-      <p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.7);">Nous vous confirmons que votre rendez-vous a bien été enregistré. Nous avons hâte d'échanger avec vous sur votre projet.</p>
-      
-      <div style="background:#0e0e0e;border:1px solid rgba(92,64,55,0.15);padding:24px;margin:28px 0;">
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Date & Heure</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;font-weight:700;color:#e5e2e1;text-transform:capitalize;">${dateStr}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);"><span style="color:rgba(229,226,225,0.4);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mode</span></td><td style="padding:8px 0;border-bottom:1px solid rgba(92,64,55,0.1);text-align:right;color:#FF5500;">${appt.location || 'Visioconférence'}</td></tr>
-        </table>
-        ${appt.notes ? `<p style="margin:16px 0 0;font-size:13px;color:rgba(229,226,225,0.5);font-style:italic;">Notes : ${appt.notes}</p>` : ''}
-      </div>
-      
-      <p style="font-size:14px;line-height:1.6;color:rgba(229,226,225,0.5);text-align:center;">Un empêchement ? Vous pouvez replanifier ou annuler votre rendez-vous à tout moment via le bouton ci-dessous.</p>
-    `,
-    cta: 'Modifier mon rendez-vous',
-    ctaUrl: manageUrl
+      <p style="${S.p}">Bonjour <strong style="${S.strong}">${(appt.with && appt.with.name) || ''}</strong>,</p>
+      <p style="${S.p}">Votre rendez-vous est bien enregistré. Nous avons hâte d’échanger avec vous sur votre projet.</p>
+      ${infoTable([['Date et heure', `<span style="text-transform:capitalize;">${dateStr}</span> (heure de Paris)`], ['Format', appt.location || 'Visioconférence'], appt.notes ? ['Notes', appt.notes] : null])}
+      <p style="${S.small}">Un empêchement ? Vous pouvez déplacer ou annuler votre rendez-vous à tout moment.</p>`,
+    cta: 'Gérer mon rendez-vous',
+    ctaUrl: manageUrl,
   });
 }
 
 async function sendAppointmentConfirmation(email, appt) {
-  return sendEmail(email, `Confirmation de votre rendez-vous — Pirabel Labs`, appointmentConfirmationEmail(appt));
+  return sendEmail(email, 'Confirmation de votre rendez-vous — Pirabel Labs', appointmentConfirmationEmail(appt));
 }
 
-// Legacy wrapper for campaigns
+// Ancien raccourci pour les campagnes
 function emailTemplate(title, content, ctaText, ctaUrl) {
   return masterTemplate({ title, body: content, cta: ctaText, ctaUrl });
 }
@@ -724,9 +670,8 @@ module.exports = {
   notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
   sendAppointmentConfirmation,
   sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,
-  emailTemplate, masterTemplate, newOrderEmail,
+  emailTemplate, masterTemplate, newOrderEmail, infoTable, EMAIL_STYLES: S, EMAIL_COLORS: C,
   prospectionEmail, newsletterEmail, welcomeEmail,
   applicationStatusEmail, applicationConfirmationEmail, newApplicationAdminEmail,
-  STATUS_MESSAGES
+  STATUS_MESSAGES,
 };
-

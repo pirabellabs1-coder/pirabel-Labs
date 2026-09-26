@@ -4637,19 +4637,13 @@ app.post('/api/admin/reviews/create-link', auth, adminOnly, limitBody(6), async 
 });
 
 // --- PUBLIC : page temoignages (avis publies, apres moderation) ---
-// Secours : les avis affichés sur l'accueil — la page ne doit JAMAIS être vide (cohérence accueil/témoignages).
-const SEED_REVIEWS = [
-  { clientName: 'A. Akouete', clientRole: 'Cabinet conseil — Cotonou', rating: 5, comment: "Un site qui charge en 1,2s, leads +187% en 3 mois. Et toujours un interlocuteur qui répond en moins de 4h." },
-  { clientName: 'F. Kpogo', clientRole: 'E-commerce mode — Cotonou', rating: 5, comment: "Boutique livrée en 4 semaines, paiements Mobile Money intégrés sans friction. Nos ventes en ligne ont doublé." },
-  { clientName: 'S. Olou', clientRole: "Cabinet d'avocat — Cotonou", rating: 5, comment: "Le chatbot IA a transformé notre service client. 22h économisées par semaine, réponses instantanées 24h/24." },
-  { clientName: 'M. Bocandy', clientRole: 'Clinique médicale — Abidjan', rating: 5, comment: "SaaS de gestion patient livré en 12 semaines. Code propre, documentation complète, équipe très professionnelle." },
-  { clientName: 'R. Locko', clientRole: 'Restaurant — Cotonou', rating: 5, comment: "Top 3 Google Maps en 5 mois sur 12 mots-clés. +340% d'appels entrants depuis la fiche Google Business." },
-  { clientName: 'C. Diop', clientRole: 'Marque mode — Dakar', rating: 5, comment: "Community management 6 mois : +18k followers IG, engagement x4. Un contenu qui nous ressemble vraiment." },
-];
+// Uniquement des avis réels, vérifiés avant publication. Tant qu'aucun n'est publié,
+// la page montre les projets livrés (études de cas publiques) : jamais d'avis inventé.
 app.get('/temoignages', async (req, res) => {
   try {
-    let reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
-    if (!reviews.length) reviews = SEED_REVIEWS;
+    const reviews = await Review.find({ publishedOnSite: true }).sort({ rating: -1, publishedAt: -1 }).limit(80).lean();
+    const cases = reviews.length ? [] : await CaseStudy.find({ status: 'publie', confidential: { $ne: true }, featuredImage: { $nin: ['', null] } })
+      .select('title slug sector location excerpt featuredImage imageAlt').sort({ featured: -1, publishedAt: -1 }).limit(9).lean();
     const cards = reviews.length ? reviews.map(r => {
       const n = Math.max(1, Math.min(5, r.rating || 5));
       const stars = '<div class="tm-stars" role="img" aria-label="Note : ' + n + ' sur 5">' + '&#9733;'.repeat(n) + '<span>' + '&#9733;'.repeat(5 - n) + '</span></div>';
@@ -4660,7 +4654,16 @@ app.get('/temoignages', async (req, res) => {
         '<figcaption class="tm-who"><span class="tm-avatar" aria-hidden="true">' + escapeHtml(initials) + '</span><span><span class="tm-name">' + escapeHtml(r.clientName) + '</span>' +
         (sub || r.serviceUsed ? '<span class="tm-role">' + escapeHtml(sub) + (r.serviceUsed ? (sub ? ' — ' : '') + escapeHtml(r.serviceUsed) : '') + '</span>' : '') +
         '</span></figcaption></figure>';
-    }).join('') : '<div class="px-note glass glass--flat" style="grid-column:1/-1">Les premiers avis clients arrivent bientôt.</div>';
+    }).join('') : '';
+    const caseCards = cases.map((c) => {
+      const name = String(c.title || '').split(' — ')[0];
+      const sub = [String(c.sector || '').split(' · ')[0], String(c.location || '').split(' · ')[0]].filter(Boolean).join(' · ');
+      return '<a class="tm-case glass glass--flat spot" data-reveal href="/realisations/' + escapeHtml(c.slug) + '">' +
+        '<span class="tm-case__img"><img src="' + escapeHtml(pubImg(c.featuredImage)) + '" alt="' + escapeHtml(c.imageAlt || name) + '" loading="lazy" decoding="async"></span>' +
+        '<span class="tm-case__b">' + (sub ? '<span class="tm-role">' + escapeHtml(sub) + '</span>' : '') + '<span class="tm-name">' + frt(name) + '</span>' +
+        '<span class="tm-case__t">' + frt(String(c.excerpt || '').slice(0, 180)) + '</span><span class="tm-case__more">Voir le projet ' + ic('arrow-right', 16) + '</span></span></a>';
+    }).join('');
+    const pending = reviews.length ? '' : '<div class="px-note glass glass--flat tm-note"><p><strong>Nos avis sont vérifiés avant publication.</strong> Nous les recueillons auprès de nos clients à la fin de chaque projet : les premiers seront publiés ici très bientôt. En attendant, voici des projets livrés, en ligne aujourd’hui.</p></div>';
     const bc = crumbs([{ name: 'Avis clients', path: '/temoignages' }]);
     const head = '<title>Avis clients — Pirabel Labs</title>' +
       '<meta name="description" content="Ce que disent nos clients : avis vérifiés sur les services de Pirabel Labs.">' +
@@ -4678,11 +4681,19 @@ app.get('/temoignages', async (req, res) => {
       '.tm-avatar{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:50%;font-family:var(--font-ui);font-weight:700;font-size:.9rem;color:var(--accent-2);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(255,140,80,.35);}' +
       '.tm-name{display:block;font-family:var(--font-ui);font-weight:600;}' +
       '.tm-role{display:block;color:var(--text-3);font-size:.84rem;line-height:1.4;}' +
+      '.tm-note{margin:0 0 clamp(20px,2.4vw,32px);padding:18px 22px;border-radius:var(--r-lg);}' +
+      '.tm-cases{display:grid;gap:clamp(16px,1.8vw,24px);grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr));}' +
+      '.tm-case{display:flex;flex-direction:column;border-radius:var(--r-lg);overflow:hidden;text-decoration:none;color:inherit;}' +
+      '.tm-case__img{display:block;aspect-ratio:16/10;overflow:hidden;background:rgba(var(--ink),.06);}' +
+      '.tm-case__img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}' +
+      '.tm-case__b{display:flex;flex-direction:column;gap:6px;padding:18px 20px 20px;}' +
+      '.tm-case__t{color:var(--text-2);font-size:.95rem;line-height:1.55;}' +
+      '.tm-case__more{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:var(--accent-3);font-family:var(--font-ui);font-weight:600;font-size:.92rem;}' +
       '</style>';
     const body = '<div class="px-wrap"><header class="px-hero"><p class="eyebrow">Avis clients</p><h1>Ils nous font <span class="grad">confiance</span></h1>' +
-      '<p class="px-hero__lead">Les avis de nos clients sur leur collaboration avec Pirabel Labs.</p>' +
+      '<p class="px-hero__lead">Des avis réels, vérifiés avant publication, et les projets que nous avons livrés.</p>' +
       '<div class="px-hero__ctas"><a class="btn btn--primary" href="/contact">Démarrer mon projet ' + ic('arrow-right', 18, 'icon--end') + '</a><a class="btn btn--glass" href="/realisations">Voir nos réalisations</a></div></header>' +
-      '<div class="tm-grid">' + cards + '</div></div>';
+      pending + (reviews.length ? '<div class="tm-grid">' + cards + '</div>' : '<div class="tm-cases">' + caseCards + '</div>') + '</div>';
     res.set('Content-Type', 'text/html; charset=utf-8').send(blogShell(head, body, { current: '/temoignages' }));
   } catch (e) { console.error('[temoignages]', e.message); res.status(500).send('Erreur'); }
 });

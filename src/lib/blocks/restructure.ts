@@ -91,7 +91,11 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   // FAQ unique : questions principales puis secondaires, sans doublon (toutes gardées : elles figurent dans les données structurées).
   const faqs = takeAll((b) => b.kind === 'faq' && (b as B<'faq'>).variant !== 'advantages') as B<'faq'>[];
   const seen = new Set<string>();
-  const faqItems = [...(local?.faq ?? []), ...faqs.flatMap((f) => f.items)].filter((it) => {
+  // Pages villes : les questions locales d'abord, puis 6 questions du modèle au plus (le reste est identique d'une ville à l'autre),
+  // sans la question « à distance » déjà traitée par la FAQ locale.
+  const legacyFaq = faqs.flatMap((f) => f.items);
+  const keptLegacy = local ? legacyFaq.filter((it) => !/distance/i.test(strip(it.q))).slice(0, 6) : legacyFaq;
+  const faqItems = [...(local?.faq ?? []), ...keptLegacy].filter((it) => {
     const k = strip(it.q).toLowerCase().replace(/[^a-zà-ÿ0-9]+/g, ' ').trim();
     if (seen.has(k)) return false;
     seen.add(k);
@@ -111,7 +115,10 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
 
   // Le reste (textes longs, piliers, outils, avantages, citations…) : « Pour aller plus loin », replié.
   // Les bandeaux d'appel restants ne sont pas du contenu : ils sont retirés (l'appel final reste en pied de page).
-  const rest = pool.filter((b) => b.kind !== 'cta' && (b.kind !== 'raw' || strip((b as B<'raw'>).html).length > 0));
+  // Pages villes : « Comment travailler avec nous depuis… » et la 2e méthode doublonnent le bloc local et la méthode principale.
+  const DUP_CITY = /^(comment travailler avec nous|notre méthode orientée résultats)/i;
+  const rest = pool.filter((b) => b.kind !== 'cta' && (b.kind !== 'raw' || strip((b as B<'raw'>).html).length > 0)
+    && !(local && DUP_CITY.test(titleOf(b))));
   const label = (b: Block) => titleOf(b) || (b.kind === 'quote' ? 'Notre conviction' : b.kind === 'prose' ? 'Le détail de notre approche' : 'En savoir plus');
   const more: Block | undefined = rest.length ? { kind: 'more', head: { eyebrow: 'Pour aller plus loin', title: 'Tout savoir, <span class="grad">en détail</span>', lead: 'Nos réponses détaillées, section par section : ouvrez celles qui vous intéressent.' }, sections: rest.map((b) => ({ title: label(b), block: b })) } : undefined;
 

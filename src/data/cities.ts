@@ -6,6 +6,9 @@
  * Règle : aucun chiffre, client ou témoignage inventé ; uniquement des faits vérifiables.
  */
 import REALISATIONS from './realisations.json';
+import { CITIES_FR } from './cities-fr';
+import { CITIES_INTL } from './cities-intl';
+import { CITIES_AFRIQUE } from './cities-afrique';
 
 export interface CityLocal {
   name: string;
@@ -23,7 +26,7 @@ export interface CityLocal {
 type Realisation = { slug: string; title: string; meta: string; excerpt: string; image: string; private: boolean };
 const BY_SLUG = new Map((REALISATIONS as Realisation[]).map((r) => [r.slug, r]));
 
-export const CITIES: Record<string, CityLocal> = {
+const NICE: Record<string, CityLocal> = {
   nice: {
     name: 'Nice',
     area: 'Nice et la Côte d’Azur',
@@ -62,6 +65,8 @@ export const CITIES: Record<string, CityLocal> = {
     ],
   },
 };
+
+export const CITIES: Record<string, CityLocal> = { ...NICE, ...CITIES_FR, ...CITIES_INTL, ...CITIES_AFRIQUE };
 
 /** Ville d'une page : « agence-web-nice », « creation-site-web-nice »… (la clé la plus longue gagne : porto-novo, abomey-calavi). */
 export function cityOf(slug: string): CityLocal | undefined {

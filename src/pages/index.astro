@@ -8,7 +8,7 @@ import '../styles/home.css';
 import { SITE } from '../data/site';
 import {
   TOOLS, QUICK_START, EXPERTISES, SERVICES, AUDIT_POINTS, CASES, COMMITMENTS, STEPS,
-  RESULTS, PRICING, COMPARISON, TESTIMONIALS, SECTORS, CITIES, INSIGHTS, FAQ,
+  RESULTS, PRICING, COMPARISON, CLIENTS, SECTORS, CITIES, INSIGHTS, FAQ,
 } from '../data/home';
 
 const org = {
@@ -376,12 +376,12 @@ const faqLd = {
   <section class="section" id="avis" aria-labelledby="reviews-title">
     <div class="container reviews__head">
       <div class="section-head">
-        <p class="eyebrow">Avis clients</p>
-        <h2 id="reviews-title" data-reveal="title"><Split>Ce que nos clients en pensent.</Split></h2>
-        <p>Avis recueillis auprès de nos clients en France, au Bénin, en Côte d’Ivoire et au Sénégal.</p>
+        <p class="eyebrow">Ils nous ont fait confiance</p>
+        <h2 id="reviews-title" data-reveal="title"><Split>Des projets réels, en ligne aujourd’hui.</Split></h2>
+        <p>De Nice à Cotonou, de Bruxelles à Marseille : ce que nous avons livré, projet par projet.</p>
       </div>
       <button class="marquee-toggle" type="button" data-marquee-toggle="reviews-marquee" aria-pressed="false">
-        <span class="sr-only">Mettre en pause le défilement des avis</span>
+        <span class="sr-only">Mettre en pause le défilement des clients</span>
         <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
       </button>
     </div>
@@ -389,13 +389,13 @@ const faqLd = {
       <div class="marquee__track">
       {[0, 1].map((k) => (
         <ul class="marquee__copy" aria-hidden={k === 1 ? 'true' : undefined}>
-          {TESTIMONIALS.map((t) => (
+          {CLIENTS.map((c) => (
             <li>
-              <figure class="review glass glass--flat">
-                <p class="review__stars"><span class="sr-only">Note : 5 sur 5</span><span aria-hidden="true">★★★★★</span></p>
-                <blockquote>« {t.quote} »</blockquote>
-                <figcaption><span class="review__av" aria-hidden="true">{t.name.split(' ').map((w) => w[0]).join('').replace('.', '')}</span><span><b>{t.name}</b><small>{t.role}</small></span></figcaption>
-              </figure>
+              <a class="review glass glass--flat" href={c.href} tabindex={k === 1 ? -1 : undefined}>
+                <p class="review__stars review__tag">{c.role}</p>
+                <p class="review__text">{c.text}</p>
+                <span class="review__by"><span class="review__av" aria-hidden="true">{c.name.replace(/[^A-Za-zÀ-ÿ ]/g, '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('')}</span><span><b>{c.name}</b><small>Voir le projet →</small></span></span>
+              </a>
             </li>
           ))}
         </ul>

@@ -189,13 +189,18 @@ export const COMPARISON = {
   ],
 };
 
-export const TESTIMONIALS = [
-  { quote: 'Un site qui charge en 1,2 s, des leads en hausse de 187 % en 3 mois. Et toujours un interlocuteur qui répond en moins de 4 h.', name: 'A. Akouete', role: 'Cabinet de conseil, Cotonou' },
-  { quote: 'Boutique livrée en 4 semaines, paiements Mobile Money intégrés, chiffre d’affaires multiplié par 3 en 6 mois. On recommande sans hésiter.', name: 'F. Kpogo', role: 'E-commerce de mode, Cotonou' },
-  { quote: 'Le chatbot IA a transformé notre service client : 22 h économisées par semaine. Une équipe vraiment à l’écoute du besoin.', name: 'S. Olou', role: 'Cabinet d’avocats, Cotonou' },
-  { quote: 'Logiciel de gestion des patients livré en 12 semaines. Code propre, documentation complète : nous pouvons le faire évoluer en interne.', name: 'M. Bocandy', role: 'Clinique médicale, Abidjan' },
-  { quote: 'Top 3 sur Google Maps en 5 mois sur 12 mots-clés, 340 % d’appels en plus via la fiche Google. Investissement vite rentabilisé.', name: 'R. Locko', role: 'Restaurant, Cotonou' },
-  { quote: 'Six mois de community management : 18 000 abonnés Instagram de plus, engagement en hausse de 9 %. Stratégie claire, reporting détaillé.', name: 'C. Diop', role: 'Marque de mode, Dakar' },
+// Clients réels (études de cas publiées sur /realisations) : ce que nous avons livré, sans citation ni note inventée.
+export const CLIENTS = [
+  { name: 'Mickael Romero', role: 'Photographe de mariage · Nice', text: 'Site vitrine bilingue, portfolio de mariages complets et prise de contact pensée pour les futurs mariés.', href: '/realisations/mickael-romero-photographe-de-mariage-a-nice' },
+  { name: 'Travisum', role: 'Traduction jurée · Bruxelles', text: 'Site trilingue (FR, NL, EN) avec un assistant qui identifie la démarche en une phrase.', href: '/realisations/travisum-traduction-juree-legalisation-et-visas-a-bruxelles' },
+  { name: 'Pirabel — Maison de Cotonou', role: 'Mode et lifestyle · Cotonou', text: 'Boutique en ligne complète : catalogue, compte client, suivi de commande et paiement Mobile Money.', href: '/realisations/pirabel-one-la-boutique-en-ligne-d-une-maison-de-mode-beninoise' },
+  { name: 'Kaabo', role: 'Immobilier · Cotonou', text: 'Plateforme de location avec annonces vérifiées, paiement sous séquestre et contrats numériques.', href: '/realisations/kaza-la-plateforme-immobiliere-qui-securise-la-location-en-afrique-de-l-ouest' },
+  { name: 'LoueMaRemorque', role: 'Place de marché · France', text: 'Location de remorques entre particuliers : réservation, paiement en ligne et état des lieux photo.', href: '/realisations/louemaremorque-location-de-remorques-entre-particuliers' },
+  { name: 'EVKHA', role: 'Formation · France', text: 'Site et tunnels de vente pour accompagner les entrepreneurs à chaque étape de leur création.', href: '/realisations/evkha-accompagnement-et-formations-pour-creer-son-entreprise' },
+  { name: 'Callpme', role: 'Agents vocaux IA · France', text: 'Plateforme d’agents vocaux IA qui répondent au téléphone et prennent des rendez-vous, jour et nuit.', href: '/realisations/callpme-l-agent-vocal-ia-qui-repond-a-vos-appels-24h-24' },
+  { name: 'Garage Boost', role: 'Garage automobile · Marseille', text: 'Site optimisé pour le référencement local et application de gestion de l’atelier.', href: '/realisations/garage-boost-de-la-vitrine-seo-a-l-application-de-gestion-tout-en-un-pour-garage' },
+  { name: 'Novakou', role: 'EdTech · Afrique francophone', text: 'Marketplace pour vendre formations et produits digitaux, avec paiement Mobile Money.', href: '/realisations/novakou-vendre-ses-formations-et-produits-digitaux-en-afrique-francophone' },
+  { name: 'Ultimauto', role: 'Entretien automobile · Cholet', text: 'Vitrine web rapide et écosystème en ligne pensés pour transformer les visites en rendez-vous.', href: '/realisations/ultimauto-le-decalaminage-automobile-avec-une-vitrine-web-qui-convertit' },
 ];
 
 export const SECTORS = ['E-commerce', 'B2B et SaaS', 'Restauration', 'Santé et médical', 'Immobilier', 'Éducation', 'Avocats et conseil', 'Beauté et cosmétique'];

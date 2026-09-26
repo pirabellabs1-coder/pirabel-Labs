@@ -282,10 +282,13 @@
 .marquee--reviews .marquee__copy > li { display: flex; }
 .review { width: min(380px, 80vw); height: 100%; margin: 0; padding: 26px; border-radius: var(--r-lg); display: flex; flex-direction: column; gap: 16px; }
 .review__stars { color: #ffb547; font-size: 1rem; letter-spacing: 0.12em; line-height: 1; }
-.review blockquote { margin: 0; flex: 1; font-size: 1rem; line-height: 1.6; }
-.review figcaption { display: flex; align-items: center; gap: 12px; }
-.review figcaption b { display: block; font-family: var(--font-ui); font-weight: 600; }
-.review figcaption small { color: var(--text-3); font-size: 0.84rem; }
+.review blockquote, .review__text { margin: 0; flex: 1; font-size: 1rem; line-height: 1.6; }
+.review figcaption, .review__by { display: flex; align-items: center; gap: 12px; }
+.review figcaption b, .review__by b { display: block; font-family: var(--font-ui); font-weight: 600; }
+.review figcaption small, .review__by small { color: var(--text-3); font-size: 0.84rem; }
+a.review { text-decoration: none; color: inherit; }
+a.review:hover .review__by small, a.review:focus-visible .review__by small { color: var(--accent-3); }
+.review__tag { color: var(--accent-3); font-family: var(--font-ui); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.35; }
 .review__av { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, rgba(255, 122, 51, 0.35), rgba(255, 85, 0, 0.15)); box-shadow: inset 0 0 0 1px rgba(255, 140, 80, 0.4); font-family: var(--font-ui); font-weight: 700; font-size: 0.85rem; }
 
 /* ---------- Villes & secteurs ---------- */

@@ -7,8 +7,8 @@ const prose = (html: string): Block => ({ kind: 'prose', html });
 
 export const page: PageData = {
   path: '/creation-saas',
-  title: 'Création de SaaS sur mesure : MVP en 8 à 12 semaines | Pirabel Labs',
-  description: 'Agence de création de SaaS sur mesure : cadrage produit, design, développement Next.js, abonnements Stripe et Mobile Money, IA intégrée. MVP dès 3 900 € en 8 à 12 semaines.',
+  title: 'Création de SaaS sur mesure : MVP dès 1 500 € | Pirabel Labs',
+  description: 'Agence de création de SaaS sur mesure : cadrage produit, design, développement Next.js, abonnements Stripe et Mobile Money, IA intégrée. MVP dès 1 500 €, lancé en 8 à 12 semaines.',
   footerCta: {
     title: 'Votre idée de SaaS mérite un vrai plan',
     text: 'Un appel de 30 minutes pour cadrer votre projet, puis un devis ferme sous 48 h : périmètre du MVP, planning, budget. Sans engagement.',
@@ -25,9 +25,9 @@ export const page: PageData = {
     areaServed: ['BJ', 'CI', 'SN', 'TG', 'BF', 'ML', 'CM', 'FR', 'BE', 'CH', 'CA'],
     description: 'Conception et développement de logiciels SaaS sur mesure : cadrage produit, design UX/UI, développement Next.js, abonnements, paiements Stripe et Mobile Money, intégration de l’IA, mise à l’échelle.',
     offers: [
-      { '@type': 'Offer', name: 'MVP SaaS', price: '3900', priceCurrency: 'EUR', description: 'Premier produit commercialisable en 8 à 12 semaines.' },
-      { '@type': 'Offer', name: 'SaaS de croissance', price: '7900', priceCurrency: 'EUR', description: 'Produit complet : abonnements, espace admin, intégrations.' },
-      { '@type': 'Offer', name: 'Plateforme sur mesure', price: '15000', priceCurrency: 'EUR', description: 'Plateforme multi-profils, marketplace ou produit à forte charge.' },
+      { '@type': 'Offer', name: 'MVP SaaS', price: '1500', priceCurrency: 'EUR', description: 'Premier produit commercialisable en 8 à 12 semaines.' },
+      { '@type': 'Offer', name: 'SaaS de croissance', price: '3500', priceCurrency: 'EUR', description: 'Produit complet : abonnements, espace admin, intégrations.' },
+      { '@type': 'Offer', name: 'Plateforme sur mesure', price: '7500', priceCurrency: 'EUR', description: 'Plateforme multi-profils, marketplace ou produit à forte charge.' },
     ],
   }],
   blocks: [
@@ -46,7 +46,7 @@ export const page: PageData = {
       caption: 'Code 100 % à vous',
       chips: [
         { icon: 'clock', text: 'MVP en 8 à 12 semaines' },
-        { icon: 'wallet', text: 'Dès 3 900 €' },
+        { icon: 'wallet', text: 'Dès 1 500 €' },
         { icon: 'smartphone', text: 'Stripe et Mobile Money' },
       ],
     },
@@ -54,7 +54,7 @@ export const page: PageData = {
       kind: 'brief',
       title: 'Créer un SaaS avec Pirabel Labs, <span class="grad">en bref</span>',
       html: '<p>Un <strong>SaaS</strong> (logiciel en tant que service) est une application web vendue par abonnement : vos clients s’inscrivent, paient chaque mois ou chaque année et utilisent le logiciel depuis leur navigateur ou leur téléphone.</p><p>Pirabel Labs conçoit des SaaS sur mesure pour les startups et les PME francophones : nous partons de votre métier, nous livrons un <strong>MVP commercialisable en 8 à 12 semaines</strong>, puis nous faisons grandir le produit avec vos premiers utilisateurs. Le code, les données et les comptes vous appartiennent.</p>',
-      points: ['MVP dès 3 900 € (≈ 2 560 000 FCFA)', 'Premier lancement en 8 à 12 semaines', 'Next.js, Node.js, PostgreSQL, Stripe', 'Paiements par carte et par Mobile Money', 'Code et données 100 % à vous'],
+      points: ['MVP dès 1 500 € (≈ 985 000 FCFA)', 'Premier lancement en 8 à 12 semaines', 'Next.js, Node.js, PostgreSQL, Stripe', 'Paiements par carte et par Mobile Money', 'Code et données 100 % à vous'],
       cta: { href: '/contact?service=creation-saas', label: 'Parler de mon projet' },
     },
     {
@@ -142,16 +142,16 @@ export const page: PageData = {
       kind: 'pricing', id: 'tarifs',
       head: { eyebrow: 'Tarifs', title: 'Tarifs de création <span class="grad">de SaaS</span>', lead: 'Prix « à partir de », confirmés par un devis ferme sous 48 h. Paiement échelonné possible.' },
       items: [
-        { icon: 'rocket', title: 'MVP SaaS', text: 'Le premier produit commercialisable, centré sur l’essentiel.', price: '<small>à partir de</small><strong>3 900 €</strong><em>soit environ 2 560 000 FCFA</em>', features: ['Cadrage produit et maquettes', 'Comptes utilisateurs', 'Abonnements (Stripe ou Mobile Money)', '1 à 3 fonctionnalités cœur', 'Mise en ligne en 8 à 12 semaines'], href: '/contact?service=creation-saas', cta: 'Estimer mon MVP' },
-        { icon: 'trending', title: 'SaaS de croissance', text: 'Un produit complet pour vendre et gérer des centaines de clients.', price: '<small>à partir de</small><strong>7 900 €</strong><em>soit environ 5 180 000 FCFA</em>', features: ['Tout le MVP', 'Espace d’administration', 'Équipes, rôles et permissions', 'API, intégrations et e-mails automatiques', 'Tableau de bord d’indicateurs'], href: '/contact?service=creation-saas', featured: true, badge: 'Le plus choisi', cta: 'Demander un devis' },
-        { icon: 'layers', title: 'Plateforme sur mesure', text: 'Marketplace, multi-profils, IA avancée ou forte charge.', price: '<small>sur devis, à partir de</small><strong>15 000 €</strong>', features: ['Architecture évolutive', 'Plusieurs types d’utilisateurs', 'Paiements sous séquestre', 'IA et automatisations avancées', 'Accompagnement continu'], href: '/contact?service=creation-saas', cta: 'Parler de mon projet' },
+        { icon: 'rocket', title: 'MVP SaaS', text: 'Le premier produit commercialisable, centré sur l’essentiel.', price: '<small>à partir de</small><strong>1 500 €</strong><em>soit environ 985 000 FCFA</em>', features: ['Cadrage produit et maquettes', 'Comptes utilisateurs', 'Abonnements (Stripe ou Mobile Money)', '1 à 3 fonctionnalités cœur', 'Mise en ligne en 8 à 12 semaines'], href: '/contact?service=creation-saas', cta: 'Estimer mon MVP' },
+        { icon: 'trending', title: 'SaaS de croissance', text: 'Un produit complet pour vendre et gérer des centaines de clients.', price: '<small>à partir de</small><strong>3 500 €</strong><em>soit environ 2 300 000 FCFA</em>', features: ['Tout le MVP', 'Espace d’administration', 'Équipes, rôles et permissions', 'API, intégrations et e-mails automatiques', 'Tableau de bord d’indicateurs'], href: '/contact?service=creation-saas', featured: true, badge: 'Le plus choisi', cta: 'Demander un devis' },
+        { icon: 'layers', title: 'Plateforme sur mesure', text: 'Marketplace, multi-profils, IA avancée ou forte charge.', price: '<small>sur devis, à partir de</small><strong>7 500 €</strong><em>soit environ 4 920 000 FCFA</em>', features: ['Architecture évolutive', 'Plusieurs types d’utilisateurs', 'Paiements sous séquestre', 'IA et automatisations avancées', 'Accompagnement continu'], href: '/contact?service=creation-saas', cta: 'Parler de mon projet' },
       ],
     },
     {
       kind: 'faq', variant: 'main', id: 'faq',
       head: { eyebrow: 'FAQ', title: 'Vos questions sur la <span class="grad">création de SaaS</span>' },
       items: [
-        { q: 'Combien coûte la création d’un SaaS ?', a: 'Chez Pirabel Labs, un MVP SaaS démarre à 3 900 € (environ 2 560 000 FCFA), un SaaS complet à 7 900 € et une plateforme sur mesure (marketplace, multi-profils, IA avancée) à partir de 15 000 €. Le prix dépend du nombre de fonctionnalités, des types d’utilisateurs et des intégrations. Vous recevez un devis ferme sous 48 h après un appel de cadrage gratuit.' },
+        { q: 'Combien coûte la création d’un SaaS ?', a: 'Chez Pirabel Labs, un MVP SaaS démarre à 1 500 € (environ 985 000 FCFA), un SaaS complet à 3 500 € (environ 2 300 000 FCFA) et une plateforme sur mesure (marketplace, multi-profils, IA avancée) à partir de 7 500 €. Le prix dépend du nombre de fonctionnalités, des types d’utilisateurs et des intégrations. Vous recevez un devis ferme sous 48 h après un appel de cadrage gratuit.' },
         { q: 'Combien de temps faut-il pour lancer un SaaS ?', a: 'Comptez 8 à 12 semaines pour un MVP : une à deux semaines de cadrage, deux semaines de design, six à huit semaines de développement en sprints hebdomadaires, puis une semaine de lancement. Un produit plus complet demande généralement de 3 à 6 mois.' },
         { q: 'Quelles technologies utilisez-vous pour développer un SaaS ?', a: 'Nous utilisons principalement Next.js et React pour l’interface, Node.js pour le serveur, PostgreSQL (souvent via Supabase) pour la base de données, Stripe pour les abonnements et Vercel pour l’hébergement. Ce sont des technologies répandues : n’importe quelle équipe peut reprendre le code.' },
         { q: 'Peut-on encaisser les abonnements par Mobile Money ?', a: 'Oui. Nous combinons Stripe pour les cartes bancaires et l’international avec des agrégateurs de paiement locaux pour Wave, MTN Mobile Money ou Orange Money. Vos clients d’Afrique francophone paient comme ils en ont l’habitude.' },

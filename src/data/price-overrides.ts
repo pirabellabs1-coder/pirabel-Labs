@@ -22,8 +22,8 @@ export const PRICE_OVERRIDES: Record<string, string[]> = {
     P('700 000 FCFA', '1 900 € HT en Europe'),
   ],
   'creation-saas': [
-    P('3 900 €', 'soit environ 2 560 000 FCFA'),
-    P('7 900 €', 'soit environ 5 180 000 FCFA'),
-    '<strong>Sur devis</strong><em>à partir de 15 000 €</em>',
+    P('1 500 €', 'soit environ 985 000 FCFA'),
+    P('3 500 €', 'soit environ 2 300 000 FCFA'),
+    '<strong>Sur devis</strong><em>à partir de 7 500 €</em>',
   ],
 };

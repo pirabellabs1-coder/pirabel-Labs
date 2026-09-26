@@ -100,6 +100,7 @@ async function ensureDB() {
     dbReady = connectDB().then(async () => {
       try { await bootstrapAdmin(); } catch (e) { console.error('[bootstrap] failed:', e.message); }
       try { await seedCaseStudies(); } catch (e) { console.error('[seed.cases] failed:', e.message); }
+      try { await seedArticles(); } catch (e) { console.error('[seed.articles] failed:', e.message); }
     });
   }
   return dbReady;
@@ -117,6 +118,20 @@ async function seedCaseStudies() {
     if (!c.slug || existing.has(c.slug)) continue;
     await CaseStudy.create({ ...c, status: c.status || 'publie', publishedAt: new Date() });
     console.log('[seed.cases] ajoutée :', c.slug);
+  }
+}
+
+// === Articles de blog versionnés (app/seed/articles.json) : ajoutés en BROUILLON si leur slug n'existe pas ===
+// Le fondateur les relit et les publie depuis l'admin. Jamais de mise à jour d'un article existant.
+async function seedArticles() {
+  const seeds = require('../app/seed/articles.json');
+  if (!Array.isArray(seeds) || !seeds.length) return;
+  const slugs = seeds.map((a) => a.slug).filter(Boolean);
+  const existing = new Set((await Article.find({ slug: { $in: slugs } }).select('slug').lean()).map((a) => a.slug));
+  for (const a of seeds) {
+    if (!a.slug || !a.content || existing.has(a.slug)) continue;
+    await Article.create({ ...a, author: 'Lissanon Gildas', status: 'brouillon' });
+    console.log('[seed.articles] brouillon ajouté :', a.slug);
   }
 }
 

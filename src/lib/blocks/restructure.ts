@@ -40,7 +40,34 @@ export function restructure(blocks: Block[]): Block[] {
   // « L'essentiel » : la définition (« Qu'est-ce qu'une agence X ? ») remonte sous le hero.
   const def = take<'split'>((b) => b.kind === 'split' && /qu['’]est-ce|en quoi (ça|cela) consiste|c['’]est quoi/i.test(titleOf(b)))
     ?? take<'split'>((b) => b.kind === 'split');
-  const brief: Block | undefined = def ? { kind: 'brief', title: def.title, html: def.html, points: def.points, cta: hero && (hero as B<'hero'>).ctas[0] } : undefined;
+  let brief: Block | undefined = def ? { kind: 'brief', title: def.title, html: def.html, points: def.points, cta: hero && (hero as B<'hero'>).ctas[0] } : undefined;
+  // Repli : les 2 premiers paragraphes de « Pourquoi choisir Pirabel Labs… » (sans doublon : retirés de la section d'origine),
+  // avec les chiffres clés de la page comme points.
+  if (!brief) {
+    const i = pool.findIndex((b) => b.kind === 'prose' && /pourquoi (choisir|pirabel)/i.test(titleOf(b)));
+    if (i >= 0) {
+      const pr = pool[i] as B<'prose'>;
+      const paras = pr.html.match(/<p[\s>][\s\S]*?<\/p>/g) ?? [];
+      if (paras.length) {
+        const head = paras.slice(0, 2).join('');
+        const restHtml = pr.html.replace(paras[0], '').replace(paras[1] ?? '\u0000', '').trim();
+        if (strip(restHtml).length > 80) pool[i] = { ...pr, html: restHtml }; else pool.splice(i, 1);
+        const statsBlock = pool.find((b) => isCards(b, PROOF)) as B<'cards'> | undefined;
+        const points = (statsBlock?.items ?? []).slice(0, 4).map((it) => strip(`${it.stat || it.title || ''} ${it.text || ''}`)).filter(Boolean);
+        brief = { kind: 'brief', title: pr.title || titleOf(pr), html: head, points, cta: hero && (hero as B<'hero'>).ctas[0] };
+      }
+    }
+  }
+  // Second repli : la question de définition de la FAQ (« Qu'est-ce que… ? », « Pourquoi… ? »), avec les prestations comme points.
+  if (!brief) {
+    const q = pool.flatMap((b) => (b.kind === 'faq' ? (b as B<'faq'>).items : []))
+      .find((it) => /^(qu['’]est-ce|c['’]est quoi|pourquoi|comment fonctionne|à quoi sert|en quoi)/i.test(strip(it.q)));
+    if (q) {
+      const offerBlock = pool.find((b) => isCards(b, OFFER)) as B<'cards'> | undefined;
+      const points = (offerBlock?.items ?? []).slice(0, 5).map((it) => strip(it.title || '')).filter(Boolean);
+      brief = { kind: 'brief', title: q.q, html: /<p[\s>]/.test(q.a) ? q.a : `<p>${q.a}</p>`, points, cta: hero && (hero as B<'hero'>).ctas[0] };
+    }
+  }
 
   // Offre : la première grille de services ; les autres grilles « features » restent dans l'ordre d'origine.
   const offer = take((b) => isCards(b, OFFER));

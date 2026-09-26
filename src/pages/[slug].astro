@@ -9,11 +9,12 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Blocks from '../components/blocks/Blocks.astro';
-import { listLegacySlugs, loadLegacy } from '../lib/legacy';
+import { listLegacySlugs, loadLegacy, decodeEntities } from '../lib/legacy';
 import { parseBlocks, type Block } from '../lib/blocks/parse';
 import { fixText } from '../lib/blocks/fr';
 import { PRICE_OVERRIDES } from '../data/price-overrides';
 import { restructure } from '../lib/blocks/restructure';
+import CONTENT_OVERRIDES from '../data/content-overrides.json';
 
 export function getStaticPaths() {
   return listLegacySlugs().map((slug) => ({ params: { slug } }));
@@ -22,10 +23,22 @@ export function getStaticPaths() {
 const { slug } = Astro.params;
 const page = loadLegacy(slug as string);
 const native = page.body.includes('class="s-hero"');
-// Nouvelle structure (parcours de conversion + SEO/GEO) : pilote sur quelques pages avant généralisation.
-const PILOT = new Set(['seo', 'creation-site-web-cotonou', 'agence-web-dakar', 'agence-shopify']);
+// Corrections de contenu propres à une page (ex. prix alignés sur la grille tarifaire), appliquées au texte source.
+const fixes = (CONTENT_OVERRIDES as { slug: string; find: string; replace: string }[]).filter((o) => o.slug === slug);
+const dec = (s: string) => decodeEntities(s);
+for (const o of fixes) {
+  page.body = page.body.split(o.find).join(o.replace);
+  page.jsonLd = page.jsonLd.map((j) => j.split(o.find).join(o.replace));
+  // Balises <title>, description et Open Graph (déjà décodées par loadLegacy).
+  const [f, r] = [dec(o.find), dec(o.replace)];
+  page.title = page.title.split(f).join(r);
+  page.description = page.description.split(f).join(r);
+  if (page.ogTitle) page.ogTitle = page.ogTitle.split(f).join(r);
+  if (page.ogDescription) page.ogDescription = page.ogDescription.split(f).join(r);
+}
+// Nouvelle structure sur toutes les pages : parcours de conversion + SEO/GEO (src/lib/blocks/restructure.ts).
 const parsed: Block[] = native ? parseBlocks(page.body) : [];
-const blocks: Block[] = PILOT.has(slug as string) ? restructure(parsed) : parsed;
+const blocks: Block[] = restructure(parsed);
 // Grille tarifaire révisée : remplace les prix historiques des blocs « tarifs » de la page.
 const prices = PRICE_OVERRIDES[slug as string];
 if (prices) {

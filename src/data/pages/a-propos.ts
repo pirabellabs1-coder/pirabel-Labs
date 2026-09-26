@@ -20,7 +20,7 @@ export const page: PageData = {
       eyebrow: 'À propos de Pirabel Labs',
       eyebrowIcon: 'users',
       title: 'Une agence francophone, pensée pour les <span class="grad">PME ambitieuses</span>',
-      lead: 'Pirabel Labs, c’est Lissanon Gildas : un expert digital polyvalent basé à Abomey-Calavi qui aide les entreprises francophones d’Afrique de l’Ouest et d’Europe à transformer leur présence digitale en moteur de croissance. Un seul interlocuteur, du devis à la livraison : pas d’agence absente, pas de sous-traitance cachée, pas de jargon — juste du travail solide, mesurable et livré.',
+      lead: 'Fondée et dirigée par Lissanon Gildas à Abomey-Calavi, Pirabel Labs aide les entreprises francophones d’Afrique de l’Ouest et d’Europe à transformer leur présence digitale en moteur de croissance. Un seul interlocuteur, du devis à la livraison : pas d’agence absente, pas de sous-traitance cachée, pas de jargon — juste du travail solide, mesurable et livré.',
       ctas: [
         { href: '/contact', label: 'Réserver un audit gratuit', primary: true },
         { href: '/services', label: 'Voir nos services' },
@@ -89,7 +89,7 @@ export const page: PageData = {
     { kind: 'cta', variant: 'inline', title: 'Un projet, une question ?', text: 'Devis gratuit et réponse sous 24 h — sans engagement.', ctas: [{ href: '/contact', label: 'Demander un devis' }, { href: WA, label: 'WhatsApp', external: true }] },
     {
       kind: 'cards', variant: 'expertises',
-      head: { eyebrow: 'L’expertise', title: 'Toutes les expertises, <span class="grad">un seul interlocuteur</span>', lead: 'Design, développement, SEO, contenu, réseaux sociaux, automatisation : toute la chaîne de valeur du marketing digital, sans intermédiaire ni sous-traitance.' },
+      head: { eyebrow: 'L’expertise', title: 'Toutes les expertises, <span class="grad">un seul interlocuteur</span>', lead: 'Design, développement, SEO, contenu, réseaux sociaux, automatisation : toute la chaîne de valeur du marketing digital, réalisée par notre équipe interne, sans intermédiaire.' },
       items: [
         { icon: 'palette', tag: 'Figma · Design system', title: 'Design UI/UX', text: 'Maquettes Figma, charte graphique, design system. Des interfaces élégantes pensées pour la conversion.', href: '/creation-site-web', cta: 'Création de site web' },
         { icon: 'code', tag: 'Next.js · WordPress · Shopify', title: 'Développement web', text: 'Next.js, WordPress, Webflow, Shopify. Des sites rapides, sécurisés et au code propre.', href: '/creation-site-web', cta: 'Création de site web' },

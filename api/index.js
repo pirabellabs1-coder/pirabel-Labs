@@ -3431,7 +3431,7 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
 
     const model = process.env.OPENROUTER_MODEL_PUBLIC || agent.model;
     const tools = assistantToolsOpenAI(agent.tools);
-    const convo = [{ role: 'system', content: AI.buildSystemPrompt(agent, null) }].concat(history);
+    const convo = [{ role: 'system', content: AI.buildSystemPrompt(agent, null, { page: typeof req.body.page === 'string' ? req.body.page : '' }) }].concat(history);
     let finalText = '';
     let captured = false;
 

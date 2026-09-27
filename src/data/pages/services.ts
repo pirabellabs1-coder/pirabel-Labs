@@ -1,6 +1,6 @@
 import type { PageData } from '../../components/blocks/BlockPage.astro';
 
-const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
+const WA = 'https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
 
 export const page: PageData = {
   path: '/services',

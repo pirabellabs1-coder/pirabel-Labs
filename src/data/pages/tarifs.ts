@@ -1,7 +1,7 @@
 import type { PageData } from '../../components/blocks/BlockPage.astro';
 import type { Region } from '../../components/blocks/PricingTabs.astro';
 
-const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
+const WA = 'https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80%99ai%20un%20projet';
 
 // Grille indicative (prix « à partir de ») révisée à la baisse en septembre 2026, alignée sur les prix
 // annoncés sur les pages villes. Zones FCFA : montants en FCFA (équivalent en euros calculé).

@@ -197,7 +197,7 @@ function footer(opts) {
     '<li><a href="' + esc(SITE.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + ic('instagram', 17) + '</a></li>' +
     '<li><a href="' + esc(SITE.linkedin) + '" target="_blank" rel="noopener" aria-label="LinkedIn">' + ic('linkedin', 17) + '</a></li>' +
     '<li><a href="mailto:' + esc(SITE.email) + '" aria-label="E-mail">' + ic('mail', 18) + '</a></li>' +
-    '<li><a href="' + esc(SITE.phoneBJHref) + '" aria-label="Téléphone Bénin ' + esc(SITE.phoneBJ) + '">' + ic('phone', 17) + '</a></li>' +
+    '<li><a href="' + esc(SITE.phoneBJHref) + '" aria-label="Téléphone ' + esc(SITE.phoneBJ) + '">' + ic('phone', 17) + '</a></li>' +
     '</ul></div>' + cols + '</div>' +
     '<div class="site-footer__word" aria-hidden="true">PIRABEL LABS</div>' +
     '<div class="container site-footer__bottom"><span>© ' + year + ' Pirabel Labs · Tous droits réservés · <a href="mailto:' + esc(SITE.email) + '">' + esc(SITE.email) + '</a> · ' + esc(SITE.city) + '</span>' +

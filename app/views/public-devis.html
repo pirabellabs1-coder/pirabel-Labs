@@ -134,7 +134,7 @@ function renderQuote(q) {
   const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoye', consulte: 'Consulte', accepte: 'Accepte', refuse: 'Refuse', expire: 'Expire' };
 
   // Bouton PDF + WhatsApp toujours disponibles
-  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
 
   let actionsHtml = utilsBar;
   if (q.status === 'accepte') {

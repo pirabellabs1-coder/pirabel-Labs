@@ -148,7 +148,7 @@ function renderInvoice(inv) {
 
   const statusLabels = { brouillon: 'Brouillon', envoyee: 'Envoyee', consultee: 'Consultee', payee: 'Payee', en_retard: 'En retard', annulee: 'Annulee' };
 
-  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF de la facture ou contactez-nous pour toute question.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/16139273067?text=Bonjour%2C+j%27ai+une+question+sur+la+facture+' + encodeURIComponent(inv.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF de la facture ou contactez-nous pour toute question.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+la+facture+' + encodeURIComponent(inv.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
 
   let actionsHtml = utilsBar;
   if (inv.status === 'payee') {

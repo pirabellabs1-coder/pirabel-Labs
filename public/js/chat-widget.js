@@ -9,7 +9,7 @@
   if (window.__plChatLoaded) return;
   window.__plChatLoaded = true;
 
-  var WHATSAPP = 'https://wa.me/16139273067';
+  var WHATSAPP = 'https://wa.me/33757751778';
   // Cle de session : permet a l'equipe de retrouver la conversation dans l'admin.
   // Conservee le temps de l'onglet uniquement (aucun cookie, aucun suivi persistant).
   var sessionKey = (function () {

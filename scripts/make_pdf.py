@@ -103,7 +103,7 @@ def main():
     f.append(Paragraph(esc(data.get('cta', "Besoin d'aide pour appliquer ce guide ? Notre équipe vous accompagne de la stratégie à l'exécution. Audit gratuit, réponse sous 24 h.")), intro))
     f.append(Spacer(1, 4*mm))
     f.append(Paragraph('<b>Contact</b> &nbsp;·&nbsp; contact@pirabellabs.com', body))
-    f.append(Paragraph('<b>WhatsApp</b> &nbsp;·&nbsp; +1 (613) 927-3067', body))
+    f.append(Paragraph('<b>WhatsApp</b> &nbsp;·&nbsp; +33 7 57 75 17 78', body))
     f.append(Paragraph('<b>Site</b> &nbsp;·&nbsp; pirabellabs.com', body))
     f.append(Paragraph('<b>Siège</b> &nbsp;·&nbsp; Abomey-Calavi, Bénin', body))
 

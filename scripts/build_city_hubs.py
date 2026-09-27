@@ -81,7 +81,7 @@ def build_hub(slug):
           "description":desc,"areaServed":{"@type":"City","name":nom},
           "provider":{"@type":"Organization","name":"Pirabel Labs"},
           "address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},
-          "telephone":"+16139273067","email":"contact@pirabellabs.com","url":url}
+          "telephone":"+33757751778","email":"contact@pirabellabs.com","url":url}
     bc = {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
         {"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},
         {"@type":"ListItem","position":2,"name":"Villes","item":"https://www.pirabellabs.com/"},
@@ -109,7 +109,7 @@ def build_hub(slug):
       '<h1>Agence web &amp; marketing à <em>'+e(nom)+'</em></h1>'
       '<p class="rich-hero__sub">'+e(ct["sub"])+'</p>'
       '<div class="rich-hero__cta"><a href="/contact?ville='+slug+'" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un devis</a>'
-      '<a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
+      '<a href="https://wa.me/33757751778" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
     # pourquoi
     cards="".join('<div class="rich-card"><div class="rich-card__icon"><span class="material-symbols-outlined">'+ic+'</span></div><div class="rich-card__title">'+e(t)+'</div><div class="rich-card__desc">'+e(ds)+'</div></div>' for ic,t,ds in ct["cards"])
     pourquoi=('<section class="rich-section"><h2>Pourquoi Pirabel Labs à <em>'+e(nom)+'</em> ?</h2>'
@@ -123,7 +123,7 @@ def build_hub(slug):
     cta=('<section class="rich-cta-band"><h2>Votre projet digital à <em>'+e(nom)+'</em> ?</h2>'
       '<p>Paiement par CB (Stripe) ou virement SEPA. Devis ferme sous 48 h, sans engagement.</p>'
       '<div class="rich-hero__cta"><a href="/contact?ville='+slug+'" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander mon devis</a>'
-      '<a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
+      '<a href="https://wa.me/33757751778" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
     body = B.NAV+"\n"+bcnav+hero+pourquoi+services+cta+B.FOOTER+"\n"+B.NAVJS+'\n<script defer src="/js/track.js"></script>\n</body>\n</html>\n'
     return head+body
 

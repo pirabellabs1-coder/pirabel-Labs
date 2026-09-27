@@ -537,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth <= 768) return; // Hide on mobile
     var wa = document.createElement('a');
     wa.id = 'wa-float-btn';
-    wa.href = 'https://wa.me/16139273067';
+    wa.href = 'https://wa.me/33757751778';
     wa.target = '_blank';
     wa.rel = 'noopener noreferrer';
     wa.setAttribute('aria-label', 'Nous contacter sur WhatsApp');

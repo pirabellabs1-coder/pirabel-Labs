@@ -36,7 +36,7 @@ def hero(s, c, ct):
       '        <p class="s-hero__lead">' + e(lead) + '</p>\n'
       '        <div class="s-hero__cta">\n'
       '          <a href="/contact?service=' + s["sl"] + '&amp;ville=' + c["sl"] + '" class="btn btn--primary btn--lg">Demander un devis <span class="material-symbols-outlined">arrow_forward</span></a>\n'
-      '          <a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>\n'
+      '          <a href="https://wa.me/33757751778" target="_blank" rel="noopener" class="btn btn--ghost btn--lg" style="border-color:#25D366;color:#25D366;"><span class="material-symbols-outlined">chat</span> WhatsApp</a>\n'
       '        </div>\n      </div>\n'
       '      <div class="s-hero__visual">\n        <div class="hero-photo"><div class="hero-photo__scene">\n'
       '          <div class="hero-photo__avatars"><div class="hero-photo__av"><span class="material-symbols-outlined">smartphone</span></div>'
@@ -173,7 +173,7 @@ def head_meta(html, s, c, ct):
         {"@type": "Question", "name": f.get("q", ""), "acceptedAnswer": {"@type": "Answer", "text": f.get("a", "")}} for f in ct.get("faq", [])]}
     svcld = {"@context": "https://schema.org", "@type": "Service", "serviceType": s["label"], "name": title, "description": desc,
              "areaServed": {"@type": "City", "name": c["nom"]},
-             "provider": {"@type": "LocalBusiness", "name": "Pirabel Labs", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "telephone": "+16139273067", "email": "contact@pirabellabs.com"},
+             "provider": {"@type": "LocalBusiness", "name": "Pirabel Labs", "address": {"@type": "PostalAddress", "addressLocality": "Abomey-Calavi", "addressCountry": "BJ"}, "telephone": "+33757751778", "email": "contact@pirabellabs.com"},
              "offers": {"@type": "Offer", "priceCurrency": c["dev"], "availability": "https://schema.org/InStock"}}
     bcld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.pirabellabs.com/"},

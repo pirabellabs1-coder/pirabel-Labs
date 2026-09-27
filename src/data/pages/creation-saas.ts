@@ -3,7 +3,7 @@ import type { Block } from '../../lib/blocks/parse';
 import { SITE } from '../site';
 import { pxHtml } from '../../lib/px.mjs';
 
-const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20cr%C3%A9er%20un%20SaaS';
+const WA = 'https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20cr%C3%A9er%20un%20SaaS';
 const prose = (html: string): Block => ({ kind: 'prose', html });
 
 export const page: PageData = {

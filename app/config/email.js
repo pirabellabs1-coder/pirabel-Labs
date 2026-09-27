@@ -15,7 +15,7 @@ console.log(`[email] provider=Resend key=${RESEND_API_KEY ? RESEND_API_KEY.subst
 const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
 const SITE = () => clean(process.env.SITE_URL) || 'https://www.pirabellabs.com';
-const WHATSAPP = 'https://wa.me/16139273067';
+const WHATSAPP = 'https://wa.me/33757751778';
 
 // ========================================
 // CHARTE E-MAIL — version claire du site (« version blanche »)

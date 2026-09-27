@@ -36,7 +36,7 @@ def build(p):
     # ---- JSON-LD ----
     faq_ld = {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
         {"@type":"Question","name":f["q"],"acceptedAnswer":{"@type":"Answer","text":f["a"]}} for f in ct["faq"]]}
-    svc_ld = {"@context":"https://schema.org","@type":"Service","provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+16139273067","email":"contact@pirabellabs.com"},"areaServed":{"@type":"City","name":c["nom"]},"serviceType":s["label"],"name":ct["meta_title"],"description":ct["meta_desc"],"offers":{"@type":"Offer","priceCurrency":c["dev"],"availability":"https://schema.org/InStock"}}
+    svc_ld = {"@context":"https://schema.org","@type":"Service","provider":{"@type":"LocalBusiness","name":"Pirabel Labs","address":{"@type":"PostalAddress","addressLocality":"Abomey-Calavi","addressCountry":"BJ"},"telephone":"+33757751778","email":"contact@pirabellabs.com"},"areaServed":{"@type":"City","name":c["nom"]},"serviceType":s["label"],"name":ct["meta_title"],"description":ct["meta_desc"],"offers":{"@type":"Offer","priceCurrency":c["dev"],"availability":"https://schema.org/InStock"}}
     bc_ld = {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
         {"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.pirabellabs.com/"},
         {"@type":"ListItem","position":2,"name":s["label"],"item":"https://www.pirabellabs.com/"+s["sl"]},
@@ -76,7 +76,7 @@ def build(p):
       '<h1>'+e(s["label"])+' à <em>'+e(c["nom"])+'</em></h1>'
       '<p class="rich-hero__sub">'+e(ct["hero_sub"])+'</p>'
       '<div class="rich-hero__cta"><a href="/contact?service='+s["sl"]+'&amp;ville='+c["sl"]+'" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander un devis ferme</a>'
-      '<a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a></div>'
+      '<a href="https://wa.me/33757751778" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp direct</a></div>'
       '<div class="rich-hero__trust"><div class="rich-hero__trust-item"><span class="material-symbols-outlined">star</span> 4.9/5 (47 avis)</div>'
       '<div class="rich-hero__trust-item"><span class="material-symbols-outlined">verified</span> Depuis 2020</div>'
       '<div class="rich-hero__trust-item"><span class="material-symbols-outlined">handshake</span> 150+ projets livrés</div>'
@@ -125,7 +125,7 @@ def build(p):
     cta=('<section class="rich-cta-band"><h2>Prêt à lancer votre projet <em>'+e(s["label"])+'</em> à '+e(c["nom"])+' ?</h2>'
       '<p>Devis ferme sous 48h, sans engagement. Parlons de votre projet dès aujourd\'hui.</p>'
       '<div class="rich-hero__cta"><a href="/contact?service='+s["sl"]+'&amp;ville='+c["sl"]+'" class="btn btn--primary btn--lg"><span class="material-symbols-outlined">today</span> Demander mon devis</a>'
-      '<a href="https://wa.me/16139273067" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
+      '<a href="https://wa.me/33757751778" target="_blank" rel="noopener" class="btn btn--ghost btn--lg"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div></section>\n')
     body = NAV + "\n" + bc + hero + pourquoi + approche + offre + tarifs + outils + mc + delais + temo + faq + autres + cta + FOOTER + "\n" + NAVJS + '\n<script defer src="/js/track.js"></script>\n</body>\n</html>\n'
     return head + body
 

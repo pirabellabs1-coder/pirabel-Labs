@@ -307,7 +307,7 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
         step('Une première estimation', 'Un budget réaliste et un planning indicatif.') +
         step('Une proposition d’étape suivante', 'Un appel découverte gratuit de 30 minutes, ou un devis ferme sous 48&nbsp;h.') +
         step('Aucune relance insistante', 'Nous vous répondons, vous prenez le temps de réfléchir.') +
-        '<p style="' + ES.small + '"><strong style="' + ES.strong + '">Une urgence&nbsp;?</strong> Écrivez-nous sur <a href="https://wa.me/16139273067" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
+        '<p style="' + ES.small + '"><strong style="' + ES.strong + '">Une urgence&nbsp;?</strong> Écrivez-nous sur <a href="https://wa.me/33757751778" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
         '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
       cta: 'Voir nos réalisations',
       ctaUrl: 'https://www.pirabellabs.com/realisations',
@@ -422,7 +422,7 @@ app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), lim
         body: '<p style="' + ES.p + '">Merci d’avoir pris le temps de décrire votre projet. Grâce à vos réponses, nous arrivons à l’appel découverte avec une première lecture de votre besoin.</p>' +
           '<p style="margin:0 0 8px;' + ES.label + '">En résumé</p>' + recap +
           '<p style="' + ES.p + '">Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
-          '<p style="' + ES.small + '">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
+          '<p style="' + ES.small + '">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/33757751778" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
           '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
         cta: 'Choisir un créneau',
         ctaUrl: 'https://www.pirabellabs.com/rdv',
@@ -493,7 +493,7 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
         body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Merci&nbsp;! Votre demande de rendez-vous (' + escapeHtml(chanLabel) + ') pour le <strong style="color:#FF5500;">' + escapeHtml(when) + '</strong> est bien enregistrée.</p>' +
           '<p style="font-size:15px;line-height:1.7;color:rgba(229,226,225,0.7);">L\'équipe Pirabel Labs vous confirme le créneau (ou vous en propose un proche) sous 24&nbsp;h ouvrées.</p>' +
           '<div style="border-left:3px solid rgba(255,85,0,0.3);padding:14px 18px;background:rgba(255,85,0,0.03);margin:20px 0;"><p style="margin:0;font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;">Besoin de <strong style="color:#e5e2e1;">changer de créneau ou d\'annuler</strong>&nbsp;? Vous pouvez le faire vous-même en un clic, à tout moment&nbsp;:<br><a href="' + escapeHtml(manageUrl) + '" style="color:#FF5500;font-weight:600;">Gérer mon rendez-vous &rarr;</a></p></div>' +
-          '<p style="font-size:14px;line-height:1.7;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/16139273067" style="color:#FF5500;">WhatsApp</a>.</p>',
+          '<p style="font-size:14px;line-height:1.7;color:rgba(229,226,225,0.6);">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/33757751778" style="color:#FF5500;">WhatsApp</a>.</p>',
         cta: 'Gérer mon rendez-vous', ctaUrl: manageUrl,
       })
     ).catch(e => console.error('[rdv] confirm email error:', e.message));
@@ -570,7 +570,7 @@ app.get('/rdv', (req, res) => {
     '<div class="px-field"><label for="message">Votre projet en quelques mots <span class="px-opt">(facultatif)</span></label><textarea id="message" rows="3" maxlength="3000"></textarea></div>' +
     '<div id="msg" class="px-msg" role="status" aria-live="polite"></div>' +
     '<button class="btn btn--primary btn--lg" id="go" type="submit">' + ic('calendar', 18) + ' <span>Demander mon rendez-vous</span></button>' +
-    '<p class="rdv__foot">Une question&nbsp;? <a href="https://wa.me/16139273067">WhatsApp</a> · <a href="/contact">Contact</a></p>' +
+    '<p class="rdv__foot">Une question&nbsp;? <a href="https://wa.me/33757751778">WhatsApp</a> · <a href="/contact">Contact</a></p>' +
     '</form></section></div>' +
     '<script>(function(){var f=document.getElementById("f"),d=document.getElementById("date"),g=document.getElementById("go"),lbl=g.querySelector("span");' +
     'var t=new Date();t.setDate(t.getDate()+1);d.min=t.toISOString().slice(0,10);' +
@@ -765,7 +765,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
         '<p style="font-size:14px;color:rgba(229,226,225,0.7);line-height:1.6;margin:0;">' + escapeHtml(lb.description) + '</p>' +
         '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le télécharger avec le bouton ci-dessous. Conservez cet e-mail pour y revenir plus tard.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Une question après lecture&nbsp;? Écrivez-nous directement&nbsp;: <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/16139273067" style="color:#FF5500;">+1 (613) 927-3067</a>.</p>' +
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Une question après lecture&nbsp;? Écrivez-nous directement&nbsp;: <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/33757751778" style="color:#FF5500;">+33 7 57 75 17 78</a>.</p>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
       cta: 'Télécharger le PDF',
       ctaUrl: pdfFullUrl,
@@ -1068,7 +1068,7 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
 function adminSignatureHtml() {
   return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 0;border-top:1px solid #ece5de;padding-top:18px;width:100%;"><tr>' +
     '<td style="width:52px;vertical-align:middle;"><span style="display:inline-block;width:44px;height:44px;line-height:44px;border-radius:50%;background:#fff4ec;border:1px solid #ffd9c2;color:#B83A00;font-weight:800;text-align:center;font-size:15px;">LG</span></td>' +
-    '<td style="vertical-align:middle;font-size:14px;line-height:1.5;color:#4a413b;"><strong style="color:#17120f;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs · <a href="https://wa.me/16139273067" style="color:#B83A00;font-weight:600;">WhatsApp</a></td>' +
+    '<td style="vertical-align:middle;font-size:14px;line-height:1.5;color:#4a413b;"><strong style="color:#17120f;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs · <a href="https://wa.me/33757751778" style="color:#B83A00;font-weight:600;">WhatsApp</a></td>' +
     '</tr></table>';
 }
 function adminTextEmailHtml(message, firstName, subject) {
@@ -3055,7 +3055,7 @@ app.get('/carrieres', async (req, res) => {
          <p>Écrivez-nous, nous répondons sous 24&nbsp;h ouvrées.</p>
          <div class="jb-cta__b">
            <a class="btn btn--primary btn--lg" href="mailto:contact@pirabellabs.com">${ic('mail', 18)} contact@pirabellabs.com</a>
-           <a class="btn btn--glass btn--lg" href="https://wa.me/16139273067" target="_blank" rel="noopener">${ic('whatsapp', 18)} WhatsApp</a>
+           <a class="btn btn--glass btn--lg" href="https://wa.me/33757751778" target="_blank" rel="noopener">${ic('whatsapp', 18)} WhatsApp</a>
          </div>
        </section>
        </div>`,

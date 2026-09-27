@@ -611,7 +611,7 @@ export default function QualifyWizard() {
             </div>
           ))}
         </dl>
-        {status === 'error' && <p className="qz-error qz-error--block" role="alert">{serverMsg} Vous pouvez réessayer ou nous écrire sur <a href="https://wa.me/16139273067">WhatsApp</a>.</p>}
+        {status === 'error' && <p className="qz-error qz-error--block" role="alert">{serverMsg} Vous pouvez réessayer ou nous écrire sur <a href="https://wa.me/33757751778">WhatsApp</a>.</p>}
       </Step>
     );
   };
@@ -714,7 +714,7 @@ function Done(props: { firstName: string; level: string; confirmationSent: boole
       </p>
       <div className="qz-done__actions">
         <a href="/rdv" className="btn btn--primary btn--lg">Choisir un créneau d’appel</a>
-        <a href="https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20viens%20d%27envoyer%20ma%20demande%20sur%20le%20site" className="btn btn--glass btn--lg" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
+        <a href="https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20je%20viens%20d%27envoyer%20ma%20demande%20sur%20le%20site" className="btn btn--glass btn--lg" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
       </div>
       <a href="/realisations" className="link-arrow qz-done__more">En attendant, découvrez nos réalisations →</a>
     </div>

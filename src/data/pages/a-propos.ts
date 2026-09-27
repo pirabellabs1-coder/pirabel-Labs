@@ -11,8 +11,8 @@ const PERSON = {
   name: 'Lissanon Gildas',
   givenName: 'Gildas',
   familyName: 'Lissanon',
-  jobTitle: ['Fondateur & CEO de Pirabel Labs', 'Développeur web full stack'],
-  description: 'Lissanon Gildas est développeur web full stack et fondateur de Pirabel Labs, agence digitale basée à Abomey-Calavi (Bénin). Il conçoit et développe des sites, des applications web, des logiciels sur mesure et des plateformes SaaS, dessine leurs interfaces (UI/UX design) et construit les stratégies marketing, SEO et GEO qui les font connaître.',
+  jobTitle: ['Fondateur et directeur général de Pirabel Labs', 'Développeur web full stack'],
+  description: 'Lissanon Gildas est le fondateur et directeur général de Pirabel Labs, agence digitale créée en 2020 à Abomey-Calavi (Bénin). Développeur web full stack, il intervient sur le développement de sites, d’applications et de logiciels, la conception UI/UX, la stratégie marketing, le SEO et le GEO.',
   image: [`${URL}/img/equipe/lissanon-gildas-carre.jpg`, `${URL}/img/equipe/lissanon-gildas.jpg`],
   url: `${URL}/a-propos`,
   email: 'contact@pirabellabs.com',
@@ -37,7 +37,7 @@ const PERSON = {
 
 export const page: PageData = {
   path: '/a-propos',
-  title: 'À propos : Pirabel Labs et Lissanon Gildas, développeur full stack',
+  title: 'À propos de Pirabel Labs et de son fondateur, Lissanon Gildas',
   description: 'Pirabel Labs, agence web et marketing d’Abomey-Calavi (Bénin), fondée par Lissanon Gildas, développeur web full stack : sites, applications, SaaS, UI/UX, SEO et GEO.',
   ogImage: '/img/equipe/lissanon-gildas-og.jpg',
   legacyLd: 'a-propos',
@@ -55,7 +55,7 @@ export const page: PageData = {
       eyebrow: 'À propos de Pirabel Labs',
       eyebrowIcon: 'users',
       title: 'Une agence francophone, pensée pour les <span class="grad">PME ambitieuses</span>',
-      lead: 'Fondée et dirigée par Lissanon Gildas, développeur web full stack, à Abomey-Calavi, Pirabel Labs aide les entreprises francophones d’Afrique de l’Ouest et d’Europe à transformer leur présence digitale en moteur de croissance. Un seul interlocuteur, du devis à la livraison : pas d’agence absente, pas de sous-traitance cachée, pas de jargon — juste du travail solide, mesurable et livré.',
+      lead: 'Fondée et dirigée par Lissanon Gildas à Abomey-Calavi, Pirabel Labs aide les entreprises francophones d’Afrique de l’Ouest et d’Europe à transformer leur présence digitale en moteur de croissance. Un seul interlocuteur, du devis à la livraison : pas d’agence absente, pas de sous-traitance cachée, pas de jargon — juste du travail solide, mesurable et livré.',
       ctas: [
         { href: '/contact', label: 'Réserver un audit gratuit', primary: true },
         { href: '/services', label: 'Voir nos services' },
@@ -84,18 +84,13 @@ export const page: PageData = {
     },
     {
       kind: 'profile',
-      head: { eyebrow: 'Le fondateur', title: 'Lissanon Gildas, <span class="grad">développeur full stack et stratège digital</span>', lead: 'Pirabel Labs repose sur un profil rare : quelqu’un qui écrit le code, dessine les interfaces et construit la stratégie marketing qui fait venir les clients.' },
+      head: { eyebrow: 'Direction', title: 'Le <span class="grad">fondateur</span>' },
       name: 'Lissanon Gildas',
-      role: 'Fondateur & CEO · Développeur web full stack',
-      photo: { src: '/img/equipe/lissanon-gildas.webp', jpg: '/img/equipe/lissanon-gildas.jpg', alt: 'Portrait de Lissanon Gildas, développeur web full stack et fondateur de Pirabel Labs', width: 720, height: 900 },
-      bio: '<p>Lissanon Gildas est <strong>développeur web full stack</strong> et fondateur de Pirabel Labs, agence digitale basée à Abomey-Calavi, au Bénin. Il conçoit et développe lui-même des sites web, des applications web, des logiciels sur mesure et des plateformes SaaS, de l’interface jusqu’au serveur et à la base de données.</p><p>Avant d’écrire la première ligne de code, il dessine les parcours et les écrans (<strong>UI/UX design</strong>) pour que chaque produit soit simple à utiliser. Une fois le produit en ligne, il construit la <strong>stratégie marketing</strong>, le référencement naturel (<strong>SEO</strong>) et l’optimisation pour les moteurs de réponse IA comme ChatGPT, Gemini ou Perplexity (<strong>GEO</strong>) qui lui amènent des clients.</p><p>Cette double compétence, technique et marketing, évite le dialogue de sourds entre le développeur et l’agence de communication : la même personne pense le produit, le construit et le fait connaître. Parmi ses <a href="/realisations">réalisations</a> : la plateforme de Pirabel Labs elle-même (site, blog, CRM et assistant IA), l’application de gestion de Garage Boost, la plateforme de formation Novakou et le site immobilier Kaabo.</p>',
-      tags: ['Développement full stack', 'Applications web et SaaS', 'Logiciels sur mesure', 'UI/UX design', 'Stratégie marketing', 'SEO', 'GEO (moteurs IA)', 'Automatisation et IA'],
-      facts: [
-        { icon: 'code', text: 'Stack : TypeScript, Node.js, React, Next.js, Astro, MongoDB, WordPress' },
-        { icon: 'pin', text: 'Basé à Abomey-Calavi, à 18 km de Cotonou' },
-        { icon: 'badge-check', text: 'Certifié Google Ads, Google Analytics 4 et HubSpot Marketing' },
-        { icon: 'message', text: 'Joignable directement, sans intermédiaire' },
-      ],
+      role: 'Fondateur et directeur général',
+      photo: { src: '/img/equipe/lissanon-gildas.webp', jpg: '/img/equipe/lissanon-gildas.jpg', alt: 'Lissanon Gildas, fondateur et directeur général de Pirabel Labs', width: 720, height: 900 },
+      bio: '<p>Lissanon Gildas est le fondateur et directeur général de Pirabel Labs. Développeur web full stack, il crée l’agence en 2020 à Abomey-Calavi, au Bénin, avec une ambition : donner aux entreprises francophones un partenaire capable de concevoir, de construire et de faire grandir leurs projets numériques.</p><p>Il dirige la stratégie de l’agence et intervient personnellement sur les projets de ses clients, du développement de sites, d’applications et de logiciels à la conception des interfaces (UI/UX), en passant par la stratégie marketing, le référencement naturel (SEO) et la visibilité dans les moteurs de réponse IA (GEO).</p><p>Sous sa direction, Pirabel Labs accompagne des entreprises en Afrique de l’Ouest, en Europe et au Canada.</p>',
+      tags: ['Développement web full stack', 'UI/UX design', 'Stratégie marketing', 'SEO et GEO'],
+      facts: [],
     },
     {
       kind: 'steps', variant: 'detailed',
@@ -151,7 +146,7 @@ export const page: PageData = {
       kind: 'faq', variant: 'main',
       head: { eyebrow: 'Questions fréquentes', title: 'Tout ce que vous voulez <span class="grad">savoir avant de nous appeler</span>', lead: 'Tarifs, contrats, méthodes, langues, facturation : nos réponses claires aux questions qu’on nous pose le plus.' },
       items: [
-        { q: 'Qui est le fondateur de Pirabel Labs ?', a: 'Pirabel Labs a été fondée en 2020 à Abomey-Calavi (Bénin) par Lissanon Gildas, qui la dirige toujours. Développeur web full stack, il conçoit et développe des sites, des applications web, des logiciels sur mesure et des SaaS, dessine leurs interfaces (UI/UX design) et construit les stratégies marketing, SEO et GEO qui les font connaître. C’est lui votre interlocuteur, du premier appel à la mise en ligne.' },
+        { q: 'Qui est le fondateur de Pirabel Labs ?', a: 'Pirabel Labs a été fondée en 2020 à Abomey-Calavi (Bénin) par Lissanon Gildas, qui en est le directeur général. Développeur web full stack, il intervient personnellement sur les projets : développement de sites, d’applications et de logiciels, conception UI/UX, stratégie marketing, SEO et GEO.' },
         { q: 'Comment fixez-vous vos tarifs ?', a: 'Nos tarifs sont transparents et adaptés à la taille du projet. Trois formats au choix : un forfait pour un livrable précis (un site, une campagne, un audit), un abonnement mensuel pour un accompagnement récurrent (SEO, community management, automatisation), ou des jours-homme pour des missions ponctuelles. Avant tout démarrage, vous recevez un devis chiffré ligne par ligne, sans surprise et sans frais cachés. Une grille indicative est publiée sur notre page <a href="/tarifs">Tarifs</a> pour donner des ordres de grandeur.' },
         { q: 'Travaillez-vous à distance avec des clients à l’étranger ?', a: 'Oui, près de 70 % de notre activité est réalisée à distance avec des clients en Côte d’Ivoire, au Sénégal, au Togo, en France, en Belgique et au Canada. Nous travaillons avec Notion pour la documentation, Slack pour les échanges quotidiens, Loom pour les démonstrations vidéo et Zoom ou Google Meet pour les points hebdomadaires. Notre fuseau horaire (GMT+1) est celui d’une grande partie de l’Europe et de l’Afrique francophone, ce qui rend les échanges fluides.' },
         { q: 'Dans quelles langues travaillez-vous ?', a: 'Notre langue principale est le français. Nous produisons aussi du contenu en anglais pour les clients européens qui ciblent une audience internationale. Pour les campagnes très locales en Afrique de l’Ouest, nous pouvons également travailler en fon (Bénin), en yoruba (Bénin, Nigeria), en wolof (Sénégal) ou en lingala selon les besoins. Le français est notre langue maternelle : nos textes n’ont jamais le ton mécanique des traductions automatiques.' },

@@ -295,7 +295,7 @@ a.b-card:hover .b-card__arrow { color: var(--accent-2); transform: translate(3px
 @keyframes hero-float-in { from { opacity: 0; transform: translate3d(0, 26px, 0) scale(0.94); } }
 
 /* =============================================================================
-   Pages uniques : profil fondateur, zones, navigation par ancres, pages juridiques.
+   Pages uniques : profil du CEO, zones, navigation par ancres, pages juridiques.
    ============================================================================= */
 .b-profile { display: grid; gap: clamp(24px, 3vw, 48px); padding: clamp(26px, 3.4vw, 48px); border-radius: var(--r-xl); }
 @media (min-width: 900px) { .b-profile { grid-template-columns: minmax(220px, 0.38fr) 1fr; align-items: center; } }

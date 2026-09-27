@@ -126,8 +126,8 @@ export const COMMITMENTS = [
   {
     n: '02', kicker: 'Réactivité', icon: 'zap',
     title: 'Réponse sous 4 h en jours ouvrés',
-    text: 'Vous n’attendez pas trois jours pour un retour. Fondateur dédié, ligne WhatsApp directe pour les questions courtes, démo en visio chaque vendredi pendant les sprints.',
-    points: ['Le fondateur est joignable, pas un commercial', 'WhatsApp, e-mail et Notion partagé', 'Démo visio hebdomadaire'],
+    text: 'Vous n’attendez pas trois jours pour un retour. Interlocuteur dédié, ligne WhatsApp directe pour les questions courtes, démo en visio chaque vendredi pendant les sprints.',
+    points: ['Un interlocuteur dédié, joignable directement', 'WhatsApp, e-mail et Notion partagé', 'Démo visio hebdomadaire'],
   },
   {
     n: '03', kicker: 'Propriété', icon: 'lock',
@@ -144,7 +144,7 @@ export const COMMITMENTS = [
 ];
 
 export const STEPS = [
-  { n: '01', title: 'Appel découverte', text: '30 minutes en visio avec le fondateur. Vous exposez vos besoins, votre contexte et vos objectifs. Sans engagement, sans script de vente.', meta: '30 minutes, gratuit' },
+  { n: '01', title: 'Appel découverte', text: '30 minutes en visio avec un expert de notre équipe. Vous exposez vos besoins, votre contexte et vos objectifs. Sans engagement, sans script de vente.', meta: '30 minutes, gratuit' },
   { n: '02', title: 'Cadrage et devis ferme', text: 'Sous 48 h, vous recevez un plan détaillé : périmètre, planning, budget fixe et évolutions possibles. Pas de « selon devis » en cours de route.', meta: 'Sous 48 h' },
   { n: '03', title: 'Sprints hebdomadaires', text: 'Lancement puis sprints d’une semaine. Démo chaque vendredi en visio, ajustements intégrés en continu. Vous voyez l’avancement réel chaque semaine.', meta: '1 à 12 semaines selon le périmètre' },
   { n: '04', title: 'Mise en ligne et formation', text: 'Mise en production accompagnée, formation de votre équipe à la prise en main, documentation écrite remise. Garantie de 30 jours incluse.', meta: 'Garantie 30 jours' },
@@ -167,7 +167,7 @@ export const PRICING = [
   {
     name: 'Forfait mensuel', price: '150 000 FCFA', eur: '690 €', unit: 'à partir de',
     period: '/ mois', featured: true,
-    points: ['Demandes illimitées sur tous nos services', 'Pause ou arrêt à tout moment', 'Fondateur dédié, réactif sous 4 h', 'Conseil hebdomadaire de 45 min inclus', 'Tableau Notion partagé pour prioriser', 'Reporting mensuel détaillé'],
+    points: ['Demandes illimitées sur tous nos services', 'Pause ou arrêt à tout moment', 'Interlocuteur dédié, réactif sous 4 h', 'Conseil hebdomadaire de 45 min inclus', 'Tableau Notion partagé pour prioriser', 'Reporting mensuel détaillé'],
     cta: 'Choisir cette formule', href: '/contact',
   },
   {

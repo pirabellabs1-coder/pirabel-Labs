@@ -8,14 +8,14 @@ import '../styles/contact.css';
 import { SITE } from '../data/site';
 
 const AFTER = [
-  { time: 'Sous 4 h ouvrées', icon: 'zap', title: 'Réception et accusé', text: 'Confirmation immédiate par e-mail avec le récapitulatif de votre demande. Le fondateur la lit et la classe par urgence et par nature.' },
+  { time: 'Sous 4 h ouvrées', icon: 'zap', title: 'Réception et accusé', text: 'Confirmation immédiate par e-mail avec le récapitulatif de votre demande. Notre équipe l’étudie et la traite par ordre d’urgence.' },
   { time: 'Sous 24 h', icon: 'target', title: 'Préqualification', text: 'Analyse rapide de la faisabilité et de l’adéquation. Si nous ne sommes pas le bon partenaire, nous vous le disons honnêtement et vous orientons vers une alternative.' },
-  { time: 'Sous 48 à 72 h', icon: 'video', title: 'Appel découverte (30 min)', text: 'Visio avec le fondateur : objectifs business, périmètre, contraintes. Gratuit, sans engagement et sans discours commercial.' },
+  { time: 'Sous 48 à 72 h', icon: 'video', title: 'Appel découverte (30 min)', text: 'Visio avec un expert de notre équipe : objectifs business, périmètre, contraintes. Gratuit, sans engagement et sans discours commercial.' },
   { time: 'Sous 48 h après l’appel', icon: 'file', title: 'Devis ferme', text: 'Proposition chiffrée précise : prix, périmètre, planning sprint par sprint, livrables. Pas de « selon devis ». Vous réfléchissez, validez ou ajustez.' },
 ];
 
 const FAQ = [
-  { q: 'Sous combien de temps recevrai-je une réponse à ma demande ?', a: 'Vous recevez un accusé de réception automatique dès l’envoi du formulaire. Ensuite, le fondateur de Pirabel Labs vous répond personnellement sous 24 à 48 heures ouvrées, du lundi au vendredi (fuseau Afrique de l’Ouest, GMT+1). Si votre demande est urgente, écrivez-nous directement sur WhatsApp. Après l’appel découverte de 30 minutes, le devis ferme est émis sous 48 h.' },
+  { q: 'Sous combien de temps recevrai-je une réponse à ma demande ?', a: 'Vous recevez un accusé de réception automatique dès l’envoi du formulaire. Ensuite, un membre de notre équipe vous répond sous 24 à 48 heures ouvrées, du lundi au vendredi (fuseau Afrique de l’Ouest, GMT+1). Si votre demande est urgente, écrivez-nous directement sur WhatsApp. Après l’appel découverte de 30 minutes, le devis ferme est émis sous 48 h.' },
   { q: 'L’appel découverte et le devis sont-ils gratuits ?', a: 'Oui, totalement. L’appel découverte de 30 minutes en visio (Google Meet ou Zoom) est gratuit et sans engagement. Le devis qui suit est également gratuit, fermé, détaillé sprint par sprint, et valable 30 jours. Vous prenez le temps de comparer et de réfléchir : aucune relance commerciale insistante. Si le moment n’est pas le bon, nous restons simplement joignables.' },
   { q: 'Quels modes de paiement acceptez-vous après signature ?', a: 'En Europe : virement SEPA, carte bancaire via Stripe ou virement international. Au Bénin et en Afrique de l’Ouest : virement bancaire local (UBA, Ecobank, BOA), Mobile Money (MTN, Moov) ou Wave. Échelonnement standard 30 / 30 / 40 : 30 % à la signature, 30 % à la validation de la maquette, 40 % à la mise en ligne. Au-delà de 15 000 €, des échéances mensuelles sur 3 à 6 mois sont possibles.' },
   { q: 'Que faites-vous de mes données personnelles ?', a: 'Nous respectons le RGPD pour nos clients européens et les mêmes bonnes pratiques pour tous les autres. Vos réponses sont stockées uniquement dans notre outil interne, accessibles aux seules personnes en charge de votre dossier. Aucune revente, aucun partage avec des tiers, aucune campagne non sollicitée. Vous pouvez demander leur suppression à tout moment en écrivant à contact@pirabellabs.com : traitement sous 7 jours.' },
@@ -70,7 +70,7 @@ const faqLd = {
       <div class="c-direct__intro">
         <p class="eyebrow">Vous préférez échanger directement&nbsp;?</p>
         <h2 id="rdv-title" data-reveal="title"><Split>Réservez un appel de 30 minutes.</Split></h2>
-        <p class="muted">Un échange gratuit et sans engagement pour comprendre vos enjeux. Choisissez un créneau : Lissanon Gildas vous le confirme (ou en propose un proche) sous 24&nbsp;h.</p>
+        <p class="muted">Un échange gratuit et sans engagement pour comprendre vos enjeux. Choisissez un créneau : nous vous le confirmons (ou vous en proposons un proche) sous 24&nbsp;h.</p>
         <ul class="c-channels">
           <li><a href={SITE.whatsapp} target="_blank" rel="noopener" class="c-channel glass glass--flat spot"><span class="card__icon"><Icon name="whatsapp" size={20} /></span><span><b>WhatsApp</b><small>Réponse rapide</small></span></a></li>
           <li><a href={SITE.phoneHref} class="c-channel glass glass--flat spot"><span class="card__icon"><Icon name="phone" size={20} /></span><span><b>{SITE.phone}</b><small>Appel ou WhatsApp</small></span></a></li>

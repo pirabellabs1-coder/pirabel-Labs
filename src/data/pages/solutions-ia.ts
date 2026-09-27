@@ -9,7 +9,7 @@ export const page: PageData = {
   legacyLd: 'solutions-ia',
   footerCta: {
     title: 'Prêt à lancer votre projet d’IA ?',
-    text: 'Appel découverte gratuit de 30 minutes, puis devis ferme sous 48 h, sans engagement. Réponse garantie du fondateur.',
+    text: 'Appel découverte gratuit de 30 minutes, puis devis ferme sous 48 h, sans engagement. Réponse garantie de notre équipe.',
     href: '/contact?service=solutions-ia',
     label: 'Demander mon devis',
   },

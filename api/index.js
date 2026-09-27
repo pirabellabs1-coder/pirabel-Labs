@@ -157,7 +157,7 @@ async function patchCaseStudies() {
 // === Articles de blog versionnés (app/seed/articles.json) : ajoutés en BROUILLON si leur slug n'existe pas ===
 // Jamais de mise à jour du contenu d'un article existant.
 // Publication groupée unique (lot mémorisé dans Setting) : la série SaaS paraît d'un bloc, car ses articles se citent
-// entre eux (demande du fondateur, 2026-09-26). Seuls les brouillons passent en ligne ; l'ordre du fichier donne l'ordre
+// entre eux (demande du CEO, 2026-09-26). Seuls les brouillons passent en ligne ; l'ordre du fichier donne l'ordre
 // d'affichage (le guide pilier en tête), avec une minute d'écart entre deux articles.
 const ARTICLES_PUBLISH_KEY = 'seed.articles.published';
 const ARTICLES_PUBLISH_BATCH = 'saas-2026-09';
@@ -303,12 +303,12 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       title: 'Bonjour ' + escapeHtml(name.split(' ')[0]) + ',',
       subtitle: 'Votre demande est entre de bonnes mains',
       body: '<p style="' + ES.p + '">Merci de nous avoir contactés&nbsp;! Nous avons bien reçu votre demande concernant <strong style="' + ES.strong + '">' + escapeHtml(service) + '</strong>.</p>' +
-        '<p style="' + ES.p + '">Lissanon Gildas, fondateur de Pirabel Labs, vous répond sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec&nbsp;:</p>' +
+        '<p style="' + ES.p + '">Un membre de notre équipe vous répond sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec&nbsp;:</p>' +
         step('Une première estimation', 'Un budget réaliste et un planning indicatif.') +
         step('Une proposition d’étape suivante', 'Un appel découverte gratuit de 30 minutes, ou un devis ferme sous 48&nbsp;h.') +
         step('Aucune relance insistante', 'Nous vous répondons, vous prenez le temps de réfléchir.') +
         '<p style="' + ES.small + '"><strong style="' + ES.strong + '">Une urgence&nbsp;?</strong> Écrivez-nous sur <a href="https://wa.me/33757751778" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
-        '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+        '<p style="' + ES.p + 'margin-top:24px;">Bien cordialement,<br><strong style="' + ES.strong + '">L’équipe Pirabel Labs</strong></p>',
       cta: 'Voir nos réalisations',
       ctaUrl: 'https://www.pirabellabs.com/realisations',
       ctaSecondary: 'Choisir un créneau d’appel',
@@ -421,9 +421,9 @@ app.post('/api/qualification', qualificationLimiter, honeypotCheck('qf_hp'), lim
         subtitle: 'Votre projet est entre de bonnes mains',
         body: '<p style="' + ES.p + '">Merci d’avoir pris le temps de décrire votre projet. Grâce à vos réponses, nous arrivons à l’appel découverte avec une première lecture de votre besoin.</p>' +
           '<p style="margin:0 0 8px;' + ES.label + '">En résumé</p>' + recap +
-          '<p style="' + ES.p + '">Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
+          '<p style="' + ES.p + '">Un membre de notre équipe vous répond sous <strong style="' + ES.strong + '">24&nbsp;h ouvrées</strong> avec une proposition de rendez-vous. Le devis est gratuit et ferme, établi sous 48&nbsp;h après notre échange.</p>' +
           '<p style="' + ES.small + '">Une urgence&nbsp;? Écrivez-nous sur <a href="https://wa.me/33757751778" style="' + ES.link + '">WhatsApp</a> ou répondez simplement à cet e-mail.</p>' +
-          '<p style="' + ES.p + 'margin-top:24px;">À très vite,<br><strong style="' + ES.strong + '">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+          '<p style="' + ES.p + 'margin-top:24px;">Bien cordialement,<br><strong style="' + ES.strong + '">L’équipe Pirabel Labs</strong></p>',
         cta: 'Choisir un créneau',
         ctaUrl: 'https://www.pirabellabs.com/rdv',
         ctaSecondary: 'Voir nos réalisations',
@@ -766,7 +766,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
         '</div>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Vous pouvez le télécharger avec le bouton ci-dessous. Conservez cet e-mail pour y revenir plus tard.</p>' +
         '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Une question après lecture&nbsp;? Écrivez-nous directement&nbsp;: <a href="mailto:contact@pirabellabs.com" style="color:#FF5500;">contact@pirabellabs.com</a> ou WhatsApp : <a href="https://wa.me/33757751778" style="color:#FF5500;">+33 7 57 75 17 78</a>.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>',
+        '<p style="font-size:14px;color:rgba(229,226,225,0.5);margin-top:24px;">Bonne lecture,<br><strong style="color:#e5e2e1;">L’équipe Pirabel Labs</strong></p>',
       cta: 'Télécharger le PDF',
       ctaUrl: pdfFullUrl,
       ctaSecondary: 'Voir tous nos livres blancs',
@@ -1067,8 +1067,8 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
 // === E-mails écrits depuis le tableau de bord : même rendu à l'envoi et dans l'aperçu ===
 function adminSignatureHtml() {
   return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 0;border-top:1px solid #ece5de;padding-top:18px;width:100%;"><tr>' +
-    '<td style="width:52px;vertical-align:middle;"><span style="display:inline-block;width:44px;height:44px;line-height:44px;border-radius:50%;background:#fff4ec;border:1px solid #ffd9c2;color:#B83A00;font-weight:800;text-align:center;font-size:15px;">LG</span></td>' +
-    '<td style="vertical-align:middle;font-size:14px;line-height:1.5;color:#4a413b;"><strong style="color:#17120f;">Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs · <a href="https://wa.me/33757751778" style="color:#B83A00;font-weight:600;">WhatsApp</a></td>' +
+    '<td style="width:52px;vertical-align:middle;"><span style="display:inline-block;width:44px;height:44px;line-height:44px;border-radius:50%;background:#fff4ec;border:1px solid #ffd9c2;color:#B83A00;font-weight:800;text-align:center;font-size:15px;">PL</span></td>' +
+    '<td style="vertical-align:middle;font-size:14px;line-height:1.5;color:#4a413b;"><strong style="color:#17120f;">L’équipe Pirabel Labs</strong><br>www.pirabellabs.com · <a href="https://wa.me/33757751778" style="color:#B83A00;font-weight:600;">WhatsApp</a></td>' +
     '</tr></table>';
 }
 function adminTextEmailHtml(message, firstName, subject) {
@@ -1076,7 +1076,7 @@ function adminTextEmailHtml(message, firstName, subject) {
   const text = String(message || '');
   const bodyHtml = '<p style="' + para + '">' +
     escapeHtml(text).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>' +
-    (/lissanon[\s\S]{0,120}$/i.test(text.trim()) ? '' : adminSignatureHtml());
+    (/(lissanon|équipe pirabel labs)[\s\S]{0,120}$/i.test(text.trim()) ? '' : adminSignatureHtml());
   return masterTemplate({
     headerType: 'hero',
     preheader: subject || '',
@@ -1825,10 +1825,10 @@ async function gatherBusinessContext() {
 }
 
 const AI_SYSTEM_PROMPTS = {
-  redaction: "Tu es l'assistant de rédaction de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi (Bénin), fondée par Lissanon Gildas (Fondateur & CEO). Tu rédiges en français impeccable (accents sur les majuscules, ç, œ, guillemets « », espaces insécables avant : ; ! ?). Tu écris des e-mails de prospection, réponses clients, propositions, posts réseaux sociaux et contenus selon les consignes. Ton professionnel, chaleureux et orienté résultat. Ne jamais inventer de chiffres ni de références. Ne jamais mentionner d'autre fondateur que Lissanon Gildas.",
-  analyse: "Tu es le directeur commercial de Pirabel Labs (agence web/marketing à Abomey-Calavi, Bénin, fondée par Lissanon Gildas). Tu analyses le pipeline commercial réel fourni dans le contexte (prospects, devis, tâches) et donnes des recommandations concrètes, priorisées et actionnables : qui relancer en priorité, quels devis suivre, risques, opportunités, plan de la semaine. Sois direct, chiffré quand les données le permettent, et ne jamais inventer de données absentes du contexte. Français impeccable.",
+  redaction: "Tu es l'assistant de rédaction de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi (Bénin), dirigée par Lissanon Gildas (CEO). Tu rédiges en français impeccable (accents sur les majuscules, ç, œ, guillemets « », espaces insécables avant : ; ! ?). Tu écris des e-mails de prospection, réponses clients, propositions, posts réseaux sociaux et contenus selon les consignes. Ton professionnel, chaleureux et orienté résultat. Ne jamais inventer de chiffres ni de références. Ne jamais mentionner d'autre dirigeant que Lissanon Gildas, CEO.",
+  analyse: "Tu es le directeur commercial de Pirabel Labs (agence web/marketing à Abomey-Calavi, Bénin, dirigée par Lissanon Gildas, CEO). Tu analyses le pipeline commercial réel fourni dans le contexte (prospects, devis, tâches) et donnes des recommandations concrètes, priorisées et actionnables : qui relancer en priorité, quels devis suivre, risques, opportunités, plan de la semaine. Sois direct, chiffré quand les données le permettent, et ne jamais inventer de données absentes du contexte. Français impeccable.",
   equipe: "Tu es le bras droit RH et opérationnel du dirigeant de Pirabel Labs (Lissanon Gildas), agence web/marketing à Abomey-Calavi (Bénin). Tu aides à répartir les tâches entre les employés selon leur pôle et leur charge actuelle, à rédiger des consignes claires, des comptes-rendus et des objectifs. Tu t'appuies sur la liste d'équipe et les tâches ouvertes du contexte. Pragmatique, bienveillant, structuré. Français impeccable.",
-  libre: "Tu es l'assistant IA de Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin), fondée par Lissanon Gildas (Fondateur & CEO). Tu réponds à toute question business, marketing, SEO, technique ou stratégique pour aider à développer l'agence. Précis, honnête, jamais d'invention de chiffres. Français impeccable. Tu peux t'appuyer sur les données réelles de l'entreprise fournies dans le contexte.",
+  libre: "Tu es l'assistant IA de Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin), dirigée par Lissanon Gildas (CEO). Tu réponds à toute question business, marketing, SEO, technique ou stratégique pour aider à développer l'agence. Précis, honnête, jamais d'invention de chiffres. Français impeccable. Tu peux t'appuyer sur les données réelles de l'entreprise fournies dans le contexte.",
 };
 
 // Outils que l'assistant peut EXÉCUTER réellement (lecture + écriture interne, réversible).
@@ -3538,7 +3538,7 @@ Regles pour le corps de la reponse :
 - Apporte un element utile des maintenant (un conseil, une question de cadrage pertinente).
 - N'annonce JAMAIS de prix. Le devis est gratuit et etabli sous 48 h apres un echange.
 - Propose un rendez-vous avec le lien https://www.pirabellabs.com/rdv
-- Termine par la signature : Lissanon Gildas, Fondateur & CEO — Pirabel Labs.
+- Termine par la signature : « Bien cordialement, L’équipe Pirabel Labs ». Ne nomme jamais une personne de l’agence ; si quelqu’un doit recontacter le prospect, écris « un membre de notre équipe ».
 - Francais impeccable, ton professionnel et chaleureux, sans flatterie ni exageration.
 - N'invente aucune reference client, aucun chiffre, aucun delai que tu ne peux tenir.
 
@@ -4112,10 +4112,10 @@ app.get('/blog/:slug', async (req, res) => {
       ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" fetchpriority="high" decoding="async">'
       : coverSvg(a.title, a.category)) + '</figure>';
     const authorCard = (a.content || '').includes('art-author') ? '' :
-      '<aside class="art-author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Fondateur &amp; CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l’IA.</p></div></aside>';
+      '<aside class="art-author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l’IA.</p></div></aside>';
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc glass glass--flat" aria-label="Sommaire de l’article"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + escapeHtml(t.id) + '">' + frt(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
-      '<div class="bx-side__author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="bx-side__name">' + authorName + '</div><div class="bx-side__role">Fondateur &amp; CEO, Pirabel Labs</div></div></div>' +
+      '<div class="bx-side__author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="bx-side__name">' + authorName + '</div><div class="bx-side__role">CEO, Pirabel Labs</div></div></div>' +
       '<div class="bx-side__cta glass glass--tint"><b>Un projet digital&nbsp;?</b><p>Audit gratuit, réponse sous 24&nbsp;h.</p><a class="btn btn--primary btn--sm" href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents
@@ -4139,7 +4139,7 @@ app.get('/blog/:slug', async (req, res) => {
       '<div class="bx-content">' + themeContent(contentHtml) + '</div>' +
       authorCard +
       '<div class="bx-cta glass glass--tint spot"><p class="bx-cta__t">Un projet en tête&nbsp;?</p>' +
-      '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit : parlez-en directement au fondateur.</p>' +
+      '<p class="bx-cta__sub">On transforme votre idée en site, boutique ou application qui convertit : parlez-en à notre équipe.</p>' +
       '<div class="bx-cta__btns"><a class="btn btn--primary" href="/contact#rdv">Discutons de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a><a class="btn btn--glass" href="/realisations">Voir nos réalisations ' + ic('arrow-up-right', 18) + '</a></div></div>' +
       relatedHtml +
       '<section class="bx-comments" aria-labelledby="cmTitle"><h2 id="cmTitle">Commentaires</h2>' +
@@ -4458,7 +4458,7 @@ app.get('/realisations', async (req, res) => {
       '<section class="rz-final glass glass--tint spot" data-reveal="scale" aria-labelledby="rzFinal"><div class="sf-cta__glow" aria-hidden="true"></div>' +
         '<p class="eyebrow">Réponse sous 24&nbsp;h</p>' +
         '<h2 id="rzFinal">Votre projet mérite la même exigence</h2>' +
-        '<p>Parlez directement au fondateur. On étudie votre besoin et on vous dit, franchement, ce qui est faisable et comment.</p>' +
+        '<p>Parlez-en à notre équipe. Nous étudions votre besoin et on vous dit, franchement, ce qui est faisable et comment.</p>' +
         '<a class="btn btn--primary btn--lg" href="/contact#rdv">Discutons de votre projet ' + ic('arrow-right', 18, 'icon--end') + '</a>' +
       '</section></div>' +
       '<script>(function(){var bar=document.getElementById("rzFilters");if(!bar)return;var out=document.getElementById("rzCount");var cards=[].slice.call(document.querySelectorAll(".rz-grid .rz-card"));bar.addEventListener("click",function(e){var b=e.target.closest("[data-cat]");if(!b)return;bar.querySelectorAll("[data-cat]").forEach(function(x){var on=x===b;x.classList.toggle("is-active",on);x.setAttribute("aria-pressed",on?"true":"false");});var cat=b.getAttribute("data-cat"),n=0;cards.forEach(function(c){var ok=cat==="all"||((" "+(c.getAttribute("data-cats")||"")+" ").indexOf(" "+cat+" ")>-1);c.style.display=ok?"":"none";if(ok){n++;c.classList.add("is-in");}});if(out)out.textContent=n+(n>1?" projets affichés":" projet affiché");});})();</script>';
@@ -5294,7 +5294,7 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
       `Devis accepté — ${quote.reference}`,
       masterTemplate({
         title: 'Merci ' + escapeHtml(quote.clientName.split(' ')[0]) + ' !',
-        body: `<p>Nous avons bien reçu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Lissanon Gildas vous contacte sous 24 h pour planifier le lancement du projet.</p><p>À très vite,<br><strong>Lissanon Gildas</strong><br>Fondateur &amp; CEO — Pirabel Labs</p>`,
+        body: `<p>Nous avons bien reçu votre acceptation du devis <strong>${escapeHtml(quote.reference)}</strong> pour ${escapeHtml(quote.title)}.</p><p>Un membre de notre équipe vous contacte sous 24 h pour planifier le lancement du projet.</p><p>Bien cordialement,<br><strong>L’équipe Pirabel Labs</strong></p>`,
         cta: 'Visiter pirabellabs.com',
         ctaUrl: 'https://www.pirabellabs.com'
       })

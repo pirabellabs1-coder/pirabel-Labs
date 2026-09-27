@@ -7,7 +7,7 @@ const URL = 'https://www.pirabellabs.com';
 const PERSON = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': `${URL}/a-propos#fondateur`,
+  '@id': `${URL}/a-propos#ceo`,
   name: 'Lissanon Gildas',
   givenName: 'Gildas',
   familyName: 'Lissanon',
@@ -98,7 +98,7 @@ export const page: PageData = {
       items: [
         { num: '2022', tag: 'Le démarrage', title: 'Naissance de Pirabel Labs à Abomey-Calavi', text: '<p>L’agence démarre à Abomey-Calavi avec ses premiers clients locaux et une première offre de création de sites et de référencement (SEO). Objectif : prouver qu’on peut faire du digital de qualité depuis le Bénin, pour toute la francophonie.</p>' },
         { num: '2023', tag: 'Ouverture et automatisation', title: 'Premiers clients en Europe, premiers agents IA', text: '<p>Premiers clients en France et en Belgique, servis à distance avec des processus de gestion de projet rigoureux. L’agence lance aussi son offre d’automatisation (Make, n8n) et ses premiers agents conversationnels IA.</p>' },
-        { num: '2024', tag: 'Reconnaissance et certifications', title: 'Partenariat Brevo, certifications Google et HubSpot', text: '<p>Pirabel Labs devient partenaire officiel Brevo ; son fondateur obtient les certifications Google Ads, Google Analytics 4 et HubSpot Marketing. Cinquante clients actifs répartis sur huit pays, accompagnés sans intermédiaire.</p>' },
+        { num: '2024', tag: 'Reconnaissance et certifications', title: 'Partenariat Brevo, certifications Google et HubSpot', text: '<p>Pirabel Labs devient partenaire officiel Brevo ; son CEO obtient les certifications Google Ads, Google Analytics 4 et HubSpot Marketing. Cinquante clients actifs répartis sur huit pays, accompagnés sans intermédiaire.</p>' },
         { num: '2025', tag: 'Année charnière', title: 'Refonte de marque et montée en gamme de l’offre vidéo', text: '<p>Nouveau logo, nouvelle identité visuelle, nouveau site. L’offre vidéo et motion design se renforce, le cap des 130 projets livrés est franchi, et le blog comme la newsletter destinée aux dirigeants de PME francophones voient le jour.</p>' },
         { num: '2026', tag: 'Aujourd’hui', title: 'Une agence 360° au service des PME francophones', text: '<p>Plus de 150 projets livrés, 50 clients actifs dans 8 pays. Onze expertises couvertes en interne : web, SEO, social, vidéo, automatisation, IA, e-mail, tunnels, consulting, hébergement et maintenance. Et toujours la même obsession : être le partenaire sur qui les patrons de PME peuvent compter.</p>' },
       ],

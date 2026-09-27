@@ -538,7 +538,7 @@ export default function QualifyWizard() {
       const c = a.contact;
       const err = (cond: boolean) => touched && cond;
       return (
-        <Step title="Où pouvons-nous vous répondre ?" hint="Lissanon Gildas, fondateur de Pirabel Labs, vous répond personnellement sous 24 h ouvrées." focus={interacted.current}>
+        <Step title="Où pouvons-nous vous répondre ?" hint="Un membre de notre équipe vous répond sous 24 h ouvrées." focus={interacted.current}>
           <div className="qz-grid">
             <div className="qz-field">
               <label htmlFor="qz-name">Nom complet <span aria-hidden="true">*</span></label>
@@ -708,7 +708,7 @@ function Done(props: { firstName: string; level: string; confirmationSent: boole
       <h2 className="qz-title" tabIndex={-1} ref={titleRef}>Merci{firstName ? ` ${firstName}` : ''}, votre demande est bien reçue !</h2>
       <p className="qz-sub">
         {hot
-          ? 'Votre projet est clair et prioritaire : Lissanon Gildas vous recontacte dans la journée ouvrée. Pour aller plus vite, choisissez dès maintenant un créneau d’appel.'
+          ? 'Votre projet est clair et prioritaire : un membre de notre équipe vous recontacte dans la journée ouvrée. Pour aller plus vite, choisissez dès maintenant un créneau d’appel.'
           : 'Nous étudions vos réponses et revenons vers vous sous 24 h ouvrées avec une première lecture de votre besoin.' +
             (confirmationSent ? ' Un e-mail de confirmation vient de partir.' : ' Votre demande précédente reste bien enregistrée.')}
       </p>

@@ -55,7 +55,7 @@ export const page: PageData = {
   legacyLd: 'tarifs',
   footerCta: {
     title: 'Prêt à recevoir votre devis ferme ?',
-    text: 'Demandez un appel découverte gratuit de 30 minutes : vous repartez avec un devis ferme sous 48 h, sans engagement. Réponse garantie du fondateur.',
+    text: 'Demandez un appel découverte gratuit de 30 minutes : vous repartez avec un devis ferme sous 48 h, sans engagement. Réponse garantie de notre équipe.',
     href: '/contact',
     label: 'Demander un devis ferme',
   },

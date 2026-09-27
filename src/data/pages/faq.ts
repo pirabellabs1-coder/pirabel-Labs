@@ -9,7 +9,7 @@ export const page: PageData = {
   legacyLd: 'faq',
   footerCta: {
     title: 'Vous avez une autre question ?',
-    text: 'Écrivez-nous : réponse garantie sous 24 h ouvrées par le fondateur. Pas de robot, pas de commercial, juste un humain qui connaît le sujet.',
+    text: 'Écrivez-nous : réponse garantie sous 24 h ouvrées par notre équipe. Pas de robot, pas de commercial, juste un humain qui connaît le sujet.',
     href: '/contact',
     label: 'Poser ma question',
   },
@@ -108,8 +108,8 @@ export const page: PageData = {
       kind: 'faq', variant: 'main', id: 'equipe',
       head: { eyebrow: 'Équipe & identité', title: 'Équipe <span class="grad">& identité</span>', lead: 'Qui nous sommes, où nous sommes, comment nous travaillons.' },
       items: [
-        { q: 'Qui a fondé Pirabel Labs ?', a: 'Pirabel Labs a été fondée en 2022 par <strong>Lissanon Gildas</strong>, fondateur et CEO. Développeur web full stack, il conçoit et développe des sites, des applications et des SaaS, dessine leurs interfaces (UI/UX design) et construit les stratégies marketing, SEO et GEO qui les font connaître. Découvrez son parcours sur notre page <a href="/a-propos">À propos</a>.' },
-        { q: 'Qui travaille sur mon projet ?', a: 'Une équipe interne resserrée (développement, design, SEO, contenu, vidéo, gestion de projet), au siège d’Abomey-Calavi, dirigée par le fondateur, Lissanon Gildas. Pour un besoin très ponctuel (traduction dans une langue rare, photographie sur place), nous vous le signalons dans le devis, avant tout engagement : jamais de sous-traitance cachée.' },
+        { q: 'Qui dirige Pirabel Labs ?', a: 'Pirabel Labs, née en 2022, est dirigée par <strong>Lissanon Gildas</strong>, son CEO. Développeur web full stack, il conçoit et développe des sites, des applications et des SaaS, dessine leurs interfaces (UI/UX design) et construit les stratégies marketing, SEO et GEO qui les font connaître. Découvrez son parcours sur notre page <a href="/a-propos">À propos</a>.' },
+        { q: 'Qui travaille sur mon projet ?', a: 'Une équipe interne resserrée (développement, design, SEO, contenu, vidéo, gestion de projet), au siège d’Abomey-Calavi, dirigée par son CEO, Lissanon Gildas. Pour un besoin très ponctuel (traduction dans une langue rare, photographie sur place), nous vous le signalons dans le devis, avant tout engagement : jamais de sous-traitance cachée.' },
         { q: 'Où êtes-vous situés ?', a: 'Notre siège est à Abomey-Calavi, dans le département de l’Atlantique au Bénin, à côté de Cotonou. Nous accompagnons des clients sur quatre continents (Afrique, Europe, Amérique du Nord, Moyen-Orient francophone).' },
         { q: 'Pouvez-vous vous déplacer chez moi ?', a: 'Oui pour les projets stratégiques (lancement, ateliers, présentations aux parties prenantes), avec des frais de déplacement à la charge du client. Au quotidien, le travail à distance avec des visios hebdomadaires est notre standard.' },
         { q: 'Quelles langues parlez-vous ?', a: 'Le français (langue principale de tous les contrats et échanges) et l’anglais (production de contenus, gestion de projets internationaux). Pour le néerlandais et les autres langues européennes, nous collaborons avec des traducteurs natifs.' },

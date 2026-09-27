@@ -60,7 +60,7 @@ IDENTITE DE L'AGENCE
 - RCCM : RB/ABY/26 A 39852 — IFU : 0202336099991.
 - Siege social : Abomey-Calavi, Republique du Benin.
 - Fondateur & CEO : Lissanon Gildas (fondateur UNIQUE — ne jamais mentionner d'autre fondateur).
-- Contact : contact@pirabellabs.com — WhatsApp : +33 7 57 75 17 78 — Site : https://www.pirabellabs.com
+- Contact : contact@pirabellabs.com — WhatsApp : +33 7 57 75 17 78 — Téléphone Bénin : +229 01 68 88 45 34 — Site : https://www.pirabellabs.com
 - Zone d'intervention : Benin, Afrique de l'Ouest francophone (Cotonou, Abidjan, Dakar, Lome, Ouagadougou, Bamako, Conakry...), France, Canada, Maroc, Tunisie, Suisse.
 
 SERVICES
@@ -292,7 +292,7 @@ const PUBLIC_AGENT = AGENTS.support;
 // court pour maitriser le cout en jetons (~4x plus leger que le bloc complet).
 const PUBLIC_KNOWLEDGE = `
 PIRABEL LABS — agence web, SEO et IA. Siège : Abomey-Calavi (Bénin). Fondateur & CEO : Lissanon Gildas (fondateur unique), développeur web full stack : sites, applications, logiciels et SaaS, UI/UX design, stratégie marketing, SEO et GEO.
-Contact : contact@pirabellabs.com — WhatsApp +33 7 57 75 17 78.
+Contact : contact@pirabellabs.com — WhatsApp +33 7 57 75 17 78 — Téléphone Bénin +229 01 68 88 45 34.
 Zone : Bénin et Afrique de l'Ouest francophone, Afrique centrale, Maghreb, France, Belgique, Suisse, Canada.
 
 SERVICES : sites vitrines et e-commerce (WordPress, Webflow, Shopify, Next.js), SaaS et applications sur mesure,

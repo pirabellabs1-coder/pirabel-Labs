@@ -168,7 +168,7 @@ ${ctaHTML}
     <a href="${site}/services" style="${S.link}text-decoration:none;">Nos services</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/realisations" style="${S.link}text-decoration:none;">Réalisations</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/blog" style="${S.link}text-decoration:none;">Blog</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="${site}/contact" style="${S.link}text-decoration:none;">Contact</a>
   </p>
   <p style="margin:0;font-size:13px;line-height:1.6;color:${C.muted};">
-    <a href="mailto:contact@pirabellabs.com" style="color:${C.muted};">contact@pirabellabs.com</a> · <a href="${WHATSAPP}" style="color:${C.muted};">WhatsApp</a><br>
+    <a href="mailto:contact@pirabellabs.com" style="color:${C.muted};">contact@pirabellabs.com</a> · <a href="${WHATSAPP}" style="color:${C.muted};">WhatsApp +33 7 57 75 17 78</a> · <a href="tel:+2290168884534" style="color:${C.muted};">Bénin +229 01 68 88 45 34</a><br>
     © ${year} Pirabel Labs. Vous recevez cet e-mail suite à un échange avec Pirabel Labs ; répondez simplement pour nous écrire.
   </p>
 </td></tr>

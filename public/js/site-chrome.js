@@ -138,16 +138,37 @@
     onScroll();
   }
 
-  // Interrupteur d'animations (pied de page) : visible seulement si le système demande moins de
-  // mouvement. « Activer » mémorise le choix (pl_motion = full) ; « Réduire » revient au mode doux.
+  // Devise des prix : euro par défaut ; franc CFA pour les visiteurs de la zone franc (UEMOA et CEMAC).
+  // Le pays vient de /api/geo (en-tête de géolocalisation de l'hébergeur), mémorisé 7 jours.
+  const FCFA = ['BJ', 'CI', 'SN', 'TG', 'ML', 'BF', 'NE', 'GW', 'CM', 'GA', 'CG', 'TD', 'CF', 'GQ'];
+  const applyCur = (cur, cc) => {
+    if (cur === 'xof') document.documentElement.setAttribute('data-cur', 'xof');
+    else document.documentElement.removeAttribute('data-cur');
+    document.dispatchEvent(new CustomEvent('pl:currency', { detail: { cur, country: cc } }));
+  };
+  if (document.querySelector('.px, [data-ptabs]')) {
+    let fresh = false;
+    try { fresh = Date.now() - Number(localStorage.getItem('pl_cur_t') || 0) < 7 * 864e5 && !!localStorage.getItem('pl_cur'); } catch (e) { /* navigation privée */ }
+    if (!fresh) {
+      fetch('/api/geo', { cache: 'no-store' }).then((r) => r.json()).then((d) => {
+        const cc = String((d && d.country) || '').toUpperCase();
+        const cur = FCFA.includes(cc) ? 'xof' : 'eur';
+        try { localStorage.setItem('pl_cur', cur); localStorage.setItem('pl_cc', cc); localStorage.setItem('pl_cur_t', String(Date.now())); } catch (e) { /* navigation privée */ }
+        applyCur(cur, cc);
+      }).catch(() => { /* euro par défaut */ });
+    }
+  }
+
+  // Interrupteur d'animations (pied de page), toujours disponible : les animations sont complètes
+  // par défaut ; « Réduire » mémorise le mode doux (pl_motion = soft), « Réactiver » l'annule.
   const motionBtn = document.querySelector('[data-motion-switch]');
-  if (motionBtn && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const full = document.documentElement.classList.contains('motion-full');
-    motionBtn.textContent = full ? 'Réduire les animations' : 'Activer toutes les animations';
-    motionBtn.setAttribute('aria-pressed', String(full));
+  if (motionBtn) {
+    const soft = document.documentElement.classList.contains('motion-soft');
+    motionBtn.textContent = soft ? 'Réactiver les animations' : 'Réduire les animations';
+    motionBtn.setAttribute('aria-pressed', String(soft));
     motionBtn.hidden = false;
     motionBtn.addEventListener('click', () => {
-      try { if (full) localStorage.removeItem('pl_motion'); else localStorage.setItem('pl_motion', 'full'); } catch (e) { /* navigation privée */ }
+      try { if (soft) localStorage.removeItem('pl_motion'); else localStorage.setItem('pl_motion', 'soft'); } catch (e) { /* navigation privée */ }
       location.reload();
     });
   }

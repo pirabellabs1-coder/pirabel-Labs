@@ -6,6 +6,7 @@ import Icon from '../components/ui/Icon.astro';
 import Split from '../components/ui/Split.astro';
 import '../styles/home.css';
 import { SITE } from '../data/site';
+import { pxHtml } from '../lib/px.mjs';
 import {
   TOOLS, QUICK_START, EXPERTISES, SERVICES, AUDIT_POINTS, CASES, COMMITMENTS, STEPS,
   RESULTS, PRICING, COMPARISON, CLIENTS, SECTORS, CITIES, INSIGHTS, FAQ,
@@ -335,8 +336,7 @@ const faqLd = {
             <article class:list={['price glass spot', p.featured ? 'price--featured glass--keep' : 'glass--flat']}>
               {p.featured && <p class="price__badge">Le plus populaire</p>}
               <h3>{p.name}</h3>
-              <p class="price__amount"><small>{p.unit}</small> <b>{p.price}</b> <small>{p.period}</small></p>
-              {p.alt && <p class="price__alt">soit {p.alt}</p>}
+              <p class="price__amount"><small>{p.unit}</small> <b set:html={pxHtml(p.eur, p.price)} /> <small>{p.period}</small></p>
               <ul class="checklist checklist--sm">
                 {p.points.map((pt) => <li><Icon name="check" size={16} />{pt}</li>)}
               </ul>

@@ -23,7 +23,7 @@ const regions = props.regions.map((r) => ({ ...r, label: fixText(r.label), short
 const nb = (n: number) => n.toLocaleString('fr-FR').replace(/ /g, ' ');
 const eurOf = (fcfa: number) => Math.round(fcfa / 655.957 / 5) * 5;
 ---
-<section class="b-sec" id="grille">
+<section class="b-sec" id="grille" data-px-skip>
   <div class="container">
     <div class="b-head b-head--center">
       <p class="eyebrow">{eyebrow}</p>
@@ -57,7 +57,6 @@ const eurOf = (fcfa: number) => Math.round(fcfa / 655.957 / 5) * 5;
                     {o.fcfa ? (
                       <>
                         <strong>{nb(o.fcfa)}{' '}FCFA{o.monthly && <span> / mois</span>}</strong>
-                        <em>soit ≈ {nb(eurOf(o.fcfa))}{' '}€{o.monthly ? ' / mois' : ''}</em>
                       </>
                     ) : (
                       <strong>{nb(o.eur ?? 0)}{' '}€{o.monthly && <span> / mois</span>}</strong>
@@ -97,9 +96,28 @@ const eurOf = (fcfa: number) => Math.round(fcfa / 655.957 / 5) * 5;
     root.classList.add('is-tabs');
     // Rôles d'onglets ajoutés seulement quand les onglets existent (sans JS : simple suite de sections).
     panels.forEach((p) => { if (!p) return; p.setAttribute('role', 'tabpanel'); p.tabIndex = 0; p.setAttribute('aria-labelledby', p.dataset.labelledby || ''); });
-    // Région pré-sélectionnée via l'ancre (#tarifs-europe) si elle existe.
+    // Région pré-sélectionnée : ancre (#tarifs-europe), sinon localisation du visiteur
+    // (zone CEMAC → Afrique centrale, autre pays de la zone franc → Afrique de l'Ouest), sinon Europe.
+    const CEMAC = ['CM', 'GA', 'CG', 'TD', 'CF', 'GQ'];
+    const idx = (id: string) => tabs.findIndex((t) => t.id === 'tab-' + id);
+    const byGeo = (cur: string | null, cc: string | null) => {
+      if (cc === 'GN') return idx('guinee');
+      if (cur === 'xof') return idx(cc && CEMAC.includes(cc) ? 'afrique-centrale' : 'afrique-ouest');
+      return idx('europe');
+    };
+    let cc: string | null = null;
+    try { cc = localStorage.getItem('pl_cc'); } catch (e) { /* navigation privée */ }
     const fromHash = tabs.findIndex((t) => location.hash === '#' + t.id.replace('tab-', 'tarifs-'));
-    select(fromHash >= 0 ? fromHash : 0);
+    const initial = fromHash >= 0 ? fromHash : byGeo(document.documentElement.getAttribute('data-cur'), cc);
+    select(initial >= 0 ? initial : 0);
+    let touched = false;
+    tabs.forEach((t) => t.addEventListener('click', () => { touched = true; }));
+    document.addEventListener('pl:currency', (e) => {
+      if (touched || fromHash >= 0) return;
+      const d = (e as CustomEvent).detail || {};
+      const i = byGeo(d.cur, d.country);
+      if (i >= 0) select(i);
+    });
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(i));
       t.addEventListener('keydown', (e) => {

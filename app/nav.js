@@ -85,8 +85,10 @@ function head(ver = VER, opts) {
     '<meta name="theme-color" content="#0E0E0E">' +
     // Thème appliqué avant le premier affichage (pas de flash) : choix mémorisé, sinon préférence du système.
     '<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pl_theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);var m=document.querySelector(\'meta[name="theme-color"]\');if(m)m.content=t==="light"?"#F6F3EF":"#0E0E0E"})();</script>' +
-    // Animations activées seulement si supportées et non refusées ; filet de sécurité à 3,5 s.
-    '<script>(function(){var d=document.documentElement;try{var r=matchMedia("(prefers-reduced-motion: reduce)").matches,f=null;try{f=localStorage.getItem("pl_motion")}catch(e){}if(r){d.classList.add(f==="full"?"motion-full":"motion-soft")}if("IntersectionObserver" in window){d.classList.add("motion-ok");setTimeout(function(){if(!window.__motionReady){d.classList.remove("motion-ok")}},3500)}}catch(e){}})();</script>' +
+    // Devise des prix : euro par défaut, franc CFA en zone franc (mémorisé par site-chrome.js).
+    '<script>(function(){try{if(localStorage.getItem("pl_cur")==="xof")document.documentElement.setAttribute("data-cur","xof")}catch(e){}})();</script>' +
+    // Animations complètes par défaut ; mode doux seulement sur choix du visiteur (pl_motion = soft) ; filet de sécurité à 3,5 s.
+    '<script>(function(){var d=document.documentElement;try{var f=null;try{f=localStorage.getItem("pl_motion")}catch(e){}if(f==="soft"){d.classList.add("motion-soft")}if("IntersectionObserver" in window){d.classList.add("motion-ok");setTimeout(function(){if(!window.__motionReady){d.classList.remove("motion-ok")}},3500)}}catch(e){}})();</script>' +
     '<link rel="icon" type="image/png" href="' + esc(SITE.logo) + '">' +
     '<link rel="apple-touch-icon" href="' + esc(SITE.logo) + '">' +
     '<meta property="og:site_name" content="Pirabel Labs">' +
@@ -199,7 +201,7 @@ function footer(opts) {
     '</ul></div>' + cols + '</div>' +
     '<div class="site-footer__word" aria-hidden="true">PIRABEL LABS</div>' +
     '<div class="container site-footer__bottom"><span>© ' + year + ' Pirabel Labs · Tous droits réservés · <a href="mailto:' + esc(SITE.email) + '">' + esc(SITE.email) + '</a> · ' + esc(SITE.city) + '</span>' +
-    '<span class="site-footer__links"><a href="/mentions-legales">Mentions légales</a><a href="/politique-confidentialite">Confidentialité</a><button type="button" class="motion-switch" data-motion-switch hidden>Activer toutes les animations</button></span></div>' +
+    '<span class="site-footer__links"><a href="/mentions-legales">Mentions légales</a><a href="/politique-confidentialite">Confidentialité</a><button type="button" class="motion-switch" data-motion-switch hidden>Réduire les animations</button></span></div>' +
     '</footer>';
 }
 

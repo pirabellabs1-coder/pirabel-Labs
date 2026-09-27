@@ -61,5 +61,5 @@ const suggestions = [
   .err h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.85rem, 1.1rem + 2.2vw, 2.9rem); line-height: 1.08; letter-spacing: -0.03em; max-width: 22ch; }
   .err__h2 { margin-bottom: 22px; font-size: 1.2rem; text-align: center; }
   @keyframes err-float { 50% { transform: translate3d(0, -10px, 0); } }
-  @media (prefers-reduced-motion: reduce) { .err__zero { animation: none; } }
+  :global(.motion-soft) .err__zero { animation: none; }
 </style>

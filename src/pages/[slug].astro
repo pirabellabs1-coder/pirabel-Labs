@@ -123,7 +123,7 @@ const hasRaw = blocks.some((b) => b.kind === 'raw');
     showFooterCta={false}
   >
     <Fragment slot="head">
-      <script is:inline>(function(){try{if(("IntersectionObserver" in window)&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("anim-on")}}catch(e){}})();</script>
+      <script is:inline>(function(){try{if(("IntersectionObserver" in window)&&!document.documentElement.classList.contains("motion-soft")){document.documentElement.classList.add("anim-on")}}catch(e){}})();</script>
       <style is:inline set:html={page.iconFontCss}></style>
       <style is:inline set:html={page.css}></style>
     </Fragment>

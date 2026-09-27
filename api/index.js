@@ -210,6 +210,13 @@ async function bootstrapAdmin() {
   await user.save();
   console.log(`[bootstrap] admin ${forceReset ? 'reinitialise' : 'cree'}: ${email} (id: ${user._id})`);
 }
+// === PUBLIC : pays du visiteur (devise des prix) ===
+// Déclaré avant le middleware de base de données : aucune requête Mongo, rien n'est enregistré.
+app.get('/api/geo', (req, res) => {
+  const cc = String(req.headers['x-vercel-ip-country'] || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
+  res.set({ 'Cache-Control': 'private, no-store', Vary: '*' }).json({ country: cc });
+});
+
 app.use(async (req, res, next) => {
   try {
     await ensureDB();
@@ -4398,7 +4405,7 @@ app.get('/realisations', async (req, res) => {
       '@media(max-width:700px){.rz-grid{grid-template-columns:1fr;}}' +
       '@media(max-width:560px){.rz-arrow{display:none;}}' +
       '@media(max-width:520px){.rz-deliver{grid-template-columns:1fr;}.px-hero__ctas .btn{width:100%;}}' +
-      '@media(prefers-reduced-motion:reduce){.rz-arrow .rz-flow{animation:none;}}' +
+      '.motion-soft .rz-arrow .rz-flow{animation:none;}' +
       '</style>';
 
     const body = '<div class="px-wrap">' +
@@ -4550,7 +4557,7 @@ app.get('/realisations/:slug', async (req, res) => {
       '.cd-cta p{max-width:560px;margin:14px auto 0;color:var(--text-2);font-size:var(--fs-lead);}' +
       '@media(max-width:560px){.cd-btns .btn{width:100%;}}' +
       '@media(max-width:600px){.cd-body{font-size:1rem;}.cd-metric b{font-size:1.85rem;}.dot-arrow{display:none;}}' +
-      '@media(prefers-reduced-motion:reduce){.dot-arrow .df{animation:none;}}' +
+      '.motion-soft .dot-arrow .df{animation:none;}' +
       '</style>';
     const bc = crumbs([{ name: 'Réalisations', path: '/realisations' }, { name: c.title, path: '/realisations/' + encodeURIComponent(c.slug) }]);
     const head = '<title>' + metaTitle + '</title><meta name="description" content="' + metaDesc + '">' +

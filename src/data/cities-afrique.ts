@@ -12,7 +12,7 @@ const P = {
 };
 const WEST = { title: 'Nos projets livrés <span class="grad">en Afrique de l’Ouest</span>', lead: 'Des plateformes en ligne, avec paiement Mobile Money, pour de vrais clients : ouvrez-les, testez-les.', slugs: [P.kaabo, P.novakou, P.afblock] };
 const BENIN = (where: string) => ({ title: `Nos projets livrés <span class="grad">${where}</span>`, lead: 'Des sites et des plateformes en ligne, pour de vrais clients béninois : ouvrez-les, testez-les.', slugs: [P.kaabo, P.pirabelOne, P.goscale] });
-const PRICES_FCFA = 'Nos prix de départ sont affichés en FCFA : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.';
+const PRICES_FCFA = 'Nos prix de départ pour l’Afrique de l’Ouest : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.';
 const REMOTE_WEST = (city: string, pays: string) => ({
   q: `Comment travaillez-vous avec une entreprise de ${city} depuis le Bénin ?`,
   a: `À distance, simplement : visioconférence ou appel WhatsApp, un interlocuteur unique du cadrage à la mise en ligne, et des points réguliers. ${pays} a une heure de moins que le Bénin, ce qui laisse de longues plages communes. Devis et factures en FCFA, paiement par Mobile Money ou virement.`,
@@ -225,7 +225,7 @@ export const CITIES_AFRIQUE: Record<string, CityLocal> = {
     faq: [
       { q: 'Comment travaillez-vous avec une entreprise de Douala depuis le Bénin ?', a: 'À distance, et à la même heure : visioconférence ou WhatsApp, un interlocuteur unique du cadrage à la mise en ligne. Devis et factures en FCFA (XAF), paiement par MTN MoMo, Orange Money ou virement.' },
       { q: 'Faut-il un site en français et en anglais au Cameroun ?', a: 'Souvent oui : le pays est bilingue, et une version anglaise vous ouvre aux régions anglophones et aux partenaires internationaux. Chaque langue a sa propre adresse pour être correctement référencée.' },
-      { q: 'Combien coûte un site à Douala ?', a: 'Nos prix de départ sont en FCFA (XAF) : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.' },
+      { q: 'Combien coûte un site à Douala ?', a: 'Nos prix de départ pour l’Afrique centrale : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.' },
     ],
   },
 
@@ -246,7 +246,7 @@ export const CITIES_AFRIQUE: Record<string, CityLocal> = {
     faq: [
       { q: 'Comment travaillez-vous avec une structure de Yaoundé depuis le Bénin ?', a: 'À distance, et à la même heure : visioconférence ou WhatsApp, un interlocuteur unique du cadrage à la mise en ligne. Devis et factures en FCFA (XAF), paiement par MTN MoMo, Orange Money ou virement.' },
       { q: 'Travaillez-vous avec des institutions, des écoles ou des ONG ?', a: 'Oui : sites institutionnels, publication d’actualités et de documents, inscriptions et formulaires en ligne. Associations et ONG bénéficient de 20 % de réduction sur présentation des statuts.' },
-      { q: 'Combien coûte un site à Yaoundé ?', a: 'Nos prix de départ sont en FCFA (XAF) : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.' },
+      { q: 'Combien coûte un site à Yaoundé ?', a: 'Nos prix de départ pour l’Afrique centrale : site vitrine dès 200 000 FCFA, boutique en ligne dès 600 000 FCFA, référencement dès 120 000 FCFA par mois. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.' },
     ],
   },
 };

@@ -2,8 +2,8 @@
 
 export const HERO_PROOF = [
   { icon: 'check', text: '150+ projets livrés' },
-  { icon: 'trending', text: '+187 % de leads en moyenne' },
-  { icon: 'clock', text: 'Réponse sous 24 h' },
+  { icon: 'trending', text: '+187 % de leads en moyenne' },
+  { icon: 'clock', text: 'Réponse sous 24 h' },
   { icon: 'sparkles', text: 'SEO · IA · Web' },
 ];
 
@@ -67,10 +67,10 @@ export const EXPERTISES = [
 
 export const SERVICES = [
   { icon: 'code', title: 'Sites web sur mesure', text: 'Sites institutionnels et e-commerce développés en code (Next.js, React). Performance maximale, design unique, évolutif.', href: '/creation-site-web' },
-  { icon: 'rocket', title: 'Applications web', text: 'Web apps, SaaS et MVP en 6 semaines. Stack moderne Next.js, Node et Postgres. Code documenté et évolutif.', href: '/creation-application-web' },
+  { icon: 'rocket', title: 'Applications web', text: 'Web apps, SaaS et MVP en 6 semaines. Stack moderne Next.js, Node et Postgres. Code documenté et évolutif.', href: '/creation-application-web' },
   { icon: 'search', title: 'SEO et référencement', text: 'Audit technique, stratégie de contenu, netlinking éthique. Du trafic qualifié qui convertit, mesurable mois après mois.', href: '/seo' },
   { icon: 'message', title: 'Community management', text: 'Stratégie, contenus et animation sur Facebook, Instagram, LinkedIn et TikTok. Ligne éditoriale, calendrier, reporting.', href: '/community-management' },
-  { icon: 'workflow', title: 'Automatisation marketing', text: 'Make, n8n, Zapier, agents IA, chatbots. Vos équipes économisent 10 à 30 h par semaine sur les tâches répétitives.', href: '/automatisation-marketing' },
+  { icon: 'workflow', title: 'Automatisation marketing', text: 'Make, n8n, Zapier, agents IA, chatbots. Vos équipes économisent 10 à 30 h par semaine sur les tâches répétitives.', href: '/automatisation-marketing' },
   { icon: 'funnel', title: 'Tunnels de vente', text: 'Landing pages à haute conversion, tunnels de génération de leads, optimisation et tests A/B. Plus de ventes mesurées.', href: '/tunnels-de-vente' },
   { icon: 'globe', title: 'Sites WordPress', text: 'Sites vitrines, WooCommerce et blogs avec WordPress et Elementor Pro, pour les PME qui veulent gérer leur contenu.', href: '/creation-site-wordpress' },
   { icon: 'pin', title: 'Fiche Google Business', text: 'Création et optimisation de votre fiche Google : top 3 du pack local, gestion des avis, citations NAP.', href: '/fiche-google-business' },
@@ -82,7 +82,7 @@ export const SERVICES = [
 export const AUDIT_POINTS = [
   'Audit SEO technique et éditorial de votre site actuel',
   'Analyse de vos canaux d’acquisition (organique, publicité, réseaux sociaux)',
-  'Plan d’action sur 90 jours, priorisé et chiffré en EUR ou en FCFA',
+  'Plan d’action sur 90 jours, priorisé et chiffré en EUR ou en FCFA',
   'Actions rapides applicables sans nous',
 ];
 
@@ -109,7 +109,7 @@ export const CASES = [
     tag: 'EdTech · E-commerce',
     title: 'Novakou — produits digitaux',
     text: 'Marketplace no-code pour les créateurs d’Afrique francophone : formations, e-books et coachings, paiement Mobile Money et assistant IA intégré.',
-    stats: [{ k: '10 %', v: 'de commission, zéro abonnement' }, { k: 'Mobile Money', v: 'Wave · Orange · MTN' }],
+    stats: [{ k: '10 %', v: 'de commission, zéro abonnement' }, { k: 'Mobile Money', v: 'Wave · Orange · MTN' }],
     href: '/realisations/novakou-vendre-ses-formations-et-produits-digitaux-en-afrique-francophone',
     image: '/media/6a452a9022a010ccdcf037d3',
     hue: 8,
@@ -119,13 +119,13 @@ export const CASES = [
 export const COMMITMENTS = [
   {
     n: '01', kicker: 'Contrat', icon: 'file',
-    title: 'Devis ferme sous 48 h, contrat écrit clair',
+    title: 'Devis ferme sous 48 h, contrat écrit clair',
     text: 'Pas de « selon devis » en cours de route. Prix fixe, périmètre défini, planning de livraison documenté. Tout est écrit dès le départ.',
     points: ['Périmètre détaillé : inclus et exclu', 'Planning par sprint hebdomadaire', 'Conditions d’évolution écrites à l’avance'],
   },
   {
     n: '02', kicker: 'Réactivité', icon: 'zap',
-    title: 'Réponse sous 4 h en jours ouvrés',
+    title: 'Réponse sous 4 h en jours ouvrés',
     text: 'Vous n’attendez pas trois jours pour un retour. Fondateur dédié, ligne WhatsApp directe pour les questions courtes, démo en visio chaque vendredi pendant les sprints.',
     points: ['Le fondateur est joignable, pas un commercial', 'WhatsApp, e-mail et Notion partagé', 'Démo visio hebdomadaire'],
   },
@@ -137,43 +137,43 @@ export const COMMITMENTS = [
   },
   {
     n: '04', kicker: 'Garantie', icon: 'shield',
-    title: 'Garantie de 30 jours après la livraison',
-    text: 'Tout bug imputable à notre travail est corrigé gratuitement pendant 30 jours après la mise en production. Sans condition, sans facturation supplémentaire.',
-    points: ['Bugs corrigés sous 48 h ouvrées', 'Aucune condition, aucun coût caché', 'Documentation de prise en main remise'],
+    title: 'Garantie de 30 jours après la livraison',
+    text: 'Tout bug imputable à notre travail est corrigé gratuitement pendant 30 jours après la mise en production. Sans condition, sans facturation supplémentaire.',
+    points: ['Bugs corrigés sous 48 h ouvrées', 'Aucune condition, aucun coût caché', 'Documentation de prise en main remise'],
   },
 ];
 
 export const STEPS = [
   { n: '01', title: 'Appel découverte', text: '30 minutes en visio avec le fondateur. Vous exposez vos besoins, votre contexte et vos objectifs. Sans engagement, sans script de vente.', meta: '30 minutes, gratuit' },
-  { n: '02', title: 'Cadrage et devis ferme', text: 'Sous 48 h, vous recevez un plan détaillé : périmètre, planning, budget fixe et évolutions possibles. Pas de « selon devis » en cours de route.', meta: 'Sous 48 h' },
-  { n: '03', title: 'Sprints hebdomadaires', text: 'Lancement puis sprints d’une semaine. Démo chaque vendredi en visio, ajustements intégrés en continu. Vous voyez l’avancement réel chaque semaine.', meta: '1 à 12 semaines selon le périmètre' },
-  { n: '04', title: 'Mise en ligne et formation', text: 'Mise en production accompagnée, formation de votre équipe à la prise en main, documentation écrite remise. Garantie de 30 jours incluse.', meta: 'Garantie 30 jours' },
+  { n: '02', title: 'Cadrage et devis ferme', text: 'Sous 48 h, vous recevez un plan détaillé : périmètre, planning, budget fixe et évolutions possibles. Pas de « selon devis » en cours de route.', meta: 'Sous 48 h' },
+  { n: '03', title: 'Sprints hebdomadaires', text: 'Lancement puis sprints d’une semaine. Démo chaque vendredi en visio, ajustements intégrés en continu. Vous voyez l’avancement réel chaque semaine.', meta: '1 à 12 semaines selon le périmètre' },
+  { n: '04', title: 'Mise en ligne et formation', text: 'Mise en production accompagnée, formation de votre équipe à la prise en main, documentation écrite remise. Garantie de 30 jours incluse.', meta: 'Garantie 30 jours' },
 ];
 
 export const RESULTS = [
-  { prefix: '+', value: 147, decimals: 0, suffix: ' %', label: 'de leads entrants en moyenne sur 6 mois' },
+  { prefix: '+', value: 147, decimals: 0, suffix: ' %', label: 'de leads entrants en moyenne sur 6 mois' },
   { prefix: '', value: 95, decimals: 0, suffix: '+', label: 'de score Lighthouse sur les sites livrés' },
   { prefix: '', value: 22, decimals: 0, suffix: ' h', label: 'économisées par semaine grâce aux automatisations' },
-  { prefix: '×', value: 3.2, decimals: 1, suffix: '', label: 'de trafic SEO en moyenne à 12 mois' },
+  { prefix: '×', value: 3.2, decimals: 1, suffix: '', label: 'de trafic SEO en moyenne à 12 mois' },
 ];
 
 export const PRICING = [
   {
-    name: 'Projet ponctuel', price: '200 000 FCFA', alt: '1 200 € en Europe', unit: 'à partir de',
+    name: 'Projet ponctuel', price: '200 000 FCFA', eur: '1 200 €', unit: 'à partir de',
     period: '', featured: false,
-    points: ['Devis ferme sous 48 h, périmètre défini', '3 réunions de 30 min incluses', 'Documentation et formation à la livraison', 'Garantie 30 jours après la mise en ligne', 'Paiement échelonné 30 / 30 / 40'],
+    points: ['Devis ferme sous 48 h, périmètre défini', '3 réunions de 30 min incluses', 'Documentation et formation à la livraison', 'Garantie 30 jours après la mise en ligne', 'Paiement échelonné 30 / 30 / 40'],
     cta: 'Demander un devis', href: '/contact',
   },
   {
-    name: 'Forfait mensuel', price: '150 000 FCFA', alt: '690 € / mois en Europe', unit: 'à partir de',
+    name: 'Forfait mensuel', price: '150 000 FCFA', eur: '690 €', unit: 'à partir de',
     period: '/ mois', featured: true,
-    points: ['Demandes illimitées sur tous nos services', 'Pause ou arrêt à tout moment', 'Fondateur dédié, réactif sous 4 h', 'Conseil hebdomadaire de 45 min inclus', 'Tableau Notion partagé pour prioriser', 'Reporting mensuel détaillé'],
+    points: ['Demandes illimitées sur tous nos services', 'Pause ou arrêt à tout moment', 'Fondateur dédié, réactif sous 4 h', 'Conseil hebdomadaire de 45 min inclus', 'Tableau Notion partagé pour prioriser', 'Reporting mensuel détaillé'],
     cta: 'Choisir cette formule', href: '/contact',
   },
   {
-    name: 'Pilotage stratégique', price: '400 000 FCFA', alt: '1 900 € / mois en Europe', unit: 'à partir de',
+    name: 'Pilotage stratégique', price: '400 000 FCFA', eur: '1 900 €', unit: 'à partir de',
     period: '/ mois', featured: false,
-    points: ['Directeur marketing externalisé dédié', 'Stratégie marketing complète', 'Tous les services du forfait inclus', '2 réunions stratégiques par mois', 'Reporting hebdomadaire et tableaux de bord', 'Accès direct WhatsApp 6 jours sur 7'],
+    points: ['Directeur marketing externalisé dédié', 'Stratégie marketing complète', 'Tous les services du forfait inclus', '2 réunions stratégiques par mois', 'Reporting hebdomadaire et tableaux de bord', 'Accès direct WhatsApp 6 jours sur 7'],
     cta: 'En savoir plus', href: '/contact',
   },
 ];
@@ -181,10 +181,10 @@ export const PRICING = [
 export const COMPARISON = {
   cols: ['Freelance', 'Recrutement', 'Autres agences', 'Pirabel Labs'],
   rows: [
-    { label: 'Coût mensuel', values: ['4 000 € et plus', '8 000 € et plus', '8 000 € et plus', '30 à 70 % d’économies'] },
+    { label: 'Coût mensuel', values: ['4 000 € et plus', '8 000 € et plus', '8 000 € et plus', '30 à 70 % d’économies'] },
     { label: 'Couverture', values: ['1 à 2 spécialités', '1 par poste', 'Variable', 'Toutes au même endroit'] },
     { label: 'Démarrage', values: ['Jours ou semaines', 'Mois', 'Semaines ou mois', 'Quelques heures'] },
-    { label: 'Première livraison', values: ['Plusieurs semaines', 'Plusieurs semaines', 'Plusieurs semaines', '1 à 2 semaines'] },
+    { label: 'Première livraison', values: ['Plusieurs semaines', 'Plusieurs semaines', 'Plusieurs semaines', '1 à 2 semaines'] },
     { label: 'Résiliation', values: ['Complexe', 'Préavis et indemnités', 'Contractuelle', 'À tout moment'] },
   ],
 };
@@ -217,22 +217,22 @@ export const CITIES = [
 ];
 
 export const INSIGHTS = [
-  { tag: 'SEO local', title: 'Fiche Google Business : guide complet pour le pack local', text: 'Comment optimiser votre fiche Google Business Profile pour dominer le pack local en moins de 90 jours.', read: '10 min de lecture', href: '/blog/google-business-profile-guide-complet' },
-  { tag: 'Sites web', title: 'WordPress, Webflow ou Next.js : quel CMS choisir en 2026 ?', text: 'Comparatif détaillé des trois solutions pour PME et startups francophones : coûts, performances, évolutivité.', read: '12 min de lecture', href: '/blog/wordpress-vs-webflow-vs-nextjs-2026' },
-  { tag: 'Automatisation', title: 'Make, n8n ou Zapier : quel outil d’automatisation choisir ?', text: 'Tour d’horizon des scénarios les plus rentables pour une PME et comparatif des trois plateformes leaders.', read: '8 min de lecture', href: '/blog/outils-automatisation-marketing-make-n8n-zapier' },
+  { tag: 'SEO local', title: 'Fiche Google Business : guide complet pour le pack local', text: 'Comment optimiser votre fiche Google Business Profile pour dominer le pack local en moins de 90 jours.', read: '10 min de lecture', href: '/blog/google-business-profile-guide-complet' },
+  { tag: 'Sites web', title: 'WordPress, Webflow ou Next.js : quel CMS choisir en 2026 ?', text: 'Comparatif détaillé des trois solutions pour PME et startups francophones : coûts, performances, évolutivité.', read: '12 min de lecture', href: '/blog/wordpress-vs-webflow-vs-nextjs-2026' },
+  { tag: 'SaaS', title: 'Créer un SaaS en 2026 : le guide complet, de l’idée au premier client', text: 'Valider l’idée, définir le MVP, choisir la technologie, budgéter et encaisser par carte et Mobile Money.', read: '20 min de lecture', href: '/blog/creer-un-saas-guide-complet-2026' },
 ];
 
 export const FAQ = [
   { q: 'L’externalisation de mon marketing est-elle faite pour moi ?', a: 'Si vous dirigez une PME en croissance et que vous n’avez ni le temps ni l’envie de recruter une équipe marketing complète, oui. Nous le déterminons ensemble lors d’un appel gratuit de 30 minutes : nous regardons votre contexte, votre cible et vos objectifs, et nous vous disons franchement si nous sommes la bonne équipe.' },
-  { q: 'Quels résultats attendre concrètement ?', a: 'Pour un site web : mise en ligne en 3 à 6 semaines, score Lighthouse de 95 et plus. Pour l’automatisation : 10 à 30 h économisées par semaine, mesurables en 60 jours. Pour le SEO : premiers signes à 30-60 jours, progression des positions à 3-6 mois. Pour le community management : 5 à 15 % d’engagement en plus par mois si l’on part de zéro.' },
+  { q: 'Quels résultats attendre concrètement ?', a: 'Pour un site web : mise en ligne en 3 à 6 semaines, score Lighthouse de 95 et plus. Pour l’automatisation : 10 à 30 h économisées par semaine, mesurables en 60 jours. Pour le SEO : premiers signes à 30-60 jours, progression des positions à 3-6 mois. Pour le community management : 5 à 15 % d’engagement en plus par mois si l’on part de zéro.' },
   { q: 'Comment communiquons-nous au quotidien ?', a: 'Un tableau Notion partagé (avancement, priorités, décisions), WhatsApp pour les échanges courts et des démos en visio chaque semaine pendant les sprints. Tous les rendez-vous se font sur Google Meet ou Zoom : pas besoin de vous déplacer.' },
-  { q: 'Que signifie « garantie 100 % satisfait » ?', a: 'Avant signature : aucun engagement, l’appel découverte est gratuit. Pendant le projet : si l’on s’éloigne de la cible, nous rectifions lors des sprints hebdomadaires, sans surcoût. Après livraison : garantie de 30 jours sur les bugs imputables à notre travail. Et si vous n’êtes vraiment pas satisfait, nous remboursons les phases non livrées.' },
-  { q: 'Pourquoi Pirabel Labs plutôt que recruter en interne ?', a: 'Recruter un développeur senior, un spécialiste SEO, un community manager et un monteur vidéo représente plus de 200 000 € par an de salaires, charges, management et outils. Avec nous, vous accédez à toutes ces expertises pour 1 800 à 4 500 € par mois, sans recruter ni manager.' },
+  { q: 'Que signifie « garantie 100 % satisfait » ?', a: 'Avant signature : aucun engagement, l’appel découverte est gratuit. Pendant le projet : si l’on s’éloigne de la cible, nous rectifions lors des sprints hebdomadaires, sans surcoût. Après livraison : garantie de 30 jours sur les bugs imputables à notre travail. Et si vous n’êtes vraiment pas satisfait, nous remboursons les phases non livrées.' },
+  { q: 'Pourquoi Pirabel Labs plutôt que recruter en interne ?', a: 'Recruter un développeur senior, un spécialiste SEO, un community manager et un monteur vidéo représente plus de 200 000 € par an de salaires, charges, management et outils. Avec nous, vous accédez à toutes ces expertises pour 1 800 à 4 500 € par mois, sans recruter ni manager.' },
   { q: 'Travaillez-vous avec des clients en France ?', a: 'Oui. Nous accompagnons des PME en France, en Belgique, en Suisse, en Côte d’Ivoire, au Sénégal, au Cameroun, au Maroc, au Canada et bien sûr au Bénin. Le travail se fait entièrement à distance : Zoom ou Google Meet, Notion partagé, démos hebdomadaires.' },
   { q: 'Faites-vous aussi du community management ?', a: 'Oui. Notre force, c’est justement la cohérence : si nous faisons votre site, nous pouvons aussi animer votre communauté avec les mêmes valeurs, la même ligne éditoriale et la même identité visuelle. Pas besoin de réexpliquer quatre fois qui vous êtes.' },
   { q: 'Quels formats vidéo produisez-vous ?', a: 'Réels Instagram et TikTok, YouTube (formats courts et longs), capsules d’entreprise, motion design, tutoriels. Tournage sur place en Afrique de l’Ouest ou montage seul à partir de vos rushes. Sous-titrage et habillage à vos couleurs inclus.' },
   { q: 'Le code et les designs m’appartiennent-ils ?', a: 'Oui, intégralement. Une fois la facture finale réglée, le code, les maquettes Figma, les éléments graphiques, la documentation et les accès administrateur sont entièrement à vous. Aucune licence, aucun verrou.' },
-  { q: 'Acceptez-vous le FCFA et le Mobile Money ?', a: 'Oui. Virement, MTN Mobile Money, Moov Money et Wave pour l’Afrique ; virement SEPA et carte bancaire (Stripe) pour l’Europe. Paiement échelonné possible : 30 % au démarrage, 30 % à mi-parcours, 40 % à la livraison.' },
+  { q: 'Acceptez-vous le FCFA et le Mobile Money ?', a: 'Oui. Virement, MTN Mobile Money, Moov Money et Wave pour l’Afrique ; virement SEPA et carte bancaire (Stripe) pour l’Europe. Paiement échelonné possible : 30 % au démarrage, 30 % à mi-parcours, 40 % à la livraison.' },
   { q: 'Faut-il des compétences techniques de votre côté ?', a: 'Non. Nous parlons votre langage business, pas le nôtre. Après la livraison, votre équipe utilise le site, l’application ou l’automatisation sans connaissance technique. La formation est incluse.' },
   { q: 'Quelles plateformes et technologies utilisez-vous ?', a: 'Sites : WordPress et Elementor, Webflow, Next.js. Applications : Next.js, React, Node.js, Postgres, Supabase. Automatisation : Make, n8n, Zapier, OpenAI, Claude. E-mail : Brevo, HubSpot, Mailchimp. Tunnels : Systeme.io, ClickFunnels. SEO : Ahrefs, Semrush, Search Console. Vidéo : Premiere Pro, After Effects, CapCut.' },
 ];

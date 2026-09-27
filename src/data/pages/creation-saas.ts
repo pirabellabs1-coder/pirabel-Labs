@@ -1,6 +1,7 @@
 import type { PageData } from '../../components/blocks/BlockPage.astro';
 import type { Block } from '../../lib/blocks/parse';
 import { SITE } from '../site';
+import { pxHtml } from '../../lib/px.mjs';
 
 const WA = 'https://wa.me/16139273067?text=Bonjour%20Pirabel%20Labs%2C%20je%20souhaite%20cr%C3%A9er%20un%20SaaS';
 const prose = (html: string): Block => ({ kind: 'prose', html });
@@ -61,7 +62,7 @@ export const page: PageData = {
       kind: 'anchors', label: 'Sur cette page', sticky: false,
       links: [
         { href: '#offre', label: 'Ce que nous construisons' }, { href: '#realisations', label: 'Réalisations' }, { href: '#methode', label: 'Méthode' },
-        { href: '#tarifs', label: 'Tarifs' }, { href: '#faq', label: 'FAQ' }, { href: '#details', label: 'Guide complet' },
+        { href: '#tarifs', label: 'Tarifs' }, { href: '#faq', label: 'FAQ' }, { href: '#details', label: 'L’essentiel à savoir' }, { href: '#guides', label: 'Guides' },
       ],
     },
     {
@@ -142,9 +143,9 @@ export const page: PageData = {
       kind: 'pricing', id: 'tarifs',
       head: { eyebrow: 'Tarifs', title: 'Tarifs de création <span class="grad">de SaaS</span>', lead: 'Prix « à partir de », confirmés par un devis ferme sous 48 h. Paiement échelonné possible.' },
       items: [
-        { icon: 'rocket', title: 'MVP SaaS', text: 'Le premier produit commercialisable, centré sur l’essentiel.', price: '<small>à partir de</small><strong>1 500 €</strong><em>soit environ 985 000 FCFA</em>', features: ['Cadrage produit et maquettes', 'Comptes utilisateurs', 'Abonnements (Stripe ou Mobile Money)', '1 à 3 fonctionnalités cœur', 'Mise en ligne en 8 à 12 semaines'], href: '/contact?service=creation-saas', cta: 'Estimer mon MVP' },
-        { icon: 'trending', title: 'SaaS de croissance', text: 'Un produit complet pour vendre et gérer des centaines de clients.', price: '<small>à partir de</small><strong>3 500 €</strong><em>soit environ 2 300 000 FCFA</em>', features: ['Tout le MVP', 'Espace d’administration', 'Équipes, rôles et permissions', 'API, intégrations et e-mails automatiques', 'Tableau de bord d’indicateurs'], href: '/contact?service=creation-saas', featured: true, badge: 'Le plus choisi', cta: 'Demander un devis' },
-        { icon: 'layers', title: 'Plateforme sur mesure', text: 'Marketplace, multi-profils, IA avancée ou forte charge.', price: '<small>sur devis, à partir de</small><strong>7 500 €</strong><em>soit environ 4 920 000 FCFA</em>', features: ['Architecture évolutive', 'Plusieurs types d’utilisateurs', 'Paiements sous séquestre', 'IA et automatisations avancées', 'Accompagnement continu'], href: '/contact?service=creation-saas', cta: 'Parler de mon projet' },
+        { icon: 'rocket', title: 'MVP SaaS', text: 'Le premier produit commercialisable, centré sur l’essentiel.', price: `<small>à partir de</small><strong>${pxHtml('1 500 €', '≈ 985 000 FCFA')}</strong>`, features: ['Cadrage produit et maquettes', 'Comptes utilisateurs', 'Abonnements (Stripe ou Mobile Money)', '1 à 3 fonctionnalités cœur', 'Mise en ligne en 8 à 12 semaines'], href: '/contact?service=creation-saas', cta: 'Estimer mon MVP' },
+        { icon: 'trending', title: 'SaaS de croissance', text: 'Un produit complet pour vendre et gérer des centaines de clients.', price: `<small>à partir de</small><strong>${pxHtml('3 500 €', '≈ 2 300 000 FCFA')}</strong>`, features: ['Tout le MVP', 'Espace d’administration', 'Équipes, rôles et permissions', 'API, intégrations et e-mails automatiques', 'Tableau de bord d’indicateurs'], href: '/contact?service=creation-saas', featured: true, badge: 'Le plus choisi', cta: 'Demander un devis' },
+        { icon: 'layers', title: 'Plateforme sur mesure', text: 'Marketplace, multi-profils, IA avancée ou forte charge.', price: `<small>sur devis, à partir de</small><strong>${pxHtml('7 500 €', '≈ 4 920 000 FCFA')}</strong>`, features: ['Architecture évolutive', 'Plusieurs types d’utilisateurs', 'Paiements sous séquestre', 'IA et automatisations avancées', 'Accompagnement continu'], href: '/contact?service=creation-saas', cta: 'Parler de mon projet' },
       ],
     },
     {
@@ -173,6 +174,24 @@ export const page: PageData = {
         { title: 'Architecture, sécurité et montée en charge', block: prose('<p>La plupart des SaaS sont <strong>multi-locataires</strong> : une seule application sert tous vos clients, chacun ne voyant que ses propres données. Cette isolation est conçue dès le départ, avec des contrôles d’accès testés automatiquement.</p><p>Côté sécurité : mots de passe chiffrés, authentification à deux facteurs possible, données chiffrées en transit et au repos, sauvegardes quotidiennes et journaux d’activité. L’infrastructure cloud absorbe la croissance : on passe de cent à dix mille utilisateurs sans réécrire le produit.</p>') },
         { title: 'Les coûts d’exploitation d’un SaaS', block: prose('<p>Au lancement, un SaaS coûte généralement quelques dizaines d’euros par mois : hébergement, base de données, envoi d’e-mails, nom de domaine. Les frais de paiement (Stripe, agrégateurs Mobile Money) sont prélevés sur chaque transaction.</p><p>Les fonctionnalités d’IA ajoutent un coût à l’usage, que nous maîtrisons par la mise en cache et le choix du bon modèle. Nous chiffrons ces coûts dès le cadrage pour que votre prix d’abonnement reste rentable.</p>') },
         { title: 'Lancer un SaaS en Afrique francophone', block: prose('<p>Trois réalités changent la conception du produit : le <strong>paiement</strong> (Mobile Money avant la carte bancaire), la <strong>connectivité</strong> (pages légères, fonctionnement correct en 3G) et l’<strong>usage mobile</strong> (la majorité des utilisateurs sur smartphone, souvent via une application installable).</p><p>La relation client passe aussi beaucoup par <strong>WhatsApp</strong> : notifications, support et relances y sont intégrés. Nos produits pour le Bénin, la Côte d’Ivoire, le Sénégal ou le Cameroun sont pensés ainsi dès la première maquette.</p>') },
+      ],
+    },
+    {
+      kind: 'cards', variant: 'insights', id: 'guides',
+      head: { eyebrow: 'Guides gratuits', title: 'Nos guides pour <span class="grad">réussir votre SaaS</span>', lead: 'Douze articles détaillés, de l’idée au pilotage : lisez-les avant de nous parler, vous gagnerez du temps.' },
+      items: [
+        { icon: 'rocket', tag: 'Guide pilier', title: 'Créer un SaaS : le guide complet', text: 'De l’idée au premier client payant, étape par étape.', href: '/blog/creer-un-saas-guide-complet-2026', cta: 'Lire le guide' },
+        { icon: 'wallet', tag: 'Budget', title: 'Combien coûte un SaaS ?', text: 'Développement, hébergement, paiement, IA : le budget réel.', href: '/blog/cout-developpement-saas-prix-2026', cta: 'Lire le guide' },
+        { icon: 'layers', tag: 'MVP', title: 'Que mettre dans un MVP ?', text: 'Les briques indispensables pour lancer en 8 semaines.', href: '/blog/mvp-saas-que-mettre-dedans', cta: 'Lire le guide' },
+        { icon: 'sliders', tag: 'Choix technique', title: 'Sur mesure ou no-code ?', text: 'Bubble, Softr, Glide ou code : comment choisir et quand migrer.', href: '/blog/saas-sur-mesure-ou-no-code', cta: 'Lire le guide' },
+        { icon: 'smartphone', tag: 'Paiement', title: 'Abonnements et Mobile Money', text: 'Récurrence, relances et formules adaptées au Mobile Money.', href: '/blog/abonnements-saas-mobile-money', cta: 'Lire le guide' },
+        { icon: 'card', tag: 'Paiement', title: 'Quel paiement en Afrique ?', text: 'Stripe, CinetPay, FedaPay, PayDunya : le comparatif.', href: '/blog/paiement-saas-afrique-stripe-cinetpay-fedapay', cta: 'Lire le guide' },
+        { icon: 'lightbulb', tag: 'Idée', title: 'Valider une idée de SaaS B2B', text: 'Prouver que des entreprises paieront avant de coder.', href: '/blog/trouver-valider-idee-saas-b2b', cta: 'Lire le guide' },
+        { icon: 'trending', tag: 'Prix', title: 'Fixer le prix de son SaaS', text: 'Modèles d’abonnement, méthode et erreurs à éviter.', href: '/blog/prix-saas-modeles-abonnement', cta: 'Lire le guide' },
+        { icon: 'shield', tag: 'Sécurité', title: 'Sécurité et RGPD', text: 'Isolation des données, conformité et architecture fiable.', href: '/blog/securite-rgpd-saas-multi-tenant', cta: 'Lire le guide' },
+        { icon: 'brain', tag: 'IA', title: 'Intégrer l’IA dans un SaaS', text: 'Cas d’usage rentables, coûts et choix des modèles.', href: '/blog/integrer-ia-dans-un-saas', cta: 'Lire le guide' },
+        { icon: 'users', tag: 'Acquisition', title: 'Trouver ses premiers clients', text: 'La méthode canal par canal pour les 100 premiers.', href: '/blog/premiers-clients-saas-acquisition', cta: 'Lire le guide' },
+        { icon: 'gauge', tag: 'Pilotage', title: 'MRR, churn, CAC, LTV', text: 'Les indicateurs d’un SaaS expliqués simplement.', href: '/blog/indicateurs-saas-mrr-churn-cac-ltv', cta: 'Lire le guide' },
       ],
     },
     {

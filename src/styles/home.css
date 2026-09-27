@@ -206,14 +206,16 @@
 .commit__card h3 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.75rem); }
 @media (min-width: 720px) { .commit__track { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) {
-  .commit.is-pinned { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding-block: 90px 60px; }
+  .commit.is-pinned { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding-block: 88px 32px; }
+  .commit.is-pinned .commit__head { margin-bottom: 24px; }
+  .commit.is-pinned .commit__head h2 { max-width: none; font-size: clamp(1.8rem, 1rem + 2vw, 2.7rem); }
   .commit.is-pinned .commit__viewport { max-width: none; padding-inline: 0; overflow: visible; }
   .commit.is-pinned .commit__track {
     display: flex; gap: 22px; width: 100%;
     padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
     overflow: visible;
   }
-  .commit.is-pinned .commit__card { flex: 0 0 min(520px, 42vw); min-height: 420px; }
+  .commit.is-pinned .commit__card { flex: 0 0 min(520px, 42vw); padding: 26px; gap: 12px; }
 }
 
 /* ---------- Méthode ---------- */

@@ -485,3 +485,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .motion-ok [data-reveal], .motion-ok [data-reveal] .wi { opacity: 1 !important; transform: none !important; }
   body { background: #fff; color: #000; }
 }
+
+/* ---------- Prix localisés (src/lib/px.mjs) ----------
+   Euro par défaut ; franc CFA quand <html data-cur="xof"> (visiteur de la zone franc, via /api/geo). */
+.px-x { display: none; }
+:root[data-cur="xof"] .px-e { display: none; }
+:root[data-cur="xof"] .px-x { display: inline; }

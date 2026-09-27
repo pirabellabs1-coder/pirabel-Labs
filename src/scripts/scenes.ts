@@ -111,11 +111,16 @@ function initScrollScenes() {
     });
   });
 
-  if (!soft) mm.add('(min-width: 1024px)', () => {
+  // La hauteur fait partie de la requête : l'épinglage est réévalué quand la fenêtre change de taille.
+  if (!soft) mm.add('(min-width: 1024px) and (min-height: 560px)', () => {
+    const cleanups: (() => void)[] = [];
     document.querySelectorAll<HTMLElement>('[data-hscroll]').forEach((section) => {
       const track = section.querySelector<HTMLElement>('[data-hscroll-track]');
       if (!track) return;
       section.classList.add('is-pinned');
+      // Épinglé seulement si tout le contenu tient à l'écran : sinon le bas des cartes resterait
+      // inaccessible (la molette fait défiler à l'horizontale). Repli : grille, tout est lisible.
+      if (section.scrollHeight > window.innerHeight) { section.classList.remove('is-pinned'); return; }
       const distance = () => Math.max(0, track.scrollWidth - track.clientWidth);
       const tween = gsap.to(track, {
         x: () => -distance(),
@@ -125,8 +130,12 @@ function initScrollScenes() {
           pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
         },
       });
-      return () => { section.classList.remove('is-pinned'); tween.kill(); };
+      cleanups.push(() => { section.classList.remove('is-pinned'); tween.kill(); });
     });
+    return () => cleanups.forEach((fn) => fn());
+  });
+
+  if (!soft) mm.add('(min-width: 1024px)', () => {
 
     document.querySelectorAll<HTMLElement>('[data-stack]').forEach((stack) => {
       const cards = Array.from(stack.querySelectorAll<HTMLElement>('[data-stack-card]'));

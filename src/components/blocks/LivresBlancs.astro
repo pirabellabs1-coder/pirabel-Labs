@@ -248,5 +248,5 @@ const { guides } = Astro.props;
   .lbx__submit { justify-content: center; }
   .lbx__legal { font-size: 0.78rem; color: var(--text-3); }
   .lbx__legal a { text-decoration: underline; }
-  @media (prefers-reduced-motion: reduce) { .lbx__dlg[open] { animation: none; } }
+  :global(.motion-soft) .lbx__dlg[open] { animation: none; }
 </style>

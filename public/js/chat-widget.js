@@ -81,7 +81,7 @@
     '}',
     // Empêche la page de défiler derrière le panneau ouvert (mobile surtout).
     'body.plc-open{overflow:hidden!important;touch-action:none}',
-    '@media(prefers-reduced-motion:reduce){.plc-typing i{animation:none}.plc-launch{transition:none}}'
+    '.motion-soft .plc-typing i{animation:none}.motion-soft .plc-launch{transition:none}'
   ].join('');
   document.head.appendChild(css);
 

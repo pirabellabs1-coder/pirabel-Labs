@@ -33,7 +33,7 @@ export type Block =
   | { kind: 'sticky'; text: string; cta: Cta }
   | { kind: 'raw'; html: string }
   // Pages uniques (données écrites à la main, src/data/pages/*)
-  | { kind: 'profile'; head: Head; name: string; role: string; bio: string; tags: string[]; facts: { icon: string; text: string }[] }
+  | { kind: 'profile'; head: Head; name: string; role: string; bio: string; tags: string[]; facts: { icon: string; text: string }[]; photo?: { src: string; jpg?: string; alt: string; width: number; height: number } }
   | { kind: 'zones'; head: Head; html: string; zones: { title: string; icon: string; items: string[] }[] }
   | { kind: 'anchors'; label: string; links: { href: string; label: string; icon?: string }[]; sticky?: boolean }
   | { kind: 'legal'; updated?: string; sections: { id: string; title: string; html: string }[] }

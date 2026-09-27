@@ -303,6 +303,11 @@ a.b-card:hover .b-card__arrow { color: var(--accent-2); transform: translate(3px
 @media (max-width: 899px) { .b-profile__id { flex-direction: row; align-items: center; } }
 .b-profile__av { position: relative; display: grid; place-items: center; width: clamp(96px, 12vw, 148px); aspect-ratio: 1; border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2vw, 3rem); letter-spacing: -0.03em; color: var(--on-accent); background: linear-gradient(145deg, #ff7a33, #ff5500); box-shadow: 0 24px 60px -18px rgba(255, 85, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
 .b-profile__ring { position: absolute; inset: -12px; border-radius: 50%; border: 1px dashed rgba(255, 110, 40, 0.45); }
+.b-profile__photo { display: block; width: 100%; max-width: 360px; aspect-ratio: 4 / 5; border-radius: var(--r-lg, 22px); overflow: hidden; background: #111; box-shadow: 0 30px 70px -28px rgba(255, 85, 0, 0.55), 0 0 0 1px rgba(255, 110, 40, 0.28); }
+.b-profile__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+@media (min-width: 900px) { .b-profile--photo { align-items: start; } .b-profile--photo .b-profile__id { position: sticky; top: 110px; } }
+@media (max-width: 899px) { .b-profile--photo .b-profile__id { flex-direction: column; align-items: flex-start; } .b-profile__photo { max-width: 300px; } }
+.b-profile__bio p + p { margin-top: 14px; }
 .b-profile h3 { font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); }
 .b-profile__role { margin-top: 4px; font-family: var(--font-ui); font-weight: 600; color: var(--accent-3); }
 .b-profile__bio { color: var(--text-2); font-size: var(--fs-lead); line-height: 1.7; }

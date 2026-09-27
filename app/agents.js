@@ -291,7 +291,7 @@ const PUBLIC_AGENT = AGENTS.support;
 // Le prompt public est appele a chaque message d'un visiteur : il doit rester
 // court pour maitriser le cout en jetons (~4x plus leger que le bloc complet).
 const PUBLIC_KNOWLEDGE = `
-PIRABEL LABS — agence web, SEO et IA. Siège : Abomey-Calavi (Bénin). Fondateur & CEO : Lissanon Gildas (fondateur unique).
+PIRABEL LABS — agence web, SEO et IA. Siège : Abomey-Calavi (Bénin). Fondateur & CEO : Lissanon Gildas (fondateur unique), développeur web full stack : sites, applications, logiciels et SaaS, UI/UX design, stratégie marketing, SEO et GEO.
 Contact : contact@pirabellabs.com — WhatsApp +1 (613) 927-3067.
 Zone : Bénin et Afrique de l'Ouest francophone, Afrique centrale, Maghreb, France, Belgique, Suisse, Canada.
 

@@ -29,6 +29,7 @@ export interface PageData {
    *  sans la FAQ ni le fil d'Ariane, régénérés ici. */
   legacyLd?: string;
   footerCta?: { title?: string; text?: string; href?: string; label?: string };
+  ogImage?: string;
 }
 interface Props { page: PageData }
 const { page: raw } = Astro.props;
@@ -49,6 +50,8 @@ const page: PageData = { ...raw, blocks: typo(raw.blocks) as Block[], after: raw
 const plain = (html: string) => decodeEntities(html.replace(/<br\s*\/?>/g, ' ').replace(/<\/(p|li)>/g, ' ').replace(/<[^>]+>/g, '')).replace(/[ \t\r\n]+/g, ' ').trim();
 // Données structurées historiques : textes corrigés, FAQPage/BreadcrumbList retirés (régénérés).
 const DROP = new Set(['FAQPage', 'BreadcrumbList']);
+// Une page qui fournit sa propre fiche Person (jsonLd) remplace celle de l'ancien modèle.
+if ((raw.jsonLd ?? []).some((j) => (j as { '@type'?: string })['@type'] === 'Person')) DROP.add('Person');
 const SKIP_KEY = /url|image|logo|item|sameAs|telephone|email|@/i;
 // Note et avis sans source vérifiable (ancien modèle) : retirés, ils exposent à une sanction de Google.
 const NO_KEYS = new Set(['aggregateRating', 'review']);
@@ -89,6 +92,7 @@ const faqLd = faqs.length ? [{
   ogDescription={page.ogDescription}
   robots={page.robots}
   noindex={page.noindex}
+  ogImage={page.ogImage ? SITE.url + page.ogImage : undefined}
   jsonLd={[...legacyLd, ...(page.jsonLd ?? []), ...faqLd, ...crumbLd]}
   breadcrumb={!crumbs}
   footerCta={page.footerCta}

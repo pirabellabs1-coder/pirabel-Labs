@@ -387,16 +387,23 @@ const withAlt = blocks.map((b) => { if (SKIP_ALT.has(b.kind)) return { b, alt: f
   if (b.kind === 'profile') return (
     <section class={secCls} id={bid}><div class="container">
       {renderHead(b.head)}
-      <article class="b-profile glass glass--flat spot" data-reveal="scale">
+      <article class={`b-profile glass glass--flat spot${b.photo ? ' b-profile--photo' : ''}`} data-reveal="scale">
         <div class="b-profile__id">
-          <span class="b-profile__av" aria-hidden="true"><span class="b-profile__ring"></span>{initials(b.name)}</span>
+          {b.photo ? (
+            <picture class="b-profile__photo">
+              <source srcset={b.photo.src} type="image/webp" />
+              <img src={b.photo.jpg ?? b.photo.src} alt={b.photo.alt} width={b.photo.width} height={b.photo.height} loading="lazy" decoding="async" />
+            </picture>
+          ) : (
+            <span class="b-profile__av" aria-hidden="true"><span class="b-profile__ring"></span>{initials(b.name)}</span>
+          )}
           <div>
             <h3>{b.name}</h3>
             <p class="b-profile__role">{b.role}</p>
           </div>
         </div>
         <div class="b-profile__body">
-          <p class="b-profile__bio" set:html={b.bio} />
+          <div class="b-profile__bio" set:html={b.bio} />
           <ul class="b-profile__tags">{b.tags.map((t) => <li class="chip">{t}</li>)}</ul>
           {b.facts.length > 0 && <ul class="b-profile__facts">{b.facts.map((f) => <li><Icon name={f.icon} size={18} /><span set:html={f.text} /></li>)}</ul>}
         </div>

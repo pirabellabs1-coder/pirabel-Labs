@@ -20,7 +20,11 @@ const WHY = new Set(['reasons', 'promises']);
 const PROOF = new Set(['stats']);
 
 /** Contenu local vérifié (pages villes) : remplace les témoignages génériques par des preuves réelles. */
-export type LocalInsert = { label: string; zones: Block; projects?: Block; faq: { q: string; a: string }[] };
+export type LocalInsert = {
+  label: string; zones: Block; projects?: Block; faq: { q: string; a: string }[];
+  /** Page hub de la ville : « L'essentiel » propre à la ville, sections génériques du modèle retirées. */
+  hub?: { brief: { title: string; html: string; points: string[] }; priceFaq?: { q: string; a: string } };
+};
 
 export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   const pool = [...blocks];
@@ -44,6 +48,7 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   const def = take<'split'>((b) => b.kind === 'split' && /qu['’]est-ce|en quoi (ça|cela) consiste|c['’]est quoi/i.test(titleOf(b)))
     ?? take<'split'>((b) => b.kind === 'split');
   let brief: Block | undefined = def ? { kind: 'brief', title: def.title, html: def.html, points: def.points, cta: hero && (hero as B<'hero'>).ctas[0] } : undefined;
+  if (local?.hub) brief = { kind: 'brief', ...local.hub.brief, cta: hero && (hero as B<'hero'>).ctas[0] };
   // Repli : les 2 premiers paragraphes de « Pourquoi choisir Pirabel Labs… » (sans doublon : retirés de la section d'origine),
   // avec les chiffres clés de la page comme points.
   if (!brief) {
@@ -75,7 +80,10 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   // Offre : la première grille de services ; les autres grilles « features » restent dans l'ordre d'origine.
   const offer = take((b) => isCards(b, OFFER));
   const offer2 = take((b) => isCards(b, OFFER) && (b as B<'cards'>).items.length >= 3);
-  const why = take((b) => isCards(b, WHY) && (b as B<'cards'>).variant === 'reasons') ?? take((b) => isCards(b, WHY));
+  const whyAny = take((b) => isCards(b, WHY) && (b as B<'cards'>).variant === 'reasons') ?? take((b) => isCards(b, WHY));
+  // Hubs villes : « Pourquoi une agence digitale à… » était identique d'une ville à l'autre (et parfois faux) :
+  // le bloc local et les projets réels le remplacent.
+  const why = local?.hub ? undefined : whyAny;
   const stats = take((b) => isCards(b, PROOF));
   const oldTestimonials = take((b) => b.kind === 'testimonials');
   // Pages villes : témoignages de modèle (non vérifiables) remplacés par les projets réellement livrés.
@@ -86,7 +94,8 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
     ?? take((b) => b.kind === 'cards' && (b as B<'cards'>).variant === 'pillars')
     ?? take((b) => b.kind === 'steps');
   const pricing = take((b) => b.kind === 'pricing');
-  const compare = take((b) => b.kind === 'compare');
+  const compareAny = take((b) => b.kind === 'compare');
+  const compare = local?.hub ? undefined : compareAny; // tableau « X en chiffres » générique retiré des hubs
 
   // FAQ unique : questions principales puis secondaires, sans doublon (toutes gardées : elles figurent dans les données structurées).
   const faqs = takeAll((b) => b.kind === 'faq' && (b as B<'faq'>).variant !== 'advantages') as B<'faq'>[];
@@ -94,8 +103,12 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   // Pages villes : les questions locales d'abord, puis 6 questions du modèle au plus (le reste est identique d'une ville à l'autre),
   // sans la question « à distance » déjà traitée par la FAQ locale.
   const legacyFaq = faqs.flatMap((f) => f.items);
-  const keptLegacy = local ? legacyFaq.filter((it) => !/distance/i.test(strip(it.q))).slice(0, 6) : legacyFaq;
-  const faqItems = [...(local?.faq ?? []), ...keptLegacy].filter((it) => {
+  const PRICE_Q = /tarif|prix|co[uû]t|combien/i;
+  const keptLegacy = local
+    ? legacyFaq.filter((it) => !/distance/i.test(strip(it.q)) && !(local.hub && PRICE_Q.test(strip(it.q)))).slice(0, local.hub ? 3 : 6)
+    : legacyFaq;
+  const localPrice = local?.hub?.priceFaq && !(local.faq ?? []).some((f) => PRICE_Q.test(f.q)) ? [local.hub.priceFaq] : [];
+  const faqItems = [...(local?.faq ?? []), ...localPrice, ...keptLegacy].filter((it) => {
     const k = strip(it.q).toLowerCase().replace(/[^a-zà-ÿ0-9]+/g, ' ').trim();
     if (seen.has(k)) return false;
     seen.add(k);
@@ -118,7 +131,8 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   // Pages villes : « Comment travailler avec nous depuis… » et la 2e méthode doublonnent le bloc local et la méthode principale.
   const DUP_CITY = /^(comment travailler avec nous|notre méthode orientée résultats)/i;
   const rest = pool.filter((b) => b.kind !== 'cta' && (b.kind !== 'raw' || strip((b as B<'raw'>).html).length > 0)
-    && !(local && DUP_CITY.test(titleOf(b))));
+    && !(local && DUP_CITY.test(titleOf(b)))
+    && !(local?.hub && /^pourquoi le digital est incontournable/i.test(titleOf(b))));
   const label = (b: Block) => titleOf(b) || (b.kind === 'quote' ? 'Notre conviction' : b.kind === 'prose' ? 'Le détail de notre approche' : 'En savoir plus');
   const more: Block | undefined = rest.length ? { kind: 'more', head: { eyebrow: 'Pour aller plus loin', title: 'Tout savoir, <span class="grad">en détail</span>', lead: 'Nos réponses détaillées, section par section : ouvrez celles qui vous intéressent.' }, sections: rest.map((b) => ({ title: label(b), block: b })) } : undefined;
 

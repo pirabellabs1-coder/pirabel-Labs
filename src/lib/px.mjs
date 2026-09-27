@@ -25,10 +25,10 @@ const toXof = (eur) => fmt(roundXof(eur * XOF_PER_EUR));
 // Séparateurs de milliers et espaces possibles dans le HTML produit.
 const S = '(?:[ \\u00a0\\u202f]|&nbsp;|&#160;|&#x202f;|&#8239;)';
 const AMT = `(?<![\\d.,])(?:\\d{1,3}(?:${S}\\d{3})+|\\d+)(?:,\\d{1,2})?`;
-const CUR = `(FCFA|F${S}?CFA|€)`;
+const CUR = `(FCFA|F${S}?CFA|€|EUR(?![A-Za-z]))`;
 const PER = `((?:${S}*\\/${S}*mois)|(?:${S}+par${S}+mois))?`;
 const num = (s) => parseFloat(s.replace(/(?:[   ]|&nbsp;|&#160;|&#x202f;|&#8239;)/g, '').replace(',', '.'));
-const isEur = (c) => c === '€';
+const isEur = (c) => c === '€' || c === 'EUR';
 const per = (p) => (p ? (/par/.test(p) ? `${NB}par mois` : `${NB}/${NB}mois`) : '');
 
 const RE_PAIR = new RegExp(`(${AMT})${S}*${CUR}${PER}((?:${S}*,)?${S}*(?:soit${S}+)?(?:≈|environ|env\\.)${S}*|${S}*,?${S}*soit${S}+|${S}*\\(${S}*(?:≈|environ)?${S}*|${S}+\\/${S}+)(${AMT})${S}*${CUR}${PER}(\\))?`, 'g');
@@ -36,7 +36,7 @@ const RE_RANGE = new RegExp(`(${AMT})(${S}*(?:à|et|-|–)${S}*)(${AMT})${S}*${C
 const RE_ONE = new RegExp(`(${AMT})${S}*${CUR}${PER}`, 'g');
 
 function convertText(t) {
-  if (!/FCFA|F.?CFA|€/.test(t)) return t;
+  if (!/FCFA|F.?CFA|€|\d\s?EUR/.test(t)) return t;
   const parts = [];
   const keep = (s) => { parts.push(s); return `\u0000${parts.length - 1}\u0000`; };
   // 1) Paires : « 200 000 FCFA soit ≈ 305 € », « 1 500 € (≈ 985 000 FCFA) », « 200 000 FCFA / 1 200 € ».

@@ -14,7 +14,8 @@ import { parseBlocks, type Block } from '../lib/blocks/parse';
 import { fixText, fixHtml } from '../lib/blocks/fr';
 import { PRICE_OVERRIDES } from '../data/price-overrides';
 import { restructure, type LocalInsert } from '../lib/blocks/restructure';
-import { cityOf, cityProjects } from '../data/cities';
+import { cityOf, cityProjects, cityKey, cityGrid } from '../data/cities';
+import { CITY_BRIEFS } from '../data/cities-brief';
 import CONTENT_OVERRIDES from '../data/content-overrides.json';
 
 export function getStaticPaths() {
@@ -41,15 +42,37 @@ for (const o of fixes) {
 const parsed: Block[] = native ? parseBlocks(page.body) : [];
 // Pages villes : contenu local vérifié (src/data/cities.ts) à la place des témoignages de modèle.
 const city = native ? cityOf(slug as string) : undefined;
+const ckey = city ? cityKey(slug as string) : undefined;
+const isHub = /^agence-(web|marketing)-/.test(slug as string);
+const grid = ckey ? cityGrid(ckey) : undefined;
 const cityItems = city ? cityProjects(city) : [];
 const local: LocalInsert | undefined = city ? {
   label: city.name,
   zones: { kind: 'zones', head: { eyebrow: fixText(city.area), title: fixHtml(city.title) }, html: fixHtml(city.intro), zones: city.zones.map((z) => ({ ...z, title: fixText(z.title), items: z.items.map(fixText) })) } as Block,
   projects: cityItems.length ? { kind: 'showcase', head: { eyebrow: 'Preuves', title: fixHtml(city.projects.title), lead: fixText(city.projects.lead) }, items: cityItems.map((it) => ({ ...it, title: fixText(it.title), text: fixText(it.text) })), cta: { href: '/realisations', label: 'Toutes nos réalisations' } } as Block : undefined,
   faq: city.faq.map((f) => ({ q: fixText(f.q), a: fixHtml(f.a) })),
+  hub: isHub && ckey ? {
+    brief: {
+      title: fixText(`Votre agence à ${city.name}`),
+      html: fixHtml(`<p>${CITY_BRIEFS[ckey] ?? ''}</p>`),
+      points: [`Site vitrine dès ${grid!.vitrine}`, `Boutique en ligne dès ${grid!.ecom}`, `Paiement : ${(city.zones[2]?.items ?? []).slice(0, 3).join(', ')}`, 'Devis ferme et gratuit sous 48 h'].map(fixText),
+    },
+    priceFaq: {
+      q: fixText(`Quels sont vos tarifs à ${city.name} ?`),
+      a: fixHtml(`Nos prix de départ : site vitrine dès ${grid!.vitrine}, boutique en ligne dès ${grid!.ecom}, référencement dès ${grid!.seo}. Les projets sur mesure et les SaaS sont chiffrés sur devis. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.`),
+    },
+  } : undefined,
 } : undefined;
 const blocks: Block[] = restructure(parsed, local);
 // Grille tarifaire révisée : remplace les prix historiques des blocs « tarifs » de la page.
+// Hubs villes : grille validée de la région de la ville (la devise affichée suit ensuite le visiteur).
+if (isHub && grid) {
+  const pricing = blocks.find((b) => b.kind === 'pricing') as Extract<Block, { kind: 'pricing' }> | undefined;
+  if (pricing) {
+    [grid.vitrine, grid.ecom].forEach((amount, i) => { if (pricing.items[i]) pricing.items[i].price = `<small>à partir de</small><strong>${amount.replace(/ /g, ' ')}</strong>`; });
+    pricing.head = { ...pricing.head, lead: 'Trois formules claires, du site vitrine au projet sur mesure. Devis ferme et gratuit sous 48 h après un appel de cadrage.' };
+  }
+}
 const prices = PRICE_OVERRIDES[slug as string];
 if (prices) {
   const pricing = blocks.find((b) => b.kind === 'pricing') as Extract<Block, { kind: 'pricing' }> | undefined;

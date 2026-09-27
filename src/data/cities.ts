@@ -89,3 +89,14 @@ export function cityProjects(city: CityLocal) {
       tag: r.meta.split(' · ')[0],
     }));
 }
+
+/** Région tarifaire de la ville (grille validée de /tarifs) : la devise affichée suit ensuite le visiteur. */
+const XOF_CITIES = new Set(['cotonou', 'abomey-calavi', 'porto-novo', 'abidjan', 'dakar', 'lome', 'bamako', 'ouagadougou', 'douala', 'yaounde']);
+export function cityKey(slug: string): string | undefined {
+  return Object.keys(CITIES).sort((a, b) => b.length - a.length).find((c) => slug === c || slug.endsWith('-' + c));
+}
+export function cityGrid(key: string) {
+  if (XOF_CITIES.has(key)) return { vitrine: '200 000 FCFA', ecom: '600 000 FCFA', seo: '120 000 FCFA par mois' };
+  if (key === 'conakry') return { vitrine: '350 €', ecom: '950 €', seo: '200 € par mois' };
+  return { vitrine: '1 200 €', ecom: '2 500 €', seo: '590 € par mois' };
+}

@@ -23,6 +23,8 @@ const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+// Signature des articles du blog : l'agence, jamais une personne.
+const BLOG_TEAM = 'L’équipe Pirabel Labs';
 
 const connectDB = require('../app/config/db');
 const { sendEmail, masterTemplate, newOrderEmail, infoTable: emailInfoTable, EMAIL_STYLES: ES,
@@ -168,7 +170,7 @@ async function seedArticles() {
   const existing = new Set((await Article.find({ slug: { $in: slugs } }).select('slug').lean()).map((a) => a.slug));
   for (const a of seeds) {
     if (!a.slug || !a.content || existing.has(a.slug)) continue;
-    await Article.create({ ...a, author: 'Lissanon Gildas', status: 'brouillon' });
+    await Article.create({ ...a, author: BLOG_TEAM, status: 'brouillon' });
     console.log('[seed.articles] brouillon ajouté :', a.slug);
   }
   const batch = await Setting.findOne({ key: ARTICLES_PUBLISH_KEY }).lean();
@@ -1825,7 +1827,7 @@ async function gatherBusinessContext() {
 }
 
 const AI_SYSTEM_PROMPTS = {
-  redaction: "Tu es l'assistant de rédaction de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi (Bénin), dirigée par Lissanon Gildas (CEO). Tu rédiges en français impeccable (accents sur les majuscules, ç, œ, guillemets « », espaces insécables avant : ; ! ?). Tu écris des e-mails de prospection, réponses clients, propositions, posts réseaux sociaux et contenus selon les consignes. Ton professionnel, chaleureux et orienté résultat. Ne jamais inventer de chiffres ni de références. Ne jamais mentionner d'autre dirigeant que Lissanon Gildas, CEO.",
+  redaction: "Tu es l'assistant de rédaction de Pirabel Labs, agence web et marketing digital basée à Abomey-Calavi (Bénin), dirigée par Lissanon Gildas (CEO). Tu rédiges en français impeccable (accents sur les majuscules, ç, œ, guillemets « », espaces insécables avant : ; ! ?). Tu écris des e-mails de prospection, réponses clients, propositions, posts réseaux sociaux et contenus selon les consignes. Ton professionnel, chaleureux et orienté résultat. Ne jamais inventer de chiffres ni de références. Ne jamais mentionner d'autre dirigeant que Lissanon Gildas, CEO. Les articles du blog sont signés par l’agence : ne les signe jamais au nom d’une personne et n’ajoute pas d’encadré auteur.",
   analyse: "Tu es le directeur commercial de Pirabel Labs (agence web/marketing à Abomey-Calavi, Bénin, dirigée par Lissanon Gildas, CEO). Tu analyses le pipeline commercial réel fourni dans le contexte (prospects, devis, tâches) et donnes des recommandations concrètes, priorisées et actionnables : qui relancer en priorité, quels devis suivre, risques, opportunités, plan de la semaine. Sois direct, chiffré quand les données le permettent, et ne jamais inventer de données absentes du contexte. Français impeccable.",
   equipe: "Tu es le bras droit RH et opérationnel du dirigeant de Pirabel Labs (Lissanon Gildas), agence web/marketing à Abomey-Calavi (Bénin). Tu aides à répartir les tâches entre les employés selon leur pôle et leur charge actuelle, à rédiger des consignes claires, des comptes-rendus et des objectifs. Tu t'appuies sur la liste d'équipe et les tâches ouvertes du contexte. Pragmatique, bienveillant, structuré. Français impeccable.",
   libre: "Tu es l'assistant IA de Pirabel Labs, agence web et marketing digital à Abomey-Calavi (Bénin), dirigée par Lissanon Gildas (CEO). Tu réponds à toute question business, marketing, SEO, technique ou stratégique pour aider à développer l'agence. Précis, honnête, jamais d'invention de chiffres. Français impeccable. Tu peux t'appuyer sur les données réelles de l'entreprise fournies dans le contexte.",
@@ -2075,7 +2077,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
     }
     if (name === 'creer_brouillon_article') {
       const doc = new Article({ title: sanitize(input.title, 200), excerpt: sanitize(input.excerpt || '', 500), content: sanitizeSoft(input.content || '', 100000),
-        category: sanitize(input.category || 'Marketing', 60) || 'Marketing', author: 'Lissanon Gildas', status: 'brouillon' });
+        category: sanitize(input.category || 'Marketing', 60) || 'Marketing', author: BLOG_TEAM, status: 'brouillon' });
       doc.slug = await uniqueSlug(input.title);
       await doc.save();
       return { ok: true, message: `Brouillon créé : « ${doc.title} » (catégorie ${doc.category}). Relis-le dans l'onglet Blog avant publication.`, slug: doc.slug };
@@ -4076,27 +4078,29 @@ app.get('/blog/:slug', async (req, res) => {
     const metaTitle = escapeHtml(a.seoTitle || a.title);
     const metaDesc = escapeHtml(a.metaDescription || a.excerpt || '');
     const url = SITE() + '/blog/' + encodeURIComponent(a.slug);
+    // Articles signés par l'agence (jamais au nom d'une personne de l'équipe).
+    const byTeam = !a.author || /lissanon|gildas|pirabel/i.test(a.author);
     const ogImg = a.featuredImage ? (a.featuredImage.startsWith('http') ? a.featuredImage : SITE() + a.featuredImage) : (SITE() + '/img/og-image.png?v=elan');
     const bc = crumbs([{ name: 'Blog', path: '/blog' }, { name: a.title, path: '/blog/' + encodeURIComponent(a.slug) }]);
     const head = '<title>' + metaTitle + '</title>' +
       '<meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
       (a.status !== 'publie' ? '<meta name="robots" content="noindex, nofollow">' : '') +
-      '<meta name="author" content="' + escapeHtml(a.author || 'Pirabel Labs') + '">' +
+      '<meta name="author" content="' + escapeHtml(byTeam ? 'Pirabel Labs' : a.author) + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '">' +
       '<meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '">' +
       '<meta name="twitter:card" content="summary_large_image">' +
       ldJson({
         '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title,
         description: a.metaDescription || a.excerpt || '', image: ogImg, datePublished: a.publishedAt,
-        dateModified: a.updatedAt, author: { '@type': 'Person', name: a.author || 'Lissanon Gildas' },
+        dateModified: a.updatedAt, author: byTeam ? { '@type': 'Organization', name: 'Pirabel Labs', url: SITE() } : { '@type': 'Person', name: a.author },
         publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
       }) + bc.ld;
-    const authorName = escapeHtml(a.author || 'Lissanon Gildas');
+    const authorName = escapeHtml(byTeam ? BLOG_TEAM : a.author);
     const catLabel = escapeHtml(a.category || 'Marketing');
     // Sommaire auto : injecte des id sur les H2 et collecte le sommaire
     const toc = [];
-    const contentHtml = (a.content || ('<p>' + escapeHtml(a.excerpt || '') + '</p>')).replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi, (m, attrs, inner) => {
+    const contentHtml = (a.content || ('<p>' + escapeHtml(a.excerpt || '') + '</p>')).replace(/<aside class="art-author[\s\S]*?<\/aside>/g, '').replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi, (m, attrs, inner) => {
       attrs = attrs || '';
       const idm = attrs.match(/id="([^"]+)"/);
       let id = idm ? idm[1] : '';
@@ -4111,11 +4115,11 @@ app.get('/blog/:slug', async (req, res) => {
     const cover = '<figure class="bx-cover glass glass--flat">' + (a.featuredImage
       ? '<img src="' + escapeHtml(a.featuredImage) + '" alt="' + escapeHtml(a.imageAlt || a.title) + '" fetchpriority="high" decoding="async">'
       : coverSvg(a.title, a.category)) + '</figure>';
-    const authorCard = (a.content || '').includes('art-author') ? '' :
-      '<aside class="art-author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">CEO, Pirabel Labs</div><p class="art-author__bio">Expert produit et stratégie digitale, passionné par la croissance des PME francophones grâce au web, au SEO et à l’IA.</p></div></aside>';
+    const authorCard =
+      '<aside class="art-author glass glass--flat"><div class="art-author__avatar">PL</div><div><div class="art-author__label">Article rédigé par</div><div class="art-author__name">' + authorName + '</div><div class="art-author__role">Agence web et marketing digital</div><p class="art-author__bio">Pirabel Labs conçoit des sites, des applications et des stratégies SEO, GEO et marketing pour les entreprises francophones d’Afrique et d’Europe.</p></div></aside>';
     const tocHtml = toc.length >= 2 ? '<nav class="bx-toc glass glass--flat" aria-label="Sommaire de l’article"><strong>Sommaire</strong>' + toc.map(t => '<a href="#' + escapeHtml(t.id) + '">' + frt(t.txt) + '</a>').join('') + '</nav>' : '';
     const side = '<aside class="bx-side">' + tocHtml +
-      '<div class="bx-side__author glass glass--flat"><div class="art-author__avatar">LG</div><div><div class="bx-side__name">' + authorName + '</div><div class="bx-side__role">CEO, Pirabel Labs</div></div></div>' +
+      '<div class="bx-side__author glass glass--flat"><div class="art-author__avatar">PL</div><div><div class="bx-side__name">' + authorName + '</div><div class="bx-side__role">Agence web et marketing digital</div></div></div>' +
       '<div class="bx-side__cta glass glass--tint"><b>Un projet digital&nbsp;?</b><p>Audit gratuit, réponse sous 24&nbsp;h.</p><a class="btn btn--primary btn--sm" href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents

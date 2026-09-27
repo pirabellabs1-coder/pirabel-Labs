@@ -19,7 +19,7 @@ const PASS = process.env.ADMIN_PW;
   const existing = (list.articles || []).find(a => a.slug === meta.slug);
   // Nouveau => brouillon (relu/publié par l'humain). Existant => on PRÉSERVE son statut (un publié reste publié, amélioré en place).
   const status = process.env.FORCE_STATUS || (existing ? (existing.status || 'brouillon') : 'brouillon');
-  const payload = Object.assign({}, meta, { content, author: 'Lissanon Gildas', status });
+  const payload = Object.assign({}, meta, { content, author: 'L’équipe Pirabel Labs', status });
   let r;
   if (existing) r = await fetch(BASE + '/api/admin/articles/' + existing._id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: JSON.stringify(payload) });
   else r = await fetch(BASE + '/api/admin/articles', { method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: JSON.stringify(payload) });

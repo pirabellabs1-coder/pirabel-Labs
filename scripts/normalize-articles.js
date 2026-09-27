@@ -1,4 +1,4 @@
-// Normalise tous les articles : auteur = Lissanon Gildas + statut = publie (les "published" cachés réapparaissent).
+// Normalise tous les articles : auteur = L’équipe Pirabel Labs + statut = publie (les "published" cachés réapparaissent).
 const BASE = process.env.BASE || 'https://www.pirabellabs.com';
 const PASS = process.env.ADMIN_PW;
 (async () => {
@@ -15,7 +15,7 @@ const PASS = process.env.ADMIN_PW;
   for (const a of arts) {
     const r = await fetch(BASE + '/api/admin/articles/' + a._id, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json', Cookie: cookie },
-      body: JSON.stringify({ author: 'Lissanon Gildas', status: 'publie' }),
+      body: JSON.stringify({ author: 'L’équipe Pirabel Labs', status: 'publie' }),
     });
     if (r.ok) ok++; else { fail++; console.log('FAIL', a.slug, r.status); }
   }

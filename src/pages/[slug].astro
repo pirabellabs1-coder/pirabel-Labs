@@ -14,7 +14,8 @@ import { parseBlocks, type Block } from '../lib/blocks/parse';
 import { fixText, fixHtml } from '../lib/blocks/fr';
 import { PRICE_OVERRIDES } from '../data/price-overrides';
 import { restructure, type LocalInsert } from '../lib/blocks/restructure';
-import { cityOf, cityProjects, cityKey, cityGrid } from '../data/cities';
+import { cityOf, cityProjects, cityKey, cityGrid, cityZone } from '../data/cities';
+import { SERVICE_GRID, serviceOf } from '../data/service-grid';
 import { CITY_BRIEFS } from '../data/cities-brief';
 import CONTENT_OVERRIDES from '../data/content-overrides.json';
 
@@ -45,6 +46,13 @@ const city = native ? cityOf(slug as string) : undefined;
 const ckey = city ? cityKey(slug as string) : undefined;
 const isHub = /^agence-(web|marketing)-/.test(slug as string);
 const grid = ckey ? cityGrid(ckey) : undefined;
+// Pages « service × ville » : prix de départ propre au service, dans la grille de la zone de la ville.
+const svc = ckey && !isHub ? serviceOf(slug as string, ckey) : undefined;
+const svcPrice = svc && ckey ? (() => {
+  const p = SERVICE_GRID[svc].price;
+  const amount = p[cityZone(ckey)] + (p.per ? ' ' + p.per : '');
+  return { amount, basis: p.basis, label: SERVICE_GRID[svc].label };
+})() : undefined;
 const cityItems = city ? cityProjects(city) : [];
 const local: LocalInsert | undefined = city ? {
   label: city.name,
@@ -57,10 +65,13 @@ const local: LocalInsert | undefined = city ? {
       html: fixHtml(`<p>${CITY_BRIEFS[ckey] ?? ''}</p>`),
       points: [`Site vitrine dès ${grid!.vitrine}`, `Boutique en ligne dès ${grid!.ecom}`, `Paiement : ${(city.zones[2]?.items ?? []).slice(0, 3).join(', ')}`, 'Devis ferme et gratuit sous 48 h'].map(fixText),
     },
-    priceFaq: {
-      q: fixText(`Quels sont vos tarifs à ${city.name} ?`),
-      a: fixHtml(`Nos prix de départ : site vitrine dès ${grid!.vitrine}, boutique en ligne dès ${grid!.ecom}, référencement dès ${grid!.seo}. Les projets sur mesure et les SaaS sont chiffrés sur devis. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.`),
-    },
+  } : undefined,
+  priceFaq: isHub && grid ? {
+    q: fixText(`Quels sont vos tarifs à ${city.name} ?`),
+    a: fixHtml(`Nos prix de départ : site vitrine dès ${grid.vitrine}, boutique en ligne dès ${grid.ecom}, référencement dès ${grid.seo}. Les projets sur mesure et les SaaS sont chiffrés sur devis. Le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage.`),
+  } : svcPrice ? {
+    q: fixText(`Combien coûte ${svcPrice.label} à ${city.name} ?`),
+    a: fixHtml(`À partir de ${svcPrice.amount}, ${svcPrice.basis}. Le prix final dépend de votre projet : le devis ferme, gratuit, est établi sous 48 h après un appel de cadrage, sans engagement.`),
   } : undefined,
 } : undefined;
 const blocks: Block[] = restructure(parsed, local);
@@ -72,6 +83,10 @@ if (isHub && grid) {
     [grid.vitrine, grid.ecom].forEach((amount, i) => { if (pricing.items[i]) pricing.items[i].price = `<small>à partir de</small><strong>${amount.replace(/ /g, ' ')}</strong>`; });
     pricing.head = { ...pricing.head, lead: 'Trois formules claires, du site vitrine au projet sur mesure. Devis ferme et gratuit sous 48 h après un appel de cadrage.' };
   }
+}
+if (svcPrice) {
+  const pricing = blocks.find((b) => b.kind === 'pricing') as Extract<Block, { kind: 'pricing' }> | undefined;
+  if (pricing?.items[0]) pricing.items[0].price = `<small>à partir de</small><strong>${fixText(svcPrice.amount)}</strong><em>${fixText(svcPrice.basis)}</em>`;
 }
 const prices = PRICE_OVERRIDES[slug as string];
 if (prices) {

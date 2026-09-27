@@ -100,3 +100,6 @@ export function cityGrid(key: string) {
   if (key === 'conakry') return { vitrine: '350 €', ecom: '950 €', seo: '200 € par mois' };
   return { vitrine: '1 200 €', ecom: '2 500 €', seo: '590 € par mois' };
 }
+export function cityZone(key: string): 'eur' | 'xof' | 'gn' {
+  return XOF_CITIES.has(key) ? 'xof' : key === 'conakry' ? 'gn' : 'eur';
+}

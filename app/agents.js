@@ -308,6 +308,7 @@ Guinée : site vitrine dès 350 €, e-commerce dès 950 €, SEO dès 200 € p
 SaaS : MVP dès 1 500 € (environ 985 000 FCFA, lancé en 8 à 12 semaines) ; SaaS de croissance dès 3 500 € ; plateforme sur mesure sur devis dès 7 500 €.
 IA : preuve de concept dès 1 500 € ; solution en production dès 5 000 € ; plateforme IA complète sur devis dès 10 000 €.
 Associations et ONG : 20 % de réduction sur présentation des statuts.
+Autres services (Europe / zone franc) : SEO local dès 390 € / 90 000 FCFA par mois ; fiche Google Business dès 290 € / 60 000 FCFA ; application web dès 3 500 € / 1 200 000 FCFA ; automatisation dès 600 € / 250 000 FCFA ; e-mail marketing et CRM dès 490 € / 90 000 FCFA ; tunnel de vente dès 990 € / 350 000 FCFA ; montage vidéo dès 250 € / 35 000 FCFA par mois ; agent IA ou chatbot dès 1 500 € / 450 000 FCFA.
 Paiement : Mobile Money (MTN MoMo, Orange Money, Moov Money, Wave), virement (XOF, XAF, GNF, EUR, USD), carte bancaire via Stripe, virement SEPA en Europe.
 RÈGLE PRIX : tu peux citer ces prix de départ en disant « à partir de », dans la devise de la zone du visiteur si tu la connais
 (sinon, demande son pays). Tu n'annonces jamais un autre montant ni un prix ferme : le devis ferme est gratuit, établi

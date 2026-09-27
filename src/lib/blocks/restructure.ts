@@ -23,7 +23,9 @@ const PROOF = new Set(['stats']);
 export type LocalInsert = {
   label: string; zones: Block; projects?: Block; faq: { q: string; a: string }[];
   /** Page hub de la ville : « L'essentiel » propre à la ville, sections génériques du modèle retirées. */
-  hub?: { brief: { title: string; html: string; points: string[] }; priceFaq?: { q: string; a: string } };
+  hub?: { brief: { title: string; html: string; points: string[] } };
+  /** Question tarifs régénérée depuis la grille : remplace la question tarifs du modèle (anciens prix). */
+  priceFaq?: { q: string; a: string };
 };
 
 export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
@@ -105,9 +107,9 @@ export function restructure(blocks: Block[], local?: LocalInsert): Block[] {
   const legacyFaq = faqs.flatMap((f) => f.items);
   const PRICE_Q = /tarif|prix|co[uû]t|combien/i;
   const keptLegacy = local
-    ? legacyFaq.filter((it) => !/distance/i.test(strip(it.q)) && !(local.hub && PRICE_Q.test(strip(it.q)))).slice(0, local.hub ? 3 : 6)
+    ? legacyFaq.filter((it) => !/distance/i.test(strip(it.q)) && !(local.priceFaq && PRICE_Q.test(strip(it.q)))).slice(0, local.hub ? 3 : 6)
     : legacyFaq;
-  const localPrice = local?.hub?.priceFaq && !(local.faq ?? []).some((f) => PRICE_Q.test(f.q)) ? [local.hub.priceFaq] : [];
+  const localPrice = local?.priceFaq && !(local.faq ?? []).some((f) => PRICE_Q.test(f.q)) ? [local.priceFaq] : [];
   const faqItems = [...(local?.faq ?? []), ...localPrice, ...keptLegacy].filter((it) => {
     const k = strip(it.q).toLowerCase().replace(/[^a-zà-ÿ0-9]+/g, ' ').trim();
     if (seen.has(k)) return false;

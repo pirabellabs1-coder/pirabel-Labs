@@ -240,6 +240,8 @@ code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size
 .chart-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-faint); text-align: center; padding: 1rem; }
 .chart-empty .material-symbols-outlined { font-size: 2.2rem; opacity: 0.45; }
 .chart-empty span:last-child { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; }
+.chart-empty--error { color: var(--danger); }
+.kpi__err { font-size: 0.95rem; font-weight: 700; color: var(--danger); }
 
 /* ---------- KPI compacts (icône · valeur · libellé · delta) ---------- */
 .kpi { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 0.8rem; row-gap: 0.1rem; align-items: center; padding: 14px 16px; min-width: 0; transition: border-color 0.18s; }
@@ -572,7 +574,7 @@ select option { background: var(--bg-2); color: var(--text); }
       <button type="button" class="sidebar__link" data-view="reviews" data-label="Avis clients" title="Avis clients"><span class="material-symbols-outlined" aria-hidden="true">reviews</span><span class="sidebar__link-text">Avis clients</span></button>
       <button type="button" class="sidebar__link" data-view="bulk-email" data-label="E-mails groupés" title="E-mails groupés"><span class="material-symbols-outlined" aria-hidden="true">campaign</span><span class="sidebar__link-text">E-mails groupés</span></button>
       <button type="button" class="sidebar__link" data-view="emails" data-label="E-mails envoyés" title="E-mails envoyés"><span class="material-symbols-outlined" aria-hidden="true">outgoing_mail</span><span class="sidebar__link-text">E-mails envoyés</span></button>
-      <button type="button" class="sidebar__link" data-view="conversations" data-label="Conversations du site" title="Conversations du site"><span class="material-symbols-outlined" aria-hidden="true">chat</span><span class="sidebar__link-text">Conversations du site</span> <span id="csBadge" class="nav-badge" style="display:none;" title="Conversations chaudes"></span></button>
+      <button type="button" class="sidebar__link" data-view="conversations" data-label="Conversations du site" title="Conversations du site"><span class="material-symbols-outlined" aria-hidden="true">chat</span><span class="sidebar__link-text">Conversations du site</span> <span id="csBadge" class="nav-badge" style="display:none;" title="Conversations non lues"></span></button>
       <div class="sidebar__group" aria-hidden="true">Équipe</div>
       <button type="button" class="sidebar__link" data-view="team" data-label="Équipe" title="Équipe"><span class="material-symbols-outlined" aria-hidden="true">groups</span><span class="sidebar__link-text">Équipe</span></button>
       <button type="button" class="sidebar__link" data-view="tasks" data-label="Tâches" title="Tâches"><span class="material-symbols-outlined" aria-hidden="true">checklist</span><span class="sidebar__link-text">Tâches</span></button>
@@ -1349,10 +1351,22 @@ function dateLocaleISO(d) { d = d || new Date(); return d.getFullYear() + '-' + 
 function kpiCard(icon, iconClass, valueHtml, label) {
   return '<div class="kpi"><div class="kpi__top"><div class="kpi__icon ' + (iconClass || '') + '"><span class="material-symbols-outlined">' + icon + '</span></div></div><div class="kpi__value">' + valueHtml + '</div><div class="kpi__label">' + label + '</div></div>';
 }
+// Nombres et pourcentages au format français (espace fine, virgule décimale).
+function fmtNb(n, dec) {
+  var v = Number(n); if (!isFinite(v)) v = 0;
+  return v.toLocaleString('fr-FR', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+}
+function fmtPct(n) { return fmtNb(n, 1) + '\u00a0%'; }
+// Valeur de KPI en erreur : explicite (jamais « -- » indéfiniment), détail au survol.
+function kpiErr(msg) { return '<span class="kpi__err" role="alert" title="' + escape(msg || '') + '">Indisponible</span>'; }
+function setKpiErr(ids, msg) { ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.innerHTML = kpiErr(msg); }); }
+function setTxt(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
 // Une carte par devise présente : on n'additionne jamais des devises différentes.
+// Aucune somme non nulle : une carte à 0 (dans la devise connue, sinon EUR).
 function kpiParDevise(map, icon, iconClass, label) {
-  var devs = Object.keys(map || {}).filter(function (d) { return map[d]; });
-  if (!devs.length) return kpiCard(icon, iconClass, '—', label);
+  var keys = Object.keys(map || {});
+  var devs = keys.filter(function (d) { return Number(map[d]); });
+  if (!devs.length) return kpiCard(icon, iconClass, moneyFmt(0, keys[0] || 'EUR'), label);
   return devs.map(function (d) { return kpiCard(icon, iconClass, moneyFmt(map[d], d), label + (devs.length > 1 ? ' · ' + d : '')); }).join('');
 }
 function erreurBox(txt) { return '<div class="notice notice--danger" role="alert">' + escape(txt) + '</div>'; }
@@ -1399,6 +1413,21 @@ async function deleteComment(id) {
 function updateCmBadge(n) {
   var b = document.getElementById('cmBadge'); if (!b) return;
   if (n > 0) { b.textContent = n; b.style.display = ''; } else { b.style.display = 'none'; }
+}
+// /api/admin/sidebar-counts → { rendezVous, commentaires, conversations, candidatures } (entiers).
+async function refreshSidebarBadges() {
+  try {
+    var c = await api('/api/admin/sidebar-counts');
+    refreshApptBadge(Number(c.rendezVous) || 0);
+    updateCmBadge(Number(c.commentaires) || 0);
+    updateCsBadge(Number(c.conversations) || 0);
+    rcBadge(Number(c.candidatures) || 0);
+  } catch (e) {
+    console.warn('[badges]', e && e.message);
+    // Repli sur les routes détaillées (déploiement antérieur sans la route de compteurs).
+    refreshCmBadge();
+    api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){});
+  }
 }
 async function refreshCmBadge() {
   try { var d = await api('/api/admin/comments?status=en_attente'); updateCmBadge((d.counts || {}).en_attente || 0); } catch(e) {}
@@ -2141,7 +2170,7 @@ async function loadQuotes() {
       kpiCard('request_quote', '', st.total, 'Total devis') +
       kpiCard('check_circle', 'kpi__icon--success', (st.byStatus && st.byStatus.accepte) || 0, 'Acceptés') +
       kpiParDevise(st.acceptedByCurrency, 'payments', '', 'CA devis acceptés') +
-      kpiCard('percent', 'kpi__icon--info', (st.acceptanceRate || 0) + ' %', 'Taux d’acceptation');
+      kpiCard('percent', 'kpi__icon--info', fmtPct(st.acceptanceRate), 'Taux d’acceptation');
 
     const tbody = document.getElementById('qTbody');
     if (!quotes.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">Aucun devis. Cliquez sur « Nouveau devis » pour commencer.</td></tr>'; return; }
@@ -2269,7 +2298,7 @@ var CP_CATS = { outils:'Outils & logiciels', sous_traitance:'Sous-traitance', sa
   hebergement:'Hébergement', materiel:'Matériel', deplacement:'Déplacement', banque:'Frais bancaires', impots:'Impôts & taxes', autre:'Autre' };
 
 function cpMontant(v, d) { return moneyFmt(v, d || 'EUR'); }
-function cpDate(d) { try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e){ return '—'; } }
+function cpDate(d) { if (!d) return '—'; var x = new Date(d); return isNaN(x.getTime()) ? '—' : x.toLocaleDateString('fr-FR'); }
 
 function cpRemplirPeriodes() {
   var sel = document.getElementById('cpPeriode');
@@ -2294,30 +2323,31 @@ async function loadComptabilite() {
   if (depBox) depBox.innerHTML = '<div class="empty">Chargement…</div>';
   try {
     var c = await api('/api/admin/comptabilite' + (per ? '?periode=' + per : ''));
-    var devises = Object.keys(c.parDevise || {});
-    if (!devises.length) {
-      box.innerHTML = '<div class="card"><div class="empty">'
-        + '<span class="material-symbols-outlined" style="font-size:2.2rem;display:block;margin-bottom:.6rem;opacity:.5;">account_balance</span>'
-        + 'Aucun mouvement sur cette période.</div></div>';
-      if (depBox) depBox.innerHTML = '<div class="card"><div class="empty"><span class="material-symbols-outlined">shopping_bag</span><p>Aucune charge sur cette période.</p></div></div>';
-      return;
-    }
-    var html = '', dep = '';
+    // parDevise : { XOF: { ca, charges, resultat, creances, pipeline, marge } } — jamais additionné entre devises.
+    var pd = {};
+    Object.keys(c.parDevise || {}).forEach(function(d){
+      var v = c.parDevise[d] || {};
+      pd[d] = { ca: Number(v.ca) || 0, charges: Number(v.charges) || 0, resultat: Number(v.resultat) || 0, creances: Number(v.creances) || 0, pipeline: Number(v.pipeline) || 0, marge: Number(v.marge) || 0 };
+    });
+    var aucunMouvement = !Object.keys(pd).length;
+    if (aucunMouvement) pd.EUR = { ca: 0, charges: 0, resultat: 0, creances: 0, pipeline: 0, marge: 0 };
+    var devises = Object.keys(pd).sort();
+    var html = aucunMouvement ? '<p class="hint" style="margin:0 0 .8rem;">Aucun mouvement sur cette période.</p>' : '', dep = '';
 
     devises.forEach(function(d){
-      var v = c.parDevise[d];
+      var v = pd[d];
       html += (devises.length > 1 ? '<h2 class="section-title">' + escape(d) + '</h2>' : '')
         + '<div class="kpi-grid">'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + cpMontant(v.ca,d) + '</div><div class="kpi__label">Chiffre d’affaires encaissé</div></div>'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">trending_down</span></div></div><div class="kpi__value">' + cpMontant(v.charges,d) + '</div><div class="kpi__label">Charges</div></div>'
-        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">savings</span></div></div><div class="kpi__value" style="color:' + (v.resultat>=0?'var(--success)':'var(--danger)') + ';">' + cpMontant(v.resultat,d) + '</div><div class="kpi__label">Résultat · ' + v.marge + ' % de marge</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">savings</span></div></div><div class="kpi__value" style="color:' + (v.resultat>=0?'var(--success)':'var(--danger)') + ';">' + cpMontant(v.resultat,d) + '</div><div class="kpi__label">Résultat · ' + fmtPct(v.marge) + ' de marge</div></div>'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule</span></div></div><div class="kpi__value">' + cpMontant(v.creances,d) + '</div><div class="kpi__label">Créances à recouvrer</div></div>'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">target</span></div></div><div class="kpi__value">' + cpMontant(v.pipeline,d) + '</div><div class="kpi__label">Pipeline (devis acceptés non facturés)</div></div>'
         + '</div>';
     });
 
     // Avertissement seulement si AUCUNE devise ne porte de charge.
-    var aucuneCharge = devises.every(function(d){ return !c.parDevise[d].charges; });
+    var aucuneCharge = devises.every(function(d){ return !pd[d].charges; });
     if (aucuneCharge) {
       html += '<div class="card card--warning" style="margin-bottom:var(--section);"><div style="display:flex;gap:.6rem;align-items:flex-start;">'
         + '<span class="material-symbols-outlined" style="color:var(--warning);">info</span>'
@@ -2394,12 +2424,12 @@ async function loadComptabilite() {
     box.innerHTML = html;
     if (depBox) {
       var totCharges = {};
-      devises.forEach(function(d){ totCharges[d] = c.parDevise[d].charges; });
+      devises.forEach(function(d){ totCharges[d] = pd[d].charges; });
       depBox.innerHTML = '<div class="kpi-grid">' + kpiParDevise(totCharges, 'shopping_bag', 'kpi__icon--warning', 'Charges de la période') + '</div>' + dep;
     }
   } catch(e) {
-    box.innerHTML = '<div class="card"><div class="empty empty--error">Erreur : ' + escape((e&&e.message)||'') + '</div></div>';
-    if (depBox) depBox.innerHTML = box.innerHTML;
+    box.innerHTML = '<div class="card"><div class="empty empty--error" role="alert">Impossible de charger la comptabilité : ' + escape((e&&e.message)||'erreur inconnue') + '</div></div>';
+    if (depBox) depBox.innerHTML = '<div class="card"><div class="empty empty--error" role="alert">Impossible de charger les dépenses : ' + escape((e&&e.message)||'erreur inconnue') + '</div></div>';
   }
 }
 
@@ -3152,16 +3182,31 @@ async function loadMe() {
   } catch(e){ /* will redirect */ }
 }
 
+// /api/admin/stats → { kpis: { total, last30, last7, prev30, prev7, converted, conversionRate },
+//   byService: [{ _id, count }], byStatus: [{ _id, count }], bySource: [{ _id, count }],
+//   last12Months: [{ _id: { y, m }, count }] } (12 mois glissants).
+var STATS_CHARTS = ['chartLeadsOverTime', 'chartByService', 'chartTrend', 'chartStatus', 'chartServices', 'chartSources', 'chartFunnel', 'chartWeekly'];
 async function loadStats() {
+  // Trafic et finances ont leurs propres sources : ils se chargent même si les statistiques échouent.
+  loadTraffic();
+  loadHomeFinance();
   try {
     const stats = await api('/api/admin/stats');
+    if (!stats || !stats.kpis) throw new Error('réponse inattendue du serveur');
     STATE.stats = stats;
     renderKpis();
     renderDashboardCharts();
     renderAnalyticsMini();
-    loadTraffic();
-    loadHomeFinance();
-  } catch(e) { console.error(e); toast('Erreur de chargement des statistiques', 'error'); }
+    if (CURRENT_VIEW === 'analytics') renderAnalyticsCharts();
+  } catch(e) {
+    console.error(e);
+    STATE.stats = null;
+    var msg = 'Statistiques indisponibles : ' + ((e && e.message) || 'erreur inconnue');
+    setKpiErr(['kpiTotal', 'kpi30', 'kpi7', 'kpiConverted', 'kpiConvRate', 'aWeek', 'aMonth', 'aConv', 'aAvg', 'aTop'], msg);
+    setTxt('kpi30Trend', '');
+    STATS_CHARTS.forEach(function (id) { destroyChart(id); chartEmpty(id, true, 'Impossible de charger les statistiques. Cliquez sur « Actualiser » pour réessayer.', true); });
+    toast(msg, 'error');
+  }
 }
 
 // Accueil : encaissements du mois (d'après les paiements reçus) et reste à encaisser, par devise.
@@ -3172,24 +3217,30 @@ async function loadHomeFinance() {
     var now = new Date(), per = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
     var c = await api('/api/admin/comptabilite?periode=' + per);
     var ca = {}, cr = {};
-    Object.keys(c.parDevise || {}).forEach(function (d) { ca[d] = c.parDevise[d].ca; cr[d] = c.parDevise[d].creances; });
+    Object.keys(c.parDevise || {}).forEach(function (d) { var v = c.parDevise[d] || {}; ca[d] = Number(v.ca) || 0; cr[d] = Number(v.creances) || 0; });
     box.innerHTML = kpiParDevise(ca, 'payments', 'kpi__icon--success', 'Encaissé ce mois-ci') +
       kpiParDevise(cr, 'pending', 'kpi__icon--warning', 'Reste à encaisser');
-  } catch (e) { box.innerHTML = ''; }
+  } catch (e) {
+    var msg = 'Finances indisponibles : ' + ((e && e.message) || 'erreur inconnue');
+    box.innerHTML = kpiCard('payments', 'kpi__icon--success', kpiErr(msg), 'Encaissé ce mois-ci') +
+      kpiCard('pending', 'kpi__icon--warning', kpiErr(msg), 'Reste à encaisser');
+  }
 }
 
 async function loadTraffic() {
   try {
+    // /api/admin/traffic → { today, last7, last30: { pageviews, uniqueVisitors, whatsappClicks }, series: [{ day: 'AAAA-MM-JJ', ... }] }
     const t = await api('/api/admin/traffic');
-    document.getElementById('trafVisitors').textContent = t.last30.uniqueVisitors;
-    document.getElementById('trafViews').textContent = t.last30.pageviews;
-    document.getElementById('trafWa').textContent = t.last30.whatsappClicks;
-    document.getElementById('trafToday').textContent = t.today.uniqueVisitors;
+    const l30 = t.last30 || {}, td = t.today || {};
+    setTxt('trafVisitors', fmtNb(l30.uniqueVisitors));
+    setTxt('trafViews', fmtNb(l30.pageviews));
+    setTxt('trafWa', fmtNb(l30.whatsappClicks));
+    setTxt('trafToday', fmtNb(td.uniqueVisitors));
     destroyChart('traffic');
-    const series = t.series || [];
-    const labels = series.map(function(d){ var p = d.day.split('-'); return p[2] + '/' + p[1]; });
-    const views = series.map(function(d){ return d.pageviews; });
-    const visitors = series.map(function(d){ return d.uniqueVisitors; });
+    const series = Array.isArray(t.series) ? t.series : [];
+    const labels = series.map(function(d){ var p = String(d.day || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] : String(d.day || ''); });
+    const views = series.map(function(d){ return Number(d.pageviews) || 0; });
+    const visitors = series.map(function(d){ return Number(d.uniqueVisitors) || 0; });
     const ctx = document.getElementById('chartTraffic');
     const allZero = views.every(function(v){ return v === 0; }) && visitors.every(function(v){ return v === 0; });
     if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite pour l’instant — les données apparaissent dès que le site reçoit du trafic')) {
@@ -3202,29 +3253,57 @@ async function loadTraffic() {
         options: chartDefaults()
       });
     }
-  } catch(e) { console.error('traffic', e); }
+  } catch(e) {
+    console.error('traffic', e);
+    var msg = 'Trafic indisponible : ' + ((e && e.message) || 'erreur inconnue');
+    setKpiErr(['trafVisitors', 'trafViews', 'trafWa', 'trafToday'], msg);
+    destroyChart('traffic');
+    chartEmpty('chartTraffic', true, msg, true);
+  }
 }
 
 async function loadLeads() {
   try {
     const data = await api('/api/admin/leads');
-    STATE.leads = data.leads || data;
+    STATE.leads = Array.isArray(data.leads) ? data.leads : (Array.isArray(data) ? data : []);
     renderLeadsTable();
     renderRecentLeads();
     populateServiceFilter();
-  } catch(e) { console.error(e); toast('Erreur chargement leads', 'error'); }
+  } catch(e) {
+    console.error(e);
+    var msg = escape((e && e.message) || 'erreur inconnue');
+    var rb = document.getElementById('recentLeadsBody');
+    if (rb) rb.innerHTML = '<tr><td colspan="5" class="empty empty--error" role="alert">Impossible de charger les prospects : ' + msg + '</td></tr>';
+    var lb = document.getElementById('leadsTableBody');
+    if (lb) lb.innerHTML = '<tr><td colspan="6" class="empty empty--error" role="alert">Impossible de charger les prospects : ' + msg + '</td></tr>';
+    toast('Erreur de chargement des prospects', 'error');
+  }
 }
 
 // ============ Rendering ============
+// Évolution d'une période par rapport à la précédente (même durée), en % fr-FR.
+function evolutionTxt(cur, prev) {
+  cur = Number(cur) || 0; prev = Number(prev);
+  if (!isFinite(prev)) return { txt: '', down: false };
+  if (!prev) return { txt: cur ? 'en hausse' : 'stable', down: false };
+  var ev = Math.round(((cur - prev) / prev) * 1000) / 10;
+  if (!ev) return { txt: 'stable', down: false };
+  return { txt: (ev > 0 ? '+' : '−') + fmtNb(Math.abs(ev), 1) + '\u00a0%', down: ev < 0 };
+}
 function renderKpis() {
-  const k = STATE.stats.kpis;
-  document.getElementById('kpiTotal').textContent = k.total;
-  document.getElementById('kpi30').textContent = k.last30;
-  document.getElementById('kpi7').textContent = k.last7;
-  document.getElementById('kpiConverted').textContent = k.converted;
-  document.getElementById('kpiConvRate').textContent = k.conversionRate + '%';
-  const trend30 = k.last30 > k.last7 * 4 ? '+' + Math.round(((k.last30 / (k.last30 - k.last7)) - 1) * 100) + '%' : 'stable';
-  document.getElementById('kpi30Trend').textContent = trend30;
+  const k = (STATE.stats && STATE.stats.kpis) || {};
+  setTxt('kpiTotal', fmtNb(k.total));
+  setTxt('kpi30', fmtNb(k.last30));
+  setTxt('kpi7', fmtNb(k.last7));
+  setTxt('kpiConverted', fmtNb(k.converted));
+  setTxt('kpiConvRate', fmtPct(k.conversionRate));
+  var tr = document.getElementById('kpi30Trend');
+  if (tr) {
+    var ev = evolutionTxt(k.last30, k.prev30);
+    tr.textContent = ev.txt;
+    tr.classList.toggle('kpi__trend--down', ev.down);
+    tr.title = 'Par rapport aux 30 jours précédents (' + fmtNb(k.prev30) + ')';
+  }
 }
 
 function renderRecentLeads() {
@@ -3235,7 +3314,7 @@ function renderRecentLeads() {
     return '<tr data-id="' + l._id + '">' +
       '<td><strong>' + escape(l.name) + '</strong></td>' +
       '<td>' + escape(l.email) + '</td>' +
-      '<td>' + escape(l.service || '--') + '</td>' +
+      '<td>' + escape(l.service || '—') + '</td>' +
       '<td>' + statusBadge(l.status || 'nouveau') + '</td>' +
       '<td>' + fmtDate(l.createdAt) + '</td>' +
       '</tr>';
@@ -3288,17 +3367,19 @@ function destroyChart(name) { if (charts[name]) { charts[name].destroy(); delete
 
 // État vide propre : si pas de données, masque le canvas et affiche un message centre.
 // Retourne true si VIDE (le rendu du chart doit alors être saute).
-function chartEmpty(canvasId, isEmpty, msg) {
+function chartEmpty(canvasId, isEmpty, msg, isError) {
   var canvas = document.getElementById(canvasId);
   if (!canvas) return true;
   var wrap = canvas.closest('.card__chart') || canvas.parentNode;
   var existing = wrap ? wrap.querySelector('.chart-empty') : null;
   if (isEmpty) {
     canvas.style.display = 'none';
-    if (!existing && wrap) {
+    if (existing) existing.remove();
+    if (wrap) {
       var el = document.createElement('div');
-      el.className = 'chart-empty';
-      el.innerHTML = '<span class="material-symbols-outlined">bar_chart</span><span>' + (msg || 'Aucune donnée pour le moment') + '</span>';
+      el.className = 'chart-empty' + (isError ? ' chart-empty--error' : '');
+      if (isError) el.setAttribute('role', 'alert');
+      el.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">' + (isError ? 'error' : 'bar_chart') + '</span><span>' + escape(msg || 'Aucune donnée pour le moment') + '</span>';
       wrap.appendChild(el);
     }
     return true;
@@ -3316,16 +3397,28 @@ function chartDefaults() {
   };
 }
 
+// last12Months ([{ _id: { y, m }, count }]) → 12 mois glissants, mois vides à 0.
+function derniers12Mois(list) {
+  var noms = ['Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'];
+  var map = {};
+  (Array.isArray(list) ? list : []).forEach(function (m) { if (m && m._id) map[m._id.y + '-' + m._id.m] = (map[m._id.y + '-' + m._id.m] || 0) + (Number(m.count) || 0); });
+  var now = new Date(), labels = [], values = [];
+  for (var i = 11; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    labels.push(noms[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2));
+    values.push(map[d.getFullYear() + '-' + (d.getMonth() + 1)] || 0);
+  }
+  return { labels: labels, values: values };
+}
+function libelleService(id) { return id ? String(id) : 'Non précisé'; }
+
 function renderDashboardCharts() {
   const s = STATE.stats;
   if (!s) return;
   // Leads over time (line chart)
   destroyChart('leadsOverTime');
-  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
-  const labels = []; const values = [];
-  const monthMap = {};
-  (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
-  for (let i = 1; i <= 12; i++) { labels.push(months[i-1]); values.push(monthMap[i] || 0); }
+  const serie12 = derniers12Mois(s.last12Months);
+  const labels = serie12.labels; const values = serie12.values;
   const ctx1 = document.getElementById('chartLeadsOverTime');
   if (ctx1 && !chartEmpty('chartLeadsOverTime', values.every(function(v){ return v === 0; }))) {
     charts.leadsOverTime = new Chart(ctx1, {
@@ -3342,7 +3435,7 @@ function renderDashboardCharts() {
   if (ctx2 && !chartEmpty('chartByService', svcData.length === 0)) {
     charts.byService = new Chart(ctx2, {
       type: 'doughnut',
-      data: { labels: svcData.map(function(d){ return d._id || 'autre'; }), datasets: [{ data: svcData.map(function(d){ return d.count; }), backgroundColor: ['#FF5500', '#FF7A33', '#FFA366', '#60a5fa', '#4ade80', '#fbbf24'], borderColor: '#161616', borderWidth: 2 }] },
+      data: { labels: svcData.map(function(d){ return libelleService(d._id); }), datasets: [{ data: svcData.map(function(d){ return Number(d.count) || 0; }), backgroundColor: ['#FF5500', '#FF7A33', '#FFA366', '#60a5fa', '#4ade80', '#fbbf24'], borderColor: '#161616', borderWidth: 2 }] },
       options: Object.assign(chartDefaults(), { cutout: '60%', scales: {} })
     });
   }
@@ -3351,14 +3444,25 @@ function renderDashboardCharts() {
 function renderAnalyticsMini() {
   const s = STATE.stats;
   if (!s) return;
-  document.getElementById('aWeek').textContent = s.kpis.last7;
-  document.getElementById('aMonth').textContent = s.kpis.last30;
-  document.getElementById('aConv').textContent = s.kpis.conversionRate + '%';
-  const monthsCount = (s.last12Months || []).length || 1;
-  const avg = Math.round(s.kpis.total / monthsCount);
-  document.getElementById('aAvg').textContent = avg;
-  const topService = (s.byService && s.byService[0]) ? s.byService[0]._id : '--';
-  document.getElementById('aTop').textContent = topService;
+  const k = s.kpis || {};
+  setTxt('aWeek', fmtNb(k.last7));
+  setTxt('aMonth', fmtNb(k.last30));
+  setTxt('aConv', fmtPct(k.conversionRate));
+  // Sous-titres « vs période précédente » : valeur réelle de la période précédente.
+  function sousTitre(id, prev, lib) {
+    var el = document.getElementById(id), sub = el && el.closest('.mini-chart__head') ? el.closest('.mini-chart__head').querySelector('.mini-chart__sub') : null;
+    if (!sub) return;
+    if (!isFinite(Number(prev)) || prev === undefined || prev === null) { sub.textContent = lib.sans; return; }
+    var ev = evolutionTxt(id === 'aWeek' ? k.last7 : k.last30, prev);
+    sub.textContent = lib.avec + ' : ' + fmtNb(prev) + (ev.txt && ev.txt !== 'stable' ? ' (' + ev.txt + ')' : '');
+  }
+  sousTitre('aWeek', k.prev7, { avec: 'Semaine précédente', sans: '7 derniers jours' });
+  sousTitre('aMonth', k.prev30, { avec: '30 jours précédents', sans: '30 derniers jours' });
+  // Moyenne mensuelle sur les 12 mois glissants (et non le total historique).
+  const somme12 = derniers12Mois(s.last12Months).values.reduce(function(a, b){ return a + b; }, 0);
+  setTxt('aAvg', fmtNb(somme12 / 12, 1));
+  const top = (Array.isArray(s.byService) ? s.byService : []).filter(function(d){ return d && d._id; })[0];
+  setTxt('aTop', top ? String(top._id) : 'Aucun service renseigné');
 }
 
 function renderAnalyticsCharts() {
@@ -3367,11 +3471,8 @@ function renderAnalyticsCharts() {
 
   // Trend (line area)
   destroyChart('trend');
-  const months = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
-  const labels = []; const values = [];
-  const monthMap = {};
-  (s.last12Months || []).forEach(function(m){ monthMap[m._id.m] = m.count; });
-  for (let i = 1; i <= 12; i++) { labels.push(months[i-1]); values.push(monthMap[i] || 0); }
+  const serie12 = derniers12Mois(s.last12Months);
+  const labels = serie12.labels; const values = serie12.values;
   const ctx1 = document.getElementById('chartTrend');
   if (ctx1 && !chartEmpty('chartTrend', values.every(function(v){ return v === 0; }))) {
     charts.trend = new Chart(ctx1, {
@@ -3400,7 +3501,7 @@ function renderAnalyticsCharts() {
   if (ctx3 && !chartEmpty('chartServices', svcData.length === 0)) {
     charts.services = new Chart(ctx3, {
       type: 'bar',
-      data: { labels: svcData.map(function(d){ return d._id || 'autre'; }), datasets: [{ label: 'Leads', data: svcData.map(function(d){ return d.count; }), backgroundColor: 'rgba(255,85,0,0.65)', borderRadius: 6 }] },
+      data: { labels: svcData.map(function(d){ return libelleService(d._id); }), datasets: [{ label: 'Prospects', data: svcData.map(function(d){ return Number(d.count) || 0; }), backgroundColor: 'rgba(255,85,0,0.65)', borderRadius: 6 }] },
       options: Object.assign(chartDefaults(), { indexAxis: 'y', plugins: Object.assign(chartDefaults().plugins, { legend: { display: false } }) })
     });
   }
@@ -3412,7 +3513,7 @@ function renderAnalyticsCharts() {
   if (ctx4 && !chartEmpty('chartSources', srcData.length === 0)) {
     charts.sources = new Chart(ctx4, {
       type: 'doughnut',
-      data: { labels: srcData.map(function(d){ return d._id || 'direct'; }), datasets: [{ data: srcData.map(function(d){ return d.count; }), backgroundColor: ['#FF5500', '#60a5fa', '#4ade80', '#fbbf24', '#f87171'], borderColor: '#161616', borderWidth: 2 }] },
+      data: { labels: srcData.map(function(d){ return d._id || 'Direct / non précisé'; }), datasets: [{ data: srcData.map(function(d){ return d.count; }), backgroundColor: ['#FF5500', '#60a5fa', '#4ade80', '#fbbf24', '#f87171'], borderColor: '#161616', borderWidth: 2 }] },
       options: Object.assign(chartDefaults(), { cutout: '55%', scales: {} })
     });
   }
@@ -3420,7 +3521,7 @@ function renderAnalyticsCharts() {
   // Funnel (horizontal bar)
   destroyChart('funnel');
   const statusMap = {}; (s.byStatus || []).forEach(function(d){ statusMap[d._id] = d.count; });
-  const total = s.kpis.total;
+  const total = Number((s.kpis || {}).total) || 0;
   const ctx5 = document.getElementById('chartFunnel');
   if (ctx5 && !chartEmpty('chartFunnel', !total)) {
     charts.funnel = new Chart(ctx5, {
@@ -3647,7 +3748,7 @@ async function init() {
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && isMobile()) closeSidebar();
   });
-  document.getElementById('refreshBtn').addEventListener('click', function(){ loadStats(); loadLeads(); toast('Actualisé', 'success'); });
+  document.getElementById('refreshBtn').addEventListener('click', function(){ loadStats(); loadLeads(); refreshSidebarBadges(); toast('Actualisé', 'success'); });
   document.getElementById('logoutBtn').addEventListener('click', logout);
   document.getElementById('logoutBtn2').addEventListener('click', logout);
   document.getElementById('detailClose').addEventListener('click', closeDetail);
@@ -3747,14 +3848,13 @@ async function init() {
 
   await loadMe();
   await Promise.all([loadStats(), loadLeads()]);
-  refreshCmBadge();
-  api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){});
+  refreshSidebarBadges();
   // Rafraîchissement auto des RDV (changements client pris en compte sans recharger la page)
   setInterval(function(){
     var activeView = document.querySelector('.view.is-active');
     var modalOpen = document.getElementById('apptEditModal') || document.getElementById('apptRemindModal');
     if (activeView && activeView.dataset.view === 'appointments' && !modalOpen) { loadAppointments(APPT_STATUS); }
-    else { api('/api/admin/appointments?status=demande').then(function(d){ refreshApptBadge((d.counts || {}).demande || 0); }).catch(function(){}); }
+    else { refreshSidebarBadges(); }
   }, 60000);
 
   const hash = (window.location.hash || '').replace('#', '');
@@ -4473,19 +4573,22 @@ async function loadFinOverview() {
   if (!box) return;
   box.innerHTML = '<div class="empty">Chargement…</div>';
   var now = new Date(), per = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  // Chaque source est suivie : une source en échec affiche « Indisponible », jamais un faux 0.
+  var errs = {};
+  function charge(cle, url) { return api(url).catch(function(e){ errs[cle] = String((e && e.message) || 'erreur inconnue').replace(/\.\s*$/, ''); return null; }); }
   var res = await Promise.all([
-    api('/api/admin/comptabilite?periode=' + per).catch(function(){ return null; }),
-    api('/api/admin/invoices').catch(function(){ return null; }),
-    api('/api/admin/quotes').catch(function(){ return null; })
+    charge('cp', '/api/admin/comptabilite?periode=' + per), // { parDevise: { XOF: { ca, creances, … } } }
+    charge('iv', '/api/admin/invoices'),                      // { invoices: [{ status, balanceDue, dueDate, currency }], stats: { byCurrency: { XOF: { reste, enRetard } } } }
+    charge('qt', '/api/admin/quotes')                         // { quotes: [{ status, total, currency }], stats: { pendingByCurrency: { XOF: n } } }
   ]);
   var cp = res[0], iv = res[1], qt = res[2];
-  if (!cp && !iv && !qt) { box.innerHTML = '<div class="card"><div class="empty empty--error"><span class="material-symbols-outlined">error</span><p>Impossible de charger les données financières.</p></div></div>'; return; }
+  if (!cp && !iv && !qt) { box.innerHTML = '<div class="card"><div class="empty empty--error" role="alert"><span class="material-symbols-outlined">error</span><p>Impossible de charger les données financières : ' + escape(errs.cp || errs.iv || errs.qt || '') + '</p></div></div>'; return; }
   var cur = {};
   function slot(d) { d = d || 'EUR'; return cur[d] || (cur[d] = { encaisse: 0, reste: 0, retard: 0, nRetard: 0, devis: 0, nDevis: 0 }); }
   var parDevise = (cp && cp.parDevise) || {};
-  Object.keys(parDevise).forEach(function(d){ slot(d).encaisse = Number(parDevise[d].ca) || 0; slot(d).reste = Number(parDevise[d].creances) || 0; });
-  var byCur = iv && iv.stats && iv.stats.byCurrency;
-  if (byCur) Object.keys(byCur).forEach(function(d){ slot(d).reste = Number(byCur[d].reste) || 0; });
+  Object.keys(parDevise).forEach(function(d){ var v = parDevise[d] || {}; slot(d).encaisse = Number(v.ca) || 0; slot(d).reste = Number(v.creances) || 0; });
+  var ivStats = (iv && iv.stats && iv.stats.byCurrency) || null;
+  var qtStats = (qt && qt.stats && qt.stats.pendingByCurrency) || null;
   var today = new Date(); today.setHours(0, 0, 0, 0);
   var late = [], pending = [];
   ((iv && iv.invoices) || []).forEach(function(i){
@@ -4498,23 +4601,32 @@ async function loadFinOverview() {
     if (['envoye', 'consulte'].indexOf(q.status) < 0) return;
     var c = slot(q.currency); c.devis += Number(q.total) || 0; c.nDevis++; pending.push(q);
   });
+  // Montants serveur calculés sur TOUS les documents (la liste est plafonnée à 300).
+  if (ivStats) Object.keys(ivStats).forEach(function(d){ var v = ivStats[d] || {}; slot(d).reste = Number(v.reste) || 0; slot(d).retard = Number(v.enRetard) || 0; });
+  if (qtStats) Object.keys(qtStats).forEach(function(d){ slot(d).devis = Number(qtStats[d]) || 0; });
   var devs = Object.keys(cur).filter(function(d){ var c = cur[d]; return c.encaisse || c.reste || c.retard || c.devis; }).sort();
+  var aucunMouvement = !devs.length;
+  if (aucunMouvement) { devs = [Object.keys(cur)[0] || 'EUR']; slot(devs[0]); }
+  function val(src, montant, d) { return errs[src] ? kpiErr(errs[src]) : moneyFmt(montant, d); }
   var html = '<div class="view-head"><div class="row">' +
     '<button type="button" class="btn btn--sm" onclick="openNewQuoteModal()"><span class="material-symbols-outlined" aria-hidden="true">request_quote</span> Nouveau devis</button>' +
     '<button type="button" class="btn btn--ghost btn--sm" onclick="openNewInvoiceModal()"><span class="material-symbols-outlined" aria-hidden="true">receipt_long</span> Nouvelle facture</button>' +
     '<button type="button" class="btn btn--ghost btn--sm" onclick="cpSaisirCharge()"><span class="material-symbols-outlined" aria-hidden="true">add</span> Saisir une charge</button>' +
     '</div></div>';
-  if (!devs.length) {
-    html += '<div class="card"><div class="empty"><span class="material-symbols-outlined">account_balance_wallet</span><p>Aucun mouvement financier pour l’instant.</p></div></div>';
-  }
+  var echecs = [];
+  if (errs.cp) echecs.push('comptabilité (' + errs.cp + ')');
+  if (errs.iv) echecs.push('factures (' + errs.iv + ')');
+  if (errs.qt) echecs.push('devis (' + errs.qt + ')');
+  if (echecs.length) html += '<div class="notice notice--danger" role="alert" style="margin-bottom:var(--section);">Certaines données n’ont pas pu être chargées : ' + escape(echecs.join(', ')) + '.</div>';
+  if (aucunMouvement && !echecs.length) html += '<p class="hint" style="margin:0 0 .8rem;">Aucun mouvement financier pour l’instant.</p>';
   devs.forEach(function(d){
     var c = cur[d];
     html += '<section class="fin-cur" aria-label="Montants en ' + escape(d) + '">' + (devs.length > 1 ? '<h2 class="section-title">' + escape(d) + '</h2>' : '') +
       '<div class="kpi-grid">' +
-      kpiCard('payments', 'kpi__icon--success', moneyFmt(c.encaisse, d), 'Encaissé ce mois-ci') +
-      kpiCard('pending', 'kpi__icon--warning', moneyFmt(c.reste, d), 'Reste à encaisser') +
-      kpiCard('warning', 'kpi__icon--danger', moneyFmt(c.retard, d), 'En retard' + (c.nRetard ? ' · ' + c.nRetard + ' facture' + (c.nRetard > 1 ? 's' : '') : '')) +
-      kpiCard('request_quote', 'kpi__icon--info', moneyFmt(c.devis, d), 'Devis en attente' + (c.nDevis ? ' · ' + c.nDevis : '')) +
+      kpiCard('payments', 'kpi__icon--success', val('cp', c.encaisse, d), 'Encaissé ce mois-ci') +
+      kpiCard('pending', 'kpi__icon--warning', (errs.cp && errs.iv) ? kpiErr(errs.iv) : moneyFmt(c.reste, d), 'Reste à encaisser') +
+      kpiCard('warning', 'kpi__icon--danger', val('iv', c.retard, d), 'En retard' + (c.nRetard ? ' · ' + c.nRetard + ' facture' + (c.nRetard > 1 ? 's' : '') : '')) +
+      kpiCard('request_quote', 'kpi__icon--info', val('qt', c.devis, d), 'Devis en attente' + (c.nDevis ? ' · ' + c.nDevis : '')) +
       '</div></section>';
   });
   function table(rows, head, emptyMsg) {
@@ -4537,12 +4649,12 @@ async function loadFinOverview() {
   html += '<div class="grid-2 grid-2--equal" style="margin-top:var(--section);">' +
     '<div class="card"><div class="card__header"><div><div class="card__title">Factures en retard</div><div class="card__sub">Échéance dépassée, reste à payer</div></div>' +
     '<button type="button" class="btn btn--ghost btn--sm" onclick="setView(\'invoices\')">Factures <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button></div>' +
-    table(lateRows, '<th>Référence</th><th>Client</th><th>Échéance</th><th style="text-align:right;">Reste</th>', 'Aucune facture en retard.') + '</div>' +
+    (errs.iv ? '<div class="empty empty--error" role="alert">Factures indisponibles : ' + escape(errs.iv) + '</div>' : table(lateRows, '<th>Référence</th><th>Client</th><th>Échéance</th><th style="text-align:right;">Reste</th>', 'Aucune facture en retard.')) + '</div>' +
     '<div class="card"><div class="card__header"><div><div class="card__title">Devis en attente de réponse</div><div class="card__sub">Envoyés ou consultés par le client</div></div>' +
     '<button type="button" class="btn btn--ghost btn--sm" onclick="setView(\'quotes\')">Devis <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button></div>' +
-    table(quoteRows, '<th>Référence</th><th>Client</th><th>Statut</th><th style="text-align:right;">Montant</th>', 'Aucun devis en attente.') + '</div>' +
+    (errs.qt ? '<div class="empty empty--error" role="alert">Devis indisponibles : ' + escape(errs.qt) + '</div>' : table(quoteRows, '<th>Référence</th><th>Client</th><th>Statut</th><th style="text-align:right;">Montant</th>', 'Aucun devis en attente.')) + '</div>' +
     '</div>' +
-    '<p class="hint">« Encaissé ce mois-ci » : paiements reçus depuis le 1<sup>er</sup> du mois. Retards et devis en attente : calculés sur les 300 derniers documents.</p>';
+    '<p class="hint">« Encaissé ce mois-ci » : paiements reçus depuis le 1<sup>er</sup> du mois. Retards et devis en attente : montants calculés sur toutes les factures et tous les devis ; les tableaux montrent les six plus urgents.</p>';
   box.innerHTML = html;
 }
 

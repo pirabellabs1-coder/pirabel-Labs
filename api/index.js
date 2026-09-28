@@ -1075,6 +1075,22 @@ app.post('/api/admin/account/password', loginLimiter, limitBody(5), auth, adminO
   }
 });
 
+// Compteurs de la barre latérale (pastilles) : un seul appel léger au chargement.
+app.get('/api/admin/sidebar-counts', auth, adminOnly, async (req, res) => {
+  try {
+    const [rendezVous, commentaires, conversations, candidatures] = await Promise.all([
+      Appointment.countDocuments({ status: 'demande' }),
+      Comment.countDocuments({ status: 'en_attente' }),
+      ChatSession.countDocuments({ lu: false }),
+      Application.countDocuments({ lu: false }),
+    ]);
+    res.set('Cache-Control', 'no-store').json({ rendezVous, commentaires, conversations, candidatures });
+  } catch (err) {
+    console.error('[sidebar-counts]', err.message);
+    res.status(500).json({ error: 'Erreur de chargement des compteurs.' });
+  }
+});
+
 app.get('/api/admin/me', auth, adminOnly, (req, res) => {
   res.json({ user: { id: req.user._id, name: req.user.name, email: req.user.email, role: req.user.role } });
 });
@@ -1271,9 +1287,13 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
     const now = new Date();
     const d30 = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
     const d7 = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
-    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const d14 = new Date(now.getTime() - 14 * 24 * 3600 * 1000);
+    const d60 = new Date(now.getTime() - 60 * 24 * 3600 * 1000);
+    // 12 mois glissants (mois courant compris), bornés dans le fuseau de l'agence.
+    const moisAgence = new Intl.DateTimeFormat('en-CA', { timeZone: TZ_AGENCE, year: 'numeric', month: '2-digit' }).format(now).split('-');
+    const debut12Mois = debutMoisAgence(+moisAgence[0], +moisAgence[1] - 1 - 11);
 
-    const [total, last30, last7, byService, byStatus, bySource, last12Months] = await Promise.all([
+    const [total, last30, last7, byService, byStatus, bySource, last12Months, prev30, prev7] = await Promise.all([
       Lead.countDocuments({}),
       Lead.countDocuments({ createdAt: { $gte: d30 } }),
       Lead.countDocuments({ createdAt: { $gte: d7 } }),
@@ -1281,17 +1301,21 @@ app.get('/api/admin/stats', auth, adminOnly, async (req, res) => {
       Lead.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
       Lead.aggregate([{ $group: { _id: '$source', count: { $sum: 1 } } }]),
       Lead.aggregate([
-        { $match: { createdAt: { $gte: yearStart } } },
-        { $group: { _id: { y: { $year: '$createdAt' }, m: { $month: '$createdAt' } }, count: { $sum: 1 } } },
+        { $match: { createdAt: { $gte: debut12Mois } } },
+        { $group: { _id: { y: { $year: { date: '$createdAt', timezone: TZ_AGENCE } }, m: { $month: { date: '$createdAt', timezone: TZ_AGENCE } } }, count: { $sum: 1 } } },
         { $sort: { '_id.y': 1, '_id.m': 1 } },
       ]),
+      Lead.countDocuments({ createdAt: { $gte: d60, $lt: d30 } }),
+      Lead.countDocuments({ createdAt: { $gte: d14, $lt: d7 } }),
     ]);
 
     const converted = await Lead.countDocuments({ $or: [{ status: 'converti' }, { stage: 'client' }] });
     const conversionRate = total ? Math.round((converted / total) * 100 * 10) / 10 : 0;
 
     res.json({
-      kpis: { total, last30, last7, converted, conversionRate },
+      // prev30 / prev7 : période précédente de même durée (comparaisons « vs mois / semaine dernière »).
+      // last12Months : 12 mois glissants, [{ _id: { y, m }, count }] (mois 1-12, fuseau de l'agence).
+      kpis: { total, last30, last7, prev30, prev7, converted, conversionRate },
       byService,
       byStatus,
       bySource,
@@ -2983,7 +3007,7 @@ async function synthetiseComptabilite(periode) {
     v.creances = arrondiDevise(v.creances, d);
     v.pipeline = arrondiDevise(v.pipeline, d);
     v.resultat = arrondiDevise(v.ca - v.charges, d);
-    v.marge = v.ca > 0 ? Math.round((v.resultat / v.ca) * 100) : 0;
+    v.marge = v.ca > 0 ? Math.round((v.resultat / v.ca) * 1000) / 10 : 0;
   });
 
   // Répartition des charges par poste ET par devise, pour voir où part l'argent.
@@ -6048,7 +6072,7 @@ app.get('/api/admin/quotes', auth, adminOnly, async (req, res) => {
       if (s === 'envoye' || s === 'consulte') stats.pendingByCurrency[c] = arrondiDevise((stats.pendingByCurrency[c] || 0) + (d.total || 0), c);
     });
     const base = stats.total - (stats.byStatus.brouillon || 0) - (stats.byStatus.annule || 0);
-    stats.acceptanceRate = base > 0 ? Math.round(((stats.byStatus.accepte || 0) / base) * 100) : 0;
+    stats.acceptanceRate = base > 0 ? Math.round(((stats.byStatus.accepte || 0) / base) * 1000) / 10 : 0;
 
     res.json({
       quotes: quotes.map(x => {

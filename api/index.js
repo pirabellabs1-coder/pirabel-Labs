@@ -104,6 +104,7 @@ async function ensureDB() {
       try { await seedCaseStudies(); } catch (e) { console.error('[seed.cases] failed:', e.message); }
       try { await patchCaseStudies(); } catch (e) { console.error('[seed.casePatches] failed:', e.message); }
       try { await seedArticles(); } catch (e) { console.error('[seed.articles] failed:', e.message); }
+      try { await patchArticles(); } catch (e) { console.error('[seed.articlePatches] failed:', e.message); }
     });
   }
   return dbReady;
@@ -154,6 +155,53 @@ async function patchCaseStudies() {
   }
   for (const doc of changed) await doc.save();
   await Setting.updateOne({ key: CASE_PATCHES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
+}
+
+// === Correctifs ponctuels du contenu des articles en base (appliqués une seule fois, mémorisés dans Setting) ===
+// 2026-09-28 : les articles sont signés par l'agence ; plus aucune personne nommée dans le texte.
+const ARTICLE_PATCHES_KEY = 'seed.articlePatches.applied';
+const ARTICLE_PATCHES = [
+  {
+    id: 'sans-nom-2026-09-28',
+    rules: [
+      [/Chez (<strong>)?Pirabel Labs(<\/strong>)?, fondée? par (?:<strong>)?Lissanon Gildas(?:<\/strong>)?(?: à Abomey-Calavi)?,/g, 'Chez $1Pirabel Labs$2, agence basée à Abomey-Calavi,'],
+      [/, fondée? par (?:<strong>)?Lissanon Gildas(?:<\/strong>)? à Abomey-Calavi( \(Bénin\))?,/g, ', basée à Abomey-Calavi$1,'],
+      [/, fondée? par (?:<strong>)?Lissanon Gildas(?:<\/strong>)?,/g, ','],
+      [/Fondée par Lissanon Gildas à Abomey-Calavi( \(Bénin\))?, /g, 'Basée à Abomey-Calavi$1, '],
+      [/Fondée par Lissanon Gildas, Pirabel Labs a été créée/g, 'Pirabel Labs a été créée'],
+      [/Lissanon Gildas et l['’]équipe Pirabel Labs ont accompagné/g, 'L’équipe Pirabel Labs a accompagné'],
+      [/Lissanon Gildas et son équipe sont prêts/g, 'Notre équipe est prête'],
+      [/Lissanon Gildas et son équipe ont aidé/g, 'Notre équipe a aidé'],
+      [/C['’]est face à ce constat que Lissanon Gildas a fondé Pirabel Labs à Abomey-Calavi\./g, 'C’est face à ce constat qu’est née Pirabel Labs, à Abomey-Calavi.'],
+      [/Lissanon Gildas, fondateur de Pirabel Labs, répète souvent que/g, 'Chez Pirabel Labs, nous répétons souvent que'],
+      [/Chez Pirabel Labs, Lissanon Gildas incarne cette vision/g, 'Chez Pirabel Labs, nous incarnons cette vision'],
+      [/Chez Pirabel Labs, par exemple, Lissanon Gildas a fondé l['’]agence avec une conviction claire/g, 'Pirabel Labs, par exemple, est née d’une conviction claire'],
+    ],
+  },
+];
+async function patchArticles() {
+  const row = await Setting.findOne({ key: ARTICLE_PATCHES_KEY }).lean();
+  const done = new Set(row && row.value ? JSON.parse(row.value) : []);
+  const todo = ARTICLE_PATCHES.filter((p) => !done.has(p.id));
+  if (!todo.length) return;
+  const articles = await Article.find({}).select('slug content excerpt metaDescription');
+  for (const p of todo) {
+    let n = 0;
+    for (const doc of articles) {
+      let changed = false;
+      for (const f of ['content', 'excerpt', 'metaDescription']) {
+        const before = doc[f] || '';
+        let after = before;
+        for (const [re, rep] of p.rules) after = after.replace(re, rep);
+        if (after !== before) { doc[f] = after; changed = true; }
+      }
+      if (changed) { await Article.updateOne({ _id: doc._id }, { $set: { content: doc.content, excerpt: doc.excerpt, metaDescription: doc.metaDescription } }); n++; }
+      if (/Lissanon|Gildas/.test(doc.content || '')) console.warn('[seed.articlePatches] nom restant :', doc.slug);
+    }
+    done.add(p.id);
+    console.log('[seed.articlePatches] appliqué :', p.id, '—', n, 'article(s)');
+  }
+  await Setting.updateOne({ key: ARTICLE_PATCHES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
 }
 
 // === Articles de blog versionnés (app/seed/articles.json) : ajoutés en BROUILLON si leur slug n'existe pas ===

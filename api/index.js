@@ -65,6 +65,129 @@ const Application = require('../app/models/Application');
 const SentEmail = require('../app/models/SentEmail');
 const Setting = require('../app/models/Setting');
 const Appointment = require('../app/models/Appointment');
+const Counter = require('../app/models/Counter');
+
+// ========================================================================
+// === MONNAIE, NUMÉROTATION, STATUTS (devis / factures) ===
+// ========================================================================
+const DEVISES = ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'];
+const DEVISES_SANS_DECIMALES = ['XOF', 'XAF', 'GNF'];
+// Fuseau de l'agence (Bénin, UTC+1 toute l'année, sans heure d'été).
+const TZ_AGENCE = 'Africa/Porto-Novo';
+const DECALAGE_AGENCE_MS = 3600000;
+
+function decimalesDevise(devise) { return DEVISES_SANS_DECIMALES.includes(devise) ? 0 : 2; }
+function arrondiDevise(v, devise) {
+  const f = Math.pow(10, decimalesDevise(devise));
+  return Math.round((Number(v) || 0) * f) / f;
+}
+// Format monétaire unique (e-mails, messages) : pas de décimales pour XOF / XAF / GNF.
+function moneyFmt(amount, currency) {
+  const cur = DEVISES.includes(currency) ? currency : 'EUR';
+  const d = decimalesDevise(cur);
+  try {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: cur, minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(amount) || 0);
+  } catch (e) { return (Number(amount) || 0).toFixed(d) + ' ' + cur; }
+}
+
+// Libellés affichés (jamais de code brut côté utilisateur).
+const LIBELLES_STATUT_DEVIS = { brouillon: 'Brouillon', envoye: 'Envoyé', consulte: 'Consulté', accepte: 'Accepté', refuse: 'Refusé', expire: 'Expiré', annule: 'Annulé' };
+const LIBELLES_STATUT_FACTURE = { brouillon: 'Brouillon', envoyee: 'Envoyée', consultee: 'Consultée', partiellement_payee: 'Partiellement payée', payee: 'Payée', en_retard: 'En retard', annulee: 'Annulée' };
+const MOYENS_PAIEMENT = ['Virement', 'Mobile Money', 'Espèces', 'Carte', 'Chèque', 'Autre'];
+
+// Statut réel d'un devis à l'instant T : un devis envoyé/consulté dont la validité est
+// dépassée est « expiré », même si la base n'a pas encore été mise à jour.
+function statutDevisEffectif(q, now) {
+  if (!q) return '';
+  if (['envoye', 'consulte'].includes(q.status) && q.validUntil && new Date(q.validUntil) < (now || new Date())) return 'expire';
+  return q.status;
+}
+function exposerDevis(q) {
+  const o = q && typeof q.toObject === 'function' ? q.toObject() : Object.assign({}, q);
+  o.status = statutDevisEffectif(q);
+  return o;
+}
+function exposerFacture(inv) {
+  const o = inv && typeof inv.toObject === 'function' ? inv.toObject() : Object.assign({}, inv);
+  o.status = Invoice.effectiveStatus(inv);
+  o.amountPaid = Invoice.amountPaidOf(inv);
+  o.balanceDue = Invoice.balanceOf(inv);
+  o.payments = Invoice.paymentsOf(inv).map(p => ({
+    _id: p._id ? String(p._id) : null, amount: p.amount, date: p.date, method: p.method || '', note: p.note || '', legacy: !!p.legacy,
+  }));
+  return o;
+}
+
+// Année courante dans le fuseau de l'agence (une pièce émise le 31/12 à 23 h 30 à
+// Cotonou appartient bien à l'année qui se termine).
+function anneeAgence(d) {
+  return Number(new Intl.DateTimeFormat('en', { timeZone: TZ_AGENCE, year: 'numeric' }).format(d || new Date()));
+}
+
+// Numérotation séquentielle sans trou ni doublon : FACT-2026-0001, DEVIS-2026-0001.
+// Le compteur est initialisé paresseusement à partir du plus grand numéro déjà
+// utilisé cette année-là, pour ne jamais entrer en collision avec l'historique.
+async function prochaineReference(prefixe, Model) {
+  const annee = anneeAgence();
+  const cle = `${prefixe}-${annee}`;
+  const existe = await Counter.findById(cle).lean();
+  if (!existe) {
+    const rx = new RegExp('^' + prefixe + '-' + annee + '-(\\d+)$');
+    const docs = await Model.find({ reference: { $regex: '^' + prefixe + '-' + annee + '-' } }).select('reference').lean();
+    let max = 0;
+    docs.forEach(d => { const m = rx.exec(d.reference || ''); if (m) max = Math.max(max, parseInt(m[1], 10) || 0); });
+    try { await Counter.create({ _id: cle, seq: max }); }
+    catch (e) { if (e.code !== 11000) throw e; } // créé en parallèle par une autre requête : on continue
+  }
+  const c = await Counter.findOneAndUpdate({ _id: cle }, { $inc: { seq: 1 } }, { upsert: true, new: true });
+  return `${prefixe}-${annee}-${String(c.seq).padStart(4, '0')}`;
+}
+
+// Création avec référence séquentielle. En cas (très improbable) de collision
+// d'index unique, on retente avec un nouveau numéro / jeton.
+async function creerAvecReference(Model, prefixe, donnees) {
+  for (let essai = 0; essai < 4; essai++) {
+    const doc = Object.assign({}, donnees, { reference: await prochaineReference(prefixe, Model) });
+    if (essai > 0) {
+      doc.publicToken = generateToken();
+      if (doc.publicSlug) doc.publicSlug = genererAlias(doc.title);
+    }
+    try { return await Model.create(doc); }
+    catch (e) { if (e && e.code === 11000) continue; throw e; }
+  }
+  const err = new Error('Numérotation indisponible, réessayez dans un instant.');
+  err.messageUtilisateur = err.message;
+  throw err;
+}
+
+// Message d'erreur présentable : jamais d'erreur Mongo brute (E11000…) côté interface.
+function messageErreur(err, defaut) {
+  if (err && err.messageUtilisateur) return err.messageUtilisateur;
+  if (err && err.code === 11000) return 'Ce document existe déjà (doublon de référence). Réessayez.';
+  if (err && err.name === 'VersionError') return 'Ce document a été modifié entre-temps : actualisez la page puis réessayez.';
+  if (err && err.name === 'ValidationError') return 'Données invalides : vérifiez les montants, taux et dates saisis.';
+  if (err && err.name === 'CastError') return 'Identifiant ou valeur invalide.';
+  return defaut || 'Erreur serveur.';
+}
+
+// Validation commune des champs numériques / dates d'un devis ou d'une facture.
+// Renvoie un message d'erreur français, ou null si tout est valide.
+function validerChampsDocument(b, opts) {
+  opts = opts || {};
+  const pct = (v) => { const n = Number(v); return Number.isFinite(n) && n >= 0 && n <= 100; };
+  if (b.taxRate !== undefined && b.taxRate !== '' && !pct(b.taxRate)) return 'Taux de TVA invalide : il doit être compris entre 0 et 100 %.';
+  if (b.discountPercent !== undefined && b.discountPercent !== '' && !pct(b.discountPercent)) return 'Remise invalide : elle doit être comprise entre 0 et 100 %.';
+  if (b.depositPercent !== undefined && b.depositPercent !== '' && !pct(b.depositPercent)) return 'Acompte invalide : il doit être compris entre 0 et 100 %.';
+  if (b.currency !== undefined && b.currency !== '' && !DEVISES.includes(b.currency)) return 'Devise non prise en charge.';
+  if (b.validDays !== undefined && b.validDays !== '') { const n = Number(b.validDays); if (!Number.isFinite(n) || n < 1 || n > 3650) return 'Durée de validité invalide : au moins 1 jour.'; }
+  if (b.dueDays !== undefined && b.dueDays !== '') { const n = Number(b.dueDays); if (!Number.isFinite(n) || n < 0 || n > 3650) return 'Délai d’échéance invalide.'; }
+  const nomsDates = { validUntil: 'date de validité', dueDate: 'date d’échéance', date: 'date' };
+  for (const champ of (opts.dates || [])) {
+    if (b[champ] === null || (b[champ] !== undefined && b[champ] !== '' && isNaN(new Date(b[champ]).getTime()))) return 'Date invalide (' + (nomsDates[champ] || 'date') + ').';
+  }
+  if (b.items !== undefined && !Array.isArray(b.items)) return 'Lignes invalides.';
+  return null;
+}
 
 // Lecture d'un réglage serveur (clé/valeur en base). Jamais renvoyé au client.
 async function getSetting(key) {
@@ -104,6 +227,7 @@ async function ensureDB() {
       try { await seedCaseStudies(); } catch (e) { console.error('[seed.cases] failed:', e.message); }
       try { await patchCaseStudies(); } catch (e) { console.error('[seed.casePatches] failed:', e.message); }
       try { await seedArticles(); } catch (e) { console.error('[seed.articles] failed:', e.message); }
+      try { await updateArticles(); } catch (e) { console.error('[seed.articleUpdates] failed:', e.message); }
       try { await patchArticles(); } catch (e) { console.error('[seed.articlePatches] failed:', e.message); }
     });
   }
@@ -155,6 +279,29 @@ async function patchCaseStudies() {
   }
   for (const doc of changed) await doc.save();
   await Setting.updateOne({ key: CASE_PATCHES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
+}
+
+// === Refonte d'articles existants (app/seed/article-updates.json) : appliquée une seule fois par lot ===
+// Remplace le contenu et le SEO des articles listés (slug inchangé, statut conservé) ; date de mise à jour = maintenant.
+const ARTICLE_UPDATES_KEY = 'seed.articleUpdates.applied';
+async function updateArticles() {
+  const batch = require('../app/seed/article-updates.json');
+  if (!batch || !batch.id || !Array.isArray(batch.articles)) return;
+  const row = await Setting.findOne({ key: ARTICLE_UPDATES_KEY }).lean();
+  const done = new Set(row && row.value ? JSON.parse(row.value) : []);
+  if (done.has(batch.id)) return;
+  let n = 0;
+  for (const a of batch.articles) {
+    const set = { updatedAt: new Date() };
+    for (const k of ['title', 'category', 'excerpt', 'seoTitle', 'metaDescription', 'imageAlt', 'content']) if (a[k]) set[k] = a[k];
+    const words = (a.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+    if (words) set.readTime = Math.max(1, Math.round(words / 200));
+    const r = await Article.updateOne({ slug: a.slug }, { $set: set });
+    n += r.modifiedCount || 0;
+  }
+  done.add(batch.id);
+  await Setting.updateOne({ key: ARTICLE_UPDATES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
+  console.log('[seed.articleUpdates] lot ' + batch.id + ' :', n, 'article(s) mis à jour');
 }
 
 // === Correctifs ponctuels du contenu des articles en base (appliqués une seule fois, mémorisés dans Setting) ===
@@ -210,7 +357,7 @@ async function patchArticles() {
 // entre eux (demande du CEO, 2026-09-26). Seuls les brouillons passent en ligne ; l'ordre du fichier donne l'ordre
 // d'affichage (le guide pilier en tête), avec une minute d'écart entre deux articles.
 const ARTICLES_PUBLISH_KEY = 'seed.articles.published';
-const ARTICLES_PUBLISH_BATCH = 'saas-2026-09';
+const ARTICLES_PUBLISH_BATCH = 'seo-2026-09-28';
 async function seedArticles() {
   const seeds = require('../app/seed/articles.json');
   if (!Array.isArray(seeds) || !seeds.length) return;
@@ -279,7 +426,7 @@ app.use(async (req, res, next) => {
 // === PUBLIC : Contact form ===
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, max: 5,
-  message: 'Trop de demandes. Reessayez dans 15 minutes.',
+  message: 'Trop de demandes. Réessayez dans 15 minutes.',
   keyPrefix: 'contact',
 });
 
@@ -716,7 +863,7 @@ app.post('/api/rdv/:token', contactLimiter, limitBody(10), async (req, res) => {
 // === PUBLIC : Demande de livre blanc ===
 const livreBlancLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, max: 10,
-  message: 'Trop de demandes. Reessayez dans 15 minutes.',
+  message: 'Trop de demandes. Réessayez dans 15 minutes.',
   keyPrefix: 'livre-blanc',
 });
 
@@ -725,7 +872,7 @@ const LIVRES_BLANCS = {
     title: 'Le guide complet du SEO pour PME francophones en 2026',
     pages: 62,
     pdfUrl: '/downloads/livre-blanc-seo-pme-francophones-2026.pdf',
-    description: 'Methodologie complete SEO : audit technique 60 points, recherche mots-cles, contenu E-E-A-T, netlinking white-hat.'
+    description: 'Méthodologie SEO complète : audit technique en 60 points, recherche de mots-clés, contenu E-E-A-T, netlinking white-hat.'
   },
   'ia-pme-cas-usage-roi': {
     title: "Integrer l'IA dans votre PME : cas d'usage et ROI mesurables",
@@ -737,7 +884,7 @@ const LIVRES_BLANCS = {
     title: 'Tunnels de vente : passer de 1% a 5% de conversion en 90 jours',
     pages: 54,
     pdfUrl: '/downloads/livre-blanc-tunnels-vente-cro-3x-conversion.pdf',
-    description: 'Methodologie CRO complete : audit comportement, conception landing pages, A/B testing, paiements optimises.'
+    description: 'Méthodologie CRO complète : audit comportemental, conception de pages d’atterrissage, tests A/B, paiements optimisés.'
   },
   'ecommerce-afrique-paiement-mobile-money': {
     title: 'E-commerce en Afrique francophone : Mobile Money, logistique, conversion',
@@ -784,7 +931,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
       livreBlancTitle: lb.title,
       name, email, phone, company,
       service: 'livre-blanc',
-      message: `Telechargement livre blanc : ${lb.title}`,
+      message: `Téléchargement du livre blanc : ${lb.title}`,
       newsletterOptIn,
       source: 'site_livre_blanc',
       userAgent: (req.headers['user-agent'] || '').slice(0, 500),
@@ -843,7 +990,7 @@ app.post('/api/livre-blanc/request', livreBlancLimiter, honeypotCheck('lb_check_
 // === ADMIN AUTH ===
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, max: 10,
-  message: 'Trop de tentatives. Reessayez dans 15 minutes.',
+  message: 'Trop de tentatives. Réessayez dans 15 minutes.',
   keyPrefix: 'login',
 });
 
@@ -970,7 +1117,7 @@ app.post('/api/admin/leads/import', auth, adminOnly, limitBody(4000), async (req
 // Bulk email aux leads (newsletter / relance / annonce)
 const bulkEmailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, max: 10,
-  message: 'Trop d\'envois bulk. Reessayez dans 1 heure.',
+  message: 'Trop d’envois groupés. Réessayez dans 1 heure.',
   keyPrefix: 'bulk-email',
 });
 
@@ -981,7 +1128,7 @@ app.post('/api/admin/leads/bulk-email', auth, adminOnly, bulkEmailLimiter, limit
     const bodyHtml = sanitizeSoft(String(req.body.bodyHtml || ''), 50000);
     const onlyOptIn = req.body.onlyOptIn !== false;
 
-    if (!ids.length) return res.status(400).json({ error: 'Aucun lead selectionne.' });
+    if (!ids.length) return res.status(400).json({ error: 'Aucun contact sélectionné.' });
     if (!subject || subject.length < 3) return res.status(400).json({ error: 'Sujet requis (3 caracteres min).' });
     if (!bodyHtml || bodyHtml.length < 20) return res.status(400).json({ error: 'Corps email requis (20 caracteres min).' });
 
@@ -1597,7 +1744,7 @@ app.post('/api/admin/articles', auth, adminOnly, limitBody(20), async (req, res)
     doc.slug = await uniqueSlug(req.body.slug || title);
     await doc.save();
     res.json({ success: true, article: doc });
-  } catch (e) { console.error('[articles.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+  } catch (e) { console.error('[articles.create]', e.message); res.status(500).json({ error: 'Erreur lors de la création.' }); }
 });
 app.patch('/api/admin/articles/:id', auth, adminOnly, limitBody(20), async (req, res) => {
   try {
@@ -1856,17 +2003,22 @@ async function gatherBusinessContext() {
       Lead.aggregate([{ $group: { _id: '$stage', n: { $sum: 1 } } }]),
       Lead.find({}).sort({ createdAt: -1 }).limit(8).select('name email company service stage createdAt phone').lean(),
       Quote.find({}).sort({ createdAt: -1 }).limit(8).select('reference clientName clientCompany total currency status validUntil createdAt').lean(),
-      Quote.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
+      Quote.aggregate([{ $group: { _id: { s: '$status', c: '$currency' }, n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
       Task.find({ status: { $in: ['a_faire', 'en_cours', 'en_revue', 'bloque'] } }).sort({ dueDate: 1 }).limit(15).select('title status priority dueDate assignedToName').lean(),
       User.find({ role: { $in: ['admin', 'employee'] }, isActive: true }).select('name role poste department').lean(),
       Article.countDocuments({ status: 'publie' }),
     ]);
     const stageMap = {}; byStage.forEach(s => { stageMap[s._id] = s.n; });
-    const quoteMap = {}; quoteByStatus.forEach(s => { quoteMap[s._id] = { nombre: s.n, montant: Math.round(s.montant || 0) }; });
+    // Montants ventilés par devise (jamais additionnés entre devises différentes).
+    const quoteMap = {}; quoteByStatus.forEach(s => {
+      const k = s._id.s, c = s._id.c || 'EUR';
+      quoteMap[k] = quoteMap[k] || { nombre: 0, montant: {} };
+      quoteMap[k].nombre += s.n; quoteMap[k].montant[c] = arrondiDevise(s.montant || 0, c);
+    });
     return {
       date: new Date().toISOString().slice(0, 10),
       prospects: { total: leadCount, par_stade: stageMap, recents: recentLeads.map(l => ({ nom: l.name, entreprise: l.company || '', service: l.service || '', stade: l.stage, tel: l.phone || '', email: l.email, le: new Date(l.createdAt).toISOString().slice(0, 10) })) },
-      devis: { par_statut: quoteMap, recents: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, statut: q.status, valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0, 10) : '' })) },
+      devis: { par_statut: quoteMap, recents: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, statut: statutDevisEffectif(q), valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0, 10) : '' })) },
       taches_ouvertes: openTasks.map(t => ({ titre: t.title, statut: t.status, priorite: t.priority, echeance: t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : '', assigne: t.assignedToName || '(non assigné)' })),
       equipe: team.map(u => ({ nom: u.name, role: u.role, poste: u.poste || '', pole: u.department || '' })),
       blog: { articles_publies: articleCount },
@@ -1927,7 +2079,7 @@ const ASSISTANT_TOOLS = [
     taxRate: { type: 'number' },
     dueDays: { type: 'number', description: "Délai de règlement en jours (15 par défaut)" },
   }, required: ['clientEmail', 'title', 'items'] } },
-  { name: 'lister_factures', description: 'Lister les factures avec leur statut de règlement (brouillon, envoyee, consultee, payee, en_retard, annulee).', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
+  { name: 'lister_factures', description: 'Lister les factures avec leur statut de règlement (brouillon, envoyee, consultee, partiellement_payee, payee, en_retard, annulee), le montant déjà payé et le reste à payer.', input_schema: { type: 'object', properties: { status: { type: 'string' } } } },
   { name: 'stats_revenus', description: "Obtenir la synthèse financière réelle : chiffre d'affaires encaissé, montants en attente de règlement, pipeline des devis, taux de conversion, factures en retard.", input_schema: { type: 'object', properties: {} } },
   { name: 'enregistrer_prospect', description: "Enregistrer un nouveau prospect dans le CRM (ou compléter une fiche existante repérée par son e-mail). À utiliser dès qu'un visiteur du site laisse son contact.", input_schema: { type: 'object', properties: {
     name: { type: 'string', description: "Nom du prospect EXACTEMENT tel qu'il l'a écrit, sans rien ajouter, corriger ni inventer. S'il n'a donné qu'un prénom, n'enregistre que ce prénom." },
@@ -2013,7 +2165,7 @@ const ASSISTANT_TOOLS = [
     recurring: { type: 'boolean', description: 'Vrai si la charge revient chaque mois' },
     date: { type: 'string', description: "Date de l'opération au format AAAA-MM-JJ (aujourd'hui par défaut)" },
   }, required: ['label', 'amount'] } },
-  { name: 'requalifier_factures_en_retard', description: "Passer automatiquement au statut « en_retard » toutes les factures envoyées ou consultées dont la date d'échéance est dépassée. Fais-le toi-même au lieu de conseiller une vérification manuelle. Action interne et réversible : exécutée immédiatement.", input_schema: { type: 'object', properties: {} } },
+  { name: 'requalifier_factures_en_retard', description: "Passer automatiquement au statut « en_retard » toutes les factures envoyées, consultées ou partiellement payées dont la date d'échéance est dépassée. Fais-le toi-même au lieu de conseiller une vérification manuelle. Action interne et réversible : exécutée immédiatement.", input_schema: { type: 'object', properties: {} } },
   { name: 'relancer_facture', description: "Préparer et envoyer une relance de paiement au client pour une facture impayée. Rédige toi-même un message courtois et ferme, adapté au retard. ACTION SORTANTE : soumise à confirmation.", input_schema: { type: 'object', properties: {
     reference: { type: 'string', description: 'Référence de la facture, ex : FACT-2026-1234' },
     message: { type: 'string', description: "Corps de la relance en texte simple. Ne commence pas par « Bonjour X », c'est ajouté automatiquement." },
@@ -2119,9 +2271,10 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       return { ok: true, prospects: leads.map(l => ({ nom: l.name, email: l.email, tel: l.phone || '', entreprise: l.company || '', service: l.service || '', stade: l.stage, le: new Date(l.createdAt).toISOString().slice(0,10) })) };
     }
     if (name === 'lister_devis') {
-      const f = {}; if (input.status) f.status = input.status;
-      const quotes = await Quote.find(f).sort({ createdAt: -1 }).limit(40).select('reference clientName clientCompany total currency status validUntil').lean();
-      return { ok: true, devis: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, statut: q.status, valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0,10) : null })) };
+      const f = {}; if (input.status && input.status !== 'expire') f.status = input.status;
+      const quotes = (await Quote.find(f).sort({ createdAt: -1 }).limit(input.status ? 200 : 40).select('reference clientName clientCompany total currency status validUntil').lean())
+        .filter(q => !input.status || statutDevisEffectif(q) === input.status).slice(0, 40);
+      return { ok: true, devis: quotes.map(q => ({ ref: q.reference, client: q.clientName, entreprise: q.clientCompany || '', montant: q.total, devise: q.currency, montant_formate: moneyFmt(q.total, q.currency), statut: statutDevisEffectif(q), valide_jusqu: q.validUntil ? new Date(q.validUntil).toISOString().slice(0,10) : null })) };
     }
     if (name === 'creer_brouillon_article') {
       const doc = new Article({ title: sanitize(input.title, 200), excerpt: sanitize(input.excerpt || '', 500), content: sanitizeSoft(input.content || '', 100000),
@@ -2141,9 +2294,11 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       if (!lead) return { ok: false, message: `Aucun prospect avec l'e-mail ${input.clientEmail}. Utilise rechercher_prospects pour trouver le bon e-mail, ou enregistrer_prospect pour le créer d'abord.` };
       const rawItems = Array.isArray(input.items) ? input.items.filter(i => i && i.description && Number(i.unitPrice) >= 0) : [];
       if (!rawItems.length) return { ok: false, message: 'Au moins une ligne complète (description + prix unitaire) est requise.' };
-      const taxRate = Math.max(0, Number(input.taxRate) || 0);
-      const totals = recalcQuote(rawItems, taxRate);
-      const currency = ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(input.currency) ? input.currency : 'EUR';
+      const errV = validerChampsDocument({ taxRate: input.taxRate, currency: input.currency });
+      if (errV) return { ok: false, message: errV };
+      const taxRate = pctOu(input.taxRate, 0);
+      const currency = DEVISES.includes(input.currency) ? input.currency : 'EUR';
+      const totals = recalcQuote(rawItems, taxRate, currency, 0);
       const common = {
         leadId: lead._id, clientName: lead.name, clientEmail: lead.email,
         clientCompany: lead.company || '', clientPhone: lead.phone || '', clientAddress: lead.clientData?.address || '',
@@ -2152,48 +2307,59 @@ async function executeAssistantTool(name, input, currentUser, opts) {
         terms: sanitize(input.terms || '', 5000), publicToken: generateToken(), createdBy: currentUser._id, status: 'brouillon',
       };
       if (isQuote) {
-        const q = await Quote.create(Object.assign({}, common, {
-          reference: generateQuoteReference(),
+        const q = await creerAvecReference(Quote, 'DEVIS', Object.assign({}, common, {
           validUntil: new Date(Date.now() + 30 * 86400000),
         }));
-        return { ok: true, message: `Devis ${q.reference} créé EN BROUILLON pour ${q.clientName} — ${q.total} ${q.currency}. Il attend ta validation dans l'onglet Devis avant tout envoi.`, reference: q.reference, total: q.total, devise: q.currency };
+        return { ok: true, message: `Devis ${q.reference} créé EN BROUILLON pour ${q.clientName} — ${moneyFmt(q.total, q.currency)}. Il attend ta validation dans l'onglet Devis avant tout envoi.`, reference: q.reference, total: q.total, devise: q.currency };
       }
-      const inv = await Invoice.create(Object.assign({}, common, {
-        reference: generateInvoiceReference(),
+      const inv = await creerAvecReference(Invoice, 'FACT', Object.assign({}, common, {
         issuerBrand: 'Pirabel Labs',
         dueDate: new Date(Date.now() + (Number(input.dueDays) || 15) * 86400000),
       }));
-      return { ok: true, message: `Facture ${inv.reference} créée EN BROUILLON pour ${inv.clientName} — ${inv.total} ${inv.currency}. Elle attend ta validation dans l'onglet Factures avant tout envoi.`, reference: inv.reference, total: inv.total, devise: inv.currency };
+      return { ok: true, message: `Facture ${inv.reference} créée EN BROUILLON pour ${inv.clientName} — ${moneyFmt(inv.total, inv.currency)}. Elle attend ta validation dans l'onglet Factures avant tout envoi.`, reference: inv.reference, total: inv.total, devise: inv.currency };
     }
     if (name === 'lister_factures') {
-      const f = {}; if (input.status) f.status = input.status;
-      const list = await Invoice.find(f).sort({ createdAt: -1 }).limit(40).select('reference clientName total currency status dueDate').lean();
-      return { ok: true, factures: list.map(i => ({ ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency, statut: i.status, echeance: i.dueDate ? new Date(i.dueDate).toISOString().slice(0, 10) : null })) };
+      const f = {}; if (input.status && input.status !== 'en_retard') f.status = input.status;
+      const list = (await Invoice.find(f).sort({ createdAt: -1 }).limit(input.status ? 200 : 40).select('reference clientName total currency status dueDate payments paidAt paymentMethod updatedAt issuedAt').lean())
+        .filter(i => !input.status || Invoice.effectiveStatus(i) === input.status).slice(0, 40);
+      return { ok: true, factures: list.map(i => ({ ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency, paye: Invoice.amountPaidOf(i), reste: Invoice.balanceOf(i), statut: Invoice.effectiveStatus(i), echeance: i.dueDate ? new Date(i.dueDate).toISOString().slice(0, 10) : null })) };
     }
     if (name === 'stats_revenus') {
-      const [quoteAgg, invAgg, leadCount, clientCount] = await Promise.all([
-        Quote.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
-        Invoice.aggregate([{ $group: { _id: '$status', n: { $sum: 1 }, montant: { $sum: '$total' } } }]),
+      const [quotesAll, invoicesAll, leadCount, clientCount] = await Promise.all([
+        Quote.find({}).select('status currency total validUntil').lean(),
+        Invoice.find({}).select('status currency total dueDate payments paidAt paymentMethod updatedAt issuedAt').lean(),
         Lead.countDocuments({}),
         Lead.countDocuments({ stage: 'client' }),
       ]);
-      const qm = {}; quoteAgg.forEach(q => { qm[q._id] = { nombre: q.n, montant: Math.round(q.montant) }; });
-      const im = {}; invAgg.forEach(i => { im[i._id] = { nombre: i.n, montant: Math.round(i.montant) }; });
-      const encaisse = (im.payee && im.payee.montant) || 0;
-      const enAttente = ['envoyee', 'consultee', 'en_retard'].reduce((s, k) => s + ((im[k] && im[k].montant) || 0), 0);
-      const devisTotal = quoteAgg.reduce((s, q) => s + q.n, 0);
+      const now = new Date();
+      // Tout est ventilé par devise : on n'additionne jamais des devises différentes.
+      const qm = {}; quotesAll.forEach(q => {
+        const k = statutDevisEffectif(q, now); qm[k] = qm[k] || { nombre: 0, montant: {} };
+        qm[k].nombre++; qm[k].montant[q.currency] = arrondiDevise((qm[k].montant[q.currency] || 0) + (q.total || 0), q.currency);
+      });
+      const im = {}, encaisse = {}, enAttente = {};
+      let enRetard = 0;
+      invoicesAll.forEach(i => {
+        const k = Invoice.effectiveStatus(i, now), c = i.currency || 'EUR';
+        im[k] = im[k] || { nombre: 0, montant: {} };
+        im[k].nombre++; im[k].montant[c] = arrondiDevise((im[k].montant[c] || 0) + (i.total || 0), c);
+        if (k === 'annulee') return;
+        encaisse[c] = arrondiDevise((encaisse[c] || 0) + Invoice.amountPaidOf(i), c);
+        if (k !== 'brouillon') enAttente[c] = arrondiDevise((enAttente[c] || 0) + Invoice.balanceOf(i), c);
+        if (k === 'en_retard') enRetard++;
+      });
+      const devisBase = quotesAll.length - ((qm.brouillon && qm.brouillon.nombre) || 0) - ((qm.annule && qm.annule.nombre) || 0);
       const devisAcceptes = (qm.accepte && qm.accepte.nombre) || 0;
-      const enRetard = await Invoice.countDocuments({ status: { $in: ['envoyee', 'consultee'] }, dueDate: { $lt: new Date() } });
       return { ok: true, revenus: {
-        encaisse_total: encaisse,
-        en_attente_de_reglement: enAttente,
+        encaisse_par_devise: encaisse,
+        en_attente_de_reglement_par_devise: enAttente,
         factures_par_statut: im,
         devis_par_statut: qm,
-        taux_acceptation_devis_pct: devisTotal ? Math.round((devisAcceptes / devisTotal) * 100) : 0,
+        taux_acceptation_devis_pct: devisBase > 0 ? Math.round((devisAcceptes / devisBase) * 100) : 0,
         factures_echues_non_payees: enRetard,
         prospects_total: leadCount,
         clients: clientCount,
-        note: 'Montants exprimes dans la devise de chaque document (majoritairement EUR) — ne pas additionner aveuglement des devises differentes.',
+        note: 'Encaissé = paiements réellement reçus (acomptes compris). Montants ventilés par devise : ne jamais additionner des devises différentes.',
       } };
     }
     if (name === 'enregistrer_prospect') {
@@ -2255,31 +2421,21 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       const Model = isQuote ? Quote : Invoice;
       const doc = await Model.findOne({ reference: sanitize(input.reference || '', 40) });
       if (!doc) return { ok: false, message: `${isQuote ? 'Devis' : 'Facture'} ${input.reference} introuvable.` };
-      const publicUrl = `https://www.pirabellabs.com/${isQuote ? 'devis' : 'facture'}/${doc.publicToken}`;
-      const rows = doc.items.map(i =>
-        `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${doc.currency}</td></tr>`).join('');
-      const echeance = isQuote ? doc.validUntil : doc.dueDate;
-      const html = masterTemplate({
-        headerType: 'hero', preheader: `${isQuote ? 'Votre devis' : 'Votre facture'} ${doc.reference}`,
-        title: 'Bonjour ' + escapeHtml((doc.clientName || '').split(' ')[0]) + ',',
-        subtitle: isQuote ? 'Votre devis est prêt' : 'Votre facture est disponible',
-        body: `<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici ${isQuote ? 'votre devis personnalisé' : 'votre facture'} :</p>` +
-          `<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">` +
-          `<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">${escapeHtml(doc.reference)}</div>` +
-          `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">${escapeHtml(doc.title)}</div>` +
-          `<table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #333;border-bottom:1px solid #333;"><tbody>${rows}</tbody></table>` +
-          `<div style="margin-top:16px;text-align:right;font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;">Total : ${doc.total.toFixed(2)} ${doc.currency}</div></div>` +
-          (echeance ? `<p style="font-size:14px;color:rgba(229,226,225,0.6);">${isQuote ? 'Valable jusqu’au' : 'À régler avant le'} <strong style="color:#e5e2e1;">${new Date(echeance).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.</p>` : ''),
-        cta: isQuote ? 'Consulter et valider le devis' : 'Consulter la facture', ctaUrl: publicUrl,
-      });
+      if (isQuote && ['accepte', 'refuse', 'annule'].includes(doc.status)) return { ok: false, message: `Le devis ${doc.reference} est ${LIBELLES_STATUT_DEVIS[doc.status].toLowerCase()} : il ne peut plus être envoyé.` };
+      if (isQuote && statutDevisEffectif(doc) === 'expire') return { ok: false, message: `Le devis ${doc.reference} a expiré : prolonge sa validité avant de l’envoyer.` };
+      if (!isQuote && doc.status === 'annulee') return { ok: false, message: `La facture ${doc.reference} est annulée : elle ne peut pas être envoyée.` };
+      if (isQuote && doc.status === 'brouillon') reporterValiditeBrouillon(doc);
+      const publicUrl = `https://www.pirabellabs.com/${isQuote ? 'devis' : 'facture'}/${isQuote ? (doc.publicSlug || doc.publicToken) : doc.publicToken}`;
+      const html = isQuote ? emailDevisHtml(doc, publicUrl) : emailFactureHtml(doc, publicUrl);
       const sent = await sendEmail(doc.clientEmail, `${isQuote ? 'Votre devis' : 'Votre facture'} Pirabel Labs - ${doc.reference}`, html);
       if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
       await journaliserEmail({ to: doc.clientEmail, toName: doc.clientName, subject: (isQuote ? 'Devis ' : 'Facture ') + doc.reference, body: doc.title, ok: true, leadId: doc.leadId, agent: opts.agentId });
-      if (doc.status === 'brouillon') doc.status = isQuote ? 'envoye' : 'envoyee';
+      const premierEnvoi = doc.status === 'brouillon';
+      if (premierEnvoi) doc.status = isQuote ? 'envoye' : 'envoyee';
       doc.sentAt = new Date();
       await doc.save();
-      if (isQuote) await Lead.findByIdAndUpdate(doc.leadId, { $inc: { quotesSent: 1 }, $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' } });
-      return { ok: true, message: `${isQuote ? 'Devis' : 'Facture'} ${doc.reference} envoyé à ${doc.clientEmail}.` };
+      if (isQuote && premierEnvoi) await Lead.findByIdAndUpdate(doc.leadId, { $inc: { quotesSent: 1 }, $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' } });
+      return { ok: true, message: `${isQuote ? 'Devis' : 'Facture'} ${doc.reference} envoyé${isQuote ? '' : 'e'} à ${doc.clientEmail}.` };
     }
     if (name === 'envoyer_email') {
       const email = sanitizeEmail(input.email || '');
@@ -2299,18 +2455,26 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       return { ok: true, message: `E-mail envoyé à ${lead.name} (${email}).` };
     }
     if (name === 'supprimer_devis' || name === 'supprimer_facture') {
-      const Model = name === 'supprimer_devis' ? Quote : Invoice;
-      const doc = await Model.findOneAndDelete({ reference: sanitize(input.reference || '', 40) });
-      if (!doc) return { ok: false, message: `Document ${input.reference} introuvable.` };
-      return { ok: true, message: `${doc.reference} supprimé définitivement (${doc.total} ${doc.currency}).` };
+      const isQuote = name === 'supprimer_devis';
+      const Model = isQuote ? Quote : Invoice;
+      const ref = sanitize(input.reference || '', 40);
+      const existant = await Model.findOne({ reference: ref }).select('_id status').lean();
+      if (!existant) return { ok: false, message: `Document ${input.reference} introuvable.` };
+      if (!isQuote && existant.status !== 'brouillon') return { ok: false, message: 'Une facture émise ne peut pas être supprimée : annulez-la.' };
+      if (isQuote && await Invoice.countDocuments({ quoteId: existant._id })) return { ok: false, message: 'Des factures sont rattachées à ce devis : il ne peut pas être supprimé. Annulez-le plutôt.' };
+      const doc = await Model.findOneAndDelete(isQuote ? { _id: existant._id } : { _id: existant._id, status: 'brouillon' });
+      if (!doc) return { ok: false, message: `Document ${input.reference} introuvable ou modifié entre-temps.` };
+      return { ok: true, message: `${doc.reference} supprimé définitivement (${moneyFmt(doc.total, doc.currency)}).` };
     }
     if (name === 'marquer_facture_payee') {
       const inv = await Invoice.findOne({ reference: sanitize(input.reference || '', 40) });
       if (!inv) return { ok: false, message: `Facture ${input.reference} introuvable.` };
-      inv.status = 'payee'; inv.paidAt = new Date();
-      inv.paymentMethod = sanitize(input.paymentMethod || '', 100);
+      if (inv.status === 'payee' || (inv.status !== 'annulee' && Invoice.balanceOf(inv) <= 0)) return { ok: false, message: `La facture ${inv.reference} est déjà réglée.` };
+      const reste = Invoice.balanceOf(inv);
+      const errP = enregistrerPaiement(inv, { amount: reste, method: input.paymentMethod || '' });
+      if (errP) return { ok: false, message: errP };
       await inv.save();
-      return { ok: true, message: `Facture ${inv.reference} marquée réglée (${inv.total} ${inv.currency}).` };
+      return { ok: true, message: `Facture ${inv.reference} marquée réglée (paiement de ${moneyFmt(reste, inv.currency)} enregistré).` };
     }
     if (name === 'modifier_rendez_vous') {
       if (!/^[a-f0-9]{24}$/i.test(input.rdvId || '')) return { ok: false, message: 'Identifiant de rendez-vous invalide — utilise lister_rendez_vous.' };
@@ -2417,16 +2581,16 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       const d = await Expense.create({
         label: sanitize(input.label || '', 200), amount: Math.round(montant * 100) / 100,
         category: CATEGORIES_CHARGES.includes(input.category) ? input.category : 'autre',
-        currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(input.currency) ? input.currency : 'EUR',
+        currency: DEVISES.includes(input.currency) ? input.currency : 'EUR',
         supplier: sanitize(input.supplier || '', 160), recurring: !!input.recurring,
-        date: input.date ? new Date(input.date) : new Date(),
+        date: input.date && !isNaN(new Date(input.date).getTime()) ? new Date(input.date) : new Date(),
         createdBy: currentUser && currentUser._id ? currentUser._id : undefined,
       });
       return { ok: true, message: `Charge enregistrée : ${d.label} — ${d.amount} ${d.currency}${d.recurring ? ' (récurrente)' : ''}.` };
     }
     if (name === 'requalifier_factures_en_retard') {
       const r = await Invoice.updateMany(
-        { status: { $in: ['envoyee', 'consultee'] }, dueDate: { $lt: new Date() } },
+        { status: { $in: ['envoyee', 'consultee', 'partiellement_payee'] }, dueDate: { $lt: new Date() } },
         { $set: { status: 'en_retard', updatedAt: new Date() } }
       );
       const total = await Invoice.countDocuments({ status: 'en_retard' });
@@ -2437,7 +2601,9 @@ async function executeAssistantTool(name, input, currentUser, opts) {
     if (name === 'relancer_facture') {
       const inv = await Invoice.findOne({ reference: sanitize(input.reference || '', 40) });
       if (!inv) return { ok: false, message: `Facture ${input.reference} introuvable.` };
-      if (inv.status === 'payee') return { ok: false, message: `La facture ${inv.reference} est déjà réglée : aucune relance à envoyer.` };
+      if (inv.status === 'annulee') return { ok: false, message: `La facture ${inv.reference} est annulée : aucune relance à envoyer.` };
+      if (inv.status === 'payee' || Invoice.balanceOf(inv) <= 0) return { ok: false, message: `La facture ${inv.reference} est déjà réglée : aucune relance à envoyer.` };
+      const resteDu = Invoice.balanceOf(inv);
       const jours = inv.dueDate ? Math.floor((Date.now() - new Date(inv.dueDate).getTime()) / 86400000) : 0;
       const para = 'font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);margin:0 0 16px;';
       const html = masterTemplate({
@@ -2446,8 +2612,8 @@ async function executeAssistantTool(name, input, currentUser, opts) {
         subtitle: `Facture ${inv.reference}`,
         body: '<p style="' + para + '">' + escapeHtml(String(input.message || '')).replace(/\n\n+/g, '</p><p style="' + para + '">').replace(/\n/g, '<br>') + '</p>' +
           `<div style="margin:20px 0;padding:18px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:10px;">` +
-          `<div style="font-size:13px;color:rgba(229,226,225,0.6);">Montant dû</div>` +
-          `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:24px;color:#FF5500;">${inv.total.toFixed(2)} ${inv.currency}</div>` +
+          `<div style="font-size:13px;color:rgba(229,226,225,0.6);">${resteDu < inv.total ? 'Reste à payer (sur ' + moneyFmt(inv.total, inv.currency) + ')' : 'Montant dû'}</div>` +
+          `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:24px;color:#FF5500;">${moneyFmt(resteDu, inv.currency)}</div>` +
           (inv.dueDate ? `<div style="font-size:13px;color:rgba(229,226,225,0.6);margin-top:6px;">Échéance : ${new Date(inv.dueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}${jours > 0 ? ` (dépassée de ${jours} jour${jours > 1 ? 's' : ''})` : ''}</div>` : '') +
           `</div>`,
         cta: 'Consulter et régler la facture', ctaUrl: `https://www.pirabellabs.com/facture/${inv.publicToken}`,
@@ -2458,7 +2624,7 @@ async function executeAssistantTool(name, input, currentUser, opts) {
       if (!sent) return { ok: false, message: "Envoi refusé par le fournisseur d'e-mail." };
       inv.internalNotes = ((inv.internalNotes || '') + `\n[Relance ${new Date().toISOString().slice(0, 10)}]`).slice(0, 5000);
       await inv.save();
-      return { ok: true, message: `Relance envoyée à ${inv.clientEmail} pour ${inv.reference} (${inv.total} ${inv.currency}).` };
+      return { ok: true, message: `Relance envoyée à ${inv.clientEmail} pour ${inv.reference} (reste à payer : ${moneyFmt(resteDu, inv.currency)}).` };
     }
     if (name === 'supprimer_rendez_vous') {
       if (!/^[a-f0-9]{24}$/i.test(input.rdvId || '')) return { ok: false, message: 'Identifiant invalide — utilise lister_rendez_vous pour le récupérer.' };
@@ -2683,121 +2849,183 @@ app.post('/api/admin/candidatures/:id/statut', auth, adminOnly, limitBody(10), a
 // ========================================================================
 // === COMPTABILITÉ ===
 // ========================================================================
-// Principe retenu : le chiffre d'affaires est constaté à l'ENCAISSEMENT (facture
-// passée à « payée »), pas à l'émission. C'est la comptabilité de trésorerie, la
+// Principe retenu : le chiffre d'affaires est constaté à l'ENCAISSEMENT (date de
+// chaque paiement reçu, acomptes compris), pas à l'émission. C'est la comptabilité de trésorerie, la
 // plus juste pour une structure de cette taille. Les factures émises non réglées
 // sont donc des créances, pas du chiffre d'affaires.
 const CATEGORIES_CHARGES = ['outils', 'sous_traitance', 'salaires', 'marketing', 'hebergement',
   'materiel', 'deplacement', 'banque', 'impots', 'autre'];
 
 // Bornes d'une période : « 2026-07 » (mois), « 2026 » (année), ou tout par défaut.
+// Les bornes suivent le fuseau de l'agence (Africa/Porto-Novo, UTC+1) : un paiement
+// reçu le 1er août à 0 h 30 à Cotonou appartient bien au mois d'août.
+function debutMoisAgence(annee, moisIndex) {
+  return new Date(Date.UTC(annee, moisIndex, 1) - DECALAGE_AGENCE_MS);
+}
 function bornesPeriode(p) {
   const s = String(p || '').trim();
   let m;
   if ((m = s.match(/^(\d{4})-(\d{2})$/))) {
-    const debut = new Date(Date.UTC(+m[1], +m[2] - 1, 1));
-    return { debut, fin: new Date(Date.UTC(+m[1], +m[2], 1)), libelle: s };
+    return { debut: debutMoisAgence(+m[1], +m[2] - 1), fin: debutMoisAgence(+m[1], +m[2]), libelle: s };
   }
   if ((m = s.match(/^(\d{4})$/))) {
-    return { debut: new Date(Date.UTC(+m[1], 0, 1)), fin: new Date(Date.UTC(+m[1] + 1, 0, 1)), libelle: s };
+    return { debut: debutMoisAgence(+m[1], 0), fin: debutMoisAgence(+m[1] + 1, 0), libelle: s };
   }
   return { debut: null, fin: null, libelle: 'depuis le début' };
+}
+
+// Paiements (réels ou « historiques ») d'une liste de factures, éventuellement
+// filtrés sur une période — c'est la base du CA encaissé.
+function paiementsDesFactures(factures, debut, fin) {
+  const out = [];
+  factures.forEach(i => {
+    if (i.status === 'annulee') return;
+    Invoice.paymentsOf(i).forEach(p => {
+      const d = p.date ? new Date(p.date) : null;
+      if (debut && (!d || d < debut || d >= fin)) return;
+      out.push({ facture: i, montant: Number(p.amount) || 0, date: d, moyen: p.method || '' });
+    });
+  });
+  return out;
 }
 
 async function synthetiseComptabilite(periode) {
   const { debut, fin, libelle } = bornesPeriode(periode);
   const dansPeriode = (champ) => (debut ? { [champ]: { $gte: debut, $lt: fin } } : {});
+  const now = new Date();
 
-  const [payees, emises, devis, charges] = await Promise.all([
-    // CA encaissé : factures réglées, datées par leur date de paiement.
-    Invoice.find(Object.assign({ status: 'payee' }, dansPeriode('paidAt')))
-      .select('reference clientName total currency paidAt paymentMethod').sort({ paidAt: -1 }).lean(),
-    // Créances : émises, consultées ou en retard — encaissement attendu.
-    Invoice.find({ status: { $in: ['envoyee', 'consultee', 'en_retard'] } })
-      .select('reference clientName total currency dueDate status').sort({ dueDate: 1 }).lean(),
-    // Pipeline : devis acceptés (chiffre d'affaires probable, pas encore facturé).
+  // Factures portant au moins un paiement (ou anciennes factures « payées » sans détail).
+  const filtreEncaisse = debut
+    ? { status: { $ne: 'annulee' }, $or: [{ 'payments.date': { $gte: debut, $lt: fin } }, { status: 'payee', 'payments.0': { $exists: false }, paidAt: { $gte: debut, $lt: fin } }] }
+    : { status: { $ne: 'annulee' }, $or: [{ 'payments.0': { $exists: true } }, { status: 'payee' }] };
+
+  const [avecPaiements, emises, devis, charges] = await Promise.all([
+    Invoice.find(filtreEncaisse).select('reference clientName total currency status paidAt paymentMethod payments updatedAt issuedAt title').lean(),
+    // Créances : émises et non soldées — encaissement attendu.
+    Invoice.find({ status: { $in: ['envoyee', 'consultee', 'partiellement_payee', 'en_retard'] } })
+      .select('reference clientName total currency dueDate status payments paidAt').sort({ dueDate: 1 }).lean(),
+    // Pipeline : devis acceptés pas encore (entièrement) facturés.
     Quote.find({ status: 'accepte' }).select('reference clientName total currency acceptedAt').lean(),
     Expense.find(dansPeriode('date')).select('label category amount currency date supplier recurring').sort({ date: -1 }).lean(),
   ]);
+  const facturesDevis = devis.length
+    ? await Invoice.find({ quoteId: { $in: devis.map(q => q._id) }, status: { $ne: 'annulee' } }).select('quoteId kind total').lean()
+    : [];
+
+  const encaissements = paiementsDesFactures(avecPaiements, debut, fin).sort((a, b) => (b.date || 0) - (a.date || 0));
 
   // Les devises ne s'additionnent pas : on ventile.
   const parDevise = {};
   const init = (d) => (parDevise[d] = parDevise[d] || { ca: 0, charges: 0, resultat: 0, creances: 0, pipeline: 0 });
-  payees.forEach(i => { init(i.currency).ca += i.total; });
+  encaissements.forEach(e => { init(e.facture.currency).ca += e.montant; });
   charges.forEach(c => { init(c.currency).charges += c.amount; });
-  emises.forEach(i => { init(i.currency).creances += i.total; });
-  devis.forEach(q => { init(q.currency).pipeline += q.total; });
-  Object.values(parDevise).forEach(v => {
-    v.ca = Math.round(v.ca * 100) / 100;
-    v.charges = Math.round(v.charges * 100) / 100;
-    v.creances = Math.round(v.creances * 100) / 100;
-    v.pipeline = Math.round(v.pipeline * 100) / 100;
-    v.resultat = Math.round((v.ca - v.charges) * 100) / 100;
+  emises.forEach(i => { init(i.currency).creances += Invoice.balanceOf(i); });
+
+  // Pipeline : un devis accepté déjà entièrement facturé (facture totale ou de solde)
+  // en sort ; s'il n'a que des acomptes, seul le reste à facturer y figure.
+  const parDevis = {};
+  facturesDevis.forEach(i => { (parDevis[String(i.quoteId)] = parDevis[String(i.quoteId)] || []).push(i); });
+  const pipelineDevis = [];
+  devis.forEach(q => {
+    const f = parDevis[String(q._id)] || [];
+    if (f.some(i => (i.kind || 'totale') !== 'acompte')) return;
+    const reste = arrondiDevise((q.total || 0) - f.reduce((s, i) => s + (i.total || 0), 0), q.currency);
+    if (reste <= 0) return;
+    init(q.currency).pipeline += reste;
+    pipelineDevis.push(q);
+  });
+  Object.entries(parDevise).forEach(([d, v]) => {
+    v.ca = arrondiDevise(v.ca, d);
+    v.charges = arrondiDevise(v.charges, d);
+    v.creances = arrondiDevise(v.creances, d);
+    v.pipeline = arrondiDevise(v.pipeline, d);
+    v.resultat = arrondiDevise(v.ca - v.charges, d);
     v.marge = v.ca > 0 ? Math.round((v.resultat / v.ca) * 100) : 0;
   });
 
-  // Répartition des charges par poste, pour voir où part l'argent.
+  // Répartition des charges par poste ET par devise, pour voir où part l'argent.
   const parCategorie = {};
   charges.forEach(c => {
-    parCategorie[c.category] = parCategorie[c.category] || { montant: 0, nombre: 0, devise: c.currency };
-    parCategorie[c.category].montant += c.amount;
-    parCategorie[c.category].nombre++;
+    const k = c.category + '|' + c.currency;
+    parCategorie[k] = parCategorie[k] || { categorie: c.category, devise: c.currency, montant: 0, nombre: 0 };
+    parCategorie[k].montant += c.amount;
+    parCategorie[k].nombre++;
   });
-  Object.values(parCategorie).forEach(v => { v.montant = Math.round(v.montant * 100) / 100; });
+  Object.values(parCategorie).forEach(v => { v.montant = arrondiDevise(v.montant, v.devise); });
 
-  // Évolution mensuelle sur 12 mois : la tendance compte plus que l'instantané.
-  const ilYaUnAn = new Date(); ilYaUnAn.setMonth(ilYaUnAn.getMonth() - 11); ilYaUnAn.setDate(1);
-  const [caMois, chargesMois] = await Promise.all([
+  // Évolution mensuelle sur 12 mois, par devise (une série par devise).
+  const moisCourant = new Intl.DateTimeFormat('en-CA', { timeZone: TZ_AGENCE, year: 'numeric', month: '2-digit' }).format(now).split('-');
+  const ilYaUnAn = debutMoisAgence(+moisCourant[0], +moisCourant[1] - 1 - 11);
+  const [caPaiements, caHistorique, chargesMois] = await Promise.all([
     Invoice.aggregate([
-      { $match: { status: 'payee', paidAt: { $gte: ilYaUnAn } } },
-      { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$paidAt' } }, total: { $sum: '$total' } } },
+      { $match: { status: { $ne: 'annulee' }, 'payments.date': { $gte: ilYaUnAn } } },
+      { $unwind: '$payments' },
+      { $match: { 'payments.date': { $gte: ilYaUnAn } } },
+      { $group: { _id: { mois: { $dateToString: { format: '%Y-%m', date: '$payments.date', timezone: TZ_AGENCE } }, devise: '$currency' }, total: { $sum: '$payments.amount' } } },
+    ]),
+    // Anciennes factures payées sans détail des paiements : un paiement du total à paidAt.
+    Invoice.aggregate([
+      { $match: { status: 'payee', 'payments.0': { $exists: false }, paidAt: { $gte: ilYaUnAn } } },
+      { $group: { _id: { mois: { $dateToString: { format: '%Y-%m', date: '$paidAt', timezone: TZ_AGENCE } }, devise: '$currency' }, total: { $sum: '$total' } } },
     ]),
     Expense.aggregate([
       { $match: { date: { $gte: ilYaUnAn } } },
-      { $group: { _id: { $dateToString: { format: '%Y-%m', date: '$date' } }, total: { $sum: '$amount' } } },
+      { $group: { _id: { mois: { $dateToString: { format: '%Y-%m', date: '$date', timezone: TZ_AGENCE } }, devise: '$currency' }, total: { $sum: '$amount' } } },
     ]),
   ]);
-  const mois = {};
-  caMois.forEach(m => { mois[m._id] = mois[m._id] || { ca: 0, charges: 0 }; mois[m._id].ca = Math.round(m.total); });
-  chargesMois.forEach(m => { mois[m._id] = mois[m._id] || { ca: 0, charges: 0 }; mois[m._id].charges = Math.round(m.total); });
-  const evolution = Object.keys(mois).sort().map(k => ({ mois: k, ca: mois[k].ca, charges: mois[k].charges, resultat: mois[k].ca - mois[k].charges }));
+  const series = {};
+  const cellule = (id) => {
+    series[id.devise] = series[id.devise] || {};
+    return (series[id.devise][id.mois] = series[id.devise][id.mois] || { ca: 0, charges: 0 });
+  };
+  caPaiements.concat(caHistorique).forEach(m => { cellule(m._id).ca += m.total; });
+  chargesMois.forEach(m => { cellule(m._id).charges += m.total; });
+  const evolution = {};
+  Object.keys(series).forEach(dev => {
+    evolution[dev] = Object.keys(series[dev]).sort().map(k => {
+      const v = series[dev][k];
+      const ca = arrondiDevise(v.ca, dev), ch = arrondiDevise(v.charges, dev);
+      return { mois: k, ca, charges: ch, resultat: arrondiDevise(ca - ch, dev) };
+    });
+  });
 
-  const enRetard = emises.filter(i => i.dueDate && new Date(i.dueDate) < new Date());
+  const enRetard = emises.filter(i => Invoice.effectiveStatus(i, now) === 'en_retard');
   const chargesRecurrentes = charges.filter(c => c.recurring);
 
   return {
     periode: libelle,
     parDevise,
     resume: {
-      facturesPayees: payees.length,
+      paiementsRecus: encaissements.length,
+      facturesPayees: new Set(encaissements.map(e => String(e.facture._id))).size,
       creancesOuvertes: emises.length,
       creancesEnRetard: enRetard.length,
-      devisAcceptes: devis.length,
+      devisAcceptes: pipelineDevis.length,
       nombreCharges: charges.length,
       chargesRecurrentes: chargesRecurrentes.length,
     },
     chargesParCategorie: parCategorie,
     evolution,
-    encaissements: payees.slice(0, 40).map(i => ({
-      ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency,
-      le: i.paidAt, moyen: i.paymentMethod || '',
+    encaissements: encaissements.slice(0, 40).map(e => ({
+      ref: e.facture.reference, client: e.facture.clientName, montant: arrondiDevise(e.montant, e.facture.currency), devise: e.facture.currency,
+      le: e.date, moyen: e.moyen,
     })),
     creances: emises.slice(0, 40).map(i => ({
-      ref: i.reference, client: i.clientName, montant: i.total, devise: i.currency,
-      echeance: i.dueDate, statut: i.status,
-      retard: i.dueDate && new Date(i.dueDate) < new Date() ? Math.floor((Date.now() - new Date(i.dueDate)) / 86400000) : 0,
+      ref: i.reference, client: i.clientName, montant: Invoice.balanceOf(i), total: i.total, devise: i.currency,
+      echeance: i.dueDate, statut: Invoice.effectiveStatus(i, now),
+      retard: i.dueDate && new Date(i.dueDate) < now ? Math.floor((now - new Date(i.dueDate)) / 86400000) : 0,
     })),
     depenses: charges.slice(0, 40).map(c => ({
-      libelle: c.label, categorie: c.category, montant: c.amount, devise: c.currency,
+      id: String(c._id), libelle: c.label, categorie: c.category, montant: c.amount, devise: c.currency,
       le: c.date, fournisseur: c.supplier || '', recurrente: c.recurring,
     })),
-    note: 'Chiffre d’affaires constaté à l’encaissement. Les montants ne sont jamais additionnés entre devises différentes.',
+    note: 'Chiffre d’affaires constaté à l’encaissement (date de chaque paiement, acomptes compris). Les montants ne sont jamais additionnés entre devises différentes.',
   };
 }
 
 app.get('/api/admin/comptabilite', auth, adminOnly, async (req, res) => {
   try { res.json(await synthetiseComptabilite(req.query.periode)); }
-  catch (e) { console.error('[compta]', e.message); res.status(500).json({ error: 'Erreur : ' + e.message }); }
+  catch (e) { console.error('[compta]', e.message); res.status(500).json({ error: messageErreur(e, 'Erreur lors du calcul de la comptabilité.') }); }
 });
 
 // --- Charges : saisie et suivi ---
@@ -2816,10 +3044,13 @@ app.post('/api/admin/depenses', auth, adminOnly, limitBody(20), async (req, res)
     const amount = Number(req.body.amount);
     if (!label || label.length < 2) return res.status(400).json({ error: 'Libellé requis.' });
     if (!(amount > 0)) return res.status(400).json({ error: 'Montant invalide.' });
+    if (req.body.currency && !DEVISES.includes(req.body.currency)) return res.status(400).json({ error: 'Devise non prise en charge.' });
+    if (req.body.date && isNaN(new Date(req.body.date).getTime())) return res.status(400).json({ error: 'Date invalide.' });
+    const currency = DEVISES.includes(req.body.currency) ? req.body.currency : 'EUR';
     const d = await Expense.create({
-      label, amount: Math.round(amount * 100) / 100,
+      label, amount: arrondiDevise(amount, currency),
       category: CATEGORIES_CHARGES.includes(req.body.category) ? req.body.category : 'autre',
-      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(req.body.currency) ? req.body.currency : 'EUR',
+      currency,
       recurring: !!req.body.recurring,
       supplier: sanitize(req.body.supplier || '', 160),
       paymentMethod: sanitize(req.body.paymentMethod || '', 80),
@@ -2829,7 +3060,7 @@ app.post('/api/admin/depenses', auth, adminOnly, limitBody(20), async (req, res)
       createdBy: req.user._id,
     });
     res.json({ success: true, depense: d });
-  } catch (e) { console.error('[depense.create]', e.message); res.status(500).json({ error: 'Erreur : ' + e.message }); }
+  } catch (e) { console.error('[depense.create]', e.message); res.status(500).json({ error: messageErreur(e, 'Erreur lors de l’enregistrement de la charge.') }); }
 });
 
 app.delete('/api/admin/depenses/:id', auth, adminOnly, async (req, res) => {
@@ -2841,26 +3072,31 @@ app.delete('/api/admin/depenses/:id', auth, adminOnly, async (req, res) => {
 });
 
 // Export comptable : format ouvert, lisible par tout tableur ou expert-comptable.
+// Une ligne de recette par PAIEMENT reçu (acomptes compris), datée du jour du paiement.
 app.get('/api/admin/comptabilite/export', auth, adminOnly, async (req, res) => {
   try {
     const { debut, fin } = bornesPeriode(req.query.periode);
     const dans = (c) => (debut ? { [c]: { $gte: debut, $lt: fin } } : {});
-    const [payees, charges] = await Promise.all([
-      Invoice.find(Object.assign({ status: 'payee' }, dans('paidAt'))).select('reference clientName total currency paidAt paymentMethod title').sort({ paidAt: 1 }).lean(),
+    const filtreEncaisse = debut
+      ? { status: { $ne: 'annulee' }, $or: [{ 'payments.date': { $gte: debut, $lt: fin } }, { status: 'payee', 'payments.0': { $exists: false }, paidAt: { $gte: debut, $lt: fin } }] }
+      : { status: { $ne: 'annulee' }, $or: [{ 'payments.0': { $exists: true } }, { status: 'payee' }] };
+    const [factures, charges] = await Promise.all([
+      Invoice.find(filtreEncaisse).select('reference clientName total currency status paidAt paymentMethod payments updatedAt issuedAt title').lean(),
       Expense.find(dans('date')).select('label category amount currency date supplier reference').sort({ date: 1 }).lean(),
     ]);
+    const jour = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ_AGENCE }).format(new Date(d));
     const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    const lignes = [['Date', 'Type', 'Categorie', 'Libelle', 'Tiers', 'Reference', 'Recette', 'Depense', 'Devise'].join(';')];
-    payees.forEach(i => lignes.push([
-      new Date(i.paidAt).toISOString().slice(0, 10), 'Recette', 'Prestation',
-      esc(i.title), esc(i.clientName), esc(i.reference), i.total, '', i.currency,
+    const lignes = [['Date', 'Type', 'Catégorie', 'Libellé', 'Tiers', 'Référence', 'Recette', 'Dépense', 'Devise', 'Moyen'].join(';')];
+    paiementsDesFactures(factures, debut, fin).sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(e => lignes.push([
+      e.date ? jour(e.date) : '', 'Recette', 'Prestation',
+      esc(e.facture.title), esc(e.facture.clientName), esc(e.facture.reference), arrondiDevise(e.montant, e.facture.currency), '', e.facture.currency, esc(e.moyen),
     ].join(';')));
     charges.forEach(c => lignes.push([
-      new Date(c.date).toISOString().slice(0, 10), 'Depense', c.category,
-      esc(c.label), esc(c.supplier), esc(c.reference), '', c.amount, c.currency,
+      jour(c.date), 'Dépense', c.category,
+      esc(c.label), esc(c.supplier), esc(c.reference), '', c.amount, c.currency, '',
     ].join(';')));
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="comptabilite-${req.query.periode || 'complet'}.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="comptabilite-${String(req.query.periode || 'complet').replace(/[^0-9a-z-]/gi, '')}.csv"`);
     res.send('﻿' + lignes.join('\n'));   // BOM : accents corrects dans Excel
   } catch (e) { console.error('[compta.export]', e.message); res.status(500).json({ error: 'Erreur export.' }); }
 });
@@ -3393,27 +3629,32 @@ app.get('/api/client/me', clientAuth, async (req, res) => {
     const [projects, quotes, invoices, messages, appointments] = await Promise.all([
       Project.find({ leadId: lead._id }).sort({ createdAt: -1 }).lean(),
       Quote.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
-        .select('reference title total currency status validUntil issuedAt publicToken').lean(),
+        .select('reference title total currency status validUntil issuedAt publicToken publicSlug').lean(),
       Invoice.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
-        .select('reference title total currency status dueDate issuedAt paidAt publicToken').lean(),
+        .select('reference title total currency status dueDate issuedAt paidAt paymentMethod payments updatedAt publicToken').lean(),
       ClientMessage.find({ leadId: lead._id }).sort({ createdAt: 1 }).limit(200).lean(),
       Appointment.find({ email: lead.email, status: { $in: ['demande', 'confirme'] } }).sort({ createdAt: -1 }).limit(10)
         .select('preferredDate preferredTime channel status subject').lean(),
     ]);
 
     // Comptabilite : synthese des montants, par devise (jamais additionner des devises differentes).
+    // Les factures annulées ne sont ni dues ni facturées ; « payé » et « dû » viennent
+    // des paiements réellement enregistrés (acomptes compris).
     const parDevise = {};
     invoices.forEach(i => {
+      if (i.status === 'annulee') return;
       const d = i.currency || 'EUR';
-      parDevise[d] = parDevise[d] || { facture: 0, paye: 0, du: 0 };
+      parDevise[d] = parDevise[d] || { facture: 0, paye: 0, du: 0, facturesDues: 0 };
       parDevise[d].facture += i.total;
-      if (i.status === 'payee') parDevise[d].paye += i.total;
-      else parDevise[d].du += i.total;
+      parDevise[d].paye += Invoice.amountPaidOf(i);
+      const reste = Invoice.balanceOf(i);
+      parDevise[d].du += reste;
+      if (reste > 0) parDevise[d].facturesDues++;
     });
-    Object.values(parDevise).forEach(v => {
-      v.facture = Math.round(v.facture * 100) / 100;
-      v.paye = Math.round(v.paye * 100) / 100;
-      v.du = Math.round(v.du * 100) / 100;
+    Object.entries(parDevise).forEach(([d, v]) => {
+      v.facture = arrondiDevise(v.facture, d);
+      v.paye = arrondiDevise(v.paye, d);
+      v.du = arrondiDevise(v.du, d);
     });
 
     // Marque les messages de l'equipe comme lus par le client.
@@ -3427,8 +3668,13 @@ app.get('/api/client/me', clientAuth, async (req, res) => {
         debut: p.startedAt, echeance: p.dueDate, livre: p.deliveredAt,
         previewUrl: p.previewUrl || '', liveUrl: p.liveUrl || '',
       })),
-      devis: quotes.map(q => ({ ref: q.reference, titre: q.title, montant: q.total, devise: q.currency, statut: q.status, valideJusqu: q.validUntil, lien: '/devis/' + q.publicToken })),
-      factures: invoices.map(i => ({ ref: i.reference, titre: i.title, montant: i.total, devise: i.currency, statut: i.status, echeance: i.dueDate, payeeLe: i.paidAt, lien: '/facture/' + i.publicToken })),
+      devis: quotes.map(q => ({ ref: q.reference, titre: q.title, montant: q.total, devise: q.currency, statut: statutDevisEffectif(q), valideJusqu: q.validUntil, lien: '/devis/' + (q.publicSlug || q.publicToken) })),
+      factures: invoices.map(i => ({
+        ref: i.reference, titre: i.title, montant: i.total, devise: i.currency, statut: Invoice.effectiveStatus(i),
+        paye: Invoice.amountPaidOf(i), reste: Invoice.balanceOf(i), echeance: i.dueDate, payeeLe: i.paidAt,
+        paiements: i.status === 'annulee' ? [] : Invoice.paymentsOf(i).map(p => ({ montant: p.amount, le: p.date })),
+        lien: '/facture/' + i.publicToken,
+      })),
       messages: messages.map(m => ({ de: m.from, auteur: m.authorName, contenu: m.content, le: m.createdAt })),
       rendezVous: appointments.map(a => ({ date: a.preferredDate, heure: a.preferredTime, canal: a.channel, statut: a.status, objet: a.subject })),
       comptabilite: parDevise,
@@ -3596,7 +3842,7 @@ Qualification : chaud = projet precis avec budget ou echeance claire. tiede = be
 identifiable mais flou. froid = demande vague, hors sujet, ou candidature spontanee.`;
 
   const demande = `Nom : ${lead.name}\nEntreprise : ${lead.company || 'non précisée'}\n` +
-    `E-mail : ${lead.email}\nTelephone : ${lead.phone || 'non precise'}\n` +
+    `E-mail : ${lead.email}\nTéléphone : ${lead.phone || 'non précisé'}\n` +
     `Service demande : ${lead.service}\n\nMessage :\n${lead.message}`;
 
   const { ok, data } = await AI.callOpenRouter({
@@ -3996,7 +4242,7 @@ app.post('/api/admin/livres-blancs', auth, adminOnly, limitBody(20), async (req,
     doc.slug = await uniqueSlug(req.body.slug || title);
     await doc.save();
     res.json({ success: true, livreBlanc: doc });
-  } catch (e) { console.error('[lb.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+  } catch (e) { console.error('[lb.create]', e.message); res.status(500).json({ error: 'Erreur lors de la création.' }); }
 });
 app.patch('/api/admin/livres-blancs/:id', auth, adminOnly, limitBody(20), async (req, res) => {
   try {
@@ -4264,7 +4510,7 @@ app.post('/api/admin/case-studies', auth, adminOnly, limitBody(20), async (req, 
     doc.slug = await uniqueCaseSlug(req.body.slug || title);
     await doc.save();
     res.json({ success: true, caseStudy: doc });
-  } catch (e) { console.error('[cases.create]', e.message); res.status(500).json({ error: 'Erreur creation.' }); }
+  } catch (e) { console.error('[cases.create]', e.message); res.status(500).json({ error: 'Erreur lors de la création.' }); }
 });
 app.patch('/api/admin/case-studies/:id', auth, adminOnly, limitBody(20), async (req, res) => {
   try {
@@ -4692,7 +4938,7 @@ app.post('/api/admin/reviews/create-link', auth, adminOnly, limitBody(6), async 
       sendEmail(email, 'Votre avis sur Pirabel Labs (2 min)', html).catch(() => {});
     }
     res.json({ success: true, publicUrl, emailSent: wantMail });
-  } catch (e) { console.error('[reviews.create-link]', e.message); res.status(500).json({ error: 'Erreur creation du lien.' }); }
+  } catch (e) { console.error('[reviews.create-link]', e.message); res.status(500).json({ error: 'Erreur lors de la création du lien.' }); }
 });
 
 // --- PUBLIC : page temoignages (avis publies, apres moderation) ---
@@ -4875,7 +5121,7 @@ app.get('/admin/setup', async (req, res) => {
 // POST /api/admin/setup : cree le compte admin si aucun n'existe.
 const setupLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, max: 5,
-  message: 'Trop de tentatives. Reessayez dans 1 heure.',
+  message: 'Trop de tentatives. Réessayez dans 1 heure.',
   keyPrefix: 'setup',
 });
 app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
@@ -4897,7 +5143,7 @@ app.post('/api/admin/setup', setupLimiter, limitBody(5), async (req, res) => {
     res.json({ success: true, message: 'Compte administrateur créé.' });
   } catch (err) {
     console.error('[setup]', err.message);
-    res.status(500).json({ error: 'Erreur serveur. Reessayez.' });
+    res.status(500).json({ error: 'Erreur serveur. Réessayez.' });
   }
 });
 
@@ -4947,7 +5193,7 @@ app.post('/api/admin/media', auth, adminOnly, limitBody(3000), async (req, res) 
   try {
     const { data, filename, alt, folder, tags, width, height } = req.body;
     const validated = validateImageDataUrl(data);
-    if (!validated) return res.status(400).json({ error: 'Image invalide (formats acceptes : JPG, PNG, WEBP, GIF, SVG ; max 2MB).' });
+    if (!validated) return res.status(400).json({ error: 'Image invalide (formats acceptés : JPG, PNG, WEBP, GIF, SVG ; 2 Mo maximum).' });
 
     const VALID_FOLDERS = ['general', 'realisations', 'blog', 'team', 'logos', 'icones', 'autres'];
 
@@ -5049,46 +5295,141 @@ function genererAlias(base) {
   return `${mots}-${suffixe}`;
 }
 
-function generateQuoteReference() {
-  const year = new Date().getFullYear();
-  const random = Math.floor(Math.random() * 9000) + 1000;
-  return `DEVIS-${year}-${random}`;
-}
-
 function generateToken() {
   return crypto.randomBytes(24).toString('hex');
 }
 
-function recalcQuote(items, taxRate) {
-  const cleaned = items.map(i => {
-    const qty = Math.max(0, Number(i.quantity) || 1);
-    const price = Math.max(0, Number(i.unitPrice) || 0);
+// Pourcentage borné 0–100, avec valeur par défaut si absent ou illisible.
+function pctOu(v, defaut) {
+  const n = Number(v);
+  if (v === undefined || v === null || v === '' || !Number.isFinite(n)) return defaut;
+  return Math.min(100, Math.max(0, n));
+}
+
+// Nettoie les lignes et calcule les totaux (remise appliquée avant TVA, arrondi selon la devise).
+function recalcQuote(items, taxRate, currency, discountPercent) {
+  const cleaned = (Array.isArray(items) ? items : []).map(i => {
+    const q = Number(i && i.quantity);
+    const qty = Number.isFinite(q) ? Math.max(0, q) : 1;
+    const p = Number(i && i.unitPrice);
+    const price = arrondiDevise(Number.isFinite(p) ? Math.max(0, p) : 0, currency);
     return {
-      description: sanitize(String(i.description || ''), 500),
+      description: sanitize(String((i && i.description) || ''), 500),
       quantity: qty,
-      unitPrice: Math.round(price * 100) / 100,
-      total: Math.round(qty * price * 100) / 100
+      unitPrice: price,
+      total: arrondiDevise(qty * price, currency)   // même calcul que le pre-save du modèle
     };
+  }).filter(i => i.description);
+  const subtotal = arrondiDevise(cleaned.reduce((s, i) => s + i.total, 0), currency);
+  const discountAmount = arrondiDevise(subtotal * (discountPercent || 0) / 100, currency);
+  const base = subtotal - discountAmount;
+  const tax = arrondiDevise(base * (taxRate || 0) / 100, currency);
+  return { items: cleaned, subtotal, discountAmount, taxAmount: tax, total: arrondiDevise(base + tax, currency) };
+}
+
+// Bloc HTML (e-mail) : lignes, remise, TVA, total — et, pour une facture, le déjà
+// réglé et le reste à payer quand un paiement partiel existe.
+function blocMontantsEmail(doc, opts) {
+  opts = opts || {};
+  const cur = doc.currency;
+  const td = 'padding:8px 12px;border-bottom:1px solid #222;font-size:13px;';
+  const th = 'padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);';
+  const rows = (doc.items || []).map(i =>
+    `<tr><td style="${td}color:#e5e2e1;">${escapeHtml(i.description)}</td><td style="${td}color:rgba(229,226,225,0.7);text-align:right;">${i.quantity}</td><td style="${td}color:rgba(229,226,225,0.7);text-align:right;">${moneyFmt(i.unitPrice, cur)}</td><td style="${td}color:#e5e2e1;font-weight:600;text-align:right;">${moneyFmt(i.total, cur)}</td></tr>`
+  ).join('');
+  const ligne = (label, val) => `<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">${label} : ${val}</div>`;
+  let html = `<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="${th}text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="${th}text-align:right;">Qté</th><th style="${th}text-align:right;">PU</th><th style="${th}text-align:right;">Total</th></tr></thead><tbody>${rows}</tbody></table>`;
+  html += '<div style="margin-top:16px;text-align:right;">' + ligne('Sous-total', moneyFmt(doc.subtotal, cur));
+  if (doc.discountAmount > 0) html += ligne(`Remise ${doc.discountPercent} %`, '− ' + moneyFmt(doc.discountAmount, cur));
+  if (doc.taxRate > 0) html += ligne(`TVA ${doc.taxRate} %`, moneyFmt(doc.taxAmount, cur));
+  html += `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ${moneyFmt(doc.total, cur)}</div>`;
+  if (opts.facture) {
+    const paye = Invoice.amountPaidOf(doc);
+    if (paye > 0 && doc.status !== 'annulee') {
+      html += ligne('Déjà réglé', moneyFmt(paye, cur));
+      html += `<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;color:#e5e2e1;margin-top:6px;">Reste à payer : ${moneyFmt(Invoice.balanceOf(doc), cur)}</div>`;
+    }
+  }
+  return html + '</div>';
+}
+
+function emailDevisHtml(quote, publicUrl) {
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: `Votre devis ${quote.reference} - ${quote.title}`,
+    title: 'Bonjour ' + escapeHtml((quote.clientName || '').split(' ')[0]) + ',',
+    subtitle: 'Votre devis est prêt',
+    body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Comme convenu, voici votre devis personnalisé :</p>' +
+      '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
+      '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(quote.reference) + '</div>' +
+      '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(quote.title) + '</div>' +
+      blocMontantsEmail(quote) +
+      '</div>' +
+      (quote.validUntil ? '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Valable jusqu’au <strong style="color:#e5e2e1;">' + new Date(quote.validUntil).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ_AGENCE }) + '</strong>.</p>' : '') +
+      '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le détail, accepter ou refuser le devis directement en ligne.</p>',
+    cta: 'Consulter et valider le devis',
+    ctaUrl: publicUrl
   });
-  const subtotal = cleaned.reduce((s, i) => s + i.total, 0);
-  const tax = Math.round((subtotal * (taxRate || 0) / 100) * 100) / 100;
-  return { items: cleaned, subtotal: Math.round(subtotal * 100) / 100, taxAmount: tax, total: Math.round((subtotal + tax) * 100) / 100 };
+}
+
+function emailFactureHtml(invoice, publicUrl) {
+  const reste = Invoice.balanceOf(invoice);
+  const partiel = Invoice.amountPaidOf(invoice) > 0;
+  return masterTemplate({
+    headerType: 'hero',
+    preheader: `Votre facture ${invoice.reference} - ${invoice.title}`,
+    title: 'Bonjour ' + escapeHtml((invoice.clientName || '').split(' ')[0]) + ',',
+    subtitle: 'Votre facture est disponible',
+    body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici votre facture :</p>' +
+      '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
+      '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(invoice.reference) + '</div>' +
+      '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(invoice.title) + '</div>' +
+      blocMontantsEmail(invoice, { facture: true }) +
+      '</div>' +
+      (reste > 0 && invoice.dueDate ? '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">' + (partiel ? 'Reste de ' + moneyFmt(reste, invoice.currency) + ' à régler' : 'À régler') + ' avant le <strong style="color:#e5e2e1;">' + new Date(invoice.dueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ_AGENCE }) + '</strong>.</p>' : '') +
+      '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le détail et les modalités de paiement.</p>',
+    cta: 'Consulter la facture',
+    ctaUrl: publicUrl
+  });
+}
+
+// État de facturation d'un devis à partir de ses factures (hors annulées).
+// Une ancienne facture sans « kind » est une facture totale.
+function etatFacturationDevis(quote, factures) {
+  const actives = (factures || []).filter(i => i.status !== 'annulee');
+  const complete = actives.find(i => (i.kind || 'totale') !== 'acompte') || null;
+  const acomptes = actives.filter(i => i.kind === 'acompte');
+  const montantAcomptes = arrondiDevise(acomptes.reduce((s, i) => s + (i.total || 0), 0), quote.currency);
+  return {
+    complete: !!complete,
+    reference: complete ? complete.reference : '',
+    acomptes: acomptes.length,
+    montantAcomptes,
+    peutTotale: !complete && !acomptes.length,
+    peutAcompte: !complete && montantAcomptes < (quote.total || 0),
+    peutSolde: !complete && acomptes.length > 0 && montantAcomptes < (quote.total || 0),
+  };
 }
 
 // POST /api/admin/quotes : créer un devis (brouillon)
 app.post('/api/admin/quotes', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
-    const { leadId, title, items, taxRate, currency, introduction, terms, validDays } = req.body;
-    if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Lead invalide.' });
-    if (!title || title.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+    const b = req.body || {};
+    const { leadId, title, items, taxRate, currency, introduction, terms, validDays } = b;
+    if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Client invalide.' });
+    if (!title || String(title).trim().length < 3) return res.status(400).json({ error: 'Titre requis (3 caractères minimum).' });
+    const errV = validerChampsDocument(b);
+    if (errV) return res.status(400).json({ error: errV });
 
     const lead = await Lead.findById(leadId);
-    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
+    if (!lead) return res.status(404).json({ error: 'Client introuvable.' });
 
-    const totals = recalcQuote(Array.isArray(items) ? items : [], Number(taxRate) || 0);
+    const cur = DEVISES.includes(currency) ? currency : 'EUR';
+    const tva = pctOu(taxRate, 0);
+    const remise = pctOu(b.discountPercent, 0);
+    const totals = recalcQuote(items, tva, cur, remise);
 
-    const quote = await Quote.create({
-      reference: generateQuoteReference(),
+    const quote = await creerAvecReference(Quote, 'DEVIS', {
       leadId: lead._id,
       clientName: lead.name,
       clientEmail: lead.email,
@@ -5097,40 +5438,80 @@ app.post('/api/admin/quotes', auth, adminOnly, limitBody(50), async (req, res) =
       clientAddress: lead.clientData?.address || '',
       items: totals.items,
       subtotal: totals.subtotal,
-      taxRate: Math.max(0, Number(taxRate) || 0),
+      discountPercent: remise,
+      discountAmount: totals.discountAmount,
+      taxRate: tva,
       taxAmount: totals.taxAmount,
       total: totals.total,
-      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(currency) ? currency : 'EUR',
-      title: sanitize(title, 200),
+      currency: cur,
+      depositPercent: pctOu(b.depositPercent, 30),
+      title: sanitize(String(title), 200),
       introduction: sanitize(introduction || '', 2000),
       terms: sanitize(terms || '', 5000),
       validUntil: new Date(Date.now() + (Number(validDays) || 30) * 86400000),
       publicToken: generateToken(),
-      publicSlug: genererAlias(sanitize(title, 200)),
+      publicSlug: genererAlias(sanitize(String(title), 200)),
       createdBy: req.user._id
     });
 
     res.json({ success: true, quote });
   } catch (err) {
     console.error('[quotes] create error:', err.message);
-    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+    res.status(500).json({ error: messageErreur(err, 'Erreur lors de la création du devis.') });
   }
 });
 
-// GET /api/admin/quotes : liste
+// GET /api/admin/quotes : liste (+ factures liées) et statistiques par devise
 app.get('/api/admin/quotes', auth, adminOnly, async (req, res) => {
   try {
+    const now = new Date();
     const status = sanitize(req.query.status || '', 30);
     const leadId = sanitize(req.query.leadId || '', 30);
     const q = {};
-    if (['brouillon', 'envoye', 'consulte', 'accepte', 'refuse', 'expire'].includes(status)) q.status = status;
+    if (status === 'expire') q.$or = [{ status: 'expire' }, { status: { $in: ['envoye', 'consulte'] }, validUntil: { $lt: now } }];
+    else if (['brouillon', 'envoye', 'consulte', 'accepte', 'refuse', 'annule'].includes(status)) q.status = status;
     if (/^[a-f0-9]{24}$/i.test(leadId)) q.leadId = leadId;
-    const quotes = await Quote.find(q).sort({ createdAt: -1 }).limit(300);
-    const stats = await Quote.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 }, total: { $sum: '$total' } } }
+    const quotes = (await Quote.find(q).sort({ createdAt: -1 }).limit(300))
+      .filter(x => !status || statutDevisEffectif(x, now) === status);
+
+    const [liees, tous] = await Promise.all([
+      Invoice.find({ quoteId: { $in: quotes.map(x => x._id) } })
+        .select('reference kind status total currency quoteId publicToken dueDate payments paidAt').lean(),
+      Quote.find({}).select('status currency total validUntil').lean(),
     ]);
-    res.json({ quotes, stats });
+    const parDevis = {};
+    liees.forEach(i => {
+      const k = String(i.quoteId);
+      (parDevis[k] = parDevis[k] || []).push({
+        _id: String(i._id), reference: i.reference, kind: i.kind || 'totale', status: Invoice.effectiveStatus(i, now),
+        total: i.total, currency: i.currency, publicToken: i.publicToken,
+      });
+    });
+
+    // Statistiques sur TOUS les devis (pas la liste plafonnée), ventilées par devise.
+    const stats = { total: 0, byStatus: {}, acceptedByCurrency: {}, pendingByCurrency: {}, acceptanceRate: 0 };
+    tous.forEach(d => {
+      const s = statutDevisEffectif(d, now);
+      const c = d.currency || 'EUR';
+      stats.total++;
+      stats.byStatus[s] = (stats.byStatus[s] || 0) + 1;
+      if (s === 'accepte') stats.acceptedByCurrency[c] = arrondiDevise((stats.acceptedByCurrency[c] || 0) + (d.total || 0), c);
+      if (s === 'envoye' || s === 'consulte') stats.pendingByCurrency[c] = arrondiDevise((stats.pendingByCurrency[c] || 0) + (d.total || 0), c);
+    });
+    const base = stats.total - (stats.byStatus.brouillon || 0) - (stats.byStatus.annule || 0);
+    stats.acceptanceRate = base > 0 ? Math.round(((stats.byStatus.accepte || 0) / base) * 100) : 0;
+
+    res.json({
+      quotes: quotes.map(x => {
+        const o = exposerDevis(x);
+        o.invoices = parDevis[String(x._id)] || [];
+        o.facturation = etatFacturationDevis(x, o.invoices);
+        return o;
+      }),
+      stats
+    });
   } catch (err) {
+    console.error('[quotes] list error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
   }
 });
@@ -5140,33 +5521,43 @@ app.get('/api/admin/quotes/:id', auth, adminOnly, async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    res.json(quote);
+    res.json(exposerDevis(quote));
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
-// PATCH /api/admin/quotes/:id : update
+// PATCH /api/admin/quotes/:id : modification (impossible une fois accepté, refusé ou annulé)
 app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte' || quote.status === 'refuse') {
-      return res.status(403).json({ error: 'Devis verrouillé (déjà accepté ou refusé).' });
+    if (['accepte', 'refuse', 'annule'].includes(quote.status)) {
+      return res.status(403).json({ error: 'Devis verrouillé : il a déjà été accepté, refusé ou annulé.' });
     }
+    const b = req.body || {};
+    const errV = validerChampsDocument(b, { dates: ['validUntil'] });
+    if (errV) return res.status(400).json({ error: errV });
 
-    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'validUntil'];
-    fields.forEach(f => {
-      if (req.body[f] !== undefined) {
-        if (f === 'taxRate') quote.taxRate = Math.max(0, Number(req.body.taxRate) || 0);
-        else if (f === 'validUntil') quote.validUntil = new Date(req.body.validUntil);
-        else quote[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
-      }
-    });
+    if (b.title !== undefined) {
+      const t = sanitize(String(b.title), 200);
+      if (t.trim().length < 3) return res.status(400).json({ error: 'Titre requis (3 caractères minimum).' });
+      quote.title = t;
+    }
+    if (b.introduction !== undefined) quote.introduction = sanitize(String(b.introduction), 2000);
+    if (b.terms !== undefined) quote.terms = sanitize(String(b.terms), 5000);
+    if (b.internalNotes !== undefined) quote.internalNotes = sanitize(String(b.internalNotes), 5000);
+    if (b.currency !== undefined && DEVISES.includes(b.currency)) quote.currency = b.currency;
+    if (b.taxRate !== undefined) quote.taxRate = pctOu(b.taxRate, 0);
+    if (b.discountPercent !== undefined) quote.discountPercent = pctOu(b.discountPercent, 0);
+    if (b.depositPercent !== undefined) quote.depositPercent = pctOu(b.depositPercent, 30);
+    if (b.validUntil !== undefined && b.validUntil !== '') quote.validUntil = new Date(b.validUntil);
+    else if (b.validDays !== undefined && b.validDays !== '') quote.validUntil = new Date(Date.now() + Number(b.validDays) * 86400000);
+
     // Alias court personnalise. Un suffixe aleatoire est ajoute s'il n'y en a pas,
     // pour qu'un lien reste non devinable : c'est la seule protection du devis.
-    if (typeof req.body.publicSlug === 'string') {
-      let slug = req.body.publicSlug.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    if (typeof b.publicSlug === 'string') {
+      let slug = b.publicSlug.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
       if (slug.length < 3) return res.status(400).json({ error: 'Alias trop court (3 caractères minimum).' });
       // Le suffixe aleatoire est TOUJOURS ajoute : impossible de distinguer de maniere
@@ -5180,92 +5571,108 @@ app.patch('/api/admin/quotes/:id', auth, adminOnly, limitBody(50), async (req, r
 
     // Correction manuelle du statut (ex. consultation faussement enregistree).
     // Revenir a « envoye » efface la date de consultation, sinon elle resterait incoherente.
-    if (['brouillon', 'envoye', 'consulte', 'expire'].includes(req.body.status)) {
-      quote.status = req.body.status;
-      if (req.body.status === 'envoye' || req.body.status === 'brouillon') quote.viewedAt = undefined;
+    if (['brouillon', 'envoye', 'consulte', 'expire'].includes(b.status)) {
+      quote.status = b.status;
+      if (b.status === 'envoye' || b.status === 'brouillon') quote.viewedAt = undefined;
+    }
+    // Validité prolongée : un devis marqué « expire » redevient consultable par le client
+    // (sauf si l'équipe vient justement de le marquer expiré à la main).
+    if (b.status === undefined && quote.status === 'expire' && quote.validUntil && quote.validUntil > new Date()) {
+      quote.status = quote.viewedAt ? 'consulte' : (quote.sentAt ? 'envoye' : 'brouillon');
     }
 
-    if (Array.isArray(req.body.items)) {
-      const totals = recalcQuote(req.body.items, quote.taxRate);
-      quote.items = totals.items;
+    if (Array.isArray(b.items)) {
+      quote.items = recalcQuote(b.items, quote.taxRate, quote.currency, quote.discountPercent).items;
     }
 
-    await quote.save();
-    res.json({ success: true, quote });
+    await quote.save();   // le pre-save recalcule sous-total, remise, TVA et total
+    res.json({ success: true, quote: exposerDevis(quote) });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    console.error('[quotes] update error:', err.message);
+    res.status(500).json({ error: messageErreur(err) });
+  }
+});
+
+// POST /api/admin/quotes/:id/cancel : annuler un devis (sans le supprimer)
+app.post('/api/admin/quotes/:id/cancel', auth, adminOnly, async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (quote.status === 'annule') return res.status(409).json({ error: 'Ce devis est déjà annulé.' });
+    if (quote.status === 'refuse') return res.status(409).json({ error: 'Ce devis a été refusé par le client : il est déjà clos.' });
+    const actives = await Invoice.countDocuments({ quoteId: quote._id, status: { $ne: 'annulee' } });
+    if (actives) return res.status(409).json({ error: 'Des factures sont rattachées à ce devis : annulez-les d’abord.' });
+    quote.status = 'annule';
+    quote.cancelledAt = new Date();
+    await quote.save();
+    res.json({ success: true, quote: exposerDevis(quote) });
+  } catch (err) {
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
 // DELETE /api/admin/quotes/:id
 app.delete('/api/admin/quotes/:id', auth, adminOnly, async (req, res) => {
   try {
-    const quote = await Quote.findByIdAndDelete(req.params.id);
+    const quote = await Quote.findById(req.params.id).select('_id').lean();
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    const liees = await Invoice.countDocuments({ quoteId: quote._id });
+    if (liees) return res.status(409).json({ error: 'Des factures sont rattachées à ce devis : il ne peut pas être supprimé. Annulez-le plutôt.' });
+    await Quote.deleteOne({ _id: quote._id });
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
-// POST /api/admin/quotes/:id/send : envoyer par email
+// POST /api/admin/quotes/:id/send : envoyer par e-mail.
+// { canal: 'whatsapp' } : le lien est partagé par WhatsApp, on marque le devis envoyé SANS e-mail.
 app.post('/api/admin/quotes/:id/send', auth, adminOnly, async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (['accepte', 'refuse', 'annule'].includes(quote.status)) {
+      return res.status(409).json({ error: 'Ce devis est déjà accepté, refusé ou annulé : il ne peut plus être envoyé.' });
+    }
+    if (statutDevisEffectif(quote) === 'expire') {
+      return res.status(409).json({ error: 'Ce devis a expiré : prolongez sa validité avant de l’envoyer.' });
+    }
+    // Un brouillon resté trop longtemps en préparation ne part pas déjà périmé :
+    // sa durée de validité d'origine repart du jour d'envoi (appliqué avant l'e-mail).
+    if (quote.status === 'brouillon') reporterValiditeBrouillon(quote);
 
     // On privilégie l'alias court dans le lien envoyé au client : plus lisible,
     // notamment quand le devis transite par WhatsApp.
     const publicUrl = `https://www.pirabellabs.com/devis/${quote.publicSlug || quote.publicToken}`;
+    const viaWhatsApp = req.body && req.body.canal === 'whatsapp';
 
-    const itemsRows = quote.items.map(i =>
-      `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.unitPrice.toFixed(2)} ${quote.currency}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${quote.currency}</td></tr>`
-    ).join('');
+    if (!viaWhatsApp) {
+      // Pièce jointe facultative (proposition détaillée en PDF, par exemple).
+      const att = req.body && req.body.attachment;
+      const attachments = (att && att.filename && att.content)
+        ? [{ filename: String(att.filename).slice(0, 200), content: att.content }]
+        : undefined;
+      const envoye = await sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, emailDevisHtml(quote, publicUrl), { attachments })
+        .catch(e => { console.error('[quotes] send email error:', e.message); return false; });
+      if (!envoye) return res.status(502).json({ error: "Envoi refusé par le fournisseur d'e-mail." });
+    }
 
-    const html = masterTemplate({
-      headerType: 'hero',
-      preheader: `Votre devis ${quote.reference} - ${quote.title}`,
-      title: 'Bonjour ' + escapeHtml(quote.clientName.split(' ')[0]) + ',',
-      subtitle: 'Votre devis est prêt',
-      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Comme convenu, voici votre devis personnalise :</p>' +
-        '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(quote.reference) + '</div>' +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(quote.title) + '</div>' +
-        '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Qte</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">PU</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Total</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
-        '<div style="margin-top:16px;text-align:right;"><div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">Sous-total : ' + quote.subtotal.toFixed(2) + ' ' + quote.currency + '</div>' +
-        (quote.taxRate > 0 ? '<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">TVA ' + quote.taxRate + '% : ' + quote.taxAmount.toFixed(2) + ' ' + quote.currency + '</div>' : '') +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + quote.total.toFixed(2) + ' ' + quote.currency + '</div></div>' +
-        '</div>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">Valide jusqu&apos;au <strong style="color:#e5e2e1;">' + quote.validUntil.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) + '</strong>.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le detail, accepter ou refuser le devis directement en ligne.</p>',
-      cta: 'Consulter et valider le devis',
-      ctaUrl: publicUrl
-    });
-
-    // Pièce jointe facultative (proposition détaillée en PDF, par exemple).
-    const att = req.body && req.body.attachment;
-    const attachments = (att && att.filename && att.content)
-      ? [{ filename: String(att.filename).slice(0, 200), content: att.content }]
-      : undefined;
-
-    const envoye = await sendEmail(quote.clientEmail, `Votre devis Pirabel Labs - ${quote.reference}`, html, { attachments })
-      .catch(e => { console.error('[quotes] send email error:', e.message); return false; });
-    if (!envoye) return res.status(502).json({ error: "Envoi refusé par le fournisseur d'e-mail." });
-
-    quote.status = 'envoye';
+    const premierEnvoi = quote.status === 'brouillon';
+    if (premierEnvoi) { reporterValiditeBrouillon(quote); quote.status = 'envoye'; }
     quote.sentAt = new Date();
     await quote.save();
 
-    // Update lead
-    await Lead.findByIdAndUpdate(quote.leadId, {
-      $inc: { quotesSent: 1 },
-      $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' }
-    });
+    if (premierEnvoi) {
+      await Lead.findByIdAndUpdate(quote.leadId, {
+        $inc: { quotesSent: 1 },
+        $set: { lastQuoteAt: new Date(), stage: 'devis_envoye' }
+      });
+    }
 
-    res.json({ success: true, message: 'Devis envoyé au client.', publicUrl });
+    res.json({ success: true, message: viaWhatsApp ? 'Devis marqué comme envoyé.' : 'Devis envoyé au client.', publicUrl });
   } catch (err) {
     console.error('[quotes] send error:', err.message);
-    res.status(500).json({ error: 'Erreur envoi : ' + err.message });
+    res.status(500).json({ error: messageErreur(err, 'Erreur lors de l’envoi du devis.') });
   }
 });
 
@@ -5280,9 +5687,10 @@ app.get('/api/quotes/:token', async (req, res) => {
     if (!quote.viewedAt && !estRequeteInterne(req)) {
       quote.viewedAt = new Date();
       if (quote.status === 'envoye') quote.status = 'consulte';
-      await quote.save();
+      await Quote.updateOne({ _id: quote._id, viewedAt: null }, { $set: { viewedAt: quote.viewedAt, status: quote.status } });
     }
 
+    const statut = statutDevisEffectif(quote);
     res.json({
       reference: quote.reference,
       title: quote.title,
@@ -5290,31 +5698,59 @@ app.get('/api/quotes/:token', async (req, res) => {
       clientCompany: quote.clientCompany,
       items: quote.items,
       subtotal: quote.subtotal,
+      discountPercent: quote.discountPercent || 0,
+      discountAmount: quote.discountAmount || 0,
       taxRate: quote.taxRate,
       taxAmount: quote.taxAmount,
       total: quote.total,
       currency: quote.currency,
+      depositPercent: quote.depositPercent,
       introduction: quote.introduction,
       terms: quote.terms,
       validUntil: quote.validUntil,
       issuedAt: quote.issuedAt,
-      status: quote.status
+      status: statut,
+      canAnswer: statut === 'envoye' || statut === 'consulte'
     });
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
   }
 });
 
+const MSG_DEVIS_EXPIRE = 'Ce devis a expiré, contactez-nous pour le mettre à jour.';
+
+// Brouillon dont la validité est déjà dépassée au moment de l'envoi : on conserve la
+// durée prévue à la création (30 jours par défaut) à partir d'aujourd'hui.
+function reporterValiditeBrouillon(quote) {
+  const now = Date.now();
+  if (!quote.validUntil || new Date(quote.validUntil).getTime() >= now) return;
+  const depart = new Date(quote.createdAt || quote.issuedAt || now).getTime();
+  const duree = new Date(quote.validUntil).getTime() - depart;
+  quote.validUntil = new Date(now + (duree > 86400000 ? duree : 30 * 86400000));
+}
+
 app.post('/api/quotes/:token/accept', async (req, res) => {
   try {
-    const quote = await Quote.findOne(refDevis(req.params.token));
-    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte') return res.json({ success: true, message: 'Devis déjà accepté.' });
-    if (quote.status === 'refuse') return res.status(403).json({ error: 'Devis déjà refusé.' });
+    const q0 = await Quote.findOne(refDevis(req.params.token));
+    if (!q0) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (q0.status === 'accepte') return res.json({ success: true, message: 'Devis déjà accepté.' });
+    if (q0.status === 'refuse') return res.status(403).json({ error: 'Devis déjà refusé.' });
+    if (q0.status === 'annule') return res.status(410).json({ error: 'Ce devis a été annulé, contactez-nous pour en obtenir un nouveau.' });
+    const now = new Date();
+    if (q0.status === 'brouillon' || statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
 
-    quote.status = 'accepte';
-    quote.acceptedAt = new Date();
-    await quote.save();
+    // Acceptation atomique : si deux clics arrivent en même temps, un seul « gagne »
+    // et lui seul met à jour la fiche client et envoie les e-mails.
+    const quote = await Quote.findOneAndUpdate(
+      { _id: q0._id, status: { $in: ['envoye', 'consulte'] }, $or: [{ validUntil: { $gte: now } }, { validUntil: null }] },
+      { $set: { status: 'accepte', acceptedAt: now, updatedAt: now } },
+      { new: true }
+    );
+    if (!quote) {
+      const actuel = await Quote.findById(q0._id).select('status').lean();
+      if (actuel && actuel.status === 'accepte') return res.json({ success: true, message: 'Devis déjà accepté.' });
+      return res.status(409).json({ error: 'Ce devis ne peut plus être accepté. Contactez-nous.' });
+    }
 
     // Convertir le lead en client
     const lead = await Lead.findById(quote.leadId);
@@ -5331,11 +5767,11 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     // Email admin
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      `[Pirabel Labs] Devis ACCEPTÉ — ${quote.reference} (${quote.total} ${quote.currency})`,
+      `[Pirabel Labs] Devis ACCEPTÉ — ${quote.reference} (${moneyFmt(quote.total, quote.currency)})`,
       masterTemplate({
         title: 'Devis accepté !',
-        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}) vient d’être accepté par <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}).</p><p>Montant : <strong>${quote.total} ${quote.currency}</strong></p><p>Le lead a ete converti en client. Lancement du projet a planifier.</p>`,
-        cta: 'Ouvrir le dashboard',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}) vient d’être accepté par <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}).</p><p>Montant : <strong>${moneyFmt(quote.total, quote.currency)}</strong></p><p>Le prospect a été converti en client. Lancement du projet à planifier.</p>`,
+        cta: 'Ouvrir le tableau de bord',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
     ).catch(e => console.error('[quotes] accept admin email:', e.message));
@@ -5360,22 +5796,30 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
 
 app.post('/api/quotes/:token/refuse', async (req, res) => {
   try {
-    const quote = await Quote.findOne(refDevis(req.params.token));
-    if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte') return res.status(403).json({ error: 'Devis déjà accepté.' });
+    const q0 = await Quote.findOne(refDevis(req.params.token));
+    if (!q0) return res.status(404).json({ error: 'Devis introuvable.' });
+    if (q0.status === 'accepte') return res.status(403).json({ error: 'Devis déjà accepté.' });
+    if (q0.status === 'refuse') return res.json({ success: true, message: 'Devis déjà refusé.' });
+    if (q0.status === 'annule') return res.status(410).json({ error: 'Ce devis a été annulé.' });
+    const now = new Date();
+    if (q0.status === 'brouillon' || statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
 
-    quote.status = 'refuse';
-    quote.refusedAt = new Date();
-    quote.internalNotes = (quote.internalNotes || '') + '\n[Refus client] ' + sanitize(req.body?.reason || 'Aucune raison fournie', 1000);
-    await quote.save();
+    const raison = sanitize(req.body?.reason || 'Aucune raison fournie', 1000);
+    const quote = await Quote.findOneAndUpdate(
+      { _id: q0._id, status: { $in: ['envoye', 'consulte'] } },
+      { $set: { status: 'refuse', refusedAt: now, updatedAt: now,
+        internalNotes: ((q0.internalNotes || '') + '\n[Refus client] ' + raison).slice(0, 5000) } },
+      { new: true }
+    );
+    if (!quote) return res.status(409).json({ error: 'Ce devis ne peut plus être refusé.' });
 
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Pirabel Labs] Devis REFUSÉ — ${quote.reference}`,
       masterTemplate({
         title: 'Devis refusé',
-        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> vient d’être refusé par <strong>${escapeHtml(quote.clientName)}</strong>.</p><p>Raison : ${escapeHtml(req.body?.reason || 'non précisée')}</p>`,
-        cta: 'Ouvrir le dashboard',
+        body: `<p>Le devis <strong>${escapeHtml(quote.reference)}</strong> vient d’être refusé par <strong>${escapeHtml(quote.clientName)}</strong>.</p><p>Raison : ${escapeHtml(req.body?.reason || 'non précisée')}</p>`,
+        cta: 'Ouvrir le tableau de bord',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
     ).catch(() => {});
@@ -5395,10 +5839,50 @@ app.get('/devis/:token', (req, res) => {
 // === INVOICES (factures) ===
 // ========================================================================
 
-function generateInvoiceReference() {
-  const year = new Date().getFullYear();
-  const random = Math.floor(Math.random() * 9000) + 1000;
-  return `FACT-${year}-${random}`;
+// Recalcule statut et date de règlement après ajout / suppression d'un paiement.
+function appliquerStatutReglement(inv) {
+  const pays = inv.payments || [];
+  if (!pays.length) {
+    if (['payee', 'partiellement_payee'].includes(inv.status)) {
+      inv.status = inv.viewedAt ? 'consultee' : (inv.sentAt ? 'envoyee' : 'brouillon');
+    }
+    inv.paidAt = undefined;
+    return;
+  }
+  if (Invoice.balanceOf(inv) <= 0) {
+    const dernier = pays.reduce((a, p) => (new Date(p.date) > new Date(a.date) ? p : a));
+    inv.status = 'payee';
+    inv.paidAt = dernier.date;
+    if (dernier.method) inv.paymentMethod = dernier.method;
+  } else {
+    inv.status = 'partiellement_payee';
+    inv.paidAt = undefined;
+  }
+}
+
+// Ajoute un paiement après validation. Renvoie un message d'erreur, ou null.
+function enregistrerPaiement(inv, p) {
+  if (inv.status === 'annulee') return 'Facture annulée : aucun paiement ne peut être enregistré.';
+  if (inv.status === 'brouillon') return 'Facture encore en brouillon : envoyez-la (e-mail ou WhatsApp) avant d’enregistrer un paiement.';
+  const reste = Invoice.balanceOf(inv);
+  if (inv.status === 'payee' || reste <= 0) return 'Cette facture est déjà entièrement réglée.';
+  const brut = Number(p.amount);
+  const montant = arrondiDevise(brut, inv.currency);
+  if (!Number.isFinite(brut) || !(montant > 0)) return 'Montant invalide : il doit être supérieur à zéro.';
+  if (montant > reste) return `Le montant dépasse le reste à payer (${moneyFmt(reste, inv.currency)}).`;
+  let date = new Date();
+  if (p.date) {
+    date = new Date(p.date);
+    if (isNaN(date.getTime())) return 'Date de paiement invalide.';
+    if (date.getTime() > Date.now() + 86400000) return 'La date de paiement ne peut pas être dans le futur.';
+  }
+  inv.payments.push({
+    amount: montant, date,
+    method: sanitize(String(p.method || ''), 100),
+    note: sanitize(String(p.note || ''), 500),
+  });
+  appliquerStatutReglement(inv);
+  return null;
 }
 
 // Maintenance ponctuelle : supprime un index obsolete (invoiceNumber_1) laisse par une ancienne
@@ -5408,41 +5892,84 @@ app.post('/api/admin/invoices/_fix-index', auth, adminOnly, async (req, res) => 
     await Invoice.collection.dropIndex('invoiceNumber_1');
     res.json({ success: true });
   } catch (err) {
-    res.json({ success: false, error: err.message });
+    res.json({ success: false, error: 'Index déjà supprimé ou introuvable.' });
   }
 });
 
-// POST /api/admin/invoices : creer une facture (brouillon), depuis un devis ou en libre
+// POST /api/admin/invoices : créer une facture (brouillon), libre ou depuis un devis accepté.
+// Depuis un devis : kind = 'totale' (par défaut), 'acompte' (depositPercent % du devis)
+// ou 'solde' (devis − acomptes non annulés).
 app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
-    const { leadId, quoteId, title, items, taxRate, currency, introduction, terms, dueDays, issuerBrand } = req.body;
+    const b = req.body || {};
+    const { leadId, quoteId, title, items, taxRate, currency, introduction, terms, dueDays, issuerBrand } = b;
+    const errV = validerChampsDocument(b);
+    if (errV) return res.status(400).json({ error: errV });
 
-    let lead, baseItems = Array.isArray(items) ? items : [], baseTitle = title, baseTaxRate = Number(taxRate) || 0, baseCurrency = currency, baseIntro = introduction, baseTerms = terms, sourceQuote = null;
+    let lead, sourceQuote = null, kind = 'totale';
+    const d = {
+      items: Array.isArray(items) ? items : [], title, taxRate: pctOu(taxRate, 0),
+      currency, introduction, terms, discountPercent: pctOu(b.discountPercent, 0),
+    };
 
     if (quoteId) {
       if (!/^[a-f0-9]{24}$/i.test(quoteId)) return res.status(400).json({ error: 'Devis invalide.' });
       sourceQuote = await Quote.findById(quoteId);
       if (!sourceQuote) return res.status(404).json({ error: 'Devis introuvable.' });
+      if (sourceQuote.status !== 'accepte') return res.status(409).json({ error: 'Seul un devis accepté peut être facturé.' });
+      kind = ['totale', 'acompte', 'solde'].includes(b.kind) ? b.kind : 'totale';
+
+      const liees = await Invoice.find({ quoteId: sourceQuote._id, status: { $ne: 'annulee' } }).lean();
+      const complete = liees.find(i => (i.kind || 'totale') !== 'acompte');
+      if (complete) return res.status(409).json({ error: `Ce devis est déjà entièrement facturé (${complete.reference}).` });
+      const acomptes = liees.filter(i => i.kind === 'acompte');
+      const cur = sourceQuote.currency;
+      const baseHT = arrondiDevise((sourceQuote.subtotal || 0) - (sourceQuote.discountAmount || 0), cur);
+      const acomptesHT = arrondiDevise(acomptes.reduce((s, i) => s + (i.subtotal || 0) - (i.discountAmount || 0), 0), cur);
+      const acomptesTTC = arrondiDevise(acomptes.reduce((s, i) => s + (i.total || 0), 0), cur);
+
+      d.currency = cur;
+      d.taxRate = sourceQuote.taxRate || 0;
+      d.terms = terms || sourceQuote.terms;
+      if (kind === 'totale') {
+        if (acomptes.length) return res.status(409).json({ error: 'Des factures d’acompte existent déjà pour ce devis : créez la facture de solde.' });
+        d.title = title || sourceQuote.title;
+        d.items = sourceQuote.items;
+        d.discountPercent = sourceQuote.discountPercent || 0;
+        d.introduction = introduction || sourceQuote.introduction;
+      } else if (kind === 'acompte') {
+        const pct = pctOu(b.depositPercent, sourceQuote.depositPercent || 30);
+        if (!(pct > 0 && pct < 100)) return res.status(400).json({ error: 'Pourcentage d’acompte invalide : il doit être compris entre 1 et 99 %.' });
+        const montantHT = arrondiDevise(baseHT * pct / 100, cur);
+        if (acomptesHT + montantHT >= baseHT) return res.status(409).json({ error: 'Le cumul des acomptes atteindrait le montant du devis : créez plutôt la facture de solde.' });
+        d.title = `Facture d’acompte (${pct} %) — devis ${sourceQuote.reference}`;
+        d.items = [{ description: `Acompte de ${pct} % sur le devis ${sourceQuote.reference} — ${sourceQuote.title}`, quantity: 1, unitPrice: montantHT }];
+        d.discountPercent = 0;
+        d.introduction = introduction || `Acompte de ${pct} % à la commande, conformément au devis ${sourceQuote.reference} (montant total ${moneyFmt(sourceQuote.total, cur)}).`;
+      } else {
+        if (!acomptes.length) return res.status(409).json({ error: 'Aucune facture d’acompte pour ce devis : créez une facture totale.' });
+        const resteHT = arrondiDevise(baseHT - acomptesHT, cur);
+        if (!(resteHT > 0)) return res.status(409).json({ error: 'Les acomptes couvrent déjà la totalité du devis.' });
+        d.title = `Facture de solde — devis ${sourceQuote.reference}`;
+        d.items = [{ description: `Solde du devis ${sourceQuote.reference} — ${sourceQuote.title}`, quantity: 1, unitPrice: resteHT }];
+        d.discountPercent = 0;
+        d.introduction = introduction || `Solde du devis ${sourceQuote.reference} (montant total ${moneyFmt(sourceQuote.total, cur)}), déduction faite des acomptes déjà facturés : ${acomptes.map(i => i.reference).join(', ')} (${moneyFmt(acomptesTTC, cur)}).`;
+      }
       lead = await Lead.findById(sourceQuote.leadId);
-      if (!baseTitle) baseTitle = sourceQuote.title;
-      if (!items) baseItems = sourceQuote.items;
-      if (taxRate === undefined) baseTaxRate = sourceQuote.taxRate;
-      if (!currency) baseCurrency = sourceQuote.currency;
-      if (!introduction) baseIntro = sourceQuote.introduction;
-      if (!terms) baseTerms = sourceQuote.terms;
     } else {
-      if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Lead invalide.' });
+      if (!leadId || !/^[a-f0-9]{24}$/i.test(leadId)) return res.status(400).json({ error: 'Client invalide.' });
       lead = await Lead.findById(leadId);
     }
-    if (!lead) return res.status(404).json({ error: 'Lead introuvable.' });
-    if (!baseTitle || baseTitle.length < 3) return res.status(400).json({ error: 'Titre requis (3 caracteres min).' });
+    if (!lead) return res.status(404).json({ error: 'Client introuvable.' });
+    if (!d.title || String(d.title).trim().length < 3) return res.status(400).json({ error: 'Titre requis (3 caractères minimum).' });
 
-    const totals = recalcQuote(baseItems, baseTaxRate);
+    const cur = DEVISES.includes(d.currency) ? d.currency : 'EUR';
+    const totals = recalcQuote(d.items, d.taxRate, cur, d.discountPercent);
 
-    const invoice = await Invoice.create({
-      reference: generateInvoiceReference(),
+    const invoice = await creerAvecReference(Invoice, 'FACT', {
       leadId: lead._id,
       quoteId: sourceQuote ? sourceQuote._id : undefined,
+      kind,
       clientName: lead.name,
       clientEmail: lead.email,
       clientCompany: lead.company || '',
@@ -5450,40 +5977,62 @@ app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res)
       clientAddress: lead.clientData?.address || '',
       items: totals.items,
       subtotal: totals.subtotal,
-      taxRate: Math.max(0, baseTaxRate || 0),
+      discountPercent: d.discountPercent,
+      discountAmount: totals.discountAmount,
+      taxRate: d.taxRate,
       taxAmount: totals.taxAmount,
       total: totals.total,
-      currency: ['EUR', 'USD', 'CAD', 'XOF', 'XAF', 'MAD', 'TND', 'GNF', 'CHF'].includes(baseCurrency) ? baseCurrency : 'EUR',
-      title: sanitize(baseTitle, 200),
-      introduction: sanitize(baseIntro || '', 2000),
-      terms: sanitize(baseTerms || '', 5000),
+      currency: cur,
+      title: sanitize(String(d.title), 200),
+      introduction: sanitize(d.introduction || '', 2000),
+      terms: sanitize(d.terms || '', 5000),
       issuerBrand: sanitize(issuerBrand || '', 100) || 'Pirabel Labs',
       dueDate: new Date(Date.now() + (Number(dueDays) || 15) * 86400000),
       publicToken: generateToken(),
       createdBy: req.user._id
     });
 
-    res.json({ success: true, invoice });
+    res.json({ success: true, invoice: exposerFacture(invoice) });
   } catch (err) {
     console.error('[invoices] create error:', err.message);
-    res.status(500).json({ error: 'Erreur serveur : ' + err.message });
+    res.status(500).json({ error: messageErreur(err, 'Erreur lors de la création de la facture.') });
   }
 });
 
-// GET /api/admin/invoices : liste
+// GET /api/admin/invoices : liste (statut effectif, payé / reste) et statistiques par devise
 app.get('/api/admin/invoices', auth, adminOnly, async (req, res) => {
   try {
+    const now = new Date();
     const status = sanitize(req.query.status || '', 30);
     const leadId = sanitize(req.query.leadId || '', 30);
     const q = {};
-    if (['brouillon', 'envoyee', 'consultee', 'payee', 'en_retard', 'annulee'].includes(status)) q.status = status;
+    if (status === 'en_retard') q.$or = [{ status: 'en_retard' }, { status: { $in: ['envoyee', 'consultee', 'partiellement_payee'] }, dueDate: { $lt: now } }];
+    else if (['brouillon', 'envoyee', 'consultee', 'partiellement_payee', 'payee', 'annulee'].includes(status)) q.status = status;
     if (/^[a-f0-9]{24}$/i.test(leadId)) q.leadId = leadId;
-    const invoices = await Invoice.find(q).sort({ createdAt: -1 }).limit(300);
-    const stats = await Invoice.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 }, total: { $sum: '$total' } } }
-    ]);
+    const invoices = (await Invoice.find(q).sort({ createdAt: -1 }).limit(300))
+      .map(exposerFacture)
+      .filter(i => !status || i.status === status);
+
+    // Statistiques sur TOUTES les factures (pas la liste plafonnée), par devise.
+    const toutes = await Invoice.find({}).select('status currency total dueDate payments paidAt paymentMethod updatedAt issuedAt').lean();
+    const stats = { total: toutes.length, byStatus: {}, byCurrency: {} };
+    toutes.forEach(i => {
+      const s = Invoice.effectiveStatus(i, now);
+      const c = i.currency || 'EUR';
+      stats.byStatus[s] = (stats.byStatus[s] || 0) + 1;
+      const v = stats.byCurrency[c] = stats.byCurrency[c] || { encaisse: 0, reste: 0, enRetard: 0, factures: 0, payees: 0 };
+      if (s === 'annulee') return;
+      v.factures++;
+      v.encaisse = arrondiDevise(v.encaisse + Invoice.amountPaidOf(i), c);
+      if (s === 'payee') v.payees++;
+      // « En attente de paiement » : ni brouillon ni annulée.
+      if (s !== 'brouillon') v.reste = arrondiDevise(v.reste + Invoice.balanceOf(i), c);
+      if (s === 'en_retard') v.enRetard = arrondiDevise(v.enRetard + Invoice.balanceOf(i), c);
+    });
+
     res.json({ invoices, stats });
   } catch (err) {
+    console.error('[invoices] list error:', err.message);
     res.status(500).json({ error: 'Erreur serveur.' });
   }
 });
@@ -5493,132 +6042,197 @@ app.get('/api/admin/invoices/:id', auth, adminOnly, async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
-    res.json(invoice);
+    res.json(exposerFacture(invoice));
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
-// PATCH /api/admin/invoices/:id : update
+// PATCH /api/admin/invoices/:id : le contenu n'est modifiable qu'en brouillon.
+// Une facture émise n'accepte plus que l'échéance et les notes internes.
 app.patch('/api/admin/invoices/:id', auth, adminOnly, limitBody(50), async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
-    if (invoice.status === 'payee' || invoice.status === 'annulee') {
-      return res.status(403).json({ error: 'Facture verrouillée (déjà payée ou annulée).' });
+    const b = req.body || {};
+    const errV = validerChampsDocument(b, { dates: ['dueDate'] });
+    if (errV) return res.status(400).json({ error: errV });
+
+    const CONTENU = ['title', 'introduction', 'terms', 'currency', 'taxRate', 'discountPercent', 'items', 'issuerBrand'];
+    const toucheContenu = CONTENU.some(f => b[f] !== undefined);
+    if (toucheContenu && invoice.status !== 'brouillon') {
+      return res.status(403).json({ error: 'Facture émise : son contenu n’est plus modifiable. Annulez-la et créez-en une nouvelle (seules l’échéance et les notes internes restent modifiables).' });
+    }
+    if (b.dueDays !== undefined && b.dueDays !== '' && b.dueDate === undefined) {
+      b.dueDate = new Date(new Date(invoice.issuedAt || Date.now()).getTime() + Number(b.dueDays) * 86400000);
+    }
+    if (b.dueDate !== undefined && ['payee', 'annulee'].includes(invoice.status)) {
+      return res.status(403).json({ error: 'Facture réglée ou annulée : l’échéance n’est plus modifiable.' });
     }
 
-    const fields = ['title', 'introduction', 'terms', 'internalNotes', 'currency', 'taxRate', 'dueDate', 'paymentMethod', 'issuerBrand'];
-    fields.forEach(f => {
-      if (req.body[f] !== undefined) {
-        if (f === 'taxRate') invoice.taxRate = Math.max(0, Number(req.body.taxRate) || 0);
-        else if (f === 'dueDate') invoice.dueDate = new Date(req.body.dueDate);
-        else invoice[f] = sanitize(String(req.body[f]), f === 'terms' ? 5000 : 2000);
+    if (b.title !== undefined) {
+      const t = sanitize(String(b.title), 200);
+      if (t.trim().length < 3) return res.status(400).json({ error: 'Titre requis (3 caractères minimum).' });
+      invoice.title = t;
+    }
+    if (b.introduction !== undefined) invoice.introduction = sanitize(String(b.introduction), 2000);
+    if (b.terms !== undefined) invoice.terms = sanitize(String(b.terms), 5000);
+    if (b.issuerBrand !== undefined) invoice.issuerBrand = sanitize(String(b.issuerBrand), 100) || 'Pirabel Labs';
+    if (b.internalNotes !== undefined) invoice.internalNotes = sanitize(String(b.internalNotes), 5000);
+    if (b.paymentMethod !== undefined) invoice.paymentMethod = sanitize(String(b.paymentMethod), 100);
+    if (b.currency !== undefined && DEVISES.includes(b.currency)) invoice.currency = b.currency;
+    if (b.taxRate !== undefined) invoice.taxRate = pctOu(b.taxRate, 0);
+    if (b.discountPercent !== undefined) invoice.discountPercent = pctOu(b.discountPercent, 0);
+    if (b.dueDate !== undefined && b.dueDate !== '') {
+      invoice.dueDate = new Date(b.dueDate);
+      // Échéance repoussée : la facture n'est plus en retard.
+      if (invoice.status === 'en_retard' && invoice.dueDate > new Date()) {
+        invoice.status = Invoice.amountPaidOf(invoice) > 0 ? 'partiellement_payee' : 'envoyee';
       }
-    });
-
-    if (Array.isArray(req.body.items)) {
-      const totals = recalcQuote(req.body.items, invoice.taxRate);
-      invoice.items = totals.items;
+    }
+    if (Array.isArray(b.items)) {
+      invoice.items = recalcQuote(b.items, invoice.taxRate, invoice.currency, invoice.discountPercent).items;
     }
 
     await invoice.save();
-    res.json({ success: true, invoice });
+    res.json({ success: true, invoice: exposerFacture(invoice) });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    console.error('[invoices] update error:', err.message);
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
-// DELETE /api/admin/invoices/:id
+// DELETE /api/admin/invoices/:id : seul un brouillon peut être supprimé.
 app.delete('/api/admin/invoices/:id', auth, adminOnly, async (req, res) => {
   try {
-    const invoice = await Invoice.findByIdAndDelete(req.params.id);
-    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
-    res.json({ success: true });
+    const supprimee = await Invoice.findOneAndDelete({ _id: req.params.id, status: 'brouillon' });
+    if (supprimee) return res.json({ success: true });
+    const existe = await Invoice.findById(req.params.id).select('_id').lean();
+    if (!existe) return res.status(404).json({ error: 'Facture introuvable.' });
+    res.status(403).json({ error: 'Une facture émise ne peut pas être supprimée : annulez-la.' });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
-// POST /api/admin/invoices/:id/send : envoyer par email
+// POST /api/admin/invoices/:id/cancel : annulation (la pièce reste dans l'historique)
+app.post('/api/admin/invoices/:id/cancel', auth, adminOnly, async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    if (invoice.status === 'annulee') return res.status(409).json({ error: 'Cette facture est déjà annulée.' });
+    const pays = Invoice.paymentsOf(invoice);
+    if (pays.some(p => p.legacy)) return res.status(409).json({ error: 'Cette facture est réglée : elle ne peut pas être annulée.' });
+    if (pays.length) return res.status(409).json({ error: 'Des paiements sont enregistrés sur cette facture : supprimez-les d’abord.' });
+    invoice.status = 'annulee';
+    invoice.cancelledAt = new Date();
+    await invoice.save();
+    res.json({ success: true, invoice: exposerFacture(invoice) });
+  } catch (err) {
+    res.status(500).json({ error: messageErreur(err) });
+  }
+});
+
+// POST /api/admin/invoices/:id/payments : enregistrer un paiement (acompte, partiel, solde)
+app.post('/api/admin/invoices/:id/payments', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    const b = req.body || {};
+    const err = enregistrerPaiement(invoice, { amount: b.amount, date: b.date, method: b.method, note: b.note });
+    if (err) return res.status(400).json({ error: err });
+    await invoice.save();   // verrou optimiste (__v) : deux saisies simultanées ne peuvent pas dépasser le total
+    res.json({ success: true, invoice: exposerFacture(invoice) });
+  } catch (err) {
+    console.error('[invoices] payment error:', err.message);
+    res.status(err && err.name === 'VersionError' ? 409 : 500).json({ error: messageErreur(err) });
+  }
+});
+
+// DELETE /api/admin/invoices/:id/payments/:pid : retirer un paiement saisi par erreur
+app.delete('/api/admin/invoices/:id/payments/:pid', auth, adminOnly, async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    const p = /^[a-f0-9]{24}$/i.test(req.params.pid) ? invoice.payments.id(req.params.pid) : null;
+    if (!p) return res.status(404).json({ error: 'Paiement introuvable.' });
+    invoice.payments.pull(p._id);
+    appliquerStatutReglement(invoice);
+    await invoice.save();
+    res.json({ success: true, invoice: exposerFacture(invoice) });
+  } catch (err) {
+    res.status(500).json({ error: messageErreur(err) });
+  }
+});
+
+// POST /api/admin/invoices/:id/send : envoyer par e-mail.
+// { canal: 'whatsapp' } : lien partagé par WhatsApp, facture marquée envoyée SANS e-mail.
 app.post('/api/admin/invoices/:id/send', auth, adminOnly, async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
+    if (invoice.status === 'annulee') return res.status(409).json({ error: 'Facture annulée : elle ne peut pas être envoyée.' });
 
     const publicUrl = `https://www.pirabellabs.com/facture/${invoice.publicToken}`;
+    const viaWhatsApp = req.body && req.body.canal === 'whatsapp';
 
-    const itemsRows = invoice.items.map(i =>
-      `<tr><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-size:13px;">${escapeHtml(i.description)}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.quantity}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:rgba(229,226,225,0.7);font-size:13px;text-align:right;">${i.unitPrice.toFixed(2)} ${invoice.currency}</td><td style="padding:8px 12px;border-bottom:1px solid #222;color:#e5e2e1;font-weight:600;font-size:13px;text-align:right;">${i.total.toFixed(2)} ${invoice.currency}</td></tr>`
-    ).join('');
-
-    const html = masterTemplate({
-      headerType: 'hero',
-      preheader: `Votre facture ${invoice.reference} - ${invoice.title}`,
-      title: 'Bonjour ' + escapeHtml(invoice.clientName.split(' ')[0]) + ',',
-      subtitle: 'Votre facture est disponible',
-      body: '<p style="font-size:16px;line-height:1.7;color:rgba(229,226,225,0.85);">Voici votre facture :</p>' +
-        '<div style="margin:24px 0;padding:24px;background:#0e0e0e;border:1px solid rgba(255,85,0,0.3);border-radius:12px;">' +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:#FF5500;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">' + escapeHtml(invoice.reference) + '</div>' +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#e5e2e1;line-height:1.3;margin-bottom:16px;">' + escapeHtml(invoice.title) + '</div>' +
-        '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;border-top:1px solid #333;border-bottom:1px solid #333;"><thead><tr><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:left;text-transform:uppercase;letter-spacing:0.08em;">Description</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Qte</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">PU</th><th style="padding:8px 12px;background:#1a1a1a;font-size:12px;color:rgba(229,226,225,0.6);text-align:right;">Total</th></tr></thead><tbody>' + itemsRows + '</tbody></table>' +
-        '<div style="margin-top:16px;text-align:right;"><div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">Sous-total : ' + invoice.subtotal.toFixed(2) + ' ' + invoice.currency + '</div>' +
-        (invoice.taxRate > 0 ? '<div style="font-size:13px;color:rgba(229,226,225,0.7);margin-bottom:4px;">TVA ' + invoice.taxRate + '% : ' + invoice.taxAmount.toFixed(2) + ' ' + invoice.currency + '</div>' : '') +
-        '<div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:20px;color:#FF5500;margin-top:8px;">Total : ' + invoice.total.toFixed(2) + ' ' + invoice.currency + '</div></div>' +
-        '</div>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.6);line-height:1.6;">A regler avant le <strong style="color:#e5e2e1;">' + invoice.dueDate.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}) + '</strong>.</p>' +
-        '<p style="font-size:14px;color:rgba(229,226,225,0.5);">Cliquez ci-dessous pour consulter le detail et les modalites de paiement.</p>',
-      cta: 'Consulter la facture',
-      ctaUrl: publicUrl
-    });
-
-    await sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, html)
-      .catch(e => console.error('[invoices] send email error:', e.message));
+    if (!viaWhatsApp) {
+      const envoye = await sendEmail(invoice.clientEmail, `Votre facture Pirabel Labs - ${invoice.reference}`, emailFactureHtml(invoice, publicUrl))
+        .catch(e => { console.error('[invoices] send email error:', e.message); return false; });
+      // Aligné sur les devis : un échec d'envoi ne marque PAS la facture comme envoyée.
+      if (!envoye) return res.status(502).json({ error: "Envoi refusé par le fournisseur d'e-mail." });
+    }
 
     if (invoice.status === 'brouillon') invoice.status = 'envoyee';
     invoice.sentAt = new Date();
     await invoice.save();
 
-    res.json({ success: true, message: 'Facture envoyée au client.', publicUrl });
+    res.json({ success: true, message: viaWhatsApp ? 'Facture marquée comme envoyée.' : 'Facture envoyée au client.', publicUrl });
   } catch (err) {
     console.error('[invoices] send error:', err.message);
-    res.status(500).json({ error: 'Erreur envoi : ' + err.message });
+    res.status(500).json({ error: messageErreur(err, 'Erreur lors de l’envoi de la facture.') });
   }
 });
 
-// POST /api/admin/invoices/:id/mark-paid : marquer comme payee (manuel, cote admin)
+// POST /api/admin/invoices/:id/mark-paid : solde la facture en enregistrant un paiement
+// du reste à payer. Idempotent : refusé si déjà réglée ou annulée.
 app.post('/api/admin/invoices/:id/mark-paid', auth, adminOnly, limitBody(5), async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
     if (invoice.status === 'annulee') return res.status(403).json({ error: 'Facture annulée.' });
-
-    invoice.status = 'payee';
-    invoice.paidAt = new Date();
-    invoice.paymentMethod = sanitize(req.body?.paymentMethod || '', 100);
+    if (invoice.status === 'payee' || Invoice.balanceOf(invoice) <= 0) return res.status(409).json({ error: 'Cette facture est déjà réglée.' });
+    const paidAtAvant = invoice.paidAt;
+    const err = enregistrerPaiement(invoice, {
+      amount: Invoice.balanceOf(invoice), date: req.body?.date,
+      method: req.body?.paymentMethod || req.body?.method || '', note: req.body?.note || '',
+    });
+    if (err) return res.status(400).json({ error: err });
+    if (paidAtAvant) invoice.paidAt = paidAtAvant;   // ne jamais écraser une date de paiement existante
     await invoice.save();
-
-    res.json({ success: true, invoice });
+    res.json({ success: true, invoice: exposerFacture(invoice) });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur serveur.' });
+    res.status(500).json({ error: messageErreur(err) });
   }
 });
 
 // === PUBLIC invoice view (no auth, by token) ===
 app.get('/api/invoices/:token', async (req, res) => {
   try {
-    const invoice = await Invoice.findOne({ publicToken: req.params.token });
+    const invoice = await Invoice.findOne({ publicToken: String(req.params.token || '').slice(0, 100) });
     if (!invoice) return res.status(404).json({ error: 'Facture introuvable.' });
 
     if (!invoice.viewedAt && !estRequeteInterne(req)) {
       invoice.viewedAt = new Date();
       if (invoice.status === 'envoyee') invoice.status = 'consultee';
-      await invoice.save();
+      // Mise à jour ciblée : pas de conflit de version avec un paiement saisi au même moment.
+      await Invoice.updateOne({ _id: invoice._id, viewedAt: null }, { $set: { viewedAt: invoice.viewedAt, status: invoice.status } });
     }
 
     res.json({
       reference: invoice.reference,
       title: invoice.title,
+      kind: invoice.kind || 'totale',
       issuerBrand: invoice.issuerBrand || 'Pirabel Labs',
       clientName: invoice.clientName,
       clientCompany: invoice.clientCompany,
@@ -5626,6 +6240,8 @@ app.get('/api/invoices/:token', async (req, res) => {
       clientAddress: invoice.clientAddress,
       items: invoice.items,
       subtotal: invoice.subtotal,
+      discountPercent: invoice.discountPercent || 0,
+      discountAmount: invoice.discountAmount || 0,
       taxRate: invoice.taxRate,
       taxAmount: invoice.taxAmount,
       total: invoice.total,
@@ -5634,8 +6250,11 @@ app.get('/api/invoices/:token', async (req, res) => {
       terms: invoice.terms,
       dueDate: invoice.dueDate,
       issuedAt: invoice.issuedAt,
-      status: invoice.status,
-      paidAt: invoice.paidAt
+      status: Invoice.effectiveStatus(invoice),
+      paidAt: invoice.paidAt,
+      amountPaid: Invoice.amountPaidOf(invoice),
+      balanceDue: Invoice.balanceOf(invoice),
+      payments: Invoice.paymentsOf(invoice).map(p => ({ amount: p.amount, date: p.date }))
     });
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur.' });
@@ -5801,8 +6420,8 @@ app.post('/api/reviews/:token', reviewSubmitLimiter, limitBody(5), async (req, r
       `[Pirabel Labs] Nouvel avis client - ${rating}/5 - ${review.clientName}`,
       masterTemplate({
         title: 'Nouvel avis client',
-        body: `<p><strong>${escapeHtml(review.clientName)}</strong> (${escapeHtml(review.clientEmail)}) a laisse un avis :</p><p>Note : <strong>${rating}/5</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(comment)}</blockquote><p>A moderer dans le dashboard avant publication sur le site.</p>`,
-        cta: 'Moderer l\'avis',
+        body: `<p><strong>${escapeHtml(review.clientName)}</strong> (${escapeHtml(review.clientEmail)}) a laissé un avis :</p><p>Note : <strong>${rating}/5</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(comment)}</blockquote><p>A moderer dans le dashboard avant publication sur le site.</p>`,
+        cta: 'Modérer l’avis',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
     ).catch(() => {});
@@ -5855,22 +6474,22 @@ app.post('/api/quotes/:token/adjust', limitBody(5), async (req, res) => {
   try {
     const quote = await Quote.findOne(refDevis(req.params.token));
     if (!quote) return res.status(404).json({ error: 'Devis introuvable.' });
-    if (quote.status === 'accepte' || quote.status === 'refuse') {
-      return res.status(403).json({ error: 'Devis déjà accepté ou refusé.' });
+    if (['accepte', 'refuse', 'annule', 'brouillon'].includes(quote.status)) {
+      return res.status(403).json({ error: 'Ce devis n’est plus modifiable (accepté, refusé ou annulé).' });
     }
     const message = sanitize(req.body.message || '', 2000);
-    if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
+    if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caractères minimum).' });
 
-    quote.internalNotes = (quote.internalNotes || '') + '\n[Ajustement demande ' + new Date().toISOString() + '] ' + message;
+    quote.internalNotes = ((quote.internalNotes || '') + '\n[Ajustement demandé ' + new Date().toISOString() + '] ' + message).slice(0, 5000);
     await quote.save();
 
     await sendEmail(
       process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
-      `[Pirabel Labs] Ajustement demande - Devis ${quote.reference}`,
+      `[Pirabel Labs] Ajustement demandé - Devis ${quote.reference}`,
       masterTemplate({
         title: 'Demande d\'ajustement client',
-        body: `<p>Le client <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}) demande des ajustements sur le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}).</p><p><strong>Message :</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(message)}</blockquote><p>Modifiez le devis dans le dashboard et renvoyez une version corrigee.</p>`,
-        cta: 'Ouvrir le dashboard',
+        body: `<p>Le client <strong>${escapeHtml(quote.clientName)}</strong> (${escapeHtml(quote.clientEmail)}) demande des ajustements sur le devis <strong>${escapeHtml(quote.reference)}</strong> (${escapeHtml(quote.title)}).</p><p><strong>Message :</strong></p><blockquote style="border-left:3px solid #FF5500;padding-left:16px;margin:16px 0;color:rgba(229,226,225,0.85);font-style:italic;">${escapeHtml(message)}</blockquote><p>Modifiez le devis dans le tableau de bord et renvoyez une version corrigée.</p>`,
+        cta: 'Ouvrir le tableau de bord',
         ctaUrl: 'https://www.pirabellabs.com/admin/dashboard'
       })
     ).catch(() => {});
@@ -5926,9 +6545,9 @@ app.get('/api/admin/stats-extended', auth, adminOnly, async (req, res) => {
       Lead.countDocuments({ stage: 'prospect' }),
       Lead.countDocuments({ stage: 'client' }),
       Quote.countDocuments({}),
-      Quote.countDocuments({ status: { $in: ['envoye', 'consulte'] } }),
+      Quote.countDocuments({ status: { $in: ['envoye', 'consulte'] }, validUntil: { $gte: now } }),
       Quote.countDocuments({ status: 'accepte' }),
-      Quote.aggregate([{ $match: { status: 'accepte' } }, { $group: { _id: null, total: { $sum: '$total' } } }]),
+      Quote.aggregate([{ $match: { status: 'accepte' } }, { $group: { _id: '$currency', total: { $sum: '$total' } } }]),
       Review.countDocuments({ status: 'en_attente', submittedAt: { $ne: null } }),
       Review.countDocuments({ publishedOnSite: true }),
       Lead.aggregate([{ $group: { _id: '$stage', count: { $sum: 1 } } }]),
@@ -5938,7 +6557,9 @@ app.get('/api/admin/stats-extended', auth, adminOnly, async (req, res) => {
 
     res.json({
       leads: { total: leadsTotal, prospects, clients, last30: leadsLast30, conversionsLast30 },
-      quotes: { total: quotesTotal, pending: quotesPending, accepted: quotesAccepted, revenue: quotesRevenue[0]?.total || 0 },
+      // Montants par devise : jamais d'addition de devises différentes.
+      quotes: { total: quotesTotal, pending: quotesPending, accepted: quotesAccepted,
+        revenueByCurrency: Object.fromEntries(quotesRevenue.map(r => [r._id || 'EUR', arrondiDevise(r.total, r._id)])) },
       reviews: { pending: reviewsPending, published: reviewsPublished },
       byStage
     });
@@ -5972,7 +6593,7 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
 
     const key = (process.env.RESEND_API_KEY || '').trim();
     if (!key) {
-      return res.status(503).json({ error: 'RESEND_API_KEY non configuree sur Vercel. Aucun email ne peut partir tant qu\'elle n\'est pas ajoutee.' });
+      return res.status(503).json({ error: 'RESEND_API_KEY non configurée sur Vercel. Aucun e-mail ne peut partir tant qu’elle n’est pas ajoutée.' });
     }
 
     const from = '"Pirabel Labs" <' + ((process.env.FROM_EMAIL || '').trim() || 'contact@pirabellabs.com') + '>';
@@ -5990,7 +6611,7 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
       });
       body = await resp.json().catch(() => ({}));
     } catch (e) {
-      return res.status(502).json({ error: 'Echec reseau vers Resend : ' + e.message });
+      return res.status(502).json({ error: 'Échec réseau vers Resend : ' + e.message });
     }
 
     if (!resp.ok) {
@@ -6001,12 +6622,12 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
         from,
         to,
         hint: resp.status === 403 || resp.status === 422
-          ? 'Domaine probablement non verifie OU FROM_EMAIL hors domaine verifie. Verifiez le domaine de FROM_EMAIL sur resend.com/domains.'
+          ? 'Domaine probablement non vérifié OU FROM_EMAIL hors domaine vérifié. Vérifiez le domaine de FROM_EMAIL sur resend.com/domains.'
           : 'Vérifiez la clé API et le domaine sur resend.com.'
       });
     }
 
-    res.json({ success: true, message: 'E-mail de test envoyé à ' + to + '. Verifiez la boite (et les spams).', resendId: body.id, from });
+    res.json({ success: true, message: 'E-mail de test envoyé à ' + to + '. Vérifiez la boîte de réception (et les indésirables).', resendId: body.id, from });
   } catch (err) {
     console.error('[test-email]', err.message);
     res.status(500).json({ error: 'Erreur serveur : ' + err.message });

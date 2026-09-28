@@ -187,7 +187,9 @@ th.r,td.r{text-align:right}
 var DATA = null;
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function money(v,c){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0)+' '+(c||'EUR')}
+// Montant formaté selon la devise : pas de décimales pour XOF, XAF et GNF.
+function moneyFmt(amount,currency){var cur=currency||'EUR',d=['XOF','XAF','GNF'].indexOf(cur)>=0?0:2;try{return new Intl.NumberFormat('fr-FR',{style:'currency',currency:cur,minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(amount)||0)}catch(e){return (Number(amount)||0).toFixed(d)+' '+cur}}
+function money(v,c){return moneyFmt(v,c)}
 function dateFr(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}catch(e){return '—'}}
 function dateCourt(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}catch(e){return '—'}}
 function show(id,on){var e=document.getElementById(id);if(e)e.style.display=on?'':'none'}
@@ -230,13 +232,22 @@ function initPortal(d){
   renderKpis(); renderSuivi(); renderDevis(); renderFactures(); renderCompta(); renderMessages();
 }
 
+// Une ligne par devise présente : on n'additionne jamais des devises différentes.
+function parDeviseHtml(cle, couleurSiPositif){
+  var devs=Object.keys(DATA.comptabilite||{});
+  if(!devs.length) return '<div class="card__v" style="color:var(--muted)">'+money(0,'EUR')+'</div>';
+  return devs.map(function(dev){var v=DATA.comptabilite[dev][cle]||0;
+    return '<div class="card__v" style="'+(devs.length>1?'font-size:1.15rem;':'')+'color:'+(v>0?couleurSiPositif:'var(--muted)')+'">'+money(v,dev)+'</div>';}).join('');
+}
 function renderKpis(){
-  var d=DATA, dev=Object.keys(d.comptabilite)[0]||'EUR', c=d.comptabilite[dev]||{facture:0,paye:0,du:0};
+  var d=DATA;
   var actifs=d.projets.filter(function(p){return p.statut!=='livre'}).length;
+  // « Reste à régler » : factures ni annulées ni soldées, sur la base du reste réellement dû.
+  var aRegler=d.factures.filter(function(f){return f.statut!=='annulee'&&(f.reste||0)>0}).length;
   document.getElementById('kpis').innerHTML=
     '<div class="card"><div class="card__l">Projets en cours</div><div class="card__v">'+actifs+'</div><div class="card__s">'+d.projets.length+' au total</div></div>'+
-    '<div class="card"><div class="card__l">Réglé</div><div class="card__v" style="color:var(--success)">'+money(c.paye,dev)+'</div><div class="card__s">merci !</div></div>'+
-    '<div class="card"><div class="card__l">Reste à régler</div><div class="card__v" style="color:'+(c.du>0?'var(--warn)':'var(--muted)')+'">'+money(c.du,dev)+'</div><div class="card__s">'+d.factures.filter(function(f){return f.statut!=='payee'}).length+' facture(s)</div></div>'+
+    '<div class="card"><div class="card__l">Réglé</div>'+parDeviseHtml('paye','var(--success)')+'<div class="card__s">merci&nbsp;!</div></div>'+
+    '<div class="card"><div class="card__l">Reste à régler</div>'+parDeviseHtml('du','var(--warn)')+'<div class="card__s">'+aRegler+' facture(s)</div></div>'+
     '<div class="card"><div class="card__l">Client depuis</div><div class="card__v" style="font-size:1.05rem">'+dateFr(d.client.depuis)+'</div></div>';
 }
 
@@ -274,29 +285,31 @@ function renderSuivi(){
   }).join('');
 }
 
-var QST={envoye:['À examiner','b-info'],consulte:['Consulté','b-wait'],accepte:['Accepté','b-ok'],refuse:['Refusé','b-late'],expire:['Expiré','b-mute']};
+var QST={envoye:['À examiner','b-info'],consulte:['Consulté','b-wait'],accepte:['Accepté','b-ok'],refuse:['Refusé','b-late'],expire:['Expiré','b-mute'],annule:['Annulé','b-mute']};
 function renderDevis(){
   var d=DATA, el=document.getElementById('pDevis');
   if(!d.devis.length){ el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">request_quote</span>Aucun devis pour le moment.</div></div>'; return; }
   el.innerHTML='<div class="sec"><div class="sec__h"><div class="sec__t">Vos devis</div></div><div class="tbl-wrap"><table>'+
     '<thead><tr><th>Référence</th><th>Objet</th><th>Validité</th><th class="r">Montant</th><th>Statut</th><th class="r"></th></tr></thead><tbody>'+
-    d.devis.map(function(q){var s=QST[q.statut]||[q.statut,'b-mute'];
+    d.devis.map(function(q){var s=QST[q.statut]||['—','b-mute'];
       return '<tr><td class="ref">'+esc(q.ref)+'</td><td>'+esc(q.titre)+'</td><td>'+dateCourt(q.valideJusqu)+'</td>'+
       '<td class="r" style="font-weight:700">'+money(q.montant,q.devise)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td>'+
       '<td class="r"><a class="btn btn--sm" href="'+esc(q.lien)+'" target="_blank" rel="noopener">Ouvrir</a></td></tr>';
     }).join('')+'</tbody></table></div></div>';
 }
 
-var IST={envoyee:['À régler','b-info'],consultee:['À régler','b-wait'],payee:['Réglée','b-ok'],en_retard:['En retard','b-late'],annulee:['Annulée','b-mute']};
+var IST={envoyee:['À régler','b-info'],consultee:['À régler','b-wait'],partiellement_payee:['Partiellement payée','b-wait'],payee:['Réglée','b-ok'],en_retard:['En retard','b-late'],annulee:['Annulée','b-mute']};
 function renderFactures(){
   var d=DATA, el=document.getElementById('pFactures');
   if(!d.factures.length){ el.innerHTML='<div class="sec"><div class="empty"><span class="material-symbols-outlined">receipt_long</span>Aucune facture pour le moment.</div></div>'; return; }
   el.innerHTML='<div class="sec"><div class="sec__h"><div class="sec__t">Vos factures</div></div><div class="tbl-wrap"><table>'+
     '<thead><tr><th>Référence</th><th>Objet</th><th>Échéance</th><th class="r">Montant</th><th>Statut</th><th class="r"></th></tr></thead><tbody>'+
-    d.factures.map(function(f){var s=IST[f.statut]||[f.statut,'b-mute'];
+    d.factures.map(function(f){var s=IST[f.statut]||['—','b-mute'], aPayer=f.statut!=='annulee'&&(f.reste||0)>0;
       return '<tr><td class="ref">'+esc(f.ref)+'</td><td>'+esc(f.titre)+'</td><td>'+dateCourt(f.echeance)+'</td>'+
-      '<td class="r" style="font-weight:700">'+money(f.montant,f.devise)+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td>'+
-      '<td class="r"><a class="btn '+(f.statut==='payee'?'btn--ghost ':'')+'btn--sm" href="'+esc(f.lien)+'" target="_blank" rel="noopener">'+(f.statut==='payee'?'Voir':'Régler')+'</a></td></tr>';
+      '<td class="r" style="font-weight:700">'+money(f.montant,f.devise)+
+        ((f.paye||0)>0&&f.statut!=='annulee'&&(f.reste||0)>0?'<div style="font-weight:400;font-size:.78rem;color:var(--faint)">Payé&nbsp;: '+money(f.paye,f.devise)+' · Reste&nbsp;: '+money(f.reste,f.devise)+'</div>':'')+'</td>'+
+      '<td><span class="badge '+s[1]+'">'+s[0]+'</span></td>'+
+      '<td class="r"><a class="btn '+(aPayer?'':'btn--ghost ')+'btn--sm" href="'+esc(f.lien)+'" target="_blank" rel="noopener">'+(aPayer?'Régler':'Voir')+'</a></td></tr>';
     }).join('')+'</tbody></table></div></div>';
 }
 
@@ -313,10 +326,14 @@ function renderCompta(){
       '</div>'+
       '<div class="bar"><i style="width:'+pct+'%"></i></div><div class="bar-l">'+pct+' % du montant facturé est réglé</div></div>';
   }).join('');
+  // Un règlement par paiement reçu (acomptes compris), du plus récent au plus ancien.
+  var regl=[];
+  d.factures.forEach(function(f){(f.paiements||[]).forEach(function(p){regl.push({f:f,p:p})})});
+  regl.sort(function(a,b){return new Date(b.p.le||0)-new Date(a.p.le||0)});
   var hist='<div class="sec"><div class="sec__h"><div class="sec__t">Historique des règlements</div></div><div class="tbl-wrap"><table>'+
-    '<thead><tr><th>Référence</th><th>Objet</th><th>Réglée le</th><th class="r">Montant</th></tr></thead><tbody>'+
-    (d.factures.filter(function(f){return f.statut==='payee'}).map(function(f){
-      return '<tr><td class="ref">'+esc(f.ref)+'</td><td>'+esc(f.titre)+'</td><td>'+dateCourt(f.payeeLe)+'</td><td class="r" style="font-weight:700">'+money(f.montant,f.devise)+'</td></tr>';
+    '<thead><tr><th>Référence</th><th>Objet</th><th>Réglé le</th><th class="r">Montant</th></tr></thead><tbody>'+
+    (regl.map(function(x){
+      return '<tr><td class="ref">'+esc(x.f.ref)+'</td><td>'+esc(x.f.titre)+'</td><td>'+dateCourt(x.p.le)+'</td><td class="r" style="font-weight:700">'+money(x.p.montant,x.f.devise)+'</td></tr>';
     }).join('')||'<tr><td colspan="4" style="padding:1.6rem;text-align:center;color:var(--faint)">Aucun règlement enregistré.</td></tr>')+
     '</tbody></table></div>'+
     '<div style="margin-top:1rem;font-size:.78rem;color:var(--faint);line-height:1.6">Pour toute question comptable ou une facture au format spécifique, écrivez-nous depuis l\'onglet Messages.</div></div>';

@@ -53,6 +53,8 @@ th.r, td.r { text-align:right; }
 .totals { max-width:20rem; margin-left:auto; padding:1.1rem 1.3rem; background:var(--surface); border-radius:12px; margin-bottom:1.75rem; }
 .totals .row { display:flex; justify-content:space-between; padding:0.35rem 0; font-size:0.88rem; color:var(--muted); }
 .totals .row.total { font-family:'Montserrat',sans-serif; font-size:1.4rem; font-weight:800; color:var(--accent); padding-top:0.8rem; margin-top:0.4rem; border-top:1px solid var(--border); }
+.totals .row.paid { color:var(--success); }
+.totals .row.due { font-family:'Montserrat',sans-serif; font-size:1.1rem; font-weight:800; color:var(--text); padding-top:0.6rem; margin-top:0.3rem; border-top:1px dashed var(--border); }
 
 .panel { background:var(--surface); border-radius:12px; padding:1.25rem 1.4rem; margin-bottom:1.25rem; }
 .panel__title { font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.85rem; margin-bottom:0.6rem; }
@@ -75,7 +77,7 @@ th.r, td.r { text-align:right; }
   .sheet { background:#fff !important; border:0 !important; box-shadow:none !important; color:#000 !important; }
   .sheet__band { display:none !important; }
   .actions, .no-print, .btn { display:none !important; }
-  .issuer__brand, .doctype__label, .title, .bloc-name, .totals .row.total { color:#000 !important; }
+  .issuer__brand, .doctype__label, .title, .bloc-name, .totals .row.total, .totals .row.due { color:#000 !important; }
   .issuer__legal, .issuer__dba, .doctype__ref, .bloc-sub, .intro, .terms, .totals .row, .dates-row, .legal-footer { color:#333 !important; }
   table { color:#000 !important; }
   th { background:#f5f5f5 !important; color:#666 !important; }
@@ -87,6 +89,7 @@ th.r, td.r { text-align:right; }
 .status-badge.envoyee { background:rgba(96,165,250,0.15); color:#60a5fa; }
 .status-badge.consultee { background:rgba(251,191,36,0.15); color:#fbbf24; }
 .status-badge.payee { background:rgba(74,222,128,0.15); color:var(--success); }
+.status-badge.partiellement_payee { background:rgba(251,191,36,0.15); color:var(--warn); }
 .status-badge.en_retard { background:rgba(248,113,113,0.15); color:var(--danger); }
 .status-badge.annulee { background:rgba(248,113,113,0.15); color:var(--danger); }
 .status-badge.brouillon { background:rgba(229,226,225,0.1); color:var(--muted); }
@@ -113,15 +116,21 @@ const content = document.getElementById('content');
 const errorBlock = document.getElementById('errorBlock');
 
 const LEGAL_NAME = 'PIRABEL';
-const LEGAL_STATUS = 'Etablissement immatricule en qualite de personne physique';
+const LEGAL_STATUS = 'Établissement immatriculé en qualité de personne physique';
 const LEGAL_RCCM = 'RB/ABY/26 A 39852';
 const LEGAL_IFU = '0202336099991';
-const LEGAL_ADDRESS = 'Abomey-Calavi, Republique du Benin';
+const LEGAL_ADDRESS = 'Abomey-Calavi, République du Bénin';
 const LEGAL_EMAIL = 'contact@pirabellabs.com';
 
 function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
-function formatMoney(v, c) { return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2,maximumFractionDigits:2}).format(v) + ' ' + c; }
+// Montant formaté selon la devise : pas de décimales pour XOF, XAF et GNF.
+function moneyFmt(amount, currency) {
+  var cur = currency || 'EUR', d = ['XOF','XAF','GNF'].indexOf(cur) >= 0 ? 0 : 2;
+  try { return new Intl.NumberFormat('fr-FR', { style:'currency', currency:cur, minimumFractionDigits:d, maximumFractionDigits:d }).format(Number(amount) || 0); }
+  catch (e) { return (Number(amount) || 0).toFixed(d) + ' ' + cur; }
+}
+function formatMoney(v, c) { return moneyFmt(v, c); }
 
 async function loadInvoice() {
   try {
@@ -146,17 +155,21 @@ function renderInvoice(inv) {
 
   const itemsHtml = inv.items.map(i => `<tr><td>${escapeHtml(i.description)}</td><td class="r">${i.quantity}</td><td class="r">${formatMoney(i.unitPrice, inv.currency)}</td><td class="r" style="font-weight:600;">${formatMoney(i.total, inv.currency)}</td></tr>`).join('');
 
-  const statusLabels = { brouillon: 'Brouillon', envoyee: 'Envoyee', consultee: 'Consultee', payee: 'Payee', en_retard: 'En retard', annulee: 'Annulee' };
+  const statusLabels = { brouillon: 'Brouillon', envoyee: 'Envoyée', consultee: 'Consultée', partiellement_payee: 'Partiellement payée', payee: 'Payée', en_retard: 'En retard', annulee: 'Annulée' };
+  const paye = Number(inv.amountPaid) || 0;
+  const reste = inv.balanceDue != null ? Number(inv.balanceDue) : (inv.status === 'payee' || inv.status === 'annulee' ? 0 : inv.total);
 
-  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF de la facture ou contactez-nous pour toute question.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+la+facture+' + encodeURIComponent(inv.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Téléchargez le PDF de la facture ou contactez-nous pour toute question.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+la+facture+' + encodeURIComponent(inv.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
 
   let actionsHtml = utilsBar;
   if (inv.status === 'payee') {
-    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Facture payee</strong>Merci, cette facture a ete reglee' + (inv.paidAt ? ' le ' + formatDate(inv.paidAt) : '') + '.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Facture payée</strong>Merci, cette facture a été réglée' + (inv.paidAt ? ' le ' + formatDate(inv.paidAt) : '') + '.</div></div>';
   } else if (inv.status === 'annulee') {
-    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Facture annulee</strong>Cette facture a ete annulee. Contactez-nous pour plus d\'informations.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Facture annulée</strong>Cette facture a été annulée. Contactez-nous pour plus d’informations.</div></div>';
   } else {
-    actionsHtml += '<div class="actions"><div class="info"><strong>Reglement</strong>Merci de regler cette facture avant la date d\'echeance indiquee ci-dessus, selon les modalites de paiement precisees plus bas. Pour toute question, contactez-nous par WhatsApp ou email.</div></div>';
+    actionsHtml += '<div class="actions"' + (inv.status === 'en_retard' ? ' style="border-color:var(--danger);"' : '') + '><div class="info"><strong' + (inv.status === 'en_retard' ? ' style="color:var(--danger);"' : '') + '>' + (inv.status === 'en_retard' ? 'Règlement en retard' : 'Règlement') + '</strong>'
+      + (paye > 0 ? 'Déjà réglé&nbsp;: ' + formatMoney(paye, inv.currency) + '. Reste à payer&nbsp;: <strong style="display:inline;color:var(--text);">' + formatMoney(reste, inv.currency) + '</strong>. ' : '')
+      + 'Merci de régler ' + (paye > 0 ? 'le solde' : 'cette facture') + (inv.status === 'en_retard' ? ' dès que possible : la date d’échéance indiquée ci-dessus est dépassée' : ' avant la date d’échéance indiquée ci-dessus') + ', selon les modalités de paiement précisées plus bas. Pour toute question, contactez-nous par WhatsApp ou e-mail.</div></div>';
   }
 
   const issuerLegalLine = escapeHtml(LEGAL_NAME) + ' &middot; ' + escapeHtml(LEGAL_STATUS) + '<br>RCCM ' + escapeHtml(LEGAL_RCCM) + ' &middot; IFU ' + escapeHtml(LEGAL_IFU) + '<br>' + escapeHtml(LEGAL_ADDRESS) + '<br>' + escapeHtml(LEGAL_EMAIL);
@@ -166,20 +179,26 @@ function renderInvoice(inv) {
     '<div class="sheet"><div class="sheet__band"></div><div class="sheet__inner">' +
     '<div class="top">' +
       '<div class="issuer"><img class="issuer__logo" src="/img/logo.png?v=elan2" alt="Pirabel Labs" width="48" height="48"><div><div class="issuer__brand">' + escapeHtml(brand.toUpperCase()) + '</div>' + dbaLine + '<div class="issuer__legal">' + issuerLegalLine + '</div></div></div>' +
-      '<div class="doctype"><div class="doctype__label">FACTURE</div><div class="doctype__ref">' + escapeHtml(inv.reference) + '</div><div class="doctype__status"><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
+      '<div class="doctype"><div class="doctype__label">' + (inv.kind === 'acompte' ? 'FACTURE D’ACOMPTE' : inv.kind === 'solde' ? 'FACTURE DE SOLDE' : 'FACTURE') + '</div><div class="doctype__ref">' + escapeHtml(inv.reference) + '</div><div class="doctype__status"><span class="status-badge ' + inv.status + '">' + (statusLabels[inv.status] || inv.status) + '</span></div></div>' +
     '</div>' +
     '<div class="grid2">' +
-      '<div><div class="bloc-label">Facture a</div><div class="bloc-name">' + escapeHtml(inv.clientName) + '</div><div class="bloc-sub">' + (inv.clientCompany ? escapeHtml(inv.clientCompany) + '<br>' : '') + (inv.clientAddress ? escapeHtml(inv.clientAddress) + '<br>' : '') + escapeHtml(inv.clientEmail || '') + '</div></div>' +
-      '<div><div class="bloc-label">Details</div><div class="dates-row"><div><span>Date d\'emission</span><strong>' + formatDate(inv.issuedAt) + '</strong></div><div><span>Date d\'echeance</span><strong>' + formatDate(inv.dueDate) + '</strong></div></div></div>' +
+      '<div><div class="bloc-label">Facture à</div><div class="bloc-name">' + escapeHtml(inv.clientName) + '</div><div class="bloc-sub">' + (inv.clientCompany ? escapeHtml(inv.clientCompany) + '<br>' : '') + (inv.clientAddress ? escapeHtml(inv.clientAddress) + '<br>' : '') + escapeHtml(inv.clientEmail || '') + '</div></div>' +
+      '<div><div class="bloc-label">Détails</div><div class="dates-row"><div><span>Date d’émission</span><strong>' + formatDate(inv.issuedAt) + '</strong></div><div><span>Date d’échéance</span><strong>' + formatDate(inv.dueDate) + '</strong></div></div></div>' +
     '</div>' +
     '<div class="title">' + escapeHtml(inv.title) + '</div>' +
     (inv.introduction ? '<p class="intro">' + escapeHtml(inv.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
-    '<table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table>' +
+    '<table><thead><tr><th>Description</th><th class="r">Qté</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table>' +
     '<div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(inv.subtotal, inv.currency) + '</span></div>' +
-    (inv.taxRate > 0 ? '<div class="row"><span>TVA ' + inv.taxRate + '%</span><span>' + formatMoney(inv.taxAmount, inv.currency) + '</span></div>' : '<div class="row"><span>TVA</span><span>Non applicable</span></div>') +
-    '<div class="row total"><span>Total TTC</span><span>' + formatMoney(inv.total, inv.currency) + '</span></div></div>' +
-    (inv.terms ? '<div class="panel"><div class="panel__title">Modalites de paiement</div><div class="terms">' + escapeHtml(inv.terms) + '</div></div>' : '') +
-    '<div class="legal-footer">Facture emise par ' + escapeHtml(LEGAL_NAME) + (isDba ? ' (' + escapeHtml(brand) + ')' : '') + ', ' + escapeHtml(LEGAL_STATUS.toLowerCase()) + ', RCCM ' + escapeHtml(LEGAL_RCCM) + ', IFU ' + escapeHtml(LEGAL_IFU) + '.<br>Document genere electroniquement, valable sans signature manuscrite.</div>' +
+    (inv.discountAmount > 0 ? '<div class="row"><span>Remise ' + inv.discountPercent + '&nbsp;%</span><span>−&nbsp;' + formatMoney(inv.discountAmount, inv.currency) + '</span></div>' : '') +
+    (inv.taxRate > 0 ? '<div class="row"><span>TVA ' + inv.taxRate + '&nbsp;%</span><span>' + formatMoney(inv.taxAmount, inv.currency) + '</span></div>' : '<div class="row"><span>TVA</span><span>Non applicable</span></div>') +
+    '<div class="row total"><span>Total TTC</span><span>' + formatMoney(inv.total, inv.currency) + '</span></div>' +
+    (paye > 0 && inv.status !== 'annulee'
+      ? (inv.payments || []).map(function (p) { return '<div class="row paid"><span>Réglé le ' + formatDate(p.date) + '</span><span>−&nbsp;' + formatMoney(p.amount, inv.currency) + '</span></div>'; }).join('')
+        + '<div class="row due"><span>Reste à payer</span><span>' + formatMoney(reste, inv.currency) + '</span></div>'
+      : '') +
+    '</div>' +
+    (inv.terms ? '<div class="panel"><div class="panel__title">Modalités de paiement</div><div class="terms">' + escapeHtml(inv.terms) + '</div></div>' : '') +
+    '<div class="legal-footer">Facture émise par ' + escapeHtml(LEGAL_NAME) + (isDba ? ' (' + escapeHtml(brand) + ')' : '') + ', ' + escapeHtml(LEGAL_STATUS.toLowerCase()) + ', RCCM ' + escapeHtml(LEGAL_RCCM) + ', IFU ' + escapeHtml(LEGAL_IFU) + '.<br>Document généré électroniquement, valable sans signature manuscrite.</div>' +
     '</div></div>' +
     actionsHtml;
 }

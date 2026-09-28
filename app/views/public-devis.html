@@ -65,6 +65,7 @@ th.r, td.r { text-align:right; }
 .status-badge.consulte { background:rgba(251,191,36,0.15); color:#fbbf24; }
 .status-badge.accepte { background:rgba(74,222,128,0.15); color:var(--success); }
 .status-badge.refuse { background:rgba(248,113,113,0.15); color:var(--danger); }
+.status-badge.expire, .status-badge.annule { background:rgba(229,226,225,0.1); color:var(--muted); }
 .msg { padding:1rem 1.25rem; border-radius:10px; margin-top:1rem; font-size:0.9rem; display:none; }
 .msg.show { display:block; }
 .msg.success { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--success); }
@@ -98,7 +99,7 @@ th.r, td.r { text-align:right; }
   <div id="loading" class="loading">Chargement du devis...</div>
   <div id="errorBlock" class="error-page" style="display:none;">
     <h1 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:1rem;">Devis introuvable</h1>
-    <p style="color:var(--muted);">Le lien est invalide ou le devis a expire. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
+    <p style="color:var(--muted);">Le lien est invalide ou le devis a expiré. Contactez-nous : <a href="mailto:contact@pirabellabs.com" style="color:var(--accent);">contact@pirabellabs.com</a></p>
   </div>
   <div id="content" style="display:none;"></div>
 </div>
@@ -111,7 +112,13 @@ const errorBlock = document.getElementById('errorBlock');
 
 function escapeHtml(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { return new Date(d).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'}); }
-function formatMoney(v, c) { return new Intl.NumberFormat('fr-FR', {minimumFractionDigits:2,maximumFractionDigits:2}).format(v) + ' ' + c; }
+// Montant formaté selon la devise : pas de décimales pour XOF, XAF et GNF.
+function moneyFmt(amount, currency) {
+  var cur = currency || 'EUR', d = ['XOF','XAF','GNF'].indexOf(cur) >= 0 ? 0 : 2;
+  try { return new Intl.NumberFormat('fr-FR', { style:'currency', currency:cur, minimumFractionDigits:d, maximumFractionDigits:d }).format(Number(amount) || 0); }
+  catch (e) { return (Number(amount) || 0).toFixed(d) + ' ' + cur; }
+}
+function formatMoney(v, c) { return moneyFmt(v, c); }
 
 async function loadQuote() {
   try {
@@ -131,25 +138,33 @@ function renderQuote(q) {
 
   const itemsHtml = q.items.map(i => `<tr><td>${escapeHtml(i.description)}</td><td class="r">${i.quantity}</td><td class="r">${formatMoney(i.unitPrice, q.currency)}</td><td class="r" style="font-weight:600;">${formatMoney(i.total, q.currency)}</td></tr>`).join('');
 
-  const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoye', consulte: 'Consulte', accepte: 'Accepte', refuse: 'Refuse', expire: 'Expire' };
+  const statusLabels = { brouillon: 'Brouillon', envoye: 'Envoyé', consulte: 'Consulté', accepte: 'Accepté', refuse: 'Refusé', expire: 'Expiré', annule: 'Annulé' };
 
   // Bouton PDF + WhatsApp toujours disponibles
-  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Telechargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
+  const utilsBar = '<div class="actions no-print" style="border-color:var(--border);margin-bottom:1rem;"><div class="info"><strong>Actions rapides</strong>Téléchargez le PDF du devis ou contactez-nous directement.</div><button class="btn btn--ghost" onclick="window.print()"><span class="material-symbols-outlined">download</span> Télécharger PDF</button><a class="btn btn--wa" href="https://wa.me/33757751778?text=Bonjour%2C+j%27ai+une+question+sur+le+devis+' + encodeURIComponent(q.reference) + '" target="_blank"><span class="material-symbols-outlined">chat</span> WhatsApp</a></div>';
 
   let actionsHtml = utilsBar;
   if (q.status === 'accepte') {
-    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Devis accepte</strong>Vous avez accepte ce devis. Nous vous contactons sous 24h pour planifier le kick-off.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--success);"><div class="info"><strong style="color:var(--success);">Devis accepté</strong>Vous avez accepté ce devis. Nous vous contactons sous 24 h pour planifier le lancement.</div></div>';
   } else if (q.status === 'refuse') {
-    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refuse</strong>Vous avez refuse ce devis. Si vous changez d\'avis, contactez-nous directement.</div></div>';
+    actionsHtml += '<div class="actions" style="border-color:var(--danger);"><div class="info"><strong style="color:var(--danger);">Devis refusé</strong>Vous avez refusé ce devis. Si vous changez d’avis, contactez-nous directement.</div></div>';
+  } else if (q.status === 'annule') {
+    actionsHtml += '<div class="actions" style="border-color:var(--border);"><div class="info"><strong>Devis annulé</strong>Ce devis a été annulé. Contactez-nous pour en obtenir un nouveau.</div></div>';
+  } else if (q.status === 'brouillon') {
+    actionsHtml += '<div class="actions no-print" style="border-color:var(--border);"><div class="info"><strong>Devis en préparation</strong>Ce devis n’a pas encore été finalisé : il vous sera transmis très prochainement.</div></div>';
+  } else if (q.status === 'expire' || q.canAnswer === false) {
+    // Plus de bouton Accepter / Refuser : le serveur refuserait de toute façon (HTTP 410).
+    actionsHtml += '<div class="actions no-print" style="border-color:var(--border);"><div class="info"><strong>Devis expiré</strong>Ce devis a expiré, contactez-nous pour le mettre à jour.</div><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander une mise à jour</button></div>';
   } else {
-    actionsHtml += '<div class="actions no-print"><div class="info"><strong>Donner votre réponse</strong>Acceptez pour demarrer le projet, demandez des ajustements pour modifier, ou refusez.</div><button class="btn btn--accent" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter</button><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander ajustements</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
+    actionsHtml += '<div class="actions no-print"><div class="info"><strong>Donner votre réponse</strong>Acceptez pour démarrer le projet, demandez des ajustements pour modifier, ou refusez.</div><button class="btn btn--accent" onclick="acceptQuote()"><span class="material-symbols-outlined">check</span> Accepter</button><button class="btn btn--ghost" onclick="adjustQuote()"><span class="material-symbols-outlined">edit</span> Demander ajustements</button><button class="btn btn--ghost" onclick="refuseQuote()"><span class="material-symbols-outlined">close</span> Refuser</button></div>';
   }
 
-  content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(q.reference) + '</div><h1 class="title">' + escapeHtml(q.title) + '</h1><div class="meta"><div><strong>Pour :</strong> ' + escapeHtml(q.clientName) + (q.clientCompany ? ' &middot; ' + escapeHtml(q.clientCompany) : '') + '</div><div><strong>Date :</strong> ' + formatDate(q.issuedAt) + '</div><div><strong>Valide jusqu\'au :</strong> ' + formatDate(q.validUntil) + '</div><div><span class="status-badge ' + q.status + '">' + (statusLabels[q.status] || q.status) + '</span></div></div>' +
+  content.innerHTML = '<div class="card"><div class="ref">' + escapeHtml(q.reference) + '</div><h1 class="title">' + escapeHtml(q.title) + '</h1><div class="meta"><div><strong>Pour&nbsp;:</strong> ' + escapeHtml(q.clientName) + (q.clientCompany ? ' &middot; ' + escapeHtml(q.clientCompany) : '') + '</div><div><strong>Date&nbsp;:</strong> ' + formatDate(q.issuedAt) + '</div><div><strong>Valable jusqu’au&nbsp;:</strong> ' + formatDate(q.validUntil) + '</div><div><span class="status-badge ' + q.status + '">' + (statusLabels[q.status] || q.status) + '</span></div></div>' +
     (q.introduction ? '<p class="intro">' + escapeHtml(q.introduction).replace(/\n/g, '<br>') + '</p>' : '') +
     '</div>' +
-    '<div class="card"><table><thead><tr><th>Description</th><th class="r">Qte</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table><div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(q.subtotal, q.currency) + '</span></div>' +
-    (q.taxRate > 0 ? '<div class="row"><span>TVA ' + q.taxRate + '%</span><span>' + formatMoney(q.taxAmount, q.currency) + '</span></div>' : '') +
+    '<div class="card"><table><thead><tr><th>Description</th><th class="r">Qté</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + itemsHtml + '</tbody></table><div class="totals"><div class="row"><span>Sous-total</span><span>' + formatMoney(q.subtotal, q.currency) + '</span></div>' +
+    (q.discountAmount > 0 ? '<div class="row"><span>Remise ' + q.discountPercent + '&nbsp;%</span><span>−&nbsp;' + formatMoney(q.discountAmount, q.currency) + '</span></div>' : '') +
+    (q.taxRate > 0 ? '<div class="row"><span>TVA ' + q.taxRate + '&nbsp;%</span><span>' + formatMoney(q.taxAmount, q.currency) + '</span></div>' : '') +
     '<div class="row total"><span>Total</span><span>' + formatMoney(q.total, q.currency) + '</span></div></div></div>' +
     (q.terms ? '<div class="card"><h3 style="font-family:Montserrat,sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.85rem;">Conditions</h3><div class="terms">' + escapeHtml(q.terms) + '</div></div>' : '') +
     actionsHtml +

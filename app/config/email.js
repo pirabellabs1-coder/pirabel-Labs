@@ -275,21 +275,6 @@ function projectUpdateEmail(clientName, projectName, update, progress) {
   });
 }
 
-// --- FACTURE (client) ---
-function invoiceEmail(clientName, invoiceNumber, amount, dueDate) {
-  return masterTemplate({
-    preheader: `Facture ${invoiceNumber} — ${amount}`,
-    title: 'Votre facture',
-    subtitle: invoiceNumber,
-    body: `
-      <p style="${S.p}">Bonjour ${clientName},</p>
-      <p style="${S.p}">Votre facture est disponible :</p>
-      ${infoTable([['Facture', invoiceNumber], ['Montant', `<strong style="font-size:20px;color:${C.accentText};">${amount}</strong>`], dueDate ? ['Échéance', dueDate] : null])}`,
-    cta: 'Voir ma facture',
-    ctaUrl: `${SITE()}/espace-client`,
-  });
-}
-
 // --- PROSPECTION / CAMPAGNE ---
 // Aucun chiffre ni témoignage générique : seuls ceux fournis explicitement (et vérifiables) sont affichés.
 function prospectionEmail(recipientName, options = {}) {
@@ -427,10 +412,6 @@ async function notifyNewOrder(order) {
 
 async function notifyProjectUpdate(clientEmail, clientName, projectName, update, progress) {
   return sendEmail(clientEmail, `Mise à jour : ${projectName}`, projectUpdateEmail(clientName, projectName, update, progress));
-}
-
-async function sendInvoiceNotification(clientEmail, clientName, invoiceNumber, amount, dueDate) {
-  return sendEmail(clientEmail, `Facture ${invoiceNumber}`, invoiceEmail(clientName, invoiceNumber, amount, dueDate));
 }
 
 async function sendWelcome(email, name) {
@@ -666,7 +647,7 @@ function emailTemplate(title, content, ctaText, ctaUrl) {
 
 module.exports = {
   sendEmail, sendOTP, notifyNewOrder, notifyProjectUpdate,
-  sendInvoiceNotification, sendWelcome, sendProspection, sendNewsletter,
+  sendWelcome, sendProspection, sendNewsletter,
   notifyNewApplication, sendApplicationConfirmation, sendApplicationStatusUpdate,
   sendAppointmentConfirmation,
   sendOrderStatusUpdate, sendQuoteInteraction, sendMeetingReminder,

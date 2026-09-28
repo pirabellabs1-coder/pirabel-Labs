@@ -507,7 +507,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <button class="burger" id="burgerBtn"><span class="material-symbols-outlined">menu</span></button>
       <div>
         <h1 id="pageTitle">Tableau de bord</h1>
-        <div class="topbar__sub" id="pageSub">Vue d'ensemble en temps reel</div>
+        <div class="topbar__sub" id="pageSub">Vue d’ensemble en temps réel</div>
       </div>
       <div class="topbar__actions" id="topbarActions">
         <a href="/" class="btn btn--ghost btn--sm"><span class="material-symbols-outlined">open_in_new</span> Voir le site</a>
@@ -523,8 +523,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">calendar_today</span></div><span class="kpi__trend" id="kpi30Trend">--</span></div><div class="kpi__value" id="kpi30">--</div><div class="kpi__label">30 derniers jours</div></div>
         <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">date_range</span></div></div><div class="kpi__value" id="kpi7">--</div><div class="kpi__label">7 derniers jours</div></div>
         <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value" id="kpiConverted">--</div><div class="kpi__label">Convertis</div></div>
-        <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--danger"><span class="material-symbols-outlined">percent</span></div></div><div class="kpi__value" id="kpiConvRate">--</div><div class="kpi__label">Taux conversion</div></div>
+        <div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--danger"><span class="material-symbols-outlined">percent</span></div></div><div class="kpi__value" id="kpiConvRate">--</div><div class="kpi__label">Taux de conversion</div></div>
       </div>
+      <div class="kpi-grid" id="homeFinance" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:1.25rem;"></div>
 
       <!-- TRAFIC DU SITE -->
       <div class="card" style="margin-bottom:1.25rem;">
@@ -549,7 +550,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         </div>
         <div class="card">
           <div class="card__header">
-            <div><div class="card__title">Repartition par service</div><div class="card__sub">Top demandes</div></div>
+            <div><div class="card__title">Répartition par service</div><div class="card__sub">Top demandes</div></div>
           </div>
           <div class="card__chart"><canvas id="chartByService"></canvas></div>
         </div>
@@ -622,7 +623,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
 
       <div class="grid-2 grid-2--equal">
-        <div class="card"><div class="card__header"><div><div class="card__title">Entonnoir de conversion</div><div class="card__sub">Du lead a la signature</div></div></div><div class="card__chart"><canvas id="chartFunnel"></canvas></div></div>
+        <div class="card"><div class="card__header"><div><div class="card__title">Entonnoir de conversion</div><div class="card__sub">Du prospect à la signature</div></div></div><div class="card__chart"><canvas id="chartFunnel"></canvas></div></div>
         <div class="card"><div class="card__header"><div><div class="card__title">Activite hebdomadaire</div><div class="card__sub">Jour par jour, 7 derniers jours</div></div></div><div class="card__chart"><canvas id="chartWeekly"></canvas></div></div>
       </div>
     </div>
@@ -792,7 +793,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
       <div class="kpi-grid" id="clKpis" style="grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));margin-bottom:2rem;"></div>
       <div class="card">
-        <div class="card__header"><div><div class="card__title">Tous les clients</div><div class="card__sub">Statut "client" = devis accepté ou conversion manuelle.</div></div></div>
+        <div class="card__header"><div><div class="card__title">Tous les clients</div><div class="card__sub">Statut « client » = devis accepté ou conversion manuelle.</div></div></div>
         <div style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;">
             <thead><tr style="border-bottom:1px solid var(--border);">
@@ -800,7 +801,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Nom</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Email</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Entreprise</th>
-              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">CA cumule</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">CA cumulé</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Devis</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
             </tr></thead>
@@ -822,7 +823,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;">
             <thead><tr style="border-bottom:1px solid var(--border);">
-              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Reference</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Référence</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Date</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Client</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Titre</th>
@@ -848,11 +849,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;">
             <thead><tr style="border-bottom:1px solid var(--border);">
-              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Reference</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Référence</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Date</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Client</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Titre</th>
-              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Echeance</th>
+              <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Échéance</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Total</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Statut</th>
               <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
@@ -910,14 +911,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Notifications email</div><div class="card__sub">Sur quelles actions recevoir un mail</div></div></div>
-        <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">Email envoye automatiquement a chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
+        <div class="setting-row"><div><div class="setting-row__label">Nouveau lead</div><div class="setting-row__sub">E-mail envoyé automatiquement à chaque demande</div></div><span class="badge badge--converti">Actif</span></div>
         <div class="setting-row"><div><div class="setting-row__label">Résumé hebdomadaire</div><div class="setting-row__sub">Envoyé automatiquement chaque lundi à 9h00 (heure du Bénin) à contact@pirabellabs.com</div></div><span class="badge badge--converti">Actif</span></div>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Sécurité</div><div class="card__sub">Accès et session</div></div></div>
         <div class="setting-row">
-          <div><div class="setting-row__label">Se deconnecter</div><div class="setting-row__sub">Termine votre session admin</div></div>
-          <button class="btn btn--ghost btn--sm" id="logoutBtn2"><span class="material-symbols-outlined">logout</span> Deconnexion</button>
+          <div><div class="setting-row__label">Se déconnecter</div><div class="setting-row__sub">Termine votre session d’administration</div></div>
+          <button class="btn btn--ghost btn--sm" id="logoutBtn2"><span class="material-symbols-outlined">logout</span> Déconnexion</button>
         </div>
       </div>
     </div>
@@ -1152,6 +1153,30 @@ function fmtDateTime(d) {
   return date.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 function escape(str) { return String(str || '').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// ============ Montants & statuts (devis / factures) ============
+// Montant formaté selon la devise : pas de décimales pour XOF, XAF et GNF.
+function moneyFmt(amount, currency) {
+  var cur = currency || 'EUR', d = ['XOF', 'XAF', 'GNF'].indexOf(cur) >= 0 ? 0 : 2;
+  try { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: cur, minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(amount) || 0); }
+  catch (e) { return (Number(amount) || 0).toFixed(d) + ' ' + cur; }
+}
+function arrondiDevise(v, cur) { var f = ['XOF', 'XAF', 'GNF'].indexOf(cur) >= 0 ? 1 : 100; return Math.round((Number(v) || 0) * f) / f; }
+var QUOTE_LABELS = { brouillon: ['Brouillon', 'badge--new'], envoye: ['Envoyé', 'badge--info'], consulte: ['Consulté', 'badge--warning'], accepte: ['Accepté', 'badge--won'], refuse: ['Refusé', 'badge--lost'], expire: ['Expiré', 'badge--lost'], annule: ['Annulé', 'badge--lost'] };
+var INVOICE_LABELS = { brouillon: ['Brouillon', 'badge--new'], envoyee: ['Envoyée', 'badge--info'], consultee: ['Consultée', 'badge--warning'], partiellement_payee: ['Partiellement payée', 'badge--warning'], payee: ['Payée', 'badge--won'], en_retard: ['En retard', 'badge--lost'], annulee: ['Annulée', 'badge--lost'] };
+var INVOICE_KIND_LABELS = { totale: 'Facture totale', acompte: 'Acompte', solde: 'Solde' };
+var PAYMENT_METHODS = ['Virement', 'Mobile Money', 'Espèces', 'Carte', 'Chèque', 'Autre'];
+function dateLocaleISO(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function kpiCard(icon, iconClass, valueHtml, label) {
+  return '<div class="kpi"><div class="kpi__top"><div class="kpi__icon ' + (iconClass || '') + '"><span class="material-symbols-outlined">' + icon + '</span></div></div><div class="kpi__value">' + valueHtml + '</div><div class="kpi__label">' + label + '</div></div>';
+}
+// Une carte par devise présente : on n'additionne jamais des devises différentes.
+function kpiParDevise(map, icon, iconClass, label) {
+  var devs = Object.keys(map || {}).filter(function (d) { return map[d]; });
+  if (!devs.length) return kpiCard(icon, iconClass, '—', label);
+  return devs.map(function (d) { return kpiCard(icon, iconClass, moneyFmt(map[d], d), label + (devs.length > 1 ? ' · ' + d : '')); }).join('');
+}
+function erreurBox(txt) { return '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">' + escape(txt) + '</div>'; }
 function statusBadge(status) { return '<span class="badge badge--' + status + '">' + (STATUS_LABELS[status] || status) + '</span>'; }
 
 // ============ Commentaires (modération) ============
@@ -1204,7 +1229,7 @@ async function refreshCmBadge() {
 function setView(view) {
   document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === view); });
   document.querySelectorAll('.sidebar__link').forEach(function(l){ l.classList.toggle('is-active', l.dataset.view === view); });
-  const titles = { dashboard: ['Tableau de bord', 'Vue d\'ensemble en temps reel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptes)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + repartitions'], cases: ['Cas clients', 'Gerer les réalisations affichees'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'], appointments: ['Rendez-vous', 'Demandes de RDV depuis le site — relances et suivi'] };
+  const titles = { dashboard: ['Tableau de bord', 'Vue d’ensemble en temps réel'], leads: ['Prospects CRM', 'Gestion des contacts entrants'], clients: ['Clients', 'Prospects convertis (devis acceptés)'], quotes: ['Devis', 'Créer, envoyer et suivre vos devis'], reviews: ['Avis clients', 'Demandes envoyées + modération'], 'livres-blancs': ['Livres blancs', 'Téléchargements et leads capturés'], 'bulk-email': ['Envoi email masse', 'Newsletter et relances aux leads'], analytics: ['Analytics', '6 indicateurs clés + répartitions'], cases: ['Cas clients', 'Gérer les réalisations affichées'], comments: ['Commentaires', 'Modération des commentaires de blog'], gallery: ['Galerie images', 'Uploads, organisation, URLs'], settings: ['Paramètres', 'Compte et notifications'], assistant: ['Assistant IA', 'Votre directeur commercial et assistant de rédaction'], team: ['Équipe', 'Gestion des employés et des rôles'], tasks: ['Tâches', 'Répartition et suivi du travail'], emails: ['E-mails envoyés', 'Historique des e-mails individuels et campagnes'], appointments: ['Rendez-vous', 'Demandes de RDV depuis le site — relances et suivi'] };
   // Titres des écrans ajoutés après la version initiale.
   Object.assign(titles, {
     invoices: ['Factures', 'Émission, envoi et suivi des règlements'],
@@ -1299,7 +1324,7 @@ function openCompose(prefill) {
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
   modal.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;max-width:36rem;width:100%;max-height:92vh;overflow:auto;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">' +
-      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (prefill.leadId ? 'Répondre par email' : 'Ecrire un email') + '</div>' +
+      '<div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">' + (prefill.leadId ? 'Répondre par email' : 'Écrire un e-mail') + '</div>' +
       '<button id="cmClose" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>' +
     '</div>' +
     '<label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.3rem;color:var(--text-muted);">Destinataire (email)</label>' +
@@ -1337,11 +1362,11 @@ function openCompose(prefill) {
       var payload = { to: to, subject: subject, message: message };
       if (modal.dataset.leadId) payload.leadId = modal.dataset.leadId;
       var r = await api('/api/admin/send-email', { method: 'POST', body: payload });
-      toast(r.message || 'Email envoye !', 'success');
+      toast(r.message || 'E-mail envoyé\u00a0!', 'success');
       close();
       if (modal.dataset.leadId) { loadLeads(); }
     } catch(e) {
-      toast(e.message || "Echec de l'envoi", 'error');
+      toast(e.message || 'Échec de l’envoi', 'error');
       btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined">send</span> Envoyer';
     }
   });
@@ -1796,7 +1821,7 @@ function showLinkModal(title, body, url) {
     document.getElementById('lmClose').addEventListener('click', () => modal.remove());
     document.getElementById('lmCopy').addEventListener('click', async () => {
       const v = document.getElementById('lmInput').value;
-      try { await navigator.clipboard.writeText(v); toast('Lien copie', 'success'); } catch(e) { toast('Copie manuelle requise', 'error'); }
+      try { await navigator.clipboard.writeText(v); toast('Lien copié', 'success'); } catch(e) { toast('Copie manuelle requise', 'error'); }
     });
   }
   document.getElementById('lmTitle').textContent = title;
@@ -1808,46 +1833,62 @@ function showLinkModal(title, body, url) {
 
 // ============ CLIENTS ============
 async function loadClients() {
-  document.getElementById('clTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);"><span class="material-symbols-outlined" style="vertical-align:middle;animation:spin 1s linear infinite;">progress_activity</span> Chargement...</td></tr>';
+  document.getElementById('clTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);"><span class="material-symbols-outlined" style="vertical-align:middle;animation:spin 1s linear infinite;">progress_activity</span> Chargement…</td></tr>';
   try {
-    const data = await api('/api/admin/leads?status=converti');
+    const [data, qd] = await Promise.all([
+      api('/api/admin/leads?status=converti'),
+      api('/api/admin/quotes?status=accepte').catch(function () { return { quotes: [], stats: {} }; }),
+    ]);
     let clients = (data.leads || []).filter(l => l.stage === 'client' || l.status === 'converti');
+    // CA par client et par devise, à partir des devis acceptés (jamais d'addition entre devises).
+    const parClient = {};
+    (qd.quotes || []).forEach(q => {
+      const k = String(q.leadId);
+      parClient[k] = parClient[k] || {};
+      parClient[k][q.currency] = arrondiDevise((parClient[k][q.currency] || 0) + (q.total || 0), q.currency);
+    });
+    const totalParDevise = (qd.stats && qd.stats.acceptedByCurrency) || {};
+    const nbParDevise = {};
+    Object.keys(parClient).forEach(k => Object.keys(parClient[k]).forEach(d => { nbParDevise[d] = (nbParDevise[d] || 0) + 1; }));
+    const moyenne = {};
+    Object.keys(totalParDevise).forEach(d => { if (nbParDevise[d]) moyenne[d] = arrondiDevise(totalParDevise[d] / nbParDevise[d], d); });
     const kpis = document.getElementById('clKpis');
-    const total = clients.length;
-    const totalCa = clients.reduce((s, c) => s + (c.clientData?.totalContractValue || 0), 0);
-    const avgCa = total ? Math.round(totalCa / total) : 0;
-    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">verified_user</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total clients</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalCa.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA total cumule</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + avgCa.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">Panier moyen client</div></div>';
+    kpis.innerHTML = kpiCard('verified_user', 'kpi__icon--success', clients.length, 'Total clients') +
+      kpiParDevise(totalParDevise, 'payments', '', 'CA cumulé (devis acceptés)') +
+      kpiParDevise(moyenne, 'trending_up', 'kpi__icon--info', 'Panier moyen client');
 
     const tbody = document.getElementById('clTbody');
-    if (!clients.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun client pour l\'instant. Convertissez un prospect via un devis accepte.</td></tr>'; return; }
-    tbody.innerHTML = clients.map(c => '<tr style="border-bottom:1px solid var(--border);">' +
+    if (!clients.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun client pour l’instant. Convertissez un prospect via un devis accepté.</td></tr>'; return; }
+    tbody.innerHTML = clients.map(c => {
+      const ca = parClient[String(c._id)] || {};
+      const caHtml = Object.keys(ca).map(d => moneyFmt(ca[d], d)).join('<br>') || '—';
+      return '<tr style="border-bottom:1px solid var(--border);">' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + (c.clientData?.becameClientAt ? new Date(c.clientData.becameClientAt).toLocaleDateString('fr-FR') : '-') + '</td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:600;">' + escape(c.name) + '</td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;"><a href="mailto:' + escape(c.email) + '" style="color:var(--accent);">' + escape(c.email) + '</a></td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(c.company || '-') + '</td>' +
-      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--success);">' + (c.clientData?.totalContractValue || 0).toLocaleString('fr-FR') + ' &euro;</td>' +
+      '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--success);">' + caHtml + '</td>' +
       '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;">' + (c.clientData?.quotesCount || 0) + '</td>' +
       '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
-        '<button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Envoyer email de demande"><span class="material-symbols-outlined">mail</span></button>' +
+        '<button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Envoyer l’e-mail de demande d’avis"><span class="material-symbols-outlined">mail</span></button>' +
         '<button onclick="newQuoteFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Créer un devis"><span class="material-symbols-outlined">request_quote</span></button>' +
       '</td>' +
-      '</tr>').join('');
+      '</tr>';
+    }).join('');
   } catch(e) {
     console.error(e);
-    errorState('clTbody', 7, 'Erreur chargement clients : ' + (e.message || 'vérifiez votre connexion'));
-    toast('Erreur chargement clients', 'error');
+    errorState('clTbody', 7, 'Erreur de chargement des clients : ' + (e.message || 'vérifiez votre connexion'));
+    toast('Erreur de chargement des clients', 'error');
   }
 }
 
 async function requestReview(leadId) {
-  if (!confirm('Envoyer un email de demande d\'avis a ce client ?')) return;
+  if (!confirm('Envoyer un e-mail de demande d’avis à ce client ?')) return;
   try {
     const data = await api('/api/admin/reviews/request', { method: 'POST', body: JSON.stringify({ leadId }) });
     // Affiche modal avec lien copiable
-    showLinkModal('Demande d\'avis envoyée', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier pour l\'envoyer manuellement (WhatsApp, SMS, etc).', data.publicUrl);
-  } catch(e) { toast('Erreur envoi : ' + (e.message || ''), 'error'); }
+    showLinkModal('Demande d’avis envoyée', 'Le client reçoit l’e-mail avec le lien ci-dessous. Vous pouvez aussi le copier pour l’envoyer manuellement (WhatsApp, SMS, etc.).', data.publicUrl);
+  } catch(e) { toast('Erreur d’envoi : ' + (e.message || ''), 'error'); }
 }
 
 function newQuoteFor(leadId) {
@@ -1856,79 +1897,133 @@ function newQuoteFor(leadId) {
 }
 
 // ============ QUOTES ============
+var QUOTES_CACHE = {};
 async function loadQuotes() {
-  document.getElementById('qTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr>';
+  document.getElementById('qTbody').innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr>';
   try {
     const data = await api('/api/admin/quotes');
     const quotes = data.quotes || [];
-    const stats = data.stats || [];
+    const st = data.stats || { total: quotes.length, byStatus: {}, acceptedByCurrency: {}, acceptanceRate: 0 };
+    QUOTES_CACHE = {};
+    quotes.forEach(q => { QUOTES_CACHE[q._id] = q; });
 
-    const kpis = document.getElementById('qKpis');
-    const total = quotes.length;
-    const accepted = quotes.filter(q => q.status === 'accepte').length;
-    const totalAccepted = quotes.filter(q => q.status === 'accepte').reduce((s, q) => s + q.total, 0);
-    const conv = total ? Math.round((accepted / total) * 100) : 0;
-    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">request_quote</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total devis</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + accepted + '</div><div class="kpi__label">Acceptes</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalAccepted.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA devis acceptes</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">percent</span></div></div><div class="kpi__value">' + conv + '%</div><div class="kpi__label">Taux acceptation</div></div>';
+    // KPI calculés côté serveur sur TOUS les devis (pas la liste plafonnée), par devise.
+    document.getElementById('qKpis').innerHTML =
+      kpiCard('request_quote', '', st.total, 'Total devis') +
+      kpiCard('check_circle', 'kpi__icon--success', (st.byStatus && st.byStatus.accepte) || 0, 'Acceptés') +
+      kpiParDevise(st.acceptedByCurrency, 'payments', '', 'CA devis acceptés') +
+      kpiCard('percent', 'kpi__icon--info', (st.acceptanceRate || 0) + ' %', 'Taux d’acceptation');
 
     const tbody = document.getElementById('qTbody');
-    if (!quotes.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun devis. Cliquez sur "Nouveau devis" pour commencer.</td></tr>'; return; }
-    const labels = { brouillon: ['Brouillon','badge--new'], envoye: ['Envoye','badge--info'], consulte: ['Consulte','badge--warning'], accepte: ['Accepte','badge--won'], refuse: ['Refuse','badge--lost'], expire: ['Expire','badge--lost'] };
+    if (!quotes.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun devis. Cliquez sur « Nouveau devis » pour commencer.</td></tr>'; return; }
     tbody.innerHTML = quotes.map(q => {
-      const lab = labels[q.status] || [q.status, ''];
+      const lab = QUOTE_LABELS[q.status] || ['—', ''];
+      const f = q.facturation || {};
+      const liees = q.invoices || [];
+      const facturesHtml = liees.map(i => {
+        const annulee = i.status === 'annulee';
+        return '<a href="/facture/' + escape(i.publicToken) + '" target="_blank" rel="noopener" title="' + escape((INVOICE_KIND_LABELS[i.kind] || '') + ' · ' + (INVOICE_LABELS[i.status] || ['—'])[0]) + '" style="display:inline-block;margin:.25rem .4rem 0 0;font-family:monospace;font-size:.72rem;color:' + (annulee ? 'var(--text-faint)' : 'var(--accent)') + ';' + (annulee ? 'text-decoration:line-through;' : '') + '">' + escape(i.reference) + (i.kind && i.kind !== 'totale' ? ' (' + (INVOICE_KIND_LABELS[i.kind] || '').toLowerCase() + ')' : '') + '</a>';
+      }).join('');
+      const envoyable = ['brouillon', 'envoye', 'consulte'].indexOf(q.status) >= 0;
+      const modifiable = ['brouillon', 'envoye', 'consulte', 'expire'].indexOf(q.status) >= 0;
+      const actives = liees.some(i => i.status !== 'annulee');
+      const annulable = ['refuse', 'annule'].indexOf(q.status) < 0 && !actives;
+      const facturable = q.status === 'accepte' && (f.peutTotale || f.peutAcompte || f.peutSolde);
       return '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:0.85rem 0.5rem;font-family:monospace;font-size:0.82rem;color:var(--accent);">' + escape(q.reference) + '</td>' +
         '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(q.createdAt).toLocaleDateString('fr-FR') + '</td>' +
         '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;">' + escape(q.clientName) + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(q.title) + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;">' + q.total.toLocaleString('fr-FR') + ' ' + q.currency + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span></td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(q.title) + (facturesHtml ? '<div>' + facturesHtml + '</div>' : '') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;white-space:nowrap;">' + moneyFmt(q.total, q.currency) + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span>' + (q.status === 'accepte' && f.complete ? '<div style="font-size:.7rem;color:var(--success);margin-top:.3rem;">Facturé</div>' : '') + '</td>' +
         '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
-          (q.status === 'brouillon' ? '<button onclick="sendQuote(\'' + q._id + '\')" class="btn btn--sm" title="Envoyer par email"><span class="material-symbols-outlined">mail</span></button>' : '') +
-          '<button onclick="sendQuoteWhatsApp(\'' + q._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' +
-          '<a href="/devis/' + escape(q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir le devis publique"><span class="material-symbols-outlined">visibility</span></a>' +
-          '<button onclick="copyQuoteLink(\'' + escape(q.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
-          (q.status === 'accepte' ? '<button onclick="invoiceFromQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--accent);" title="Creer la facture"><span class="material-symbols-outlined">receipt_long</span></button>' : '') +
-          '<button onclick="deleteQuote(\'' + q._id + '\',\'' + escape(q.reference) + '\',\'' + q.status + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+          (q.status === 'brouillon' ? '<button onclick="sendQuote(\'' + q._id + '\')" class="btn btn--sm" title="Envoyer par e-mail"><span class="material-symbols-outlined">mail</span></button>' : '') +
+          (envoyable ? '<button onclick="sendQuoteWhatsApp(\'' + q._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' : '') +
+          '<a href="/devis/' + escape(q.publicSlug || q.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir le devis public"><span class="material-symbols-outlined">visibility</span></a>' +
+          '<button onclick="copyQuoteLink(\'' + escape(q.publicSlug || q.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
+          (modifiable ? '<button onclick="editQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" title="Modifier le devis"><span class="material-symbols-outlined">edit</span></button>' : '') +
+          (facturable ? '<button onclick="invoiceFromQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--accent);" title="Créer la facture"><span class="material-symbols-outlined">receipt_long</span></button>' : '') +
+          (annulable ? '<button onclick="cancelQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" title="Annuler le devis"><span class="material-symbols-outlined">block</span></button>' : '') +
+          (!liees.length ? '<button onclick="deleteQuote(\'' + q._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' : '') +
         '</td>' +
         '</tr>';
     }).join('');
   } catch(e) {
     console.error(e);
-    errorState('qTbody', 7, 'Erreur chargement devis : ' + (e.message || 'API indisponible'));
-    toast('Erreur chargement devis', 'error');
+    errorState('qTbody', 7, 'Erreur de chargement des devis : ' + (e.message || 'API indisponible'));
+    toast('Erreur de chargement des devis', 'error');
   }
 }
 
 async function sendQuote(id) {
-  if (!confirm('Envoyer ce devis par email au client ?')) return;
+  if (!confirm('Envoyer ce devis par e-mail au client ?')) return;
   try {
     await api('/api/admin/quotes/' + id + '/send', { method: 'POST', body: '{}' });
-    toast('Devis envoye au client', 'success');
+    toast('Devis envoyé au client', 'success');
     loadQuotes();
-  } catch(e) { toast('Erreur envoi', 'error'); }
+  } catch(e) { toast('Erreur d’envoi : ' + (e.message || ''), 'error'); }
 }
 
 async function copyQuoteLink(token) {
   const url = window.location.origin + '/devis/' + token;
-  try { await navigator.clipboard.writeText(url); toast('Lien copie : ' + url, 'success'); }
-  catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
+  try { await navigator.clipboard.writeText(url); toast('Lien copié : ' + url, 'success'); }
+  catch(e) { toast('Copie impossible, copiez manuellement : ' + url, 'error'); }
 }
 
-async function deleteQuote(id, reference, status) {
-  // Un devis deja envoye/accepte est un document commercial : double confirmation.
-  const sensible = status && status !== 'brouillon';
+async function deleteQuote(id) {
+  const q = QUOTES_CACHE[id] || {};
+  const reference = q.reference || '';
+  // Un devis déjà envoyé/accepté est un document commercial : double confirmation.
+  const sensible = q.status && q.status !== 'brouillon';
   const msg = sensible
-    ? 'Ce devis (' + (reference || '') + ') a le statut « ' + status + ' ».\n\nLe supprimer est DÉFINITIF et casse le lien public déjà transmis au client.\n\nConfirmer la suppression ?'
-    : 'Supprimer le brouillon ' + (reference || '') + ' ?';
+    ? 'Ce devis (' + reference + ') a le statut « ' + ((QUOTE_LABELS[q.status] || ['—'])[0]) + ' ».\n\nLe supprimer est DÉFINITIF et casse le lien public déjà transmis au client. Préférez « Annuler ».\n\nConfirmer la suppression ?'
+    : 'Supprimer le brouillon ' + reference + ' ?';
   if (!confirm(msg)) return;
   try {
     await api('/api/admin/quotes/' + id, { method: 'DELETE' });
     toast('Devis supprimé', 'success');
     loadQuotes();
-  } catch(e) { toast('Erreur suppression : ' + (e.message || ''), 'error'); }
+  } catch(e) { toast('Erreur de suppression : ' + (e.message || ''), 'error'); }
+}
+
+async function cancelQuote(id) {
+  const q = QUOTES_CACHE[id] || {};
+  if (!confirm('Annuler le devis ' + (q.reference || '') + ' ?\n\nLe client ne pourra plus l’accepter. Le devis reste visible dans l’historique avec le statut « Annulé ».')) return;
+  try {
+    await api('/api/admin/quotes/' + id + '/cancel', { method: 'POST', body: '{}' });
+    toast('Devis annulé', 'success');
+    loadQuotes();
+  } catch(e) { toast('Erreur : ' + (e.message || ''), 'error'); }
+}
+
+async function editQuote(id) {
+  try {
+    const q = await api('/api/admin/quotes/' + id);
+    if (typeof showQuoteModal === 'function') showQuoteModal(String(q.leadId || ''), q);
+  } catch(e) { toast('Erreur : ' + (e.message || ''), 'error'); }
+}
+
+// Facturation d'un devis accepté : totale, acompte (X % du devis) ou solde.
+function invoiceFromQuote(quoteId) {
+  const q = QUOTES_CACHE[quoteId];
+  if (!q) { toast('Devis introuvable, actualisez la liste.', 'error'); return; }
+  const f = q.facturation || {};
+  const opts = [];
+  if (f.peutSolde) opts.push({ v: 'solde', t: 'Facture de solde (reste environ ' + moneyFmt((q.total || 0) - (f.montantAcomptes || 0), q.currency) + ')' });
+  if (f.peutTotale) opts.push({ v: 'totale', t: 'Facture totale (' + moneyFmt(q.total, q.currency) + ')' });
+  if (f.peutAcompte) opts.push({ v: 'acompte', t: 'Facture d’acompte' });
+  if (!opts.length) { toast('Ce devis est déjà entièrement facturé.', 'error'); return; }
+  showFormModal('Facturer le devis ' + q.reference, [
+    { id: 'kind', label: 'Type de facture', type: 'select', options: opts, value: opts[0].v },
+    { id: 'depositPercent', label: 'Acompte (%) — pour une facture d’acompte uniquement', type: 'number', step: '0.5', value: q.depositPercent != null ? q.depositPercent : 30 },
+  ], async function (vals) {
+    const body = { quoteId: quoteId, kind: vals.kind };
+    if (vals.kind === 'acompte') body.depositPercent = vals.depositPercent;
+    await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify(body) });
+    toast('Facture créée en brouillon', 'success');
+    setView('invoices');
+    setTimeout(loadInvoices, 200);
+  });
 }
 
 // Ouvre le modal devis complet (defini plus bas, scope global). Remplace l'ancien prompt().
@@ -1936,7 +2031,7 @@ function openNewQuoteModal(preLeadId) {
   if (typeof showQuoteModal === 'function') {
     showQuoteModal(typeof preLeadId === 'string' ? preLeadId : undefined);
   } else {
-    toast('Modal devis indisponible, rechargez la page', 'error');
+    toast('Fenêtre de devis indisponible, rechargez la page', 'error');
   }
 }
 
@@ -1944,7 +2039,7 @@ function openNewQuoteModal(preLeadId) {
 var CP_CATS = { outils:'Outils & logiciels', sous_traitance:'Sous-traitance', salaires:'Salaires', marketing:'Marketing',
   hebergement:'Hébergement', materiel:'Matériel', deplacement:'Déplacement', banque:'Frais bancaires', impots:'Impôts & taxes', autre:'Autre' };
 
-function cpMontant(v, d) { return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0)+' '+(d||'EUR'); }
+function cpMontant(v, d) { return moneyFmt(v, d || 'EUR'); }
 function cpDate(d) { try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e){ return '—'; } }
 
 function cpRemplirPeriodes() {
@@ -1979,61 +2074,71 @@ async function loadComptabilite() {
 
     devises.forEach(function(d){
       var v = c.parDevise[d];
-      html += '<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:1.2rem;">'
-        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + cpMontant(v.ca,d) + '</div><div class="kpi__label">Chiffre d\'affaires encaissé</div></div>'
+      html += (devises.length > 1 ? '<div style="font-family:var(--font-display);font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin:0 0 .5rem;">' + escape(d) + '</div>' : '')
+        + '<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin-bottom:1.2rem;">'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">trending_up</span></div></div><div class="kpi__value">' + cpMontant(v.ca,d) + '</div><div class="kpi__label">Chiffre d’affaires encaissé</div></div>'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">trending_down</span></div></div><div class="kpi__value">' + cpMontant(v.charges,d) + '</div><div class="kpi__label">Charges</div></div>'
-        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">savings</span></div></div><div class="kpi__value" style="color:' + (v.resultat>=0?'var(--success)':'var(--danger)') + ';">' + cpMontant(v.resultat,d) + '</div><div class="kpi__label">Résultat · ' + v.marge + '% de marge</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">savings</span></div></div><div class="kpi__value" style="color:' + (v.resultat>=0?'var(--success)':'var(--danger)') + ';">' + cpMontant(v.resultat,d) + '</div><div class="kpi__label">Résultat · ' + v.marge + ' % de marge</div></div>'
         + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule</span></div></div><div class="kpi__value">' + cpMontant(v.creances,d) + '</div><div class="kpi__label">Créances à recouvrer</div></div>'
-        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">target</span></div></div><div class="kpi__value">' + cpMontant(v.pipeline,d) + '</div><div class="kpi__label">Pipeline (devis acceptés)</div></div>'
+        + '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">target</span></div></div><div class="kpi__value">' + cpMontant(v.pipeline,d) + '</div><div class="kpi__label">Pipeline (devis acceptés non facturés)</div></div>'
         + '</div>';
     });
 
-    if (c.parDevise[devises[0]] && c.parDevise[devises[0]].charges === 0) {
+    // Avertissement seulement si AUCUNE devise ne porte de charge.
+    var aucuneCharge = devises.every(function(d){ return !c.parDevise[d].charges; });
+    if (aucuneCharge) {
       html += '<div class="card" style="border-color:rgba(251,191,36,.35);margin-bottom:1.2rem;"><div style="display:flex;gap:.6rem;align-items:flex-start;">'
         + '<span class="material-symbols-outlined" style="color:var(--warning);">info</span>'
         + '<div style="font-size:.88rem;line-height:1.6;color:var(--text-muted);"><strong style="color:var(--text);">Aucune charge saisie.</strong> '
-        + 'Le résultat affiché est donc surévalué : il ne tient compte d\'aucune dépense. Saisissez vos abonnements '
+        + 'Le résultat affiché est donc surévalué : il ne tient compte d’aucune dépense. Saisissez vos abonnements '
         + '(hébergement, base de données, e-mail, IA) pour obtenir un résultat réel.</div></div></div>';
     }
 
-    // Évolution mensuelle
-    if (c.evolution && c.evolution.length) {
-      var max = Math.max.apply(null, c.evolution.map(function(m){ return Math.max(m.ca, m.charges); })) || 1;
-      html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Évolution sur 12 mois</div></div></div>'
+    // Évolution mensuelle : une série (un graphique) par devise.
+    var evo = c.evolution || {};
+    Object.keys(evo).forEach(function(dev){
+      var serie = evo[dev] || [];
+      if (!serie.length) return;
+      var max = Math.max.apply(null, serie.map(function(m){ return Math.max(m.ca, m.charges); })) || 1;
+      html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Évolution sur 12 mois — ' + escape(dev) + '</div></div></div>'
         + '<div style="display:flex;align-items:flex-end;gap:.5rem;height:150px;padding:1rem .3rem 0;overflow-x:auto;">'
-        + c.evolution.map(function(m){
+        + serie.map(function(m){
             return '<div style="flex:1;min-width:38px;display:flex;flex-direction:column;align-items:center;gap:.25rem;">'
               + '<div style="display:flex;gap:2px;align-items:flex-end;height:110px;">'
-              + '<div title="CA : ' + m.ca + '" style="width:12px;background:var(--success);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.ca/max)*110) + 'px;"></div>'
-              + '<div title="Charges : ' + m.charges + '" style="width:12px;background:var(--warning);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.charges/max)*110) + 'px;"></div>'
+              + '<div title="Chiffre d’affaires : ' + escape(cpMontant(m.ca, dev)) + '" style="width:12px;background:var(--success);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.ca/max)*110) + 'px;"></div>'
+              + '<div title="Charges : ' + escape(cpMontant(m.charges, dev)) + '" style="width:12px;background:var(--warning);border-radius:3px 3px 0 0;height:' + Math.max(2,(m.charges/max)*110) + 'px;"></div>'
               + '</div><span style="font-size:.62rem;color:var(--text-faint);">' + m.mois.slice(5) + '/' + m.mois.slice(2,4) + '</span></div>';
           }).join('')
         + '</div><div style="display:flex;gap:1.2rem;font-size:.75rem;color:var(--text-muted);padding:.6rem .3rem 0;">'
-        + '<span><i style="display:inline-block;width:9px;height:9px;background:var(--success);border-radius:2px;"></i> Chiffre d\'affaires</span>'
+        + '<span><i style="display:inline-block;width:9px;height:9px;background:var(--success);border-radius:2px;"></i> Chiffre d’affaires</span>'
         + '<span><i style="display:inline-block;width:9px;height:9px;background:var(--warning);border-radius:2px;"></i> Charges</span></div></div>';
-    }
+    });
 
-    // Charges par poste
+    // Charges par poste et par devise
     var cats = Object.keys(c.chargesParCategorie || {});
     if (cats.length) {
       html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Répartition des charges</div></div></div><div style="display:grid;gap:.5rem;">'
-        + cats.sort(function(a,b){ return c.chargesParCategorie[b].montant - c.chargesParCategorie[a].montant; }).map(function(k){
+        + cats.sort(function(a,b){
+            var A = c.chargesParCategorie[a], B = c.chargesParCategorie[b];
+            return A.devise === B.devise ? B.montant - A.montant : (A.devise < B.devise ? -1 : 1);
+          }).map(function(k){
             var v = c.chargesParCategorie[k];
             return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;background:var(--surface);border-radius:8px;">'
-              + '<span style="font-size:.88rem;">' + escape(CP_CATS[k]||k) + ' <span style="color:var(--text-faint);font-size:.78rem;">(' + v.nombre + ')</span></span>'
+              + '<span style="font-size:.88rem;">' + escape(CP_CATS[v.categorie]||v.categorie) + ' <span style="color:var(--text-faint);font-size:.78rem;">(' + v.nombre + ')</span></span>'
               + '<strong style="font-size:.9rem;">' + cpMontant(v.montant, v.devise) + '</strong></div>';
           }).join('') + '</div></div>';
     }
 
-    // Créances
+    // Créances (reste à payer de chaque facture)
     if (c.creances && c.creances.length) {
       html += '<div class="card" style="margin-bottom:1.2rem;"><div class="card__header"><div><div class="card__title">Créances à recouvrer</div></div></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">'
-        + '<thead><tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Référence</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Client</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Échéance</th><th style="text-align:right;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Montant</th></tr></thead><tbody>'
+        + '<thead><tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Référence</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Client</th><th style="text-align:left;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Échéance</th><th style="text-align:right;padding:.7rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);">Reste à payer</th></tr></thead><tbody>'
         + c.creances.map(function(x){
             return '<tr style="border-bottom:1px solid var(--border);"><td style="padding:.75rem .5rem;font-family:monospace;font-size:.8rem;color:var(--accent);">' + escape(x.ref) + '</td>'
               + '<td style="padding:.75rem .5rem;font-size:.85rem;">' + escape(x.client) + '</td>'
-              + '<td style="padding:.75rem .5rem;font-size:.82rem;color:' + (x.retard>0?'var(--danger)':'var(--text-muted)') + ';">' + cpDate(x.echeance) + (x.retard>0?' · +'+x.retard+' j':'') + '</td>'
-              + '<td style="padding:.75rem .5rem;text-align:right;font-weight:700;font-size:.88rem;">' + cpMontant(x.montant,x.devise) + '</td></tr>';
+              + '<td style="padding:.75rem .5rem;font-size:.82rem;color:' + (x.retard>0?'var(--danger)':'var(--text-muted)') + ';">' + cpDate(x.echeance) + (x.retard>0?' · +'+x.retard+' j':'') + '</td>'
+              + '<td style="padding:.75rem .5rem;text-align:right;font-weight:700;font-size:.88rem;">' + cpMontant(x.montant,x.devise)
+              + (x.total != null && x.total !== x.montant ? '<div style="font-weight:400;font-size:.72rem;color:var(--text-faint);">sur ' + cpMontant(x.total, x.devise) + '</div>' : '') + '</td></tr>';
           }).join('') + '</tbody></table></div></div>';
     }
 
@@ -2046,7 +2151,9 @@ async function loadComptabilite() {
         return '<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem .85rem;background:var(--surface);border-radius:8px;flex-wrap:wrap;">'
           + '<div><div style="font-size:.9rem;font-weight:600;">' + escape(x.libelle) + (x.recurrente?' <span class="badge badge--info" style="font-size:.6rem;">récurrente</span>':'') + '</div>'
           + '<div style="font-size:.75rem;color:var(--text-faint);">' + escape(CP_CATS[x.categorie]||x.categorie) + ' · ' + cpDate(x.le) + (x.fournisseur?' · '+escape(x.fournisseur):'') + '</div></div>'
-          + '<strong style="font-size:.9rem;color:var(--warning);">− ' + cpMontant(x.montant,x.devise) + '</strong></div>';
+          + '<div style="display:flex;align-items:center;gap:.6rem;"><strong style="font-size:.9rem;color:var(--warning);">− ' + cpMontant(x.montant,x.devise) + '</strong>'
+          + (x.id ? '<button type="button" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer cette charge" data-dep-id="' + escape(x.id) + '" data-dep-lib="' + escape(x.libelle) + '" onclick="cpSupprimerCharge(this.dataset.depId, this.dataset.depLib)"><span class="material-symbols-outlined">delete</span></button>' : '')
+          + '</div></div>';
       }).join('') + '</div>';
     }
     html += '</div>';
@@ -2054,7 +2161,7 @@ async function loadComptabilite() {
     html += '<div style="margin-top:1rem;font-size:.78rem;color:var(--text-faint);line-height:1.6;">' + escape(c.note || '') + '</div>';
     box.innerHTML = html;
   } catch(e) {
-    box.innerHTML = '<div class="card"><div class="empty" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape((e&&e.message)||'') + '</div></div>';
+    box.innerHTML = '<div class="card"><div class="empty" style="padding:2rem;text-align:center;color:var(--danger);">Erreur : ' + escape((e&&e.message)||'') + '</div></div>';
   }
 }
 
@@ -2063,9 +2170,9 @@ function cpSaisirCharge() {
     { id:'label', label:'Libellé', required:true, placeholder:'Abonnement Vercel Pro' },
     { id:'amount', label:'Montant', type:'number', required:true, step:'0.01' },
     { id:'category', label:'Poste', type:'select', options:Object.keys(CP_CATS).map(function(k){return {v:k,t:CP_CATS[k]};}) },
-    { id:'currency', label:'Devise', type:'select', options:['EUR','USD','CAD','XOF','XAF','MAD','TND','CHF'].map(function(x){return {v:x,t:x};}) },
+    { id:'currency', label:'Devise', type:'select', options:['EUR','USD','CAD','XOF','XAF','MAD','TND','GNF','CHF'].map(function(x){return {v:x,t:x};}) },
     { id:'supplier', label:'Fournisseur', placeholder:'Optionnel' },
-    { id:'date', label:'Date de l\'opération', type:'date' },
+    { id:'date', label:'Date de l’opération', type:'date' },
     { id:'recurring', label:'Charge récurrente (chaque mois)', type:'checkbox' },
   ], async function(vals){
     await api('/api/admin/depenses', { method:'POST', body: JSON.stringify(vals) });
@@ -2074,7 +2181,17 @@ function cpSaisirCharge() {
   });
 }
 
-// Petit formulaire modal générique, réutilisé par la comptabilité et le recrutement.
+async function cpSupprimerCharge(id, libelle) {
+  if (!confirm('Supprimer la charge « ' + (libelle || '') + ' » ? Cette action est définitive.')) return;
+  try {
+    await api('/api/admin/depenses/' + id, { method: 'DELETE' });
+    toast('Charge supprimée', 'success');
+    loadComptabilite();
+  } catch(e) { toast('Erreur de suppression : ' + (e.message || ''), 'error'); }
+}
+
+// Petit formulaire modal générique, réutilisé par la comptabilité, la facturation et le recrutement.
+// Chaque champ accepte une valeur initiale facultative (c.value).
 function showFormModal(titre, champs, onValider) {
   var old = document.getElementById('formModal'); if (old) old.remove();
   var m = document.createElement('div');
@@ -2082,15 +2199,16 @@ function showFormModal(titre, champs, onValider) {
   m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
   var inputs = champs.map(function(c){
     var base = 'width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.7rem .85rem;border-radius:8px;font-family:inherit;font-size:.9rem;';
-    if (c.type === 'checkbox') return '<label style="display:flex;gap:.5rem;align-items:center;font-size:.85rem;margin-bottom:.9rem;"><input type="checkbox" id="fm_'+c.id+'"> '+escape(c.label)+'</label>';
-    if (c.type === 'select') return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
-      + '<select id="fm_'+c.id+'" style="'+base+'margin-bottom:.9rem;">'+c.options.map(function(o){return '<option value="'+o.v+'">'+escape(o.t)+'</option>';}).join('')+'</select>';
-    if (c.type === 'textarea') return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
-      + '<textarea id="fm_'+c.id+'" rows="3" placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;resize:vertical;"></textarea>';
-    return '<label style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+(c.required?' *':'')+'</label>'
-      + '<input id="fm_'+c.id+'" type="'+(c.type||'text')+'"'+(c.step?' step="'+c.step+'"':'')+' placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;">';
+    var val = c.value == null ? '' : String(c.value);
+    if (c.type === 'checkbox') return '<label style="display:flex;gap:.5rem;align-items:center;font-size:.85rem;margin-bottom:.9rem;"><input type="checkbox" id="fm_'+c.id+'"'+(c.value?' checked':'')+'> '+escape(c.label)+'</label>';
+    if (c.type === 'select') return '<label for="fm_'+c.id+'" style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
+      + '<select id="fm_'+c.id+'" style="'+base+'margin-bottom:.9rem;">'+c.options.map(function(o){return '<option value="'+escape(o.v)+'"'+(String(o.v)===val?' selected':'')+'>'+escape(o.t)+'</option>';}).join('')+'</select>';
+    if (c.type === 'textarea') return '<label for="fm_'+c.id+'" style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+'</label>'
+      + '<textarea id="fm_'+c.id+'" rows="3" placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;resize:vertical;">'+escape(val)+'</textarea>';
+    return '<label for="fm_'+c.id+'" style="display:block;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;">'+escape(c.label)+(c.required?' *':'')+'</label>'
+      + '<input id="fm_'+c.id+'" type="'+(c.type||'text')+'"'+(c.step?' step="'+c.step+'"':'')+' value="'+escape(val)+'" placeholder="'+escape(c.placeholder||'')+'" style="'+base+'margin-bottom:.9rem;">';
   }).join('');
-  m.innerHTML = '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:32rem;width:100%;max-height:90vh;overflow-y:auto;">'
+  m.innerHTML = '<div role="dialog" aria-modal="true" style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:32rem;width:100%;max-height:90vh;overflow-y:auto;">'
     + '<div style="padding:1.3rem 1.6rem;border-bottom:1px solid var(--border);font-family:var(--font-display);font-weight:800;font-size:1.1rem;">'+escape(titre)+'</div>'
     + '<div style="padding:1.3rem 1.6rem;">'+inputs+'<div id="fmErr" style="color:var(--danger);font-size:.83rem;margin-bottom:.8rem;display:none;"></div>'
     + '<div style="display:flex;gap:.6rem;justify-content:flex-end;"><button class="btn btn--ghost btn--sm" id="fmNon">Annuler</button><button class="btn btn--sm" id="fmOui">Enregistrer</button></div></div></div>';
@@ -2098,7 +2216,7 @@ function showFormModal(titre, champs, onValider) {
   m.addEventListener('click', function(e){ if (e.target === m) m.remove(); });
   m.querySelector('#fmNon').onclick = function(){ m.remove(); };
   m.querySelector('#fmOui').onclick = async function(){
-    var vals = {}, err = m.querySelector('#fmErr');
+    var vals = {}, err = m.querySelector('#fmErr'), btn = this;
     for (var i=0;i<champs.length;i++) {
       var c = champs[i], el = m.querySelector('#fm_'+c.id);
       var v = c.type === 'checkbox' ? el.checked : el.value.trim();
@@ -2106,8 +2224,9 @@ function showFormModal(titre, champs, onValider) {
       if (c.type === 'number' && v) v = parseFloat(v);
       if (v !== '' && v !== false) vals[c.id] = v;
     }
+    btn.disabled = true;
     try { await onValider(vals); m.remove(); }
-    catch(e){ err.textContent = (e&&e.message)||'Erreur.'; err.style.display='block'; }
+    catch(e){ err.textContent = (e&&e.message)||'Erreur.'; err.style.display='block'; btn.disabled = false; }
   };
 }
 
@@ -2347,106 +2466,158 @@ function showInfoModal(titre, contenuHtml) {
 }
 
 // ============ INVOICES ============
+var INVOICES_CACHE = {};
 async function loadInvoices() {
-  document.getElementById('ivTbody').innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr>';
+  document.getElementById('ivTbody').innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr>';
   try {
     const data = await api('/api/admin/invoices');
     const invoices = data.invoices || [];
+    const st = data.stats || { total: invoices.length, byStatus: {}, byCurrency: {} };
+    INVOICES_CACHE = {};
+    invoices.forEach(i => { INVOICES_CACHE[i._id] = i; });
 
-    const kpis = document.getElementById('ivKpis');
-    const total = invoices.length;
-    const paid = invoices.filter(i => i.status === 'payee').length;
-    const totalPaid = invoices.filter(i => i.status === 'payee').reduce((s, i) => s + i.total, 0);
-    const totalDue = invoices.filter(i => i.status !== 'payee' && i.status !== 'annulee').reduce((s, i) => s + i.total, 0);
-    kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">receipt_long</span></div></div><div class="kpi__value">' + total + '</div><div class="kpi__label">Total factures</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + paid + '</div><div class="kpi__label">Payees</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">euro</span></div></div><div class="kpi__value">' + totalPaid.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">CA encaisse</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--warning"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + totalDue.toLocaleString('fr-FR') + ' &euro;</div><div class="kpi__label">En attente de paiement</div></div>';
+    // KPI serveur sur TOUTES les factures, par devise ; l'encaissé vient des paiements.
+    const encaisse = {}, reste = {};
+    Object.keys(st.byCurrency || {}).forEach(d => { encaisse[d] = st.byCurrency[d].encaisse; reste[d] = st.byCurrency[d].reste; });
+    document.getElementById('ivKpis').innerHTML =
+      kpiCard('receipt_long', '', st.total, 'Total factures') +
+      kpiCard('check_circle', 'kpi__icon--success', (st.byStatus && st.byStatus.payee) || 0, 'Payées') +
+      kpiParDevise(encaisse, 'payments', '', 'CA encaissé') +
+      kpiParDevise(reste, 'pending', 'kpi__icon--warning', 'En attente de paiement');
 
     const tbody = document.getElementById('ivTbody');
-    if (!invoices.length) { tbody.innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucune facture. Cliquez sur "Nouvelle facture" pour commencer.</td></tr>'; return; }
-    const labels = { brouillon: ['Brouillon','badge--new'], envoyee: ['Envoyee','badge--info'], consultee: ['Consultee','badge--warning'], payee: ['Payee','badge--won'], en_retard: ['En retard','badge--lost'], annulee: ['Annulee','badge--lost'] };
+    if (!invoices.length) { tbody.innerHTML = '<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucune facture. Cliquez sur « Nouvelle facture » pour commencer.</td></tr>'; return; }
     tbody.innerHTML = invoices.map(i => {
-      const lab = labels[i.status] || [i.status, ''];
+      const lab = INVOICE_LABELS[i.status] || ['—', ''];
+      const paye = Number(i.amountPaid) || 0, du = Number(i.balanceDue) || 0;
+      const detailMontant = i.status === 'annulee' ? '' :
+        '<div style="font-size:.74rem;font-weight:500;color:var(--text-muted);line-height:1.5;margin-top:.2rem;">Payé : ' + moneyFmt(paye, i.currency) + '<br>Reste à payer : <span style="color:' + (du > 0 ? 'var(--warning)' : 'var(--success)') + ';">' + moneyFmt(du, i.currency) + '</span></div>';
       return '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:0.85rem 0.5rem;font-family:monospace;font-size:0.82rem;color:var(--accent);">' + escape(i.reference) + '</td>' +
         '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(i.createdAt).toLocaleDateString('fr-FR') + '</td>' +
         '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;">' + escape(i.clientName) + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(i.title) + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:var(--text-muted);">' + new Date(i.dueDate).toLocaleDateString('fr-FR') + '</td>' +
-        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;">' + i.total.toLocaleString('fr-FR') + ' ' + i.currency + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.85rem;color:var(--text-muted);">' + escape(i.title) + (i.kind && i.kind !== 'totale' ? ' <span class="badge badge--info" style="font-size:.6rem;">' + INVOICE_KIND_LABELS[i.kind] + '</span>' : '') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.82rem;color:' + (i.status === 'en_retard' ? 'var(--danger)' : 'var(--text-muted)') + ';">' + (i.dueDate ? new Date(i.dueDate).toLocaleDateString('fr-FR') : '—') + '</td>' +
+        '<td style="padding:0.85rem 0.5rem;font-size:0.88rem;font-weight:700;white-space:nowrap;">' + moneyFmt(i.total, i.currency) + detailMontant + '</td>' +
         '<td style="padding:0.85rem 0.5rem;"><span class="badge ' + lab[1] + '">' + lab[0] + '</span></td>' +
         '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
-          (i.status === 'brouillon' ? '<button onclick="sendInvoice(\'' + i._id + '\')" class="btn btn--sm" title="Envoyer par email"><span class="material-symbols-outlined">mail</span></button>' : '') +
-          '<button onclick="sendInvoiceWhatsApp(\'' + i._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' +
+          (i.status === 'brouillon' ? '<button onclick="sendInvoice(\'' + i._id + '\')" class="btn btn--sm" title="Envoyer par e-mail"><span class="material-symbols-outlined">mail</span></button>' : '') +
+          (i.status !== 'annulee' ? '<button onclick="sendInvoiceWhatsApp(\'' + i._id + '\')" class="btn btn--sm" style="background:#25D366;" title="Envoyer sur WhatsApp"><span class="material-symbols-outlined">chat</span></button>' : '') +
           '<a href="/facture/' + escape(i.publicToken) + '" target="_blank" class="btn btn--ghost btn--sm" title="Voir la facture publique"><span class="material-symbols-outlined">visibility</span></a>' +
           '<button onclick="copyInvoiceLink(\'' + escape(i.publicToken) + '\')" class="btn btn--ghost btn--sm" title="Copier le lien"><span class="material-symbols-outlined">link</span></button>' +
-          (i.status !== 'payee' && i.status !== 'annulee' ? '<button onclick="markInvoicePaid(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--success);" title="Marquer payee"><span class="material-symbols-outlined">payments</span></button>' : '') +
-          '<button onclick="deleteInvoice(\'' + i._id + '\',\'' + escape(i.reference) + '\',\'' + i.status + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer"><span class="material-symbols-outlined">delete</span></button>' +
+          (i.status === 'brouillon' ? '<button onclick="editInvoice(\'' + i._id + '\')" class="btn btn--ghost btn--sm" title="Modifier la facture"><span class="material-symbols-outlined">edit</span></button>' : '') +
+          (['annulee', 'payee', 'brouillon'].indexOf(i.status) < 0 && du > 0 ? '<button onclick="openPaymentModal(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--success);" title="Enregistrer un paiement"><span class="material-symbols-outlined">payments</span></button>' : '') +
+          ((i.payments || []).length ? '<button onclick="showPayments(\'' + i._id + '\')" class="btn btn--ghost btn--sm" title="Historique des paiements"><span class="material-symbols-outlined">history</span></button>' : '') +
+          (['annulee', 'brouillon', 'payee'].indexOf(i.status) < 0 ? '<button onclick="cancelInvoice(\'' + i._id + '\')" class="btn btn--ghost btn--sm" title="Annuler la facture"><span class="material-symbols-outlined">block</span></button>' : '') +
+          (i.status === 'brouillon' ? '<button onclick="deleteInvoice(\'' + i._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer le brouillon"><span class="material-symbols-outlined">delete</span></button>' : '') +
         '</td>' +
         '</tr>';
     }).join('');
   } catch(e) {
     console.error(e);
-    errorState('ivTbody', 8, 'Erreur chargement factures : ' + (e.message || 'API indisponible'));
-    toast('Erreur chargement factures', 'error');
+    errorState('ivTbody', 8, 'Erreur de chargement des factures : ' + (e.message || 'API indisponible'));
+    toast('Erreur de chargement des factures', 'error');
   }
 }
 
 async function sendInvoice(id) {
-  if (!confirm('Envoyer cette facture par email au client ?')) return;
+  if (!confirm('Envoyer cette facture par e-mail au client ?')) return;
   try {
     await api('/api/admin/invoices/' + id + '/send', { method: 'POST', body: '{}' });
-    toast('Facture envoyee au client', 'success');
+    toast('Facture envoyée au client', 'success');
     loadInvoices();
-  } catch(e) { toast('Erreur envoi', 'error'); }
+  } catch(e) { toast('Erreur d’envoi : ' + (e.message || ''), 'error'); }
 }
 
 async function copyInvoiceLink(token) {
   const url = window.location.origin + '/facture/' + token;
-  try { await navigator.clipboard.writeText(url); toast('Lien copie : ' + url, 'success'); }
-  catch(e) { toast('Erreur copie - copiez manuellement : ' + url, 'error'); }
+  try { await navigator.clipboard.writeText(url); toast('Lien copié : ' + url, 'success'); }
+  catch(e) { toast('Copie impossible, copiez manuellement : ' + url, 'error'); }
 }
 
-async function deleteInvoice(id, reference, status) {
-  // Une facture deja envoyee/payee est une piece comptable : double confirmation.
-  const sensible = status && status !== 'brouillon';
-  const msg = sensible
-    ? 'La facture ' + (reference || '') + ' a le statut « ' + status + ' ».\n\nLa supprimer est DÉFINITIF : le lien public déjà transmis au client cessera de fonctionner et le montant disparaîtra du chiffre d\'affaires.\n\nConfirmer la suppression ?'
-    : 'Supprimer le brouillon ' + (reference || '') + ' ?';
-  if (!confirm(msg)) return;
+// Seul un brouillon peut être supprimé (règle appliquée aussi côté serveur).
+async function deleteInvoice(id) {
+  const i = INVOICES_CACHE[id] || {};
+  if (i.status && i.status !== 'brouillon') { toast('Une facture émise ne peut pas être supprimée : annulez-la.', 'error'); return; }
+  if (!confirm('Supprimer le brouillon ' + (i.reference || '') + ' ?')) return;
   try {
     await api('/api/admin/invoices/' + id, { method: 'DELETE' });
     toast('Facture supprimée', 'success');
     loadInvoices();
-  } catch(e) { toast('Erreur suppression : ' + (e.message || ''), 'error'); }
+  } catch(e) { toast('Erreur de suppression : ' + (e.message || ''), 'error'); }
 }
 
-async function markInvoicePaid(id) {
-  const method = prompt('Moyen de paiement (optionnel) : virement, Mobile Money, especes...');
-  if (method === null) return;
+async function cancelInvoice(id) {
+  const i = INVOICES_CACHE[id] || {};
+  if ((i.payments || []).length) { toast('Des paiements sont enregistrés sur cette facture : supprimez-les d’abord (historique des paiements).', 'error'); return; }
+  if (!confirm('Annuler la facture ' + (i.reference || '') + ' ?\n\nElle restera dans l’historique avec le statut « Annulée » et ne sera plus due par le client.')) return;
   try {
-    await api('/api/admin/invoices/' + id + '/mark-paid', { method: 'POST', body: JSON.stringify({ paymentMethod: method || '' }) });
-    toast('Facture marquee payee', 'success');
+    await api('/api/admin/invoices/' + id + '/cancel', { method: 'POST', body: '{}' });
+    toast('Facture annulée', 'success');
     loadInvoices();
-  } catch(e) { toast('Erreur', 'error'); }
+  } catch(e) { toast('Erreur : ' + (e.message || ''), 'error'); }
 }
 
-async function invoiceFromQuote(quoteId) {
-  if (!confirm('Creer une facture a partir de ce devis accepte ?')) return;
+// Enregistrer un paiement (acompte, partiel ou solde) : montant prérempli avec le reste à payer.
+function openPaymentModal(id) {
+  const i = INVOICES_CACHE[id];
+  if (!i) { toast('Facture introuvable, actualisez la liste.', 'error'); return; }
+  const sansDecimales = ['XOF', 'XAF', 'GNF'].indexOf(i.currency) >= 0;
+  showFormModal('Enregistrer un paiement — ' + i.reference, [
+    { id: 'amount', label: 'Montant (' + i.currency + ') — reste à payer : ' + moneyFmt(i.balanceDue, i.currency), type: 'number', required: true, step: sansDecimales ? '1' : '0.01', value: i.balanceDue },
+    { id: 'date', label: 'Date du paiement', type: 'date', required: true, value: dateLocaleISO(new Date()) },
+    { id: 'method', label: 'Moyen de paiement', type: 'select', options: PAYMENT_METHODS.map(function (m) { return { v: m, t: m }; }), value: 'Virement' },
+    { id: 'note', label: 'Note (facultatif)', type: 'textarea', placeholder: 'Référence de transaction, remarque…' },
+  ], async function (vals) {
+    await api('/api/admin/invoices/' + id + '/payments', { method: 'POST', body: JSON.stringify(vals) });
+    toast('Paiement enregistré', 'success');
+    loadInvoices();
+  });
+}
+// Compatibilité : l'ancien bouton « Marquer payée » ouvre désormais la saisie de paiement.
+function markInvoicePaid(id) { openPaymentModal(id); }
+
+function showPayments(id) {
+  const i = INVOICES_CACHE[id];
+  if (!i) return;
+  const th = 'text-align:left;padding:.6rem .5rem;font-size:.7rem;text-transform:uppercase;color:var(--text-muted);';
+  const rows = (i.payments || []).map(function (p) {
+    return '<tr style="border-bottom:1px solid var(--border);">' +
+      '<td style="padding:.65rem .5rem;font-size:.85rem;">' + (p.date ? new Date(p.date).toLocaleDateString('fr-FR') : '—') + '</td>' +
+      '<td style="padding:.65rem .5rem;font-size:.85rem;">' + escape(p.method || '—') + (p.note ? '<div style="font-size:.75rem;color:var(--text-faint);">' + escape(p.note) + '</div>' : '') + '</td>' +
+      '<td style="padding:.65rem .5rem;font-size:.88rem;font-weight:700;text-align:right;white-space:nowrap;">' + moneyFmt(p.amount, i.currency) + '</td>' +
+      '<td style="padding:.65rem .5rem;text-align:right;">' + (p._id && !p.legacy
+        ? '<button type="button" onclick="deletePayment(\'' + i._id + '\',\'' + p._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);" title="Supprimer ce paiement"><span class="material-symbols-outlined">delete</span></button>'
+        : '<span style="font-size:.72rem;color:var(--text-faint);" title="Paiement enregistré avant le suivi détaillé des règlements">antérieur</span>') + '</td></tr>';
+  }).join('');
+  showInfoModal('Paiements — ' + escape(i.reference),
+    '<table style="width:100%;border-collapse:collapse;"><thead><tr style="border-bottom:1px solid var(--border);"><th style="' + th + '">Date</th><th style="' + th + '">Moyen</th><th style="' + th + 'text-align:right;">Montant</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:1rem;font-size:.85rem;color:var(--text-muted);">Total : <strong>' + moneyFmt(i.total, i.currency) + '</strong> · Payé : <strong style="color:var(--success);">' + moneyFmt(i.amountPaid, i.currency) + '</strong> · Reste à payer : <strong>' + moneyFmt(i.balanceDue, i.currency) + '</strong></div>');
+}
+
+async function deletePayment(invoiceId, paymentId) {
+  if (!confirm('Supprimer ce paiement ? Le statut de la facture sera recalculé.')) return;
   try {
-    const data = await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify({ quoteId }) });
-    toast('Facture creee en brouillon', 'success');
-    setView('invoices');
-    setTimeout(loadInvoices, 200);
-  } catch(e) { toast('Erreur creation facture : ' + (e.message || ''), 'error'); }
+    await api('/api/admin/invoices/' + invoiceId + '/payments/' + paymentId, { method: 'DELETE' });
+    toast('Paiement supprimé', 'success');
+    var m = document.getElementById('infoModal'); if (m) m.remove();
+    loadInvoices();
+  } catch(e) { toast('Erreur : ' + (e.message || ''), 'error'); }
+}
+
+async function editInvoice(id) {
+  try {
+    const i = await api('/api/admin/invoices/' + id);
+    if (i.status !== 'brouillon') { toast('Seul un brouillon peut être modifié.', 'error'); return; }
+    if (typeof showInvoiceModal === 'function') showInvoiceModal(String(i.leadId || ''), i);
+  } catch(e) { toast('Erreur : ' + (e.message || ''), 'error'); }
 }
 
 function openNewInvoiceModal(preLeadId) {
   if (typeof showInvoiceModal === 'function') {
     showInvoiceModal(typeof preLeadId === 'string' ? preLeadId : undefined);
   } else {
-    toast('Modal facture indisponible, rechargez la page', 'error');
+    toast('Fenêtre de facture indisponible, rechargez la page', 'error');
   }
 }
 
@@ -2463,7 +2634,7 @@ async function loadReviews() {
     kpis.innerHTML = '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">reviews</span></div></div><div class="kpi__value">' + reviews.length + '</div><div class="kpi__label">Total avis</div></div>' +
       '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--info"><span class="material-symbols-outlined">schedule_send</span></div></div><div class="kpi__value">' + requestSent + '</div><div class="kpi__label">Demandes en attente</div></div>' +
       '<div class="kpi"><div class="kpi__top"><div class="kpi__icon"><span class="material-symbols-outlined">pending</span></div></div><div class="kpi__value">' + pending + '</div><div class="kpi__label">A modérer</div></div>' +
-      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + published + '</div><div class="kpi__label">Publies sur site</div></div>';
+      '<div class="kpi"><div class="kpi__top"><div class="kpi__icon kpi__icon--success"><span class="material-symbols-outlined">check_circle</span></div></div><div class="kpi__value">' + published + '</div><div class="kpi__label">Publiés sur le site</div></div>';
 
     const list = document.getElementById('rvList');
     const submitted = reviews.filter(r => r.submittedAt);
@@ -2478,8 +2649,8 @@ async function loadReviews() {
         '<div style="font-size:1rem;color:var(--accent);">' + stars + '</div></div>' +
         '<p style="font-size:0.92rem;line-height:1.6;color:var(--text);margin-bottom:0.85rem;font-style:italic;">"' + escape(r.comment) + '"</p>' +
         '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">' +
-        '<span class="badge ' + (r.publishedOnSite ? 'badge--won' : 'badge--new') + '">' + (r.publishedOnSite ? 'Publie' : 'Non publie') + '</span>' +
-        '<button onclick="togglePublishReview(\'' + r._id + '\', ' + !r.publishedOnSite + ')" class="btn btn--sm" style="margin-left:auto;">' + (r.publishedOnSite ? '<span class="material-symbols-outlined">visibility_off</span> Depublier' : '<span class="material-symbols-outlined">visibility</span> Publier sur site') + '</button>' +
+        '<span class="badge ' + (r.publishedOnSite ? 'badge--won' : 'badge--new') + '">' + (r.publishedOnSite ? 'Publié' : 'Non publié') + '</span>' +
+        '<button onclick="togglePublishReview(\'' + r._id + '\', ' + !r.publishedOnSite + ')" class="btn btn--sm" style="margin-left:auto;">' + (r.publishedOnSite ? '<span class="material-symbols-outlined">visibility_off</span> Dépublier' : '<span class="material-symbols-outlined">visibility</span> Publier sur site') + '</button>' +
         '<button onclick="deleteReview(\'' + r._id + '\')" class="btn btn--ghost btn--sm" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span></button>' +
         '</div></div>';
     }).join('');
@@ -2493,7 +2664,7 @@ async function loadReviews() {
 async function togglePublishReview(id, publish) {
   try {
     await api('/api/admin/reviews/' + id, { method: 'PATCH', body: JSON.stringify({ publishedOnSite: publish, status: publish ? 'publie' : 'en_attente' }) });
-    toast(publish ? 'Avis publie' : 'Avis depublie', 'success');
+    toast(publish ? 'Avis publié' : 'Avis dépublié', 'success');
     loadReviews();
   } catch(e) { toast('Erreur', 'error'); }
 }
@@ -2749,7 +2920,22 @@ async function loadStats() {
     renderDashboardCharts();
     renderAnalyticsMini();
     loadTraffic();
-  } catch(e) { console.error(e); toast('Erreur chargement stats', 'error'); }
+    loadHomeFinance();
+  } catch(e) { console.error(e); toast('Erreur de chargement des statistiques', 'error'); }
+}
+
+// Accueil : encaissements du mois (d'après les paiements reçus) et reste à encaisser, par devise.
+async function loadHomeFinance() {
+  var box = document.getElementById('homeFinance');
+  if (!box) return;
+  try {
+    var now = new Date(), per = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    var c = await api('/api/admin/comptabilite?periode=' + per);
+    var ca = {}, cr = {};
+    Object.keys(c.parDevise || {}).forEach(function (d) { ca[d] = c.parDevise[d].ca; cr[d] = c.parDevise[d].creances; });
+    box.innerHTML = kpiParDevise(ca, 'payments', 'kpi__icon--success', 'Encaissé ce mois-ci') +
+      kpiParDevise(cr, 'pending', 'kpi__icon--warning', 'Reste à encaisser');
+  } catch (e) { box.innerHTML = ''; }
 }
 
 async function loadTraffic() {
@@ -2766,7 +2952,7 @@ async function loadTraffic() {
     const visitors = series.map(function(d){ return d.uniqueVisitors; });
     const ctx = document.getElementById('chartTraffic');
     const allZero = views.every(function(v){ return v === 0; }) && visitors.every(function(v){ return v === 0; });
-    if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite encore — les données apparaissent des que le site recoit du trafic')) {
+    if (ctx && !chartEmpty('chartTraffic', allZero, 'Aucune visite pour l’instant — les données apparaissent dès que le site reçoit du trafic')) {
       charts.traffic = new Chart(ctx, {
         type: 'line',
         data: { labels: labels, datasets: [
@@ -3215,7 +3401,7 @@ async function init() {
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && isMobile()) closeSidebar();
   });
-  document.getElementById('refreshBtn').addEventListener('click', function(){ loadStats(); loadLeads(); toast('Actualise', 'success'); });
+  document.getElementById('refreshBtn').addEventListener('click', function(){ loadStats(); loadLeads(); toast('Actualisé', 'success'); });
   document.getElementById('logoutBtn').addEventListener('click', logout);
   document.getElementById('logoutBtn2').addEventListener('click', logout);
   document.getElementById('detailClose').addEventListener('click', closeDetail);
@@ -3309,7 +3495,7 @@ async function init() {
     try {
       var d = await api('/api/admin/test-email', { method: 'POST', body: JSON.stringify({ to: to }) });
       if (d.success) box.innerHTML = '<span style="color:var(--success);">&#10003; ' + escape(d.message) + '</span><br><span style="color:var(--text-muted);">Expediteur : ' + escape(d.from) + ' &middot; ID Resend : ' + escape(d.resendId || '-') + '</span>';
-      else box.innerHTML = '<span style="color:var(--danger);">&#10007; Echec (statut ' + d.resendStatus + ') : ' + escape(d.resendError) + '</span><br><span style="color:var(--warning);">' + escape(d.hint || '') + '</span>';
+      else box.innerHTML = '<span style="color:var(--danger);">&#10007; Échec (statut ' + d.resendStatus + ')&nbsp;: ' + escape(d.resendError) + '</span><br><span style="color:var(--warning);">' + escape(d.hint || '') + '</span>';
     } catch(e) { box.innerHTML = '<span style="color:var(--danger);">Erreur : ' + escape(e.message) + '</span>'; }
   });
 
@@ -3752,7 +3938,7 @@ var AI_MODE_LABELS = { chef: 'Chef de projet', commercial: 'Commercial', redacte
 var AI_MODE_TITLES = {
   chef: 'Ayaba · Pilotage', commercial: 'Ayaba · Commercial',
   redacteur: 'Ayaba · Rédaction SEO', analyste: 'Ayaba · Analyse',
-  analyse: 'Ayaba · Analyse', redaction: 'Ayaba · Redaction SEO', equipe: 'Ayaba · Pilotage', libre: 'Ayaba · Pilotage' };
+  analyse: 'Ayaba · Analyse', redaction: 'Ayaba · Rédaction SEO', equipe: 'Ayaba · Pilotage', libre: 'Ayaba · Pilotage' };
 var AI_MODE_INTRO = {
   chef: "Je vois vos prospects, devis, factures, tâches et votre équipe en temps réel. Je peux créer et assigner des tâches, prioriser votre semaine et coordonner le travail.",
   commercial: "Je suis votre pipeline commercial. Je peux préparer des devis et factures en brouillon, identifier qui relancer en priorité et rédiger vos propositions.",
@@ -4027,8 +4213,8 @@ init();
   <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:46rem;width:100%;max-height:90vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
       <div>
-        <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouveau devis</div>
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer un devis</div>
+        <div id="qmKicker" style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouveau devis</div>
+        <div id="qmHeading" style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer un devis</div>
       </div>
       <button type="button" id="qmClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
     </div>
@@ -4049,7 +4235,7 @@ init();
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
-        <textarea id="qmIntro" rows="2" maxlength="2000" placeholder="Comme convenu après notre echange du..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="qmIntro" rows="2" maxlength="2000" placeholder="Comme convenu après notre échange du…" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Lignes du devis <span style="color:var(--accent);">*</span></label>
@@ -4071,23 +4257,34 @@ init();
             <option value="XAF">FCFA (XAF)</option>
             <option value="MAD">MAD</option>
             <option value="TND">TND</option>
+            <option value="GNF">GNF</option>
             <option value="CHF">CHF</option>
           </select>
         </div>
         <div>
-          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Validite (jours)</label>
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Validité (jours)</label>
           <input type="number" id="qmValid" value="30" min="1" max="365" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label for="qmDiscount" style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Remise (%)</label>
+          <input type="number" id="qmDiscount" value="0" min="0" max="100" step="0.5" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+        <div>
+          <label for="qmDeposit" style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Acompte à la commande (%)</label>
+          <input type="number" id="qmDeposit" value="30" min="0" max="100" step="0.5" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
         </div>
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Conditions / mentions (optionnel)</label>
-        <textarea id="qmTerms" rows="3" maxlength="5000" placeholder="30% acompte au lancement, 40% mi-projet, 30% livraison. Devis valable 30 jours..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="qmTerms" rows="3" maxlength="5000" placeholder="30 % d’acompte au lancement, 40 % à mi-projet, 30 % à la livraison. Devis valable 30 jours…" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div id="qmTotals" style="background:var(--surface);padding:1rem 1.25rem;border-radius:10px;margin-bottom:1rem;font-size:0.88rem;color:var(--text-muted);"></div>
       <div id="qmMsg" style="margin-bottom:1rem;"></div>
       <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
         <button type="button" id="qmCancel" class="btn btn--ghost btn--sm">Annuler</button>
-        <button type="button" id="qmSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer brouillon</button>
+        <button type="button" id="qmSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer le brouillon</button>
         <button type="button" id="qmSend" class="btn"><span class="material-symbols-outlined">send</span> Créer et envoyer</button>
       </div>
     </div>
@@ -4099,8 +4296,8 @@ init();
   <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:46rem;width:100%;max-height:90vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border);">
       <div>
-        <div style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouvelle facture</div>
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer une facture</div>
+        <div id="imKicker" style="font-family:var(--font-display);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);margin-bottom:0.3rem;">Nouvelle facture</div>
+        <div id="imHeading" style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;">Créer une facture</div>
       </div>
       <button type="button" id="imClose" style="background:none;border:0;color:var(--text-muted);cursor:pointer;padding:0.4rem;"><span class="material-symbols-outlined">close</span></button>
     </div>
@@ -4123,7 +4320,7 @@ init();
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Introduction (optionnel)</label>
-        <textarea id="imIntro" rows="2" maxlength="2000" placeholder="Comme convenu suite au devis accepte..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="imIntro" rows="2" maxlength="2000" placeholder="Comme convenu à la suite du devis accepté…" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:1rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Lignes de la facture <span style="color:var(--accent);">*</span></label>
@@ -4145,23 +4342,30 @@ init();
             <option value="XAF">FCFA (XAF)</option>
             <option value="MAD">MAD</option>
             <option value="TND">TND</option>
+            <option value="GNF">GNF</option>
             <option value="CHF">CHF</option>
           </select>
         </div>
         <div>
-          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Echeance (jours)</label>
-          <input type="number" id="imDueDays" value="15" min="1" max="365" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+          <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Échéance (jours)</label>
+          <input type="number" id="imDueDays" value="15" min="0" max="365" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <label for="imDiscount" style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Remise (%)</label>
+          <input type="number" id="imDiscount" value="0" min="0" max="100" step="0.5" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
         </div>
       </div>
       <div style="margin-bottom:1.25rem;">
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Modalités de paiement (optionnel)</label>
-        <textarea id="imTerms" rows="3" maxlength="5000" placeholder="Paiement par virement bancaire ou Mobile Money. Merci de nous contacter pour les coordonnees..." style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
+        <textarea id="imTerms" rows="3" maxlength="5000" placeholder="Paiement par virement bancaire ou Mobile Money. Merci de nous contacter pour les coordonnées…" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.75rem 0.9rem;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;"></textarea>
       </div>
       <div id="imTotals" style="background:var(--surface);padding:1rem 1.25rem;border-radius:10px;margin-bottom:1rem;font-size:0.88rem;color:var(--text-muted);"></div>
       <div id="imMsg" style="margin-bottom:1rem;"></div>
       <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border);padding-top:1.25rem;">
         <button type="button" id="imCancel" class="btn btn--ghost btn--sm">Annuler</button>
-        <button type="button" id="imSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer brouillon</button>
+        <button type="button" id="imSave" class="btn"><span class="material-symbols-outlined">save</span> Enregistrer le brouillon</button>
         <button type="button" id="imSend" class="btn"><span class="material-symbols-outlined">send</span> Créer et envoyer</button>
       </div>
     </div>
@@ -4201,7 +4405,7 @@ init();
         <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-muted);">Stade</label>
         <select id="cmStage" style="width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.7rem 0.85rem;border-radius:8px;">
           <option value="prospect">Prospect</option>
-          <option value="qualifie">Qualifie</option>
+          <option value="qualifie">Qualifié</option>
           <option value="client">Client (direct)</option>
         </select>
       </div>
@@ -4216,26 +4420,41 @@ init();
 
 <script>
 // ============= QUOTE MODAL LOGIC =============
-function showQuoteModal(preLeadId) {
+// Mode création (quote absent) ou modification (quote = devis existant, PATCH).
+var QM_EDIT_ID = null, QM_VALID_INIT = null;
+function showQuoteModal(preLeadId, quote) {
+  QM_EDIT_ID = quote ? quote._id : null;
   loadLeadsIntoSelector(preLeadId);
-  document.getElementById('qmTitle').value = '';
-  document.getElementById('qmIntro').value = '';
-  document.getElementById('qmTerms').value = '30% acompte au lancement, 40% a la validation des maquettes, 30% a la livraison. Devis valable 30 jours.';
-  document.getElementById('qmTva').value = 0;
-  document.getElementById('qmCurrency').value = 'EUR';
-  document.getElementById('qmValid').value = 30;
+  document.getElementById('qmClient').disabled = !!quote;
+  document.getElementById('qmNewClient').style.display = quote ? 'none' : '';
+  document.getElementById('qmKicker').textContent = quote ? 'Devis ' + (quote.reference || '') : 'Nouveau devis';
+  document.getElementById('qmHeading').textContent = quote ? 'Modifier le devis' : 'Créer un devis';
+  document.getElementById('qmSave').innerHTML = '<span class="material-symbols-outlined">save</span> ' + (quote ? 'Enregistrer les modifications' : 'Enregistrer le brouillon');
+  document.getElementById('qmSend').innerHTML = '<span class="material-symbols-outlined">send</span> ' + (quote ? 'Enregistrer et envoyer' : 'Créer et envoyer');
+  document.getElementById('qmTitle').value = quote ? (quote.title || '') : '';
+  document.getElementById('qmIntro').value = quote ? (quote.introduction || '') : '';
+  document.getElementById('qmTerms').value = quote ? (quote.terms || '') : '30 % d’acompte au lancement, 40 % à la validation des maquettes, 30 % à la livraison. Devis valable 30 jours.';
+  document.getElementById('qmTva').value = quote ? (quote.taxRate || 0) : 0;
+  document.getElementById('qmDiscount').value = quote ? (quote.discountPercent || 0) : 0;
+  document.getElementById('qmDeposit').value = quote && quote.depositPercent != null ? quote.depositPercent : 30;
+  document.getElementById('qmCurrency').value = quote ? (quote.currency || 'EUR') : 'EUR';
+  // Devis expiré : on propose 30 jours et la nouvelle validité sera toujours envoyée.
+  var joursRestants = quote && quote.validUntil ? Math.ceil((new Date(quote.validUntil) - Date.now()) / 86400000) : 30;
+  QM_VALID_INIT = quote && joursRestants >= 1 ? joursRestants : null;
+  document.getElementById('qmValid').value = joursRestants >= 1 ? joursRestants : 30;
   document.getElementById('qmItems').innerHTML = '';
-  addQuoteLine();
+  if (quote && (quote.items || []).length) quote.items.forEach(function (it) { addQuoteLine(it.description, it.quantity, it.unitPrice); });
+  else addQuoteLine();
   updateQuoteTotals();
   document.getElementById('qmMsg').innerHTML = '';
   document.getElementById('quoteModal').style.display = 'flex';
 }
 
-function hideQuoteModal() { document.getElementById('quoteModal').style.display = 'none'; }
+function hideQuoteModal() { document.getElementById('quoteModal').style.display = 'none'; QM_EDIT_ID = null; }
 
 async function loadLeadsIntoSelector(preSelectedId) {
   const sel = document.getElementById('qmClient');
-  sel.innerHTML = '<option value="">Chargement...</option>';
+  sel.innerHTML = '<option value="">Chargement…</option>';
   try {
     const data = await api('/api/admin/leads');
     const leads = (data.leads || data).filter(l => l.email);
@@ -4243,103 +4462,156 @@ async function loadLeadsIntoSelector(preSelectedId) {
       leads.map(l => '<option value="' + l._id + '" data-name="' + escape(l.name) + '" data-email="' + escape(l.email) + '" data-phone="' + escape(l.phone||'') + '" data-company="' + escape(l.company||'') + '" data-stage="' + escape(l.stage||'prospect') + '">' + escape(l.name) + ' &middot; ' + escape(l.email) + (l.company ? ' (' + escape(l.company) + ')' : '') + '</option>').join('');
     if (preSelectedId) sel.value = preSelectedId;
     sel.dispatchEvent(new Event('change'));
-  } catch(e) { sel.innerHTML = '<option value="">Erreur chargement</option>'; }
+  } catch(e) { sel.innerHTML = '<option value="">Erreur de chargement</option>'; }
+}
+
+function ligneDocumentHtml(prefixe, desc, qty, price) {
+  return '<input type="text" placeholder="Description de la prestation" value="' + escape(desc || '') + '" class="' + prefixe + '-line-desc" aria-label="Description" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;">' +
+    '<input type="number" min="0" step="1" value="' + (qty == null || qty === '' ? 1 : qty) + '" class="' + prefixe + '-line-qty" aria-label="Quantité" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<input type="number" min="0" step="0.01" placeholder="Prix" value="' + (price || 0) + '" class="' + prefixe + '-line-price" aria-label="Prix unitaire" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
+    '<button type="button" class="' + prefixe + '-line-del" aria-label="Supprimer la ligne" style="background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:6px;cursor:pointer;height:2rem;width:2rem;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:1rem;">delete</span></button>';
 }
 
 function addQuoteLine(desc, qty, price) {
   const container = document.getElementById('qmItems');
   const row = document.createElement('div');
   row.style.cssText = 'display:grid;grid-template-columns:1fr 4rem 7rem 2rem;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
-  row.innerHTML = '<input type="text" placeholder="Description de la prestation" value="' + (desc||'') + '" class="qm-line-desc" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;">' +
-    '<input type="number" min="0" step="1" value="' + (qty||1) + '" class="qm-line-qty" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
-    '<input type="number" min="0" step="0.01" placeholder="Prix" value="' + (price||0) + '" class="qm-line-price" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
-    '<button type="button" class="qm-line-del" style="background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:6px;cursor:pointer;height:2rem;width:2rem;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:1rem;">delete</span></button>';
+  row.innerHTML = ligneDocumentHtml('qm', desc, qty, price);
   container.appendChild(row);
   row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateQuoteTotals));
   row.querySelector('.qm-line-del').addEventListener('click', () => { row.remove(); updateQuoteTotals(); });
   updateQuoteTotals();
 }
 
+// Aperçu des totaux (même règle que le serveur : remise avant TVA, arrondi selon la devise).
+function totauxDocumentHtml(rowsSelector, prefixe, cur, tva, remisePct) {
+  let subtotal = 0;
+  document.querySelectorAll(rowsSelector).forEach(row => {
+    const q = parseFloat(row.querySelector('.' + prefixe + '-line-qty').value);
+    const p = arrondiDevise(Math.max(0, parseFloat(row.querySelector('.' + prefixe + '-line-price').value) || 0), cur);
+    subtotal += arrondiDevise((Number.isFinite(q) ? Math.max(0, q) : 1) * p, cur);
+  });
+  subtotal = arrondiDevise(subtotal, cur);
+  const remise = arrondiDevise(subtotal * remisePct / 100, cur);
+  const taxAmt = arrondiDevise((subtotal - remise) * tva / 100, cur);
+  const total = arrondiDevise(subtotal - remise + taxAmt, cur);
+  return '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Sous-total</span><span>' + moneyFmt(subtotal, cur) + '</span></div>' +
+    (remise > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Remise ' + remisePct + ' %</span><span>− ' + moneyFmt(remise, cur) + '</span></div>' : '') +
+    (tva > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>TVA ' + tva + ' %</span><span>' + moneyFmt(taxAmt, cur) + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;border-top:1px solid var(--border);margin-top:0.5rem;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--accent);"><span>Total</span><span>' + moneyFmt(total, cur) + '</span></div>';
+}
+
 function updateQuoteTotals() {
   const cur = document.getElementById('qmCurrency').value;
   const tva = parseFloat(document.getElementById('qmTva').value) || 0;
-  let subtotal = 0;
-  document.querySelectorAll('#qmItems > div').forEach(row => {
-    const q = parseFloat(row.querySelector('.qm-line-qty').value) || 0;
-    const p = parseFloat(row.querySelector('.qm-line-price').value) || 0;
-    subtotal += q * p;
-  });
-  const taxAmt = subtotal * tva / 100;
-  const total = subtotal + taxAmt;
-  document.getElementById('qmTotals').innerHTML =
-    '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Sous-total</span><span>' + subtotal.toFixed(2) + ' ' + cur + '</span></div>' +
-    (tva > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>TVA ' + tva + '%</span><span>' + taxAmt.toFixed(2) + ' ' + cur + '</span></div>' : '') +
-    '<div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;border-top:1px solid var(--border);margin-top:0.5rem;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--accent);"><span>Total</span><span>' + total.toFixed(2) + ' ' + cur + '</span></div>';
+  const remise = parseFloat(document.getElementById('qmDiscount').value) || 0;
+  document.getElementById('qmTotals').innerHTML = totauxDocumentHtml('#qmItems > div', 'qm', cur, tva, remise);
+}
+
+function lignesDocument(rowsSelector, prefixe) {
+  return [...document.querySelectorAll(rowsSelector)].map(row => {
+    const q = parseFloat(row.querySelector('.' + prefixe + '-line-qty').value);
+    return {
+      description: row.querySelector('.' + prefixe + '-line-desc').value.trim(),
+      quantity: Number.isFinite(q) ? Math.max(0, q) : 1,   // une quantité 0 reste 0
+      unitPrice: parseFloat(row.querySelector('.' + prefixe + '-line-price').value) || 0
+    };
+  }).filter(i => i.description && i.unitPrice >= 0);
 }
 
 function collectQuoteData() {
-  const leadId = document.getElementById('qmClient').value;
-  const title = document.getElementById('qmTitle').value.trim();
-  const items = [...document.querySelectorAll('#qmItems > div')].map(row => ({
-    description: row.querySelector('.qm-line-desc').value.trim(),
-    quantity: parseFloat(row.querySelector('.qm-line-qty').value) || 0,
-    unitPrice: parseFloat(row.querySelector('.qm-line-price').value) || 0
-  })).filter(i => i.description && i.quantity > 0 && i.unitPrice >= 0);
   return {
-    leadId, title, items,
+    leadId: document.getElementById('qmClient').value,
+    title: document.getElementById('qmTitle').value.trim(),
+    items: lignesDocument('#qmItems > div', 'qm'),
     introduction: document.getElementById('qmIntro').value.trim(),
     terms: document.getElementById('qmTerms').value.trim(),
     taxRate: parseFloat(document.getElementById('qmTva').value) || 0,
+    discountPercent: parseFloat(document.getElementById('qmDiscount').value) || 0,
+    depositPercent: parseFloat(document.getElementById('qmDeposit').value) || 0,
     currency: document.getElementById('qmCurrency').value,
     validDays: parseInt(document.getElementById('qmValid').value) || 30
   };
 }
 
+// Contrôles communs (création / modification) avant envoi au serveur.
+function verifierDocument(data, avecClient) {
+  if (avecClient && !data.leadId) return 'Sélectionnez un client.';
+  if (!data.title || data.title.length < 3) return 'Titre requis (3 caractères minimum).';
+  if (!data.items.length) return 'Au moins une ligne valide est requise.';
+  if (data.taxRate < 0 || data.taxRate > 100) return 'Le taux de TVA doit être compris entre 0 et 100 %.';
+  if (data.discountPercent < 0 || data.discountPercent > 100) return 'La remise doit être comprise entre 0 et 100 %.';
+  if (data.depositPercent != null && (data.depositPercent < 0 || data.depositPercent > 100)) return 'L’acompte doit être compris entre 0 et 100 %.';
+  return null;
+}
+
 async function saveQuote(sendAfter) {
   const data = collectQuoteData();
   const msg = document.getElementById('qmMsg');
-  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Sélectionnez un client.</div>'; return; }
-  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caractères min).</div>'; return; }
-  if (!data.items.length) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Au moins une ligne valide requise.</div>'; return; }
-  msg.innerHTML = '<div style="color:var(--info);">Enregistrement...</div>';
+  const editId = QM_EDIT_ID;
+  const errV = verifierDocument(data, !editId);
+  if (errV) { msg.innerHTML = erreurBox(errV); return; }
+  msg.innerHTML = '<div style="color:var(--info);">Enregistrement…</div>';
+  let quote;
   try {
-    const quote = await api('/api/admin/quotes', { method: 'POST', body: JSON.stringify(data) });
-    if (sendAfter) {
-      await api('/api/admin/quotes/' + quote.quote._id + '/send', { method: 'POST', body: '{}' });
-      const publicUrl = window.location.origin + '/devis/' + quote.quote.publicToken;
-      showLinkModal('Devis envoye !', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier ou l\'envoyer via WhatsApp.', publicUrl);
+    if (editId) {
+      const body = Object.assign({}, data);
+      delete body.leadId;
+      if (QM_VALID_INIT !== null && Number(body.validDays) === Number(QM_VALID_INIT)) delete body.validDays;   // validité inchangée
+      quote = (await api('/api/admin/quotes/' + editId, { method: 'PATCH', body: JSON.stringify(body) })).quote;
     } else {
-      toast('Devis enregistré en brouillon', 'success');
+      quote = (await api('/api/admin/quotes', { method: 'POST', body: JSON.stringify(data) })).quote;
     }
-    hideQuoteModal();
+  } catch(e) {
+    msg.innerHTML = erreurBox('Erreur : ' + (e.message || 'API'));
+    return;
+  }
+  // Le document existe : on ferme et on rafraîchit, même si l'envoi échoue ensuite.
+  hideQuoteModal();
+  if (typeof loadQuotes === 'function') loadQuotes();
+  if (!sendAfter) { toast(editId ? 'Devis modifié' : 'Devis enregistré en brouillon', 'success'); return; }
+  try {
+    const r = await api('/api/admin/quotes/' + quote._id + '/send', { method: 'POST', body: '{}' });
+    showLinkModal('Devis envoyé !', 'Le client reçoit l’e-mail avec le lien ci-dessous. Vous pouvez aussi le copier ou l’envoyer via WhatsApp.', r.publicUrl || (window.location.origin + '/devis/' + (quote.publicSlug || quote.publicToken)));
     if (typeof loadQuotes === 'function') loadQuotes();
   } catch(e) {
-    msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Erreur : ' + (e.message || 'API') + '</div>';
+    toast((editId ? 'Document enregistré' : 'Document créé') + ' mais non envoyé : ' + (e.message || 'erreur inconnue'), 'error');
   }
 }
 
 // ============= INVOICE MODAL LOGIC =============
-function showInvoiceModal(preLeadId) {
+var IM_EDIT_ID = null;
+function showInvoiceModal(preLeadId, invoice) {
+  IM_EDIT_ID = invoice ? invoice._id : null;
   loadLeadsIntoInvoiceSelector(preLeadId);
-  document.getElementById('imTitle').value = '';
-  document.getElementById('imIntro').value = '';
-  document.getElementById('imTerms').value = 'Paiement par virement bancaire ou Mobile Money. Coordonnees transmises sur demande.';
-  document.getElementById('imIssuer').value = 'Pirabel Labs';
-  document.getElementById('imTva').value = 0;
-  document.getElementById('imCurrency').value = 'EUR';
-  document.getElementById('imDueDays').value = 15;
+  document.getElementById('imClient').disabled = !!invoice;
+  document.getElementById('imKicker').textContent = invoice ? 'Facture ' + (invoice.reference || '') : 'Nouvelle facture';
+  document.getElementById('imHeading').textContent = invoice ? 'Modifier la facture (brouillon)' : 'Créer une facture';
+  document.getElementById('imSave').innerHTML = '<span class="material-symbols-outlined">save</span> ' + (invoice ? 'Enregistrer les modifications' : 'Enregistrer le brouillon');
+  document.getElementById('imSend').innerHTML = '<span class="material-symbols-outlined">send</span> ' + (invoice ? 'Enregistrer et envoyer' : 'Créer et envoyer');
+  document.getElementById('imTitle').value = invoice ? (invoice.title || '') : '';
+  document.getElementById('imIntro').value = invoice ? (invoice.introduction || '') : '';
+  document.getElementById('imTerms').value = invoice ? (invoice.terms || '') : 'Paiement par virement bancaire ou Mobile Money. Coordonnées transmises sur demande.';
+  document.getElementById('imIssuer').value = invoice ? (invoice.issuerBrand || 'Pirabel Labs') : 'Pirabel Labs';
+  document.getElementById('imTva').value = invoice ? (invoice.taxRate || 0) : 0;
+  document.getElementById('imDiscount').value = invoice ? (invoice.discountPercent || 0) : 0;
+  document.getElementById('imCurrency').value = invoice ? (invoice.currency || 'EUR') : 'EUR';
+  document.getElementById('imDueDays').value = invoice && invoice.dueDate
+    ? Math.max(0, Math.round((new Date(invoice.dueDate) - new Date(invoice.issuedAt || invoice.createdAt || Date.now())) / 86400000))
+    : 15;
   document.getElementById('imItems').innerHTML = '';
-  addInvoiceLine();
+  if (invoice && (invoice.items || []).length) invoice.items.forEach(function (it) { addInvoiceLine(it.description, it.quantity, it.unitPrice); });
+  else addInvoiceLine();
   updateInvoiceTotals();
   document.getElementById('imMsg').innerHTML = '';
   document.getElementById('invoiceModal').style.display = 'flex';
 }
 
-function hideInvoiceModal() { document.getElementById('invoiceModal').style.display = 'none'; }
+function hideInvoiceModal() { document.getElementById('invoiceModal').style.display = 'none'; IM_EDIT_ID = null; }
 
 async function loadLeadsIntoInvoiceSelector(preSelectedId) {
   const sel = document.getElementById('imClient');
-  sel.innerHTML = '<option value="">Chargement...</option>';
+  sel.innerHTML = '<option value="">Chargement…</option>';
   try {
     const data = await api('/api/admin/leads');
     const leads = (data.leads || data).filter(l => l.email);
@@ -4347,17 +4619,14 @@ async function loadLeadsIntoInvoiceSelector(preSelectedId) {
       leads.map(l => '<option value="' + l._id + '" data-name="' + escape(l.name) + '" data-email="' + escape(l.email) + '" data-phone="' + escape(l.phone||'') + '" data-company="' + escape(l.company||'') + '">' + escape(l.name) + ' &middot; ' + escape(l.email) + (l.company ? ' (' + escape(l.company) + ')' : '') + '</option>').join('');
     if (preSelectedId) sel.value = preSelectedId;
     sel.dispatchEvent(new Event('change'));
-  } catch(e) { sel.innerHTML = '<option value="">Erreur chargement</option>'; }
+  } catch(e) { sel.innerHTML = '<option value="">Erreur de chargement</option>'; }
 }
 
 function addInvoiceLine(desc, qty, price) {
   const container = document.getElementById('imItems');
   const row = document.createElement('div');
   row.style.cssText = 'display:grid;grid-template-columns:1fr 4rem 7rem 2rem;gap:0.5rem;margin-bottom:0.5rem;align-items:center;';
-  row.innerHTML = '<input type="text" placeholder="Description de la prestation" value="' + (desc||'') + '" class="im-line-desc" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;">' +
-    '<input type="number" min="0" step="1" value="' + (qty||1) + '" class="im-line-qty" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
-    '<input type="number" min="0" step="0.01" placeholder="Prix" value="' + (price||0) + '" class="im-line-price" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.85rem;text-align:right;">' +
-    '<button type="button" class="im-line-del" style="background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:6px;cursor:pointer;height:2rem;width:2rem;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:1rem;">delete</span></button>';
+  row.innerHTML = ligneDocumentHtml('im', desc, qty, price);
   container.appendChild(row);
   row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateInvoiceTotals));
   row.querySelector('.im-line-del').addEventListener('click', () => { row.remove(); updateInvoiceTotals(); });
@@ -4367,34 +4636,20 @@ function addInvoiceLine(desc, qty, price) {
 function updateInvoiceTotals() {
   const cur = document.getElementById('imCurrency').value;
   const tva = parseFloat(document.getElementById('imTva').value) || 0;
-  let subtotal = 0;
-  document.querySelectorAll('#imItems > div').forEach(row => {
-    const q = parseFloat(row.querySelector('.im-line-qty').value) || 0;
-    const p = parseFloat(row.querySelector('.im-line-price').value) || 0;
-    subtotal += q * p;
-  });
-  const taxAmt = subtotal * tva / 100;
-  const total = subtotal + taxAmt;
-  document.getElementById('imTotals').innerHTML =
-    '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Sous-total</span><span>' + subtotal.toFixed(2) + ' ' + cur + '</span></div>' +
-    (tva > 0 ? '<div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>TVA ' + tva + '%</span><span>' + taxAmt.toFixed(2) + ' ' + cur + '</span></div>' : '') +
-    '<div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;border-top:1px solid var(--border);margin-top:0.5rem;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--accent);"><span>Total</span><span>' + total.toFixed(2) + ' ' + cur + '</span></div>';
+  const remise = parseFloat(document.getElementById('imDiscount').value) || 0;
+  document.getElementById('imTotals').innerHTML = totauxDocumentHtml('#imItems > div', 'im', cur, tva, remise);
 }
 
 function collectInvoiceData() {
-  const leadId = document.getElementById('imClient').value;
-  const title = document.getElementById('imTitle').value.trim();
-  const items = [...document.querySelectorAll('#imItems > div')].map(row => ({
-    description: row.querySelector('.im-line-desc').value.trim(),
-    quantity: parseFloat(row.querySelector('.im-line-qty').value) || 0,
-    unitPrice: parseFloat(row.querySelector('.im-line-price').value) || 0
-  })).filter(i => i.description && i.quantity > 0 && i.unitPrice >= 0);
   return {
-    leadId, title, items,
+    leadId: document.getElementById('imClient').value,
+    title: document.getElementById('imTitle').value.trim(),
+    items: lignesDocument('#imItems > div', 'im'),
     introduction: document.getElementById('imIntro').value.trim(),
     terms: document.getElementById('imTerms').value.trim(),
     issuerBrand: document.getElementById('imIssuer').value.trim() || 'Pirabel Labs',
     taxRate: parseFloat(document.getElementById('imTva').value) || 0,
+    discountPercent: parseFloat(document.getElementById('imDiscount').value) || 0,
     currency: document.getElementById('imCurrency').value,
     dueDays: parseInt(document.getElementById('imDueDays').value) || 15
   };
@@ -4403,23 +4658,33 @@ function collectInvoiceData() {
 async function saveInvoice(sendAfter) {
   const data = collectInvoiceData();
   const msg = document.getElementById('imMsg');
-  if (!data.leadId) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Sélectionnez un client.</div>'; return; }
-  if (!data.title || data.title.length < 3) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Titre requis (3 caractères min).</div>'; return; }
-  if (!data.items.length) { msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Au moins une ligne valide requise.</div>'; return; }
-  msg.innerHTML = '<div style="color:var(--info);">Enregistrement...</div>';
+  const editId = IM_EDIT_ID;
+  const errV = verifierDocument(data, !editId);
+  if (errV) { msg.innerHTML = erreurBox(errV); return; }
+  msg.innerHTML = '<div style="color:var(--info);">Enregistrement…</div>';
+  let invoice;
   try {
-    const invoice = await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify(data) });
-    if (sendAfter) {
-      await api('/api/admin/invoices/' + invoice.invoice._id + '/send', { method: 'POST', body: '{}' });
-      const publicUrl = window.location.origin + '/facture/' + invoice.invoice.publicToken;
-      showLinkModal('Facture envoyee !', 'Le client recoit l\'email avec le lien ci-dessous. Vous pouvez aussi le copier ou l\'envoyer via WhatsApp.', publicUrl);
+    if (editId) {
+      const body = Object.assign({}, data);
+      delete body.leadId;
+      invoice = (await api('/api/admin/invoices/' + editId, { method: 'PATCH', body: JSON.stringify(body) })).invoice;
     } else {
-      toast('Facture enregistree en brouillon', 'success');
+      invoice = (await api('/api/admin/invoices', { method: 'POST', body: JSON.stringify(data) })).invoice;
     }
-    hideInvoiceModal();
+  } catch(e) {
+    msg.innerHTML = erreurBox('Erreur : ' + (e.message || 'API'));
+    return;
+  }
+  // La facture existe : on ferme et on rafraîchit, même si l'envoi échoue ensuite.
+  hideInvoiceModal();
+  if (typeof loadInvoices === 'function') loadInvoices();
+  if (!sendAfter) { toast(editId ? 'Facture modifiée' : 'Facture enregistrée en brouillon', 'success'); return; }
+  try {
+    const r = await api('/api/admin/invoices/' + invoice._id + '/send', { method: 'POST', body: '{}' });
+    showLinkModal('Facture envoyée !', 'Le client reçoit l’e-mail avec le lien ci-dessous. Vous pouvez aussi le copier ou l’envoyer via WhatsApp.', r.publicUrl || (window.location.origin + '/facture/' + invoice.publicToken));
     if (typeof loadInvoices === 'function') loadInvoices();
   } catch(e) {
-    msg.innerHTML = '<div style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger);padding:0.7rem;border-radius:8px;font-size:0.85rem;">Erreur : ' + (e.message || 'API') + '</div>';
+    toast((editId ? 'Document enregistré' : 'Document créé') + ' mais non envoyé : ' + (e.message || 'erreur inconnue'), 'error');
   }
 }
 
@@ -4472,6 +4737,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('qmCancel')?.addEventListener('click', hideQuoteModal);
   document.getElementById('qmAddItem')?.addEventListener('click', () => addQuoteLine());
   document.getElementById('qmTva')?.addEventListener('input', updateQuoteTotals);
+  document.getElementById('qmDiscount')?.addEventListener('input', updateQuoteTotals);
   document.getElementById('qmCurrency')?.addEventListener('change', updateQuoteTotals);
   document.getElementById('qmSave')?.addEventListener('click', () => saveQuote(false));
   document.getElementById('qmSend')?.addEventListener('click', () => saveQuote(true));
@@ -4481,7 +4747,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const info = document.getElementById('qmClientInfo');
     if (opt && opt.value) {
       const phone = opt.dataset.phone;
-      info.innerHTML = 'Email : <strong>' + opt.dataset.email + '</strong>' + (phone ? ' &middot; Tel : <strong>' + phone + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + opt.dataset.company : '');
+      info.innerHTML = 'E-mail&nbsp;: <strong>' + escape(opt.dataset.email) + '</strong>' + (phone ? ' &middot; Tél.&nbsp;: <strong>' + escape(phone) + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + escape(opt.dataset.company) : '');
     } else info.innerHTML = '';
   });
   document.querySelector('#quoteModal').addEventListener('click', e => { if (e.target.id === 'quoteModal') hideQuoteModal(); });
@@ -4491,6 +4757,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('imCancel')?.addEventListener('click', hideInvoiceModal);
   document.getElementById('imAddItem')?.addEventListener('click', () => addInvoiceLine());
   document.getElementById('imTva')?.addEventListener('input', updateInvoiceTotals);
+  document.getElementById('imDiscount')?.addEventListener('input', updateInvoiceTotals);
   document.getElementById('imCurrency')?.addEventListener('change', updateInvoiceTotals);
   document.getElementById('imSave')?.addEventListener('click', () => saveInvoice(false));
   document.getElementById('imSend')?.addEventListener('click', () => saveInvoice(true));
@@ -4499,7 +4766,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const info = document.getElementById('imClientInfo');
     if (opt && opt.value) {
       const phone = opt.dataset.phone;
-      info.innerHTML = 'Email : <strong>' + opt.dataset.email + '</strong>' + (phone ? ' &middot; Tel : <strong>' + phone + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + opt.dataset.company : '');
+      info.innerHTML = 'E-mail&nbsp;: <strong>' + escape(opt.dataset.email) + '</strong>' + (phone ? ' &middot; Tél.&nbsp;: <strong>' + escape(phone) + '</strong>' : '') + (opt.dataset.company ? ' &middot; ' + escape(opt.dataset.company) : '');
     } else info.innerHTML = '';
   });
   document.querySelector('#invoiceModal').addEventListener('click', e => { if (e.target.id === 'invoiceModal') hideInvoiceModal(); });
@@ -4541,45 +4808,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Remplace les fonctions prompt() existantes
-window.openNewQuoteModal = function(preLeadId) { showQuoteModal(preLeadId); };
-window.openNewInvoiceModal = function(preLeadId) { showInvoiceModal(preLeadId); };
+window.openNewQuoteModal = function(preLeadId) { showQuoteModal(typeof preLeadId === 'string' ? preLeadId : undefined); };
+window.openNewInvoiceModal = function(preLeadId) { showInvoiceModal(typeof preLeadId === 'string' ? preLeadId : undefined); };
 
-// ============= ACTIONS QUOTE : WhatsApp send =============
-window.sendQuoteWhatsApp = async function(quoteId) {
+// ============= PARTAGE WHATSAPP (devis / factures) =============
+// La fenêtre est ouverte TOUT DE SUITE, dans le geste de l'utilisateur : ouverte après
+// des appels réseau, elle serait bloquée par le navigateur (fenêtre surgissante).
+// Un brouillon partagé par WhatsApp est marqué « envoyé » SANS e-mail au client.
+async function partagerWhatsApp(type, id) {
+  const w = window.open('', '_blank');
   try {
-    const q = await api('/api/admin/quotes/' + quoteId);
-    const lead = await api('/api/admin/leads/' + q.leadId);
-    if (!lead.phone) { toast('Pas de téléphone pour ce client', 'error'); return; }
+    const estDevis = type === 'devis';
+    const doc = await api('/api/admin/' + (estDevis ? 'quotes/' : 'invoices/') + id);
+    const lead = await api('/api/admin/leads/' + doc.leadId);
+    if (!lead.phone) { if (w) w.close(); toast('Pas de téléphone pour ce client', 'error'); return; }
     const phone = lead.phone.replace(/[^0-9]/g, '');
-    const url = window.location.origin + '/devis/' + q.publicToken;
-    const msg = 'Bonjour ' + lead.name.split(' ')[0] + ', voici votre devis Pirabel Labs - ' + q.reference + ' (' + q.title + ') : ' + url;
+    const url = window.location.origin + (estDevis ? '/devis/' + (doc.publicSlug || doc.publicToken) : '/facture/' + doc.publicToken);
+    const msg = 'Bonjour ' + String(lead.name || '').split(' ')[0] + ', voici votre ' + (estDevis ? 'devis' : 'facture') + ' Pirabel Labs - ' + doc.reference + ' (' + doc.title + ') : ' + url;
     const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-    window.open(waUrl, '_blank');
-    // Marquer comme envoye si pas encore fait
-    if (q.status === 'brouillon') {
-      await api('/api/admin/quotes/' + quoteId + '/send', { method: 'POST', body: '{}' });
-      if (typeof loadQuotes === 'function') loadQuotes();
+    if (w) { try { w.opener = null; } catch (e) {} w.location.href = waUrl; }
+    else window.open(waUrl, '_blank', 'noopener');
+    if (doc.status === 'brouillon') {
+      await api('/api/admin/' + (estDevis ? 'quotes/' : 'invoices/') + id + '/send', { method: 'POST', body: JSON.stringify({ canal: 'whatsapp' }) });
+      if (estDevis && typeof loadQuotes === 'function') loadQuotes();
+      if (!estDevis && typeof loadInvoices === 'function') loadInvoices();
     }
-  } catch(e) { toast('Erreur : ' + (e.message || 'API'), 'error'); }
-};
-
-// ============= ACTIONS INVOICE : WhatsApp send =============
-window.sendInvoiceWhatsApp = async function(invoiceId) {
-  try {
-    const i = await api('/api/admin/invoices/' + invoiceId);
-    const lead = await api('/api/admin/leads/' + i.leadId);
-    if (!lead.phone) { toast('Pas de téléphone pour ce client', 'error'); return; }
-    const phone = lead.phone.replace(/[^0-9]/g, '');
-    const url = window.location.origin + '/facture/' + i.publicToken;
-    const msg = 'Bonjour ' + lead.name.split(' ')[0] + ', voici votre facture Pirabel Labs - ' + i.reference + ' (' + i.title + ') : ' + url;
-    const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-    window.open(waUrl, '_blank');
-    if (i.status === 'brouillon') {
-      await api('/api/admin/invoices/' + invoiceId + '/send', { method: 'POST', body: '{}' });
-      if (typeof loadInvoices === 'function') loadInvoices();
-    }
-  } catch(e) { toast('Erreur : ' + (e.message || 'API'), 'error'); }
-};
+  } catch(e) {
+    if (w) w.close();
+    toast('Erreur : ' + (e.message || 'API'), 'error');
+  }
+}
+window.sendQuoteWhatsApp = function(quoteId) { return partagerWhatsApp('devis', quoteId); };
+window.sendInvoiceWhatsApp = function(invoiceId) { return partagerWhatsApp('facture', invoiceId); };
 </script>
 </body>
 </html>

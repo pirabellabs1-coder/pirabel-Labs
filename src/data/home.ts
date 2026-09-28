@@ -1,9 +1,6 @@
 // Contenus de la page d'accueil (repris du site actuel, relus et corrigés).
 
 export const HERO_PROOF = [
-  { icon: 'check', text: '150+ projets livrés' },
-  { icon: 'trending', text: '+187 % de leads en moyenne' },
-  { icon: 'clock', text: 'Réponse sous 24 h' },
   { icon: 'sparkles', text: 'SEO · IA · Web' },
 ];
 

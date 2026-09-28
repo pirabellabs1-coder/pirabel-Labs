@@ -29,6 +29,7 @@ const BLOG_TEAM = 'L’équipe Pirabel Labs';
 const connectDB = require('../app/config/db');
 const { sendEmail, masterTemplate, newOrderEmail, infoTable: emailInfoTable, EMAIL_STYLES: ES,
   newApplicationAdminEmail, applicationConfirmationEmail, applicationStatusEmail, STATUS_MESSAGES,
+  clientProjectUpdateEmail, clientNewDocumentEmail, clientMessageReplyEmail,
 } = require('../app/config/email');
 const {
   rateLimit, sanitize, sanitizeSoft, sanitizeEmail, honeypotCheck, limitBody,
@@ -58,6 +59,7 @@ const Conversation = require('../app/models/Conversation');
 const PendingAction = require('../app/models/PendingAction');
 const Project = require('../app/models/Project');
 const ClientMessage = require('../app/models/ClientMessage');
+const ClientDocument = require('../app/models/ClientDocument');
 const ChatSession = require('../app/models/ChatSession');
 const Expense = require('../app/models/Expense');
 const Job = require('../app/models/Job');
@@ -216,6 +218,17 @@ app.use(cors({
 }));
 
 app.use(securityHeaders);
+// Téléversement de documents clients (base64) : la donnée brute est mise de côté AVANT
+// l'assainissement global (qui la tronquerait à 10 000 caractères et pourrait l'altérer).
+// Elle est ensuite validée strictement dans la route (extension, signature binaire, 2 Mo).
+const RX_UPLOAD_DOC_CLIENT = /^\/api\/admin\/projects\/[a-f0-9]{24}\/documents\/?$/i;
+app.use((req, res, next) => {
+  if (req.method === 'POST' && RX_UPLOAD_DOC_CLIENT.test(req.path) && req.body && typeof req.body.data === 'string') {
+    req.rawUpload = req.body.data;
+    delete req.body.data;
+  }
+  next();
+});
 app.use(globalSanitize);
 
 // === DB connection (lazy, partagee entre invocations serverless) ===
@@ -3652,20 +3665,61 @@ app.post('/api/client/logout', (req, res) => {
   res.json({ success: true });
 });
 
+// Libellés affichés (espace client et admin) — jamais de code brut côté utilisateur.
+const LIBELLES_STATUT_PROJET = { cadrage: 'Cadrage', en_cours: 'En cours', en_revue: 'En revue', livre: 'Livré', suspendu: 'Suspendu' };
+const LIBELLES_ETAPE_CLIENT = { a_venir: 'À venir', en_cours: 'En cours', termine: 'Terminée', bloque: 'En attente' };
+const LIBELLES_TYPE_DOC = { livrable: 'Livrable', maquette: 'Maquette', contrat: 'Contrat', facture: 'Facture', autre: 'Autre' };
+const EQUIPE_SIGNATURE = 'L’équipe Pirabel Labs';
+const RX_OBJECT_ID = /^[a-f0-9]{24}$/i;
+
+const clientWriteLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 20,
+  message: 'Trop de demandes. Merci de patienter quelques minutes.',
+  keyPrefix: 'client-write',
+});
+const clientDownloadLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 120,
+  message: 'Trop de téléchargements. Merci de patienter quelques minutes.',
+  keyPrefix: 'client-download',
+});
+
+// Sert un document (fichier stocké ou lien externe). Les appelants ont DÉJÀ vérifié l'accès.
+function servirDocument(res, d) {
+  if (d.source === 'lien') {
+    const url = ClientDocument.validateLink(d.url);
+    if (!url) return res.status(404).json({ error: 'Lien indisponible.' });
+    return res.redirect(302, url);
+  }
+  if (!d.data) return res.status(404).json({ error: 'Fichier indisponible.' });
+  res.set({
+    'Content-Type': d.mimeType || 'application/octet-stream',
+    'Content-Disposition': ClientDocument.contentDisposition(d.filename || d.title),
+    'Cache-Control': 'private, no-store',
+    'Content-Security-Policy': "default-src 'none'; sandbox",
+  });
+  return res.send(Buffer.from(d.data, 'base64'));
+}
+
 // 3) Toutes les données de l'espace client en un appel.
+//    Jamais exposés : notes internes, moyens et notes de paiement, contenu des fichiers,
+//    documents masqués, données d'autres clients (tout est filtré par leadId).
 app.get('/api/client/me', clientAuth, async (req, res) => {
   try {
     const lead = req.client;
-    const [projects, quotes, invoices, messages, appointments] = await Promise.all([
-      Project.find({ leadId: lead._id }).sort({ createdAt: -1 }).lean(),
+    const [projects, quotes, invoices, messagesDesc, appointments, documents] = await Promise.all([
+      Project.find({ leadId: lead._id }).sort({ createdAt: -1 }).select('-internalNotes').lean(),
       Quote.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
         .select('reference title total currency status validUntil issuedAt publicToken publicSlug').lean(),
       Invoice.find({ leadId: lead._id, status: { $ne: 'brouillon' } }).sort({ createdAt: -1 })
-        .select('reference title total currency status dueDate issuedAt paidAt paymentMethod payments updatedAt publicToken').lean(),
-      ClientMessage.find({ leadId: lead._id }).sort({ createdAt: 1 }).limit(200).lean(),
-      Appointment.find({ email: lead.email, status: { $in: ['demande', 'confirme'] } }).sort({ createdAt: -1 }).limit(10)
-        .select('preferredDate preferredTime channel status subject').lean(),
+        .select('reference title kind total currency status dueDate issuedAt paidAt payments.amount payments.date updatedAt publicToken terms').lean(),
+      ClientMessage.find({ leadId: lead._id }).sort({ createdAt: -1 }).limit(300).lean(),
+      lead.email
+        ? Appointment.find({ email: lead.email }).sort({ createdAt: -1 }).limit(30)
+          .select('preferredDate preferredTime channel status subject publicToken createdAt').lean()
+        : Promise.resolve([]),
+      ClientDocument.find({ leadId: lead._id, visibleClient: true }).sort({ createdAt: -1 }).limit(300).lean(),
     ]);
+    const messages = messagesDesc.reverse();
 
     // Comptabilite : synthese des montants, par devise (jamais additionner des devises differentes).
     // Les factures annulées ne sont ni dues ni facturées ; « payé » et « dû » viennent
@@ -3687,54 +3741,510 @@ app.get('/api/client/me', clientAuth, async (req, res) => {
       v.du = arrondiDevise(v.du, d);
     });
 
-    // Marque les messages de l'equipe comme lus par le client.
-    await ClientMessage.updateMany({ leadId: lead._id, from: 'equipe', readByClient: false }, { $set: { readByClient: true } });
+    const titreProjet = {};
+    projects.forEach(p => { titreProjet[String(p._id)] = p.title; });
+    const nonLus = messages.filter(m => m.from === 'equipe' && !m.readByClient).length;
 
     res.json({
-      client: { nom: lead.name, email: lead.email, entreprise: lead.company || '', depuis: lead.clientData?.becameClientAt || lead.createdAt },
-      projets: projects.map(p => ({
-        id: String(p._id), titre: p.title, description: p.description, service: p.service,
-        statut: p.status, etapes: p.steps, progression: p.progress,
-        debut: p.startedAt, echeance: p.dueDate, livre: p.deliveredAt,
-        previewUrl: p.previewUrl || '', liveUrl: p.liveUrl || '',
+      client: {
+        nom: lead.name, email: lead.email, entreprise: lead.company || '', telephone: lead.phone || '',
+        depuis: (lead.clientData && lead.clientData.becameClientAt) || lead.createdAt,
+      },
+      projets: projects.map(p => {
+        const cur = Project.currentStepOf(p);
+        const next = Project.nextStepOf(p);
+        return {
+          id: String(p._id), titre: p.title, description: p.description || '', service: p.service || '',
+          statut: p.status, statutLibelle: LIBELLES_STATUT_PROJET[p.status] || p.status,
+          progression: Project.progressOf(p),
+          etapes: (p.steps || []).map(s => ({
+            libelle: s.label, description: s.description || '', statut: s.status,
+            statutLibelle: LIBELLES_ETAPE_CLIENT[s.status] || s.status,
+            echeance: s.dueDate || null, termineeLe: s.completedAt || null,
+          })),
+          etapeCourante: cur ? cur.label : '', etapeSuivante: next ? next.label : '',
+          debut: p.startedAt, echeance: p.dueDate || null, livre: p.deliveredAt || null, majLe: p.updatedAt,
+          previewUrl: Project.normalizeUrl(p.previewUrl) || '', liveUrl: Project.normalizeUrl(p.liveUrl) || '',
+        };
+      }),
+      devis: quotes.map(q => {
+        const st = statutDevisEffectif(q);
+        return { ref: q.reference, titre: q.title, montant: q.total, devise: q.currency, statut: st, statutLibelle: LIBELLES_STATUT_DEVIS[st] || st, emisLe: q.issuedAt, valideJusqu: q.validUntil, lien: '/devis/' + (q.publicSlug || q.publicToken) };
+      }),
+      factures: invoices.map(i => {
+        const st = Invoice.effectiveStatus(i);
+        return {
+          ref: i.reference, titre: i.title, nature: i.kind || 'totale', montant: i.total, devise: i.currency,
+          statut: st, statutLibelle: LIBELLES_STATUT_FACTURE[st] || st,
+          paye: Invoice.amountPaidOf(i), reste: Invoice.balanceOf(i), emiseLe: i.issuedAt, echeance: i.dueDate, payeeLe: i.paidAt,
+          // Montant et date seulement : le moyen et les notes de paiement restent internes.
+          paiements: i.status === 'annulee' ? [] : Invoice.paymentsOf(i).map(p => ({ montant: p.amount, le: p.date })),
+          modalites: i.status === 'annulee' ? '' : (i.terms || ''),
+          lien: '/facture/' + i.publicToken,
+        };
+      }),
+      documents: documents.map(d => ({
+        id: String(d._id), titre: d.title, type: d.type, typeLibelle: LIBELLES_TYPE_DOC[d.type] || 'Document',
+        source: d.source, nomFichier: d.filename || '', taille: d.size || 0, mime: d.mimeType || '',
+        projetId: String(d.projectId), projet: titreProjet[String(d.projectId)] || '',
+        lien: '/api/client/documents/' + d._id, le: d.createdAt,
       })),
-      devis: quotes.map(q => ({ ref: q.reference, titre: q.title, montant: q.total, devise: q.currency, statut: statutDevisEffectif(q), valideJusqu: q.validUntil, lien: '/devis/' + (q.publicSlug || q.publicToken) })),
-      factures: invoices.map(i => ({
-        ref: i.reference, titre: i.title, montant: i.total, devise: i.currency, statut: Invoice.effectiveStatus(i),
-        paye: Invoice.amountPaidOf(i), reste: Invoice.balanceOf(i), echeance: i.dueDate, payeeLe: i.paidAt,
-        paiements: i.status === 'annulee' ? [] : Invoice.paymentsOf(i).map(p => ({ montant: p.amount, le: p.date })),
-        lien: '/facture/' + i.publicToken,
+      messages: messages.map(m => ({
+        id: String(m._id), de: m.from,
+        // Côté équipe, on ne nomme jamais une personne.
+        auteur: m.from === 'equipe' ? EQUIPE_SIGNATURE : (lead.name || 'Vous'),
+        contenu: m.content, le: m.createdAt, lu: m.from === 'equipe' ? !!m.readByClient : true,
+        projet: m.projectId ? (titreProjet[String(m.projectId)] || '') : '',
       })),
-      messages: messages.map(m => ({ de: m.from, auteur: m.authorName, contenu: m.content, le: m.createdAt })),
-      rendezVous: appointments.map(a => ({ date: a.preferredDate, heure: a.preferredTime, canal: a.channel, statut: a.status, objet: a.subject })),
+      nonLus,
+      rendezVous: appointments.map(a => ({
+        date: a.preferredDate, heure: a.preferredTime, canal: a.channel, statut: a.status, objet: a.subject || '',
+        gerer: a.publicToken && ['demande', 'confirme'].includes(a.status) ? '/rdv/' + a.publicToken : '',
+      })),
       comptabilite: parDevise,
+      avis: { possible: projects.some(p => p.status === 'livre'), dejaDonne: !!lead.reviewSubmittedAt },
     });
   } catch (e) { console.error('[client.me]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
 });
 
-// 4) Le client écrit à l'équipe.
-app.post('/api/client/message', clientAuth, limitBody(10), async (req, res) => {
+// 4) Le client écrit à l'équipe (optionnellement à propos d'un de SES projets).
+app.post('/api/client/message', clientAuth, clientWriteLimiter, limitBody(10), async (req, res) => {
   try {
     const content = sanitize(req.body && req.body.content || '', 5000);
-    if (!content || content.trim().length < 2) return res.status(400).json({ error: 'Message vide.' });
+    if (!content || content.trim().length < 2) return res.status(400).json({ error: 'Votre message est vide.' });
     const lead = req.client;
-    await ClientMessage.create({ leadId: lead._id, from: 'client', authorName: lead.name, content });
+    let projectId;
+    const pid = String(req.body && req.body.projetId || '');
+    if (pid) {
+      if (!RX_OBJECT_ID.test(pid)) return res.status(400).json({ error: 'Projet invalide.' });
+      const own = await Project.exists({ _id: pid, leadId: lead._id });
+      if (!own) return res.status(404).json({ error: 'Projet introuvable.' });
+      projectId = pid;
+    }
+    const msg = await ClientMessage.create({ leadId: lead._id, projectId, from: 'client', authorName: lead.name, content, readByClient: true });
     await sendEmail(process.env.CONTACT_EMAIL || 'contact@pirabellabs.com',
       `[Espace client] Nouveau message de ${lead.name}`,
       masterTemplate({
-        title: 'Message depuis l\'espace client',
+        title: 'Message depuis l’espace client',
         body: `<p><strong>${escapeHtml(lead.name)}</strong> (${escapeHtml(lead.email)}) vous a écrit :</p>` +
           `<div style="border-left:3px solid #FF5500;padding:14px 18px;background:#0e0e0e;color:rgba(229,226,225,0.85);white-space:pre-wrap;">${escapeHtml(content)}</div>`,
-        cta: 'Répondre dans l\'admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard',
+        cta: 'Répondre dans l’admin', ctaUrl: 'https://www.pirabellabs.com/admin/dashboard#projects',
       })
     ).catch(e => console.error('[client.message] mail:', e.message));
-    res.json({ success: true });
-  } catch (e) { console.error('[client.message]', e.message); res.status(500).json({ error: 'Erreur envoi.' }); }
+    res.json({ success: true, message: { id: String(msg._id), de: 'client', auteur: lead.name, contenu: content, le: msg.createdAt, lu: true } });
+  } catch (e) { console.error('[client.message]', e.message); res.status(500).json({ error: 'Erreur lors de l’envoi.' }); }
+});
+
+// 4 bis) Le client a lu les réponses de l'équipe.
+app.post('/api/client/messages/lu', clientAuth, async (req, res) => {
+  try {
+    const r = await ClientMessage.updateMany({ leadId: req.client._id, from: 'equipe', readByClient: false }, { $set: { readByClient: true } });
+    res.json({ success: true, marques: r.modifiedCount || 0 });
+  } catch (e) { console.error('[client.messages.lu]', e.message); res.status(500).json({ error: 'Erreur.' }); }
+});
+
+// 4 ter) Téléchargement d'un document : uniquement les documents visibles DU client connecté.
+app.get('/api/client/documents/:id', clientAuth, clientDownloadLimiter, async (req, res) => {
+  try {
+    const id = String(req.params.id || '');
+    if (!RX_OBJECT_ID.test(id)) return res.status(404).json({ error: 'Document introuvable.' });
+    const d = await ClientDocument.findOne({ _id: id, leadId: req.client._id, visibleClient: true }).select('+data').lean();
+    if (!d) return res.status(404).json({ error: 'Document introuvable.' });
+    return servirDocument(res, d);
+  } catch (e) { console.error('[client.document]', e.message); res.status(500).json({ error: 'Erreur de téléchargement.' }); }
+});
+
+// 4 quater) Mise à jour du profil : seul le téléphone est modifiable par le client.
+function normaliserTelephone(v) {
+  const s = sanitize(String(v == null ? '' : v), 30).replace(/\s+/g, ' ').trim();
+  if (!s) return '';
+  if (!/^\+?[0-9][0-9 .()-]{4,28}$/.test(s)) return null;
+  const chiffres = s.replace(/\D/g, '').length;
+  return chiffres >= 6 && chiffres <= 15 ? s : null;
+}
+app.patch('/api/client/profile', clientAuth, clientWriteLimiter, limitBody(3), async (req, res) => {
+  try {
+    const tel = normaliserTelephone(req.body && req.body.telephone);
+    if (tel === null) return res.status(400).json({ error: 'Numéro de téléphone invalide (ex. : +229 01 23 45 67 89).' });
+    req.client.phone = tel;
+    await req.client.save();
+    res.json({ success: true, telephone: tel });
+  } catch (e) { console.error('[client.profile]', e.message); res.status(500).json({ error: 'Erreur d’enregistrement.' }); }
+});
+
+// 4 quinquies) Lien pour laisser un avis (mécanisme existant : Review + /avis/:token),
+//    proposé seulement quand un projet a été livré.
+app.post('/api/client/avis', clientAuth, clientWriteLimiter, async (req, res) => {
+  try {
+    const lead = req.client;
+    if (lead.reviewSubmittedAt) return res.status(409).json({ error: 'Vous avez déjà laissé un avis : merci beaucoup !' });
+    const livre = await Project.findOne({ leadId: lead._id, status: 'livre' }).select('service').lean();
+    if (!livre) return res.status(403).json({ error: 'Vous pourrez laisser un avis dès la livraison de votre projet.' });
+    if (!lead.email) return res.status(400).json({ error: 'Adresse e-mail manquante.' });
+    let review = await Review.findOne({ leadId: lead._id, submittedAt: { $exists: false } }).select('requestToken').lean();
+    if (!review) {
+      review = await Review.create({
+        leadId: lead._id, clientName: lead.name, clientEmail: lead.email, clientCompany: lead.company || '',
+        clientCity: (lead.clientData && lead.clientData.city) || '',
+        rating: 5, comment: 'En attente de la soumission de l’avis par le client.',
+        serviceUsed: sanitize(livre.service || lead.service || '', 100),
+        status: 'en_attente', requestToken: generateToken(), source: 'spontane',
+      });
+    }
+    res.json({ success: true, url: '/avis/' + review.requestToken });
+  } catch (e) { console.error('[client.avis]', e.message); res.status(500).json({ error: 'Erreur, réessayez plus tard.' }); }
 });
 
 // 5) Page de l'espace client (login + tableau de bord dans une seule vue).
 app.get('/espace-client', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'app', 'views', 'client-portal.html'));
+});
+
+// ========================================================================
+// === ADMIN : PROJETS CLIENTS (alimentent l'espace client) ===
+// ========================================================================
+const adminUploadLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 40,
+  message: 'Trop de téléversements. Réessayez dans quelques minutes.',
+  keyPrefix: 'admin-doc-upload',
+});
+const adminNotifyLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, max: 30,
+  message: 'Trop d’envois. Réessayez dans quelques minutes.',
+  keyPrefix: 'admin-client-notify',
+});
+
+function fmtDateFr(d) {
+  if (!d) return '';
+  const x = new Date(d);
+  return isNaN(x.getTime()) ? '' : x.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ_AGENCE });
+}
+function docPublic(d) {
+  return {
+    _id: String(d._id), projectId: String(d.projectId), title: d.title, type: d.type, source: d.source,
+    url: d.source === 'lien' ? d.url : '', filename: d.filename || '', mimeType: d.mimeType || '', size: d.size || 0,
+    visibleClient: d.visibleClient !== false, createdAt: d.createdAt,
+  };
+}
+function projetAdmin(p) {
+  const o = p && typeof p.toObject === 'function' ? p.toObject() : Object.assign({}, p);
+  o.progress = Project.progressOf(o);
+  const cur = Project.currentStepOf(o);
+  o.currentStep = cur ? cur.label : '';
+  return o;
+}
+async function chargerProjet(req, res) {
+  const id = String(req.params.id || '');
+  if (!RX_OBJECT_ID.test(id)) { res.status(404).json({ error: 'Projet introuvable.' }); return null; }
+  const p = await Project.findById(id);
+  if (!p) { res.status(404).json({ error: 'Projet introuvable.' }); return null; }
+  return p;
+}
+function dateOuVide(v) {
+  if (v === null || v === '' ) return null;
+  if (v === undefined) return undefined;
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? undefined : d;
+}
+
+// Clients sélectionnables pour un projet (clients, convertis ou espace ouvert) + modèles d'étapes.
+app.get('/api/admin/projects/options', auth, adminOnly, async (req, res) => {
+  try {
+    const leads = await Lead.find({ $or: [{ stage: 'client' }, { status: 'converti' }, { portalEnabled: true }] })
+      .select('name email company').sort({ name: 1 }).limit(1000).lean();
+    res.json({
+      clients: leads.map(l => ({ _id: String(l._id), name: l.name, email: l.email || '', company: l.company || '' })),
+      templates: Object.entries(Project.STEP_TEMPLATES).map(([key, t]) => ({ key, label: t.label, steps: t.steps })),
+      statuses: LIBELLES_STATUT_PROJET,
+    });
+  } catch (e) { console.error('[admin.projects.options]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// Liste des projets (filtres : statut, client = identifiant ou texte).
+app.get('/api/admin/projects', auth, adminOnly, async (req, res) => {
+  try {
+    const status = sanitize(req.query.status || '', 30);
+    const client = sanitize(req.query.client || '', 80);
+    const q = {};
+    if (Project.PROJECT_STATUSES.includes(status)) q.status = status;
+    if (RX_OBJECT_ID.test(client)) q.leadId = client;
+    else if (client) {
+      const rx = new RegExp(client.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      q.$or = [{ clientName: rx }, { clientEmail: rx }, { title: rx }];
+    }
+    const [projects, parStatut, nonLus] = await Promise.all([
+      Project.find(q).sort({ updatedAt: -1 }).limit(300).select('-internalNotes').lean(),
+      Project.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]),
+      ClientMessage.aggregate([{ $match: { from: 'client', readByTeam: false } }, { $group: { _id: '$leadId', n: { $sum: 1 } } }]),
+    ]);
+    const ids = projects.map(p => p._id);
+    const docs = ids.length ? await ClientDocument.aggregate([{ $match: { projectId: { $in: ids } } }, { $group: { _id: '$projectId', n: { $sum: 1 } } }]) : [];
+    const nbDocs = {}; docs.forEach(d => { nbDocs[String(d._id)] = d.n; });
+    const nlParLead = {}; let nonLusTotal = 0;
+    nonLus.forEach(x => { nlParLead[String(x._id)] = x.n; nonLusTotal += x.n; });
+    const counts = {}; parStatut.forEach(s => { counts[s._id] = s.n; });
+    res.json({
+      projects: projects.map(p => Object.assign(projetAdmin(p), { docCount: nbDocs[String(p._id)] || 0, unread: nlParLead[String(p.leadId)] || 0 })),
+      counts, unreadTotal: nonLusTotal,
+    });
+  } catch (e) { console.error('[admin.projects.list]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// Création : étapes pré-remplies selon le modèle (ou deviné d'après le service).
+app.post('/api/admin/projects', auth, adminOnly, limitBody(10), async (req, res) => {
+  try {
+    const b = req.body || {};
+    const leadId = String(b.leadId || '');
+    if (!RX_OBJECT_ID.test(leadId)) return res.status(400).json({ error: 'Choisissez un client.' });
+    const lead = await Lead.findById(leadId);
+    if (!lead) return res.status(404).json({ error: 'Client introuvable.' });
+    if (!lead.email) return res.status(400).json({ error: 'Ce contact n’a pas d’adresse e-mail : il ne pourrait pas se connecter à son espace client.' });
+    const title = sanitize(String(b.title || ''), 200);
+    if (title.length < 2) return res.status(400).json({ error: 'Le titre du projet est requis.' });
+    const service = sanitize(String(b.service || lead.service || ''), 120);
+    const key = Project.STEP_TEMPLATES[b.template] ? b.template : Project.templateKeyForService(service);
+    const due = dateOuVide(b.dueDate);
+    const p = await Project.create({
+      leadId: lead._id, clientName: lead.name, clientEmail: lead.email,
+      title, service: service || Project.STEP_TEMPLATES[key].label,
+      description: sanitize(String(b.description || ''), 4000),
+      dueDate: due || undefined,
+      steps: Project.stepsFromTemplate(key), status: 'cadrage',
+    });
+    // Un projet n'a d'intérêt que s'il est consultable : on ouvre l'espace client.
+    if (!lead.portalEnabled) { lead.portalEnabled = true; await lead.save(); }
+    res.json({ success: true, project: projetAdmin(p) });
+  } catch (e) { console.error('[admin.projects.create]', e.message); res.status(500).json({ error: 'Erreur de création.' }); }
+});
+
+// Détail : projet complet (notes internes comprises) + documents (sans contenu) + fiche client.
+app.get('/api/admin/projects/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const p = await chargerProjet(req, res); if (!p) return;
+    const [documents, lead] = await Promise.all([
+      ClientDocument.find({ projectId: p._id }).sort({ createdAt: -1 }).lean(),
+      Lead.findById(p.leadId).select('name email phone company portalEnabled portalLastLoginAt').lean(),
+    ]);
+    res.json({ project: projetAdmin(p), documents: documents.map(docPublic), lead: lead || null });
+  } catch (e) { console.error('[admin.projects.get]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// Mise à jour : champs, liens, statut, étapes (ajout, renommage, ordre, statut).
+app.patch('/api/admin/projects/:id', auth, adminOnly, limitBody(15), async (req, res) => {
+  try {
+    const p = await chargerProjet(req, res); if (!p) return;
+    const b = req.body || {};
+    if (b.title !== undefined) {
+      const t = sanitize(String(b.title), 200);
+      if (t.length < 2) return res.status(400).json({ error: 'Le titre du projet est requis.' });
+      p.title = t;
+    }
+    if (b.description !== undefined) p.description = sanitize(String(b.description), 4000);
+    if (b.service !== undefined) p.service = sanitize(String(b.service), 120);
+    if (b.internalNotes !== undefined) p.internalNotes = sanitize(String(b.internalNotes), 5000);
+    if (b.status !== undefined) {
+      if (!Project.PROJECT_STATUSES.includes(b.status)) return res.status(400).json({ error: 'Statut invalide.' });
+      p.status = b.status;
+      if (b.status === 'livre' && !p.deliveredAt) p.deliveredAt = new Date();
+    }
+    if (b.dueDate !== undefined) { const d = dateOuVide(b.dueDate); p.dueDate = d || undefined; }
+    if (b.startedAt !== undefined) { const d = dateOuVide(b.startedAt); if (d) p.startedAt = d; }
+    for (const k of ['previewUrl', 'liveUrl']) {
+      if (b[k] === undefined) continue;
+      const u = Project.normalizeUrl(b[k]);
+      if (u === null) return res.status(400).json({ error: 'Lien invalide : il doit commencer par https://' });
+      p[k] = u;
+    }
+    if (b.steps !== undefined) {
+      const r = Project.normalizeSteps(b.steps);
+      if (r.error) return res.status(400).json({ error: r.error });
+      p.steps = r.steps;
+    }
+    await p.save();
+    res.json({ success: true, project: projetAdmin(p) });
+  } catch (e) { console.error('[admin.projects.patch]', e.message); res.status(500).json({ error: 'Erreur d’enregistrement.' }); }
+});
+
+// Suppression : refusée tant que des documents y sont rattachés (on ne perd rien par erreur).
+app.delete('/api/admin/projects/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const p = await chargerProjet(req, res); if (!p) return;
+    const n = await ClientDocument.countDocuments({ projectId: p._id });
+    if (n > 0) return res.status(409).json({ error: `Ce projet contient ${n} document(s) : supprimez-les d’abord.` });
+    await Project.deleteOne({ _id: p._id });
+    res.json({ success: true });
+  } catch (e) { console.error('[admin.projects.delete]', e.message); res.status(500).json({ error: 'Erreur de suppression.' }); }
+});
+
+// Ajout d'un document : lien externe { source:'lien', url } ou fichier (base64, 2 Mo max,
+// PDF/PNG/JPG/WEBP/ZIP/DOCX/XLSX, signature binaire vérifiée). notify:true prévient le client.
+app.post('/api/admin/projects/:id/documents', auth, adminOnly, adminUploadLimiter, limitBody(10), async (req, res) => {
+  try {
+    const p = await chargerProjet(req, res); if (!p) return;
+    const b = req.body || {};
+    const type = ClientDocument.DOC_TYPES.includes(b.type) ? b.type : 'livrable';
+    const visibleClient = b.visibleClient !== false;
+    const doc = { leadId: p.leadId, projectId: p._id, type, visibleClient, createdBy: req.user._id };
+    if (b.source === 'lien') {
+      const url = ClientDocument.validateLink(b.url);
+      if (!url) return res.status(400).json({ error: 'Lien invalide : il doit commencer par https://' });
+      Object.assign(doc, { source: 'lien', url });
+      doc.title = sanitize(String(b.title || ''), 200);
+      if (!doc.title) return res.status(400).json({ error: 'Donnez un titre au document.' });
+    } else {
+      const v = ClientDocument.validateUpload(req.rawUpload, b.filename);
+      if (v.error) return res.status(400).json({ error: v.error });
+      Object.assign(doc, { source: 'fichier', filename: v.filename, mimeType: v.mime, size: v.size, data: v.base64 });
+      doc.title = sanitize(String(b.title || ''), 200) || v.filename;
+    }
+    const d = await ClientDocument.create(doc);
+    let emailSent = false;
+    if (b.notify && visibleClient) {
+      const lead = await Lead.findById(p.leadId).select('name email').lean();
+      if (lead && lead.email) {
+        emailSent = !!(await sendEmail(lead.email, `Nouveau document disponible — ${d.title}`,
+          clientNewDocumentEmail({ clientName: lead.name, projectTitle: p.title, docTitle: d.title, typeLabel: LIBELLES_TYPE_DOC[d.type] }))
+          .catch(e => { console.error('[admin.doc] mail:', e.message); return false; }));
+      }
+    }
+    res.json({ success: true, document: docPublic(d), emailSent });
+  } catch (e) { console.error('[admin.projects.doc.add]', e.message); res.status(500).json({ error: 'Erreur d’enregistrement du document.' }); }
+});
+
+// Modification d'un document (titre, type, visibilité client).
+app.patch('/api/admin/projects/:id/documents/:docId', auth, adminOnly, limitBody(5), async (req, res) => {
+  try {
+    const docId = String(req.params.docId || '');
+    if (!RX_OBJECT_ID.test(docId) || !RX_OBJECT_ID.test(String(req.params.id || ''))) return res.status(404).json({ error: 'Document introuvable.' });
+    const d = await ClientDocument.findOne({ _id: docId, projectId: req.params.id });
+    if (!d) return res.status(404).json({ error: 'Document introuvable.' });
+    const b = req.body || {};
+    if (b.title !== undefined) { const t = sanitize(String(b.title), 200); if (t) d.title = t; }
+    if (b.type !== undefined && ClientDocument.DOC_TYPES.includes(b.type)) d.type = b.type;
+    if (b.visibleClient !== undefined) d.visibleClient = !!b.visibleClient;
+    await d.save();
+    res.json({ success: true, document: docPublic(d) });
+  } catch (e) { console.error('[admin.projects.doc.patch]', e.message); res.status(500).json({ error: 'Erreur d’enregistrement.' }); }
+});
+
+app.delete('/api/admin/projects/:id/documents/:docId', auth, adminOnly, async (req, res) => {
+  try {
+    const docId = String(req.params.docId || '');
+    if (!RX_OBJECT_ID.test(docId) || !RX_OBJECT_ID.test(String(req.params.id || ''))) return res.status(404).json({ error: 'Document introuvable.' });
+    const r = await ClientDocument.deleteOne({ _id: docId, projectId: req.params.id });
+    if (!r.deletedCount) return res.status(404).json({ error: 'Document introuvable.' });
+    res.json({ success: true });
+  } catch (e) { console.error('[admin.projects.doc.delete]', e.message); res.status(500).json({ error: 'Erreur de suppression.' }); }
+});
+
+app.get('/api/admin/projects/:id/documents/:docId/download', auth, adminOnly, async (req, res) => {
+  try {
+    const docId = String(req.params.docId || '');
+    if (!RX_OBJECT_ID.test(docId) || !RX_OBJECT_ID.test(String(req.params.id || ''))) return res.status(404).json({ error: 'Document introuvable.' });
+    const d = await ClientDocument.findOne({ _id: docId, projectId: req.params.id }).select('+data').lean();
+    if (!d) return res.status(404).json({ error: 'Document introuvable.' });
+    return servirDocument(res, d);
+  } catch (e) { console.error('[admin.projects.doc.download]', e.message); res.status(500).json({ error: 'Erreur de téléchargement.' }); }
+});
+
+// « Notifier le client » : e-mail récapitulatif de l'avancement (+ message facultatif).
+app.post('/api/admin/projects/:id/notify', auth, adminOnly, adminNotifyLimiter, limitBody(3), async (req, res) => {
+  try {
+    const p = await chargerProjet(req, res); if (!p) return;
+    const lead = await Lead.findById(p.leadId).select('name email portalEnabled');
+    if (!lead || !lead.email) return res.status(400).json({ error: 'Ce client n’a pas d’adresse e-mail.' });
+    if (!lead.portalEnabled) { lead.portalEnabled = true; await lead.save(); }
+    const cur = Project.currentStepOf(p);
+    const next = Project.nextStepOf(p);
+    const html = clientProjectUpdateEmail({
+      clientName: lead.name, title: p.title,
+      statusLabel: LIBELLES_STATUT_PROJET[p.status] || p.status,
+      progress: Project.progressOf(p),
+      currentStep: p.status === 'livre' ? '' : (cur ? cur.label : ''),
+      nextStep: p.status === 'livre' ? '' : (next ? next.label : ''),
+      doneSteps: p.steps.filter(s => s.status === 'termine').map(s => s.label),
+      dueDate: p.status === 'livre' ? '' : fmtDateFr(p.dueDate),
+      message: sanitize(String(req.body && req.body.message || ''), 2000),
+    });
+    const ok = await sendEmail(lead.email, `Suivi de votre projet — ${p.title}`, html);
+    if (!ok) return res.status(502).json({ error: 'L’e-mail n’a pas pu partir. Réessayez plus tard.' });
+    p.lastNotifiedAt = new Date();
+    await p.save();
+    res.json({ success: true, lastNotifiedAt: p.lastNotifiedAt });
+  } catch (e) { console.error('[admin.projects.notify]', e.message); res.status(500).json({ error: 'Erreur d’envoi.' }); }
+});
+
+// ========================================================================
+// === ADMIN : MESSAGERIE CLIENTS (fils par client) ===
+// ========================================================================
+app.get('/api/admin/client-messages', auth, adminOnly, async (req, res) => {
+  try {
+    const fils = await ClientMessage.aggregate([
+      { $sort: { createdAt: -1 } },
+      { $group: {
+        _id: '$leadId', last: { $first: '$content' }, lastFrom: { $first: '$from' }, lastAt: { $first: '$createdAt' }, total: { $sum: 1 },
+        unread: { $sum: { $cond: [{ $and: [{ $eq: ['$from', 'client'] }, { $eq: ['$readByTeam', false] }] }, 1, 0] } },
+      } },
+      { $sort: { lastAt: -1 } }, { $limit: 200 },
+    ]);
+    const leads = await Lead.find({ _id: { $in: fils.map(f => f._id) } }).select('name email company').lean();
+    const parId = {}; leads.forEach(l => { parId[String(l._id)] = l; });
+    res.json({
+      threads: fils.map(f => {
+        const l = parId[String(f._id)] || {};
+        return { leadId: String(f._id), name: l.name || 'Contact supprimé', email: l.email || '', company: l.company || '',
+          last: String(f.last || '').slice(0, 160), lastFrom: f.lastFrom, lastAt: f.lastAt, total: f.total, unread: f.unread };
+      }),
+      unreadTotal: fils.reduce((s, f) => s + f.unread, 0),
+    });
+  } catch (e) { console.error('[admin.client-messages]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// Fil d'un client (marque ses messages comme lus par l'équipe).
+app.get('/api/admin/client-messages/:leadId', auth, adminOnly, async (req, res) => {
+  try {
+    const leadId = String(req.params.leadId || '');
+    if (!RX_OBJECT_ID.test(leadId)) return res.status(404).json({ error: 'Client introuvable.' });
+    const [lead, msgs, projects] = await Promise.all([
+      Lead.findById(leadId).select('name email company phone portalEnabled').lean(),
+      ClientMessage.find({ leadId }).sort({ createdAt: -1 }).limit(300).lean(),
+      Project.find({ leadId }).select('title').lean(),
+    ]);
+    if (!lead) return res.status(404).json({ error: 'Client introuvable.' });
+    await ClientMessage.updateMany({ leadId, from: 'client', readByTeam: false }, { $set: { readByTeam: true } });
+    const titres = {}; projects.forEach(p => { titres[String(p._id)] = p.title; });
+    res.json({
+      lead,
+      projects: projects.map(p => ({ _id: String(p._id), title: p.title })),
+      messages: msgs.reverse().map(m => ({ _id: String(m._id), from: m.from, authorName: m.authorName || '', content: m.content, createdAt: m.createdAt, readByClient: !!m.readByClient, project: m.projectId ? (titres[String(m.projectId)] || '') : '' })),
+    });
+  } catch (e) { console.error('[admin.client-messages.thread]', e.message); res.status(500).json({ error: 'Erreur de chargement.' }); }
+});
+
+// Réponse de l'équipe : enregistrée dans le fil + e-mail au client (signature d'équipe).
+app.post('/api/admin/client-messages/:leadId', auth, adminOnly, adminNotifyLimiter, limitBody(5), async (req, res) => {
+  try {
+    const leadId = String(req.params.leadId || '');
+    if (!RX_OBJECT_ID.test(leadId)) return res.status(404).json({ error: 'Client introuvable.' });
+    const lead = await Lead.findById(leadId).select('name email portalEnabled');
+    if (!lead) return res.status(404).json({ error: 'Client introuvable.' });
+    const content = sanitize(String(req.body && req.body.content || ''), 5000);
+    if (content.trim().length < 2) return res.status(400).json({ error: 'Le message est vide.' });
+    let projectId;
+    const pid = String(req.body && req.body.projectId || '');
+    if (pid) {
+      if (!RX_OBJECT_ID.test(pid) || !(await Project.exists({ _id: pid, leadId: lead._id }))) return res.status(400).json({ error: 'Projet invalide.' });
+      projectId = pid;
+    }
+    const m = await ClientMessage.create({ leadId: lead._id, projectId, from: 'equipe', authorName: EQUIPE_SIGNATURE, content, readByTeam: true, readByClient: false });
+    let emailSent = false;
+    if (req.body.notify !== false && lead.email) {
+      if (!lead.portalEnabled) { lead.portalEnabled = true; await lead.save(); }
+      emailSent = !!(await sendEmail(lead.email, 'Nouvelle réponse de l’équipe Pirabel Labs', clientMessageReplyEmail({ clientName: lead.name, content }))
+        .catch(e => { console.error('[admin.client-messages] mail:', e.message); return false; }));
+    }
+    res.json({ success: true, emailSent, message: { _id: String(m._id), from: 'equipe', authorName: m.authorName, content, createdAt: m.createdAt, readByClient: false } });
+  } catch (e) { console.error('[admin.client-messages.reply]', e.message); res.status(500).json({ error: 'Erreur d’envoi.' }); }
 });
 
 // ========================================================================

@@ -17,5 +17,8 @@ const clientMessageSchema = new mongoose.Schema({
 });
 
 clientMessageSchema.index({ leadId: 1, createdAt: 1 });
+// Compteurs « non lus » (admin : messages clients non lus ; client : réponses non lues).
+clientMessageSchema.index({ from: 1, readByTeam: 1 });
+clientMessageSchema.index({ leadId: 1, from: 1, readByClient: 1 });
 
 module.exports = mongoose.model('ClientMessage', clientMessageSchema);

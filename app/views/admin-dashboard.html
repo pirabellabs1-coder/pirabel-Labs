@@ -463,6 +463,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
       <div class="sidebar__group">Commercial</div>
       <a class="sidebar__link" data-view="leads" data-label="Prospects (CRM)"><span class="material-symbols-outlined">person_search</span><span class="sidebar__link-text">Prospects (CRM)</span></a>
       <a class="sidebar__link" data-view="clients" data-label="Clients"><span class="material-symbols-outlined">verified_user</span><span class="sidebar__link-text">Clients</span></a>
+      <a class="sidebar__link" data-view="projects" data-label="Projets clients"><span class="material-symbols-outlined">folder_open</span><span class="sidebar__link-text">Projets clients</span> <span id="pjBadgeNav" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;" title="Messages clients non lus"></span></a>
       <a class="sidebar__link" data-view="quotes" data-label="Devis"><span class="material-symbols-outlined">request_quote</span><span class="sidebar__link-text">Devis</span></a>
       <a class="sidebar__link" data-view="invoices" data-label="Factures"><span class="material-symbols-outlined">receipt_long</span><span class="sidebar__link-text">Factures</span></a>
       <a class="sidebar__link" data-view="appointments" data-label="Rendez-vous"><span class="material-symbols-outlined">event</span><span class="sidebar__link-text">Rendez-vous</span> <span id="apptBadge" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;margin-left:auto;"></span></a>
@@ -814,6 +815,66 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
             </tr></thead>
             <tbody id="clTbody"><tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement...</td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJETS CLIENTS VIEW (alimente l'espace client) -->
+    <div class="view" data-view="projects">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;" id="pjTabs" role="tablist" aria-label="Projets et messages">
+          <button type="button" class="btn btn--ghost btn--sm is-active" role="tab" aria-selected="true" data-pjtab="list" onclick="pjShowTab('list')"><span class="material-symbols-outlined">folder_open</span> Projets</button>
+          <button type="button" class="btn btn--ghost btn--sm" role="tab" aria-selected="false" data-pjtab="msgs" onclick="pjShowTab('msgs')"><span class="material-symbols-outlined">forum</span> Messages clients <span id="pjMsgCount" style="display:none;background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.05rem .42rem;border-radius:999px;"></span></button>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button type="button" class="btn btn--ghost btn--sm" onclick="loadProjects()"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+          <button type="button" class="btn btn--sm" onclick="openNewProjectModal()"><span class="material-symbols-outlined">add</span> Nouveau projet</button>
+        </div>
+      </div>
+
+      <div id="pjPaneList">
+        <div class="kpi-grid" id="pjKpis" style="grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));margin-bottom:1.5rem;"></div>
+        <div class="card">
+          <div class="card__header" style="flex-wrap:wrap;gap:.8rem;">
+            <div><div class="card__title">Projets clients</div><div class="card__sub">Chaque projet apparaît dans l’espace client du contact : étapes, liens, documents et messages.</div></div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <label class="sr-only" for="pjFilterStatus">Filtrer par statut</label>
+              <select id="pjFilterStatus" onchange="loadProjects()" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.5rem .7rem;border-radius:8px;font-size:.84rem;">
+                <option value="">Tous les statuts</option>
+                <option value="cadrage">Cadrage</option>
+                <option value="en_cours">En cours</option>
+                <option value="en_revue">En revue</option>
+                <option value="livre">Livré</option>
+                <option value="suspendu">Suspendu</option>
+              </select>
+              <label class="sr-only" for="pjFilterClient">Rechercher un client</label>
+              <input id="pjFilterClient" type="search" placeholder="Client ou projet…" style="background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.5rem .7rem;border-radius:8px;font-size:.84rem;min-width:12rem;">
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead><tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Projet</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Client</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Statut</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);min-width:10rem;">Avancement</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Échéance</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Docs</th>
+                <th style="text-align:left;padding:0.85rem 0.5rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Actions</th>
+              </tr></thead>
+              <tbody id="pjTbody"><tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="pjPaneMsgs" style="display:none;">
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-start;">
+          <div class="card" style="padding:0;overflow:hidden;flex:1 1 17rem;min-width:0;">
+            <div class="card__header" style="padding:1rem 1.2rem;margin:0;"><div><div class="card__title">Conversations</div><div class="card__sub">Messages envoyés depuis l’espace client.</div></div></div>
+            <div id="pjThreads" style="max-height:34rem;overflow-y:auto;"><div class="empty">Chargement…</div></div>
+          </div>
+          <div class="card" id="pjThreadPanel" style="flex:2 1 24rem;min-width:0;"><div class="empty"><span class="material-symbols-outlined">forum</span><p>Sélectionnez une conversation.</p></div></div>
         </div>
       </div>
     </div>
@@ -1253,6 +1314,7 @@ function setView(view) {
     conversations: ['Conversations site', 'Échanges tenus avec Ayaba sur le site public'],
     recrutement: ['Recrutement', 'Offres d\'emploi et candidatures reçues'],
     comptabilite: ['Comptabilité', 'Chiffre d\'affaires, charges, résultat et créances'],
+    projects: ['Projets clients', 'Suivi, documents et messages visibles dans l’espace client'],
   });
   const t = titles[view] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
@@ -1269,6 +1331,7 @@ function setView(view) {
   if (view === 'comments') loadComments();
   if (view === 'bulk-email') initBulkEmail();
   if (view === 'clients') loadClients();
+  if (view === 'projects') loadProjects();
   if (view === 'quotes') loadQuotes();
   if (view === 'invoices') loadInvoices();
   if (view === 'conversations') loadChatSessions();
@@ -1889,6 +1952,8 @@ async function loadClients() {
       '<td style="padding:0.85rem 0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;">' +
         '<button onclick="requestReview(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Envoyer l’e-mail de demande d’avis"><span class="material-symbols-outlined">mail</span></button>' +
         '<button onclick="newQuoteFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Créer un devis"><span class="material-symbols-outlined">request_quote</span></button>' +
+        '<button onclick="newProjectFor(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Créer un projet (espace client)"><span class="material-symbols-outlined">create_new_folder</span></button>' +
+        '<button onclick="openClientThread(\'' + c._id + '\')" class="btn btn--ghost btn--sm" title="Messages de l’espace client"><span class="material-symbols-outlined">forum</span></button>' +
       '</td>' +
       '</tr>';
     }).join('');
@@ -4880,6 +4945,526 @@ window.sendInvoiceWhatsApp = function(invoiceId) { return partagerWhatsApp('fact
     finally { btn.disabled = false; }
   });
 })();
+</script>
+<style>
+/* Module « Projets clients » (styles propres au module, le reste du tableau de bord n'est pas touché) */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.pj-bar{height:8px;background:rgba(229,226,225,.08);border-radius:99px;overflow:hidden;flex:1;min-width:5rem}
+.pj-bar>span{display:block;height:100%;background:linear-gradient(90deg,#FF5500,#FF7A33);border-radius:99px}
+.pj-in{width:100%;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.55rem .75rem;border-radius:8px;font-family:inherit;font-size:.88rem}
+.pj-in:focus-visible,.pj-step button:focus-visible{outline:2px solid #FF7A33;outline-offset:2px}
+.pj-lbl{display:block;font-size:.76rem;font-weight:600;margin:.85rem 0 .3rem;color:var(--text-muted)}
+.pj-sec{border-top:1px solid var(--border);margin-top:1.3rem;padding-top:1rem}
+.pj-sec__t{font-size:.78rem;color:var(--accent);font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.pj-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:0 .8rem}
+.pj-step{display:grid;grid-template-columns:1.6rem minmax(0,1fr) auto;gap:.5rem;align-items:start;padding:.6rem;border:1px solid var(--border);border-radius:10px;margin-top:.5rem;background:rgba(229,226,225,.02)}
+.pj-step__n{font-weight:800;color:var(--text-muted);font-size:.8rem;padding-top:.55rem;text-align:center}
+.pj-step__f{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr));gap:.4rem}
+.pj-step__f .pj-in--wide{grid-column:1/-1}
+.pj-step__a{display:flex;gap:.2rem;flex-wrap:wrap;justify-content:flex-end}
+.pj-step__a button{background:none;border:1px solid var(--border-2);color:var(--text-muted);border-radius:7px;width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.pj-step__a button:hover{color:var(--text);border-color:var(--accent)}
+.pj-step__a button:disabled{opacity:.35;cursor:default}
+.pj-doc{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;margin-top:.5rem}
+.pj-doc__t{flex:1;min-width:10rem;font-size:.86rem}
+.pj-doc__t small{display:block;color:var(--text-muted);font-size:.74rem}
+.pj-msgs{max-height:22rem;overflow-y:auto;display:flex;flex-direction:column;gap:.55rem;padding:.3rem 0}
+.pj-msg{max-width:85%;padding:.65rem .85rem;border-radius:12px;font-size:.86rem;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.pj-msg--client{align-self:flex-start;background:var(--surface);border:1px solid var(--border)}
+.pj-msg--equipe{align-self:flex-end;background:rgba(255,85,0,.12);border:1px solid rgba(255,85,0,.3)}
+.pj-msg small{display:block;color:var(--text-muted);font-size:.72rem;margin-top:.3rem}
+.pj-thread{display:flex;gap:.7rem;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border);color:var(--text);padding:.85rem 1.2rem;cursor:pointer;font:inherit}
+.pj-thread:hover,.pj-thread.is-on{background:rgba(255,85,0,.06)}
+.pj-thread__b{flex:1;min-width:0}
+.pj-thread__b strong{display:block;font-size:.88rem}
+.pj-thread__b span{display:block;font-size:.78rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-count{background:#FF5500;color:#190800;font-weight:700;font-size:.66rem;padding:.08rem .45rem;border-radius:999px}
+</style>
+<script>
+// ============================================================
+// PROJETS CLIENTS + MESSAGERIE CLIENTS (alimentent /espace-client)
+// ============================================================
+var PJ_STATUS = { cadrage: ['Cadrage', 'badge--new'], en_cours: ['En cours', 'badge--warning'], en_revue: ['En revue', 'badge--info'], livre: ['Livré', 'badge--won'], suspendu: ['Suspendu', 'badge--lost'] };
+var PJ_STEP_STATUS = { a_venir: 'À venir', en_cours: 'En cours', termine: 'Terminée', bloque: 'Bloquée (en attente client)' };
+var PJ_DOC_TYPES = { livrable: 'Livrable', maquette: 'Maquette', contrat: 'Contrat', facture: 'Facture', autre: 'Autre' };
+var PJ_OPTIONS = null;       // { clients, templates }
+var PJ_EDIT = null;          // { project, documents, lead }
+var PJ_THREAD_LEAD = '';
+var PJ_SEARCH_T = null;
+
+function pjBadge(st) { var s = PJ_STATUS[st] || [st, '']; return '<span class="badge ' + s[1] + '">' + escape(s[0]) + '</span>'; }
+function pjDateInput(d) { if (!d) return ''; var x = new Date(d); return isNaN(x.getTime()) ? '' : x.toISOString().slice(0, 10); }
+function pjBar(pct) { pct = Math.max(0, Math.min(100, Number(pct) || 0)); return '<div style="display:flex;align-items:center;gap:.5rem;"><div class="pj-bar" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement"><span style="width:' + pct + '%"></span></div><span style="font-size:.78rem;font-weight:700;min-width:2.6rem;">' + pct + '&nbsp;%</span></div>'; }
+function pjSize(n) { n = Number(n) || 0; if (n < 1024) return n + ' o'; if (n < 1048576) return Math.round(n / 1024) + ' Ko'; return (n / 1048576).toFixed(1).replace('.', ',') + ' Mo'; }
+
+async function pjLoadOptions(force) {
+  if (PJ_OPTIONS && !force) return PJ_OPTIONS;
+  PJ_OPTIONS = await api('/api/admin/projects/options');
+  return PJ_OPTIONS;
+}
+
+function pjShowTab(tab) {
+  document.querySelectorAll('#pjTabs [data-pjtab]').forEach(function (b) {
+    var on = b.dataset.pjtab === tab; b.classList.toggle('is-active', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.getElementById('pjPaneList').style.display = tab === 'list' ? '' : 'none';
+  document.getElementById('pjPaneMsgs').style.display = tab === 'msgs' ? '' : 'none';
+  if (tab === 'msgs') loadClientThreads();
+}
+
+function pjSetUnread(n) {
+  ['pjBadgeNav', 'pjMsgCount'].forEach(function (id) {
+    var b = document.getElementById(id); if (!b) return;
+    if (n > 0) { b.textContent = n; b.style.display = ''; } else { b.style.display = 'none'; }
+  });
+}
+
+async function loadProjects() {
+  var tbody = document.getElementById('pjTbody'); if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Chargement…</td></tr>';
+  var qs = [], st = document.getElementById('pjFilterStatus').value, cl = document.getElementById('pjFilterClient').value.trim();
+  if (st) qs.push('status=' + encodeURIComponent(st));
+  if (cl) qs.push('client=' + encodeURIComponent(cl));
+  try {
+    var d = await api('/api/admin/projects' + (qs.length ? '?' + qs.join('&') : ''));
+    var c = d.counts || {};
+    pjSetUnread(d.unreadTotal || 0);
+    document.getElementById('pjKpis').innerHTML =
+      kpiCard('pending_actions', 'kpi__icon--info', (c.cadrage || 0) + (c.en_cours || 0) + (c.en_revue || 0), 'Projets actifs') +
+      kpiCard('rate_review', 'kpi__icon--warning', c.en_revue || 0, 'En revue client') +
+      kpiCard('task_alt', 'kpi__icon--success', c.livre || 0, 'Livrés') +
+      kpiCard('mark_chat_unread', '', d.unreadTotal || 0, 'Messages non lus');
+    var list = d.projects || [];
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--text-muted);">Aucun projet' + (st || cl ? ' pour ce filtre' : ' pour l’instant. Créez-en un pour alimenter l’espace client d’un client') + '.</td></tr>';
+      return;
+    }
+    var now = new Date();
+    tbody.innerHTML = list.map(function (p) {
+      var late = p.dueDate && new Date(p.dueDate) < now && p.status !== 'livre';
+      return '<tr style="border-bottom:1px solid var(--border);">' +
+        '<td style="padding:.85rem .5rem;"><button type="button" onclick="openProjectEditor(\'' + escape(p._id) + '\')" style="background:none;border:0;color:var(--text);font:inherit;font-weight:700;cursor:pointer;text-align:left;padding:0;">' + escape(p.title) + '</button>' +
+          '<div style="font-size:.74rem;color:var(--text-muted);">' + escape(p.service || '') + (p.currentStep ? ' · ' + escape(p.currentStep) : '') + '</div></td>' +
+        '<td style="padding:.85rem .5rem;font-size:.85rem;">' + escape(p.clientName || '—') + (p.unread ? ' <span class="pj-count" title="Messages non lus">' + p.unread + '</span>' : '') + '<div style="font-size:.74rem;color:var(--text-muted);">' + escape(p.clientEmail || '') + '</div></td>' +
+        '<td style="padding:.85rem .5rem;">' + pjBadge(p.status) + '</td>' +
+        '<td style="padding:.85rem .5rem;">' + pjBar(p.progress) + '</td>' +
+        '<td style="padding:.85rem .5rem;font-size:.82rem;' + (late ? 'color:var(--danger);font-weight:700;' : 'color:var(--text-muted);') + '">' + (p.dueDate ? fmtDate(p.dueDate) : '—') + '</td>' +
+        '<td style="padding:.85rem .5rem;font-size:.82rem;">' + (p.docCount || 0) + '</td>' +
+        '<td style="padding:.85rem .5rem;white-space:nowrap;">' +
+          '<button type="button" class="btn btn--ghost btn--sm" onclick="openProjectEditor(\'' + escape(p._id) + '\')" title="Ouvrir le projet" aria-label="Ouvrir le projet ' + escape(p.title) + '"><span class="material-symbols-outlined">edit</span></button> ' +
+          '<button type="button" class="btn btn--ghost btn--sm" onclick="openClientThread(\'' + escape(p.leadId) + '\')" title="Messages du client" aria-label="Messages de ' + escape(p.clientName) + '"><span class="material-symbols-outlined">forum</span></button>' +
+        '</td></tr>';
+    }).join('');
+  } catch (e) {
+    errorState('pjTbody', 7, 'Erreur de chargement des projets : ' + escape(e.message || ''));
+  }
+}
+
+// ---------- Création ----------
+async function openNewProjectModal(preLeadId) {
+  var o;
+  try { o = await pjLoadOptions(true); } catch (e) { toast(e.message || 'Erreur', 'error'); return; }
+  if (!o.clients.length) { toast('Aucun client disponible : convertissez d’abord un prospect en client.', 'error'); return; }
+  var old = document.getElementById('pjNewModal'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'pjNewModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
+  var optsClients = o.clients.map(function (c) { return '<option value="' + escape(c._id) + '"' + (c._id === preLeadId ? ' selected' : '') + '>' + escape(c.name + (c.company ? ' — ' + c.company : '') + (c.email ? ' (' + c.email + ')' : ' (sans e-mail)')) + '</option>'; }).join('');
+  var optsTpl = '<option value="">Deviner d’après le service</option>' + o.templates.map(function (t) { return '<option value="' + escape(t.key) + '">' + escape(t.label) + ' (' + t.steps.length + ' étapes)</option>'; }).join('');
+  m.innerHTML = '<div role="dialog" aria-modal="true" aria-labelledby="pjNewTitle" style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;max-width:34rem;width:100%;max-height:92vh;overflow-y:auto;padding:1.4rem 1.6rem;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;"><h2 id="pjNewTitle" style="font-family:var(--font-display);font-weight:800;font-size:1.15rem;margin:0;">Nouveau projet client</h2><button type="button" id="pjNewClose" aria-label="Fermer" style="background:none;border:0;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+    '<label class="pj-lbl" for="pjNewSearch">Client *</label><input id="pjNewSearch" class="pj-in" type="search" placeholder="Filtrer la liste…" style="margin-bottom:.4rem;">' +
+    '<select id="pjNewLead" class="pj-in" size="5">' + optsClients + '</select>' +
+    '<label class="pj-lbl" for="pjNewTitleIn">Titre du projet *</label><input id="pjNewTitleIn" class="pj-in" maxlength="200" placeholder="ex. : Refonte du site vitrine">' +
+    '<div class="pj-grid2"><div><label class="pj-lbl" for="pjNewService">Service</label><input id="pjNewService" class="pj-in" maxlength="120" placeholder="ex. : Site web"></div>' +
+    '<div><label class="pj-lbl" for="pjNewDue">Échéance prévue</label><input id="pjNewDue" class="pj-in" type="date"></div></div>' +
+    '<label class="pj-lbl" for="pjNewTpl">Modèle d’étapes</label><select id="pjNewTpl" class="pj-in">' + optsTpl + '</select>' +
+    '<label class="pj-lbl" for="pjNewDesc">Description (visible par le client)</label><textarea id="pjNewDesc" class="pj-in" rows="3" maxlength="4000" style="resize:vertical;"></textarea>' +
+    '<p style="font-size:.78rem;color:var(--text-muted);margin:.8rem 0 0;">La création ouvre automatiquement l’espace client de ce contact. Les étapes restent modifiables ensuite.</p>' +
+    '<div id="pjNewErr" role="alert" style="color:var(--danger);font-size:.83rem;margin-top:.7rem;display:none;"></div>' +
+    '<div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:1rem;"><button type="button" class="btn btn--ghost btn--sm" id="pjNewCancel">Annuler</button><button type="button" class="btn btn--sm" id="pjNewOk"><span class="material-symbols-outlined">add</span> Créer le projet</button></div></div>';
+  document.body.appendChild(m);
+  function close() { m.remove(); }
+  m.addEventListener('click', function (e) { if (e.target === m) close(); });
+  m.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  document.getElementById('pjNewClose').onclick = close;
+  document.getElementById('pjNewCancel').onclick = close;
+  var sel = document.getElementById('pjNewLead');
+  if (!preLeadId && sel.options.length) sel.selectedIndex = 0;
+  document.getElementById('pjNewSearch').addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    Array.prototype.forEach.call(sel.options, function (op) { op.hidden = q && op.textContent.toLowerCase().indexOf(q) < 0; });
+  });
+  document.getElementById('pjNewTitleIn').focus();
+  document.getElementById('pjNewOk').onclick = async function () {
+    var err = document.getElementById('pjNewErr'), btn = this;
+    var body = { leadId: sel.value, title: document.getElementById('pjNewTitleIn').value.trim(), service: document.getElementById('pjNewService').value.trim(),
+      dueDate: document.getElementById('pjNewDue').value || '', template: document.getElementById('pjNewTpl').value, description: document.getElementById('pjNewDesc').value.trim() };
+    if (!body.leadId) { err.textContent = 'Choisissez un client.'; err.style.display = 'block'; return; }
+    if (body.title.length < 2) { err.textContent = 'Le titre du projet est requis.'; err.style.display = 'block'; return; }
+    btn.disabled = true;
+    try {
+      var r = await api('/api/admin/projects', { method: 'POST', body: body });
+      close(); toast('Projet créé', 'success');
+      if (document.querySelector('.view.is-active[data-view="projects"]')) loadProjects();
+      openProjectEditor(r.project._id);
+    } catch (e) { err.textContent = e.message || 'Erreur.'; err.style.display = 'block'; btn.disabled = false; }
+  };
+}
+
+function newProjectFor(leadId) {
+  setView('projects');
+  setTimeout(function () { openNewProjectModal(leadId); }, 150);
+}
+
+// ---------- Éditeur ----------
+async function openProjectEditor(id) {
+  var d;
+  try { d = await api('/api/admin/projects/' + encodeURIComponent(id)); } catch (e) { toast(e.message || 'Projet introuvable', 'error'); return; }
+  try { await pjLoadOptions(); } catch (e) { /* modèles facultatifs */ }
+  PJ_EDIT = { project: d.project, documents: d.documents || [], lead: d.lead || {}, steps: (d.project.steps || []).map(function (s) { return Object.assign({}, s); }) };
+  var p = d.project, lead = d.lead || {};
+  var old = document.getElementById('pjEditModal'); if (old) old.remove();
+  var m = document.createElement('div'); m.id = 'pjEditModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9998;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow:auto;';
+  var stOpts = Object.keys(PJ_STATUS).map(function (k) { return '<option value="' + k + '"' + (p.status === k ? ' selected' : '') + '>' + PJ_STATUS[k][0] + '</option>'; }).join('');
+  var tplOpts = '<option value="">Remplacer par un modèle…</option>' + ((PJ_OPTIONS && PJ_OPTIONS.templates) || []).map(function (t) { return '<option value="' + escape(t.key) + '">' + escape(t.label) + '</option>'; }).join('');
+  var docTypeOpts = Object.keys(PJ_DOC_TYPES).map(function (k) { return '<option value="' + k + '">' + PJ_DOC_TYPES[k] + '</option>'; }).join('');
+  m.innerHTML = '<div role="dialog" aria-modal="true" aria-labelledby="pjEdTitle" style="background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.6rem;max-width:58rem;width:100%;margin:auto;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">' +
+      '<div style="min-width:0;"><h2 id="pjEdTitle" style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;margin:0;">' + escape(p.title) + '</h2>' +
+      '<div style="font-size:.82rem;color:var(--text-muted);margin-top:.2rem;">' + escape(lead.name || p.clientName || '') + (lead.company ? ' · ' + escape(lead.company) : '') + ' · ' + escape(lead.email || p.clientEmail || '') +
+      (lead.portalLastLoginAt ? ' · dernière connexion le ' + fmtDate(lead.portalLastLoginAt) : ' · jamais connecté à son espace') + '</div>' +
+      (p.lastNotifiedAt ? '<div style="font-size:.76rem;color:var(--text-muted);">Dernière notification envoyée le ' + fmtDateTime(p.lastNotifiedAt) + '</div>' : '') + '</div>' +
+      '<button type="button" id="pjEdClose" aria-label="Fermer" style="background:none;border:0;color:var(--text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button></div>' +
+
+    '<div class="pj-grid2">' +
+      '<div><label class="pj-lbl" for="pjEdTitleIn">Titre</label><input id="pjEdTitleIn" class="pj-in" maxlength="200" value="' + escape(p.title) + '"></div>' +
+      '<div><label class="pj-lbl" for="pjEdService">Service</label><input id="pjEdService" class="pj-in" maxlength="120" value="' + escape(p.service || '') + '"></div>' +
+      '<div><label class="pj-lbl" for="pjEdStatus">Statut du projet</label><select id="pjEdStatus" class="pj-in">' + stOpts + '</select></div>' +
+      '<div><label class="pj-lbl" for="pjEdStart">Début</label><input id="pjEdStart" class="pj-in" type="date" value="' + pjDateInput(p.startedAt) + '"></div>' +
+      '<div><label class="pj-lbl" for="pjEdDue">Échéance prévue</label><input id="pjEdDue" class="pj-in" type="date" value="' + pjDateInput(p.dueDate) + '"></div>' +
+    '</div>' +
+    '<label class="pj-lbl" for="pjEdDesc">Description (visible par le client)</label><textarea id="pjEdDesc" class="pj-in" rows="3" maxlength="4000" style="resize:vertical;">' + escape(p.description || '') + '</textarea>' +
+
+    '<div class="pj-sec"><div class="pj-sec__t">Liens</div><div class="pj-grid2">' +
+      '<div><label class="pj-lbl" for="pjEdPreview">Lien d’aperçu (recette)</label><input id="pjEdPreview" class="pj-in" type="url" placeholder="https://" value="' + escape(p.previewUrl || '') + '"></div>' +
+      '<div><label class="pj-lbl" for="pjEdLive">Lien en ligne</label><input id="pjEdLive" class="pj-in" type="url" placeholder="https://" value="' + escape(p.liveUrl || '') + '"></div>' +
+    '</div></div>' +
+
+    '<div class="pj-sec"><div class="pj-sec__t"><span>Étapes <span id="pjEdProg" style="color:var(--text-muted);font-weight:600;text-transform:none;letter-spacing:0;"></span></span>' +
+      '<span style="display:flex;gap:.4rem;flex-wrap:wrap;"><label class="sr-only" for="pjEdTpl">Appliquer un modèle d’étapes</label><select id="pjEdTpl" class="pj-in" style="width:auto;padding:.35rem .6rem;font-size:.8rem;">' + tplOpts + '</select>' +
+      '<button type="button" class="btn btn--ghost btn--sm" id="pjEdAddStep"><span class="material-symbols-outlined">add</span> Ajouter une étape</button></span></div>' +
+      '<div id="pjEdSteps"></div></div>' +
+
+    '<div class="pj-sec"><div class="pj-sec__t">Documents</div>' +
+      '<div id="pjEdDocs"></div>' +
+      '<div style="border:1px dashed var(--border-2);border-radius:10px;padding:.8rem;margin-top:.8rem;">' +
+        '<div style="display:flex;gap:.4rem;flex-wrap:wrap;" role="radiogroup" aria-label="Type d’ajout">' +
+          '<label style="font-size:.82rem;display:flex;gap:.3rem;align-items:center;cursor:pointer;"><input type="radio" name="pjDocSrc" value="fichier" checked> Fichier (2 Mo max)</label>' +
+          '<label style="font-size:.82rem;display:flex;gap:.3rem;align-items:center;cursor:pointer;margin-left:.8rem;"><input type="radio" name="pjDocSrc" value="lien"> Lien externe</label></div>' +
+        '<div class="pj-grid2">' +
+          '<div><label class="pj-lbl" for="pjDocTitle">Titre</label><input id="pjDocTitle" class="pj-in" maxlength="200" placeholder="ex. : Maquettes V2"></div>' +
+          '<div><label class="pj-lbl" for="pjDocType">Type</label><select id="pjDocType" class="pj-in">' + docTypeOpts + '</select></div>' +
+        '</div>' +
+        '<div id="pjDocFileWrap"><label class="pj-lbl" for="pjDocFile">Fichier (PDF, PNG, JPG, WEBP, ZIP, DOCX, XLSX)</label><input id="pjDocFile" class="pj-in" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.zip,.docx,.xlsx"></div>' +
+        '<div id="pjDocUrlWrap" style="display:none;"><label class="pj-lbl" for="pjDocUrl">Lien (Drive, Figma…)</label><input id="pjDocUrl" class="pj-in" type="url" placeholder="https://"></div>' +
+        '<div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-top:.7rem;">' +
+          '<label style="font-size:.82rem;display:flex;gap:.35rem;align-items:center;cursor:pointer;"><input type="checkbox" id="pjDocVisible" checked> Visible par le client</label>' +
+          '<label style="font-size:.82rem;display:flex;gap:.35rem;align-items:center;cursor:pointer;"><input type="checkbox" id="pjDocNotify"> Prévenir le client par e-mail</label>' +
+          '<button type="button" class="btn btn--sm" id="pjDocAdd" style="margin-left:auto;"><span class="material-symbols-outlined">upload</span> Ajouter</button></div>' +
+      '</div></div>' +
+
+    '<div class="pj-sec"><div class="pj-sec__t">Notes internes <span style="color:var(--text-muted);font-weight:600;text-transform:none;letter-spacing:0;">— jamais visibles par le client</span></div>' +
+      '<textarea id="pjEdNotes" class="pj-in" rows="3" maxlength="5000" style="resize:vertical;margin-top:.5rem;">' + escape(p.internalNotes || '') + '</textarea></div>' +
+
+    '<div class="pj-sec"><div class="pj-sec__t">Messages avec le client</div><div id="pjEdThread" style="margin-top:.5rem;"><div class="empty" style="padding:1rem;">Chargement…</div></div></div>' +
+
+    '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.4rem;border-top:1px solid var(--border);padding-top:1rem;">' +
+      '<button type="button" class="btn btn--ghost btn--sm" id="pjEdDelete" style="color:var(--danger);"><span class="material-symbols-outlined">delete</span> Supprimer</button>' +
+      '<a class="btn btn--ghost btn--sm" href="/espace-client" target="_blank" rel="noopener" title="Le client voit son espace après connexion par lien magique"><span class="material-symbols-outlined">open_in_new</span> Espace client</a>' +
+      '<span style="flex:1;"></span>' +
+      '<button type="button" class="btn btn--ghost btn--sm" id="pjEdNotify"><span class="material-symbols-outlined">outgoing_mail</span> Notifier le client</button>' +
+      '<button type="button" class="btn btn--sm" id="pjEdSave"><span class="material-symbols-outlined">save</span> Enregistrer</button>' +
+    '</div></div>';
+  document.body.appendChild(m);
+
+  function close() { m.remove(); PJ_EDIT = null; }
+  m.addEventListener('click', function (e) { if (e.target === m) close(); });
+  m.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !document.getElementById('formModal')) close(); });
+  document.getElementById('pjEdClose').onclick = close;
+  pjRenderSteps();
+  pjRenderDocs();
+  renderClientThread(document.getElementById('pjEdThread'), p.leadId, true);
+
+  document.getElementById('pjEdAddStep').onclick = function () {
+    pjCollectSteps();
+    if (PJ_EDIT.steps.length >= 30) { toast('30 étapes au maximum', 'error'); return; }
+    PJ_EDIT.steps.push({ label: '', description: '', status: 'a_venir' });
+    pjRenderSteps();
+    var inputs = document.querySelectorAll('#pjEdSteps [data-f="label"]'); if (inputs.length) inputs[inputs.length - 1].focus();
+  };
+  document.getElementById('pjEdTpl').onchange = function () {
+    var key = this.value; if (!key) return;
+    var t = ((PJ_OPTIONS && PJ_OPTIONS.templates) || []).filter(function (x) { return x.key === key; })[0];
+    this.value = '';
+    if (!t || !confirm('Remplacer les ' + PJ_EDIT.steps.length + ' étape(s) actuelle(s) par le modèle « ' + t.label + ' » ? (effectif après « Enregistrer »)')) return;
+    PJ_EDIT.steps = t.steps.map(function (l) { return { label: l, description: '', status: 'a_venir' }; });
+    pjRenderSteps();
+  };
+  Array.prototype.forEach.call(m.querySelectorAll('input[name="pjDocSrc"]'), function (r) {
+    r.addEventListener('change', function () {
+      var lien = m.querySelector('input[name="pjDocSrc"]:checked').value === 'lien';
+      document.getElementById('pjDocFileWrap').style.display = lien ? 'none' : '';
+      document.getElementById('pjDocUrlWrap').style.display = lien ? '' : 'none';
+    });
+  });
+  document.getElementById('pjDocAdd').onclick = pjAddDocument;
+  document.getElementById('pjEdSave').onclick = function () { pjSave(false); };
+  document.getElementById('pjEdNotify').onclick = pjNotify;
+  document.getElementById('pjEdDelete').onclick = pjDelete;
+}
+
+function pjCollectSteps() {
+  var rows = document.querySelectorAll('#pjEdSteps .pj-step');
+  PJ_EDIT.steps = Array.prototype.map.call(rows, function (row, i) {
+    var prev = PJ_EDIT.steps[i] || {};
+    var get = function (f) { var el = row.querySelector('[data-f="' + f + '"]'); return el ? el.value : ''; };
+    var st = get('status');
+    return { label: get('label').trim(), description: get('description').trim(), status: st, dueDate: get('dueDate') || null,
+      completedAt: st === 'termine' ? (prev.status === 'termine' && prev.completedAt ? prev.completedAt : new Date().toISOString()) : null };
+  });
+}
+
+function pjRenderSteps() {
+  var box = document.getElementById('pjEdSteps'); if (!box) return;
+  var steps = PJ_EDIT.steps;
+  var done = steps.filter(function (s) { return s.status === 'termine'; }).length;
+  document.getElementById('pjEdProg').textContent = steps.length ? '(' + done + '/' + steps.length + ' terminée' + (done > 1 ? 's' : '') + ' · ' + Math.round(done * 100 / steps.length) + ' %)' : '';
+  if (!steps.length) { box.innerHTML = '<div class="empty" style="padding:1rem;">Aucune étape. Ajoutez-en ou appliquez un modèle.</div>'; return; }
+  box.innerHTML = steps.map(function (s, i) {
+    var opts = Object.keys(PJ_STEP_STATUS).map(function (k) { return '<option value="' + k + '"' + (s.status === k ? ' selected' : '') + '>' + PJ_STEP_STATUS[k] + '</option>'; }).join('');
+    return '<div class="pj-step" data-i="' + i + '"><div class="pj-step__n">' + (i + 1) + '</div>' +
+      '<div class="pj-step__f">' +
+        '<label class="sr-only" for="pjS' + i + 'l">Intitulé de l’étape ' + (i + 1) + '</label><input id="pjS' + i + 'l" class="pj-in pj-in--wide" data-f="label" maxlength="120" placeholder="Intitulé de l’étape" value="' + escape(s.label) + '">' +
+        '<label class="sr-only" for="pjS' + i + 's">Statut de l’étape ' + (i + 1) + '</label><select id="pjS' + i + 's" class="pj-in" data-f="status">' + opts + '</select>' +
+        '<label class="sr-only" for="pjS' + i + 'd">Échéance de l’étape ' + (i + 1) + '</label><input id="pjS' + i + 'd" class="pj-in" type="date" data-f="dueDate" value="' + pjDateInput(s.dueDate) + '" title="Échéance de l’étape (facultatif)">' +
+        '<label class="sr-only" for="pjS' + i + 'x">Détail de l’étape ' + (i + 1) + '</label><input id="pjS' + i + 'x" class="pj-in pj-in--wide" data-f="description" maxlength="600" placeholder="Détail visible par le client (facultatif)" value="' + escape(s.description || '') + '">' +
+      '</div>' +
+      '<div class="pj-step__a">' +
+        '<button type="button" data-act="up" aria-label="Monter l’étape ' + (i + 1) + '"' + (i === 0 ? ' disabled' : '') + '><span class="material-symbols-outlined">arrow_upward</span></button>' +
+        '<button type="button" data-act="down" aria-label="Descendre l’étape ' + (i + 1) + '"' + (i === steps.length - 1 ? ' disabled' : '') + '><span class="material-symbols-outlined">arrow_downward</span></button>' +
+        '<button type="button" data-act="del" aria-label="Supprimer l’étape ' + (i + 1) + '"><span class="material-symbols-outlined">close</span></button>' +
+      '</div></div>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('.pj-step__a button'), function (b) {
+    b.onclick = function () {
+      pjCollectSteps();
+      var i = parseInt(b.closest('.pj-step').dataset.i, 10), s = PJ_EDIT.steps, act = b.dataset.act;
+      if (act === 'up' && i > 0) { var t = s[i - 1]; s[i - 1] = s[i]; s[i] = t; }
+      else if (act === 'down' && i < s.length - 1) { var u = s[i + 1]; s[i + 1] = s[i]; s[i] = u; }
+      else if (act === 'del') { if (s[i].label && !confirm('Supprimer l’étape « ' + s[i].label + ' » ?')) return; s.splice(i, 1); }
+      pjRenderSteps();
+      var focusI = act === 'up' ? i - 1 : act === 'down' ? i + 1 : Math.min(i, s.length - 1);
+      var row = document.querySelector('#pjEdSteps .pj-step[data-i="' + focusI + '"] [data-act="' + (act === 'del' ? 'del' : act) + '"]');
+      if (row && !row.disabled) row.focus();
+    };
+  });
+  Array.prototype.forEach.call(box.querySelectorAll('[data-f="status"]'), function (sel) {
+    sel.addEventListener('change', function () { pjCollectSteps(); pjRenderSteps(); });
+  });
+}
+
+function pjRenderDocs() {
+  var box = document.getElementById('pjEdDocs'); if (!box) return;
+  var docs = PJ_EDIT.documents, pid = PJ_EDIT.project._id;
+  if (!docs.length) { box.innerHTML = '<div style="font-size:.84rem;color:var(--text-muted);margin-top:.5rem;">Aucun document pour l’instant.</div>'; return; }
+  box.innerHTML = docs.map(function (d) {
+    var href = '/api/admin/projects/' + encodeURIComponent(pid) + '/documents/' + encodeURIComponent(d._id) + '/download';
+    return '<div class="pj-doc"><span class="material-symbols-outlined" style="color:var(--accent);">' + (d.source === 'lien' ? 'link' : 'description') + '</span>' +
+      '<div class="pj-doc__t"><strong>' + escape(d.title) + '</strong><small>' + escape(PJ_DOC_TYPES[d.type] || d.type) + ' · ' + (d.source === 'lien' ? escape(d.url) : escape(d.filename) + ' · ' + pjSize(d.size)) + ' · ' + fmtDate(d.createdAt) + '</small></div>' +
+      '<label style="font-size:.78rem;display:flex;gap:.3rem;align-items:center;cursor:pointer;"><input type="checkbox" data-vis="' + escape(d._id) + '"' + (d.visibleClient ? ' checked' : '') + '> Visible client</label>' +
+      '<a class="btn btn--ghost btn--sm" href="' + href + '" target="_blank" rel="noopener" title="' + (d.source === 'lien' ? 'Ouvrir le lien' : 'Télécharger') + '" aria-label="' + (d.source === 'lien' ? 'Ouvrir' : 'Télécharger') + ' ' + escape(d.title) + '"><span class="material-symbols-outlined">' + (d.source === 'lien' ? 'open_in_new' : 'download') + '</span></a>' +
+      '<button type="button" class="btn btn--ghost btn--sm" data-del="' + escape(d._id) + '" style="color:var(--danger);" aria-label="Supprimer ' + escape(d.title) + '"><span class="material-symbols-outlined">delete</span></button></div>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('[data-vis]'), function (cb) {
+    cb.onchange = async function () {
+      try { await api('/api/admin/projects/' + pid + '/documents/' + cb.dataset.vis, { method: 'PATCH', body: { visibleClient: cb.checked } });
+        PJ_EDIT.documents.forEach(function (x) { if (x._id === cb.dataset.vis) x.visibleClient = cb.checked; });
+        toast(cb.checked ? 'Document visible par le client' : 'Document masqué au client', 'success');
+      } catch (e) { cb.checked = !cb.checked; toast(e.message || 'Erreur', 'error'); }
+    };
+  });
+  Array.prototype.forEach.call(box.querySelectorAll('[data-del]'), function (b) {
+    b.onclick = async function () {
+      if (!confirm('Supprimer définitivement ce document ?')) return;
+      try { await api('/api/admin/projects/' + pid + '/documents/' + b.dataset.del, { method: 'DELETE' });
+        PJ_EDIT.documents = PJ_EDIT.documents.filter(function (x) { return x._id !== b.dataset.del; });
+        pjRenderDocs(); toast('Document supprimé', 'success');
+      } catch (e) { toast(e.message || 'Erreur', 'error'); }
+    };
+  });
+}
+
+function pjReadFile(file) {
+  return new Promise(function (resolve, reject) {
+    var rd = new FileReader();
+    rd.onload = function () { resolve(rd.result); };
+    rd.onerror = function () { reject(new Error('Lecture du fichier impossible.')); };
+    rd.readAsDataURL(file);
+  });
+}
+
+async function pjAddDocument() {
+  var btn = document.getElementById('pjDocAdd'), pid = PJ_EDIT.project._id;
+  var src = document.querySelector('input[name="pjDocSrc"]:checked').value;
+  var body = { source: src, title: document.getElementById('pjDocTitle').value.trim(), type: document.getElementById('pjDocType').value,
+    visibleClient: document.getElementById('pjDocVisible').checked, notify: document.getElementById('pjDocNotify').checked };
+  if (src === 'lien') {
+    body.url = document.getElementById('pjDocUrl').value.trim();
+    if (!/^https?:\/\//i.test(body.url)) { toast('Le lien doit commencer par https://', 'error'); return; }
+    if (!body.title) { toast('Donnez un titre au document', 'error'); return; }
+  } else {
+    var f = document.getElementById('pjDocFile').files[0];
+    if (!f) { toast('Choisissez un fichier', 'error'); return; }
+    if (f.size > 2 * 1024 * 1024) { toast('Fichier trop lourd (2 Mo maximum) : ajoutez plutôt un lien.', 'error'); return; }
+    if (!/\.(pdf|png|jpe?g|webp|zip|docx|xlsx)$/i.test(f.name)) { toast('Format non autorisé', 'error'); return; }
+    body.filename = f.name;
+    try { body.data = await pjReadFile(f); } catch (e) { toast(e.message, 'error'); return; }
+  }
+  btn.disabled = true;
+  try {
+    var r = await api('/api/admin/projects/' + pid + '/documents', { method: 'POST', body: body });
+    PJ_EDIT.documents.unshift(r.document);
+    pjRenderDocs();
+    ['pjDocTitle', 'pjDocUrl', 'pjDocFile'].forEach(function (id) { document.getElementById(id).value = ''; });
+    toast(body.notify ? (r.emailSent ? 'Document ajouté, client prévenu' : 'Document ajouté (e-mail non envoyé)') : 'Document ajouté', r.emailSent || !body.notify ? 'success' : 'error');
+  } catch (e) { toast(e.message || 'Erreur', 'error'); }
+  btn.disabled = false;
+}
+
+async function pjSave(silent) {
+  pjCollectSteps();
+  var bad = PJ_EDIT.steps.filter(function (s) { return !s.label; });
+  if (bad.length) { toast('Chaque étape doit avoir un intitulé', 'error'); return false; }
+  var body = {
+    title: document.getElementById('pjEdTitleIn').value.trim(), service: document.getElementById('pjEdService').value.trim(),
+    status: document.getElementById('pjEdStatus').value, startedAt: document.getElementById('pjEdStart').value || undefined,
+    dueDate: document.getElementById('pjEdDue').value || '', description: document.getElementById('pjEdDesc').value,
+    previewUrl: document.getElementById('pjEdPreview').value.trim(), liveUrl: document.getElementById('pjEdLive').value.trim(),
+    internalNotes: document.getElementById('pjEdNotes').value, steps: PJ_EDIT.steps,
+  };
+  var btn = document.getElementById('pjEdSave'); btn.disabled = true;
+  try {
+    var r = await api('/api/admin/projects/' + PJ_EDIT.project._id, { method: 'PATCH', body: body });
+    PJ_EDIT.project = r.project;
+    PJ_EDIT.steps = (r.project.steps || []).map(function (s) { return Object.assign({}, s); });
+    pjRenderSteps();
+    document.getElementById('pjEdTitle').textContent = r.project.title;
+    if (!silent) toast('Projet enregistré', 'success');
+    if (document.querySelector('.view.is-active[data-view="projects"]')) loadProjects();
+    return true;
+  } catch (e) { toast(e.message || 'Erreur d’enregistrement', 'error'); return false; }
+  finally { btn.disabled = false; }
+}
+
+async function pjNotify() {
+  if (!(await pjSave(true))) return;
+  var pid = PJ_EDIT.project._id;
+  showFormModal('Notifier le client', [
+    { id: 'message', label: 'Message d’accompagnement (facultatif)', type: 'textarea', placeholder: 'ex. : Les maquettes sont prêtes, vos retours sont les bienvenus.' },
+  ], async function (vals) {
+    var r = await api('/api/admin/projects/' + pid + '/notify', { method: 'POST', body: { message: vals.message || '' } });
+    toast('E-mail de suivi envoyé au client', 'success');
+    if (PJ_EDIT) PJ_EDIT.project.lastNotifiedAt = r.lastNotifiedAt;
+  });
+  var ok = document.querySelector('#formModal #fmOui'); if (ok) ok.textContent = 'Envoyer l’e-mail';
+}
+
+async function pjDelete() {
+  if (PJ_EDIT.documents.length) { toast('Supprimez d’abord les ' + PJ_EDIT.documents.length + ' document(s) du projet', 'error'); return; }
+  if (!confirm('Supprimer définitivement le projet « ' + PJ_EDIT.project.title + ' » ? Il disparaîtra de l’espace client.')) return;
+  try {
+    await api('/api/admin/projects/' + PJ_EDIT.project._id, { method: 'DELETE' });
+    var m = document.getElementById('pjEditModal'); if (m) m.remove(); PJ_EDIT = null;
+    toast('Projet supprimé', 'success'); loadProjects();
+  } catch (e) { toast(e.message || 'Erreur', 'error'); }
+}
+
+// ---------- Messagerie clients ----------
+async function loadClientThreads() {
+  var box = document.getElementById('pjThreads'); if (!box) return;
+  try {
+    var d = await api('/api/admin/client-messages');
+    pjSetUnread(d.unreadTotal || 0);
+    var t = d.threads || [];
+    if (!t.length) { box.innerHTML = '<div class="empty"><span class="material-symbols-outlined">forum</span><p>Aucun message client pour l’instant.</p></div>'; return; }
+    box.innerHTML = t.map(function (x) {
+      return '<button type="button" class="pj-thread' + (x.leadId === PJ_THREAD_LEAD ? ' is-on' : '') + '" data-lead="' + escape(x.leadId) + '">' +
+        '<div class="pj-thread__b"><strong>' + escape(x.name) + (x.company ? ' <span style="display:inline;font-weight:400;color:var(--text-muted);">· ' + escape(x.company) + '</span>' : '') + '</strong>' +
+        '<span>' + (x.lastFrom === 'equipe' ? 'Vous : ' : '') + escape(x.last) + '</span></div>' +
+        '<div style="text-align:right;flex-shrink:0;"><div style="font-size:.72rem;color:var(--text-muted);">' + fmtDate(x.lastAt) + '</div>' + (x.unread ? '<span class="pj-count">' + x.unread + '</span>' : '') + '</div></button>';
+    }).join('');
+    Array.prototype.forEach.call(box.querySelectorAll('.pj-thread'), function (b) {
+      b.onclick = function () { PJ_THREAD_LEAD = b.dataset.lead; box.querySelectorAll('.pj-thread').forEach(function (x) { x.classList.toggle('is-on', x === b); }); renderClientThread(document.getElementById('pjThreadPanel'), b.dataset.lead, false); };
+    });
+  } catch (e) { box.innerHTML = '<div class="empty">Erreur de chargement.</div>'; }
+}
+
+function openClientThread(leadId) {
+  setView('projects');
+  pjShowTab('msgs');
+  PJ_THREAD_LEAD = leadId;
+  renderClientThread(document.getElementById('pjThreadPanel'), leadId, false);
+}
+
+async function renderClientThread(box, leadId, compact) {
+  if (!box) return;
+  box.innerHTML = '<div class="empty" style="padding:1rem;">Chargement…</div>';
+  var d;
+  try { d = await api('/api/admin/client-messages/' + encodeURIComponent(leadId)); }
+  catch (e) { box.innerHTML = '<div class="empty" style="padding:1rem;">' + escape(e.message || 'Erreur de chargement.') + '</div>'; return; }
+  var lead = d.lead || {}, msgs = d.messages || [], uid = 'th' + Math.random().toString(36).slice(2, 8);
+  var projOpts = '<option value="">Sans projet précis</option>' + (d.projects || []).map(function (p) { return '<option value="' + escape(p._id) + '">' + escape(p.title) + '</option>'; }).join('');
+  box.innerHTML = (compact ? '' : '<div class="card__header" style="margin-bottom:.6rem;"><div><div class="card__title">' + escape(lead.name) + '</div><div class="card__sub">' + escape(lead.email || '') + (lead.company ? ' · ' + escape(lead.company) : '') + '</div></div></div>') +
+    '<div class="pj-msgs" id="' + uid + 'L" aria-live="polite">' + (msgs.length ? msgs.map(pjMsgHtml).join('') : '<div style="font-size:.84rem;color:var(--text-muted);">Aucun échange pour l’instant. Écrivez le premier message ci-dessous.</div>') + '</div>' +
+    '<label class="sr-only" for="' + uid + 'T">Votre réponse</label><textarea id="' + uid + 'T" class="pj-in" rows="3" maxlength="5000" placeholder="Votre réponse (signée « L’équipe Pirabel Labs »)…" style="resize:vertical;margin-top:.7rem;"></textarea>' +
+    '<div style="display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-top:.5rem;">' +
+      '<label class="sr-only" for="' + uid + 'P">Projet concerné</label><select id="' + uid + 'P" class="pj-in" style="width:auto;flex:1;min-width:10rem;">' + projOpts + '</select>' +
+      '<label style="font-size:.8rem;display:flex;gap:.35rem;align-items:center;cursor:pointer;"><input type="checkbox" id="' + uid + 'N" checked> Prévenir par e-mail</label>' +
+      '<button type="button" class="btn btn--sm" id="' + uid + 'S"><span class="material-symbols-outlined">send</span> Envoyer</button></div>';
+  var list = document.getElementById(uid + 'L'); list.scrollTop = list.scrollHeight;
+  document.getElementById(uid + 'S').onclick = async function () {
+    var ta = document.getElementById(uid + 'T'), btn = this, content = ta.value.trim();
+    if (content.length < 2) { toast('Le message est vide', 'error'); ta.focus(); return; }
+    btn.disabled = true;
+    try {
+      var r = await api('/api/admin/client-messages/' + encodeURIComponent(leadId), { method: 'POST', body: { content: content, projectId: document.getElementById(uid + 'P').value, notify: document.getElementById(uid + 'N').checked } });
+      if (!msgs.length) list.innerHTML = '';
+      msgs.push(r.message);
+      list.insertAdjacentHTML('beforeend', pjMsgHtml(r.message));
+      list.scrollTop = list.scrollHeight; ta.value = '';
+      toast(r.emailSent ? 'Réponse envoyée, client prévenu par e-mail' : 'Réponse enregistrée', 'success');
+    } catch (e) { toast(e.message || 'Erreur d’envoi', 'error'); }
+    btn.disabled = false;
+  };
+  if (!compact) loadClientThreads();
+  else api('/api/admin/client-messages').then(function (x) { pjSetUnread(x.unreadTotal || 0); }).catch(function () {});
+}
+
+function pjMsgHtml(m) {
+  var eq = m.from === 'equipe';
+  return '<div class="pj-msg ' + (eq ? 'pj-msg--equipe' : 'pj-msg--client') + '">' + escape(m.content) +
+    '<small>' + (eq ? 'Équipe' : 'Client') + ' · ' + fmtDateTime(m.createdAt) + (m.project ? ' · ' + escape(m.project) : '') + (eq ? (m.readByClient ? ' · lu' : ' · non lu') : '') + '</small></div>';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var fc = document.getElementById('pjFilterClient');
+  if (fc) fc.addEventListener('input', function () { clearTimeout(PJ_SEARCH_T); PJ_SEARCH_T = setTimeout(loadProjects, 350); });
+  // Badge « messages clients non lus » dans le menu (léger, toutes les 2 minutes).
+  function refresh() { api('/api/admin/client-messages').then(function (x) { pjSetUnread(x.unreadTotal || 0); }).catch(function () {}); }
+  setTimeout(refresh, 2500);
+  setInterval(refresh, 120000);
+});
 </script>
 </body>
 </html>

@@ -640,6 +640,94 @@ async function sendAppointmentConfirmation(email, appt) {
   return sendEmail(email, 'Confirmation de votre rendez-vous — Pirabel Labs', appointmentConfirmationEmail(appt));
 }
 
+// ========================================
+// ESPACE CLIENT — notifications (projet, document, réponse)
+// Aucun nom de personne : signature « L’équipe Pirabel Labs ».
+// Toutes les valeurs dynamiques sont échappées ici.
+// ========================================
+function escClient(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function greetingClient(name) {
+  const first = String(name || '').trim().split(/\s+/)[0];
+  return first ? `Bonjour ${escClient(first)},` : 'Bonjour,';
+}
+const SIGNATURE_CLIENT = `<p style="${S.p}margin-top:24px;">À très vite,<br><strong style="${S.strong}">L’équipe Pirabel Labs</strong></p>`;
+function progressBar(pct) {
+  const p = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+  return `<p style="margin:0 0 8px;${S.label}">Avancement · <span style="color:${C.accentText};">${p}&nbsp;%</span></p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 22px;"><tr>
+        ${p > 0 ? `<td style="height:10px;background:${C.accent};border-radius:${p >= 100 ? '10px' : '10px 0 0 10px'};width:${p}%;font-size:0;">&nbsp;</td>` : ''}
+        ${p < 100 ? `<td style="height:10px;background:${C.lineSoft};border-radius:${p <= 0 ? '10px' : '0 10px 10px 0'};font-size:0;">&nbsp;</td>` : ''}
+      </tr></table>`;
+}
+
+// p : { clientName, title, statusLabel, progress, currentStep, nextStep, doneSteps: [libellés], dueDate (texte), message }
+function clientProjectUpdateEmail(p) {
+  const done = (p.doneSteps || []).slice(-4);
+  return masterTemplate({
+    preheader: `Où en est votre projet « ${escClient(String(p.title || '').slice(0, 80))} »`,
+    subtitle: 'Suivi de projet',
+    title: escClient(p.title),
+    body: `
+      <p style="${S.p}">${greetingClient(p.clientName)}</p>
+      <p style="${S.p}">Voici un point d’étape sur votre projet.</p>
+      ${p.message ? `<div style="${S.note}"><p style="margin:0;font-size:15px;line-height:1.65;color:${C.text};white-space:pre-line;">${escClient(p.message)}</p></div>` : ''}
+      ${progressBar(p.progress)}
+      ${infoTable([
+        ['Statut', escClient(p.statusLabel)],
+        p.currentStep ? ['Étape en cours', escClient(p.currentStep)] : null,
+        p.nextStep ? ['Étape suivante', escClient(p.nextStep)] : null,
+        p.dueDate ? ['Échéance prévue', escClient(p.dueDate)] : null,
+        done.length ? ['Dernières étapes terminées', done.map(escClient).join('<br>')] : null,
+      ])}
+      <p style="${S.small}">Le détail des étapes, vos documents et la messagerie sont disponibles dans votre espace client.</p>
+      ${SIGNATURE_CLIENT}`,
+    cta: 'Voir mon projet',
+    ctaUrl: `${SITE()}/espace-client#projets`,
+  });
+}
+
+// d : { clientName, projectTitle, docTitle, typeLabel }
+function clientNewDocumentEmail(d) {
+  return masterTemplate({
+    preheader: `Nouveau document disponible : ${escClient(String(d.docTitle || '').slice(0, 80))}`,
+    subtitle: 'Nouveau document',
+    title: 'Un document vous attend',
+    body: `
+      <p style="${S.p}">${greetingClient(d.clientName)}</p>
+      <p style="${S.p}">Un nouveau document a été ajouté à votre espace client.</p>
+      ${infoTable([
+        ['Document', `<strong style="${S.strong}">${escClient(d.docTitle)}</strong>`],
+        d.typeLabel ? ['Type', escClient(d.typeLabel)] : null,
+        d.projectTitle ? ['Projet', escClient(d.projectTitle)] : null,
+      ])}
+      <p style="${S.small}">Pour des raisons de confidentialité, le fichier n’est pas joint à cet e-mail : il se consulte depuis votre espace sécurisé.</p>
+      ${SIGNATURE_CLIENT}`,
+    cta: 'Consulter le document',
+    ctaUrl: `${SITE()}/espace-client#documents`,
+  });
+}
+
+// r : { clientName, content }
+function clientMessageReplyEmail(r) {
+  const content = String(r.content || '');
+  const extrait = content.length > 1200 ? content.slice(0, 1200) + '…' : content;
+  return masterTemplate({
+    preheader: 'Vous avez reçu une réponse de notre équipe',
+    subtitle: 'Messagerie',
+    title: 'Nouvelle réponse de notre équipe',
+    body: `
+      <p style="${S.p}">${greetingClient(r.clientName)}</p>
+      <p style="${S.p}">Un membre de notre équipe a répondu à votre message :</p>
+      <div style="${S.note}"><p style="margin:0;font-size:15px;line-height:1.65;color:${C.text};white-space:pre-line;">${escClient(extrait)}</p></div>
+      <p style="${S.small}">Pour répondre, utilisez la messagerie de votre espace client : l’historique de vos échanges y est conservé.</p>
+      ${SIGNATURE_CLIENT}`,
+    cta: 'Répondre depuis mon espace',
+    ctaUrl: `${SITE()}/espace-client#messages`,
+  });
+}
+
 // Ancien raccourci pour les campagnes
 function emailTemplate(title, content, ctaText, ctaUrl) {
   return masterTemplate({ title, body: content, cta: ctaText, ctaUrl });
@@ -655,4 +743,5 @@ module.exports = {
   prospectionEmail, newsletterEmail, welcomeEmail,
   applicationStatusEmail, applicationConfirmationEmail, newApplicationAdminEmail,
   STATUS_MESSAGES,
+  clientProjectUpdateEmail, clientNewDocumentEmail, clientMessageReplyEmail,
 };

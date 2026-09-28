@@ -92,7 +92,7 @@ function validateLink(url) {
   if (!s) return null;
   try {
     const u = new URL(s);
-    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
+    if (u.protocol !== 'https:') return null;
     return u.toString();
   } catch (e) { return null; }
 }

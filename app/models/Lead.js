@@ -91,6 +91,8 @@ const leadSchema = new mongoose.Schema({
   // Le jeton est a usage unique et expire au bout de 30 minutes.
   portalToken: { type: String, index: true },
   portalTokenExpires: { type: Date },
+  // Version des sessions de l'espace client : incrémentée à la déconnexion ou à la révocation.
+  portalSessionVersion: { type: Number, default: 0 },
   portalEnabled: { type: Boolean, default: false },   // acces ouvert par l'admin
   portalLastLoginAt: { type: Date },
 

@@ -3600,10 +3600,13 @@ async function clientAuth(req, res, next) {
   try {
     const token = (req.cookies && req.cookies[CLIENT_COOKIE]) || '';
     if (!token) return res.status(401).json({ error: 'NON_CONNECTE' });
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     if (!payload || payload.kind !== 'client') return res.status(401).json({ error: 'NON_CONNECTE' });
     const lead = await Lead.findById(payload.sub);
     if (!lead) return res.status(401).json({ error: 'NON_CONNECTE' });
+    // Accès retiré ou session révoquée (déconnexion) : le jeton n'est plus accepté.
+    if (!(lead.stage === 'client' || lead.portalEnabled)) return res.status(401).json({ error: 'NON_CONNECTE' });
+    if ((payload.v || 0) !== (lead.portalSessionVersion || 0)) return res.status(401).json({ error: 'NON_CONNECTE' });
     req.client = lead;
     next();
   } catch (e) { return res.status(401).json({ error: 'NON_CONNECTE' }); }
@@ -3652,7 +3655,7 @@ app.get('/espace-client/connexion/:token', async (req, res) => {
     lead.portalLastLoginAt = new Date();
     await lead.save();
 
-    const jwtToken = jwt.sign({ sub: String(lead._id), kind: 'client' }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const jwtToken = jwt.sign({ sub: String(lead._id), kind: 'client', v: lead.portalSessionVersion || 0 }, process.env.JWT_SECRET, { expiresIn: '7d', algorithm: 'HS256' });
     res.cookie(CLIENT_COOKIE, jwtToken, {
       httpOnly: true, secure: true, sameSite: 'lax', maxAge: 7 * 24 * 3600 * 1000, path: '/',
     });
@@ -3660,7 +3663,13 @@ app.get('/espace-client/connexion/:token', async (req, res) => {
   } catch (e) { console.error('[client.auth]', e.message); res.redirect('/espace-client?erreur=technique'); }
 });
 
-app.post('/api/client/logout', (req, res) => {
+app.post('/api/client/logout', async (req, res) => {
+  // Révoque toutes les sessions de ce client (jeton volé ou poste partagé).
+  try {
+    const token = (req.cookies && req.cookies[CLIENT_COOKIE]) || '';
+    const payload = token ? jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] }) : null;
+    if (payload && payload.kind === 'client') await Lead.updateOne({ _id: payload.sub }, { $inc: { portalSessionVersion: 1 } });
+  } catch (e) { /* jeton déjà invalide : rien à révoquer */ }
   res.clearCookie(CLIENT_COOKIE, { path: '/' });
   res.json({ success: true });
 });

@@ -291,14 +291,17 @@ async function updateArticles() {
   const done = new Set(row && row.value ? JSON.parse(row.value) : []);
   if (done.has(batch.id)) return;
   let n = 0;
+  const missing = [];
   for (const a of batch.articles) {
     const set = { updatedAt: new Date() };
     for (const k of ['title', 'category', 'excerpt', 'seoTitle', 'metaDescription', 'imageAlt', 'content']) if (a[k]) set[k] = a[k];
     const words = (a.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
     if (words) set.readTime = Math.max(1, Math.round(words / 200));
     const r = await Article.updateOne({ slug: a.slug }, { $set: set });
+    if (!r.matchedCount) { missing.push(a.slug); continue; }
     n += r.modifiedCount || 0;
   }
+  if (missing.length) { console.warn('[seed.articleUpdates] introuvables, lot non marqué :', missing.join(', ')); return; }
   done.add(batch.id);
   await Setting.updateOne({ key: ARTICLE_UPDATES_KEY }, { $set: { value: JSON.stringify([...done]), updatedAt: new Date() } }, { upsert: true });
   console.log('[seed.articleUpdates] lot ' + batch.id + ' :', n, 'article(s) mis à jour');
@@ -372,7 +375,8 @@ async function seedArticles() {
   if (batch && batch.value === ARTICLES_PUBLISH_BATCH) return;
   const now = Date.now();
   let published = 0;
-  for (const [i, slug] of slugs.entries()) {
+  const lot = seeds.filter((a) => a.batch === ARTICLES_PUBLISH_BATCH).map((a) => a.slug);
+  for (const [i, slug] of lot.entries()) {
     const r = await Article.updateOne({ slug, status: 'brouillon' }, { $set: { status: 'publie', publishedAt: new Date(now - i * 60000), updatedAt: new Date(now) } });
     published += r.modifiedCount || 0;
   }
@@ -1030,6 +1034,32 @@ app.post('/api/admin/login', loginLimiter, limitBody(5), async (req, res) => {
 app.post('/api/admin/logout', (req, res) => {
   res.clearCookie('token', { path: '/' });
   res.json({ success: true });
+});
+
+// Changement du mot de passe par l'administrateur connecté (ancien mot de passe exigé).
+// Les autres sessions sont fermées ; la session courante reçoit un nouveau jeton.
+app.post('/api/admin/account/password', loginLimiter, limitBody(5), auth, adminOnly, async (req, res) => {
+  try {
+    const current = String(req.body.current || '');
+    const next = String(req.body.next || '');
+    const confirm = String(req.body.confirm || '');
+    if (!current || !next) return res.status(400).json({ error: 'Renseignez le mot de passe actuel et le nouveau.' });
+    if (next !== confirm) return res.status(400).json({ error: 'Les deux nouveaux mots de passe ne sont pas identiques.' });
+    if (next.length < 12 || next.length > 128) return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir entre 12 et 128 caractères.' });
+    if (!/[A-Za-z]/.test(next) || !/[0-9]/.test(next)) return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir au moins une lettre et un chiffre.' });
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) return res.status(400).json({ error: 'Compte introuvable.' });
+    if (!(await user.comparePassword(current))) return res.status(400).json({ error: 'Le mot de passe actuel est incorrect.' });
+    if (await user.comparePassword(next)) return res.status(400).json({ error: 'Le nouveau mot de passe doit être différent de l’actuel.' });
+    user.password = next;
+    user.passwordChangedAt = new Date(Date.now() - 1000);
+    await user.save();
+    res.cookie('token', user.generateToken(), COOKIE_OPTS);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[account.password] error:', err.message);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
 });
 
 app.get('/api/admin/me', auth, adminOnly, (req, res) => {
@@ -5737,7 +5767,8 @@ app.post('/api/quotes/:token/accept', async (req, res) => {
     if (q0.status === 'refuse') return res.status(403).json({ error: 'Devis déjà refusé.' });
     if (q0.status === 'annule') return res.status(410).json({ error: 'Ce devis a été annulé, contactez-nous pour en obtenir un nouveau.' });
     const now = new Date();
-    if (q0.status === 'brouillon' || statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
+    if (q0.status === 'brouillon') return res.status(409).json({ error: 'Ce devis n’a pas encore été finalisé : contactez-nous.' });
+    if (statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
 
     // Acceptation atomique : si deux clics arrivent en même temps, un seul « gagne »
     // et lui seul met à jour la fiche client et envoie les e-mails.
@@ -5802,7 +5833,8 @@ app.post('/api/quotes/:token/refuse', async (req, res) => {
     if (q0.status === 'refuse') return res.json({ success: true, message: 'Devis déjà refusé.' });
     if (q0.status === 'annule') return res.status(410).json({ error: 'Ce devis a été annulé.' });
     const now = new Date();
-    if (q0.status === 'brouillon' || statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
+    if (q0.status === 'brouillon') return res.status(409).json({ error: 'Ce devis n’a pas encore été finalisé : contactez-nous.' });
+    if (statutDevisEffectif(q0, now) === 'expire') return res.status(410).json({ error: MSG_DEVIS_EXPIRE });
 
     const raison = sanitize(req.body?.reason || 'Aucune raison fournie', 1000);
     const quote = await Quote.findOneAndUpdate(
@@ -5906,7 +5938,7 @@ app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res)
     const errV = validerChampsDocument(b);
     if (errV) return res.status(400).json({ error: errV });
 
-    let lead, sourceQuote = null, kind = 'totale';
+    let lead, sourceQuote = null, kind = 'totale', soldeTTC = null;
     const d = {
       items: Array.isArray(items) ? items : [], title, taxRate: pctOu(taxRate, 0),
       currency, introduction, terms, discountPercent: pctOu(b.discountPercent, 0),
@@ -5950,6 +5982,7 @@ app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res)
         if (!acomptes.length) return res.status(409).json({ error: 'Aucune facture d’acompte pour ce devis : créez une facture totale.' });
         const resteHT = arrondiDevise(baseHT - acomptesHT, cur);
         if (!(resteHT > 0)) return res.status(409).json({ error: 'Les acomptes couvrent déjà la totalité du devis.' });
+        soldeTTC = arrondiDevise((sourceQuote.total || 0) - acomptesTTC, cur);
         d.title = `Facture de solde — devis ${sourceQuote.reference}`;
         d.items = [{ description: `Solde du devis ${sourceQuote.reference} — ${sourceQuote.title}`, quantity: 1, unitPrice: resteHT }];
         d.discountPercent = 0;
@@ -5965,6 +5998,11 @@ app.post('/api/admin/invoices', auth, adminOnly, limitBody(50), async (req, res)
 
     const cur = DEVISES.includes(d.currency) ? d.currency : 'EUR';
     const totals = recalcQuote(d.items, d.taxRate, cur, d.discountPercent);
+    // Solde : acomptes + solde = exactement le total TTC du devis (TVA déduite par différence).
+    if (soldeTTC != null && soldeTTC > 0) {
+      totals.taxAmount = arrondiDevise(soldeTTC - (totals.subtotal - (totals.discountAmount || 0)), cur);
+      totals.total = soldeTTC;
+    }
 
     const invoice = await creerAvecReference(Invoice, 'FACT', {
       leadId: lead._id,

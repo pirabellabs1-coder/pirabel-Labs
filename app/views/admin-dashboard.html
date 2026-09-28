@@ -433,6 +433,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 #apptCalendar .fc-daygrid-event-dot { display: none; }
 #apptCalendar .fc-event:hover { filter: brightness(1.08); }
 #apptCalendar .fc .fc-daygrid-day-frame { min-height: 4.5rem; }
+
+.pwd-form{display:grid;gap:.9rem;margin-top:1rem;max-width:34rem}
+.pwd-field{display:grid;gap:.35rem;font-size:.85rem;color:var(--text-muted)}
+.pwd-field input{background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:.65rem .8rem;border-radius:8px;font-size:.9rem}
+.pwd-field input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.pwd-actions{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.pwd-ok{color:var(--success);font-size:.85rem}.pwd-err{color:var(--danger);font-size:.85rem}
 </style>
 </head>
 <body>
@@ -898,6 +905,16 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
         <div class="setting-row"><div><div class="setting-row__label">Email</div><div class="setting-row__sub" id="settingsEmail">--</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Role</div><div class="setting-row__sub">Administrateur</div></div></div>
         <div class="setting-row"><div><div class="setting-row__label">Dernière connexion</div><div class="setting-row__sub" id="settingsLastLogin">Maintenant</div></div></div>
+      </div>
+      <div class="card" style="margin-top:1.25rem;">
+        <div class="card__header"><div><div class="card__title">Changer mon mot de passe</div><div class="card__sub">Au moins 12 caractères, avec une lettre et un chiffre. Vos autres sessions seront fermées.</div></div></div>
+        <form id="pwdForm" class="pwd-form" autocomplete="on" novalidate>
+          <input type="text" name="username" autocomplete="username" id="pwdUser" hidden>
+          <label class="pwd-field"><span>Mot de passe actuel</span><input type="password" id="pwdCurrent" autocomplete="current-password" required></label>
+          <label class="pwd-field"><span>Nouveau mot de passe</span><input type="password" id="pwdNext" autocomplete="new-password" minlength="12" required></label>
+          <label class="pwd-field"><span>Confirmer le nouveau mot de passe</span><input type="password" id="pwdConfirm" autocomplete="new-password" minlength="12" required></label>
+          <div class="pwd-actions"><button type="submit" class="btn btn--sm" id="pwdBtn"><span class="material-symbols-outlined">lock_reset</span> Mettre à jour le mot de passe</button><span id="pwdMsg" role="status" aria-live="polite"></span></div>
+        </form>
       </div>
       <div class="card" style="margin-top:1.25rem;">
         <div class="card__header"><div><div class="card__title">Diagnostic email (Resend)</div><div class="card__sub">Vérifiez si l'envoi d'emails fonctionne</div></div></div>
@@ -2904,11 +2921,13 @@ async function bulkSend() {
 // ============ Data loading ============
 async function loadMe() {
   try {
-    const me = await api('/api/admin/me');
+    const res = await api('/api/admin/me');
+    const me = res.user || res;
     STATE.user = me;
     document.getElementById('userEmail').textContent = me.email || '--';
     document.getElementById('userAvatar').textContent = (me.email || 'P').charAt(0).toUpperCase();
     document.getElementById('settingsEmail').textContent = me.email || '--';
+    var pu = document.getElementById('pwdUser'); if (pu) pu.value = me.email || '';
   } catch(e){ /* will redirect */ }
 }
 
@@ -4840,6 +4859,27 @@ async function partagerWhatsApp(type, id) {
 }
 window.sendQuoteWhatsApp = function(quoteId) { return partagerWhatsApp('devis', quoteId); };
 window.sendInvoiceWhatsApp = function(invoiceId) { return partagerWhatsApp('facture', invoiceId); };
+
+// ============ Changement du mot de passe ============
+(function(){
+  var form = document.getElementById('pwdForm'); if (!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var msg = document.getElementById('pwdMsg'), btn = document.getElementById('pwdBtn');
+    var cur = document.getElementById('pwdCurrent'), nx = document.getElementById('pwdNext'), cf = document.getElementById('pwdConfirm');
+    msg.className = ''; msg.textContent = '';
+    if (nx.value.length < 12) { msg.className = 'pwd-err'; msg.textContent = 'Le nouveau mot de passe doit contenir au moins 12 caractères.'; return; }
+    if (nx.value !== cf.value) { msg.className = 'pwd-err'; msg.textContent = 'Les deux nouveaux mots de passe ne sont pas identiques.'; return; }
+    btn.disabled = true;
+    try {
+      await api('/api/admin/account/password', { method: 'POST', body: { current: cur.value, next: nx.value, confirm: cf.value } });
+      form.reset(); var pu = document.getElementById('pwdUser'); if (pu && STATE.user) pu.value = STATE.user.email || '';
+      msg.className = 'pwd-ok'; msg.textContent = 'Mot de passe mis à jour. Vos autres sessions ont été fermées.';
+      toast('Mot de passe mis à jour', 'success');
+    } catch (err) { msg.className = 'pwd-err'; msg.textContent = err.message; }
+    finally { btn.disabled = false; }
+  });
+})();
 </script>
 </body>
 </html>

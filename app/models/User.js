@@ -18,6 +18,8 @@ const userSchema = new mongoose.Schema({
   totpSecret: { type: String, default: '' },
   totpEnabled: { type: Boolean, default: false },
   lastLogin: { type: Date },
+  // Date du dernier changement de mot de passe : les sessions ouvertes avant sont refusées.
+  passwordChangedAt: { type: Date },
   createdAt: { type: Date, default: Date.now }
 });
 

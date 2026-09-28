@@ -24,6 +24,10 @@ const auth = async (req, res, next) => {
     }
     const user = await User.findById(decoded.id);
     if (!user || !user.isActive) return res.status(401).json({ error: 'Utilisateur invalide' });
+    // Session ouverte avant le dernier changement de mot de passe : refusée.
+    if (user.passwordChangedAt && decoded.iat && decoded.iat * 1000 < user.passwordChangedAt.getTime()) {
+      return res.status(401).json({ error: 'Session expirée, reconnectez-vous.' });
+    }
     req.user = user;
     next();
   } catch (err) {

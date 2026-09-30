@@ -17,6 +17,7 @@ import { restructure, type LocalInsert } from '../lib/blocks/restructure';
 import { cityOf, cityProjects, cityKey, cityGrid, cityZone } from '../data/cities';
 import { SERVICE_GRID, serviceOf } from '../data/service-grid';
 import { CITY_BRIEFS } from '../data/cities-brief';
+import { SEO_TARGETS } from '../data/seo-targets';
 import CONTENT_OVERRIDES from '../data/content-overrides.json';
 
 export function getStaticPaths() {
@@ -61,7 +62,7 @@ const local: LocalInsert | undefined = city ? {
   faq: city.faq.map((f) => ({ q: fixText(f.q), a: fixHtml(f.a) })),
   hub: isHub && ckey ? {
     brief: {
-      title: fixText(`Votre agence à ${city.name}`),
+      title: fixText(`Votre agence web à ${city.name}`),
       html: fixHtml(`<p>${CITY_BRIEFS[ckey] ?? ''}</p>`),
       points: [`Site vitrine dès ${grid!.vitrine}`, `Boutique en ligne dès ${grid!.ecom}`, `Paiement : ${(city.zones[2]?.items ?? []).slice(0, 3).join(', ')}`, 'Devis ferme et gratuit sous 48 h'].map(fixText),
     },
@@ -138,6 +139,15 @@ if (city) {
 // Appel à l'action final : titre de la page + lien principal du hero (formulaire pré-rempli).
 const final = blocks.find((b) => b.kind === 'final') as Extract<Block, { kind: 'final' }> | undefined;
 const hero = blocks.find((b) => b.kind === 'hero') as Extract<Block, { kind: 'hero' }> | undefined;
+// Mots-clés prioritaires : titre, description et H1 de la page cible (src/data/seo-targets.ts).
+const target = SEO_TARGETS[slug as string];
+if (target) {
+  page.title = target.title;
+  page.description = target.description;
+  page.ogTitle = target.title;
+  page.ogDescription = target.description;
+  if (hero) hero.title = fixHtml(target.h1);
+}
 const mainHref = hero?.ctas.find((c) => c.href.startsWith('/contact'))?.href || '/contact';
 const footerCta = final ? { title: final.title, text: final.text, href: mainHref, label: 'Démarrer mon projet' } : undefined;
 const hasRaw = blocks.some((b) => b.kind === 'raw');

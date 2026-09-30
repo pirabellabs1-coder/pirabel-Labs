@@ -373,7 +373,7 @@ async function patchArticles() {
 // entre eux (demande du CEO, 2026-09-26). Seuls les brouillons passent en ligne ; l'ordre du fichier donne l'ordre
 // d'affichage (le guide pilier en tête), avec une minute d'écart entre deux articles.
 const ARTICLES_PUBLISH_KEY = 'seed.articles.published';
-const ARTICLES_PUBLISH_BATCH = 'seo-2026-09-28';
+const ARTICLES_PUBLISH_BATCH = 'seo-local-2026-09-30';
 async function seedArticles() {
   const seeds = require('../app/seed/articles.json');
   if (!Array.isArray(seeds) || !seeds.length) return;

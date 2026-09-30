@@ -146,7 +146,8 @@ if (target) {
   page.description = target.description;
   page.ogTitle = target.title;
   page.ogDescription = target.description;
-  if (hero) hero.title = fixHtml(target.h1);
+  if (hero && target.h1) hero.title = fixHtml(target.h1);
+  if (hero && target.lead) hero.lead = fixHtml(target.lead + (hero.lead ? ' ' + hero.lead : ''));
 }
 const mainHref = hero?.ctas.find((c) => c.href.startsWith('/contact'))?.href || '/contact';
 const footerCta = final ? { title: final.title, text: final.text, href: mainHref, label: 'Démarrer mon projet' } : undefined;

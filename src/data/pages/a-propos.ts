@@ -38,7 +38,7 @@ const PERSON = {
 export const page: PageData = {
   path: '/a-propos',
   title: 'À propos de Pirabel Labs et de son CEO, Lissanon Gildas',
-  description: 'Pirabel Labs, agence web et marketing d’Abomey-Calavi (Bénin), dirigée par Lissanon Gildas, développeur web full stack : sites, applications, SaaS, UI/UX, SEO et GEO.',
+  description: 'Pirabel Labs, agence web et marketing d’Abomey-Calavi (Bénin), dirigée par Lissanon Gildas : sites, applications, SaaS, UI/UX, SEO et GEO.',
   ogImage: '/img/equipe/lissanon-gildas-og.jpg',
   legacyLd: 'a-propos',
   jsonLd: [PERSON],

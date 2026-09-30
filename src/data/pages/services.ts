@@ -4,7 +4,7 @@ const WA = 'https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80
 
 export const page: PageData = {
   path: '/services',
-  title: 'Nos services : site web, SEO, IA, automatisation | Pirabel Labs',
+  title: 'Services : site web, SEO, IA, automatisation | Pirabel Labs',
   description: 'Site web, SEO, réseaux sociaux, vidéo, tunnels de vente, e-mail, automatisation, IA et consulting : une seule équipe, un seul interlocuteur.',
   legacyLd: 'services',
   footerCta: {

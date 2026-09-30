@@ -221,7 +221,7 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 .site-footer__links { display: flex; gap: 18px; }
 
 @media (min-width: 900px) {
-  .site-footer__main { grid-template-columns: 1.4fr repeat(3, 1fr); }
+  .site-footer__main { grid-template-columns: 1.3fr repeat(4, 1fr); }
   .site-footer__brand { grid-column: auto; }
 }
 

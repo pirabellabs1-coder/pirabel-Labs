@@ -9,7 +9,7 @@ const prose = (html: string): Block => ({ kind: 'prose', html });
 export const page: PageData = {
   path: '/creation-saas',
   title: 'Création de SaaS sur mesure : MVP dès 1 500 € | Pirabel Labs',
-  description: 'Agence de création de SaaS sur mesure : cadrage produit, design, développement Next.js, abonnements Stripe et Mobile Money, IA intégrée. MVP dès 1 500 €, lancé en 8 à 12 semaines.',
+  description: 'Création de SaaS sur mesure : cadrage, design, développement, abonnements Stripe et Mobile Money, IA intégrée. MVP dès 1 500 €, lancé en 8 à 12 semaines.',
   footerCta: {
     title: 'Votre idée de SaaS mérite un vrai plan',
     text: 'Un appel de 30 minutes pour cadrer votre projet, puis un devis ferme sous 48 h : périmètre du MVP, planning, budget. Sans engagement.',

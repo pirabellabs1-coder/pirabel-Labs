@@ -4,7 +4,7 @@ const WA = 'https://wa.me/33757751778?text=Bonjour%20Pirabel%20Labs%2C%20j%E2%80
 
 export const page: PageData = {
   path: '/faq',
-  title: 'FAQ Pirabel Labs : services, tarifs, délais, paiements, garanties',
+  title: 'FAQ : services, tarifs, délais et paiements | Pirabel Labs',
   description: 'Toutes les réponses avant de demander un devis : services, tarifs, méthodologie, délais, moyens de paiement, équipe, garanties et accompagnement international.',
   legacyLd: 'faq',
   footerCta: {

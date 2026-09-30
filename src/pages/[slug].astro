@@ -102,6 +102,19 @@ const fixLd = (raw: string) => {
   } catch { return raw; }
 };
 let jsonLd = native ? page.jsonLd.map(fixLd) : page.jsonLd;
+// Notes et avis agrégés sans source vérifiable (anciens modèles) : retirés, Google les sanctionne.
+// Fourchette de prix « EUR-EUR » (valeur invalide) remplacée par « €€ ».
+const cleanLd = (raw: string) => {
+  try {
+    const strip = (v: unknown): unknown => Array.isArray(v)
+      ? v.filter((x) => !(x && typeof x === 'object' && ['AggregateRating', 'Review'].includes(String((x as { '@type'?: string })['@type'])))).map(strip)
+      : v && typeof v === 'object'
+        ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== 'aggregateRating' && k !== 'review').map(([k, x]) => [k, k === 'priceRange' && /EUR-EUR/.test(String(x)) ? '€€' : strip(x)]))
+        : v;
+    return JSON.stringify(strip(JSON.parse(raw)));
+  } catch { return raw; }
+};
+jsonLd = jsonLd.map(cleanLd);
 // Pages villes : FAQPage = exactement la FAQ visible (questions locales + questions conservées du modèle).
 if (city) {
   const faqBlock = blocks.find((b) => b.kind === 'faq') as Extract<Block, { kind: 'faq' }> | undefined;

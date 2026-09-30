@@ -1507,6 +1507,21 @@ const SITE = () => (process.env.SITE_URL || 'https://www.pirabellabs.com').repla
 const ASSET_V = siteNav.VER; // ?v= des ressources /css, /js, /img (cache d'un an)
 const ic = (name, size, cls) => siteNav.icon(name, size, cls, ASSET_V);
 // JSON-LD sûr dans un <script> : « < » échappé, aucune chaîne ne peut fermer la balise.
+// FAQ d'un article (section h2 « FAQ » / « Questions fréquentes ») → FAQPage, identique au texte visible.
+function articleFaqLd(content, url) {
+  const html = String(content || '');
+  const m = html.match(/<h2[^>]*>\s*(?:FAQ|Questions fréquentes|Foire aux questions)[^<]*<\/h2>([\s\S]*?)(?=<h2[\s>]|$)/i);
+  if (!m) return '';
+  const txt = (h) => decodeEnt(String(h).replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  const qa = [];
+  const re = /<h3[^>]*>([\s\S]*?)<\/h3>\s*((?:<(?:p|ul|ol)[\s\S]*?<\/(?:p|ul|ol)>\s*)+)/gi;
+  let x;
+  while ((x = re.exec(m[1])) && qa.length < 10) {
+    const q = txt(x[1]), r = txt(x[2]);
+    if (q.length > 5 && r.length > 20) qa.push({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } });
+  }
+  return qa.length >= 2 ? ldJson({ '@context': 'https://schema.org', '@type': 'FAQPage', url, mainEntity: qa }) : '';
+}
 const ldJson = (o) => '<script type="application/ld+json">' + JSON.stringify(o).replace(/</g, '\\u003c') + '</script>';
 // Texte saisi dans l'admin, échappé puis mis aux normes typographiques françaises :
 // espace insécable avant « : ; ! ? » et à l'intérieur des guillemets (pas de « : » orphelin en début de ligne).
@@ -4961,8 +4976,10 @@ app.get('/blog/:slug', async (req, res) => {
         '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title,
         description: a.metaDescription || a.excerpt || '', image: ogImg, datePublished: a.publishedAt,
         dateModified: a.updatedAt, author: byTeam ? { '@type': 'Organization', name: 'Pirabel Labs', url: SITE() } : { '@type': 'Person', name: a.author },
-        publisher: { '@type': 'Organization', name: 'Pirabel Labs' }, mainEntityOfPage: url,
-      }) + bc.ld;
+        publisher: { '@type': 'Organization', '@id': SITE() + '/#organization', name: 'Pirabel Labs', url: SITE(), logo: { '@type': 'ImageObject', url: SITE() + '/img/logo.png' } },
+        mainEntityOfPage: url, inLanguage: 'fr-FR', articleSection: a.category || 'Marketing',
+        wordCount: (a.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length,
+      }) + articleFaqLd(a.content, url) + bc.ld;
     const authorName = escapeHtml(byTeam ? BLOG_TEAM : a.author);
     const catLabel = escapeHtml(a.category || 'Marketing');
     // Sommaire auto : injecte des id sur les H2 et collecte le sommaire

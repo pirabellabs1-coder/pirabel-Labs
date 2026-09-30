@@ -1,4 +1,5 @@
 ---
+import { SERVICE_GRID } from '../data/service-grid';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
 import Orbit from '../components/home/Orbit.astro';
@@ -15,13 +16,26 @@ import {
 const org = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'ProfessionalService'],
-  '@id': SITE.url + '/#organisation',
+  '@id': SITE.url + '/#organization',
   name: 'Pirabel Labs',
   alternateName: 'Pirabel Labs — Agence web et marketing digital',
   url: SITE.url,
   logo: SITE.url + '/img/logo.png?v=elan2',
   image: SITE.ogImage,
-  description: 'Agence marketing digital 360 spécialisée dans la création de sites web, applications, WordPress, SEO, Google Business Profile, community management, vidéo, tunnels de vente, automatisation marketing, e-mail marketing et conseil. Basée à Abomey-Calavi (Bénin).',
+  description: 'Agence web et marketing digital née en 2022 à Abomey-Calavi (Bénin) : création de sites web, applications et SaaS, SEO et GEO, réseaux sociaux, automatisation et agents IA pour les entreprises d’Afrique francophone, d’Europe et du Canada.',
+  slogan: 'Un seul interlocuteur, du cadrage à la mise en ligne',
+  geo: { '@type': 'GeoCoordinates', latitude: 6.4486, longitude: 2.3556 },
+  knowsAbout: ['Création de site web', 'Site e-commerce', 'WordPress', 'Application web', 'SaaS', 'SEO', 'SEO local', 'GEO (Generative Engine Optimization)', 'Google Business Profile', 'Community management', 'Automatisation marketing', 'Agents IA et chatbots', 'E-mail marketing', 'CRM', 'Tunnels de vente', 'Mobile Money'],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Services et prix de départ',
+    itemListElement: Object.entries(SERVICE_GRID).map(([slug, s]) => ({
+      '@type': 'Offer',
+      url: SITE.url + '/' + slug,
+      itemOffered: { '@type': 'Service', name: s.label.replace(/^(la |le |l’|un |une )/, '').replace(/^./, (c) => c.toUpperCase()) },
+      priceSpecification: { '@type': 'PriceSpecification', price: Number(s.price.eur.replace(/\D/g, '')), priceCurrency: 'EUR', ...(s.price.per ? { unitText: 'MON' } : {}) },
+    })),
+  },
   email: SITE.email,
   telephone: '+33757751778',
   priceRange: '€€',
@@ -43,7 +57,7 @@ const website = {
   url: SITE.url + '/',
   name: 'Pirabel Labs',
   inLanguage: 'fr',
-  publisher: { '@id': SITE.url + '/#organisation' },
+  publisher: { '@id': SITE.url + '/#organization' },
 };
 const faqLd = {
   '@context': 'https://schema.org',
@@ -52,7 +66,7 @@ const faqLd = {
 };
 ---
 <BaseLayout
-  title="Agence web et marketing digital au Bénin et en Afrique | Pirabel Labs"
+  title="Agence web et marketing digital au Bénin | Pirabel Labs"
   description="Agence web et marketing digital à Abomey-Calavi (Bénin) : création de sites web, applications, SEO, réseaux sociaux et automatisation. Devis gratuit sous 48 h."
   path="/"
   ogTitle="Pirabel Labs — Agence marketing digital 360"

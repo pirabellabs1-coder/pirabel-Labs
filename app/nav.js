@@ -84,7 +84,7 @@ function head(ver = VER, opts) {
     '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' +
     '<meta name="theme-color" content="#0E0E0E">' +
     // Thème appliqué avant le premier affichage (pas de flash) : choix mémorisé, sinon préférence du système.
-    '<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pl_theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}d.setAttribute("data-theme",t);var m=document.querySelector(\'meta[name="theme-color"]\');if(m)m.content=t==="light"?"#F6F3EF":"#0E0E0E"})();</script>' +
+    '<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pl_theme")}catch(e){}if(t!=="light"&&t!=="dark"){t="dark"}d.setAttribute("data-theme",t);var m=document.querySelector(\'meta[name="theme-color"]\');if(m)m.content=t==="light"?"#F6F3EF":"#0E0E0E"})();</script>' +
     // Devise des prix : euro par défaut, franc CFA en zone franc (mémorisé par site-chrome.js).
     '<script>(function(){try{if(localStorage.getItem("pl_cur")==="xof")document.documentElement.setAttribute("data-cur","xof")}catch(e){}})();</script>' +
     // Animations complètes par défaut ; mode doux seulement sur choix du visiteur (pl_motion = soft) ; filet de sécurité à 3,5 s.

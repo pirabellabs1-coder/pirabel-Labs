@@ -12,6 +12,7 @@ const prospectEmailSchema = new mongoose.Schema({
   to: { type: String, default: '', maxlength: 254 },       // destinataire effectif (adresse de test en mode test)
   sentAt: { type: Date },
   resendId: { type: String, default: '', maxlength: 100 },
+  messageId: { type: String, default: '', maxlength: 200 }, // en-tête Message-ID posé à l'envoi (vérifie les réponses)
   delivered: { type: Boolean, default: false },
   opened: { type: Boolean, default: false },
   openedAt: { type: Date },
@@ -33,6 +34,8 @@ const prospectSchema = new mongoose.Schema({
   reviewsCount: { type: Number, default: 0, min: 0 },
   email: { type: String, default: '', lowercase: true, trim: true, maxlength: 254 },
   emailSource: { type: String, default: '', maxlength: 300 },   // page où l'adresse a été trouvée, ou « manuel »
+  // Adresse dont le domaine ne correspond pas au site (risque d'écrire à un tiers) : aucun envoi automatique avant validation.
+  needsReview: { type: Boolean, default: false },
   audit: {
     done: { type: Boolean, default: false },
     hasWebsite: { type: Boolean, default: false },

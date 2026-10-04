@@ -61,12 +61,18 @@ function requestOnce(u, timeoutMs) {
       const status = res.statusCode || 0;
       if (status >= 300 && status < 400 && res.headers.location) {
         res.resume();
-        return resolve({ status, location: res.headers.location });
+        return settle(null, { status, location: res.headers.location });
       }
       const type = String(res.headers['content-type'] || '');
       if (type && !/text\/html|application\/xhtml|text\/plain/i.test(type)) {
         res.destroy();
-        return resolve({ status, body: '', type });
+        return settle(null, { status, body: '', type });
+      }
+      // Taille annoncée trop grande : refus immédiat, sans rien télécharger.
+      const announced = Number(res.headers['content-length']);
+      if (Number.isFinite(announced) && announced > MAX_BYTES) {
+        res.destroy();
+        return settle(null, { status, body: '', type, tooLarge: true });
       }
       const enc = String(res.headers['content-encoding'] || '').toLowerCase();
       let stream = res;
@@ -75,19 +81,32 @@ function requestOnce(u, timeoutMs) {
       else if (enc === 'br') stream = res.pipe(zlib.createBrotliDecompress());
       const chunks = [];
       let size = 0;
-      let done = false;
-      const finish = () => { if (done) return; done = true; resolve({ status, body: Buffer.concat(chunks).toString('utf8'), type }); };
+      const stop = () => { // arrête la décompression ET la réception (anti-bombe de décompression)
+        if (stream !== res) { try { res.unpipe(stream); } catch (e) { /* déjà détaché */ } stream.destroy(); }
+        res.destroy();
+      };
+      const finish = () => settle(null, { status, body: Buffer.concat(chunks).toString('utf8'), type });
       stream.on('data', (c) => {
+        if (done) return;
         size += c.length;
-        if (size > MAX_BYTES) { chunks.push(c.slice(0, Math.max(0, c.length - (size - MAX_BYTES)))); res.destroy(); finish(); return; }
+        if (size > MAX_BYTES) { chunks.push(c.subarray(0, Math.max(0, c.length - (size - MAX_BYTES)))); stop(); finish(); return; }
         chunks.push(c);
       });
       stream.on('end', finish);
-      stream.on('error', (e) => { if (!done) { done = true; chunks.length ? finish() : reject(e); } });
+      stream.on('error', (e) => { stop(); if (chunks.length) finish(); else settle(e); });
       res.on('aborted', finish);
+      res.on('error', (e) => { if (chunks.length) finish(); else settle(e); });
     });
+    let done = false;
+    const timer = setTimeout(() => { req.destroy(new Error('Délai dépassé')); }, timeoutMs);
+    function settle(err, value) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      if (err) reject(err); else resolve(value);
+    }
     req.on('timeout', () => req.destroy(new Error('Délai dépassé')));
-    req.on('error', reject);
+    req.on('error', (e) => settle(e));
     req.end();
   });
 }
@@ -105,10 +124,7 @@ async function safeFetch(rawUrl, opts) {
     if (left <= 200) return { ok: false, error: 'Délai dépassé', finalUrl: current };
     let r;
     try {
-      r = await Promise.race([
-        requestOnce(u, left),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('Délai dépassé')), left + 50)),
-      ]);
+      r = await requestOnce(u, left); // délai interne : la requête est détruite à l'échéance
     } catch (e) {
       return { ok: false, error: e && e.code === 'EBLOCKED' ? 'Adresse privée refusée' : ((e && e.message) || 'Erreur réseau'), finalUrl: u.toString() };
     }
@@ -116,6 +132,7 @@ async function safeFetch(rawUrl, opts) {
       try { current = new URL(r.location, u).toString(); } catch (e) { return { ok: false, error: 'Redirection invalide', finalUrl: u.toString() }; }
       continue;
     }
+    if (r.tooLarge) return { ok: false, error: 'Page trop volumineuse', finalUrl: u.toString() };
     return { ok: r.status >= 200 && r.status < 400, status: r.status, body: r.body || '', finalUrl: u.toString(), loadMs: Date.now() - t0 };
   }
   return { ok: false, error: 'Trop de redirections', finalUrl: current };

@@ -12,7 +12,7 @@ const Prospect = require('../models/Prospect');
 const ProspectCampaign = require('../models/ProspectCampaign');
 const ProspectRun = require('../models/ProspectRun');
 const Suppression = require('../models/Suppression');
-const Setting = require('../models/Setting');
+const WebhookEvent = require('../models/WebhookEvent');
 
 const RX_ID = /^[a-f0-9]{24}$/i;
 const CAMPAIGN_STATUSES = ['brouillon', 'active', 'en_pause', 'terminee'];
@@ -65,7 +65,7 @@ module.exports = function registerProspection(app, deps) {
       _id: p._id, campaignId: p.campaignId, name: p.name, city: p.city, phone: p.phone, website: p.website, email: p.email,
       score: p.score, status: p.status, isTest: !!p.isTest, rating: p.rating, reviewsCount: p.reviewsCount,
       emailsSent: real.length, opened: real.some((e) => e.opened), lastActionAt: p.lastActionAt, nextActionAt: p.nextActionAt,
-      lastEmailAt: last ? last.sentAt : null, issues: (p.audit && p.audit.issues) || [], leadId: p.leadId || null,
+      lastEmailAt: last ? last.sentAt : null, issues: (p.audit && p.audit.issues) || [], leadId: p.leadId || null, needsReview: !!p.needsReview,
     };
   }
   async function loadProspect(req, res) {
@@ -116,6 +116,7 @@ module.exports = function registerProspection(app, deps) {
         const on = b.testMode === true || b.testMode === 'true';
         if (!on && b.confirmLive !== true) return res.status(400).json({ error: 'Confirmation requise pour passer en envoi réel.' });
         if (!on && !engine.prospectFrom()) return res.status(400).json({ error: 'Configurez d’abord PROSPECT_FROM (expéditeur dédié vérifié dans Resend).' });
+        if (!on && !engine.unsubSecret()) return res.status(400).json({ error: 'Configurez d’abord UNSUB_SECRET (ou JWT_SECRET) : les liens de désinscription doivent être signés.' });
         await engine.setSetting(K.testMode, on ? 'true' : 'false');
       }
       const cfg = await engine.getConfig();
@@ -233,6 +234,7 @@ module.exports = function registerProspection(app, deps) {
       const status = String((req.body || {}).status || '');
       const note = sanitize(String((req.body || {}).note || ''), 1000);
       if (!MANUAL_STATUSES.includes(status)) return res.status(400).json({ error: 'Statut invalide.' });
+      if (p.isTest && ['interesse', 'converti', 'desinscrit'].includes(status)) return res.status(400).json({ error: 'Action indisponible pour un prospect de test (rien n’est ajouté au CRM ni à la liste d’exclusion).' });
       const campaign = p.campaignId ? await ProspectCampaign.findById(p.campaignId).lean() : null;
       let lead = null;
       if (status === 'qualifie') {
@@ -250,9 +252,12 @@ module.exports = function registerProspection(app, deps) {
       if (status === 'desinscrit' && p.email) {
         await Suppression.updateOne({ email: p.email }, { $setOnInsert: { email: p.email, reason: 'manuel', note: 'Désinscrit depuis le tableau de bord', createdAt: new Date() } }, { upsert: true });
       }
-      if (note) p.notes = ((p.notes ? p.notes + '\n' : '') + '[' + new Date().toISOString().slice(0, 10) + '] ' + note).slice(-5000);
+      if (note) engine.appendNote(p, note);
       p.lastActionAt = new Date();
       await p.save();
+      if (!p.isTest && p.email && ['repondu', 'interesse', 'pas_interesse', 'desinscrit', 'converti'].includes(status)) {
+        await engine.stopAllWithEmails([p.email], status === 'desinscrit' ? 'desinscrit' : 'repondu', p._id);
+      }
       res.json({ success: true, prospect: prospectSummary(p), leadId: lead ? String(lead._id) : (p.leadId ? String(p.leadId) : null) });
     } catch (e) { fail(res, e, 'prospect.status'); }
   });
@@ -262,7 +267,7 @@ module.exports = function registerProspection(app, deps) {
       const p = await loadProspect(req, res); if (!p) return;
       const email = sanitizeEmail((req.body || {}).email);
       if (!isValidEmail(email) || !core.isPlausibleBusinessEmail(email)) return res.status(400).json({ error: 'Adresse e-mail invalide.' });
-      p.email = email; p.emailSource = 'manuel';
+      p.email = email; p.emailSource = 'manuel'; p.needsReview = false; // saisie par l'équipe : adresse validée
       if (['sans_email', 'nouveau'].includes(p.status)) { p.status = 'qualifie'; p.nextActionAt = new Date(); }
       p.lastActionAt = new Date();
       await p.save();
@@ -270,26 +275,27 @@ module.exports = function registerProspection(app, deps) {
     } catch (e) { fail(res, e, 'prospect.email'); }
   });
 
-  // « Envoyer maintenant » : en mode test (ou prospect de test), l'e-mail part vers l'adresse de test.
-  app.post('/api/admin/prospection/prospects/:id/send', ...A, testLimiter, async (req, res) => {
+  // Adresse trouvée sur le site mais d'un autre domaine : l'équipe confirme qu'elle appartient bien à l'entreprise.
+  app.post('/api/admin/prospection/prospects/:id/approve-email', ...A, async (req, res) => {
     try {
       const p = await loadProspect(req, res); if (!p) return;
-      const cfg = await engine.getConfig();
-      if (p.isTest || cfg.testMode) {
-        const r = await engine.sendTestEmail(p, null);
-        return r.ok ? res.json({ success: true, test: true, message: 'E-mail de test envoyé à ' + r.testEmail + '.' }) : res.status(502).json({ error: r.error || 'Envoi impossible.' });
-      }
-      if (!cfg.enabled) return res.status(400).json({ error: 'L’agent est désactivé : activez l’interrupteur général pour envoyer.' });
-      const active = await ProspectCampaign.find({ status: 'active', isTest: { $ne: true } }).lean();
-      const budget = await engine.computeBudget(cfg, active.length ? active : [{ dailyLimit: cfg.globalCap }]);
-      if (budget.remaining <= 0) return res.status(429).json({ error: 'Quota d’envois du jour atteint (' + budget.dailyCap + ').' });
-      const campaign = await ProspectCampaign.findById(p.campaignId);
-      if (!campaign) return res.status(400).json({ error: 'Campagne introuvable.' });
-      if (p.status === 'qualifie' || p.status === 'contacte' || p.status === 'relance_1') { /* ok */ } else return res.status(400).json({ error: 'Ce prospect n’est pas dans une séquence d’envoi.' });
-      const r = await engine.sendStep(p, campaign, {});
-      if (r.blocked) return res.status(400).json({ error: 'Envoi bloqué : ' + r.blocked + '.' });
-      if (!r.ok) return res.status(502).json({ error: r.error || 'Envoi impossible.' });
-      res.json({ success: true, message: 'E-mail envoyé à ' + p.email + '.' });
+      if (!p.email) return res.status(400).json({ error: 'Aucune adresse à valider.' });
+      p.needsReview = false;
+      engine.appendNote(p, 'Adresse ' + p.email + ' validée manuellement.');
+      if (p.status === 'qualifie' && !p.nextActionAt) p.nextActionAt = new Date();
+      p.lastActionAt = new Date();
+      await p.save();
+      res.json({ success: true, prospect: prospectSummary(p) });
+    } catch (e) { fail(res, e, 'prospect.approve'); }
+  });
+
+  // « Envoyer maintenant » : verrou, fenêtre d'envoi, campagne active, quotas ; en mode test, vers l'adresse de test.
+  app.post('/api/admin/prospection/prospects/:id/send', ...A, testLimiter, async (req, res) => {
+    try {
+      if (!RX_ID.test(req.params.id || '')) return res.status(400).json({ error: 'Identifiant invalide.' });
+      const r = await engine.sendNow(req.params.id);
+      if (!r.ok) return res.status(r.status || 400).json({ error: r.error });
+      res.json({ success: true, message: r.message });
     } catch (e) { fail(res, e, 'prospect.send'); }
   });
 
@@ -371,15 +377,11 @@ module.exports = function registerProspection(app, deps) {
   // ------------------------------------------------------------------ cron
   app.get('/api/cron/prospection', async (req, res) => {
     try {
-      const secret = process.env.CRON_SECRET || ((await Setting.findOne({ key: 'cronSecret' }).lean()) || {}).value || '';
-      const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-      let ok;
-      if (secret) ok = safeEqual(bearer, secret) || safeEqual(req.query.secret, secret);
-      else {
-        const ua = String(req.headers['user-agent'] || '').toLowerCase();
-        ok = ua.includes('vercel-cron') || !!req.headers['x-vercel-cron'];
-      }
-      if (!ok) return res.status(401).json({ error: 'Non autorisé.' });
+      // Seule preuve acceptée : l'en-tête « Authorization: Bearer <CRON_SECRET> » envoyé par Vercel Cron.
+      const secret = String(process.env.CRON_SECRET || '').trim();
+      if (!secret) return res.status(503).json({ error: 'Cycle automatique non configuré : définissez CRON_SECRET dans Vercel.' });
+      const auth = String(req.headers.authorization || '');
+      if (!auth.startsWith('Bearer ') || !safeEqual(auth.slice(7), secret)) return res.status(401).json({ error: 'Non autorisé.' });
       const run = await engine.runCycle({ trigger: 'cron' });
       res.json({ success: true, sent: run.sent, discovered: run.discovered, enriched: run.enriched, durationMs: run.durationMs });
     } catch (e) { console.error('[cron.prospection]', e.message); res.status(500).json({ error: 'Erreur cron.' }); }
@@ -397,7 +399,17 @@ module.exports = function registerProspection(app, deps) {
       if (!v.ok) return res.status(401).json({ error: 'Signature invalide.' });
       let evt;
       try { evt = JSON.parse(raw); } catch (e) { return res.status(400).json({ error: 'Corps invalide.' }); }
-      const r = await engine.handleWebhookEvent(evt);
+      // Anti-rejeu : chaque svix-id n'est traité qu'une fois (mémoire de 10 minutes, au-delà la signature expire).
+      const svixId = String(req.headers['svix-id']).slice(0, 200);
+      try { await WebhookEvent.create({ _id: svixId }); } catch (e) {
+        if (e && e.code === 11000) return res.json({ received: true, duplicate: true });
+        throw e;
+      }
+      let r;
+      try { r = await engine.handleWebhookEvent(evt); } catch (e) {
+        await WebhookEvent.deleteOne({ _id: svixId }).catch(() => {}); // Resend pourra renvoyer l'événement
+        throw e;
+      }
       res.json({ received: true, handled: !!r.handled });
     } catch (e) { console.error('[prospection.webhook]', e.message); res.status(500).json({ error: 'Erreur serveur.' }); }
   });
@@ -416,7 +428,9 @@ module.exports = function registerProspection(app, deps) {
   app.get('/desinscription/:token', unsubLimiter, async (req, res) => {
     try {
       res.set({ 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Content-Type': 'text/html; charset=utf-8' });
-      const p = await engine.prospectFromToken(req.params.token);
+      const found = await engine.prospectFromToken(req.params.token);
+      if (found && (found.test || found.prospect.isTest)) return res.send(unsubPage('Lien de test', '<h1>Lien de désinscription de test</h1><p>Ce lien provient d’un e-mail envoyé en mode test : aucune adresse n’est désinscrite et aucune fiche n’est modifiée. Dans un vrai message, ce lien désinscrit le destinataire en un clic.</p>'));
+      const p = found && found.prospect;
       if (!p) return res.status(404).send(unsubPage('Lien invalide', '<h1>Lien invalide ou expiré</h1><p>Pour ne plus recevoir nos messages, écrivez-nous à <a href="mailto:contact@pirabellabs.com?subject=D%C3%A9sinscription">contact@pirabellabs.com</a> : nous vous retirons de nos listes immédiatement.</p>'));
       if (p.status === 'desinscrit') return res.send(unsubPage('Désinscription confirmée', '<h1>Vous êtes déjà désinscrit</h1><p>Vous ne recevrez plus de messages de prospection de Pirabel Labs.</p>'));
       const action = '/desinscription/' + encodeURIComponent(req.params.token);
@@ -431,6 +445,7 @@ module.exports = function registerProspection(app, deps) {
     try {
       res.set({ 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Content-Type': 'text/html; charset=utf-8' });
       const r = await engine.unsubscribe(req.params.token);
+      if (r.ok && r.test) return res.send(unsubPage('Lien de test', '<h1>Lien de désinscription de test</h1><p>E-mail envoyé en mode test : rien n’a été modifié.</p>'));
       if (!r.ok) return res.status(404).send(unsubPage('Lien invalide', '<h1>Lien invalide ou expiré</h1><p>Écrivez-nous à <a href="mailto:contact@pirabellabs.com?subject=D%C3%A9sinscription">contact@pirabellabs.com</a> : nous vous retirons de nos listes immédiatement.</p>'));
       res.send(unsubPage('Désinscription confirmée', '<h1>Désinscription confirmée</h1><p>Vous ne recevrez plus de messages de prospection de Pirabel Labs. Merci de votre retour, et belle continuation.</p>'));
     } catch (e) { console.error('[unsub.post]', e.message); res.status(500).send('Erreur serveur.'); }

@@ -6254,23 +6254,25 @@ function prFilterCampaign(id) {
 // ---------------------------------------------------------------- prospects
 async function prLoadProspects(page) {
   PR.page = page || 1;
+  var reqId = PR.reqId = (PR.reqId || 0) + 1; // seule la dernière requête lancée met à jour le tableau
   var f = PR.filters, body = prEl('prBody'); if (!body) return;
   var qs = '?page=' + PR.page + (f.campaignId ? '&campaignId=' + encodeURIComponent(f.campaignId) : '') + (f.status ? '&status=' + encodeURIComponent(f.status) : '') +
     (f.q ? '&q=' + encodeURIComponent(f.q) : '') + (f.test ? '&test=1' : '');
   try {
     var d = await api('/api/admin/prospection/prospects' + qs);
+    if (reqId !== PR.reqId) return;
     prEl('prCount').textContent = prNum(d.total) + ' prospect' + (d.total > 1 ? 's' : '') + (f.test ? ' de test' : '');
     if (!d.prospects.length) { body.innerHTML = '<tr><td colspan="6" class="empty">' + (f.test ? 'Aucun prospect de test.' : 'Aucun prospect pour ces critères. Démarrez une campagne puis lancez un cycle.') + '</td></tr>'; prEl('prPager').innerHTML = ''; return; }
     body.innerHTML = d.prospects.map(function (p) {
       var last = p.lastEmailAt ? 'E-mail ' + (p.emailsSent || 0) + '/3 · ' + fmtDate(p.lastEmailAt) + (p.opened ? ' · ouvert' : '') : (p.lastActionAt ? 'Analysé · ' + fmtDate(p.lastActionAt) : '—');
       return '<tr><td><button type="button" class="btn btn--ghost btn--sm" style="border:0;padding-left:0;text-align:left;justify-content:flex-start;min-height:0;" onclick="prOpenProspect(\'' + p._id + '\')"><strong>' + escape(p.name) + '</strong></button>' +
         '<div style="font-size:.76rem;color:var(--text-muted);overflow-wrap:anywhere;">' + escape(p.email || (p.phone ? p.phone : 'aucun contact')) + '</div></td>' +
-        '<td>' + escape(p.city || '—') + '</td><td><strong>' + (p.score || 0) + '</strong><span class="muted">/100</span></td><td>' + prBadge(PR_STATUS, p.status) + (p.isTest ? ' <span class="badge badge--warning badge--xs">test</span>' : '') + '</td>' +
+        '<td>' + escape(p.city || '—') + '</td><td><strong>' + (p.score || 0) + '</strong><span class="muted">/100</span></td><td>' + prBadge(PR_STATUS, p.status) + (p.isTest ? ' <span class="badge badge--warning badge--xs">test</span>' : '') + (p.needsReview ? ' <span class="badge badge--danger badge--xs" title="Adresse d’un autre domaine que le site : aucun envoi avant validation">à valider</span>' : '') + '</td>' +
         '<td style="font-size:.8rem;">' + escape(last) + '</td>' +
         '<td><button type="button" class="btn btn--ghost btn--sm" onclick="prOpenProspect(\'' + p._id + '\')" aria-label="Ouvrir la fiche de ' + escape(p.name) + '"><span class="material-symbols-outlined" aria-hidden="true">visibility</span> Prévisualiser</button></td></tr>';
     }).join('');
     prEl('prPager').innerHTML = d.pages > 1 ? '<button type="button" class="btn btn--ghost btn--sm"' + (d.page <= 1 ? ' disabled' : '') + ' onclick="prLoadProspects(' + (d.page - 1) + ')">Précédent</button><span>Page ' + d.page + ' sur ' + d.pages + '</span><button type="button" class="btn btn--ghost btn--sm"' + (d.page >= d.pages ? ' disabled' : '') + ' onclick="prLoadProspects(' + (d.page + 1) + ')">Suivant</button>' : '';
-  } catch (e) { body.innerHTML = '<tr><td colspan="6" class="empty empty--error" role="alert">Erreur : ' + escape(e.message) + '</td></tr>'; }
+  } catch (e) { if (reqId === PR.reqId) body.innerHTML = '<tr><td colspan="6" class="empty empty--error" role="alert">Erreur : ' + escape(e.message) + '</td></tr>'; }
 }
 function prShowTests() { PR.filters.test = true; PR.filters.campaignId = ''; var t = prEl('prFTest'); if (t) t.checked = true; var s = prEl('prFCamp'); if (s) s.value = ''; prLoadProspects(1); var h = prEl('prProspectsTitle'); if (h) h.scrollIntoView(); }
 
@@ -6352,13 +6354,15 @@ async function prOpenProspect(id) {
       '<dt>Téléphone</dt><dd>' + (p.phone ? '<a href="tel:' + escape(p.phone.replace(/[^0-9+]/g, '')) + '">' + escape(p.phone) + '</a>' : '—') + '</dd>' +
       (p.mapsUrl ? '<dt>Google Maps</dt><dd><a href="' + escape(p.mapsUrl) + '" target="_blank" rel="noopener noreferrer">Voir la fiche</a></dd>' : '') + '</dl>' +
       '<h3 class="pr-sec-title" style="font-size:.92rem;">Audit</h3>' + prAuditBlock(p.audit, p) +
+      (p.email && p.needsReview ? '<div class="pr-banner" style="margin:.8rem 0 0;"><div class="pr-banner__txt"><strong>Adresse à valider</strong><p>' + escape(p.email) + ' ne correspond pas au domaine du site : elle appartient peut-être à un tiers (agence, plateforme). Aucun envoi automatique tant qu’elle n’est pas validée.</p></div>' +
+        '<button type="button" class="btn btn--sm" onclick="prApproveEmail(\'' + p._id + '\')"><span class="material-symbols-outlined" aria-hidden="true">verified</span> Valider cette adresse</button></div>' : '') +
       (!p.email ? '<form class="row" style="margin-top:.8rem;" onsubmit="event.preventDefault();prAddEmail(\'' + p._id + '\');"><label class="sr-only" for="prAddEmailIn">Ajouter une adresse e-mail</label><input class="input" id="prAddEmailIn" type="email" placeholder="Ajouter une adresse e-mail trouvée" style="flex:1;min-width:12rem;"><button type="submit" class="btn btn--ghost btn--sm">Ajouter</button></form>' : '') +
       (d.whatsappUrl ? '<p style="margin:.8rem 0 0;"><a class="btn btn--whatsapp btn--sm" href="' + escape(d.whatsappUrl) + '" target="_blank" rel="noopener noreferrer"><span class="material-symbols-outlined" aria-hidden="true">chat</span> Contacter sur WhatsApp (message prérempli)</a></p>' : '') +
       '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">Prochain e-mail</h3><div id="prNextMail">' +
       (d.preview && !d.preview.done ? prMailBlock(d.preview.subject, d.preview.text, PR_STEP[d.preview.step] + ' · ' + (d.preview.source === 'ia' ? 'brouillon rédigé par l’IA' : 'modèle (l’IA peut le reformuler au prochain cycle)') + (p.nextActionAt && inSeq ? ' · prévu le ' + fmtDateTime(p.nextActionAt) : '')) : '<div class="empty" style="padding:1rem;">Aucun autre e-mail prévu.</div>') + '</div>' +
       (d.preview && !d.preview.done ? '<div class="row"><button type="button" class="btn btn--ghost btn--sm" onclick="prRegenerate(\'' + p._id + '\',this)"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span> Rédiger avec l’IA</button>' +
         '<button type="button" class="btn btn--ghost btn--sm" onclick="prSendTest(\'' + p._id + '\',' + d.preview.step + ',this)"><span class="material-symbols-outlined" aria-hidden="true">forward_to_inbox</span> M’envoyer cet e-mail</button>' +
-        (!p.isTest && inSeq && p.email ? '<button type="button" class="btn btn--sm" onclick="prSendNow(\'' + p._id + '\',this)"><span class="material-symbols-outlined" aria-hidden="true">send</span> ' + (testMode ? 'Envoyer maintenant (mode test)' : 'Envoyer maintenant') + '</button>' : '') + '</div>' : '') +
+        (!p.isTest && inSeq && p.email && !p.needsReview ? '<button type="button" class="btn btn--sm" onclick="prSendNow(\'' + p._id + '\',this)"><span class="material-symbols-outlined" aria-hidden="true">send</span> ' + (testMode ? 'Envoyer maintenant (mode test)' : 'Envoyer maintenant') + '</button>' : '') + '</div>' : '') +
       '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">E-mails envoyés (' + sent.length + ')</h3>' +
       (sent.length ? sent.map(function (e) {
         return prMailBlock((e.test ? '[TEST] ' : '') + e.subject, e.text, PR_STEP[e.step] + ' · ' + fmtDateTime(e.sentAt) + (e.test ? ' · envoyé à ' + escape(e.to) + ' (test)' : '') +
@@ -6367,9 +6371,9 @@ async function prOpenProspect(id) {
       (p.replyText ? '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">Réponse reçue</h3><pre class="pr-mail pr-mail__body">' + escape(p.replyText) + '</pre>' : '') +
       (p.notes ? '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">Notes</h3><pre class="pr-mail__body muted">' + escape(p.notes) + '</pre>' : '');
     var foot = '<button type="button" class="btn btn--ghost btn--sm" onclick="prSetStatus(\'' + p._id + '\',\'repondu\')">Marquer répondu</button>' +
-      '<button type="button" class="btn btn--sm btn--success" style="color:var(--on-accent);" onclick="prSetStatus(\'' + p._id + '\',\'interesse\')"><span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Intéressé → prospect CRM</button>' +
+      (p.isTest ? '' : '<button type="button" class="btn btn--sm btn--success" style="color:var(--on-accent);" onclick="prSetStatus(\'' + p._id + '\',\'interesse\')"><span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Intéressé → prospect CRM</button>') +
       '<button type="button" class="btn btn--ghost btn--sm" onclick="prSetStatus(\'' + p._id + '\',\'pas_interesse\')">Pas intéressé</button>' +
-      '<button type="button" class="btn btn--ghost btn--sm btn--danger" onclick="prSetStatus(\'' + p._id + '\',\'desinscrit\')">Désinscrire</button>' +
+      (p.isTest ? '' : '<button type="button" class="btn btn--ghost btn--sm btn--danger" onclick="prSetStatus(\'' + p._id + '\',\'desinscrit\')">Désinscrire</button>') +
       (p.isTest ? '<button type="button" class="btn btn--ghost btn--sm btn--danger" onclick="prDeleteProspect(\'' + p._id + '\')">Supprimer le test</button>' : '');
     prModal('prProspectModal', escape(p.name), body, foot, true);
   } catch (e) { toast(e.message, 'error'); }
@@ -6388,6 +6392,11 @@ async function prSendNow(id, btn) {
   btn.disabled = true;
   try { var r = await api('/api/admin/prospection/prospects/' + id + '/send', { method: 'POST' }); toast(r.message, 'success'); var m = prEl('prProspectModal'); if (m) m.close(); prLoadProspects(PR.page); }
   catch (e) { toast(e.message, 'error'); btn.disabled = false; }
+}
+async function prApproveEmail(id) {
+  if (!confirm('Confirmer que cette adresse appartient bien à l’entreprise ? Elle pourra alors recevoir les e-mails automatiques.')) return;
+  try { await api('/api/admin/prospection/prospects/' + id + '/approve-email', { method: 'POST' }); toast('Adresse validée', 'success'); prOpenProspect(id); prLoadProspects(PR.page); }
+  catch (e) { toast(e.message, 'error'); }
 }
 async function prAddEmail(id) {
   var v = prEl('prAddEmailIn').value.trim();

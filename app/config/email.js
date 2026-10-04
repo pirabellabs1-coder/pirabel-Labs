@@ -10,7 +10,7 @@ const RESEND_API_KEY = clean(process.env.RESEND_API_KEY);
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
 // Log config once at module load (helps debugging in Vercel logs)
-console.log(`[email] provider=Resend key=${RESEND_API_KEY ? RESEND_API_KEY.substring(0, 8) + '...' : 'MISSING'}`);
+console.log(`[email] provider=Resend key=${RESEND_API_KEY ? 'configured' : 'MISSING'}`);
 
 const FROM = () => `"Pirabel Labs" <${clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com'}>`;
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.FROM_EMAIL) || 'contact@pirabellabs.com';
@@ -326,14 +326,22 @@ function newsletterEmail(recipientName, options = {}) {
 // SEND FUNCTIONS
 // ========================================
 
+// Adresse masquée pour les journaux (aucune donnée personnelle en clair).
+function maskAddr(to) {
+  return (Array.isArray(to) ? to : [to]).map((t) => String(t || '').replace(/^(.).*?(@.*)$/, '$1***$2')).join(',');
+}
+
+// opts.detailed : renvoie toujours un objet { ok, messageId, status, errorName } (utilisé par la prospection
+// pour distinguer un refus du destinataire d'une panne générale). opts.timeoutMs : délai de l'appel (9 s par défaut).
 async function sendEmail(to, subject, html, opts = {}) {
+  const fail = (status, errorName) => (opts.detailed ? { ok: false, status: status || 0, errorName: errorName || '' } : false);
   if (!RESEND_API_KEY) {
-    console.error('[email] MISSING RESEND_API_KEY env var - cannot send email to', to);
-    return false;
+    console.error('[email] MISSING RESEND_API_KEY env var - cannot send email');
+    return fail(0, 'missing_api_key');
   }
   if (!to) {
-    console.error('[email] missing recipient (to) for subject:', subject);
-    return false;
+    console.error('[email] missing recipient (to)');
+    return fail(0, 'missing_recipient');
   }
   try {
     // Resend expects "to" as array
@@ -366,9 +374,9 @@ async function sendEmail(to, subject, html, opts = {}) {
       .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
       .replace(/&[a-z]+;/gi, ' ').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, 6000);
 
-    // Vercel serverless: AbortController for 9s timeout
+    // Vercel serverless: AbortController (9 s par défaut)
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 9000);
+    const timer = setTimeout(() => ctrl.abort(), Math.max(1000, Math.min(Number(opts.timeoutMs) || 9000, 9000)));
     let resp, body;
     try {
       resp = await fetch(RESEND_ENDPOINT, {
@@ -386,19 +394,19 @@ async function sendEmail(to, subject, html, opts = {}) {
     }
 
     if (!resp.ok) {
-      console.error(`[email] FAIL to=${to} subject="${subject}" status=${resp.status} name=${body.name} msg=${body.message}`);
-      return false;
+      console.error(`[email] FAIL to=${maskAddr(to)} status=${resp.status} name=${body.name}`);
+      return fail(resp.status, body.name);
     }
 
     // Journal sans données personnelles : adresse masquée, pas d'objet (il peut contenir un nom).
-    const masked = String(to).replace(/^(.).*?(@.*)$/, '$1***$2');
-    console.log(`[email] OK to=${masked} id=${body.id}`);
+    console.log(`[email] OK to=${maskAddr(to)} id=${body.id}`);
+    if (opts.detailed) return { ok: true, messageId: body.id, status: resp.status, errorName: '' };
     return opts.returnInfo
       ? { messageId: body.id, accepted: toArray, rejected: [], resend: body }
       : true;
   } catch (err) {
-    console.error(`[email] FAIL to=${to} subject="${subject}" error=${err.name} message=${err.message}`);
-    return false;
+    console.error(`[email] FAIL to=${maskAddr(to)} error=${err.name}`);
+    return fail(0, err.name === 'AbortError' ? 'timeout' : 'network_error');
   }
 }
 

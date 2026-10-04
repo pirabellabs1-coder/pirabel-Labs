@@ -214,13 +214,16 @@ const ALLOWED_ORIGINS = new Set([
   'http://localhost:3000',
   'http://localhost:3055',
 ]);
-app.use(cors({
+const corsMiddleware = cors({
   origin: (origin, cb) => {
     if (!origin || ALLOWED_ORIGINS.has(origin)) return cb(null, true);
     return cb(new Error('Not allowed by CORS'));
   },
   credentials: true,
-}));
+});
+// La page publique de désinscription doit toujours accepter son formulaire et la désinscription
+// « en un clic » des messageries (Origin variable ou absente) : exemptée du contrôle d'origine.
+app.use((req, res, next) => (req.path.startsWith('/desinscription/') ? next() : corsMiddleware(req, res, next)));
 
 app.use(securityHeaders);
 // Téléversement de documents clients (base64) : la donnée brute est mise de côté AVANT
@@ -4640,12 +4643,13 @@ app.post('/api/admin/appointments/:id/remind', auth, adminOnly, limitBody(10), a
 // ============ CRON : résumé hebdomadaire (lundi) ============
 app.get('/api/cron/weekly-summary', async (req, res) => {
   try {
-    // Sécurité : autorisé seulement pour Vercel Cron (User-Agent vercel-cron) ou avec le bon secret
-    const ua = (req.headers['user-agent'] || '').toLowerCase();
-    const isVercelCron = ua.includes('vercel-cron') || !!req.headers['x-vercel-cron'];
-    const secretEnv = process.env.CRON_SECRET || await getSetting('cronSecret');
-    const secretOk = req.query.secret && secretEnv && req.query.secret === secretEnv;
-    if (!isVercelCron && !secretOk) return res.status(401).json({ error: 'Non autorisé.' });
+    // Sécurité : seul l'en-tête « Authorization: Bearer <CRON_SECRET> » (envoyé par Vercel Cron) est accepté.
+    const cronSecret = String(process.env.CRON_SECRET || '').trim();
+    if (!cronSecret) return res.status(503).json({ error: 'Tâche planifiée non configurée : définissez CRON_SECRET dans Vercel.' });
+    const authz = String(req.headers.authorization || '');
+    const given = Buffer.from(authz.startsWith('Bearer ') ? authz.slice(7) : '');
+    const expected = Buffer.from(cronSecret);
+    if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) return res.status(401).json({ error: 'Non autorisé.' });
 
     const since = new Date(Date.now() - 7 * 86400000);
     const [newLeads, newAppts, newQuotes, openTasks, weekViews] = await Promise.all([

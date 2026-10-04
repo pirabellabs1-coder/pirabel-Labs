@@ -170,6 +170,10 @@
       "destination": "/api"
     },
     {
+      "source": "/desinscription/(.*)",
+      "destination": "/api"
+    },
+    {
       "source": "/en",
       "destination": "/api"
     },
@@ -229,6 +233,10 @@
     {
       "path": "/api/cron/weekly-summary",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/prospection",
+      "schedule": "0 9 * * 1-5"
     }
   ],
   "cleanUrls": true,

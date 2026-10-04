@@ -200,7 +200,12 @@ const app = express();
 
 // === Middlewares ===
 app.set('trust proxy', 1);
-app.use(express.json({ limit: '3mb' })); // 3MB pour upload images base64
+// 3MB pour upload images base64. Le corps brut du webhook Resend (prospection) est conservé :
+// la signature Svix se calcule sur les octets exacts reçus, pas sur l'objet re-sérialisé.
+app.use(express.json({
+  limit: '3mb',
+  verify: (req, res, buf) => { if (req.originalUrl && req.originalUrl.startsWith('/api/prospection/webhook')) req.rawBody = buf.toString('utf8'); },
+}));
 app.use(cookieParser());
 
 const ALLOWED_ORIGINS = new Set([
@@ -7231,6 +7236,9 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
     res.status(500).json({ error: 'Erreur serveur : ' + err.message });
   }
 });
+
+// === PROSPECTION IA (agent autonome Google Maps → e-mails) : app/prospection/ ===
+require('../app/prospection/routes')(app, { auth, adminOnly, rateLimit, sanitize, sanitizeEmail, isValidEmail });
 
 // === ERROR HANDLER ===
 app.use((err, req, res, next) => {

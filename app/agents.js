@@ -1,5 +1,5 @@
 // ============================================================================
-// PIRABEL LABS — Pipeline d'agents IA (OpenRouter)
+// PIRABEL LABS — Pipeline d'agents IA (Anthropic/Claude, repli OpenRouter + Groq)
 // ----------------------------------------------------------------------------
 // Chaque agent a un ROLE, un prompt systeme, un jeu d'OUTILS autorises et un
 // modele. Le principe directeur : un agent ne fait jamais partir quelque chose
@@ -384,6 +384,128 @@ async function callGroq(opts) {
   return callChatCompletions(GROQ_ENDPOINT, opts);
 }
 
+// ---------------------------------------------------------------------------
+// Appel direct a l'API Messages d'Anthropic (Claude), avec la cle de l'agence.
+// Adaptateur : accepte le MEME format d'entree/sortie que callOpenRouter (style
+// OpenAI) afin que les boucles d'agent existantes n'aient rien a changer.
+// ---------------------------------------------------------------------------
+const ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_VERSION = '2023-06-01';
+const ANTHROPIC_MODEL_PRO = 'claude-sonnet-5-5';   // agents internes : qualite de raisonnement
+const ANTHROPIC_MODEL_FAST = 'claude-haiku-5-5';   // chatbot public, redaction prospection, analyses JSON
+
+// Pensee etendue coupee selon les contraintes par modele (sinon 400). Latence
+// maitrisee, budget de jetons preserve, et aucun bloc « thinking » a reemettre
+// dans la boucle d'outils (on contourne ainsi la « preserved thinking »).
+function anthropicThinking(model) {
+  const m = String(model || '');
+  if (/sonnet-5-5/.test(m)) return { type: 'between_tools' };                 // Sonnet 5.5 : refuse `disabled`
+  if (/haiku|opus-4|sonnet-4|sonnet-5\b|opus-5\b/.test(m)) return { type: 'disabled' };
+  return null;                                                                 // opus-5-5, fable… : laisser le defaut
+}
+
+// Ajoute un message texte en fusionnant avec le precedent s'il est de meme role :
+// Anthropic refuse (400) deux messages consecutifs de meme role.
+function pushText(msgs, role, text) {
+  const last = msgs[msgs.length - 1];
+  if (last && last.role === role) {
+    if (typeof last.content === 'string') { last.content += '\n\n' + text; return; }
+    if (Array.isArray(last.content)) { last.content.push({ type: 'text', text }); return; }
+  }
+  msgs.push({ role, content: text });
+}
+
+// Convertit une liste de messages « style OpenAI » (avec role system/tool et
+// tool_calls) vers le format Anthropic (system separe, blocs de contenu).
+function toAnthropicMessages(messages) {
+  const sys = [];
+  const msgs = [];
+  for (const m of (messages || [])) {
+    if (!m) continue;
+    if (m.role === 'system') { if (m.content) sys.push(String(m.content)); continue; }
+    if (m.role === 'tool') {
+      const block = { type: 'tool_result', tool_use_id: m.tool_call_id,
+        content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) };
+      const last = msgs[msgs.length - 1];
+      // Les resultats d'outils consecutifs doivent tenir dans UN seul message user.
+      if (last && last._toolResults) last.content.push(block);
+      else msgs.push({ role: 'user', _toolResults: true, content: [block] });
+      continue;
+    }
+    if (m.role === 'assistant') {
+      const content = [];
+      // Reinjecte tels quels les blocs « thinking » renvoyes au tour precedent :
+      // sur le MEME modele, ils doivent etre renvoyes avec leur signature, en tete
+      // du contenu, avant tout texte ou appel d'outil (« preserved thinking »).
+      for (const tb of (m._anthropicThinking || [])) content.push(tb);
+      if (m.content) content.push({ type: 'text', text: String(m.content) });
+      for (const tc of (m.tool_calls || [])) {
+        let input = {};
+        try { input = JSON.parse((tc.function && tc.function.arguments) || '{}'); } catch (e) {}
+        content.push({ type: 'tool_use', id: tc.id, name: tc.function && tc.function.name, input });
+      }
+      if (content.length) msgs.push({ role: 'assistant', content });
+      continue;
+    }
+    pushText(msgs, m.role === 'assistant' ? 'assistant' : 'user', typeof m.content === 'string' ? m.content : JSON.stringify(m.content));
+  }
+  while (msgs.length && msgs[0].role !== 'user') msgs.shift();   // Anthropic : premier message = user
+  for (const mm of msgs) delete mm._toolResults;
+  return { system: sys.join('\n\n'), msgs };
+}
+
+function toAnthropicTool(t) {
+  const f = (t && t.function) || t || {};
+  return { name: f.name, description: f.description || '', input_schema: f.parameters || { type: 'object', properties: {} } };
+}
+
+// Reponse Anthropic -> enveloppe « style OpenAI » attendue par les appelants.
+function fromAnthropicMessage(data) {
+  const blocks = Array.isArray(data && data.content) ? data.content : [];
+  let text = '';
+  const toolCalls = [];
+  const thinking = [];
+  for (const b of blocks) {
+    if (b.type === 'text') text += b.text || '';
+    else if (b.type === 'tool_use') toolCalls.push({ id: b.id, type: 'function',
+      function: { name: b.name, arguments: JSON.stringify(b.input || {}) } });
+    else if (b.type === 'thinking' || b.type === 'redacted_thinking') thinking.push(b);
+  }
+  const message = { role: 'assistant', content: text };
+  if (toolCalls.length) message.tool_calls = toolCalls;
+  // Champ opaque conserve dans la boucle d'outils (jamais persiste ni renvoye au client).
+  if (thinking.length) message._anthropicThinking = thinking;
+  return { choices: [{ message, finish_reason: data && data.stop_reason }] };
+}
+
+async function callAnthropic({ apiKey, model, messages, tools, maxTokens = 4000, timeoutMs = 22000 }) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const { system, msgs } = toAnthropicMessages(messages);
+    // Pas de `temperature` : les modeles actuels (Sonnet 5.5 / Haiku 5.5) renvoient 400
+    // sur toute valeur non par defaut de l'echantillonnage.
+    const body = { model, max_tokens: maxTokens, messages: msgs };
+    if (system) body.system = system;
+    const thinking = anthropicThinking(model);
+    if (thinking) body.thinking = thinking;
+    else body.output_config = { effort: 'low' };   // modeles a pensee non desactivable : limiter la depense
+    if (tools && tools.length) body.tools = tools.map(toAnthropicTool);
+    const r = await fetch(ANTHROPIC_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': ANTHROPIC_VERSION },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) return { ok: false, status: r.status,
+      data: { error: { message: (data && data.error && data.error.message) || ('Erreur API Anthropic (' + r.status + ').') } } };
+    return { ok: true, status: r.status, data: fromAnthropicMessage(data) };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function callChatCompletions(endpoint, { apiKey, model, messages, tools, maxTokens = 4000, temperature = 0.5, timeoutMs = 22000 }) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -411,6 +533,6 @@ async function callChatCompletions(endpoint, { apiKey, model, messages, tools, m
 module.exports = {
   AGENTS, ADMIN_AGENTS, PUBLIC_AGENT,
   AGENCY_KNOWLEDGE, QUALITY_RULES, VALIDATION_RULE,
-  buildSystemPrompt, callOpenRouter, callGroq,
-  MODEL_PRO, MODEL_FAST,
+  buildSystemPrompt, callOpenRouter, callGroq, callAnthropic,
+  MODEL_PRO, MODEL_FAST, ANTHROPIC_MODEL_PRO, ANTHROPIC_MODEL_FAST,
 };

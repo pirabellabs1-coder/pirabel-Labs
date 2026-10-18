@@ -2749,8 +2749,7 @@ const MODE_TO_AGENT = { redaction: 'redacteur', analyse: 'analyste', equipe: 'ch
 
 app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res) => {
   try {
-    const apiKey = await getOpenRouterKey();
-    if (!apiKey) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas configuré (clé OpenRouter manquante)." });
+    if (!(await hasAiProvider())) return res.status(503).json({ error: 'NO_KEY', message: "L'assistant IA n'est pas configuré (aucune clé IA — ajoutez ANTHROPIC_API_KEY)." });
 
     // Sélection de l'agent : paramètre `agent` explicite, sinon dérivé de l'ancien `mode`.
     const agentId = AI.AGENTS[req.body.agent] && AI.AGENTS[req.body.agent].scope === 'admin'
@@ -2769,7 +2768,6 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
 
     const ctx = await gatherBusinessContext();
     const system = AI.buildSystemPrompt(agent, JSON.stringify(ctx));
-    const model = process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || agent.model;
     // Les casquettes internes ont acces a TOUS les outils : la specialisation guide
     // le comportement via le prompt, elle ne doit pas brider ce que l'agent peut faire.
     const tools = assistantToolsOpenAI(ASSISTANT_TOOLS.map(t => t.name));
@@ -2782,12 +2780,12 @@ app.post('/api/admin/assistant', auth, adminOnly, limitBody(80), async (req, res
     for (let turn = 0; turn < 6; turn++) {
       // Le délai doit rester sous la durée max de la fonction (60 s) tout en laissant
       // le temps aux générations longues : la rédaction d'un article dépasse 30 s.
-      const { ok, status, data } = await AI.callOpenRouter({ apiKey, model, messages: convo, tools,
-        maxTokens: agent.maxTokens || 4000, temperature: 0.5, timeoutMs: agent.timeoutMs || 45000 });
+      const { ok, status, data } = await aiComplete({ messages: convo, tools,
+        maxTokens: agent.maxTokens || 4000, timeoutMs: agent.timeoutMs || 45000, fast: agent.model === AI.MODEL_FAST });
       if (!ok) {
         console.error('[ai.api]', status, JSON.stringify(data).slice(0, 300));
-        if (status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Limite de débit atteinte chez OpenRouter. Patiente quelques secondes et réessaie.' });
-        if (status === 402) return res.status(402).json({ error: 'NO_CREDIT', message: 'Crédit OpenRouter épuisé. Recharge le compte pour continuer à utiliser les agents.' });
+        if (status === 429) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Limite de débit atteinte. Patiente quelques secondes et réessaie.' });
+        if (status === 402) return res.status(402).json({ error: 'NO_CREDIT', message: 'Crédit IA épuisé. Recharge le compte pour continuer à utiliser les agents.' });
         return res.status(502).json({ error: 'API_ERROR', message: (data && data.error && data.error.message) || 'Erreur API IA.' });
       }
       const msg = (data.choices && data.choices[0] && data.choices[0].message) || {};
@@ -3599,8 +3597,7 @@ app.post('/api/candidatures', candidatureLimiter, limitBody(20), async (req, res
 
 // Evaluation d'une candidature par Ayaba : synthese et adequation au poste.
 async function analyserCandidature(cand, job) {
-  const apiKey = await getOpenRouterKey();
-  if (!apiKey) return;
+  if (!(await hasAiProvider())) return;
   const system = `Tu es Ayaba, assistante de Pirabel Labs (agence web et marketing, Benin).
 Tu evalues une candidature. Reponds UNIQUEMENT par un objet JSON valide :
 {"resume":"3 phrases : qui est ce candidat et ce qu'il apporte","adequation":0,
@@ -3614,10 +3611,9 @@ aucune experience non mentionnee. Francais impeccable, sans caractere de mise en
     `CV : ${cand.cvUrl}\nLinkedIn : ${cand.linkedin || 'non fourni'}\nPortfolio : ${cand.portfolio || 'non fourni'}\n` +
     `\nMotivation :\n${cand.coverLetter}`;
 
-  const { ok, data } = await AI.callOpenRouter({
-    apiKey, model: AI.MODEL_FAST,
+  const { ok, data } = await aiComplete({
     messages: [{ role: 'system', content: system }, { role: 'user', content: contenu }],
-    maxTokens: 600, temperature: 0.3, timeoutMs: 18000,
+    maxTokens: 600, timeoutMs: 18000, fast: true,
   });
   if (!ok) return;
   const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
@@ -4316,9 +4312,7 @@ const chatLimiter = rateLimit({
 
 app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
   try {
-    const apiKey = await getOpenRouterKey();
-    const groqKey = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
-    if (!apiKey && !groqKey) return res.status(503).json({ error: 'NO_KEY', reply: "L'assistant n'est pas disponible pour le moment. Écrivez-nous à contact@pirabellabs.com, nous répondons vite." });
+    if (!(await hasAiProvider())) return res.status(503).json({ error: 'NO_KEY', reply: "L'assistant n'est pas disponible pour le moment. Écrivez-nous à contact@pirabellabs.com, nous répondons vite." });
 
     const agent = AI.PUBLIC_AGENT;
     // Historique volontairement court : chaque message renvoie tout le contexte au modèle.
@@ -4329,26 +4323,15 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
       .map(m => ({ role: m.role, content: m.content.slice(0, 1200) }));
     if (!history.length || history[history.length - 1].role !== 'user') return res.status(400).json({ error: 'Message requis.' });
 
-    const model = process.env.OPENROUTER_MODEL_PUBLIC || agent.model;
     const tools = assistantToolsOpenAI(agent.tools);
     const convo = [{ role: 'system', content: AI.buildSystemPrompt(agent, null, { page: typeof req.body.page === 'string' ? req.body.page : '' }) }].concat(history);
     let finalText = '';
     let captured = false;
 
     // Boucle courte : le chatbot doit répondre vite (2 tours d'outils maximum).
-    // Fournisseur : OpenRouter, puis Groq en relais si OpenRouter refuse (crédit épuisé, surcharge, panne).
-    let useGroq = !apiKey;
-    const groqModel = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
-    const ask = () => useGroq
-      ? AI.callGroq({ apiKey: groqKey, model: groqModel, messages: convo, tools, maxTokens: 400, temperature: 0.6, timeoutMs: 15000 })
-      : AI.callOpenRouter({ apiKey, model, messages: convo, tools, maxTokens: 400, temperature: 0.6, timeoutMs: 18000 });
+    // Fournisseur : Claude en priorité, repli automatique OpenRouter puis Groq (géré par aiComplete).
     for (let turn = 0; turn < 3; turn++) {
-      let { ok, status, data } = await ask().catch((e) => ({ ok: false, status: 0, data: { error: e.name } }));
-      if (!ok && !useGroq && groqKey && [0, 402, 408, 429, 500, 502, 503, 504].includes(status)) {
-        console.error('[chat.public] OpenRouter', status, '→ relais Groq');
-        useGroq = true;
-        ({ ok, status, data } = await ask().catch((e) => ({ ok: false, status: 0, data: { error: e.name } })));
-      }
+      const { ok, status, data } = await aiComplete({ messages: convo, tools, maxTokens: 400, timeoutMs: 18000, fast: true });
       if (!ok) {
         console.error('[chat.public]', status, JSON.stringify(data).slice(0, 200));
         return res.status(200).json({ reply: "Je rencontre un souci technique. Écrivez-nous directement à contact@pirabellabs.com ou sur WhatsApp, l'équipe vous répondra rapidement." });
@@ -4396,7 +4379,7 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
         }
         // Analyse : au moment où le contact est capté, ou après un échange déjà nourri.
         if (!session.analyzedAt && (captured || full.length >= 6)) {
-          await analyserConversation(session, apiKey).catch(e => console.error('[chat.analyse]', e.message));
+          await analyserConversation(session).catch(e => console.error('[chat.analyse]', e.message));
         }
       }
     } catch (e) { console.error('[chat.persist]', e.message); }
@@ -4412,8 +4395,7 @@ app.post('/api/chat', chatLimiter, limitBody(40), async (req, res) => {
 // prospect et prépare une réponse personnalisée, mise en attente de validation.
 // Appel unique sur le modèle rapide pour ne pas ralentir l'envoi du formulaire.
 async function traiterFormulaire(lead) {
-  const apiKey = await getOpenRouterKey();
-  if (!apiKey) return;
+  if (!(await hasAiProvider())) return;
 
   const system = `Tu es Ayaba, assistante de Pirabel Labs (agence web et marketing digital, Abomey-Calavi, Benin).
 Une demande vient d'arriver par le formulaire du site. Tu la qualifies et tu prepares la reponse.
@@ -4441,10 +4423,9 @@ identifiable mais flou. froid = demande vague, hors sujet, ou candidature sponta
     `E-mail : ${lead.email}\nTéléphone : ${lead.phone || 'non précisé'}\n` +
     `Service demande : ${lead.service}\n\nMessage :\n${lead.message}`;
 
-  const { ok, data } = await AI.callOpenRouter({
-    apiKey, model: AI.MODEL_FAST,
+  const { ok, data } = await aiComplete({
     messages: [{ role: 'system', content: system }, { role: 'user', content: demande }],
-    maxTokens: 1400, temperature: 0.4, timeoutMs: 20000,
+    maxTokens: 1400, timeoutMs: 20000, fast: true,
   });
   if (!ok) return;
   const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
@@ -4481,7 +4462,7 @@ identifiable mais flou. froid = demande vague, hors sujet, ou candidature sponta
 
 // Analyse d'une conversation publique : résumé + qualification du prospect.
 // Appel volontairement bref et sur le modèle économique : ce n'est pas de la rédaction.
-async function analyserConversation(session, apiKey) {
+async function analyserConversation(session) {
   const transcript = (session.messages || []).slice(-16)
     .map(m => (m.role === 'user' ? 'VISITEUR' : 'ASSISTANT') + ' : ' + m.content).join('\n').slice(0, 6000);
   if (!transcript) return;
@@ -4501,10 +4482,9 @@ score : entier de 0 a 100 refletant la probabilite de conversion.
 N'invente rien : si une information n'a pas ete dite, laisse la chaine vide.
 Francais impeccable, sans aucun caractere de mise en forme.`;
 
-  const { ok, data } = await AI.callOpenRouter({
-    apiKey, model: AI.MODEL_FAST,
+  const { ok, data } = await aiComplete({
     messages: [{ role: 'system', content: system }, { role: 'user', content: transcript }],
-    maxTokens: 500, temperature: 0.2, timeoutMs: 15000,
+    maxTokens: 500, timeoutMs: 15000, fast: true,
   });
   if (!ok) return;
   const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim();
@@ -4562,16 +4542,15 @@ app.post('/api/admin/chat-sessions/:id/analyser', auth, adminOnly, async (req, r
   try {
     const s = await ChatSession.findById(req.params.id);
     if (!s) return res.status(404).json({ error: 'Conversation introuvable.' });
-    const apiKey = await getOpenRouterKey();
-    if (!apiKey) return res.status(503).json({ error: 'Clé OpenRouter manquante.' });
+    if (!(await hasAiProvider())) return res.status(503).json({ error: 'Aucune clé IA configurée.' });
     s.analyzedAt = undefined;
-    await analyserConversation(s, apiKey);
+    await analyserConversation(s);
     res.json({ success: true, qualification: s.qualification, score: s.score, resume: s.summary, prochaineAction: s.prochaineAction });
   } catch (e) { console.error('[chat.analyse.manual]', e.message); res.status(500).json({ error: 'Erreur analyse : ' + e.message }); }
 });
 
 // Réglages IA — admin only. La valeur est stockée en base, jamais relue par le client.
-const ALLOWED_SETTINGS = ['openrouterApiKey', 'openrouterModel', 'groqApiKey', 'groqModel', 'cronSecret'];
+const ALLOWED_SETTINGS = ['anthropicApiKey', 'openrouterApiKey', 'openrouterModel', 'groqApiKey', 'groqModel', 'cronSecret'];
 app.post('/api/admin/settings', auth, adminOnly, limitBody(10), async (req, res) => {
   try {
     const key = String(req.body.key || '');
@@ -4586,7 +4565,12 @@ app.get('/api/admin/settings/status', auth, adminOnly, async (req, res) => {
   try {
     const groq = process.env.GROQ_API_KEY || await getSetting('groqApiKey');
     const openrouter = await getOpenRouterKey();
+    const anthropic = await getAnthropicKey();
     res.json({
+      anthropicConfigured: !!anthropic,
+      anthropicSource: process.env.ANTHROPIC_API_KEY ? 'env' : (anthropic ? 'db' : 'none'),
+      anthropicModel: process.env.ANTHROPIC_MODEL || AI.ANTHROPIC_MODEL_PRO,
+      provider: anthropic ? 'anthropic' : (openrouter ? 'openrouter' : (groq ? 'groq' : 'none')),
       openrouterConfigured: !!openrouter,
       openrouterSource: process.env.OPENROUTER_API_KEY ? 'env' : (openrouter ? 'db' : 'none'),
       openrouterModel: process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || AI.MODEL_PRO,
@@ -4705,6 +4689,55 @@ function estRequeteInterne(req) {
 // Clé OpenRouter : variable d'environnement en priorité, sinon réglage en base.
 async function getOpenRouterKey() {
   return process.env.OPENROUTER_API_KEY || await getSetting('openrouterApiKey');
+}
+// Clé Anthropic (Claude) : variable d'environnement en priorité, sinon réglage en base.
+async function getAnthropicKey() {
+  return (process.env.ANTHROPIC_API_KEY || await getSetting('anthropicApiKey') || '').trim();
+}
+// Au moins un fournisseur IA est-il configuré ?
+async function hasAiProvider() {
+  return !!((await getAnthropicKey()) || (await getOpenRouterKey()) || process.env.GROQ_API_KEY || await getSetting('groqApiKey'));
+}
+
+// Fournisseur IA unifié. Claude (Anthropic) en PRIORITÉ si sa clé est configurée,
+// avec repli automatique sur OpenRouter puis Groq en cas d'échec « fournisseur »
+// (crédit épuisé, débit, panne, réseau). Entrée/sortie au format OpenAI, si bien
+// que les boucles d'agent restent inchangées. `fast` choisit le modèle économique.
+async function aiComplete({ messages, tools, maxTokens = 4000, timeoutMs = 22000, fast = false }) {
+  const attempts = [];
+  const anthKey = await getAnthropicKey();
+  if (anthKey) {
+    const model = fast
+      ? (process.env.ANTHROPIC_MODEL_FAST || AI.ANTHROPIC_MODEL_FAST)
+      : (process.env.ANTHROPIC_MODEL || AI.ANTHROPIC_MODEL_PRO);
+    attempts.push({ name: 'anthropic', call: () => AI.callAnthropic({ apiKey: anthKey, model, messages, tools, maxTokens, timeoutMs }) });
+  }
+  const orKey = await getOpenRouterKey();
+  if (orKey) {
+    const model = fast
+      ? (process.env.OPENROUTER_MODEL_PUBLIC || AI.MODEL_FAST)
+      : (process.env.OPENROUTER_MODEL || (await getSetting('openrouterModel')) || AI.MODEL_PRO);
+    attempts.push({ name: 'openrouter', call: () => AI.callOpenRouter({ apiKey: orKey, model, messages, tools, maxTokens, temperature: 0.5, timeoutMs }) });
+  }
+  const groqKey = (process.env.GROQ_API_KEY || await getSetting('groqApiKey') || '').trim();
+  if (groqKey) {
+    const groqModel = process.env.GROQ_MODEL || (await getSetting('groqModel')) || 'llama-3.3-70b-versatile';
+    attempts.push({ name: 'groq', call: () => AI.callGroq({ apiKey: groqKey, model: groqModel, messages, tools, maxTokens, temperature: 0.5, timeoutMs }) });
+  }
+  let last = { ok: false, status: 503, data: { error: { message: 'Aucun fournisseur IA configuré.' } } };
+  for (let i = 0; i < attempts.length; i++) {
+    const r = await attempts[i].call().catch((e) => ({ ok: false, status: 0, data: { error: { message: e.message } } }));
+    if (r && r.ok) return { ...r, provider: attempts[i].name };
+    last = r || last;
+    // Repli sur une erreur « fournisseur » (crédit, débit, panne, réseau). On replie AUSSI
+    // sur un 400 d'Anthropic : un identifiant de modèle ou un paramètre inattendu ne doit pas
+    // neutraliser tout l'IA alors qu'OpenRouter/Groq sont disponibles.
+    const providerErr = r && [0, 401, 402, 408, 429, 500, 502, 503, 504].includes(r.status);
+    const anthShapeErr = r && r.status === 400 && attempts[i].name === 'anthropic' && i < attempts.length - 1;
+    if (!(providerErr || anthShapeErr)) return { ...r, provider: attempts[i].name };
+    if (i < attempts.length - 1) console.error('[ai]', attempts[i].name, (r && r.status) || '?', '→ repli', attempts[i + 1].name);
+  }
+  return { ...last, provider: (attempts[attempts.length - 1] || {}).name };
 }
 // Contexte métier + invites système + définitions d'outils (pour la boucle d'agent dans le navigateur).
 app.get('/api/admin/assistant/context', auth, adminOnly, async (req, res) => {

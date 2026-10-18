@@ -575,6 +575,7 @@ select option { background: var(--bg-2); color: var(--text); }
       <button type="button" class="sidebar__link" data-view="reviews" data-label="Avis clients" title="Avis clients"><span class="material-symbols-outlined" aria-hidden="true">reviews</span><span class="sidebar__link-text">Avis clients</span></button>
       <button type="button" class="sidebar__link" data-view="bulk-email" data-label="E-mails groupés" title="E-mails groupés"><span class="material-symbols-outlined" aria-hidden="true">campaign</span><span class="sidebar__link-text">E-mails groupés</span></button>
       <button type="button" class="sidebar__link" data-view="emails" data-label="E-mails envoyés" title="E-mails envoyés"><span class="material-symbols-outlined" aria-hidden="true">outgoing_mail</span><span class="sidebar__link-text">E-mails envoyés</span></button>
+      <button type="button" class="sidebar__link" data-view="inbox" data-label="Boîte mail IA" title="Boîte mail IA"><span class="material-symbols-outlined" aria-hidden="true">inbox</span><span class="sidebar__link-text">Boîte mail IA</span> <span id="ibBadge" class="nav-badge" style="display:none;" title="E-mails à traiter"></span></button>
       <button type="button" class="sidebar__link" data-view="conversations" data-label="Conversations du site" title="Conversations du site"><span class="material-symbols-outlined" aria-hidden="true">chat</span><span class="sidebar__link-text">Conversations du site</span> <span id="csBadge" class="nav-badge" style="display:none;" title="Conversations non lues"></span></button>
       <div class="sidebar__group" aria-hidden="true">Équipe</div>
       <button type="button" class="sidebar__link" data-view="team" data-label="Équipe" title="Équipe"><span class="material-symbols-outlined" aria-hidden="true">groups</span><span class="sidebar__link-text">Équipe</span></button>
@@ -1167,6 +1168,24 @@ select option { background: var(--bg-2); color: var(--text); }
       <div id="csList" class="stack"></div>
     </div>
 
+    <!-- BOÎTE MAIL IA -->
+    <div class="view" data-view="inbox">
+      <div id="ibBar" class="card" style="margin-bottom:1rem;"></div>
+      <div class="view-head">
+        <div class="row" id="ibFilters">
+          <button class="btn btn--sm" data-s="brouillon">À traiter</button>
+          <button class="btn btn--ghost btn--sm" data-s="">Tous</button>
+          <button class="btn btn--ghost btn--sm" data-s="repondu">Répondus</button>
+          <button class="btn btn--ghost btn--sm" data-s="ignore">Ignorés</button>
+        </div>
+        <div class="row">
+          <button class="btn btn--ghost btn--sm" id="ibPoll"><span class="material-symbols-outlined">sync</span> Relever maintenant</button>
+          <button class="btn btn--ghost btn--sm" id="ibRefresh"><span class="material-symbols-outlined">refresh</span> Actualiser</button>
+        </div>
+      </div>
+      <div id="ibList" class="stack"><div class="empty">Chargement…</div></div>
+    </div>
+
     <!-- RECRUTEMENT -->
     <div class="view" data-view="recrutement">
       <div class="view-head">
@@ -1468,6 +1487,7 @@ const VIEW_TITLES = {
   'bulk-email': ['E-mails groupés', 'Newsletter et relances aux prospects'],
   emails: ['E-mails envoyés', 'Historique des e-mails individuels et des campagnes'],
   conversations: ['Conversations du site', 'Échanges tenus avec Ayaba sur le site public'],
+  inbox: ['Boîte mail IA', 'E-mails reçus sur contact@ : triés et préparés par Claude'],
   team: ['Équipe', 'Membres et rôles'],
   tasks: ['Tâches', 'Répartition et suivi du travail'],
   recrutement: ['Recrutement', 'Offres d’emploi et candidatures reçues'],
@@ -1516,6 +1536,7 @@ function setView(view) {
   if (view === 'quotes') loadQuotes();
   if (view === 'invoices') loadInvoices();
   if (view === 'conversations') loadChatSessions();
+  if (view === 'inbox') loadInbox();
   if (view === 'recrutement') loadRecrutement();
   if (view === 'comptabilite') loadComptabilite();
   if (view === 'reviews') loadReviews();
@@ -6453,6 +6474,139 @@ async function prDelSuppression(id) {
 // Accès direct par l'URL (#prospection) : la vue initiale est ouverte avant la définition de ce module.
 document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelector('.view.is-active[data-view="prospection"]') && !PR.data) loadProspection();
+});
+
+// ============ BOÎTE MAIL IA ============
+var IB = { status: 'brouillon', config: null, configured: false };
+function ibEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var IB_CAT = { prospect: 'Prospect', client: 'Client', facture: 'Facture', rendez_vous: 'Rendez-vous', support: 'Support', spam: 'Spam', sensible: 'Sensible', autre: 'Autre' };
+var IB_STATUS = { nouveau: 'Nouveau', brouillon: 'À traiter', repondu: 'Répondu', ignore: 'Ignoré', erreur: 'Erreur' };
+function ibSetFilter(el) {
+  var btns = document.querySelectorAll('#ibFilters [data-s]');
+  for (var i = 0; i < btns.length; i++) btns[i].className = 'btn btn--ghost btn--sm';
+  el.className = 'btn btn--sm';
+  IB.status = el.getAttribute('data-s') || '';
+  loadInbox();
+}
+async function loadInbox() {
+  var list = document.getElementById('ibList'); if (!list) return;
+  list.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    var d = await api('/api/admin/inbox' + (IB.status ? '?status=' + IB.status : ''));
+    IB.config = d.config; IB.configured = d.configured;
+    ibRenderBar(d);
+    var badge = document.getElementById('ibBadge');
+    if (badge) { if (d.aTraiter > 0) { badge.textContent = d.aTraiter; badge.style.display = ''; } else badge.style.display = 'none'; }
+    if (!d.emails.length) { list.innerHTML = '<div class="empty" style="padding:1.5rem;">Aucun e-mail dans cette vue.</div>'; return; }
+    list.innerHTML = d.emails.map(ibCard).join('');
+  } catch (e) { list.innerHTML = '<div class="empty empty--error" role="alert">' + ibEsc(e.message) + '</div>'; }
+}
+function ibRenderBar(d) {
+  var bar = document.getElementById('ibBar'); if (!bar) return;
+  if (!d.configured) {
+    bar.innerHTML = '<div class="card__header"><div><div class="card__title">Boîte non connectée</div><div class="card__sub">Ajoutez les accès IMAP pour que Claude relève votre boîte</div></div></div>' +
+      '<p class="muted" style="font-size:.88rem;line-height:1.6;margin:.2rem 0 0;">Dans Vercel → Settings → Environment Variables, ajoutez <code>MAIL_IMAP_HOST</code> (ex. imap.hostinger.com), <code>MAIL_IMAP_PORT</code> (993), <code>MAIL_IMAP_USER</code> (contact@pirabellabs.com) et <code>MAIL_IMAP_PASSWORD</code>, puis redéployez.</p>';
+    return;
+  }
+  var c = d.config;
+  var auto = c.mode === 'auto';
+  bar.innerHTML = '<div class="card__header"><div><div class="card__title">Relève ' + (c.enabled ? '<span class="badge badge--success">autorisée</span>' : '<span class="badge">en pause</span>') + '</div>' +
+    '<div class="card__sub">Mode actuel : <strong>' + (auto ? 'envoi automatique encadré' : 'brouillon à valider') + '</strong>' + (auto ? ' · plafond ' + c.hourlyCap + '/h' : '') + ' · déclenchée par le planificateur et le bouton ci-dessous</div></div></div>' +
+    '<div class="row" style="gap:.5rem;flex-wrap:wrap;margin-top:.4rem;">' +
+      '<button class="btn btn--ghost btn--sm" onclick="ibToggleEnabled()"><span class="material-symbols-outlined">' + (c.enabled ? 'pause' : 'play_arrow') + '</span> ' + (c.enabled ? 'Mettre en pause' : 'Réactiver') + '</button>' +
+      (auto
+        ? '<button class="btn btn--ghost btn--sm" onclick="ibSetMode(false)"><span class="material-symbols-outlined">drafts</span> Repasser en brouillon</button>'
+        : '<button class="btn btn--sm" onclick="ibSetMode(true)"><span class="material-symbols-outlined">bolt</span> Passer en envoi automatique</button>') +
+    '</div>' +
+    (auto ? '' : '<p class="muted" style="font-size:.82rem;margin:.6rem 0 0;">En mode brouillon, Claude prépare les réponses mais rien ne part sans votre clic. Laissez-le une semaine, puis passez en automatique.</p>');
+}
+function ibCard(e) {
+  var qbadge = e.qualification === 'chaud' ? '<span class="badge badge--success">chaud</span>' : (e.qualification === 'tiede' ? '<span class="badge">tiède</span>' : '');
+  var flag = e.flagged ? '<span class="badge" style="background:#b4530955;">à vérifier</span>' : '';
+  var st = e.status === 'repondu' ? '<span class="badge badge--success">répondu</span>' : (e.status === 'ignore' ? '<span class="badge">ignoré</span>' : (e.status === 'erreur' ? '<span class="badge" style="background:#b4530955;">erreur</span>' : (e.status === 'brouillon' ? '<span class="badge">brouillon prêt</span>' : '')));
+  return '<div class="card" style="cursor:pointer;' + (e.readByAdmin ? '' : 'border-left:3px solid var(--accent,#6c5ce7);') + '" onclick="ibOpen(\'' + e._id + '\')">' +
+    '<div class="row" style="justify-content:space-between;gap:.5rem;align-items:flex-start;">' +
+      '<div style="min-width:0;"><div style="font-weight:600;overflow-wrap:anywhere;">' + ibEsc(e.fromName || e.fromEmail) + '</div>' +
+      '<div class="muted" style="font-size:.82rem;overflow-wrap:anywhere;">' + ibEsc(e.fromEmail) + '</div></div>' +
+      '<div class="row" style="gap:.3rem;flex-wrap:wrap;justify-content:flex-end;"><span class="badge">' + ibEsc(IB_CAT[e.category] || e.category) + '</span>' + qbadge + flag + st + '</div>' +
+    '</div>' +
+    '<div style="font-weight:600;margin-top:.4rem;overflow-wrap:anywhere;">' + ibEsc(e.subject || '(sans objet)') + '</div>' +
+    '<div class="muted" style="font-size:.86rem;margin-top:.2rem;overflow-wrap:anywhere;">' + ibEsc(e.snippet) + '</div>' +
+    '<div class="muted" style="font-size:.78rem;margin-top:.4rem;">' + (e.receivedAt ? fmtDateTime(e.receivedAt) : '') + '</div>' +
+  '</div>';
+}
+async function ibOpen(id) {
+  var list = document.getElementById('ibList');
+  list.innerHTML = '<div class="empty">Chargement…</div>';
+  try {
+    var d = await api('/api/admin/inbox/' + id);
+    var e = d.email;
+    var repondu = e.status === 'repondu';
+    var lecture = repondu || e.status === 'ignore';   // répondu ou ignoré : pas d'éditeur
+    list.innerHTML =
+      '<button class="btn btn--ghost btn--sm" onclick="loadInbox()" style="margin-bottom:.8rem;"><span class="material-symbols-outlined">arrow_back</span> Retour</button>' +
+      '<div class="card" style="margin-bottom:1rem;">' +
+        '<div class="row" style="justify-content:space-between;gap:.5rem;"><div><div style="font-weight:600;">' + ibEsc(e.fromName || e.fromEmail) + '</div><div class="muted" style="font-size:.82rem;">' + ibEsc(e.fromEmail) + '</div></div>' +
+        '<div class="row" style="gap:.3rem;flex-wrap:wrap;"><span class="badge">' + ibEsc(IB_CAT[e.category] || e.category) + '</span>' + (e.flagged ? '<span class="badge" style="background:#b4530955;">à vérifier</span>' : '') + '</div></div>' +
+        '<div style="font-weight:600;margin-top:.5rem;">' + ibEsc(e.subject || '(sans objet)') + '</div>' +
+        (e.summary ? '<div class="muted" style="font-size:.85rem;margin-top:.4rem;"><strong>Résumé&nbsp;:</strong> ' + ibEsc(e.summary) + '</div>' : '') +
+        '<details style="margin-top:.6rem;"><summary class="muted" style="cursor:pointer;font-size:.85rem;">Voir le message reçu</summary><div style="white-space:pre-wrap;margin-top:.5rem;font-size:.88rem;line-height:1.55;overflow-wrap:anywhere;">' + ibEsc(e.text) + '</div></details>' +
+      '</div>' +
+      (lecture
+        ? '<div class="card">' + (repondu ? '<div class="badge badge--success">Répondu le ' + (e.repliedAt ? fmtDateTime(e.repliedAt) : '') + '</div>' : '<div class="badge">Ignoré — aucune réponse</div>') + (e.draftBody ? '<div style="white-space:pre-wrap;margin-top:.6rem;font-size:.9rem;line-height:1.55;">' + ibEsc(e.draftBody) + '</div>' : '') + '</div>'
+        : '<div class="card"><div class="card__header"><div><div class="card__title">Réponse préparée par Claude</div><div class="card__sub">' + (e.autoEligible ? 'Jugée sûre pour un envoi automatique' : 'À valider par vous') + '</div></div></div>' +
+          '<label class="pwd-field"><span>Objet</span><input class="input" id="ibSubj" value="' + ibEsc(e.draftSubject) + '"></label>' +
+          '<label class="pwd-field" style="margin-top:.5rem;"><span>Message</span><textarea class="input" id="ibBody" rows="10" style="line-height:1.55;">' + ibEsc(e.draftBody) + '</textarea></label>' +
+          '<div class="row" style="gap:.5rem;flex-wrap:wrap;margin-top:.7rem;">' +
+            '<button class="btn btn--sm" onclick="ibSend(\'' + e._id + '\')"><span class="material-symbols-outlined">send</span> Envoyer la réponse</button>' +
+            '<button class="btn btn--ghost btn--sm" onclick="ibSave(\'' + e._id + '\')"><span class="material-symbols-outlined">save</span> Enregistrer</button>' +
+            '<button class="btn btn--ghost btn--sm" onclick="ibRedraft(\'' + e._id + '\')"><span class="material-symbols-outlined">autorenew</span> Régénérer</button>' +
+            '<button class="btn btn--ghost btn--sm" onclick="ibIgnore(\'' + e._id + '\')"><span class="material-symbols-outlined">block</span> Ignorer</button>' +
+          '</div></div>');
+  } catch (err) { list.innerHTML = '<div class="empty empty--error" role="alert">' + ibEsc(err.message) + '</div>'; }
+}
+function ibDraftBody(id) { var b = { draftBody: document.getElementById('ibBody').value }; var s = document.getElementById('ibSubj'); if (s) b.draftSubject = s.value; return b; }
+async function ibSend(id) {
+  if (!confirm('Envoyer cette réponse à l’expéditeur ?')) return;
+  try { await api('/api/admin/inbox/' + id + '/send', { method: 'POST', body: ibDraftBody(id) }); toast('Réponse envoyée', 'success'); loadInbox(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function ibSave(id) {
+  try { await api('/api/admin/inbox/' + id, { method: 'PUT', body: ibDraftBody(id) }); toast('Brouillon enregistré', 'success'); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function ibRedraft(id) {
+  toast('Régénération…', '');
+  try { await api('/api/admin/inbox/' + id + '/redraft', { method: 'POST' }); ibOpen(id); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function ibIgnore(id) {
+  try { await api('/api/admin/inbox/' + id + '/ignore', { method: 'POST' }); toast('E-mail ignoré', 'success'); loadInbox(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function ibPollNow() {
+  var btn = document.getElementById('ibPoll'); if (btn) btn.disabled = true;
+  toast('Relève en cours…', '');
+  try {
+    var r = await api('/api/admin/inbox/poll', { method: 'POST' });
+    toast(r.baseline ? 'Boîte synchronisée : les prochains e-mails seront traités.' : ('Relève terminée : ' + (r.processed || 0) + ' nouveau(x), ' + (r.drafted || 0) + ' brouillon(s)' + (r.sent ? ', ' + r.sent + ' envoyé(s)' : '') + '.'), 'success');
+    loadInbox();
+  } catch (e) { toast(e.message, 'error'); }
+  finally { if (btn) btn.disabled = false; }
+}
+async function ibToggleEnabled() {
+  try { await api('/api/admin/inbox/settings', { method: 'PUT', body: { enabled: !IB.config.enabled } }); loadInbox(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function ibSetMode(auto) {
+  if (auto && !confirm('Passer en envoi AUTOMATIQUE ?\n\nClaude répondra seul aux e-mails clairs et sans risque (jamais aux factures, prix, contrats ou sujets sensibles, qui restent en brouillon). Vous pourrez revenir en arrière à tout moment.')) return;
+  try { await api('/api/admin/inbox/settings', { method: 'PUT', body: { mode: auto ? 'auto' : 'brouillon' } }); toast(auto ? 'Envoi automatique activé' : 'Repassé en brouillon', 'success'); loadInbox(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var poll = document.getElementById('ibPoll'); if (poll) poll.addEventListener('click', ibPollNow);
+  var refr = document.getElementById('ibRefresh'); if (refr) refr.addEventListener('click', loadInbox);
+  var filt = document.getElementById('ibFilters'); if (filt) filt.addEventListener('click', function (ev) { var b = ev.target.closest('[data-s]'); if (b) ibSetFilter(b); });
 });
 </script>
 <!-- /PROSPECTION IA MODULE -->

@@ -7276,6 +7276,7 @@ app.post('/api/admin/test-email', auth, adminOnly, limitBody(5), async (req, res
 
 // === PROSPECTION IA (agent autonome Google Maps → e-mails) : app/prospection/ ===
 require('../app/prospection/routes')(app, { auth, adminOnly, rateLimit, sanitize, sanitizeEmail, isValidEmail });
+require('../app/inbox/routes')(app, { auth, adminOnly, rateLimit, sanitize });
 
 // === ERROR HANDLER ===
 app.use((err, req, res, next) => {

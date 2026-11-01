@@ -33,7 +33,7 @@ const { sendEmail, masterTemplate, newOrderEmail, infoTable: emailInfoTable, EMA
 } = require('../app/config/email');
 const {
   rateLimit, sanitize, sanitizeSoft, sanitizeEmail, honeypotCheck, limitBody,
-  isValidEmail, securityHeaders, globalSanitize,
+  isValidEmail, securityHeaders, globalSanitize, looksLikeBotSubmission,
 } = require('../app/middleware/security');
 const { auth, adminOnly } = require('../app/middleware/auth');
 const siteNav = require('../app/nav'); // en-tête de site partagé (mega menu) pour blog/réalisations/témoignages
@@ -491,6 +491,10 @@ app.post('/api/contact', contactLimiter, honeypotCheck('website_url'), limitBody
       return res.status(400).json({ error: 'Service invalide.' });
     }
     if (!message || message.length < 10) return res.status(400).json({ error: 'Message trop court (10 caracteres min).' });
+    if (looksLikeBotSubmission({ name, email, company, message })) {
+      console.warn('[contact] soumission robot ignorée :', email);
+      return res.json({ success: true, message: 'Merci !' });
+    }
 
     const ipHash = crypto.createHash('sha256')
       .update((req.ip || '') + (process.env.JWT_SECRET || ''))
@@ -677,7 +681,17 @@ app.post('/api/rdv', contactLimiter, honeypotCheck('website_url'), limitBody(10)
     if (!name || name.length < 2) return res.status(400).json({ error: 'Nom requis.' });
     if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail invalide.' });
     if (!preferredDate) return res.status(400).json({ error: 'Date souhaitée requise.' });
+    // Créneau réaliste : date valide, entre aujourd'hui (veille tolérée, fuseaux) et un an.
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(preferredDate) ? Date.parse(preferredDate + 'T12:00:00Z') : NaN;
+    if (!Number.isFinite(day) || day < Date.now() - 2 * 86400000 || day > Date.now() + 366 * 86400000) {
+      return res.status(400).json({ error: 'Date souhaitée invalide : choisissez une date à venir.' });
+    }
     if (!phone && channel !== 'visio') return res.status(400).json({ error: 'Téléphone requis pour ce canal.' });
+    // Robot : succès simulé, rien n'est enregistré ni envoyé (on ne lui révèle pas la détection).
+    if (looksLikeBotSubmission({ name, email, company, subject, message })) {
+      console.warn('[rdv] soumission robot ignorée :', email);
+      return res.json({ success: true, message: 'Demande de rendez-vous envoyée. Confirmation sous 24h ouvrées.' });
+    }
 
     const publicToken = crypto.randomBytes(24).toString('hex');
     const appt = await Appointment.create({ name, email, phone, company, preferredDate, preferredTime, channel, subject, message, publicToken, source: 'site_contact' });

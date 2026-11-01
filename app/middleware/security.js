@@ -114,6 +114,28 @@ function honeypotCheck(fieldName = 'website_url') {
   };
 }
 
+// --- SPAM BOTS (formulaires publics) ---
+// Certains robots passent le honeypot et remplissent les champs de lettres aléatoires
+// (« RjTYhaESeJBEKCxQPjwg ») avec des adresses Gmail à points (« jaqe.je.x.u1.1@gmail.com »).
+// Un mot de 10 lettres ou plus qui change de casse au moins 4 fois n'existe pas en vrai.
+function isGibberish(value) {
+  if (typeof value !== 'string') return false;
+  return value.trim().split(/\s+/).some((w) => {
+    if (!/^[A-Za-z]{10,}$/.test(w)) return false;
+    const switches = (w.match(/[a-z][A-Z]|[A-Z][a-z]/g) || []).length;
+    return switches >= 4;
+  });
+}
+
+// Score >= 2 : soumission robot. Le nom compte double (champ toujours rempli par un humain).
+function looksLikeBotSubmission({ name, email, company, subject, message } = {}) {
+  let score = isGibberish(name) ? 2 : 0;
+  for (const v of [company, subject, message]) if (isGibberish(v)) score++;
+  const local = typeof email === 'string' ? email.split('@') : [];
+  if (/^(gmail|googlemail)\.com$/.test(local[1] || '') && (local[0].match(/\./g) || []).length >= 3) score++;
+  return score >= 2;
+}
+
 // --- REQUEST SIZE LIMITER ---
 function limitBody(maxFields = 20) {
   return (req, res, next) => {
@@ -192,6 +214,8 @@ module.exports = {
   sanitizeEmail,
   isValidEmail,
   honeypotCheck,
+  isGibberish,
+  looksLikeBotSubmission,
   limitBody,
   globalSanitize
 };

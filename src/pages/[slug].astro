@@ -19,12 +19,15 @@ import { SERVICE_GRID, serviceOf } from '../data/service-grid';
 import { CITY_BRIEFS } from '../data/cities-brief';
 import { SEO_TARGETS } from '../data/seo-targets';
 import CONTENT_OVERRIDES from '../data/content-overrides.json';
+// Pages « service × ville » sorties de l'index (contenu trop proche d'une ville à l'autre) : scripts/gen-seo-noindex.js.
+import SEO_NOINDEX from '../../app/seo-noindex.json';
 
 export function getStaticPaths() {
   return listLegacySlugs().map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
+const robots = (SEO_NOINDEX as string[]).includes(slug as string) ? 'noindex, follow' : undefined;
 const page = loadLegacy(slug as string);
 const native = page.body.includes('class="s-hero"');
 // Corrections de contenu propres à une page (ex. prix alignés sur la grille tarifaire), appliquées au texte source.
@@ -162,7 +165,7 @@ const hasRaw = blocks.some((b) => b.kind === 'raw');
     ogDescription={page.ogDescription && fixText(page.ogDescription)}
     ogImage={page.ogImage}
     ogType={page.ogType}
-    robots={page.robots}
+    robots={robots ?? page.robots}
     jsonLdRaw={jsonLd}
     breadcrumb={!page.hasBreadcrumbLd}
     footerCta={footerCta}
@@ -179,7 +182,7 @@ const hasRaw = blocks.some((b) => b.kind === 'raw');
     ogDescription={page.ogDescription}
     ogImage={page.ogImage}
     ogType={page.ogType}
-    robots={page.robots}
+    robots={robots ?? page.robots}
     jsonLdRaw={page.jsonLd}
     breadcrumb={!page.hasBreadcrumbLd}
     showFooterCta={false}

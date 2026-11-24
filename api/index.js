@@ -25,6 +25,9 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 // Signature des articles du blog : l'agence, jamais une personne.
 const BLOG_TEAM = 'L’équipe Pirabel Labs';
+// Articles génériques publiés en masse (juin-juillet 2026) : hors index Google et hors sitemap
+// le temps d'être fusionnés ou réécrits. Ils restent lisibles sur /blog.
+const BLOG_NOINDEX = new Set((() => { try { return require('../app/seo-noindex-blog.json'); } catch (e) { return []; } })());
 
 const connectDB = require('../app/config/db');
 const { sendEmail, masterTemplate, newOrderEmail, infoTable: emailInfoTable, EMAIL_STYLES: ES,
@@ -5023,7 +5026,7 @@ app.get('/blog/:slug', async (req, res) => {
     const head = '<title>' + metaTitle + '</title>' +
       '<meta name="description" content="' + metaDesc + '">' +
       '<link rel="canonical" href="' + url + '">' +
-      (a.status !== 'publie' ? '<meta name="robots" content="noindex, nofollow">' : '') +
+      (a.status !== 'publie' ? '<meta name="robots" content="noindex, nofollow">' : BLOG_NOINDEX.has(a.slug) ? '<meta name="robots" content="noindex, follow">' : '') +
       '<meta name="author" content="' + escapeHtml(byTeam ? 'Pirabel Labs' : a.author) + '">' +
       '<meta property="og:title" content="' + metaTitle + '"><meta property="og:description" content="' + metaDesc + '">' +
       '<meta property="og:type" content="article"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + escapeHtml(ogImg) + '">' +
@@ -5720,8 +5723,12 @@ app.get('/sitemap.xml', async (req, res) => {
     const arts = await Article.find({ status: 'publie' }).select('slug updatedAt').lean();
     const urls = [];
     urls.push({ loc: SITE() + '/blog', lastmod: new Date().toISOString().slice(0, 10) });
-    pages.forEach(p => urls.push({ loc: SITE() + p, lastmod: null }));
-    arts.forEach(a => urls.push({ loc: SITE() + '/blog/' + a.slug, lastmod: new Date(a.updatedAt).toISOString().slice(0, 10) }));
+    // Pages « service × ville » en noindex (scripts/gen-seo-noindex.js) : hors sitemap.
+    let noindex = [];
+    try { noindex = require('../app/seo-noindex.json'); } catch (e) {}
+    const skip = new Set(noindex.map(s => '/' + s));
+    pages.filter(p => !skip.has(p)).forEach(p => urls.push({ loc: SITE() + p, lastmod: null }));
+    arts.filter(a => !BLOG_NOINDEX.has(a.slug)).forEach(a => urls.push({ loc: SITE() + '/blog/' + a.slug, lastmod: new Date(a.updatedAt).toISOString().slice(0, 10) }));
     const cases = await CaseStudy.find({ status: 'publie' }).select('slug updatedAt').lean();
     urls.push({ loc: SITE() + '/realisations', lastmod: new Date().toISOString().slice(0, 10) });
     cases.forEach(c => urls.push({ loc: SITE() + '/realisations/' + c.slug, lastmod: new Date(c.updatedAt).toISOString().slice(0, 10) }));

@@ -16,6 +16,8 @@ const prospectEmailSchema = new mongoose.Schema({
   delivered: { type: Boolean, default: false },
   opened: { type: Boolean, default: false },
   openedAt: { type: Date },
+  clicked: { type: Boolean, default: false },               // un lien de l'e-mail a été cliqué
+  clickedAt: { type: Date },
   test: { type: Boolean, default: false },                  // envoi de test : exclu des quotas et des statistiques
   error: { type: String, default: '', maxlength: 300 },
 }, { _id: false });
@@ -63,6 +65,8 @@ const prospectSchema = new mongoose.Schema({
   firstContactAt: { type: Date },
   lastActionAt: { type: Date },
   nextActionAt: { type: Date },
+  convertedAt: { type: Date },                              // date de passage au statut « converti »
+  value: { type: Number, default: 0, min: 0 },              // chiffre d'affaires généré par ce prospect converti
   leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lead' },
   replyText: { type: String, default: '', maxlength: 5000 },
   notes: { type: String, default: '', maxlength: 5000 },

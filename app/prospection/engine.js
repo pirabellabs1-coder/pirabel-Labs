@@ -12,7 +12,7 @@
 // ============================================================================
 const crypto = require('crypto');
 const core = require('./core');
-const { safeFetch, searchPlaces } = require('./net');
+const { safeFetch, searchPlaces, searchOverpass } = require('./net');
 const Prospect = require('../models/Prospect');
 const ProspectCampaign = require('../models/ProspectCampaign');
 const ProspectRun = require('../models/ProspectRun');
@@ -26,7 +26,10 @@ const clean = (v) => String(v || '').trim();
 const SITE = () => clean(process.env.SITE_URL) || core.SITE_URL;
 const DEFAULT_REPLY_TO = 'contact@pirabellabs.com';
 const ADMIN_EMAIL = () => clean(process.env.ADMIN_EMAIL) || clean(process.env.CONTACT_EMAIL) || 'contact@pirabellabs.com';
-const CYCLE_BUDGET_MS = 40000;
+// Budget étendu : la découverte OpenStreetMap (Overpass, gratuit) peut prendre plusieurs dizaines
+// de secondes. Le cron EventBridge invoque la Lambda EN DIRECT (pas via CloudFront/API Gateway),
+// donc non plafonné à 30 s — seul le timeout Lambda (300 s) borne la durée.
+const CYCLE_BUDGET_MS = 280000;
 const SEND_MIN_LEFT_MS = 11000;
 const DAY = 86400000;
 const ACTIVE_SEQUENCE = ['qualifie', 'contacte', 'relance_1'];
@@ -188,9 +191,8 @@ async function stopAllWithEmails(emails, status, exceptId) {
 // ---------------------------------------------------------------------------
 // Découverte (Google Maps)
 // ---------------------------------------------------------------------------
-async function discoverForCampaign(campaign, notes) {
-  const apiKey = clean(process.env.GOOGLE_PLACES_API_KEY);
-  if (!apiKey) { notes.push('Découverte impossible : clé Google Places absente.'); return 0; }
+async function discoverForCampaign(campaign, notes, deadline) {
+  const apiKey = clean(process.env.GOOGLE_PLACES_API_KEY);   // si absente -> OpenStreetMap (gratuit)
   const total = await Prospect.countDocuments({ campaignId: campaign._id });
   if (total >= campaign.maxProspects) return 0;
   const state = Object.assign({}, campaign.discovery || {});
@@ -200,30 +202,58 @@ async function discoverForCampaign(campaign, notes) {
   open.sort((a, b) => ((state[a] && state[a].pages) || 0) - ((state[b] && state[b].pages) || 0));
   const city = open[0];
   const st = state[city] || { pages: 0, pageToken: '', exhausted: false };
-  const r = await searchPlaces({ apiKey, query: (campaign.sector + ' ' + city).trim(), country: campaign.country, pageToken: st.pageToken, timeoutMs: 6000 });
   let added = 0;
-  if (!r.ok) {
-    notes.push(r.error + ' (' + city + ')');
-    // Jeton de page éventuellement périmé : on repart de la première page, et la ville passe derrière les autres.
-    state[city] = { pages: (st.pages || 0) + 1, pageToken: '', exhausted: false, errors: (st.errors || 0) + 1 };
-    if (state[city].errors >= 3) state[city].exhausted = true;
-  } else {
-    for (const pl of r.places) {
-      if (total + added >= campaign.maxProspects) break;
-      if (!pl || !pl.id) continue;
-      if (pl.businessStatus && pl.businessStatus !== 'OPERATIONAL') continue;
-      const doc = {
-        campaignId: campaign._id, placeId: String(pl.id).slice(0, 200),
-        name: String((pl.displayName && pl.displayName.text) || 'Entreprise').slice(0, 200),
-        address: String(pl.formattedAddress || '').slice(0, 300), city: String(city).slice(0, 100),
-        phone: String(pl.internationalPhoneNumber || pl.nationalPhoneNumber || '').slice(0, 40),
-        website: core.normalizeWebsite(pl.websiteUri), mapsUrl: /^https:\/\//.test(pl.googleMapsUri || '') ? String(pl.googleMapsUri).slice(0, 500) : '',
-        rating: typeof pl.rating === 'number' ? pl.rating : undefined, reviewsCount: Number(pl.userRatingCount) || 0,
-      };
-      try { await Prospect.create(doc); added++; } catch (e) { if (e.code !== 11000) notes.push('Création impossible : ' + String(e.message).slice(0, 80)); }
+
+  if (apiKey) {
+    // ----- Google Places (si clé configurée) -----
+    const r = await searchPlaces({ apiKey, query: (campaign.sector + ' ' + city).trim(), country: campaign.country, pageToken: st.pageToken, timeoutMs: 6000 });
+    if (!r.ok) {
+      notes.push(r.error + ' (' + city + ')');
+      state[city] = { pages: (st.pages || 0) + 1, pageToken: '', exhausted: false, errors: (st.errors || 0) + 1 };
+      if (state[city].errors >= 3) state[city].exhausted = true;
+    } else {
+      for (const pl of r.places) {
+        if (total + added >= campaign.maxProspects) break;
+        if (!pl || !pl.id) continue;
+        if (pl.businessStatus && pl.businessStatus !== 'OPERATIONAL') continue;
+        const doc = {
+          campaignId: campaign._id, placeId: String(pl.id).slice(0, 200),
+          name: String((pl.displayName && pl.displayName.text) || 'Entreprise').slice(0, 200),
+          address: String(pl.formattedAddress || '').slice(0, 300), city: String(city).slice(0, 100),
+          phone: String(pl.internationalPhoneNumber || pl.nationalPhoneNumber || '').slice(0, 40),
+          website: core.normalizeWebsite(pl.websiteUri), mapsUrl: /^https:\/\//.test(pl.googleMapsUri || '') ? String(pl.googleMapsUri).slice(0, 500) : '',
+          rating: typeof pl.rating === 'number' ? pl.rating : undefined, reviewsCount: Number(pl.userRatingCount) || 0,
+        };
+        try { await Prospect.create(doc); added++; } catch (e) { if (e.code !== 11000) notes.push('Création impossible : ' + String(e.message).slice(0, 80)); }
+      }
+      state[city] = { pages: (st.pages || 0) + 1, pageToken: r.nextPageToken || '', exhausted: !r.nextPageToken, errors: 0 };
     }
-    state[city] = { pages: (st.pages || 0) + 1, pageToken: r.nextPageToken || '', exhausted: !r.nextPageToken, errors: 0 };
+  } else {
+    // ----- OpenStreetMap (gratuit, sans clé ni carte) -----
+    // Délai Overpass borné par la deadline du cycle (plafonné à 95 s), pour ne jamais dépasser le budget.
+    const ovpTimeout = Math.min(95000, Math.max(8000, (deadline || (Date.now() + 95000)) - Date.now() - 5000));
+    const r = await searchOverpass({ sector: campaign.sector, city, country: campaign.country, limit: Math.min(80, campaign.maxProspects - total + 10), timeoutMs: ovpTimeout, bbox: st.bbox });
+    if (!r.ok) {
+      notes.push(r.error);
+      state[city] = { pages: (st.pages || 0) + 1, pageToken: '', exhausted: false, errors: (st.errors || 0) + 1, bbox: st.bbox };
+      if (state[city].errors >= 3) state[city].exhausted = true;
+    } else {
+      for (const pl of r.places) {
+        if (total + added >= campaign.maxProspects) break;
+        const doc = {
+          campaignId: campaign._id, placeId: ('osm:' + pl.id).slice(0, 200),
+          name: String(pl.name).slice(0, 200), address: String(pl.address || '').slice(0, 300), city: String(city).slice(0, 100),
+          phone: String(pl.phone || '').slice(0, 40), website: core.normalizeWebsite(pl.website),
+          email: pl.email ? String(pl.email).toLowerCase().slice(0, 254) : '',
+          mapsUrl: (pl.lat && pl.lon) ? ('https://www.openstreetmap.org/?mlat=' + pl.lat + '&mlon=' + pl.lon) : '',
+        };
+        try { await Prospect.create(doc); added++; } catch (e) { if (e.code !== 11000) notes.push('Création impossible : ' + String(e.message).slice(0, 80)); }
+      }
+      // Overpass renvoie tous les résultats d'un coup : la ville est épuisée après une passe. On garde la bbox en cache.
+      state[city] = { pages: (st.pages || 0) + 1, pageToken: '', exhausted: true, errors: 0, bbox: r.bbox || st.bbox };
+    }
   }
+
   campaign.discovery = state;
   campaign.markModified('discovery');
   await campaign.save();
@@ -439,7 +469,7 @@ async function runCycle({ trigger }) {
     return run;
   };
 
-  const lock = await acquireLock(58000);
+  const lock = await acquireLock(CYCLE_BUDGET_MS + 10000);
   if (!lock) { run.notes.push('Un cycle est déjà en cours : nouvel essai plus tard.'); return finish(); }
   try {
     const cfg = await getConfig();
@@ -520,13 +550,14 @@ async function runCycle({ trigger }) {
     // 1. Envois dus
     await sendPass();
 
-    // 2. Découverte (2 pages Google au maximum par cycle)
+    // 2. Découverte. Google : ~6 s/page. OpenStreetMap (Overpass) : plusieurs dizaines de secondes,
+    //    bornée par la deadline du cycle. On continue tant qu'il reste du temps (min. 25 s de marge).
     let pages = 0;
     for (const c of campaigns) {
-      if (pages >= 2 || left() < 22000) break;
+      if (pages >= 6 || left() < 25000) break;
       const pending = await Prospect.countDocuments({ campaignId: c._id, status: { $in: ['nouveau', 'qualifie'] } });
       if (pending >= c.dailyLimit * 2) continue;
-      run.discovered += await discoverForCampaign(c, run.notes);
+      run.discovered += await discoverForCampaign(c, run.notes, deadline);
       pages++;
     }
 
@@ -627,7 +658,7 @@ async function refreshStats(campaignIds) {
   const rows = await Prospect.aggregate([
     { $match: match },
     { $project: {
-      campaignId: 1, status: 1,
+      campaignId: 1, status: 1, value: 1,
       hasEmail: { $cond: [{ $gt: [{ $strLenCP: { $ifNull: ['$email', ''] } }, 0] }, 1, 0] },
       real: { $filter: { input: { $ifNull: ['$emails', []] }, as: 'e', cond: { $and: [{ $ne: ['$$e.test', true] }, { $eq: ['$$e.error', ''] }] } } },
     } },
@@ -637,9 +668,11 @@ async function refreshStats(campaignIds) {
       withEmail: { $sum: '$hasEmail' },
       contacted: { $sum: { $cond: [{ $gt: [{ $size: '$real' }, 0] }, 1, 0] } },
       opened: { $sum: { $cond: [{ $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $eq: ['$$r.opened', true] } } } }, 0] }, 1, 0] } },
+      clicked: { $sum: { $cond: [{ $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $eq: ['$$r.clicked', true] } } } }, 0] }, 1, 0] } },
       replied: { $sum: { $cond: [{ $in: ['$status', ['repondu', 'interesse', 'pas_interesse', 'converti']] }, 1, 0] } },
       interested: { $sum: { $cond: [{ $in: ['$status', ['interesse', 'converti']] }, 1, 0] } },
       converted: { $sum: { $cond: [{ $eq: ['$status', 'converti'] }, 1, 0] } },
+      revenue: { $sum: { $cond: [{ $eq: ['$status', 'converti'] }, { $ifNull: ['$value', 0] }, 0] } },
     } },
   ]);
   const map = new Map(rows.map((r) => [String(r._id), r]));
@@ -647,10 +680,68 @@ async function refreshStats(campaignIds) {
   for (const c of campaigns) {
     const r = map.get(String(c._id)) || {};
     c.stats = { found: r.found || 0, withEmail: r.withEmail || 0, contacted: r.contacted || 0, opened: r.opened || 0,
-      replied: r.replied || 0, interested: r.interested || 0, converted: r.converted || 0, updatedAt: new Date() };
+      clicked: r.clicked || 0, replied: r.replied || 0, interested: r.interested || 0, converted: r.converted || 0,
+      revenue: r.revenue || 0, updatedAt: new Date() };
     await ProspectCampaign.updateOne({ _id: c._id }, { $set: { stats: c.stats } });
   }
   return campaigns;
+}
+
+// Données du tableau de bord de suivi : entonnoir global, activité de la semaine, pipeline par statut.
+async function dashboardData() {
+  const match = { isTest: { $ne: true } };
+  const weekAgo = new Date(Date.now() - 7 * DAY);
+  const agg = await Prospect.aggregate([
+    { $match: match },
+    { $project: {
+      status: 1, value: 1, convertedAt: 1,
+      hasEmail: { $cond: [{ $gt: [{ $strLenCP: { $ifNull: ['$email', ''] } }, 0] }, 1, 0] },
+      real: { $filter: { input: { $ifNull: ['$emails', []] }, as: 'e', cond: { $and: [{ $ne: ['$$e.test', true] }, { $eq: ['$$e.error', ''] }] } } },
+    } },
+    { $project: {
+      status: 1, value: 1, convertedAt: 1, hasEmail: 1,
+      contacted: { $cond: [{ $gt: [{ $size: '$real' }, 0] }, 1, 0] },
+      opened: { $cond: [{ $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $eq: ['$$r.opened', true] } } } }, 0] }, 1, 0] },
+      clicked: { $cond: [{ $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $eq: ['$$r.clicked', true] } } } }, 0] }, 1, 0] },
+      wSent: { $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $gte: [{ $ifNull: ['$$r.sentAt', new Date(0)] }, weekAgo] } } } }, 0] },
+      wOpened: { $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $and: [{ $eq: ['$$r.opened', true] }, { $gte: [{ $ifNull: ['$$r.openedAt', new Date(0)] }, weekAgo] }] } } } }, 0] },
+      wClicked: { $gt: [{ $size: { $filter: { input: '$real', as: 'r', cond: { $and: [{ $eq: ['$$r.clicked', true] }, { $gte: [{ $ifNull: ['$$r.clickedAt', new Date(0)] }, weekAgo] }] } } } }, 0] },
+    } },
+    { $group: {
+      _id: null,
+      found: { $sum: 1 },
+      withEmail: { $sum: '$hasEmail' },
+      contacted: { $sum: '$contacted' },
+      opened: { $sum: '$opened' },
+      clicked: { $sum: '$clicked' },
+      replied: { $sum: { $cond: [{ $in: ['$status', ['repondu', 'interesse', 'pas_interesse', 'converti']] }, 1, 0] } },
+      interested: { $sum: { $cond: [{ $in: ['$status', ['interesse', 'converti']] }, 1, 0] } },
+      converted: { $sum: { $cond: [{ $eq: ['$status', 'converti'] }, 1, 0] } },
+      revenue: { $sum: { $cond: [{ $eq: ['$status', 'converti'] }, { $ifNull: ['$value', 0] }, 0] } },
+      wContacted: { $sum: { $cond: ['$wSent', 1, 0] } },
+      wOpened: { $sum: { $cond: ['$wOpened', 1, 0] } },
+      wClicked: { $sum: { $cond: ['$wClicked', 1, 0] } },
+      wConverted: { $sum: { $cond: [{ $and: [{ $eq: ['$status', 'converti'] }, { $gte: [{ $ifNull: ['$convertedAt', new Date(0)] }, weekAgo] }] }, 1, 0] } },
+      wRevenue: { $sum: { $cond: [{ $and: [{ $eq: ['$status', 'converti'] }, { $gte: [{ $ifNull: ['$convertedAt', new Date(0)] }, weekAgo] }] }, { $ifNull: ['$value', 0] }, 0] } },
+    } },
+  ]);
+  const g = agg[0] || {};
+  const byStatus = await Prospect.aggregate([{ $match: match }, { $group: { _id: '$status', n: { $sum: 1 } } }]);
+  const pipeline = {};
+  byStatus.forEach((r) => { if (r._id) pipeline[r._id] = r.n; });
+  const num = (v) => Number(v) || 0;
+  return {
+    funnel: {
+      found: num(g.found), withEmail: num(g.withEmail), contacted: num(g.contacted), opened: num(g.opened),
+      clicked: num(g.clicked), replied: num(g.replied), interested: num(g.interested), converted: num(g.converted),
+    },
+    revenue: num(g.revenue),
+    week: {
+      contacted: num(g.wContacted), opened: num(g.wOpened), clicked: num(g.wClicked),
+      converted: num(g.wConverted), revenue: num(g.wRevenue),
+    },
+    pipeline,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -747,6 +838,18 @@ async function handleWebhookEvent(evt) {
   if (type === 'email.opened') {
     const r = await Prospect.updateOne({ emails: { $elemMatch: { resendId: emailId, opened: { $ne: true } } } },
       { $set: { 'emails.$.opened': true, 'emails.$.openedAt': new Date() } });
+    return { handled: r.matchedCount > 0 };
+  }
+  if (type === 'email.clicked') {
+    // Un clic implique une ouverture : on marque les deux (openedAt posé s'il manquait).
+    const now = new Date();
+    const r = await Prospect.updateOne(
+      { emails: { $elemMatch: { resendId: emailId, clicked: { $ne: true } } } },
+      [{ $set: { emails: { $map: { input: '$emails', as: 'e', in: { $cond: [
+        { $eq: ['$$e.resendId', emailId] },
+        { $mergeObjects: ['$$e', { clicked: true, clickedAt: now, opened: true, openedAt: { $ifNull: ['$$e.openedAt', now] } }] },
+        '$$e',
+      ] } } } } }]);
     return { handled: r.matchedCount > 0 };
   }
   if (type !== 'email.bounced' && type !== 'email.complained') return { handled: false, reason: 'événement ignoré' };
@@ -856,7 +959,7 @@ async function sendTestEmail(p, step) {
 module.exports = {
   K, getConfig, setSetting, setupChecklist, computeBudget, countSentToday, prospectFrom, replyTo, unsubSecret,
   runCycle, sendNow, enrichProspect, discoverForCampaign, sendStep, nextStepOf, buildMessage, renderMessage,
-  refreshStats, upsertLeadFromProspect, handleWebhookEvent, unsubscribe, prospectFromToken, stopAllWithEmails,
+  refreshStats, dashboardData, upsertLeadFromProspect, handleWebhookEvent, unsubscribe, prospectFromToken, stopAllWithEmails,
   createTestProspect, previewFor, sendTestEmail, testCampaign, blockedReason, appendNote, acquireLock, releaseLock,
   ACTIVE_SEQUENCE, STOP_STATUSES,
 };

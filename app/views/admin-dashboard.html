@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
 <meta name="color-scheme" content="dark light">
-<script>(function(){try{var t=localStorage.getItem('pirabel-admin-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('pirabel-admin-theme');if(t!=='light')t='dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <style>
@@ -4688,7 +4688,7 @@ async function loadFinOverview() {
 }
 
 // ============ Thème clair / sombre ============
-// Par défaut : préférence du système. Le choix manuel est mémorisé (localStorage).
+// Par défaut : thème sombre. Le choix manuel est mémorisé (localStorage).
 function effectiveTheme() {
   var a = document.documentElement.getAttribute('data-theme');
   if (a === 'light' || a === 'dark') return a;
@@ -5978,6 +5978,30 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- PROSPECTION IA MODULE -->
 <style>
 /* Module « Prospection IA » (styles propres au module) */
+/* Tableau de bord de suivi */
+.pr-dash__kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:.7rem;margin-bottom:var(--section)}
+.pr-dash__kpi{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r-lg,14px);padding:.85rem .9rem;display:flex;flex-direction:column;gap:.1rem}
+.pr-dash__kpi b{font-family:var(--font-display);font-size:1.5rem;line-height:1.1}
+.pr-dash__kpi span{font-size:.8rem;color:var(--text-muted);font-weight:600}
+.pr-dash__kpi small{font-size:.72rem;color:var(--text-muted);opacity:.85}
+.pr-funnel{display:grid;gap:.55rem}
+.pr-funnel__row{display:grid;grid-template-columns:7rem minmax(0,1fr) 3.5rem;align-items:center;gap:.6rem;font-size:.84rem}
+.pr-funnel__lab{color:var(--text-muted);font-weight:600}
+.pr-funnel__bar{height:1.25rem;background:var(--surface-2,var(--border-2));border-radius:999px;overflow:hidden}
+.pr-funnel__fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2,var(--accent)));transition:width .5s ease}
+.pr-funnel__val{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.pr-dash__week{display:grid;grid-template-columns:repeat(auto-fit,minmax(6rem,1fr));gap:.6rem}
+.pr-dash__wk{text-align:center;padding:.7rem .5rem;border-radius:var(--r-lg,14px);background:var(--surface-2,color-mix(in srgb,var(--accent) 6%,var(--card-bg)))}
+.pr-dash__wk b{display:block;font-family:var(--font-display);font-size:1.25rem}
+.pr-dash__wk span{font-size:.74rem;color:var(--text-muted)}
+.pr-dash__wk--hl{background:color-mix(in srgb,var(--success) 14%,var(--card-bg));border:1px solid color-mix(in srgb,var(--success) 35%,transparent)}
+.pr-kanban{display:grid;grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));gap:.7rem}
+.pr-kanban__col{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:1rem .6rem;border-radius:var(--r-lg,14px);border:1px solid var(--border);background:var(--card-bg);cursor:pointer;transition:border-color .15s,transform .15s;font-family:inherit}
+.pr-kanban__col:hover{border-color:var(--accent);transform:translateY(-2px)}
+.pr-kanban__col:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+.pr-kanban__n{font-family:var(--font-display);font-size:1.6rem;line-height:1;color:var(--accent)}
+.pr-kanban__l{font-size:.78rem;color:var(--text-muted);font-weight:600;text-align:center}
+@media (prefers-reduced-motion:reduce){.pr-funnel__fill,.pr-kanban__col{transition:none}}
 .pr-mode{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .8rem;border-radius:999px;font-family:var(--font-ui);font-weight:800;font-size:.78rem;letter-spacing:.02em}
 .pr-mode--test{background:color-mix(in srgb,var(--warning) 18%,transparent);color:var(--warning);border:1px solid color-mix(in srgb,var(--warning) 45%,transparent)}
 .pr-mode--live{background:color-mix(in srgb,var(--success) 16%,transparent);color:var(--success);border:1px solid color-mix(in srgb,var(--success) 40%,transparent)}
@@ -6093,6 +6117,9 @@ function prRender() {
       '<button type="button" class="btn btn--ghost btn--sm" onclick="prBackToTest()"><span class="material-symbols-outlined" aria-hidden="true">science</span> Revenir en mode test</button></div></div>';
   }
 
+  // Tableau de bord de suivi (entonnoir, activité de la semaine, pipeline) — chargé après coup.
+  html += '<section id="prDashboard" class="pr-dash" aria-label="Tableau de bord de la prospection"><div class="card"><div class="empty" style="padding:1.2rem;"><span class="material-symbols-outlined" aria-hidden="true">insights</span>Chargement du suivi…</div></div></section>';
+
   // Configuration + pilotage
   html += '<div class="grid-2 grid-2--equal">';
   html += '<div class="card"><div class="card__header"><div><div class="card__title">Configuration</div><div class="card__sub">' +
@@ -6156,6 +6183,79 @@ function prRender() {
   prEl('prFTest').addEventListener('change', function () { PR.filters.test = this.checked; prLoadProspects(1); });
   if (PR.lastTest) prRenderTestResult(PR.lastTest);
   prLoadSuppressions();
+  prLoadDashboard();
+}
+
+// ---------------------------------------------------------------- tableau de bord de suivi
+var PR_PIPELINE_COLS = [
+  { key: 'nouveau', label: 'Nouveaux', keys: ['nouveau'] },
+  { key: 'qualifie', label: 'Qualifiés', keys: ['qualifie', 'sans_email'] },
+  { key: 'contacte', label: 'Contactés', keys: ['contacte', 'relance_1', 'relance_2'] },
+  { key: 'repondu', label: 'Ont répondu', keys: ['repondu'] },
+  { key: 'interesse', label: 'Intéressés', keys: ['interesse'] },
+  { key: 'converti', label: 'Convertis', keys: ['converti'] }
+];
+function prPct(n, d) { return d > 0 ? Math.round(100 * n / d) : 0; }
+function prMoney(v) { return prNum(Math.round(v || 0)) + ' €'; }
+async function prLoadDashboard() {
+  var box = prEl('prDashboard'); if (!box) return;
+  try {
+    var d = await api('/api/admin/prospection/dashboard');
+    var f = d.funnel, w = d.week, pipe = d.pipeline || {};
+    // Bandeau KPI
+    var kpi = function (v, l, sub) { return '<div class="pr-dash__kpi"><b>' + v + '</b><span>' + l + '</span>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>'; };
+    var html = '<h2 class="pr-sec-title">Suivi &amp; conversions</h2>';
+    html += '<div class="pr-dash__kpis">' +
+      kpi(prNum(f.found), 'Prospects') +
+      kpi(prNum(f.withEmail), 'Avec e-mail') +
+      kpi(prNum(f.contacted), 'Contactés') +
+      kpi(prNum(f.opened), 'Ouvertures', prPct(f.opened, f.contacted) + ' % des contactés') +
+      kpi(prNum(f.clicked), 'Clics', prPct(f.clicked, f.contacted) + ' % des contactés') +
+      kpi(prNum(f.replied), 'Réponses', prPct(f.replied, f.contacted) + ' % des contactés') +
+      kpi(prNum(f.converted), 'Convertis', prPct(f.converted, f.contacted) + ' % des contactés') +
+      kpi(prMoney(d.revenue), 'CA généré', 'total') +
+      '</div>';
+    // Entonnoir
+    var steps = [
+      ['Découverts', f.found], ['Avec e-mail', f.withEmail], ['Contactés', f.contacted],
+      ['Ouvert', f.opened], ['Cliqué', f.clicked], ['Répondu', f.replied], ['Intéressé', f.interested], ['Converti', f.converted]
+    ];
+    var max = f.found || 1;
+    html += '<div class="grid-2 grid-2--equal" style="margin-bottom:var(--section);">';
+    html += '<div class="card"><div class="card__header"><div><div class="card__title">Entonnoir de conversion</div><div class="card__sub">Du prospect découvert au client</div></div></div><div class="pr-funnel">' +
+      steps.map(function (s) {
+        var pc = prPct(s[1], max);
+        return '<div class="pr-funnel__row"><span class="pr-funnel__lab">' + s[0] + '</span>' +
+          '<span class="pr-funnel__bar"><span class="pr-funnel__fill" style="width:' + Math.max(2, pc) + '%;"></span></span>' +
+          '<span class="pr-funnel__val">' + prNum(s[1]) + '</span></div>';
+      }).join('') + '</div></div>';
+    // Cette semaine
+    html += '<div class="card"><div class="card__header"><div><div class="card__title">Cette semaine</div><div class="card__sub">7 derniers jours</div></div></div>' +
+      '<div class="pr-dash__week">' +
+      '<div class="pr-dash__wk"><b>' + prNum(w.contacted) + '</b><span>Contactés</span></div>' +
+      '<div class="pr-dash__wk"><b>' + prNum(w.opened) + '</b><span>Ouvertures</span></div>' +
+      '<div class="pr-dash__wk"><b>' + prNum(w.clicked) + '</b><span>Clics</span></div>' +
+      '<div class="pr-dash__wk"><b>' + prNum(w.converted) + '</b><span>Convertis</span></div>' +
+      '<div class="pr-dash__wk pr-dash__wk--hl"><b>' + prMoney(w.revenue) + '</b><span>CA de la semaine</span></div>' +
+      '</div></div>';
+    html += '</div>';
+    // Pipeline (kanban de comptage, cliquable -> filtre la liste)
+    html += '<div class="card" style="margin-bottom:var(--section);"><div class="card__header"><div><div class="card__title">Pipeline</div><div class="card__sub">Cliquez une colonne pour filtrer la liste des prospects ci-dessous</div></div></div>' +
+      '<div class="pr-kanban">' + PR_PIPELINE_COLS.map(function (col) {
+        var n = col.keys.reduce(function (a, k) { return a + (pipe[k] || 0); }, 0);
+        return '<button type="button" class="pr-kanban__col" onclick="prFilterStatus(\'' + col.keys[0] + '\')">' +
+          '<span class="pr-kanban__n">' + prNum(n) + '</span><span class="pr-kanban__l">' + col.label + '</span></button>';
+      }).join('') + '</div></div>';
+    box.innerHTML = html;
+  } catch (e) {
+    box.innerHTML = '<div class="card"><div class="empty empty--error" role="alert"><span class="material-symbols-outlined" aria-hidden="true">error</span>Suivi indisponible : ' + escape(e.message) + '</div></div>';
+  }
+}
+function prFilterStatus(status) {
+  PR.filters.status = status;
+  var sel = prEl('prFStatus'); if (sel) sel.value = status;
+  prLoadProspects(1);
+  var t = prEl('prProspectsTitle'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function prCampaignCard(c) {
@@ -6171,8 +6271,9 @@ function prCampaignCard(c) {
   return '<div class="card pr-camp"><div class="pr-camp__head"><div style="min-width:0;"><div class="card__title">' + escape(c.name) + '</div>' +
     '<div class="pr-camp__meta">« ' + escape(c.sector) + ' » · ' + escape((c.cities || []).join(', ')) + ' (' + escape(c.country || '') + ')<br>' + prNum(c.dailyLimit) + ' e-mails par jour au maximum · relances à J+' + escape((c.followUps || [3, 7]).join(' et J+')) + '</div></div>' + prBadge(PR_CAMP_STATUS, c.status) + '</div>' +
     '<div class="pr-kpis">' + k(s.found, 'Trouvés') + k(s.withEmail, 'Avec e-mail') + k(s.contacted, 'Contactés') + k(s.opened, 'Ouverts') +
-    k(s.replied, 'Réponses') + k(s.interested, 'Intéressés') + k(s.converted, 'Convertis') +
-    '<div class="pr-kpi"><b>' + (s.contacted ? Math.round(100 * (s.replied || 0) / s.contacted) + ' %' : '—') + '</b><span>Taux de réponse</span></div></div>' +
+    k(s.clicked, 'Cliqués') + k(s.replied, 'Réponses') + k(s.interested, 'Intéressés') + k(s.converted, 'Convertis') +
+    '<div class="pr-kpi"><b>' + (s.contacted ? Math.round(100 * (s.replied || 0) / s.contacted) + ' %' : '—') + '</b><span>Taux de réponse</span></div>' +
+    '<div class="pr-kpi"><b>' + prNum(Math.round(s.revenue || 0)) + ' €</b><span>CA généré</span></div></div>' +
     '<div class="row">' + btns.join('') + '</div></div>';
 }
 
@@ -6387,12 +6488,13 @@ async function prOpenProspect(id) {
       '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">E-mails envoyés (' + sent.length + ')</h3>' +
       (sent.length ? sent.map(function (e) {
         return prMailBlock((e.test ? '[TEST] ' : '') + e.subject, e.text, PR_STEP[e.step] + ' · ' + fmtDateTime(e.sentAt) + (e.test ? ' · envoyé à ' + escape(e.to) + ' (test)' : '') +
-          (e.error ? ' · <span style="color:var(--danger);">' + escape(e.error) + '</span>' : (e.opened ? ' · ouvert' : (e.delivered ? ' · délivré' : ''))) + (e.source === 'ia' ? ' · IA' : ' · modèle'));
+          (e.error ? ' · <span style="color:var(--danger);">' + escape(e.error) + '</span>' : (e.clicked ? ' · <span style="color:var(--success);font-weight:700;">cliqué</span>' : (e.opened ? ' · ouvert' : (e.delivered ? ' · délivré' : '')))) + (e.source === 'ia' ? ' · IA' : ' · modèle'));
       }).join('') : '<p class="muted" style="font-size:.85rem;">Aucun e-mail envoyé.</p>') +
       (p.replyText ? '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">Réponse reçue</h3><pre class="pr-mail pr-mail__body">' + escape(p.replyText) + '</pre>' : '') +
       (p.notes ? '<h3 class="pr-sec-title" style="font-size:.92rem;margin-top:1.2rem;">Notes</h3><pre class="pr-mail__body muted">' + escape(p.notes) + '</pre>' : '');
     var foot = '<button type="button" class="btn btn--ghost btn--sm" onclick="prSetStatus(\'' + p._id + '\',\'repondu\')">Marquer répondu</button>' +
       (p.isTest ? '' : '<button type="button" class="btn btn--sm btn--success" style="color:var(--on-accent);" onclick="prSetStatus(\'' + p._id + '\',\'interesse\')"><span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span> Intéressé → prospect CRM</button>') +
+      (p.isTest ? '' : '<button type="button" class="btn btn--sm" style="background:var(--success);color:var(--on-accent);" onclick="prSetStatus(\'' + p._id + '\',\'converti\')"><span class="material-symbols-outlined" aria-hidden="true">paid</span> Converti (client)</button>') +
       '<button type="button" class="btn btn--ghost btn--sm" onclick="prSetStatus(\'' + p._id + '\',\'pas_interesse\')">Pas intéressé</button>' +
       (p.isTest ? '' : '<button type="button" class="btn btn--ghost btn--sm btn--danger" onclick="prSetStatus(\'' + p._id + '\',\'desinscrit\')">Désinscrire</button>') +
       (p.isTest ? '<button type="button" class="btn btn--ghost btn--sm btn--danger" onclick="prDeleteProspect(\'' + p._id + '\')">Supprimer le test</button>' : '');
@@ -6425,10 +6527,18 @@ async function prAddEmail(id) {
   catch (e) { toast(e.message, 'error'); }
 }
 async function prSetStatus(id, status) {
-  var labels = { repondu: 'marquer ce prospect comme ayant répondu (la séquence s’arrête)', interesse: 'marquer ce prospect intéressé et l’ajouter au CRM', pas_interesse: 'marquer ce prospect « pas intéressé » (la séquence s’arrête)', desinscrit: 'désinscrire ce prospect (il ne sera plus jamais contacté)' };
-  if (!confirm('Confirmer : ' + labels[status] + ' ?')) return;
+  var labels = { repondu: 'marquer ce prospect comme ayant répondu (la séquence s’arrête)', interesse: 'marquer ce prospect intéressé et l’ajouter au CRM', pas_interesse: 'marquer ce prospect « pas intéressé » (la séquence s’arrête)', desinscrit: 'désinscrire ce prospect (il ne sera plus jamais contacté)', converti: 'marquer ce prospect CONVERTI (devenu client)' };
+  var body = { status: status };
+  if (status === 'converti') {
+    var v = prompt('Montant du contrat généré par ce client (en €, 0 si inconnu) :', '0');
+    if (v === null) return;            // annulé
+    var val = Math.max(0, parseFloat(String(v).replace(',', '.').replace(/[^0-9.]/g, '')) || 0);
+    body.value = val;
+  } else {
+    if (!confirm('Confirmer : ' + labels[status] + ' ?')) return;
+  }
   try {
-    var r = await api('/api/admin/prospection/prospects/' + id + '/status', { method: 'POST', body: { status: status } });
+    var r = await api('/api/admin/prospection/prospects/' + id + '/status', { method: 'POST', body: body });
     var m = prEl('prProspectModal'); if (m) m.close();
     toast('Statut mis à jour', 'success');
     if (status === 'interesse' && r.leadId) {
@@ -6438,6 +6548,7 @@ async function prSetStatus(id, status) {
       return;
     }
     prLoadProspects(PR.page);
+    prLoadDashboard();
   } catch (e) { toast(e.message, 'error'); }
 }
 async function prDeleteProspect(id) {

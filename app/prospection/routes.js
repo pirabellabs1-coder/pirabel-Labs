@@ -81,6 +81,11 @@ module.exports = function registerProspection(app, deps) {
   };
 
   // ------------------------------------------------------------------ vue d'ensemble
+  app.get('/api/admin/prospection/dashboard', ...A, async (req, res) => {
+    try { res.json(await engine.dashboardData()); }
+    catch (e) { fail(res, e, 'prospection.dashboard'); }
+  });
+
   app.get('/api/admin/prospection/overview', ...A, async (req, res) => {
     try {
       const cfg = await engine.getConfig();
@@ -245,6 +250,11 @@ module.exports = function registerProspection(app, deps) {
       } else {
         p.status = status;
         p.nextActionAt = null;
+      }
+      if (status === 'converti') {
+        const v = Number((req.body || {}).value);
+        if (Number.isFinite(v) && v >= 0) p.value = Math.min(v, 100000000);
+        if (!p.convertedAt) p.convertedAt = new Date();
       }
       if (status === 'interesse' || status === 'converti') {
         lead = await engine.upsertLeadFromProspect(p, campaign, (status === 'interesse' ? 'marqué intéressé' : 'converti') + (note ? ' — ' + note : ''), 'qualifie');

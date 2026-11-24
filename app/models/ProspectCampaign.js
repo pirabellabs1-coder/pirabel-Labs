@@ -22,9 +22,11 @@ const prospectCampaignSchema = new mongoose.Schema({
     withEmail: { type: Number, default: 0 },
     contacted: { type: Number, default: 0 },
     opened: { type: Number, default: 0 },
+    clicked: { type: Number, default: 0 },
     replied: { type: Number, default: 0 },
     interested: { type: Number, default: 0 },
     converted: { type: Number, default: 0 },
+    revenue: { type: Number, default: 0 },                  // CA total généré par la campagne
     updatedAt: { type: Date },
   },
   createdAt: { type: Date, default: Date.now, index: true },

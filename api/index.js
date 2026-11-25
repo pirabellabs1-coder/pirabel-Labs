@@ -27,6 +27,10 @@ const jwt = require('jsonwebtoken');
 const BLOG_TEAM = 'L’équipe Pirabel Labs';
 // Articles génériques publiés en masse (juin-juillet 2026) : hors index Google et hors sitemap
 // le temps d'être fusionnés ou réécrits. Ils restent lisibles sur /blog.
+// Articles fusionnés : l'ancien slug renvoie (301) vers l'article qui couvre le même sujet.
+// Ils restent en base mais disparaissent du blog, des suggestions et du sitemap (app/blog-redirects.json).
+const BLOG_REDIRECTS = (() => { try { return require('../app/blog-redirects.json'); } catch (e) { return {}; } })();
+const MERGED_SLUGS = Object.keys(BLOG_REDIRECTS);
 const BLOG_NOINDEX = new Set((() => { try { return require('../app/seo-noindex-blog.json'); } catch (e) { return []; } })());
 
 const connectDB = require('../app/config/db');
@@ -4937,17 +4941,17 @@ app.get('/blog', async (req, res) => {
     const q = String(req.query.q || '').trim().slice(0, 80);
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const isFiltered = !!(cat || q);
-    const baseFilter = { status: 'publie' };
+    const baseFilter = { status: 'publie', slug: { $nin: MERGED_SLUGS } };
     if (cat) baseFilter.category = new RegExp('^' + esc(cat) + '$', 'i');
     if (q) { const rx = new RegExp(esc(q), 'i'); baseFilter.$or = [{ title: rx }, { excerpt: rx }, { category: rx }]; }
     // catégories pour les filtres (dédupliquées, insensibles à la casse)
-    const rawCats = await Article.distinct('category', { status: 'publie' });
+    const rawCats = await Article.distinct('category', { status: 'publie', slug: { $nin: MERGED_SLUGS } });
     const seen = {}; const cats = [];
     rawCats.filter(Boolean).sort((a, b) => a.localeCompare(b, 'fr')).forEach(c => { const k = c.toLowerCase(); if (!seen[k]) { seen[k] = 1; cats.push(c); } });
     // article vedette = le plus lu (page 1 sans filtre uniquement)
     let featured = null, excludeId = null;
     if (!isFiltered) {
-      featured = await Article.findOne({ status: 'publie' }).sort({ views: -1, publishedAt: -1 }).lean();
+      featured = await Article.findOne({ status: 'publie', slug: { $nin: MERGED_SLUGS } }).sort({ views: -1, publishedAt: -1 }).lean();
       if (featured) excludeId = featured._id;
     }
     const listFilter = Object.assign({}, baseFilter);
@@ -5006,6 +5010,7 @@ app.get('/blog', async (req, res) => {
 app.get('/blog/:slug', async (req, res) => {
   try {
     const slug = String(req.params.slug || '').toLowerCase().slice(0, 100);
+    if (BLOG_REDIRECTS[slug]) return res.redirect(301, '/blog/' + BLOG_REDIRECTS[slug]);
     // Aperçu admin : ?preview=1 + cookie JWT valide -> on rend aussi les brouillons
     const previewAdmin = !!req.query.preview && (() => {
       try { jwt.verify((req.cookies || {}).token || '', process.env.JWT_SECRET, { algorithms: ['HS256'], issuer: 'pirabel-labs' }); return true; } catch (e) { return false; }
@@ -5066,10 +5071,10 @@ app.get('/blog/:slug', async (req, res) => {
       '<div class="bx-side__cta glass glass--tint"><b>Un projet digital&nbsp;?</b><p>Audit gratuit, réponse sous 24&nbsp;h.</p><a class="btn btn--primary btn--sm" href="/contact">Demander un audit</a></div>' +
       '</aside>';
     // Articles similaires : même catégorie en priorité, complété par les plus récents
-    const related = await Article.find({ status: 'publie', _id: { $ne: a._id }, category: a.category }).sort({ views: -1, publishedAt: -1 }).limit(3).lean();
+    const related = await Article.find({ status: 'publie', slug: { $nin: MERGED_SLUGS }, _id: { $ne: a._id }, category: a.category }).sort({ views: -1, publishedAt: -1 }).limit(3).lean();
     if (related.length < 3) {
       const have = related.map(r => r._id).concat(a._id);
-      const extra = await Article.find({ status: 'publie', _id: { $nin: have } }).sort({ publishedAt: -1 }).limit(3 - related.length).lean();
+      const extra = await Article.find({ status: 'publie', slug: { $nin: MERGED_SLUGS }, _id: { $nin: have } }).sort({ publishedAt: -1 }).limit(3 - related.length).lean();
       related.push(...extra);
     }
     const relCard = r => '<a class="bx-card glass glass--flat spot" href="/blog/' + escapeHtml(r.slug) + '"><div class="bx-card__img">' + (r.featuredImage ? '<img src="' + escapeHtml(r.featuredImage) + '" alt="' + escapeHtml(r.imageAlt || r.title) + '" loading="lazy" decoding="async">' : coverSvg(r.title, r.category)) + '</div><div class="bx-card__b"><span class="bx-cat">' + escapeHtml(r.category || 'Marketing') + '</span><h3>' + frt(r.title) + '</h3></div></a>';
@@ -5720,7 +5725,7 @@ app.get('/sitemap.xml', async (req, res) => {
           .map(f => f === 'index.html' ? '/' : '/' + f.replace(/\.html$/, ''));
       } catch (e2) {}
     }
-    const arts = await Article.find({ status: 'publie' }).select('slug updatedAt').lean();
+    const arts = await Article.find({ status: 'publie', slug: { $nin: MERGED_SLUGS } }).select('slug updatedAt').lean();
     const urls = [];
     urls.push({ loc: SITE() + '/blog', lastmod: new Date().toISOString().slice(0, 10) });
     // Pages « service × ville » en noindex (scripts/gen-seo-noindex.js) : hors sitemap.

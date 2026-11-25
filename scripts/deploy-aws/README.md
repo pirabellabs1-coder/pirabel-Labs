@@ -68,3 +68,15 @@ Elle doit être en pur JavaScript (la Lambda tourne sous Linux arm64).
 - Journaux de l'API : `aws logs tail /aws/lambda/pirabel-api --profile axi --region eu-north-1 --since 10m`
 - Revenir à la version précédente de l'API : relancer `-Api` depuis une copie du dépôt au commit précédent (par exemple `git worktree add ../pirabel-rollback <commit>`), sans toucher au dossier de travail courant.
 - Les crons (EventBridge `pirabel-cron-inbox`, `pirabel-cron-prospection`, `pirabel-cron-weekly`) appellent la même Lambda : ils profitent du nouveau code sans autre action.
+
+## Fonction CloudFront (redirections + URL propres)
+
+Le code de la fonction `pirabel-labs-rewrite` est versionné dans `cf-rewrite.js`. Pour la mettre à jour :
+
+```bash
+E=$(aws cloudfront describe-function --name pirabel-labs-rewrite --profile axi --query ETag --output text)
+E2=$(aws cloudfront update-function --name pirabel-labs-rewrite --if-match $E --function-config Comment="clean urls + redirects pirabel",Runtime=cloudfront-js-2.0 --function-code fileb://scripts/deploy-aws/cf-rewrite.js --profile axi --query ETag --output text)
+aws cloudfront publish-function --name pirabel-labs-rewrite --if-match $E2 --profile axi
+```
+
+Les redirections d'articles du blog (`/blog/...`) sont gérées par l'API : `app/blog-redirects.json`.
